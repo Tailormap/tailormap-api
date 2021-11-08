@@ -1,0 +1,51 @@
+name: Ubuntu Maven build
+
+env:
+  MAVEN_OPTS: -Djava.awt.headless=true
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    paths-ignore:
+jobs:
+  build:
+    name: Ubuntu Java 11 Build
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'temurin'
+
+      - name: Priming build with Maven
+        run: mvn install -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
+
+      - name: Test with Maven
+        run: |
+          mvn -e clean test -B
+          mvn -e verify -B -Pgh-action -pl '!viewer-admin'
+          mvn -e verify -B -Pgh-action -pl ':tailormap,:viewer-admin'
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+
+      - name: Build javadoc
+        run: mvn javadoc:javadoc
+
+      - name: Build test javadoc
+        run: mvn javadoc:test-javadoc
+
+      - name: Cleanup snapshots
+        run: |
+          find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}
