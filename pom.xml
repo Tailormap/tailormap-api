@@ -261,10 +261,6 @@
         <version>6.5.0</version>
         <configuration>
           <skip>${skipQA}</skip>
-          <enableExperimental>true</enableExperimental>
-          <retirejs>
-            <filterNonVulnerable>false</filterNonVulnerable>
-          </retirejs>
           <suppressionFile>${project.basedir}/build/qa/owasp-suppression.xml</suppressionFile>
           <hintsFile>${project.basedir}/build/qa/owasp-hints.xml</hintsFile>
           <format>ALL</format>
@@ -492,6 +488,14 @@
       </activation>
       <properties>
         <docker.skip>true</docker.skip>
+      </properties>
+    </profile>
+    <profile>
+      <!-- use this profile to deactivate QA actions and docker builds -->
+      <id>developing</id>
+      <properties>
+        <docker.skip>true</docker.skip>
+        <skipQA>true</skipQA>
       </properties>
     </profile>
     <profile>
