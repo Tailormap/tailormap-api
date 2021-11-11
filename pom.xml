@@ -3,11 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.b3p.tailormap</groupId>
   <artifactId>tailormap-api</artifactId>
-  <version>0.1</version>
+  <version>0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Tailormap API</name>
   <description>Tailormap API provides the OpenAPI for Tailormap</description>
-
   <url>https://github.com/B3Partners/tailormap-api/</url>
   <inceptionYear>2021</inceptionYear>
   <organization>
@@ -59,7 +58,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
     <project.build.targetVersion>${java.version}</project.build.targetVersion>
-    <project.build.outputTimestamp>2021-08-27T10:16:01Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2021-11-11T16:01:17Z</project.build.outputTimestamp>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <spring.boot.version>2.5.4</spring.boot.version>
@@ -278,7 +277,7 @@
           <excludeRoots>
             <excludeRoot>target/generated-sources</excludeRoot>
           </excludeRoots>
-          <excludes></excludes>
+          <excludes />
         </configuration>
       </plugin>
       <plugin>
@@ -364,8 +363,8 @@
           <execution>
             <id>docker-push</id>
             <!-- NB for deploy/push login is required on ghcr.io or docker.b3p.nl repository with
-                             docker - whatever value is ${docker-deploy-repo}
-                        see: https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry -->
+                 docker - whatever value is ${docker-deploy-repo}
+                 see: https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry -->
             <phase>deploy</phase>
             <goals>
               <goal>push</goal>
@@ -407,6 +406,7 @@
         <configuration>
           <pushChanges>true</pushChanges>
           <releaseProfiles>release</releaseProfiles>
+          <tagNameFormat>tailormap-api-@{project.version}</tagNameFormat>
         </configuration>
       </plugin>
     </plugins>
