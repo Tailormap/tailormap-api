@@ -29,7 +29,7 @@ jobs:
           distribution: 'temurin'
 
       - name: QA build with Maven
-        run: mvn -B -V -fae -DskipQA=false -Dfmt.action=check -Dpom.fmt.action=verify clean install
+        run: mvn -B -V -fae -DskipQA=false -Dfmt.action=check -Dpom.fmt.action=verify -Ddocker.skip=true clean install
 
       - name: Cleanup snapshots
         run: |
