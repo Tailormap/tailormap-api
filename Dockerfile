@@ -11,15 +11,18 @@ LABEL org.opencontainers.image.authors="@mprins" \
       nl.b3p.version=$TAILORMAP_API_VERSION
 
 
-RUN set -eux;ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN set -eux;ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+    && addgroup -S spring && adduser -S spring -G spring
+
+USER spring:spring
 
 WORKDIR /home
 
 COPY ./target/tailormap-api.jar tailormap-api.jar
 
 EXPOSE 8080
-
-HEALTHCHECK CMD curl -f http://localhost:8080/tailormap-api/ || exit 1
+# see https://docs.spring.io/spring-boot/docs/2.5.6/actuator-api/htmlsingle/#health
+HEALTHCHECK --interval=25s --timeout=3s --retries=2 CMD wget --spider --header 'Accept: application/json' http://localhost:8080/actuator/health || exit 1
 
 ENTRYPOINT ["java", "-jar", "tailormap-api.jar"]
 

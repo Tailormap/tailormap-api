@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.5.6</version>
+  </parent>
   <groupId>nl.b3p.tailormap</groupId>
   <artifactId>tailormap-api</artifactId>
   <version>0.1-SNAPSHOT</version>
@@ -61,7 +66,7 @@
     <project.build.outputTimestamp>2021-11-11T16:01:17Z</project.build.outputTimestamp>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <spring.boot.version>2.5.4</spring.boot.version>
+    <spring.boot.version>${project.parent.version}</spring.boot.version>
     <maven.surefire.version>3.0.0-M5</maven.surefire.version>
     <test.junit-jupiter.version>5.8.1</test.junit-jupiter.version>
     <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
@@ -70,21 +75,21 @@
     <!-- skip QA checks -->
     <skipQA>false</skipQA>
     <errorProne.version>2.10.0</errorProne.version>
-    <errorProneFlags />
+    <errorProneFlags></errorProneFlags>
     <compiler.lint>deprecation,unchecked</compiler.lint>
     <fmt.action>format</fmt.action>
     <pom.fmt.action>sort</pom.fmt.action>
   </properties>
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <!--  <artifactId>spring-boot-starter-parent</artifactId> overerft van onderstaande -->
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring.boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
+      <!--      <dependency>-->
+      <!--        <groupId>org.springframework.boot</groupId>-->
+      <!--        &lt;!&ndash;  <artifactId>spring-boot-starter-parent</artifactId> overerft van onderstaande &ndash;&gt;-->
+      <!--        <artifactId>spring-boot-dependencies</artifactId>-->
+      <!--        <version>${spring.boot.version}</version>-->
+      <!--        <type>pom</type>-->
+      <!--        <scope>import</scope>-->
+      <!--      </dependency>-->
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
@@ -97,7 +102,11 @@
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -277,7 +286,7 @@
           <excludeRoots>
             <excludeRoot>target/generated-sources</excludeRoot>
           </excludeRoots>
-          <excludes />
+          <excludes></excludes>
         </configuration>
       </plugin>
       <plugin>
