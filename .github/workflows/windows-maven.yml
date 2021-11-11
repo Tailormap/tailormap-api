@@ -30,12 +30,12 @@ jobs:
 
       - name: Priming build
         run: |
-          mvn --% install -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
+          mvn --% install -DskipTests -DskipITs -B -V -fae
 
       - name: Test with Maven
         run: |
-          mvn --% -e -fae clean test -B
-          mvn --% -e verify -B
+          mvn --% -e -fae -B clean test
+          mvn --% -e -fae -B verify
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2

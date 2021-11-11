@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Ubuntu Java 11 Build
+    name: Ubuntu Java 11 QA
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -28,22 +28,8 @@ jobs:
           java-version: 11
           distribution: 'temurin'
 
-      - name: Priming build with Maven
-        run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true install
-
-      - name: Test with Maven
-        run: |
-          mvn -B -fae -e test
-          mvn -B -fae -e verify
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-
-      - name: Build javadoc
-        run: mvn javadoc:javadoc
-
-      - name: Build test javadoc
-        run: mvn javadoc:test-javadoc
+      - name: QA build with Maven
+        run: mvn -B -V -fae -DskipQA=false -Dfmt.action=check -Dpom.fmt.action=verify clean install
 
       - name: Cleanup snapshots
         run: |
