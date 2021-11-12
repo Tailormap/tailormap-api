@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"nl.b3p.tailormap.api","l":"TailormapApiApplication"}]
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"nl.b3p.tailormap.api","l":"TailormapApiApplication"},{"p":"nl.b3p.tailormap.api.controller","l":"VersionController"}]
