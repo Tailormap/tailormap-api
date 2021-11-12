@@ -112,12 +112,15 @@ SPDX-License-Identifier: MIT
     <maven.surefire.version>3.0.0-M5</maven.surefire.version>
     <test.junit-jupiter.version>5.8.1</test.junit-jupiter.version>
     <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
+    <maven-pmd-plugin.version>3.15.0</maven-pmd-plugin.version>
     <versions-maven-plugin.version>2.8.1</versions-maven-plugin.version>
     <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+    <dependency-check-maven.version>6.5.0</dependency-check-maven.version>
     <!-- alternatively ghcr.io  -->
     <docker-deploy-repo>docker.b3p.nl</docker-deploy-repo>
     <!-- skip QA checks -->
     <skipQA>false</skipQA>
+    <pmd.version>6.40.0</pmd.version>
     <errorProne.version>2.10.0</errorProne.version>
     <errorProneFlags></errorProneFlags>
     <compiler.lint>deprecation,unchecked</compiler.lint>
@@ -212,12 +215,12 @@ SPDX-License-Identifier: MIT
         </plugin>
         <plugin>
           <artifactId>maven-pmd-plugin</artifactId>
-          <version>3.15.0</version>
+          <version>${maven-pmd-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.owasp</groupId>
           <artifactId>dependency-check-maven</artifactId>
-          <version>6.5.0</version>
+          <version>${dependency-check-maven.version}</version>
         </plugin>
         <plugin>
           <groupId>org.springframework.boot</groupId>
@@ -313,9 +316,22 @@ SPDX-License-Identifier: MIT
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <compilerArgs>
+          <fork>true</fork>
+          <compilerArgs combine.children="append">
+            <arg>-XDcompilePolicy=simple</arg>
+            <arg>-Xplugin:ErrorProne</arg>
             <arg>-Xlint:${compiler.lint}</arg>
+            <arg>-Werror</arg>
+            <arg>-Xmaxwarns</arg>
+            <arg>1000</arg>
           </compilerArgs>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_core</artifactId>
+              <version>${errorProne.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
       <plugin>
@@ -414,9 +430,10 @@ SPDX-License-Identifier: MIT
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-
       </plugin>
       <plugin>
+        <!-- not bound to any lifecycle, but can be run from commandline using:
+        mvn -U install -DskipTests -DskipITs -Ddocker.skip=true org.owasp:dependency-check-maven:check -->
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
         <configuration>
@@ -442,8 +459,27 @@ SPDX-License-Identifier: MIT
           <excludeRoots>
             <excludeRoot>target/generated-sources</excludeRoot>
           </excludeRoots>
-          <excludes></excludes>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-core</artifactId>
+            <version>${pmd.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-java</artifactId>
+            <version>${pmd.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>com.coveo</groupId>
@@ -595,6 +631,21 @@ SPDX-License-Identifier: MIT
   <reporting>
     <plugins>
       <plugin>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>3.1.1</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${maven-pmd-plugin.version}</version>
+        <configuration>
+          <rulesets>
+            <ruleset>${project.basedir}/build/qa/pmd-ruleset.xml</ruleset>
+            <ruleset>${project.basedir}/build/qa/pmd-junit-ruleset.xml</ruleset>
+          </rulesets>
+          <linkXref>true</linkXref>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
         <version>3.1.2</version>
       </plugin>
@@ -644,6 +695,14 @@ SPDX-License-Identifier: MIT
           </reportSet>
         </reportSets>
       </plugin>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+        <version>${dependency-check-maven.version}</version>
+        <configuration>
+          <name>OWASP Dependency Check</name>
+        </configuration>
+      </plugin>
     </plugins>
   </reporting>
   <profiles>
@@ -652,6 +711,14 @@ SPDX-License-Identifier: MIT
       <id>release</id>
       <build>
         <plugins>
+          <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <compilerArgs>
+                <arg>-Xlint:${compiler.lint}</arg>
+              </compilerArgs>
+            </configuration>
+          </plugin>
           <plugin>
             <!-- deploy latest and versioned tag -->
             <groupId>io.fabric8</groupId>
@@ -741,27 +808,11 @@ SPDX-License-Identifier: MIT
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.8.0</version>
             <configuration>
-              <fork>true</fork>
-              <compilerArgs combine.children="append">
-                <arg>-XDcompilePolicy=simple</arg>
-                <arg>-Xplugin:ErrorProne
-                                    -XepExcludedPaths:${project.build.directory}/generated-sources/.* ${errorProneFlags}</arg>
+              <compilerArgs>
                 <arg>-Xlint:${compiler.lint}</arg>
-                <arg>-Werror</arg>
-                <arg>-Xmaxwarns</arg>
-                <arg>1000</arg>
               </compilerArgs>
-              <annotationProcessorPaths>
-                <path>
-                  <groupId>com.google.errorprone</groupId>
-                  <artifactId>error_prone_core</artifactId>
-                  <version>${errorProne.version}</version>
-                </path>
-              </annotationProcessorPaths>
             </configuration>
           </plugin>
         </plugins>

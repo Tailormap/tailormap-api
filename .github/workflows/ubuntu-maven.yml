@@ -42,8 +42,8 @@ jobs:
       - name: Build javadoc
         run: mvn javadoc:javadoc
 
-      - name: Build test javadoc
-        run: mvn javadoc:test-javadoc
+#      - name: Build test javadoc
+#        run: mvn javadoc:test-javadoc
 
       - name: Build Maven site
         run: mvn site

@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 -->
 <ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Default Maven PMD Plugin Ruleset" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>
-ruleset. See https://pmd.github.io/latest/pmd_userdocs_understanding_rulesets.html
+ruleset.
 </description>
   <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP"/>
   <rule ref="category/java/bestpractices.xml/CheckResultSet"/>
@@ -17,13 +17,9 @@ ruleset. See https://pmd.github.io/latest/pmd_userdocs_understanding_rulesets.ht
   <rule ref="category/java/bestpractices.xml/SystemPrintln"/>
   <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach" />
   <rule ref="category/java/bestpractices.xml/UseTryWithResources" >
-<!--    <properties>-->
-<!--      // The rule reports false positives for closeable arguments that are used-->
-<!--      // closed within the method body. This suppression tries to avoid false positives for-->
-<!--      // this case, until we can switch to Java 9 and just use try(variable) {...} without-->
-<!--      // the need to instatiate the variable in the try-->
-<!--      <property name="violationSuppressXPath" value="./FinallyStatement//Name[substring-after(@Image, '.') = 'close' or substring-after(@Image, '.') = 'closeQuietly'][pmd-java:typeIs('java.lang.AutoCloseable') and fn:substring-before(@Image, '.') = ancestor::MethodDeclaration/MethodDeclarator//VariableDeclaratorId/@Name]"/>-->
-<!--    </properties>-->
+    <properties>-->
+      <property name="violationSuppressXPath" value="./FinallyStatement//Name[substring-after(@Image, '.') = 'close' or substring-after(@Image, '.') = 'closeQuietly'][pmd-java:typeIs('java.lang.AutoCloseable') and fn:substring-before(@Image, '.') = ancestor::MethodDeclaration/MethodDeclarator//VariableDeclaratorId/@Name]"/>-->
+    </properties>-->
   </rule>
   <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap" />
   <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList" />
@@ -104,5 +100,5 @@ ruleset. See https://pmd.github.io/latest/pmd_userdocs_understanding_rulesets.ht
     <properties>
       <property name="reportLevel" value="140"/>
     </properties>
-  </rule>	 
+  </rule>
 </ruleset>

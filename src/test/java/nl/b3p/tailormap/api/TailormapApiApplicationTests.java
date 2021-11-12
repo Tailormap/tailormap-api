@@ -5,7 +5,12 @@
  */
 package nl.b3p.tailormap.api;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import nl.b3p.tailormap.api.controller.VersionController;
+
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
@@ -14,8 +19,11 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @since 0.1
  */
 @SpringBootTest
-public class TailormapApiApplicationTests {
+class TailormapApiApplicationTests {
+    @Autowired private VersionController vController;
 
     @Test
-    void contextLoads() {}
+    void contextLoads() {
+        assertNotNull(vController, "vController should be initilialized");
+    }
 }
