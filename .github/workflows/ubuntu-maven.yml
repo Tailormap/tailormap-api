@@ -45,6 +45,9 @@ jobs:
       - name: Build test javadoc
         run: mvn javadoc:test-javadoc
 
+      - name: Build Maven site
+        run: mvn site
+
       - name: Cleanup snapshots
         run: |
           find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}

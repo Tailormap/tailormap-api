@@ -1,3 +1,8 @@
+#
+# Copyright (C) 2021 B3Partners B.V.
+#
+# SPDX-License-Identifier: MIT
+#
 FROM eclipse-temurin:11.0.13_8-jre-alpine
 
 ARG TAILORMAP_API_VERSION=0.1

@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2021 B3Partners B.V.
+
+SPDX-License-Identifier: MIT
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -21,11 +26,48 @@
   <licenses>
     <license>
       <name>MIT License</name>
-      <url>https://raw.githubusercontent.com/B3Partners/tailormap-api/main/LICENSE</url>
+      <url>https://raw.githubusercontent.com/B3Partners/tailormap-api/main/LICENSES/LICENSE</url>
       <distribution>repo</distribution>
       <comments>For the tailormap-api code.</comments>
     </license>
+    <license>
+      <name>CC0-1.0</name>
+      <url>https://raw.githubusercontent.com/B3Partners/tailormap-api/main/LICENSES/CC0-1.0</url>
+      <distribution>repo</distribution>
+      <comments>For the tailormap-api documentation.</comments>
+    </license>
   </licenses>
+  <developers>
+    <developer>
+      <id>matthijsln</id>
+      <name>Matthijs Laan</name>
+      <email>matthijslaan@b3partners.nl</email>
+      <organization>B3Partners B.V.</organization>
+      <organizationUrl>https://www.b3partners.nl</organizationUrl>
+    </developer>
+    <developer>
+      <id>mprins</id>
+      <name>Mark Prins</name>
+      <email>mark@b3partners.nl</email>
+      <organization>B3Partners B.V.</organization>
+      <organizationUrl>https://www.b3partners.nl</organizationUrl>
+    </developer>
+    <developer>
+      <id>mvdstruijk</id>
+      <name>Martijn van de Struijk</name>
+      <email>martijn@b3partners.nl</email>
+      <organization>B3Partners B.V.</organization>
+      <organizationUrl>https://www.b3partners.nl</organizationUrl>
+    </developer>
+    <developer>
+      <id>geertplaisier</id>
+      <name>Geert Plaisier</name>
+      <email>geert@b3partners.nl</email>
+      <organization>Gnamic</organization>
+      <organizationUrl>https://www.gnamic.nl/</organizationUrl>
+    </developer>
+  </developers>
+  <contributors></contributors>
   <scm>
     <connection>scm:git:git@github.com:B3Partners/tailormap-api.git</connection>
     <developerConnection>scm:git:git@github.com:B3Partners/tailormap-api.git</developerConnection>
@@ -69,6 +111,8 @@
     <spring.boot.version>${project.parent.version}</spring.boot.version>
     <maven.surefire.version>3.0.0-M5</maven.surefire.version>
     <test.junit-jupiter.version>5.8.1</test.junit-jupiter.version>
+    <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
+    <versions-maven-plugin.version>2.8.1</versions-maven-plugin.version>
     <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
     <!-- alternatively ghcr.io  -->
     <docker-deploy-repo>docker.b3p.nl</docker-deploy-repo>
@@ -85,7 +129,7 @@
     <dependencies>
       <!--      <dependency>-->
       <!--        <groupId>org.springframework.boot</groupId>-->
-      <!--        &lt;!&ndash;  <artifactId>spring-boot-starter-parent</artifactId> overerft van onderstaande &ndash;&gt;-->
+      <!--        &lt;!&ndash;  <artifactId>spring-boot-starter-parent</artifactId> inherits from spring-boot-dependencies &ndash;&gt;-->
       <!--        <artifactId>spring-boot-dependencies</artifactId>-->
       <!--        <version>${spring.boot.version}</version>-->
       <!--        <type>pom</type>-->
@@ -117,6 +161,8 @@
   </dependencies>
   <build>
     <defaultGoal>install</defaultGoal>
+    <!-- no version number on jar makes building docker image easier -->
+    <finalName>${project.artifactId}</finalName>
     <resources>
       <resource>
         <filtering>true</filtering>
@@ -149,28 +195,123 @@
         </excludes>
       </testResource>
     </testResources>
-    <!-- no version number on jar makes building docker image easier -->
-    <finalName>${project.artifactId}</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.openapitools</groupId>
+          <artifactId>openapi-generator-maven-plugin</artifactId>
+          <version>5.3.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>3.0.0-M1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>3.15.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>6.5.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${spring.boot.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>com.github.ekryd.sortpom</groupId>
+          <artifactId>sortpom-maven-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>com.coveo</groupId>
+          <artifactId>fmt-maven-plugin</artifactId>
+          <version>2.12</version>
+        </plugin>
+        <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>docker-maven-plugin</artifactId>
+          <version>0.38.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.9.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.3.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>3.0.0-M1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>3.0.0-M4</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven.surefire.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${maven.surefire.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.2.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven-javadoc-plugin.version}</version>
+          <configuration>
+            <notimestamp>true</notimestamp>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>3.0.0-M1</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>3.2.1</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.2.0</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>3.1.0</version>
-      </plugin>
-      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
         <configuration>
           <compilerArgs>
             <arg>-Xlint:${compiler.lint}</arg>
@@ -179,7 +320,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven.surefire.version}</version>
         <configuration>
           <!--suppress UnresolvedMavenProperty -->
           <argLine>${surefireArgLine}</argLine>
@@ -187,15 +327,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${maven.surefire.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <includes>
             <include>**/*IntegrationTest.java</include>
@@ -204,16 +335,46 @@
           <argLine>${failsafeArgLine}</argLine>
           <trimStackTrace>false</trimStackTrace>
         </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
-        <version>5.3.0</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadoc</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco-maven-plugin.version}</version>
         <executions>
           <execution>
             <id>pre-unit-test</id>
@@ -226,39 +387,38 @@
           </execution>
           <execution>
             <id>pre-integration-test</id>
-            <phase>pre-integration-test</phase>
             <goals>
               <goal>prepare-agent-integration</goal>
             </goals>
+            <phase>pre-integration-test</phase>
             <configuration>
               <propertyName>failsafeArgLine</propertyName>
             </configuration>
           </execution>
           <execution>
             <id>post-unit-test</id>
-            <phase>test</phase>
             <goals>
               <goal>report</goal>
             </goals>
+            <phase>test</phase>
           </execution>
           <execution>
             <id>post-integration-test</id>
-            <phase>post-integration-test</phase>
             <goals>
               <goal>report-integration</goal>
             </goals>
+            <phase>post-integration-test</phase>
           </execution>
         </executions>
       </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${spring.boot.version}</version>
+
       </plugin>
       <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
-        <version>6.5.0</version>
         <configuration>
           <skip>${skipQA}</skip>
           <suppressionFile>${project.basedir}/build/qa/owasp-suppression.xml</suppressionFile>
@@ -268,7 +428,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.15.0</version>
         <configuration>
           <skip>${skipQA}</skip>
           <rulesets>
@@ -289,7 +448,13 @@
       <plugin>
         <groupId>com.coveo</groupId>
         <artifactId>fmt-maven-plugin</artifactId>
-        <version>2.4.0</version>
+        <configuration>
+          <verbose>false</verbose>
+          <filesNamePattern>.*\.java</filesNamePattern>
+          <skip>${skipQA}</skip>
+          <style>aosp</style>
+          <displayFiles>true</displayFiles>
+        </configuration>
         <executions>
           <execution>
             <goals>
@@ -297,25 +462,10 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <verbose>false</verbose>
-          <filesNamePattern>.*\.java</filesNamePattern>
-          <skip>${skipQA}</skip>
-          <style>aosp</style>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>com.github.ekryd.sortpom</groupId>
         <artifactId>sortpom-maven-plugin</artifactId>
-        <version>2.15.0</version>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>${pom.fmt.action}</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <skip>${skipQA}</skip>
           <keepBlankLines>true</keepBlankLines>
@@ -324,10 +474,17 @@
           <verifyFail>stop</verifyFail>
           <verifyFailOn>strict</verifyFailOn>
         </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>${pom.fmt.action}</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0</version>
         <executions>
           <execution>
             <id>enforce-maven</id>
@@ -356,27 +513,7 @@
       <plugin>
         <groupId>io.fabric8</groupId>
         <artifactId>docker-maven-plugin</artifactId>
-        <version>0.38.0</version>
         <extensions>true</extensions>
-        <executions>
-          <execution>
-            <id>docker-build</id>
-            <phase>package</phase>
-            <goals>
-              <goal>build</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>docker-push</id>
-            <!-- NB for deploy/push login is required on ghcr.io or docker.b3p.nl repository with
-                 docker - whatever value is ${docker-deploy-repo}
-                 see: https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry -->
-            <phase>deploy</phase>
-            <goals>
-              <goal>push</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <skip>${docker.skip}</skip>
           <verbose>true</verbose>
@@ -394,30 +531,121 @@
             </image>
           </images>
         </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-scm-publish-plugin</artifactId>
-        <version>3.1.0</version>
-        <configuration>
-          <scmBranch>gh-pages</scmBranch>
-          <tryUpdate>true</tryUpdate>
-          <addUniqueDirectory>true</addUniqueDirectory>
-          <checkoutDirectory>/tmp/gh-pages</checkoutDirectory>
-          <content>/tmp/staging</content>
-          <!-- skipCheckin>true</skipCheckin -->
-        </configuration>
+        <executions>
+          <execution>
+            <id>docker-build</id>
+            <goals>
+              <goal>build</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+          <execution>
+            <id>docker-push</id>
+            <goals>
+              <goal>push</goal>
+            </goals>
+            <!-- NB for deploy/push login is required on ghcr.io or docker.b3p.nl repository with
+                 docker - whatever value is ${docker-deploy-repo}
+                 see: https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry -->
+            <phase>deploy</phase>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
-        <version>3.0.0-M4</version>
         <configuration>
           <pushChanges>true</pushChanges>
           <releaseProfiles>release</releaseProfiles>
           <tagNameFormat>tailormap-api-@{project.version}</tagNameFormat>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <skipDeploy>true</skipDeploy>
+          <generateSitemap>true</generateSitemap>
+          <attach>false</attach>
+          <outputEncoding>${project.build.sourceEncoding}</outputEncoding>
+          <locales>en</locales>
+          <relativizeDecorationLinks>false</relativizeDecorationLinks>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-scm-publish-plugin</artifactId>
+        <configuration>
+          <content>${project.reporting.outputDirectory}</content>
+          <scmBranch>gh-pages</scmBranch>
+          <tryUpdate>true</tryUpdate>
+          <addUniqueDirectory>true</addUniqueDirectory>
+          <checkoutDirectory>/tmp/gh-pages</checkoutDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>scm-publish</id>
+            <!-- deploy site with maven-scm-publish-plugin -->
+            <goals>
+              <goal>publish-scm</goal>
+            </goals>
+            <phase>site-deploy</phase>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.1.2</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven-javadoc-plugin.version}</version>
+        <configuration>
+          <notimestamp>true</notimestamp>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>javadoc-no-fork</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>${versions-maven-plugin.version}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>dependency-updates-report</report>
+              <report>plugin-updates-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco-maven-plugin.version}</version>
+        <configuration>
+          <outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+          <dataFileIncludes>
+            <dataFileInclude>${project.build.directory}/jacoco-ut.exec</dataFileInclude>
+            <dataFileInclude>${project.build.directory}/jacoco-it.exec</dataFileInclude>
+          </dataFileIncludes>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
   <profiles>
     <profile>
       <!-- automagically activated during release with maven-release-plugin -->
@@ -428,13 +656,21 @@
             <!-- deploy latest and versioned tag -->
             <groupId>io.fabric8</groupId>
             <artifactId>docker-maven-plugin</artifactId>
+            <configuration>
+              <verbose>true</verbose>
+              <images>
+                <image>
+                  <name>${docker-deploy-repo}/b3partners/%a:%l</name>
+                </image>
+              </images>
+            </configuration>
             <executions>
               <execution>
                 <id>docker-tag</id>
-                <phase>verify</phase>
                 <goals>
                   <goal>tag</goal>
                 </goals>
+                <phase>verify</phase>
                 <configuration>
                   <tagName>latest</tagName>
                   <repo>${docker-deploy-repo}/b3partners</repo>
@@ -442,10 +678,10 @@
               </execution>
               <execution>
                 <id>docker-push-latest</id>
-                <phase>deploy</phase>
                 <goals>
                   <goal>push</goal>
                 </goals>
+                <phase>deploy</phase>
                 <configuration>
                   <verbose>true</verbose>
                   <images>
@@ -456,14 +692,6 @@
                 </configuration>
               </execution>
             </executions>
-            <configuration>
-              <verbose>true</verbose>
-              <images>
-                <image>
-                  <name>${docker-deploy-repo}/b3partners/%a:%l</name>
-                </image>
-              </images>
-            </configuration>
           </plugin>
         </plugins>
       </build>
@@ -507,6 +735,9 @@
           <value>true</value>
         </property>
       </activation>
+      <properties>
+        <skipQA>true</skipQA>
+      </properties>
       <build>
         <plugins>
           <plugin>
@@ -517,7 +748,8 @@
               <fork>true</fork>
               <compilerArgs combine.children="append">
                 <arg>-XDcompilePolicy=simple</arg>
-                <arg>-Xplugin:ErrorProne -XepExcludedPaths:${project.build.directory}/generated-sources/.* ${errorProneFlags}</arg>
+                <arg>-Xplugin:ErrorProne
+                                    -XepExcludedPaths:${project.build.directory}/generated-sources/.* ${errorProneFlags}</arg>
                 <arg>-Xlint:${compiler.lint}</arg>
                 <arg>-Werror</arg>
                 <arg>-Xmaxwarns</arg>
@@ -534,9 +766,6 @@
           </plugin>
         </plugins>
       </build>
-      <properties>
-        <skipQA>true</skipQA>
-      </properties>
     </profile>
   </profiles>
 </project>
