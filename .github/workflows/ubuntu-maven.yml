@@ -1,4 +1,4 @@
-name: Ubuntu Maven build
+name: Maven build
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Ubuntu Java 11 Build
+    name: Ubuntu/Java 11
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2

@@ -1,4 +1,4 @@
-name: OWASP dependency check
+name: OWASP
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
@@ -10,6 +10,7 @@ on:
 
 jobs:
   build:
+    name: Dependency Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

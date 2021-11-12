@@ -1,16 +1,15 @@
-name: Ubuntu Maven build
+name: Ubuntu QA Maven build
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
 
 on:
-  push:
   pull_request:
   workflow_dispatch:
 
 jobs:
   build:
-    name: Ubuntu Java 11 QA
+    name: QA check
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2

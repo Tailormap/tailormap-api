@@ -1,16 +1,14 @@
-name: Windows Maven build
+name: Maven build
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
 
 on:
-  push:
   pull_request:
-  workflow_dispatch:
 
 jobs:
   build:
-    name: Windows Java 11
+    name: Windows/Java 11
     runs-on: windows-2019
     steps:
       - uses: actions/checkout@v2
