@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"nl.b3p.tailormap.api","c":"TailormapApiApplication","l":"main(String[])","url":"main(java.lang.String[])"},{"p":"nl.b3p.tailormap.api","c":"TailormapApiApplication","l":"TailormapApiApplication()","url":"%3Cinit%3E()"}]
