@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!--
+Copyright (C) 2021 B3Partners B.V.
+
+SPDX-License-Identifier: MIT
+-->
+<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Default Maven PMD Plugin Ruleset" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>
+Junit ruleset. https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html
+</description>
+  <rule ref="category/java/bestpractices.xml/JUnitAssertionsShouldIncludeMessage" />
+  <!-- if this fails check https://github.com/pmd/pmd/issues/2147 /-->
+  <rule ref="category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert" />
+  <rule ref="category/java/bestpractices.xml/UseAssertEqualsInsteadOfAssertTrue" />
+  <rule ref="category/java/bestpractices.xml/UseAssertNullInsteadOfAssertTrue" />
+  <rule ref="category/java/bestpractices.xml/UseAssertSameInsteadOfAssertTrue" />
+  <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" />
+  <rule ref="category/java/errorprone.xml/UnnecessaryBooleanAssertion" />
+  <rule name="DisallowJunit3"
+      language="java"
+      message="Avoid using JUnit3"
+      class="net.sourceforge.pmd.lang.rule.XPathRule" >
+    <description>
+        Don't use JUnit3, use JUnit5 instead
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+         <value>
+           <![CDATA[
+             //Name[pmd-java:typeIs('junit.framework.TestCase')] |
+             //Name[pmd-java:typeIs('junit.framework.TestSuite')]
+             ]]>
+         </value>
+      </property>
+    </properties>
+  </rule>
+  <rule name="DisallowJunit4"
+        language="java"
+        message="Avoid using JUnit4"
+        class="net.sourceforge.pmd.lang.rule.XPathRule" >
+    <description>
+      Don't use JUnit4, use JUnit5 instead
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value>
+          <![CDATA[
+             //Name[pmd-java:typeIs('org.junit.Test')] |
+             //Name[pmd-java:typeIs('org.junit.Before')] |
+             //Name[pmd-java:typeIs('org.junit.After')]
+             ]]>
+        </value>
+      </property>
+    </properties>
+  </rule>
+</ruleset>

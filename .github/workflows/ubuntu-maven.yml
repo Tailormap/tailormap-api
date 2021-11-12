@@ -1,0 +1,53 @@
+name: Maven build
+
+env:
+  MAVEN_OPTS: -Djava.awt.headless=true
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Ubuntu/Java 11
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'temurin'
+
+      - name: Priming build with Maven
+        run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true install
+
+      - name: Test with Maven
+        run: |
+          mvn -B -fae -e test
+          mvn -B -fae -e verify
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+
+      - name: Build javadoc
+        run: mvn javadoc:javadoc
+
+#      - name: Build test javadoc
+#        run: mvn javadoc:test-javadoc
+
+      - name: Build Maven site
+        run: mvn site
+
+      - name: Cleanup snapshots
+        run: |
+          find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}

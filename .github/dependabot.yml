@@ -1,0 +1,48 @@
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "06:00"
+      timezone: Europe/Amsterdam
+    open-pull-requests-limit: 25
+    target-branch: master
+    reviewers:
+      - mprins
+    assignees:
+      - mprins
+    labels:
+      - infrastucture
+      - dependency
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: saturday
+      time: "21:00"
+      timezone: Europe/Amsterdam
+    labels:
+      - infrastucture
+
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: saturday
+      time: "21:00"
+      timezone: Europe/Amsterdam
+    open-pull-requests-limit: 25
+    target-branch: master
+    reviewers:
+      - mprins
+    assignees:
+      - mprins
+    labels:
+      - infrastucture
+    ignore:
+      # stay on Java 11 for now
+      - dependency-name: "eclipse-temurin"
+        versions:
+          - "17.x"

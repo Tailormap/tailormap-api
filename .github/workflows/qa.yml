@@ -1,0 +1,35 @@
+name: Ubuntu QA Maven build
+
+env:
+  MAVEN_OPTS: -Djava.awt.headless=true
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: QA check
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'temurin'
+
+      - name: QA build with Maven
+        run: mvn -B -V -fae -DskipQA=false -Dfmt.action=check -Dpom.fmt.action=verify -Ddocker.skip=true clean install
+
+      - name: Cleanup snapshots
+        run: |
+          find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}
