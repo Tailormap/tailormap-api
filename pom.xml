@@ -76,7 +76,7 @@ SPDX-License-Identifier: MIT
   </scm>
   <issueManagement>
     <system>Jira</system>
-    <url>https://b3partners.atlassian.net/browse/TM</url>
+    <url>https://b3partners.atlassian.net/browse/HTM</url>
   </issueManagement>
   <ciManagement>
     <system>Github Actions</system>
