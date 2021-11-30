@@ -27,6 +27,7 @@ ruleset.
   <rule ref="category/java/bestpractices.xml/MissingOverride" />
   <rule ref="category/java/bestpractices.xml/UseStandardCharsets" />
   <rule ref="category/java/performance.xml/UseArrayListInsteadOfVector" />
+  <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation"/>
 
   <rule ref="category/java/codestyle.xml/ExtendsObject"/>
   <rule ref="category/java/codestyle.xml/ForLoopShouldBeWhileLoop"/>
@@ -74,12 +75,8 @@ ruleset.
   <rule ref="category/java/multithreading.xml/DontCallThreadRun"/>
   <rule ref="category/java/multithreading.xml/DoubleCheckedLocking"/>
   <rule ref="category/java/performance.xml/BigIntegerInstantiation"/>
-  <rule ref="category/java/performance.xml/BooleanInstantiation"/>
-  <rule ref="category/java/performance.xml/ByteInstantiation"/>
-  <rule ref="category/java/performance.xml/IntegerInstantiation"/>
-  <rule ref="category/java/performance.xml/LongInstantiation"/>
-  <rule ref="category/java/performance.xml/ShortInstantiation"/>
   <rule ref="category/java/performance.xml/StringInstantiation"/>
+  <!-- deprecated, but no replacement yet: https://pmd.github.io/latest/pmd_rules_java_performance.html#unnecessarywrapperobjectcreation -->
   <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation" />
   <rule name="wildcards" language="java" message="No Wildcard Imports" class="net.sourceforge.pmd.lang.rule.XPathRule">
     <description>
