@@ -7,7 +7,7 @@ updates:
       time: "06:00"
       timezone: Europe/Amsterdam
     open-pull-requests-limit: 25
-    target-branch: master
+    target-branch: main
     reviewers:
       - mprins
     assignees:
@@ -34,7 +34,7 @@ updates:
       time: "21:00"
       timezone: Europe/Amsterdam
     open-pull-requests-limit: 25
-    target-branch: master
+    target-branch: main
     reviewers:
       - mprins
     assignees:
