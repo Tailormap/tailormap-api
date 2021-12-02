@@ -128,6 +128,7 @@ SPDX-License-Identifier: MIT
     <fmt.action>format</fmt.action>
     <pom.fmt.action>sort</pom.fmt.action>
     <docker.skip>false</docker.skip>
+    <maven-fluido-skin.version>1.10.0</maven-fluido-skin.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -325,6 +326,15 @@ SPDX-License-Identifier: MIT
     </pluginManagement>
     <plugins>
       <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <delimiters>
+            <delimiter>@</delimiter>
+          </delimiters>
+          <useDefaultDelimiters>false</useDefaultDelimiters>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <fork>true</fork>
@@ -350,6 +360,13 @@ SPDX-License-Identifier: MIT
         <configuration>
           <!--suppress UnresolvedMavenProperty -->
           <argLine>${surefireArgLine}</argLine>
+          <systemPropertyVariables>
+            <project.version>${project.version}</project.version>
+          </systemPropertyVariables>
+          <excludes>
+            <exclude>**/*IntegrationTest.java</exclude>
+          </excludes>
+          <trimStackTrace>false</trimStackTrace>
         </configuration>
       </plugin>
       <plugin>
@@ -361,6 +378,9 @@ SPDX-License-Identifier: MIT
           <!--suppress UnresolvedMavenProperty -->
           <argLine>${failsafeArgLine}</argLine>
           <trimStackTrace>false</trimStackTrace>
+          <systemPropertyVariables>
+            <project.version>${project.version}</project.version>
+          </systemPropertyVariables>
         </configuration>
         <executions>
           <execution>
@@ -433,8 +453,19 @@ SPDX-License-Identifier: MIT
             <id>post-integration-test</id>
             <goals>
               <goal>report-integration</goal>
+              <goal>merge</goal>
             </goals>
             <phase>post-integration-test</phase>
+            <configuration>
+              <fileSets>
+                <fileSet>
+                  <directory>${project.build.directory}</directory>
+                  <includes>
+                    <include>*.exec</include>
+                  </includes>
+                </fileSet>
+              </fileSets>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -559,6 +590,7 @@ SPDX-License-Identifier: MIT
             </goals>
             <configuration>
               <rules>
+                <!-- see https://maven.apache.org/enforcer/enforcer-rules/index.html -->
                 <requireMavenVersion>
                   <version>[3.8,)</version>
                 </requireMavenVersion>
@@ -571,6 +603,13 @@ SPDX-License-Identifier: MIT
                     <exclude>org.hamcrest:hamcrest-core</exclude>
                   </excludes>
                 </bannedDependencies>
+                <banTransitiveDependencies>
+                  <excludes>
+                    <exclude>org.springframework.boot:spring-boot-starter-web</exclude>
+                    <exclude>org.springframework.boot:spring-boot-starter-actuator</exclude>
+                    <exclude>org.springframework.boot:spring-boot-starter-test</exclude>
+                  </excludes>
+                </banTransitiveDependencies>
               </rules>
             </configuration>
           </execution>
@@ -635,6 +674,13 @@ SPDX-License-Identifier: MIT
           <locales>en</locales>
           <relativizeDecorationLinks>false</relativizeDecorationLinks>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.skins</groupId>
+            <artifactId>maven-fluido-skin</artifactId>
+            <version>${maven-fluido-skin.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <artifactId>maven-scm-publish-plugin</artifactId>
@@ -672,12 +718,31 @@ SPDX-License-Identifier: MIT
             <ruleset>${project.basedir}/build/qa/pmd-ruleset.xml</ruleset>
             <ruleset>${project.basedir}/build/qa/pmd-junit-ruleset.xml</ruleset>
           </rulesets>
-          <linkXref>true</linkXref>
+          <linkXRef>true</linkXRef>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
         <version>3.1.2</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>ci-management</report>
+              <report>dependencies</report>
+              <report>dependency-convergence</report>
+              <report>dependency-management</report>
+              <report>distribution-management</report>
+              <report>index</report>
+              <report>issue-management</report>
+              <report>licenses</report>
+              <report>plugin-management</report>
+              <report>plugins</report>
+              <report>scm</report>
+              <report>summary</report>
+              <report>team</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -711,16 +776,19 @@ SPDX-License-Identifier: MIT
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>${jacoco-maven-plugin.version}</version>
         <configuration>
+          <title>Aggregate Test Coverage</title>
           <outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
           <dataFileIncludes>
-            <dataFileInclude>${project.build.directory}/jacoco-ut.exec</dataFileInclude>
-            <dataFileInclude>${project.build.directory}/jacoco-it.exec</dataFileInclude>
+            <!-- this has merged u-test and i-test coverage -->
+            <dataFileInclude>${project.build.directory}/jacoco.exec</dataFileInclude>
+            <!-- NO! <dataFileInclude>${project.build.directory}/jacoco-it.exec</dataFileInclude>-->
           </dataFileIncludes>
         </configuration>
         <reportSets>
           <reportSet>
             <reports>
               <report>report</report>
+              <!-- NO! <report>report-integration</report>-->
             </reports>
           </reportSet>
         </reportSets>
