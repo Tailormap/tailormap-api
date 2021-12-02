@@ -5,20 +5,27 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** hardcoded version controller */
+import java.io.IOException;
+
+/** version controller */
 @RestController
 public class VersionController {
+
+    // the maven build takes care of updating this in the application.properties
+    @Value("${tailormap-api.version}")
+    private String version;
+
     /**
      * get API version
      *
      * @return api version
      */
     @GetMapping(path = "/version")
-    public String getVersion() {
-        // TODO lookup version in eg. jar manifest or other resource
-        return "0.1";
+    public String getVersion() throws IOException {
+        return this.version;
     }
 }
