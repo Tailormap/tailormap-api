@@ -36,6 +36,12 @@ jobs:
           mvn -B -fae -e test
           mvn -B -fae -e verify
 
+      - name: Try Created Docker image
+        run: |
+          docker run --rm -d --name tailormap-api -h tailormap-api -p 8080:8080 ghcr.io/b3partners/tailormap-api:snapshot
+          sleep 10
+          curl http://localhost:8080/actuator/health
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
 
