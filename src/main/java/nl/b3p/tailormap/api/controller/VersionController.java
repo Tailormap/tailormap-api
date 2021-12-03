@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-
-/** version controller */
+/** Provides version information. */
 @RestController
 public class VersionController {
 
@@ -20,12 +18,12 @@ public class VersionController {
     private String version;
 
     /**
-     * get API version
+     * get API version.
      *
      * @return api version
      */
     @GetMapping(path = "/version")
-    public String getVersion() throws IOException {
+    public String getVersion() {
         return this.version;
     }
 }

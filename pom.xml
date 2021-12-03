@@ -125,6 +125,7 @@ SPDX-License-Identifier: MIT
     <errorProne.version>2.10.0</errorProne.version>
     <errorProneFlags></errorProneFlags>
     <compiler.lint>deprecation,unchecked</compiler.lint>
+    <failOnValidation>true</failOnValidation>
     <fmt.action>format</fmt.action>
     <pom.fmt.action>sort</pom.fmt.action>
     <docker.skip>false</docker.skip>
@@ -316,6 +317,8 @@ SPDX-License-Identifier: MIT
           <version>${maven-javadoc-plugin.version}</version>
           <configuration>
             <notimestamp>true</notimestamp>
+            <failOnWarnings>${failOnValidation}</failOnWarnings>
+            <failOnError>${failOnValidation}</failOnError>
           </configuration>
         </plugin>
         <plugin>
@@ -902,6 +905,7 @@ SPDX-License-Identifier: MIT
       </activation>
       <properties>
         <skipQA>true</skipQA>
+        <failOnWarnings>false</failOnWarnings>
       </properties>
       <build>
         <plugins>
