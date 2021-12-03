@@ -653,7 +653,7 @@ SPDX-License-Identifier: MIT
               <goal>push</goal>
             </goals>
             <!-- NB for deploy/push login is required on ghcr.io or docker.b3p.nl repository with
-                 docker - whatever value is ${docker-deploy-repo}
+                 docker - whatever value is ${docker.deploy.repo}
                  see: https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry -->
             <phase>deploy</phase>
           </execution>
@@ -828,7 +828,7 @@ SPDX-License-Identifier: MIT
               <verbose>true</verbose>
               <images>
                 <image>
-                  <name>${docker-deploy-repo}/b3partners/%a:%l</name>
+                  <name>${docker.deploy.repo}/b3partners/%a:%l</name>
                 </image>
               </images>
             </configuration>
@@ -841,7 +841,7 @@ SPDX-License-Identifier: MIT
                 <phase>verify</phase>
                 <configuration>
                   <tagName>latest</tagName>
-                  <repo>${docker-deploy-repo}/b3partners</repo>
+                  <repo>${docker.deploy.repo}/b3partners</repo>
                 </configuration>
               </execution>
               <execution>
@@ -854,7 +854,7 @@ SPDX-License-Identifier: MIT
                   <verbose>true</verbose>
                   <images>
                     <image>
-                      <name>${docker-deploy-repo}/b3partners/%a:latest</name>
+                      <name>${docker.deploy.repo}/b3partners/%a:latest</name>
                     </image>
                   </images>
                 </configuration>
