@@ -9,24 +9,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-
-/** version controller */
+/** Provides version information. */
 @RestController
-<span class="fc" id="L16">public class VersionController {</span>
+<span class="fc" id="L14">public class VersionController {</span>
 
     // the maven build takes care of updating this in the application.properties
     @Value(&quot;${tailormap-api.version}&quot;)
     private String version;
 
     /**
-     * get API version
+     * get API version.
      *
      * @return api version
      */
     @GetMapping(path = &quot;/version&quot;)
-    public String getVersion() throws IOException {
-<span class="fc" id="L29">        return this.version;</span>
+    public String getVersion() {
+<span class="fc" id="L27">        return this.version;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
