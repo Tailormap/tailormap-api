@@ -36,6 +36,12 @@ jobs:
           mvn -B -fae -e test
           mvn -B -fae -e verify
 
+      - name: Try Created Docker image
+        run: |
+          docker run --rm -d --name tailormap-api -h tailormap-api -p 8080:8080 ghcr.io/b3partners/tailormap-api:snapshot
+          sleep 10
+          curl http://localhost:8080/actuator/health
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
 
@@ -55,12 +61,8 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: archive-site
-          retention-days: 7
+          retention-days: 2
           path: target/site/
-
-      - name: Cleanup snapshots
-        run: |
-          find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}
 
   site-deploy:
     name: Publish gh-pages
@@ -68,18 +70,75 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+
       - name: Download Maven Site
         uses: actions/download-artifact@v2
         with:
           name: archive-site
           path: target/site
+
       - name: Display structure of downloaded files
         run: ls -R
         working-directory: target
+
       - name: Deploy gh-pages
         uses: JamesIves/github-pages-deploy-action@4.1.7
         with:
           branch: gh-pages
           folder: target/site
+
+  deploy:
+    name: deploy artifacts
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      packages: write
+      contents: read
+    if: ${{ github.ref == 'refs/heads/main' && ( github.event_name == 'push' || github.event_name == 'workflow_dispatch' ) }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'temurin'
+
+      #      - name: Log in to registry
+      #        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build and Push
+        # no need to run any QC or tests
+        # note deploy will deploy both Maven artifact as well as docker image
+        env:
+          REPO_B3P_ACTOR: ${{ secrets.REPO_B3P_ACTOR }}
+          REPO_B3P_TOKEN: ${{ secrets.REPO_B3P_TOKEN }}
+          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip clean deploy --settings .github/maven-settings.xml
+
+  cleanup:
+    name: Maven cache cleanup
+    if: ${{ always() }}
+    needs: [ build, deploy ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-
+
+      - name: Cleanup snapshot cache
+        run: |
+          find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}

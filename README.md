@@ -7,7 +7,7 @@ Tailormap API provides the OpenAPI for Tailormap.
 Basic procedure:
 
 1. do your thing, if possible use `aosp` styling
-2. run `mvn clean install`
+2. run `mvn clean install` to make sure all required formatting is applied and all tests pass
 3. commit and push your branch to create a pull request
 4. wait for code review to pass, possibly amend your PR and merge your PR
 
@@ -54,6 +54,21 @@ Some quick points of attention:
 * jUnit 4 is forbidden
 * code is reviewed before merge to the main branch
 * Javadoc must be valid
+
+
+## Running
+
+You can run this application in various ways:
+
+- using **spring-boot-maven-plugin** see https://docs.spring.io/spring-boot/docs/2.6.1/maven-plugin/reference/htmlsingle/#goals
+- using the starter in **IntelliJ IDEA**
+- using the runnable jar
+- running the docker image as a container
+  ```shell
+    ￼docker run --rm -it --name tailormap-api -h tailormap-api -p 8080:8080 ghcr.io/b3partners/tailormap-api:snapshot
+  ```
+  You can then point your browser at eg. `http://localhost:8080/version` or `http://localhost:8080/actuator/health`
+
 
 ## Releasing
 
