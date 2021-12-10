@@ -5,12 +5,9 @@
  */
 package nl.b3p.tailormap.api;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import nl.b3p.tailormap.api.controller.VersionController;
+import nl.b3p.tailormap.api.repository.MetadataRepository;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
@@ -18,12 +15,12 @@ import org.springframework.boot.test.context.SpringBootTest;
  *
  * @since 0.1
  */
-@SpringBootTest
+@SpringBootTest(classes = {HSQLDBTestProfileJPAConfiguration.class, MetadataRepository.class})
 class TailormapApiApplicationTests {
-    @Autowired private VersionController vController;
 
     @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void contextLoads() {
-        assertNotNull(vController, "vController should be initilialized");
+        /* empty by design */
     }
 }

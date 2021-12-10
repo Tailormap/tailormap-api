@@ -9,17 +9,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
+import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.io.IOException;
+import java.util.Map;
 
-@SpringBootTest
+/** Testcases for {@link VersionController}. */
+@SpringBootTest(classes = {HSQLDBTestProfileJPAConfiguration.class, VersionController.class})
+@ActiveProfiles("test")
 class VersionControllerIntegrationTest {
     private static String projectVersion;
-    @Autowired VersionController versionController;
+    private static String apiVersion;
+    @Autowired private VersionController versionController;
 
     @BeforeAll
     static void getVersionFromPom() {
@@ -28,16 +34,25 @@ class VersionControllerIntegrationTest {
         assumeFalse(
                 null == projectVersion,
                 "Project version unknown, should be set in system environment");
+        apiVersion = System.getProperty("api.version");
+        assumeFalse(null == apiVersion, "API version unknown, should be set in system environment");
     }
 
     @Test
-    void testGetVersion() throws IOException {
-        assertNotNull(versionController, "versionController can not be `null` if SpringBoot works");
+    void testGetVersion() {
+        assertNotNull(
+                versionController, "versionController can not be `null` if Spring Boot works");
         assertNotNull(versionController.getVersion(), "Version info not found");
 
-        assertEquals(
-                "{\"version\":\"0.1-SNAPSHOT\", \"databaseversion\":\"46\", \"api_version\":\"v1\"}",
-                versionController.getVersion(),
-                "Unexpected json response.");
+        Map<String, String> expected =
+                Map.of(
+                        "version",
+                        projectVersion,
+                        "databaseversion",
+                        "46",
+                        "api_version",
+                        apiVersion);
+
+        assertEquals(expected, versionController.getVersion(), "Unexpected version response.");
     }
 }

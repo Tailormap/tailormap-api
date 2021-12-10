@@ -65,10 +65,16 @@ You can run this application in various ways:
 - using the runnable jar
 - running the docker image as a container
   ```shell
-    ￼docker run --rm -it --name tailormap-api -h tailormap-api -p 8080:8080 ghcr.io/b3partners/tailormap-api:snapshot
+  # using the defaults
+  docker run --rm -it --name tailormap-api -h tailormap-api --network host ghcr.io/b3partners/tailormap-api:snapshot
+  
+  # using a different database URL
+  docker run --rm -it --name tailormap-api -h tailormap-api -e "SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5433/tailormaps" --network host ghcr.io/b3partners/tailormap-api:snapshot
+  ￼
   ```
-  You can then point your browser at eg. `http://localhost:8080/version` or `http://localhost:8080/actuator/health`
+  You can then point your browser at eg. `http://localhost:8080/api/version` or `http://localhost:8080/api/actuator/health`
 
+Note that you need to have a configured database that at least has the tailormap schema; running the Tailormap Admin once should take care of that. 
 
 ## Releasing
 

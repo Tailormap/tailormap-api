@@ -8,9 +8,12 @@ package nl.b3p.tailormap.api.repository;
 import nl.tailormap.viewer.config.metadata.Metadata;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
+/**
+ * Easy to use methods to access {@link Metadata}.
+ *
+ * @since 0.1
+ */
 public interface MetadataRepository extends JpaRepository<Metadata, Long> {
 
     /**

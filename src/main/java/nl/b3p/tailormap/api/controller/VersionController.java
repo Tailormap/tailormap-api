@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 /**
  * Provides version information of backend, API and config database.
  *
@@ -25,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class VersionController {
     @Autowired private MetadataRepository metadataRepository;
 
-    // Maven 'process-resources' takes care of updating these in the application.properties
+    // Maven 'process-resources' takes care of updating these tokens in the application.properties
     @Value("${tailormap-api.version}")
     private String version;
 
@@ -38,12 +40,16 @@ public class VersionController {
      * @return api version
      */
     @GetMapping(path = "/version", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getVersion() {
+    public Map<String, String> getVersion() {
         final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);
         final String dbVersion = ((null != m) ? m.getConfigValue() : "-1");
 
-        return String.format(
-                "{\"version\":\"%s\", \"databaseversion\":\"%s\", \"api_version\":\"%s\"}",
-                this.version, dbVersion, this.apiVersion);
+        return Map.of(
+                "version",
+                this.version,
+                "databaseversion",
+                dbVersion,
+                "api_version",
+                this.apiVersion);
     }
 }

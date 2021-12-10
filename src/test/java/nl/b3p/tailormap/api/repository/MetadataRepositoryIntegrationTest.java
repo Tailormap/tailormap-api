@@ -8,13 +8,20 @@ package nl.b3p.tailormap.api.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
 import nl.tailormap.viewer.config.metadata.Metadata;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest
+/** Testcases for {@link MetadataRepository}. */
+@ActiveProfiles("test")
+@SpringBootTest(classes = {HSQLDBTestProfileJPAConfiguration.class, Metadata.class})
+@ExtendWith(SpringExtension.class)
 class MetadataRepositoryIntegrationTest {
 
     @Autowired private MetadataRepository metadataRepository;

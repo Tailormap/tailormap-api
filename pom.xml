@@ -105,10 +105,11 @@ SPDX-License-Identifier: MIT
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
     <project.build.targetVersion>${java.version}</project.build.targetVersion>
-    <project.build.outputTimestamp>2021-11-11T16:01:17Z</project.build.outputTimestamp>
+    <!--    <project.build.outputTimestamp>2021-11-11T16:01:17Z</project.build.outputTimestamp>-->
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <spring.boot.version>${project.parent.version}</spring.boot.version>
+    <org.tailormap.version>5.9.12-SNAPSHOT</org.tailormap.version>
     <maven.surefire.version>3.0.0-M5</maven.surefire.version>
     <test.junit-jupiter.version>5.8.2</test.junit-jupiter.version>
     <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
@@ -202,7 +203,7 @@ SPDX-License-Identifier: MIT
     <dependency>
       <groupId>org.tailormap</groupId>
       <artifactId>viewer-config-persistence</artifactId>
-      <version>5.9.11</version>
+      <version>${org.tailormap.version}</version>
       <exclusions>
         <exclusion>
           <!-- SLF4J is provided by SpringBoot through logback -->
@@ -210,6 +211,32 @@ SPDX-License-Identifier: MIT
           <artifactId>slf4j-log4j12</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.12.0</version>
+    </dependency>
+    <dependency>
+      <!-- this has "testdata.sql" that can be use to setup a HSQLDB test database -->
+      <groupId>org.tailormap</groupId>
+      <artifactId>viewer-config-persistence</artifactId>
+      <version>${org.tailormap.version}</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <!-- SLF4J is provided by SpringBoot through logback -->
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <repositories>
@@ -235,7 +262,6 @@ SPDX-License-Identifier: MIT
       <resource>
         <directory>${basedir}/src/main/resources</directory>
         <excludes>
-          <exclude>**/application*.yml</exclude>
           <exclude>**/application*.properties</exclude>
           <exclude>**/index.html</exclude>
         </excludes>
@@ -284,6 +310,9 @@ SPDX-License-Identifier: MIT
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
           <version>${spring.boot.version}</version>
+          <configuration>
+            <cleanCache>true</cleanCache>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>com.github.ekryd.sortpom</groupId>
@@ -410,6 +439,8 @@ SPDX-License-Identifier: MIT
           <argLine>${surefireArgLine}</argLine>
           <systemPropertyVariables>
             <project.version>${project.version}</project.version>
+            <!-- TODO read this from property of yaml file -->
+            <api.version>v1</api.version>
           </systemPropertyVariables>
           <excludes>
             <exclude>**/*IntegrationTest.java</exclude>
@@ -429,6 +460,7 @@ SPDX-License-Identifier: MIT
           <systemPropertyVariables>
             <project.version>${project.version}</project.version>
           </systemPropertyVariables>
+          <useFile>false</useFile>
         </configuration>
         <executions>
           <execution>
@@ -464,6 +496,45 @@ SPDX-License-Identifier: MIT
               <goal>jar</goal>
             </goals>
             <phase>verify</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-test-resources</id>
+            <!-- extract testdata.sql from viewer-config-persistence:tests to import.sql -->
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <phase>process-test-classes</phase>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.tailormap</groupId>
+                  <artifactId>viewer-config-persistence</artifactId>
+                  <type>test-jar</type>
+                  <classifier>tests</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+                  <includes>**/testdata.sql</includes>
+                  <fileMappers>
+                    <org.codehaus.plexus.components.io.filemappers.FlattenFileMapper></org.codehaus.plexus.components.io.filemappers.FlattenFileMapper>
+                    <org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                      <pattern>testdata.sql</pattern>
+                      <replacement>import.sql</replacement>
+                    </org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                  </fileMappers>
+                </artifactItem>
+              </artifactItems>
+              <includes>**/*.java</includes>
+              <excludes>**/*.properties</excludes>
+              <outputDirectory>${project.build.directory}/wars</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -659,7 +730,7 @@ SPDX-License-Identifier: MIT
                     <exclude>org.springframework.boot:spring-boot-starter-test</exclude>
                     <!--
                     TODO this should be fixed; either by importing or exluding the transitive dependencies
-                   org.tailormap:viewer-config-persistence:jar:5.9.11:compile has transitive dependencies:
+                   org.tailormap:viewer-config-persistence:jar:5.9.12-SNAPSHOT:compile has transitive dependencies:
                       org.apache.commons:commons-lang3:jar:3.12.0:compile
                       commons-beanutils:commons-beanutils:jar:1.9.4:compile
                          commons-logging:commons-logging:jar:1.2:compile
