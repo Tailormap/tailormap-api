@@ -9,6 +9,11 @@ ARG TAILORMAP_API_VERSION=0.1
 ARG TZ="Europe/Amsterdam"
 ARG DEBIAN_FRONTEND="noninteractive"
 
+ENV DB_URL=jdbc:postgresql:pgservice:/tm-config
+ENV DB_USER=test
+ENV DB_PASSWORD=test
+
+
 LABEL org.opencontainers.image.authors="@mprins" \
       description="Tailormap API service" \
       nl.b3p.vendor="B3Partners" \

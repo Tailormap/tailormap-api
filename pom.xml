@@ -162,19 +162,63 @@ SPDX-License-Identifier: MIT
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <!--
+          this (broken!) transitive dependency from org.skyscreamer:jsonassert:jar:1.5.0:test conflicts
+          with org.json.json from org.tailormap:viewer-config-persistence
+          -->
+          <groupId>com.vaadin.external.google</groupId>
+          <artifactId>android-json</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <!-- provides @SuppressModernizer that can be used on method to suppress the Modernizer plugin -->
       <groupId>org.gaul</groupId>
       <artifactId>modernizer-maven-annotations</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.3.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.checkerframework</groupId>
+          <artifactId>checker-qual</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.tailormap</groupId>
+      <artifactId>viewer-config-persistence</artifactId>
+      <version>5.9.11</version>
+      <exclusions>
+        <exclusion>
+          <!-- SLF4J is provided by SpringBoot through logback -->
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
+  <repositories>
+    <repository>
+      <id>B3Partners</id>
+      <name>Releases hosted by B3Partners</name>
+      <url>https://repo.b3p.nl/nexus/repository/public/</url>
+    </repository>
+  </repositories>
   <build>
     <defaultGoal>install</defaultGoal>
     <!-- no version number on jar makes building docker image easier -->
@@ -184,7 +228,7 @@ SPDX-License-Identifier: MIT
         <filtering>true</filtering>
         <directory>${basedir}/src/main/resources</directory>
         <includes>
-          <include>**/application*.yml</include>
+          <include>**/index.html</include>
           <include>**/application*.properties</include>
         </includes>
       </resource>
@@ -193,6 +237,7 @@ SPDX-License-Identifier: MIT
         <excludes>
           <exclude>**/application*.yml</exclude>
           <exclude>**/application*.properties</exclude>
+          <exclude>**/index.html</exclude>
         </excludes>
       </resource>
     </resources>
@@ -609,8 +654,23 @@ SPDX-License-Identifier: MIT
                 <banTransitiveDependencies>
                   <excludes>
                     <exclude>org.springframework.boot:spring-boot-starter-web</exclude>
+                    <exclude>org.springframework.boot:spring-boot-starter-data-jpa</exclude>
                     <exclude>org.springframework.boot:spring-boot-starter-actuator</exclude>
                     <exclude>org.springframework.boot:spring-boot-starter-test</exclude>
+                    <!--
+                    TODO this should be fixed; either by importing or exluding the transitive dependencies
+                   org.tailormap:viewer-config-persistence:jar:5.9.11:compile has transitive dependencies:
+                      org.apache.commons:commons-lang3:jar:3.12.0:compile
+                      commons-beanutils:commons-beanutils:jar:1.9.4:compile
+                         commons-logging:commons-logging:jar:1.2:compile
+                         commons-collections:commons-collections:jar:3.2.2:compile
+                      commons-io:commons-io:jar:2.11.0:compile
+                      org.json:json:jar:20210307:compile
+                      org.hibernate:hibernate-entitymanager:jar:5.6.1.Final:compile
+                         javax.persistence:javax.persistence-api:jar:2.2:compile
+                         org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:jar:1.1.1.Final:compile
+                    -->
+                    <exclude>org.tailormap:viewer-config-persistence</exclude>
                   </excludes>
                 </banTransitiveDependencies>
               </rules>

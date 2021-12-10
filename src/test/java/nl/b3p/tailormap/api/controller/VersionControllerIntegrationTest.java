@@ -16,9 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 
-// this test could just as well be a (unit)"Test" instead of an (i-test)"IntegrationTest", but we
-// wanted
-// to have an integration test to check if that works from Maven.
 @SpringBootTest
 class VersionControllerIntegrationTest {
     private static String projectVersion;
@@ -36,7 +33,11 @@ class VersionControllerIntegrationTest {
     @Test
     void testGetVersion() throws IOException {
         assertNotNull(versionController, "versionController can not be `null` if SpringBoot works");
-        assertNotNull(versionController.getVersion(), "Project version not found");
-        assertEquals(projectVersion, versionController.getVersion(), "Project version incorrect");
+        assertNotNull(versionController.getVersion(), "Version info not found");
+
+        assertEquals(
+                "{\"version\":\"0.1-SNAPSHOT\", \"databaseversion\":\"46\", \"api_version\":\"v1\"}",
+                versionController.getVersion(),
+                "Unexpected json response.");
     }
 }
