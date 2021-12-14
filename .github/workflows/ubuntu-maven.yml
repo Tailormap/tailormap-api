@@ -54,6 +54,7 @@ jobs:
           retention-days: 2
           path: target/site/
 
+
   site-deploy:
     name: Publish gh-pages
     runs-on: ubuntu-latest
@@ -77,6 +78,7 @@ jobs:
         with:
           branch: gh-pages
           folder: target/site
+
 
   deploy:
     name: Deploy artifacts
@@ -102,12 +104,9 @@ jobs:
           java-version: 11
           distribution: 'temurin'
 
-      #      - name: Log in to registry
-      #        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
       - name: Build and Push
         # no need to run any QC or tests
-        # note deploy will deploy both Maven artifact as well as docker image
+        # note deploy will deploy both Maven artifact as well as Docker image
         env:
           REPO_B3P_ACTOR: ${{ secrets.REPO_B3P_ACTOR }}
           REPO_B3P_TOKEN: ${{ secrets.REPO_B3P_TOKEN }}
@@ -168,10 +167,11 @@ jobs:
       - name: Try Created Docker image
         run: |
           docker run -d --name tailormap-api -h tailormap-api --network host ghcr.io/b3partners/tailormap-api:snapshot
-          sleep 10
+          sleep 60
           docker logs tailormap-api
           curl http://localhost:8080/api/actuator/health
           curl http://localhost:8080/api/version
+
 
   cleanup:
     name: Maven cache cleanup
