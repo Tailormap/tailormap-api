@@ -167,7 +167,7 @@ jobs:
       - name: Try Created Docker image
         run: |
           docker run -d --name tailormap-api -h tailormap-api --network host ghcr.io/b3partners/tailormap-api:snapshot
-          sleep 20
+          sleep 60
           docker logs tailormap-api
           curl http://localhost:8080/api/actuator/health
           curl http://localhost:8080/api/version
