@@ -1,4 +1,4 @@
-name: Maven build
+name: Ubuntu Maven build
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Ubuntu/Java 11
+    name: Build w/ Java 11
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -36,21 +36,11 @@ jobs:
           mvn -B -fae -e test
           mvn -B -fae -e verify
 
-      - name: Try Created Docker image
-        run: |
-          docker run --rm -d --name tailormap-api -h tailormap-api -p 8080:8080 ghcr.io/b3partners/tailormap-api:snapshot
-          sleep 10
-          curl http://localhost:8080/actuator/health
-
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
 
       - name: Build javadoc
         run: mvn javadoc:javadoc
-
-      # because unit test are now package private no javadoc for tests
-      # - name: Build test javadoc
-      #   run: mvn javadoc:test-javadoc
 
       - name: Build Maven site
         run: mvn site
@@ -63,6 +53,7 @@ jobs:
           name: archive-site
           retention-days: 2
           path: target/site/
+
 
   site-deploy:
     name: Publish gh-pages
@@ -88,8 +79,9 @@ jobs:
           branch: gh-pages
           folder: target/site
 
+
   deploy:
-    name: deploy artifacts
+    name: Deploy artifacts
     runs-on: ubuntu-latest
     needs: build
     permissions:
@@ -112,12 +104,9 @@ jobs:
           java-version: 11
           distribution: 'temurin'
 
-      #      - name: Log in to registry
-      #        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
       - name: Build and Push
         # no need to run any QC or tests
-        # note deploy will deploy both Maven artifact as well as docker image
+        # note deploy will deploy both Maven artifact as well as Docker image
         env:
           REPO_B3P_ACTOR: ${{ secrets.REPO_B3P_ACTOR }}
           REPO_B3P_TOKEN: ${{ secrets.REPO_B3P_TOKEN }}
@@ -125,6 +114,64 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip clean deploy --settings .github/maven-settings.xml
+
+
+  docker-test:
+    name: Test docker image
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ github.event_name == 'pull_request' }}
+    env: # these defaults are also in the respective TM images
+      PG_PORT: 5432
+      DB_NAME: tailormap
+      DB_USER: tailormap
+      DB_PASS: tailormap
+
+    services:
+      postgres:
+        image: postgres:14.1-alpine
+        env:
+          POSTGRES_USER: ${{ env.DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASS }}
+          POSTGRES_DB: ${{ env.DB_NAME }}
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 15s --health-timeout 5s --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'temurin'
+
+      - name: Build docker image
+        run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip package
+
+      - name: Init database w/ Tailormap Admin
+        # use Tailormap Admin to initialize the PostgreSQL database schema
+        run: |
+          docker run -d --name tailormap-admin -h tailormap-admin --network host ghcr.io/b3partners/tailormap-admin:snapshot
+          sleep 60
+          docker logs tailormap-admin
+          docker stop tailormap-admin
+      - name: Try Created Docker image
+        run: |
+          docker run -d --name tailormap-api -h tailormap-api --network host ghcr.io/b3partners/tailormap-api:snapshot
+          sleep 60
+          docker logs tailormap-api
+          curl http://localhost:8080/api/actuator/health
+          curl http://localhost:8080/api/version
+
 
   cleanup:
     name: Maven cache cleanup

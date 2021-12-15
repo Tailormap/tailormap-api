@@ -1,4 +1,4 @@
-name: Maven build
+name: MacOS Maven build
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
@@ -8,8 +8,8 @@ on:
 
 jobs:
   build:
-    name: MacOS/Java 11
-    runs-on: macos-10.15
+    name: Build w/ Java 11
+    runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
 

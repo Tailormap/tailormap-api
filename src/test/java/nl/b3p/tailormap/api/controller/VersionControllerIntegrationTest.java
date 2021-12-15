@@ -9,20 +9,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
+import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.io.IOException;
+import java.util.Map;
 
-// this test could just as well be a (unit)"Test" instead of an (i-test)"IntegrationTest", but we
-// wanted
-// to have an integration test to check if that works from Maven.
-@SpringBootTest
+/** Testcases for {@link VersionController}. */
+@SpringBootTest(classes = {HSQLDBTestProfileJPAConfiguration.class, VersionController.class})
+@ActiveProfiles("test")
 class VersionControllerIntegrationTest {
     private static String projectVersion;
-    @Autowired VersionController versionController;
+    private static String apiVersion;
+    @Autowired private VersionController versionController;
 
     @BeforeAll
     static void getVersionFromPom() {
@@ -31,12 +34,25 @@ class VersionControllerIntegrationTest {
         assumeFalse(
                 null == projectVersion,
                 "Project version unknown, should be set in system environment");
+        apiVersion = System.getProperty("api.version");
+        assumeFalse(null == apiVersion, "API version unknown, should be set in system environment");
     }
 
     @Test
-    void testGetVersion() throws IOException {
-        assertNotNull(versionController, "versionController can not be `null` if SpringBoot works");
-        assertNotNull(versionController.getVersion(), "Project version not found");
-        assertEquals(projectVersion, versionController.getVersion(), "Project version incorrect");
+    void testGetVersion() {
+        assertNotNull(
+                versionController, "versionController can not be `null` if Spring Boot works");
+        assertNotNull(versionController.getVersion(), "Version info not found");
+
+        Map<String, String> expected =
+                Map.of(
+                        "version",
+                        projectVersion,
+                        "databaseversion",
+                        "46",
+                        "api_version",
+                        apiVersion);
+
+        assertEquals(expected, versionController.getVersion(), "Unexpected version response.");
     }
 }
