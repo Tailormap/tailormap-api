@@ -13,28 +13,54 @@
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">package</strong> nl.b3p.tailormap.api.controller;
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.GetMapping;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.RestController;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment">/** Provides version information. */</em>
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  @RestController
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="VersionController" href="../../../../../nl/b3p/tailormap/api/controller/VersionController.html#VersionController">VersionController</a> {
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>      <em class="jxr_comment">// the maven build takes care of updating this in the application.properties</em>
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>      @Value(<span class="jxr_string">"${tailormap-api.version}"</span>)
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>      <strong class="jxr_keyword">private</strong> String version;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.repository.MetadataRepository;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> nl.tailormap.viewer.config.metadata.Metadata;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.MediaType;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.CrossOrigin;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.GetMapping;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.RestController;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment">     * get API version.</em>
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment">     * @return api version</em>
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>      @GetMapping(path = <span class="jxr_string">"/version"</span>)
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>      <strong class="jxr_keyword">public</strong> String getVersion() {
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.version;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>      }
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  }
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> * Provides version information of backend, API and config database.</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> * @since 0.1</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  @RestController
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  @CrossOrigin
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="VersionController" href="../../../../../nl/b3p/tailormap/api/controller/VersionController.html#VersionController">VersionController</a> {
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      @Autowired <strong class="jxr_keyword">private</strong> <a name="MetadataRepository" href="../../../../../nl/b3p/tailormap/api/repository/MetadataRepository.html#MetadataRepository">MetadataRepository</a> metadataRepository;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <em class="jxr_comment">// Maven 'process-resources' takes care of updating these tokens in the application.properties</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      @Value(<span class="jxr_string">"${tailormap-api.version}"</span>)
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      <strong class="jxr_keyword">private</strong> String version;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      @Value(<span class="jxr_string">"${tailormap-api.api_version}"</span>)
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">private</strong> String apiVersion;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">     * get API version.</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment">     * @return api version</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      @GetMapping(path = <span class="jxr_string">"/version"</span>, produces = MediaType.APPLICATION_JSON_VALUE)
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      <strong class="jxr_keyword">public</strong> Map&lt;String, String&gt; getVersion() {
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          <strong class="jxr_keyword">final</strong> Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>          <strong class="jxr_keyword">final</strong> String dbVersion = ((<strong class="jxr_keyword">null</strong> != m) ? m.getConfigValue() : <span class="jxr_string">"-1"</span>);
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          <strong class="jxr_keyword">return</strong> Map.of(
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>                  <span class="jxr_string">"version"</span>,
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>                  <strong class="jxr_keyword">this</strong>.version,
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>                  <span class="jxr_string">"databaseversion"</span>,
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>                  dbVersion,
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>                  <span class="jxr_string">"api_version"</span>,
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>                  <strong class="jxr_keyword">this</strong>.apiVersion);
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      }
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

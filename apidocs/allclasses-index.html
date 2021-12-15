@@ -26,6 +26,12 @@
     catch(err) {
     }
 //-->
+var data = {"i0":2,"i1":2,"i2":1,"i3":2,"i4":2};
+var tabs = {65535:["t0","All Classes"],1:["t1","Interface Summary"],2:["t2","Class Summary"]};
+var altColor = "altColor";
+var rowColor = "rowColor";
+var tableTab = "tableTab";
+var activeTableTab = "activeTableTab";
 var pathtoroot = "./";
 var useModuleDirectories = true;
 loadScripts(document, 'script');</script>
@@ -99,21 +105,37 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <table class="typeSummary">
-<caption><span>Class Summary</span><span class="tabEnd">&nbsp;</span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Classes</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Interface Summary</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Class Summary</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Class</th>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><a href="nl/b3p/tailormap/api/controller/AppController.html" title="class in nl.b3p.tailormap.api.controller">AppController</a></td>
+<th class="colLast" scope="row">&nbsp;</th>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><a href="nl/b3p/tailormap/api/JPAConfiguration.html" title="class in nl.b3p.tailormap.api">JPAConfiguration</a></td>
+<th class="colLast" scope="row">
+<div class="block">JPA configuration beans.</div>
+</th>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><a href="nl/b3p/tailormap/api/repository/MetadataRepository.html" title="interface in nl.b3p.tailormap.api.repository">MetadataRepository</a></td>
+<th class="colLast" scope="row">
+<div class="block">Easy to use methods to access <code>Metadata</code>.</div>
+</th>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><a href="nl/b3p/tailormap/api/TailormapApiApplication.html" title="class in nl.b3p.tailormap.api">TailormapApiApplication</a></td>
 <th class="colLast" scope="row">
 <div class="block">API application starter.</div>
 </th>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><a href="nl/b3p/tailormap/api/controller/VersionController.html" title="class in nl.b3p.tailormap.api.controller">VersionController</a></td>
 <th class="colLast" scope="row">
-<div class="block">Provides version information.</div>
+<div class="block">Provides version information of backend, API and config database.</div>
 </th>
 </tr>
 </table>

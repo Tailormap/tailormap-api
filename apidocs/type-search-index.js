@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"nl.b3p.tailormap.api","l":"TailormapApiApplication"},{"p":"nl.b3p.tailormap.api.controller","l":"VersionController"}]
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"nl.b3p.tailormap.api.controller","l":"AppController"},{"p":"nl.b3p.tailormap.api","l":"JPAConfiguration"},{"p":"nl.b3p.tailormap.api.repository","l":"MetadataRepository"},{"p":"nl.b3p.tailormap.api","l":"TailormapApiApplication"},{"p":"nl.b3p.tailormap.api.controller","l":"VersionController"}]
