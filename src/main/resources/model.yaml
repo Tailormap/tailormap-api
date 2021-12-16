@@ -28,12 +28,39 @@ components:
       Well-known and client-supported EPSG code.
       Currently Rijksdriehoek/WGS84, new/TODO Web Mercator.
       '
-      type: string
-      default: 'EPSG:28992'
-      enum:
-        - 'EPSG:28992'
-        - 'EPSG:4236'
-        - 'EPSG:3857'
+      type: object
+      default: {
+        'code': 'EPSG:28992',
+        'definition': '+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs',
+        'area': {
+          'miny': 646.36,
+          'minx': 308975.28,
+          'maxy': 276050.82,
+          'maxx': 636456.31
+        } }
+      properties:
+        code:
+          description: 'the EPSG code'
+          type: string
+        definition:
+          description: 'PROJ4 string'
+          type: string
+        area:
+          description: 'Area of validity of this CRS'
+          type: object
+          properties:
+            schema:
+              $ref: '#/components/schemas/Bounds'
+          nullable: true
+      example:
+        code: 'EPSG:28992'
+        definition: '+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs'
+        area: {
+          miny: 646.36,
+          minx: 308975.28,
+          maxy: 276050.82,
+          maxx: 636456.31
+        }
 
     Bounds:
       description: 'Describes an extent within a Coordinate Reference System'
@@ -52,7 +79,9 @@ components:
           description: 'upper right'
           type: number
         crs:
-          $ref: '#/components/schemas/CoordinateReferenceSystem'
+          description: '(EPSG) code of the projection'
+          type: string
+          nullable: true
       example:
         miny: 400000
         minx: 105000
