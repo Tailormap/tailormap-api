@@ -3,3 +3,4 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.controller,VersionController,26,0,2
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,AppController,30,0,0,0,4,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api,TailormapApiApplication,8,0,0,0,3,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api,JPAConfiguration,100,0,0,0,25,0,6,0,6,0
+Aggregate Test Coverage,nl.b3p.tailormap.api,FilteringConfig,36,0,0,0,7,0,2,0,2,0
