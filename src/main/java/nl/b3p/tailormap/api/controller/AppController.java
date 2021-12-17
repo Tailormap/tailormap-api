@@ -51,7 +51,7 @@ public class AppController {
                 appid,
                 "name",
                 name,
-                "api_version",
+                "apiVersion",
                 this.apiVersion,
                 "version",
                 version,
