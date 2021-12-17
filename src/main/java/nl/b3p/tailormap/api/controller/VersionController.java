@@ -49,7 +49,7 @@ public class VersionController {
                 this.version,
                 "databaseversion",
                 dbVersion,
-                "api_version",
+                "apiVersion",
                 this.apiVersion);
     }
 }

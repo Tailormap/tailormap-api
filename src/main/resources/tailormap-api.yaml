@@ -102,7 +102,7 @@ components:
           type: integer
           format: int64
           example: 7
-        api_version:
+        apiVersion:
           type: string
           default: 'v1'
         name:
@@ -133,7 +133,7 @@ paths:
               example:
                 version: '0.1-SNAPSHOT'
                 databaseversion: '46'
-                api_version: 'v1'
+                apiVersion: 'v1'
 
   /app/:
     summary: '
@@ -169,7 +169,7 @@ paths:
             application/json:
               example:
                 id: 7
-                api_version: 'v1'
+                apiVersion: 'v1'
                 name: 'cool app'
                 version: '2'
                 title: 'This is a cool mapping app'
