@@ -1,3 +1,4 @@
 nl.b3p.tailormap.api
 nl.b3p.tailormap.api.controller
+nl.b3p.tailormap.api.health
 nl.b3p.tailormap.api.repository
