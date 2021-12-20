@@ -234,6 +234,15 @@ SPDX-License-Identifier: MIT
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-annotations</artifactId>
+      <version>1.6.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <scope>test</scope>
@@ -363,6 +372,10 @@ SPDX-License-Identifier: MIT
           <version>3.0.0</version>
         </plugin>
         <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.2.0</version>
         </plugin>
@@ -394,10 +407,6 @@ SPDX-License-Identifier: MIT
             <failOnWarnings>${failOnValidation}</failOnWarnings>
             <failOnError>${failOnValidation}</failOnError>
           </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-antrun-plugin</artifactId>
-          <version>3.0.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -474,6 +483,56 @@ SPDX-License-Identifier: MIT
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>${project.basedir}/src/main/resources/model.yaml</inputSpec>
+              <!-- <generatorName>java</generatorName>-->
+              <!-- <library>native</library>-->
+              <generatorName>spring</generatorName>
+              <library>spring-boot</library>
+              <generateModels>true</generateModels>
+              <generateModelTests>true</generateModelTests>
+              <modelPackage>nl.b3p.tailormap.api.model</modelPackage>
+              <generateApis>false</generateApis>
+              <invokerPackage>nl.b3p.tailormap.api.invoker</invokerPackage>
+              <generateSupportingFiles>false</generateSupportingFiles>
+              <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+              <configOptions>
+                <dateLibrary>java8</dateLibrary>
+                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                <openApiNullable>false</openApiNullable>
+                <oas3>true</oas3>
+                <serializableModel>true</serializableModel>
+                <useOptional>true</useOptional>
+              </configOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>fix-generated-sources</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>process-sources</phase>
+            <configuration>
+              <target name="fix-generated-sources">
+                <!-- work around a stupid bug in the openapi generator plugin that can't do this right -->
+                <replace file="target/generated-sources/openapi/src/main/java/nl/b3p/tailormap/api/model/Component.java" summary="true">
+                  <replacetoken><![CDATA[private Map<String, String> config = ;]]></replacetoken>
+                  <replacevalue><![CDATA[private Map<String, String> config = new HashMap<>();]]></replacevalue>
+                </replace>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
@@ -571,8 +630,9 @@ SPDX-License-Identifier: MIT
           <execution>
             <id>post-integration-test</id>
             <goals>
-              <goal>report-integration</goal>
               <goal>merge</goal>
+              <goal>report-integration</goal>
+              <goal>report</goal>
             </goals>
             <phase>post-integration-test</phase>
             <configuration>
@@ -728,6 +788,7 @@ SPDX-License-Identifier: MIT
                     <exclude>org.springframework.boot:spring-boot-starter-data-jpa</exclude>
                     <exclude>org.springframework.boot:spring-boot-starter-actuator</exclude>
                     <exclude>org.springframework.boot:spring-boot-starter-test</exclude>
+                    <exclude>org.springframework.boot:spring-boot-starter-validation</exclude>
                     <!--
                     TODO this should be fixed; either by importing or exluding the transitive dependencies
                    org.tailormap:viewer-config-persistence:jar:5.9.12-SNAPSHOT:compile has transitive dependencies:
