@@ -25,6 +25,7 @@ import java.util.Map;
 class VersionControllerIntegrationTest {
     private static String projectVersion;
     private static String apiVersion;
+    private static String databaseVersion;
     @Autowired private VersionController versionController;
 
     @BeforeAll
@@ -36,6 +37,10 @@ class VersionControllerIntegrationTest {
                 "Project version unknown, should be set in system environment");
         apiVersion = System.getProperty("api.version");
         assumeFalse(null == apiVersion, "API version unknown, should be set in system environment");
+        databaseVersion = System.getProperty("database.version");
+        assumeFalse(
+                null == databaseVersion,
+                "Database version unknown, should be set in system environment");
     }
 
     @Test
@@ -49,8 +54,8 @@ class VersionControllerIntegrationTest {
                         "version",
                         projectVersion,
                         "databaseversion",
-                        "46",
-                        "api_version",
+                        databaseVersion,
+                        "apiVersion",
                         apiVersion);
 
         assertEquals(expected, versionController.getVersion(), "Unexpected version response.");

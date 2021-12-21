@@ -31,6 +31,7 @@ class TailormapHealthIndicatorEnabledIntegrationTest {
 
     private static String projectVersion;
     private static String apiVersion;
+    private static String databaseVersion;
     @Autowired private MockMvc mockMvc;
 
     @BeforeAll
@@ -42,6 +43,10 @@ class TailormapHealthIndicatorEnabledIntegrationTest {
                 "Project version unknown, should be set in system environment");
         apiVersion = System.getProperty("api.version");
         assumeFalse(null == apiVersion, "API version unknown, should be set in system environment");
+        databaseVersion = System.getProperty("database.version");
+        assumeFalse(
+                null == databaseVersion,
+                "Database version unknown, should be set in system environment");
     }
 
     @Test
@@ -51,6 +56,7 @@ class TailormapHealthIndicatorEnabledIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.details.version").value(projectVersion))
-                .andExpect(jsonPath("$.details.api_version").value(apiVersion));
+                .andExpect(jsonPath("$.details.apiVersion").value(apiVersion))
+                .andExpect(jsonPath("$.details.databaseversion").value(databaseVersion));
     }
 }

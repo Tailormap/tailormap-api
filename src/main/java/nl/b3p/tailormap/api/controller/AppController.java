@@ -24,7 +24,7 @@ import java.util.Map;
 public class AppController {
     private final Log logger = LogFactory.getLog(getClass());
 
-    @Value("${tailormap-api.api_version}")
+    @Value("${tailormap-api.apiVersion}")
     private String apiVersion;
 
     /**

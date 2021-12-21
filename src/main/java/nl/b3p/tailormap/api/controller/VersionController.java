@@ -31,7 +31,7 @@ public class VersionController {
     @Value("${tailormap-api.version}")
     private String version;
 
-    @Value("${tailormap-api.api_version}")
+    @Value("${tailormap-api.apiVersion}")
     private String apiVersion;
 
     /**

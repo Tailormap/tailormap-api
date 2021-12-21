@@ -450,6 +450,8 @@ SPDX-License-Identifier: MIT
             <project.version>${project.version}</project.version>
             <!-- TODO read this from property of yaml file -->
             <api.version>v1</api.version>
+            <!-- TODO read this from persistence -->
+            <database.version>46</database.version>
           </systemPropertyVariables>
           <excludes>
             <exclude>**/*IntegrationTest.java</exclude>
@@ -468,6 +470,10 @@ SPDX-License-Identifier: MIT
           <trimStackTrace>false</trimStackTrace>
           <systemPropertyVariables>
             <project.version>${project.version}</project.version>
+            <!-- TODO read this from property of yaml file -->
+            <api.version>v1</api.version>
+            <!-- TODO read this from persistence -->
+            <database.version>46</database.version>
           </systemPropertyVariables>
           <useFile>false</useFile>
         </configuration>
@@ -1098,6 +1104,7 @@ SPDX-License-Identifier: MIT
       <properties>
         <skipQA>true</skipQA>
         <failOnWarnings>false</failOnWarnings>
+        <compiler.lint>none</compiler.lint>
       </properties>
       <build>
         <plugins>
