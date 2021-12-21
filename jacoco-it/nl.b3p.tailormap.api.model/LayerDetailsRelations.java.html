@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LayerDetailsRelations.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.model</a> &gt; <span class="el_source">LayerDetailsRelations.java</span></div><h1>LayerDetailsRelations.java</h1><pre class="source lang-java linenums">package nl.b3p.tailormap.api.model;
+
+import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+
+/**
+ * LayerDetailsRelations
+ */
+@javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
+<span class="nc" id="L17">public class LayerDetailsRelations  implements Serializable {</span>
+  private static final long serialVersionUID = 1L;
+
+  @JsonProperty(&quot;featureType&quot;)
+  private Long featureType;
+
+  @JsonProperty(&quot;foreignFeatureType&quot;)
+  private Long foreignFeatureType;
+
+  /**
+   * Gets or Sets type
+   */
+<span class="nc" id="L29">  public enum TypeEnum {</span>
+<span class="nc" id="L30">    RELATE(&quot;relate&quot;),</span>
+    
+<span class="nc" id="L32">    JOIN(&quot;join&quot;);</span>
+
+    private String value;
+
+<span class="nc" id="L36">    TypeEnum(String value) {</span>
+<span class="nc" id="L37">      this.value = value;</span>
+<span class="nc" id="L38">    }</span>
+
+    @JsonValue
+    public String getValue() {
+<span class="nc" id="L42">      return value;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L47">      return String.valueOf(value);</span>
+    }
+
+    @JsonCreator
+    public static TypeEnum fromValue(String value) {
+<span class="nc bnc" id="L52" title="All 2 branches missed.">      for (TypeEnum b : TypeEnum.values()) {</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
+<span class="nc" id="L54">          return b;</span>
+        }
+      }
+<span class="nc" id="L57">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
+    }
+  }
+
+  @JsonProperty(&quot;type&quot;)
+  private TypeEnum type;
+
+  public LayerDetailsRelations featureType(Long featureType) {
+<span class="nc" id="L65">    this.featureType = featureType;</span>
+<span class="nc" id="L66">    return this;</span>
+  }
+
+  /**
+   * Get featureType
+   * @return featureType
+  */
+  @ApiModelProperty(value = &quot;&quot;)
+
+
+  public Long getFeatureType() {
+<span class="nc" id="L77">    return featureType;</span>
+  }
+
+  public void setFeatureType(Long featureType) {
+<span class="nc" id="L81">    this.featureType = featureType;</span>
+<span class="nc" id="L82">  }</span>
+
+  public LayerDetailsRelations foreignFeatureType(Long foreignFeatureType) {
+<span class="nc" id="L85">    this.foreignFeatureType = foreignFeatureType;</span>
+<span class="nc" id="L86">    return this;</span>
+  }
+
+  /**
+   * Get foreignFeatureType
+   * @return foreignFeatureType
+  */
+  @ApiModelProperty(value = &quot;&quot;)
+
+
+  public Long getForeignFeatureType() {
+<span class="nc" id="L97">    return foreignFeatureType;</span>
+  }
+
+  public void setForeignFeatureType(Long foreignFeatureType) {
+<span class="nc" id="L101">    this.foreignFeatureType = foreignFeatureType;</span>
+<span class="nc" id="L102">  }</span>
+
+  public LayerDetailsRelations type(TypeEnum type) {
+<span class="nc" id="L105">    this.type = type;</span>
+<span class="nc" id="L106">    return this;</span>
+  }
+
+  /**
+   * Get type
+   * @return type
+  */
+  @ApiModelProperty(value = &quot;&quot;)
+
+
+  public TypeEnum getType() {
+<span class="nc" id="L117">    return type;</span>
+  }
+
+  public void setType(TypeEnum type) {
+<span class="nc" id="L121">    this.type = type;</span>
+<span class="nc" id="L122">  }</span>
+
+
+  @Override
+  public boolean equals(Object o) {
+<span class="nc bnc" id="L127" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L128">      return true;</span>
+    }
+<span class="nc bnc" id="L130" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L131">      return false;</span>
+    }
+<span class="nc" id="L133">    LayerDetailsRelations layerDetailsRelations = (LayerDetailsRelations) o;</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">    return Objects.equals(this.featureType, layerDetailsRelations.featureType) &amp;&amp;</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">        Objects.equals(this.foreignFeatureType, layerDetailsRelations.foreignFeatureType) &amp;&amp;</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        Objects.equals(this.type, layerDetailsRelations.type);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L141">    return Objects.hash(featureType, foreignFeatureType, type);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L146">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L147">    sb.append(&quot;class LayerDetailsRelations {\n&quot;);</span>
+    
+<span class="nc" id="L149">    sb.append(&quot;    featureType: &quot;).append(toIndentedString(featureType)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L150">    sb.append(&quot;    foreignFeatureType: &quot;).append(toIndentedString(foreignFeatureType)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L151">    sb.append(&quot;    type: &quot;).append(toIndentedString(type)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L152">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L153">    return sb.toString();</span>
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+<span class="nc bnc" id="L161" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L162">      return &quot;null&quot;;</span>
+    }
+<span class="nc" id="L164">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

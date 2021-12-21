@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Service.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.model</a> &gt; <span class="el_source">Service.java</span></div><h1>Service.java</h1><pre class="source lang-java linenums">package nl.b3p.tailormap.api.model;
+
+import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+
+/**
+ * A service provides one or more appLayers
+ */
+@ApiModel(description = &quot;A service provides one or more appLayers&quot;)
+@javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
+<span class="nc" id="L18">public class Service  implements Serializable {</span>
+  private static final long serialVersionUID = 1L;
+
+  @JsonProperty(&quot;id&quot;)
+  private Long id;
+
+  @JsonProperty(&quot;name&quot;)
+  private String name;
+
+  @JsonProperty(&quot;url&quot;)
+  private String url;
+
+<span class="nc" id="L30">  @JsonProperty(&quot;useProxy&quot;)</span>
+<span class="nc" id="L31">  private Boolean useProxy = false;</span>
+
+  @JsonProperty(&quot;styleLibraries&quot;)
+  private Object styleLibraries;
+
+  /**
+   * Gets or Sets protocol
+   */
+<span class="nc" id="L39">  public enum ProtocolEnum {</span>
+<span class="nc" id="L40">    TILED(&quot;tiled&quot;),</span>
+    
+<span class="nc" id="L42">    WMS(&quot;wms&quot;),</span>
+    
+<span class="nc" id="L44">    ARCGIS(&quot;arcgis&quot;);</span>
+
+    private String value;
+
+<span class="nc" id="L48">    ProtocolEnum(String value) {</span>
+<span class="nc" id="L49">      this.value = value;</span>
+<span class="nc" id="L50">    }</span>
+
+    @JsonValue
+    public String getValue() {
+<span class="nc" id="L54">      return value;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L59">      return String.valueOf(value);</span>
+    }
+
+    @JsonCreator
+    public static ProtocolEnum fromValue(String value) {
+<span class="nc bnc" id="L64" title="All 2 branches missed.">      for (ProtocolEnum b : ProtocolEnum.values()) {</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
+<span class="nc" id="L66">          return b;</span>
+        }
+      }
+<span class="nc" id="L69">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
+    }
+  }
+
+  @JsonProperty(&quot;protocol&quot;)
+  private ProtocolEnum protocol;
+
+  /**
+   * Gets or Sets tilingProtocol
+   */
+<span class="nc" id="L79">  public enum TilingProtocolEnum {</span>
+<span class="nc" id="L80">    WMTS(&quot;WMTS&quot;),</span>
+    
+<span class="nc" id="L82">    TMS(&quot;TMS&quot;);</span>
+
+    private String value;
+
+<span class="nc" id="L86">    TilingProtocolEnum(String value) {</span>
+<span class="nc" id="L87">      this.value = value;</span>
+<span class="nc" id="L88">    }</span>
+
+    @JsonValue
+    public String getValue() {
+<span class="nc" id="L92">      return value;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L97">      return String.valueOf(value);</span>
+    }
+
+    @JsonCreator
+    public static TilingProtocolEnum fromValue(String value) {
+<span class="nc bnc" id="L102" title="All 2 branches missed.">      for (TilingProtocolEnum b : TilingProtocolEnum.values()) {</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
+<span class="nc" id="L104">          return b;</span>
+        }
+      }
+<span class="nc" id="L107">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
+    }
+  }
+
+  @JsonProperty(&quot;tilingProtocol&quot;)
+  private TilingProtocolEnum tilingProtocol;
+
+  @JsonProperty(&quot;matrixSet&quot;)
+  private Object matrixSet;
+
+  public Service id(Long id) {
+<span class="nc" id="L118">    this.id = id;</span>
+<span class="nc" id="L119">    return this;</span>
+  }
+
+  /**
+   * Get id
+   * @return id
+  */
+  @ApiModelProperty(required = true, value = &quot;&quot;)
+  @NotNull
+
+
+  public Long getId() {
+<span class="nc" id="L131">    return id;</span>
+  }
+
+  public void setId(Long id) {
+<span class="nc" id="L135">    this.id = id;</span>
+<span class="nc" id="L136">  }</span>
+
+  public Service name(String name) {
+<span class="nc" id="L139">    this.name = name;</span>
+<span class="nc" id="L140">    return this;</span>
+  }
+
+  /**
+   * Get name
+   * @return name
+  */
+  @ApiModelProperty(value = &quot;&quot;)
+
+
+  public String getName() {
+<span class="nc" id="L151">    return name;</span>
+  }
+
+  public void setName(String name) {
+<span class="nc" id="L155">    this.name = name;</span>
+<span class="nc" id="L156">  }</span>
+
+  public Service url(String url) {
+<span class="nc" id="L159">    this.url = url;</span>
+<span class="nc" id="L160">    return this;</span>
+  }
+
+  /**
+   * Get url
+   * @return url
+  */
+  @ApiModelProperty(value = &quot;&quot;)
+
+
+  public String getUrl() {
+<span class="nc" id="L171">    return url;</span>
+  }
+
+  public void setUrl(String url) {
+<span class="nc" id="L175">    this.url = url;</span>
+<span class="nc" id="L176">  }</span>
+
+  public Service useProxy(Boolean useProxy) {
+<span class="nc" id="L179">    this.useProxy = useProxy;</span>
+<span class="nc" id="L180">    return this;</span>
+  }
+
+  /**
+   * Get useProxy
+   * @return useProxy
+  */
+  @ApiModelProperty(value = &quot;&quot;)
+
+
+  public Boolean getUseProxy() {
+<span class="nc" id="L191">    return useProxy;</span>
+  }
+
+  public void setUseProxy(Boolean useProxy) {
+<span class="nc" id="L195">    this.useProxy = useProxy;</span>
+<span class="nc" id="L196">  }</span>
+
+  public Service styleLibraries(Object styleLibraries) {
+<span class="nc" id="L199">    this.styleLibraries = styleLibraries;</span>
+<span class="nc" id="L200">    return this;</span>
+  }
+
+  /**
+   * Get styleLibraries
+   * @return styleLibraries
+  */
+  @ApiModelProperty(value = &quot;&quot;)
+
+
+  public Object getStyleLibraries() {
+<span class="nc" id="L211">    return styleLibraries;</span>
+  }
+
+  public void setStyleLibraries(Object styleLibraries) {
+<span class="nc" id="L215">    this.styleLibraries = styleLibraries;</span>
+<span class="nc" id="L216">  }</span>
+
+  public Service protocol(ProtocolEnum protocol) {
+<span class="nc" id="L219">    this.protocol = protocol;</span>
+<span class="nc" id="L220">    return this;</span>
+  }
+
+  /**
+   * Get protocol
+   * @return protocol
+  */
+  @ApiModelProperty(value = &quot;&quot;)
+
+
+  public ProtocolEnum getProtocol() {
+<span class="nc" id="L231">    return protocol;</span>
+  }
+
+  public void setProtocol(ProtocolEnum protocol) {
+<span class="nc" id="L235">    this.protocol = protocol;</span>
+<span class="nc" id="L236">  }</span>
+
+  public Service tilingProtocol(TilingProtocolEnum tilingProtocol) {
+<span class="nc" id="L239">    this.tilingProtocol = tilingProtocol;</span>
+<span class="nc" id="L240">    return this;</span>
+  }
+
+  /**
+   * Get tilingProtocol
+   * @return tilingProtocol
+  */
+  @ApiModelProperty(value = &quot;&quot;)
+
+
+  public TilingProtocolEnum getTilingProtocol() {
+<span class="nc" id="L251">    return tilingProtocol;</span>
+  }
+
+  public void setTilingProtocol(TilingProtocolEnum tilingProtocol) {
+<span class="nc" id="L255">    this.tilingProtocol = tilingProtocol;</span>
+<span class="nc" id="L256">  }</span>
+
+  public Service matrixSet(Object matrixSet) {
+<span class="nc" id="L259">    this.matrixSet = matrixSet;</span>
+<span class="nc" id="L260">    return this;</span>
+  }
+
+  /**
+   * Get matrixSet
+   * @return matrixSet
+  */
+  @ApiModelProperty(value = &quot;&quot;)
+
+
+  public Object getMatrixSet() {
+<span class="nc" id="L271">    return matrixSet;</span>
+  }
+
+  public void setMatrixSet(Object matrixSet) {
+<span class="nc" id="L275">    this.matrixSet = matrixSet;</span>
+<span class="nc" id="L276">  }</span>
+
+
+  @Override
+  public boolean equals(Object o) {
+<span class="nc bnc" id="L281" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L282">      return true;</span>
+    }
+<span class="nc bnc" id="L284" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L285">      return false;</span>
+    }
+<span class="nc" id="L287">    Service service = (Service) o;</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">    return Objects.equals(this.id, service.id) &amp;&amp;</span>
+<span class="nc bnc" id="L289" title="All 2 branches missed.">        Objects.equals(this.name, service.name) &amp;&amp;</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">        Objects.equals(this.url, service.url) &amp;&amp;</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">        Objects.equals(this.useProxy, service.useProxy) &amp;&amp;</span>
+<span class="nc bnc" id="L292" title="All 2 branches missed.">        Objects.equals(this.styleLibraries, service.styleLibraries) &amp;&amp;</span>
+<span class="nc bnc" id="L293" title="All 2 branches missed.">        Objects.equals(this.protocol, service.protocol) &amp;&amp;</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">        Objects.equals(this.tilingProtocol, service.tilingProtocol) &amp;&amp;</span>
+<span class="nc bnc" id="L295" title="All 2 branches missed.">        Objects.equals(this.matrixSet, service.matrixSet);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L300">    return Objects.hash(id, name, url, useProxy, styleLibraries, protocol, tilingProtocol, matrixSet);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L305">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L306">    sb.append(&quot;class Service {\n&quot;);</span>
+    
+<span class="nc" id="L308">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L309">    sb.append(&quot;    name: &quot;).append(toIndentedString(name)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L310">    sb.append(&quot;    url: &quot;).append(toIndentedString(url)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L311">    sb.append(&quot;    useProxy: &quot;).append(toIndentedString(useProxy)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L312">    sb.append(&quot;    styleLibraries: &quot;).append(toIndentedString(styleLibraries)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L313">    sb.append(&quot;    protocol: &quot;).append(toIndentedString(protocol)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L314">    sb.append(&quot;    tilingProtocol: &quot;).append(toIndentedString(tilingProtocol)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L315">    sb.append(&quot;    matrixSet: &quot;).append(toIndentedString(matrixSet)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L316">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L317">    return sb.toString();</span>
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+<span class="nc bnc" id="L325" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L326">      return &quot;null&quot;;</span>
+    }
+<span class="nc" id="L328">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

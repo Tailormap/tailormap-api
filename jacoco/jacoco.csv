@@ -5,3 +5,16 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.health,TailormapHealthIndicator,55,
 Aggregate Test Coverage,nl.b3p.tailormap.api,TailormapApiApplication,8,0,0,0,3,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api,JPAConfiguration,100,0,0,0,25,0,6,0,6,0
 Aggregate Test Coverage,nl.b3p.tailormap.api,FilteringConfig,36,0,0,0,7,0,2,0,2,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.model,LayerDetailsRelations,155,0,14,0,35,0,21,0,14,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.model,Component,134,0,12,0,31,0,18,0,12,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.model,Service,329,0,24,0,72,0,41,0,29,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.model,LayerDetails.GeometryTypeEnum,125,0,4,0,17,0,7,0,5,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.model,Attribute.TypeEnum,191,0,4,0,23,0,7,0,5,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.model,Service.ProtocolEnum,81,0,4,0,13,0,7,0,5,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.model,CoordinateReferenceSystem,161,0,14,0,37,0,21,0,14,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.model,Attribute,683,0,46,0,145,0,83,0,60,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.model,AppLayer,261,0,20,0,58,0,33,0,23,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.model,LayerDetailsRelations.TypeEnum,70,0,4,0,12,0,7,0,5,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.model,Service.TilingProtocolEnum,70,0,4,0,12,0,7,0,5,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.model,LayerDetails,436,0,32,0,97,0,53,0,37,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.model,Bounds,226,0,18,0,50,0,29,0,20,0
