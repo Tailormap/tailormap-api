@@ -20,10 +20,9 @@ info:
     name: 'MIT'
     url: 'https://mit-license.org/'
   version: '1.0'
-
 servers:
   - description: 'development server'
-    url: 'http://localhost:{port}/api/'
+    url: 'http://localhost:{port}/api'
     variables:
       port:
         enum:
@@ -37,9 +36,7 @@ components:
   schemas:
 
     MapResponse:
-      description: '
-      Any information needed to draw a basic map on a page. May include base layers.
-      '
+      description: 'Any information needed to draw a basic map on a page. May include base layers.'
       type: object
       properties:
         # mostly properties from table "application"
@@ -119,7 +116,8 @@ components:
         styling:
           description: 'styling information such as support- and backing colours etc.'
           type: object
-          required: false
+          additionalProperties:
+            type: string
 
 paths:
   /version:

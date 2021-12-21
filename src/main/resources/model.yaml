@@ -29,33 +29,31 @@ components:
       Currently Rijksdriehoek/WGS84, new/TODO Web Mercator.
       '
       type: object
-      default: {
-        'code': 'EPSG:28992',
-        'definition': '+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs',
-        'area': {
-          'miny': 646.36,
-          'minx': 308975.28,
-          'maxy': 276050.82,
-          'maxx': 636456.31
-        } }
       properties:
         code:
           description: 'the EPSG code'
           type: string
+          default: 'EPSG:28992'
         definition:
           description: 'PROJ4 string'
           type: string
-        area:
+          default: '+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs'
+        bounds:
           description: 'Area of validity of this CRS'
-          type: object
-          properties:
-            schema:
-              $ref: '#/components/schemas/Bounds'
+          $ref: '#/components/schemas/Bounds'
           nullable: true
+          default:
+            miny: 646.36
+            minx: 308975.28
+            maxy: 276050.82
+            maxx: 636456.31
+      required:
+        - code
+        - definition
       example:
         code: 'EPSG:28992'
         definition: '+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs'
-        area: {
+        bounds: {
           miny: 646.36,
           minx: 308975.28,
           maxy: 276050.82,
@@ -82,6 +80,11 @@ components:
           description: '(EPSG) code of the projection'
           type: string
           nullable: true
+      required:
+        - miny
+        - minx
+        - maxy
+        - maxx
       example:
         miny: 400000
         minx: 105000
@@ -96,38 +99,42 @@ components:
       For advanced functionality that required access to attributes the LayerDetails should be requested.
       '
       type: object
-      properties:
-        # TODO aanvullen?
+      properties: # TODO aanvullen?
         id:
           type: integer
           format: int64
+          readOnly: true
         url:
           type: string
         serviceId:
           type: integer
           format: int64
+          readOnly: true
         visible:
           type: boolean
-        crs:
-          # Since at some point in time we may support client-side reprojection eg. for vector-tiles'
-          $ref: '#/components/schemas/CoordinateReferenceSystem'
         isBaseLayer:
           type: boolean
           default: false
+        crs: # Since at some point in time we may support client-side reprojection eg. for vector-tiles'
+          $ref: '#/components/schemas/CoordinateReferenceSystem'
+      required:
+        - id
+        - serviceId
 
     LayerDetails:
       description: 'All details of an app layer.'
       type: object
-      properties:
-        # TODO aanvullen
+      properties: # TODO aanvullen
         id:
           type: integer
           format: int64
+          readOnly: true
         featuretypeName:
           type: string
         serviceId:
           type: integer
           format: int64
+          readOnly: true
         geometryAttribute:
           type: string
         geometryAttributeIndex:
@@ -179,6 +186,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Attribute'
+      required:
+        - id
+        - serviceId
 
     Attribute:
       type: object
@@ -186,9 +196,11 @@ components:
         id:
           type: integer
           format: int64
+          readOnly: true
         featureType:
           type: integer
           format: int64
+          readOnly: true
         name:
           type: string
         longname:
@@ -242,14 +254,11 @@ components:
         editValues:
           type: array
           items:
-            oneOf:
-              - type: string
-              - type: boolean
-              - type: number
+            type: string
 
 
     Service:
-      description: 'A service provides one or more applayers'
+      description: 'A service provides one or more appLayers'
       type: object
       properties:
         id:
@@ -283,7 +292,8 @@ components:
         #      anders kan deze hier weg en moet die naar de "map"
         matrixSet:
           type: object
-
+      required:
+        - id
 
     Component:
       description: 'a component to be used in the application'
@@ -292,8 +302,9 @@ components:
         type:
           description: 'component type eg. featurereport or print'
           type: string
-          required: true
+          nullable: false
         config:
+          description: 'component specific configuration'
           type: object
           properties:
             label:
@@ -302,7 +313,12 @@ components:
               type: string
             tooltip:
               type: string
-          additionalProperties: true
+          additionalProperties:
+            description: 'anything else component specific'
+            type: string
+      required:
+        - type
+        - config
       example:
         type: 'featurereport'
         config: {
