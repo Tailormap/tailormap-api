@@ -16,6 +16,7 @@ import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -33,6 +34,9 @@ class TailormapHealthIndicatorEnabledIntegrationTest {
     private static String apiVersion;
     private static String databaseVersion;
     @Autowired private MockMvc mockMvc;
+
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
 
     @BeforeAll
     static void getVersionFromPom() {
@@ -52,7 +56,7 @@ class TailormapHealthIndicatorEnabledIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void when_enabled_health_should_have_status_and_response_data() throws Exception {
-        mockMvc.perform(get("/api/actuator/health/tailormap"))
+        mockMvc.perform(get(contextPath + "/actuator/health/tailormap"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.details.version").value(projectVersion))
