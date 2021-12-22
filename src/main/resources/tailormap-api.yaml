@@ -140,7 +140,7 @@ paths:
     summary: '
     Use this endpoint to get the id of the requested or default application.
     Either call this with `name` and optional `version` or `appid` alone.
-    Will return general setup information such as name, appid, language, but not map specific information
+    Will return general setup information such as name, appid, language, but not map specific information.
     '
     get:
       parameters:
