@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LayerDetails.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.model</a> &gt; <span class="el_source">LayerDetails.java</span></div><h1>LayerDetails.java</h1><pre class="source lang-java linenums">package nl.b3p.tailormap.api.model;
 
+import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+
+
 import java.util.ArrayList;
 import java.util.List;
 import nl.b3p.tailormap.api.model.Attribute;
 import nl.b3p.tailormap.api.model.LayerDetailsRelations;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
+import java.util.*;
 
 /**
  * All details of an app layer.
  */
-@ApiModel(description = &quot;All details of an app layer.&quot;)
+@Schema(name = &quot;LayerDetails&quot;,description = &quot;All details of an app layer.&quot;)
 @javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="nc" id="L22">public class LayerDetails  implements Serializable {</span>
+<span class="nc" id="L28">public class LayerDetails  implements Serializable {</span>
   private static final long serialVersionUID = 1L;
 
   @JsonProperty(&quot;id&quot;)
@@ -40,329 +46,329 @@ import javax.validation.constraints.*;
   /**
    * (editable) geometry type of this layer. We can have multiple geometry attributes in a layer, but only one is rendered and optionally editable) see also see also: nl.tailormap.viewer.config.services.AttributeDescriptor
    */
-<span class="nc" id="L43">  public enum GeometryTypeEnum {</span>
-<span class="nc" id="L44">    LINESTRING(&quot;linestring&quot;),</span>
+<span class="nc" id="L49">  public enum GeometryTypeEnum {</span>
+<span class="nc" id="L50">    LINESTRING(&quot;linestring&quot;),</span>
     
-<span class="nc" id="L46">    MULTILINESTRING(&quot;multilinestring&quot;),</span>
+<span class="nc" id="L52">    MULTILINESTRING(&quot;multilinestring&quot;),</span>
     
-<span class="nc" id="L48">    POINT(&quot;point&quot;),</span>
+<span class="nc" id="L54">    POINT(&quot;point&quot;),</span>
     
-<span class="nc" id="L50">    MULTIPOINT(&quot;multipoint&quot;),</span>
+<span class="nc" id="L56">    MULTIPOINT(&quot;multipoint&quot;),</span>
     
-<span class="nc" id="L52">    POLYGON(&quot;polygon&quot;),</span>
+<span class="nc" id="L58">    POLYGON(&quot;polygon&quot;),</span>
     
-<span class="nc" id="L54">    MULTIPOLYGON(&quot;multipolygon&quot;),</span>
+<span class="nc" id="L60">    MULTIPOLYGON(&quot;multipolygon&quot;),</span>
     
-<span class="nc" id="L56">    GEOMETRY(&quot;geometry&quot;);</span>
+<span class="nc" id="L62">    GEOMETRY(&quot;geometry&quot;);</span>
 
     private String value;
 
-<span class="nc" id="L60">    GeometryTypeEnum(String value) {</span>
-<span class="nc" id="L61">      this.value = value;</span>
-<span class="nc" id="L62">    }</span>
+<span class="nc" id="L66">    GeometryTypeEnum(String value) {</span>
+<span class="nc" id="L67">      this.value = value;</span>
+<span class="nc" id="L68">    }</span>
 
     @JsonValue
     public String getValue() {
-<span class="nc" id="L66">      return value;</span>
+<span class="nc" id="L72">      return value;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L71">      return String.valueOf(value);</span>
+<span class="nc" id="L77">      return String.valueOf(value);</span>
     }
 
     @JsonCreator
     public static GeometryTypeEnum fromValue(String value) {
-<span class="nc bnc" id="L76" title="All 2 branches missed.">      for (GeometryTypeEnum b : GeometryTypeEnum.values()) {</span>
-<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
-<span class="nc" id="L78">          return b;</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">      for (GeometryTypeEnum b : GeometryTypeEnum.values()) {</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
+<span class="nc" id="L84">          return b;</span>
         }
       }
-<span class="nc" id="L81">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
+<span class="nc" id="L87">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
     }
   }
 
   @JsonProperty(&quot;geometryType&quot;)
   private GeometryTypeEnum geometryType;
 
-<span class="nc" id="L88">  @JsonProperty(&quot;editable&quot;)</span>
-<span class="nc" id="L89">  private Boolean editable = false;</span>
+<span class="nc" id="L94">  @JsonProperty(&quot;editable&quot;)</span>
+<span class="nc" id="L95">  private Boolean editable = false;</span>
 
-<span class="nc" id="L91">  @JsonProperty(&quot;metadata&quot;)</span>
+<span class="nc" id="L97">  @JsonProperty(&quot;metadata&quot;)</span>
   private String metadata = null;
 
-<span class="nc" id="L94">  @JsonProperty(&quot;relations&quot;)</span>
+<span class="nc" id="L100">  @JsonProperty(&quot;relations&quot;)</span>
   @Valid
   private List&lt;LayerDetailsRelations&gt; relations = null;
 
-<span class="nc" id="L98">  @JsonProperty(&quot;attributes&quot;)</span>
+<span class="nc" id="L104">  @JsonProperty(&quot;attributes&quot;)</span>
   @Valid
   private List&lt;Attribute&gt; attributes = null;
 
   public LayerDetails id(Long id) {
-<span class="nc" id="L103">    this.id = id;</span>
-<span class="nc" id="L104">    return this;</span>
+<span class="nc" id="L109">    this.id = id;</span>
+<span class="nc" id="L110">    return this;</span>
   }
 
   /**
    * Get id
    * @return id
   */
-  @ApiModelProperty(required = true, readOnly = true, value = &quot;&quot;)
+  @Schema(name = &quot;id&quot;, required = true, readOnly = true, defaultValue = &quot;&quot;)
   @NotNull
 
 
   public Long getId() {
-<span class="nc" id="L116">    return id;</span>
+<span class="nc" id="L122">    return id;</span>
   }
 
   public void setId(Long id) {
-<span class="nc" id="L120">    this.id = id;</span>
-<span class="nc" id="L121">  }</span>
+<span class="nc" id="L126">    this.id = id;</span>
+<span class="nc" id="L127">  }</span>
 
   public LayerDetails featuretypeName(String featuretypeName) {
-<span class="nc" id="L124">    this.featuretypeName = featuretypeName;</span>
-<span class="nc" id="L125">    return this;</span>
+<span class="nc" id="L130">    this.featuretypeName = featuretypeName;</span>
+<span class="nc" id="L131">    return this;</span>
   }
 
   /**
    * Get featuretypeName
    * @return featuretypeName
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;featuretypeName&quot;, defaultValue = &quot;&quot;)
 
 
   public String getFeaturetypeName() {
-<span class="nc" id="L136">    return featuretypeName;</span>
+<span class="nc" id="L142">    return featuretypeName;</span>
   }
 
   public void setFeaturetypeName(String featuretypeName) {
-<span class="nc" id="L140">    this.featuretypeName = featuretypeName;</span>
-<span class="nc" id="L141">  }</span>
+<span class="nc" id="L146">    this.featuretypeName = featuretypeName;</span>
+<span class="nc" id="L147">  }</span>
 
   public LayerDetails serviceId(Long serviceId) {
-<span class="nc" id="L144">    this.serviceId = serviceId;</span>
-<span class="nc" id="L145">    return this;</span>
+<span class="nc" id="L150">    this.serviceId = serviceId;</span>
+<span class="nc" id="L151">    return this;</span>
   }
 
   /**
    * Get serviceId
    * @return serviceId
   */
-  @ApiModelProperty(required = true, readOnly = true, value = &quot;&quot;)
+  @Schema(name = &quot;serviceId&quot;, required = true, readOnly = true, defaultValue = &quot;&quot;)
   @NotNull
 
 
   public Long getServiceId() {
-<span class="nc" id="L157">    return serviceId;</span>
+<span class="nc" id="L163">    return serviceId;</span>
   }
 
   public void setServiceId(Long serviceId) {
-<span class="nc" id="L161">    this.serviceId = serviceId;</span>
-<span class="nc" id="L162">  }</span>
+<span class="nc" id="L167">    this.serviceId = serviceId;</span>
+<span class="nc" id="L168">  }</span>
 
   public LayerDetails geometryAttribute(String geometryAttribute) {
-<span class="nc" id="L165">    this.geometryAttribute = geometryAttribute;</span>
-<span class="nc" id="L166">    return this;</span>
+<span class="nc" id="L171">    this.geometryAttribute = geometryAttribute;</span>
+<span class="nc" id="L172">    return this;</span>
   }
 
   /**
    * Get geometryAttribute
    * @return geometryAttribute
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;geometryAttribute&quot;, defaultValue = &quot;&quot;)
 
 
   public String getGeometryAttribute() {
-<span class="nc" id="L177">    return geometryAttribute;</span>
+<span class="nc" id="L183">    return geometryAttribute;</span>
   }
 
   public void setGeometryAttribute(String geometryAttribute) {
-<span class="nc" id="L181">    this.geometryAttribute = geometryAttribute;</span>
-<span class="nc" id="L182">  }</span>
+<span class="nc" id="L187">    this.geometryAttribute = geometryAttribute;</span>
+<span class="nc" id="L188">  }</span>
 
   public LayerDetails geometryAttributeIndex(Integer geometryAttributeIndex) {
-<span class="nc" id="L185">    this.geometryAttributeIndex = geometryAttributeIndex;</span>
-<span class="nc" id="L186">    return this;</span>
+<span class="nc" id="L191">    this.geometryAttributeIndex = geometryAttributeIndex;</span>
+<span class="nc" id="L192">    return this;</span>
   }
 
   /**
    * index of the geometryAttribute in the array of attributes.
    * @return geometryAttributeIndex
   */
-  @ApiModelProperty(value = &quot;index of the geometryAttribute in the array of attributes.&quot;)
+  @Schema(name = &quot;geometryAttributeIndex&quot;, defaultValue = &quot;index of the geometryAttribute in the array of attributes.&quot;)
 
 
   public Integer getGeometryAttributeIndex() {
-<span class="nc" id="L197">    return geometryAttributeIndex;</span>
+<span class="nc" id="L203">    return geometryAttributeIndex;</span>
   }
 
   public void setGeometryAttributeIndex(Integer geometryAttributeIndex) {
-<span class="nc" id="L201">    this.geometryAttributeIndex = geometryAttributeIndex;</span>
-<span class="nc" id="L202">  }</span>
+<span class="nc" id="L207">    this.geometryAttributeIndex = geometryAttributeIndex;</span>
+<span class="nc" id="L208">  }</span>
 
   public LayerDetails geometryType(GeometryTypeEnum geometryType) {
-<span class="nc" id="L205">    this.geometryType = geometryType;</span>
-<span class="nc" id="L206">    return this;</span>
+<span class="nc" id="L211">    this.geometryType = geometryType;</span>
+<span class="nc" id="L212">    return this;</span>
   }
 
   /**
    * (editable) geometry type of this layer. We can have multiple geometry attributes in a layer, but only one is rendered and optionally editable) see also see also: nl.tailormap.viewer.config.services.AttributeDescriptor
    * @return geometryType
   */
-  @ApiModelProperty(value = &quot;(editable) geometry type of this layer. We can have multiple geometry attributes in a layer, but only one is rendered and optionally editable) see also see also: nl.tailormap.viewer.config.services.AttributeDescriptor&quot;)
+  @Schema(name = &quot;geometryType&quot;, defaultValue = &quot;(editable) geometry type of this layer. We can have multiple geometry attributes in a layer, but only one is rendered and optionally editable) see also see also: nl.tailormap.viewer.config.services.AttributeDescriptor&quot;)
 
 
   public GeometryTypeEnum getGeometryType() {
-<span class="nc" id="L217">    return geometryType;</span>
+<span class="nc" id="L223">    return geometryType;</span>
   }
 
   public void setGeometryType(GeometryTypeEnum geometryType) {
-<span class="nc" id="L221">    this.geometryType = geometryType;</span>
-<span class="nc" id="L222">  }</span>
+<span class="nc" id="L227">    this.geometryType = geometryType;</span>
+<span class="nc" id="L228">  }</span>
 
   public LayerDetails editable(Boolean editable) {
-<span class="nc" id="L225">    this.editable = editable;</span>
-<span class="nc" id="L226">    return this;</span>
+<span class="nc" id="L231">    this.editable = editable;</span>
+<span class="nc" id="L232">    return this;</span>
   }
 
   /**
    * Get editable
    * @return editable
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;editable&quot;, defaultValue = &quot;&quot;)
 
 
   public Boolean getEditable() {
-<span class="nc" id="L237">    return editable;</span>
+<span class="nc" id="L243">    return editable;</span>
   }
 
   public void setEditable(Boolean editable) {
-<span class="nc" id="L241">    this.editable = editable;</span>
-<span class="nc" id="L242">  }</span>
+<span class="nc" id="L247">    this.editable = editable;</span>
+<span class="nc" id="L248">  }</span>
 
   public LayerDetails metadata(String metadata) {
-<span class="nc" id="L245">    this.metadata = metadata;</span>
-<span class="nc" id="L246">    return this;</span>
+<span class="nc" id="L251">    this.metadata = metadata;</span>
+<span class="nc" id="L252">    return this;</span>
   }
 
   /**
    * Get metadata
    * @return metadata
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;metadata&quot;, defaultValue = &quot;&quot;)
 
 
   public String getMetadata() {
-<span class="nc" id="L257">    return metadata;</span>
+<span class="nc" id="L263">    return metadata;</span>
   }
 
   public void setMetadata(String metadata) {
-<span class="nc" id="L261">    this.metadata = metadata;</span>
-<span class="nc" id="L262">  }</span>
+<span class="nc" id="L267">    this.metadata = metadata;</span>
+<span class="nc" id="L268">  }</span>
 
   public LayerDetails relations(List&lt;LayerDetailsRelations&gt; relations) {
-<span class="nc" id="L265">    this.relations = relations;</span>
-<span class="nc" id="L266">    return this;</span>
+<span class="nc" id="L271">    this.relations = relations;</span>
+<span class="nc" id="L272">    return this;</span>
   }
 
   public LayerDetails addRelationsItem(LayerDetailsRelations relationsItem) {
-<span class="nc bnc" id="L270" title="All 2 branches missed.">    if (this.relations == null) {</span>
-<span class="nc" id="L271">      this.relations = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">    if (this.relations == null) {</span>
+<span class="nc" id="L277">      this.relations = new ArrayList&lt;&gt;();</span>
     }
-<span class="nc" id="L273">    this.relations.add(relationsItem);</span>
-<span class="nc" id="L274">    return this;</span>
+<span class="nc" id="L279">    this.relations.add(relationsItem);</span>
+<span class="nc" id="L280">    return this;</span>
   }
 
   /**
    * Get relations
    * @return relations
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;relations&quot;, defaultValue = &quot;&quot;)
 
   @Valid
 
   public List&lt;LayerDetailsRelations&gt; getRelations() {
-<span class="nc" id="L286">    return relations;</span>
+<span class="nc" id="L292">    return relations;</span>
   }
 
   public void setRelations(List&lt;LayerDetailsRelations&gt; relations) {
-<span class="nc" id="L290">    this.relations = relations;</span>
-<span class="nc" id="L291">  }</span>
+<span class="nc" id="L296">    this.relations = relations;</span>
+<span class="nc" id="L297">  }</span>
 
   public LayerDetails attributes(List&lt;Attribute&gt; attributes) {
-<span class="nc" id="L294">    this.attributes = attributes;</span>
-<span class="nc" id="L295">    return this;</span>
+<span class="nc" id="L300">    this.attributes = attributes;</span>
+<span class="nc" id="L301">    return this;</span>
   }
 
   public LayerDetails addAttributesItem(Attribute attributesItem) {
-<span class="nc bnc" id="L299" title="All 2 branches missed.">    if (this.attributes == null) {</span>
-<span class="nc" id="L300">      this.attributes = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">    if (this.attributes == null) {</span>
+<span class="nc" id="L306">      this.attributes = new ArrayList&lt;&gt;();</span>
     }
-<span class="nc" id="L302">    this.attributes.add(attributesItem);</span>
-<span class="nc" id="L303">    return this;</span>
+<span class="nc" id="L308">    this.attributes.add(attributesItem);</span>
+<span class="nc" id="L309">    return this;</span>
   }
 
   /**
    *  Array with attributes. **note** that the ordering of this array is determined in the backend and does not need to coincide with the actual data in the data source. 
    * @return attributes
   */
-  @ApiModelProperty(value = &quot; Array with attributes. **note** that the ordering of this array is determined in the backend and does not need to coincide with the actual data in the data source. &quot;)
+  @Schema(name = &quot;attributes&quot;, defaultValue = &quot; Array with attributes. **note** that the ordering of this array is determined in the backend and does not need to coincide with the actual data in the data source. &quot;)
 
   @Valid
 
   public List&lt;Attribute&gt; getAttributes() {
-<span class="nc" id="L315">    return attributes;</span>
+<span class="nc" id="L321">    return attributes;</span>
   }
 
   public void setAttributes(List&lt;Attribute&gt; attributes) {
-<span class="nc" id="L319">    this.attributes = attributes;</span>
-<span class="nc" id="L320">  }</span>
+<span class="nc" id="L325">    this.attributes = attributes;</span>
+<span class="nc" id="L326">  }</span>
 
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L325" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L326">      return true;</span>
+<span class="nc bnc" id="L331" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L332">      return true;</span>
     }
-<span class="nc bnc" id="L328" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L329">      return false;</span>
+<span class="nc bnc" id="L334" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L335">      return false;</span>
     }
-<span class="nc" id="L331">    LayerDetails layerDetails = (LayerDetails) o;</span>
-<span class="nc bnc" id="L332" title="All 2 branches missed.">    return Objects.equals(this.id, layerDetails.id) &amp;&amp;</span>
-<span class="nc bnc" id="L333" title="All 2 branches missed.">        Objects.equals(this.featuretypeName, layerDetails.featuretypeName) &amp;&amp;</span>
-<span class="nc bnc" id="L334" title="All 2 branches missed.">        Objects.equals(this.serviceId, layerDetails.serviceId) &amp;&amp;</span>
-<span class="nc bnc" id="L335" title="All 2 branches missed.">        Objects.equals(this.geometryAttribute, layerDetails.geometryAttribute) &amp;&amp;</span>
-<span class="nc bnc" id="L336" title="All 2 branches missed.">        Objects.equals(this.geometryAttributeIndex, layerDetails.geometryAttributeIndex) &amp;&amp;</span>
-<span class="nc bnc" id="L337" title="All 2 branches missed.">        Objects.equals(this.geometryType, layerDetails.geometryType) &amp;&amp;</span>
-<span class="nc bnc" id="L338" title="All 2 branches missed.">        Objects.equals(this.editable, layerDetails.editable) &amp;&amp;</span>
-<span class="nc bnc" id="L339" title="All 2 branches missed.">        Objects.equals(this.metadata, layerDetails.metadata) &amp;&amp;</span>
-<span class="nc bnc" id="L340" title="All 2 branches missed.">        Objects.equals(this.relations, layerDetails.relations) &amp;&amp;</span>
-<span class="nc bnc" id="L341" title="All 2 branches missed.">        Objects.equals(this.attributes, layerDetails.attributes);</span>
+<span class="nc" id="L337">    LayerDetails layerDetails = (LayerDetails) o;</span>
+<span class="nc bnc" id="L338" title="All 2 branches missed.">    return Objects.equals(this.id, layerDetails.id) &amp;&amp;</span>
+<span class="nc bnc" id="L339" title="All 2 branches missed.">        Objects.equals(this.featuretypeName, layerDetails.featuretypeName) &amp;&amp;</span>
+<span class="nc bnc" id="L340" title="All 2 branches missed.">        Objects.equals(this.serviceId, layerDetails.serviceId) &amp;&amp;</span>
+<span class="nc bnc" id="L341" title="All 2 branches missed.">        Objects.equals(this.geometryAttribute, layerDetails.geometryAttribute) &amp;&amp;</span>
+<span class="nc bnc" id="L342" title="All 2 branches missed.">        Objects.equals(this.geometryAttributeIndex, layerDetails.geometryAttributeIndex) &amp;&amp;</span>
+<span class="nc bnc" id="L343" title="All 2 branches missed.">        Objects.equals(this.geometryType, layerDetails.geometryType) &amp;&amp;</span>
+<span class="nc bnc" id="L344" title="All 2 branches missed.">        Objects.equals(this.editable, layerDetails.editable) &amp;&amp;</span>
+<span class="nc bnc" id="L345" title="All 2 branches missed.">        Objects.equals(this.metadata, layerDetails.metadata) &amp;&amp;</span>
+<span class="nc bnc" id="L346" title="All 2 branches missed.">        Objects.equals(this.relations, layerDetails.relations) &amp;&amp;</span>
+<span class="nc bnc" id="L347" title="All 2 branches missed.">        Objects.equals(this.attributes, layerDetails.attributes);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L346">    return Objects.hash(id, featuretypeName, serviceId, geometryAttribute, geometryAttributeIndex, geometryType, editable, metadata, relations, attributes);</span>
+<span class="nc" id="L352">    return Objects.hash(id, featuretypeName, serviceId, geometryAttribute, geometryAttributeIndex, geometryType, editable, metadata, relations, attributes);</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L351">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L352">    sb.append(&quot;class LayerDetails {\n&quot;);</span>
+<span class="nc" id="L357">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L358">    sb.append(&quot;class LayerDetails {\n&quot;);</span>
     
-<span class="nc" id="L354">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L355">    sb.append(&quot;    featuretypeName: &quot;).append(toIndentedString(featuretypeName)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L356">    sb.append(&quot;    serviceId: &quot;).append(toIndentedString(serviceId)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L357">    sb.append(&quot;    geometryAttribute: &quot;).append(toIndentedString(geometryAttribute)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L358">    sb.append(&quot;    geometryAttributeIndex: &quot;).append(toIndentedString(geometryAttributeIndex)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L359">    sb.append(&quot;    geometryType: &quot;).append(toIndentedString(geometryType)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L360">    sb.append(&quot;    editable: &quot;).append(toIndentedString(editable)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L361">    sb.append(&quot;    metadata: &quot;).append(toIndentedString(metadata)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L362">    sb.append(&quot;    relations: &quot;).append(toIndentedString(relations)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L363">    sb.append(&quot;    attributes: &quot;).append(toIndentedString(attributes)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L364">    sb.append(&quot;}&quot;);</span>
-<span class="nc" id="L365">    return sb.toString();</span>
+<span class="nc" id="L360">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L361">    sb.append(&quot;    featuretypeName: &quot;).append(toIndentedString(featuretypeName)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L362">    sb.append(&quot;    serviceId: &quot;).append(toIndentedString(serviceId)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L363">    sb.append(&quot;    geometryAttribute: &quot;).append(toIndentedString(geometryAttribute)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L364">    sb.append(&quot;    geometryAttributeIndex: &quot;).append(toIndentedString(geometryAttributeIndex)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L365">    sb.append(&quot;    geometryType: &quot;).append(toIndentedString(geometryType)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L366">    sb.append(&quot;    editable: &quot;).append(toIndentedString(editable)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L367">    sb.append(&quot;    metadata: &quot;).append(toIndentedString(metadata)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L368">    sb.append(&quot;    relations: &quot;).append(toIndentedString(relations)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L369">    sb.append(&quot;    attributes: &quot;).append(toIndentedString(attributes)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L370">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L371">    return sb.toString();</span>
   }
 
   /**
@@ -370,10 +376,10 @@ import javax.validation.constraints.*;
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-<span class="nc bnc" id="L373" title="All 2 branches missed.">    if (o == null) {</span>
-<span class="nc" id="L374">      return &quot;null&quot;;</span>
+<span class="nc bnc" id="L379" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L380">      return &quot;null&quot;;</span>
     }
-<span class="nc" id="L376">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+<span class="nc" id="L382">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
   }
 }
 

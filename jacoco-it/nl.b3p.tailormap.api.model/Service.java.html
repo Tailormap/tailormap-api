@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Service.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.model</a> &gt; <span class="el_source">Service.java</span></div><h1>Service.java</h1><pre class="source lang-java linenums">package nl.b3p.tailormap.api.model;
 
+import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+
+
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
+import java.util.*;
 
 /**
  * A service provides one or more appLayers
  */
-@ApiModel(description = &quot;A service provides one or more appLayers&quot;)
+@Schema(name = &quot;Service&quot;,description = &quot;A service provides one or more appLayers&quot;)
 @javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="nc" id="L18">public class Service  implements Serializable {</span>
+<span class="nc" id="L24">public class Service  implements Serializable {</span>
   private static final long serialVersionUID = 1L;
 
   @JsonProperty(&quot;id&quot;)
@@ -27,8 +33,8 @@ import javax.validation.constraints.*;
   @JsonProperty(&quot;url&quot;)
   private String url;
 
-<span class="nc" id="L30">  @JsonProperty(&quot;useProxy&quot;)</span>
-<span class="nc" id="L31">  private Boolean useProxy = false;</span>
+<span class="nc" id="L36">  @JsonProperty(&quot;useProxy&quot;)</span>
+<span class="nc" id="L37">  private Boolean useProxy = false;</span>
 
   @JsonProperty(&quot;styleLibraries&quot;)
   private Object styleLibraries;
@@ -36,37 +42,37 @@ import javax.validation.constraints.*;
   /**
    * Gets or Sets protocol
    */
-<span class="nc" id="L39">  public enum ProtocolEnum {</span>
-<span class="nc" id="L40">    TILED(&quot;tiled&quot;),</span>
+<span class="nc" id="L45">  public enum ProtocolEnum {</span>
+<span class="nc" id="L46">    TILED(&quot;tiled&quot;),</span>
     
-<span class="nc" id="L42">    WMS(&quot;wms&quot;),</span>
+<span class="nc" id="L48">    WMS(&quot;wms&quot;),</span>
     
-<span class="nc" id="L44">    ARCGIS(&quot;arcgis&quot;);</span>
+<span class="nc" id="L50">    ARCGIS(&quot;arcgis&quot;);</span>
 
     private String value;
 
-<span class="nc" id="L48">    ProtocolEnum(String value) {</span>
-<span class="nc" id="L49">      this.value = value;</span>
-<span class="nc" id="L50">    }</span>
+<span class="nc" id="L54">    ProtocolEnum(String value) {</span>
+<span class="nc" id="L55">      this.value = value;</span>
+<span class="nc" id="L56">    }</span>
 
     @JsonValue
     public String getValue() {
-<span class="nc" id="L54">      return value;</span>
+<span class="nc" id="L60">      return value;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L59">      return String.valueOf(value);</span>
+<span class="nc" id="L65">      return String.valueOf(value);</span>
     }
 
     @JsonCreator
     public static ProtocolEnum fromValue(String value) {
-<span class="nc bnc" id="L64" title="All 2 branches missed.">      for (ProtocolEnum b : ProtocolEnum.values()) {</span>
-<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
-<span class="nc" id="L66">          return b;</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">      for (ProtocolEnum b : ProtocolEnum.values()) {</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
+<span class="nc" id="L72">          return b;</span>
         }
       }
-<span class="nc" id="L69">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
+<span class="nc" id="L75">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
     }
   }
 
@@ -76,35 +82,35 @@ import javax.validation.constraints.*;
   /**
    * Gets or Sets tilingProtocol
    */
-<span class="nc" id="L79">  public enum TilingProtocolEnum {</span>
-<span class="nc" id="L80">    WMTS(&quot;WMTS&quot;),</span>
+<span class="nc" id="L85">  public enum TilingProtocolEnum {</span>
+<span class="nc" id="L86">    WMTS(&quot;WMTS&quot;),</span>
     
-<span class="nc" id="L82">    TMS(&quot;TMS&quot;);</span>
+<span class="nc" id="L88">    TMS(&quot;TMS&quot;);</span>
 
     private String value;
 
-<span class="nc" id="L86">    TilingProtocolEnum(String value) {</span>
-<span class="nc" id="L87">      this.value = value;</span>
-<span class="nc" id="L88">    }</span>
+<span class="nc" id="L92">    TilingProtocolEnum(String value) {</span>
+<span class="nc" id="L93">      this.value = value;</span>
+<span class="nc" id="L94">    }</span>
 
     @JsonValue
     public String getValue() {
-<span class="nc" id="L92">      return value;</span>
+<span class="nc" id="L98">      return value;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L97">      return String.valueOf(value);</span>
+<span class="nc" id="L103">      return String.valueOf(value);</span>
     }
 
     @JsonCreator
     public static TilingProtocolEnum fromValue(String value) {
-<span class="nc bnc" id="L102" title="All 2 branches missed.">      for (TilingProtocolEnum b : TilingProtocolEnum.values()) {</span>
-<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
-<span class="nc" id="L104">          return b;</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">      for (TilingProtocolEnum b : TilingProtocolEnum.values()) {</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
+<span class="nc" id="L110">          return b;</span>
         }
       }
-<span class="nc" id="L107">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
+<span class="nc" id="L113">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
     }
   }
 
@@ -115,206 +121,206 @@ import javax.validation.constraints.*;
   private Object matrixSet;
 
   public Service id(Long id) {
-<span class="nc" id="L118">    this.id = id;</span>
-<span class="nc" id="L119">    return this;</span>
+<span class="nc" id="L124">    this.id = id;</span>
+<span class="nc" id="L125">    return this;</span>
   }
 
   /**
    * Get id
    * @return id
   */
-  @ApiModelProperty(required = true, value = &quot;&quot;)
+  @Schema(name = &quot;id&quot;, required = true, defaultValue = &quot;&quot;)
   @NotNull
 
 
   public Long getId() {
-<span class="nc" id="L131">    return id;</span>
+<span class="nc" id="L137">    return id;</span>
   }
 
   public void setId(Long id) {
-<span class="nc" id="L135">    this.id = id;</span>
-<span class="nc" id="L136">  }</span>
+<span class="nc" id="L141">    this.id = id;</span>
+<span class="nc" id="L142">  }</span>
 
   public Service name(String name) {
-<span class="nc" id="L139">    this.name = name;</span>
-<span class="nc" id="L140">    return this;</span>
+<span class="nc" id="L145">    this.name = name;</span>
+<span class="nc" id="L146">    return this;</span>
   }
 
   /**
    * Get name
    * @return name
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;name&quot;, defaultValue = &quot;&quot;)
 
 
   public String getName() {
-<span class="nc" id="L151">    return name;</span>
+<span class="nc" id="L157">    return name;</span>
   }
 
   public void setName(String name) {
-<span class="nc" id="L155">    this.name = name;</span>
-<span class="nc" id="L156">  }</span>
+<span class="nc" id="L161">    this.name = name;</span>
+<span class="nc" id="L162">  }</span>
 
   public Service url(String url) {
-<span class="nc" id="L159">    this.url = url;</span>
-<span class="nc" id="L160">    return this;</span>
+<span class="nc" id="L165">    this.url = url;</span>
+<span class="nc" id="L166">    return this;</span>
   }
 
   /**
    * Get url
    * @return url
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;url&quot;, defaultValue = &quot;&quot;)
 
 
   public String getUrl() {
-<span class="nc" id="L171">    return url;</span>
+<span class="nc" id="L177">    return url;</span>
   }
 
   public void setUrl(String url) {
-<span class="nc" id="L175">    this.url = url;</span>
-<span class="nc" id="L176">  }</span>
+<span class="nc" id="L181">    this.url = url;</span>
+<span class="nc" id="L182">  }</span>
 
   public Service useProxy(Boolean useProxy) {
-<span class="nc" id="L179">    this.useProxy = useProxy;</span>
-<span class="nc" id="L180">    return this;</span>
+<span class="nc" id="L185">    this.useProxy = useProxy;</span>
+<span class="nc" id="L186">    return this;</span>
   }
 
   /**
    * Get useProxy
    * @return useProxy
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;useProxy&quot;, defaultValue = &quot;&quot;)
 
 
   public Boolean getUseProxy() {
-<span class="nc" id="L191">    return useProxy;</span>
+<span class="nc" id="L197">    return useProxy;</span>
   }
 
   public void setUseProxy(Boolean useProxy) {
-<span class="nc" id="L195">    this.useProxy = useProxy;</span>
-<span class="nc" id="L196">  }</span>
+<span class="nc" id="L201">    this.useProxy = useProxy;</span>
+<span class="nc" id="L202">  }</span>
 
   public Service styleLibraries(Object styleLibraries) {
-<span class="nc" id="L199">    this.styleLibraries = styleLibraries;</span>
-<span class="nc" id="L200">    return this;</span>
+<span class="nc" id="L205">    this.styleLibraries = styleLibraries;</span>
+<span class="nc" id="L206">    return this;</span>
   }
 
   /**
    * Get styleLibraries
    * @return styleLibraries
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;styleLibraries&quot;, defaultValue = &quot;&quot;)
 
 
   public Object getStyleLibraries() {
-<span class="nc" id="L211">    return styleLibraries;</span>
+<span class="nc" id="L217">    return styleLibraries;</span>
   }
 
   public void setStyleLibraries(Object styleLibraries) {
-<span class="nc" id="L215">    this.styleLibraries = styleLibraries;</span>
-<span class="nc" id="L216">  }</span>
+<span class="nc" id="L221">    this.styleLibraries = styleLibraries;</span>
+<span class="nc" id="L222">  }</span>
 
   public Service protocol(ProtocolEnum protocol) {
-<span class="nc" id="L219">    this.protocol = protocol;</span>
-<span class="nc" id="L220">    return this;</span>
+<span class="nc" id="L225">    this.protocol = protocol;</span>
+<span class="nc" id="L226">    return this;</span>
   }
 
   /**
    * Get protocol
    * @return protocol
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;protocol&quot;, defaultValue = &quot;&quot;)
 
 
   public ProtocolEnum getProtocol() {
-<span class="nc" id="L231">    return protocol;</span>
+<span class="nc" id="L237">    return protocol;</span>
   }
 
   public void setProtocol(ProtocolEnum protocol) {
-<span class="nc" id="L235">    this.protocol = protocol;</span>
-<span class="nc" id="L236">  }</span>
+<span class="nc" id="L241">    this.protocol = protocol;</span>
+<span class="nc" id="L242">  }</span>
 
   public Service tilingProtocol(TilingProtocolEnum tilingProtocol) {
-<span class="nc" id="L239">    this.tilingProtocol = tilingProtocol;</span>
-<span class="nc" id="L240">    return this;</span>
+<span class="nc" id="L245">    this.tilingProtocol = tilingProtocol;</span>
+<span class="nc" id="L246">    return this;</span>
   }
 
   /**
    * Get tilingProtocol
    * @return tilingProtocol
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;tilingProtocol&quot;, defaultValue = &quot;&quot;)
 
 
   public TilingProtocolEnum getTilingProtocol() {
-<span class="nc" id="L251">    return tilingProtocol;</span>
+<span class="nc" id="L257">    return tilingProtocol;</span>
   }
 
   public void setTilingProtocol(TilingProtocolEnum tilingProtocol) {
-<span class="nc" id="L255">    this.tilingProtocol = tilingProtocol;</span>
-<span class="nc" id="L256">  }</span>
+<span class="nc" id="L261">    this.tilingProtocol = tilingProtocol;</span>
+<span class="nc" id="L262">  }</span>
 
   public Service matrixSet(Object matrixSet) {
-<span class="nc" id="L259">    this.matrixSet = matrixSet;</span>
-<span class="nc" id="L260">    return this;</span>
+<span class="nc" id="L265">    this.matrixSet = matrixSet;</span>
+<span class="nc" id="L266">    return this;</span>
   }
 
   /**
    * Get matrixSet
    * @return matrixSet
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;matrixSet&quot;, defaultValue = &quot;&quot;)
 
 
   public Object getMatrixSet() {
-<span class="nc" id="L271">    return matrixSet;</span>
+<span class="nc" id="L277">    return matrixSet;</span>
   }
 
   public void setMatrixSet(Object matrixSet) {
-<span class="nc" id="L275">    this.matrixSet = matrixSet;</span>
-<span class="nc" id="L276">  }</span>
+<span class="nc" id="L281">    this.matrixSet = matrixSet;</span>
+<span class="nc" id="L282">  }</span>
 
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L281" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L282">      return true;</span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L288">      return true;</span>
     }
-<span class="nc bnc" id="L284" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L285">      return false;</span>
+<span class="nc bnc" id="L290" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L291">      return false;</span>
     }
-<span class="nc" id="L287">    Service service = (Service) o;</span>
-<span class="nc bnc" id="L288" title="All 2 branches missed.">    return Objects.equals(this.id, service.id) &amp;&amp;</span>
-<span class="nc bnc" id="L289" title="All 2 branches missed.">        Objects.equals(this.name, service.name) &amp;&amp;</span>
-<span class="nc bnc" id="L290" title="All 2 branches missed.">        Objects.equals(this.url, service.url) &amp;&amp;</span>
-<span class="nc bnc" id="L291" title="All 2 branches missed.">        Objects.equals(this.useProxy, service.useProxy) &amp;&amp;</span>
-<span class="nc bnc" id="L292" title="All 2 branches missed.">        Objects.equals(this.styleLibraries, service.styleLibraries) &amp;&amp;</span>
-<span class="nc bnc" id="L293" title="All 2 branches missed.">        Objects.equals(this.protocol, service.protocol) &amp;&amp;</span>
-<span class="nc bnc" id="L294" title="All 2 branches missed.">        Objects.equals(this.tilingProtocol, service.tilingProtocol) &amp;&amp;</span>
-<span class="nc bnc" id="L295" title="All 2 branches missed.">        Objects.equals(this.matrixSet, service.matrixSet);</span>
+<span class="nc" id="L293">    Service service = (Service) o;</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">    return Objects.equals(this.id, service.id) &amp;&amp;</span>
+<span class="nc bnc" id="L295" title="All 2 branches missed.">        Objects.equals(this.name, service.name) &amp;&amp;</span>
+<span class="nc bnc" id="L296" title="All 2 branches missed.">        Objects.equals(this.url, service.url) &amp;&amp;</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">        Objects.equals(this.useProxy, service.useProxy) &amp;&amp;</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">        Objects.equals(this.styleLibraries, service.styleLibraries) &amp;&amp;</span>
+<span class="nc bnc" id="L299" title="All 2 branches missed.">        Objects.equals(this.protocol, service.protocol) &amp;&amp;</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">        Objects.equals(this.tilingProtocol, service.tilingProtocol) &amp;&amp;</span>
+<span class="nc bnc" id="L301" title="All 2 branches missed.">        Objects.equals(this.matrixSet, service.matrixSet);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L300">    return Objects.hash(id, name, url, useProxy, styleLibraries, protocol, tilingProtocol, matrixSet);</span>
+<span class="nc" id="L306">    return Objects.hash(id, name, url, useProxy, styleLibraries, protocol, tilingProtocol, matrixSet);</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L305">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L306">    sb.append(&quot;class Service {\n&quot;);</span>
+<span class="nc" id="L311">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L312">    sb.append(&quot;class Service {\n&quot;);</span>
     
-<span class="nc" id="L308">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L309">    sb.append(&quot;    name: &quot;).append(toIndentedString(name)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L310">    sb.append(&quot;    url: &quot;).append(toIndentedString(url)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L311">    sb.append(&quot;    useProxy: &quot;).append(toIndentedString(useProxy)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L312">    sb.append(&quot;    styleLibraries: &quot;).append(toIndentedString(styleLibraries)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L313">    sb.append(&quot;    protocol: &quot;).append(toIndentedString(protocol)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L314">    sb.append(&quot;    tilingProtocol: &quot;).append(toIndentedString(tilingProtocol)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L315">    sb.append(&quot;    matrixSet: &quot;).append(toIndentedString(matrixSet)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L316">    sb.append(&quot;}&quot;);</span>
-<span class="nc" id="L317">    return sb.toString();</span>
+<span class="nc" id="L314">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L315">    sb.append(&quot;    name: &quot;).append(toIndentedString(name)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L316">    sb.append(&quot;    url: &quot;).append(toIndentedString(url)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L317">    sb.append(&quot;    useProxy: &quot;).append(toIndentedString(useProxy)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L318">    sb.append(&quot;    styleLibraries: &quot;).append(toIndentedString(styleLibraries)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L319">    sb.append(&quot;    protocol: &quot;).append(toIndentedString(protocol)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L320">    sb.append(&quot;    tilingProtocol: &quot;).append(toIndentedString(tilingProtocol)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L321">    sb.append(&quot;    matrixSet: &quot;).append(toIndentedString(matrixSet)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L322">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L323">    return sb.toString();</span>
   }
 
   /**
@@ -322,10 +328,10 @@ import javax.validation.constraints.*;
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-<span class="nc bnc" id="L325" title="All 2 branches missed.">    if (o == null) {</span>
-<span class="nc" id="L326">      return &quot;null&quot;;</span>
+<span class="nc bnc" id="L331" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L332">      return &quot;null&quot;;</span>
     }
-<span class="nc" id="L328">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+<span class="nc" id="L334">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
   }
 }
 

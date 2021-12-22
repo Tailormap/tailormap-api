@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Attribute.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.model</a> &gt; <span class="el_source">Attribute.java</span></div><h1>Attribute.java</h1><pre class="source lang-java linenums">package nl.b3p.tailormap.api.model;
 
+import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+
+
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
+import java.util.*;
 
 /**
  * Attribute
  */
 @javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="nc" id="L19">public class Attribute  implements Serializable {</span>
+<span class="nc" id="L25">public class Attribute  implements Serializable {</span>
   private static final long serialVersionUID = 1L;
 
   @JsonProperty(&quot;id&quot;)
@@ -37,57 +43,57 @@ import javax.validation.constraints.*;
   /**
    * data type. eg \&quot;date\&quot; or \&quot;string\&quot;. see also: nl.tailormap.viewer.config.services.AttributeDescriptor
    */
-<span class="nc" id="L40">  public enum TypeEnum {</span>
-<span class="nc" id="L41">    DATE(&quot;date&quot;),</span>
+<span class="nc" id="L46">  public enum TypeEnum {</span>
+<span class="nc" id="L47">    DATE(&quot;date&quot;),</span>
     
-<span class="nc" id="L43">    TIMESTAMP(&quot;timestamp&quot;),</span>
+<span class="nc" id="L49">    TIMESTAMP(&quot;timestamp&quot;),</span>
     
-<span class="nc" id="L45">    STRING(&quot;string&quot;),</span>
+<span class="nc" id="L51">    STRING(&quot;string&quot;),</span>
     
-<span class="nc" id="L47">    DOUBLE(&quot;double&quot;),</span>
+<span class="nc" id="L53">    DOUBLE(&quot;double&quot;),</span>
     
-<span class="nc" id="L49">    INTEGER(&quot;integer&quot;),</span>
+<span class="nc" id="L55">    INTEGER(&quot;integer&quot;),</span>
     
-<span class="nc" id="L51">    BOOLEAN(&quot;boolean&quot;),</span>
+<span class="nc" id="L57">    BOOLEAN(&quot;boolean&quot;),</span>
     
-<span class="nc" id="L53">    LINESTRING(&quot;linestring&quot;),</span>
+<span class="nc" id="L59">    LINESTRING(&quot;linestring&quot;),</span>
     
-<span class="nc" id="L55">    MULTILINESTRING(&quot;multilinestring&quot;),</span>
+<span class="nc" id="L61">    MULTILINESTRING(&quot;multilinestring&quot;),</span>
     
-<span class="nc" id="L57">    POINT(&quot;point&quot;),</span>
+<span class="nc" id="L63">    POINT(&quot;point&quot;),</span>
     
-<span class="nc" id="L59">    MULTIPOINT(&quot;multipoint&quot;),</span>
+<span class="nc" id="L65">    MULTIPOINT(&quot;multipoint&quot;),</span>
     
-<span class="nc" id="L61">    POLYGON(&quot;polygon&quot;),</span>
+<span class="nc" id="L67">    POLYGON(&quot;polygon&quot;),</span>
     
-<span class="nc" id="L63">    MULTIPOLYGON(&quot;multipolygon&quot;),</span>
+<span class="nc" id="L69">    MULTIPOLYGON(&quot;multipolygon&quot;),</span>
     
-<span class="nc" id="L65">    GEOMETRY(&quot;geometry&quot;);</span>
+<span class="nc" id="L71">    GEOMETRY(&quot;geometry&quot;);</span>
 
     private String value;
 
-<span class="nc" id="L69">    TypeEnum(String value) {</span>
-<span class="nc" id="L70">      this.value = value;</span>
-<span class="nc" id="L71">    }</span>
+<span class="nc" id="L75">    TypeEnum(String value) {</span>
+<span class="nc" id="L76">      this.value = value;</span>
+<span class="nc" id="L77">    }</span>
 
     @JsonValue
     public String getValue() {
-<span class="nc" id="L75">      return value;</span>
+<span class="nc" id="L81">      return value;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L80">      return String.valueOf(value);</span>
+<span class="nc" id="L86">      return String.valueOf(value);</span>
     }
 
     @JsonCreator
     public static TypeEnum fromValue(String value) {
-<span class="nc bnc" id="L85" title="All 2 branches missed.">      for (TypeEnum b : TypeEnum.values()) {</span>
-<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
-<span class="nc" id="L87">          return b;</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">      for (TypeEnum b : TypeEnum.values()) {</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
+<span class="nc" id="L93">          return b;</span>
         }
       }
-<span class="nc" id="L90">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
+<span class="nc" id="L96">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
     }
   }
 
@@ -127,438 +133,438 @@ import javax.validation.constraints.*;
   @JsonProperty(&quot;valueList&quot;)
   private String valueList;
 
-<span class="nc" id="L130">  @JsonProperty(&quot;editValues&quot;)</span>
+<span class="nc" id="L136">  @JsonProperty(&quot;editValues&quot;)</span>
   @Valid
   private List&lt;String&gt; editValues = null;
 
   public Attribute id(Long id) {
-<span class="nc" id="L135">    this.id = id;</span>
-<span class="nc" id="L136">    return this;</span>
+<span class="nc" id="L141">    this.id = id;</span>
+<span class="nc" id="L142">    return this;</span>
   }
 
   /**
    * Get id
    * @return id
   */
-  @ApiModelProperty(readOnly = true, value = &quot;&quot;)
+  @Schema(name = &quot;id&quot;, readOnly = true, defaultValue = &quot;&quot;)
 
 
   public Long getId() {
-<span class="nc" id="L147">    return id;</span>
+<span class="nc" id="L153">    return id;</span>
   }
 
   public void setId(Long id) {
-<span class="nc" id="L151">    this.id = id;</span>
-<span class="nc" id="L152">  }</span>
+<span class="nc" id="L157">    this.id = id;</span>
+<span class="nc" id="L158">  }</span>
 
   public Attribute featureType(Long featureType) {
-<span class="nc" id="L155">    this.featureType = featureType;</span>
-<span class="nc" id="L156">    return this;</span>
+<span class="nc" id="L161">    this.featureType = featureType;</span>
+<span class="nc" id="L162">    return this;</span>
   }
 
   /**
    * Get featureType
    * @return featureType
   */
-  @ApiModelProperty(readOnly = true, value = &quot;&quot;)
+  @Schema(name = &quot;featureType&quot;, readOnly = true, defaultValue = &quot;&quot;)
 
 
   public Long getFeatureType() {
-<span class="nc" id="L167">    return featureType;</span>
+<span class="nc" id="L173">    return featureType;</span>
   }
 
   public void setFeatureType(Long featureType) {
-<span class="nc" id="L171">    this.featureType = featureType;</span>
-<span class="nc" id="L172">  }</span>
+<span class="nc" id="L177">    this.featureType = featureType;</span>
+<span class="nc" id="L178">  }</span>
 
   public Attribute name(String name) {
-<span class="nc" id="L175">    this.name = name;</span>
-<span class="nc" id="L176">    return this;</span>
+<span class="nc" id="L181">    this.name = name;</span>
+<span class="nc" id="L182">    return this;</span>
   }
 
   /**
    * Get name
    * @return name
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;name&quot;, defaultValue = &quot;&quot;)
 
 
   public String getName() {
-<span class="nc" id="L187">    return name;</span>
+<span class="nc" id="L193">    return name;</span>
   }
 
   public void setName(String name) {
-<span class="nc" id="L191">    this.name = name;</span>
-<span class="nc" id="L192">  }</span>
+<span class="nc" id="L197">    this.name = name;</span>
+<span class="nc" id="L198">  }</span>
 
   public Attribute longname(String longname) {
-<span class="nc" id="L195">    this.longname = longname;</span>
-<span class="nc" id="L196">    return this;</span>
+<span class="nc" id="L201">    this.longname = longname;</span>
+<span class="nc" id="L202">    return this;</span>
   }
 
   /**
    * has featuretype name and name combined with a dot.
    * @return longname
   */
-  @ApiModelProperty(example = &quot;v_factsheet_terrein_info.b_minhuur&quot;, value = &quot;has featuretype name and name combined with a dot.&quot;)
+  @Schema(name = &quot;longname&quot;, example = &quot;v_factsheet_terrein_info.b_minhuur&quot;, defaultValue = &quot;has featuretype name and name combined with a dot.&quot;)
 
 
   public String getLongname() {
-<span class="nc" id="L207">    return longname;</span>
+<span class="nc" id="L213">    return longname;</span>
   }
 
   public void setLongname(String longname) {
-<span class="nc" id="L211">    this.longname = longname;</span>
-<span class="nc" id="L212">  }</span>
+<span class="nc" id="L217">    this.longname = longname;</span>
+<span class="nc" id="L218">  }</span>
 
   public Attribute editAlias(String editAlias) {
-<span class="nc" id="L215">    this.editAlias = editAlias;</span>
-<span class="nc" id="L216">    return this;</span>
+<span class="nc" id="L221">    this.editAlias = editAlias;</span>
+<span class="nc" id="L222">    return this;</span>
   }
 
   /**
    * Get editAlias
    * @return editAlias
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;editAlias&quot;, defaultValue = &quot;&quot;)
 
 
   public String getEditAlias() {
-<span class="nc" id="L227">    return editAlias;</span>
+<span class="nc" id="L233">    return editAlias;</span>
   }
 
   public void setEditAlias(String editAlias) {
-<span class="nc" id="L231">    this.editAlias = editAlias;</span>
-<span class="nc" id="L232">  }</span>
+<span class="nc" id="L237">    this.editAlias = editAlias;</span>
+<span class="nc" id="L238">  }</span>
 
   public Attribute type(TypeEnum type) {
-<span class="nc" id="L235">    this.type = type;</span>
-<span class="nc" id="L236">    return this;</span>
+<span class="nc" id="L241">    this.type = type;</span>
+<span class="nc" id="L242">    return this;</span>
   }
 
   /**
    * data type. eg \&quot;date\&quot; or \&quot;string\&quot;. see also: nl.tailormap.viewer.config.services.AttributeDescriptor
    * @return type
   */
-  @ApiModelProperty(value = &quot;data type. eg \&quot;date\&quot; or \&quot;string\&quot;. see also: nl.tailormap.viewer.config.services.AttributeDescriptor&quot;)
+  @Schema(name = &quot;type&quot;, defaultValue = &quot;data type. eg \&quot;date\&quot; or \&quot;string\&quot;. see also: nl.tailormap.viewer.config.services.AttributeDescriptor&quot;)
 
 
   public TypeEnum getType() {
-<span class="nc" id="L247">    return type;</span>
+<span class="nc" id="L253">    return type;</span>
   }
 
   public void setType(TypeEnum type) {
-<span class="nc" id="L251">    this.type = type;</span>
-<span class="nc" id="L252">  }</span>
+<span class="nc" id="L257">    this.type = type;</span>
+<span class="nc" id="L258">  }</span>
 
   public Attribute visible(Boolean visible) {
-<span class="nc" id="L255">    this.visible = visible;</span>
-<span class="nc" id="L256">    return this;</span>
+<span class="nc" id="L261">    this.visible = visible;</span>
+<span class="nc" id="L262">    return this;</span>
   }
 
   /**
    * Get visible
    * @return visible
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;visible&quot;, defaultValue = &quot;&quot;)
 
 
   public Boolean getVisible() {
-<span class="nc" id="L267">    return visible;</span>
+<span class="nc" id="L273">    return visible;</span>
   }
 
   public void setVisible(Boolean visible) {
-<span class="nc" id="L271">    this.visible = visible;</span>
-<span class="nc" id="L272">  }</span>
+<span class="nc" id="L277">    this.visible = visible;</span>
+<span class="nc" id="L278">  }</span>
 
   public Attribute selectable(Boolean selectable) {
-<span class="nc" id="L275">    this.selectable = selectable;</span>
-<span class="nc" id="L276">    return this;</span>
+<span class="nc" id="L281">    this.selectable = selectable;</span>
+<span class="nc" id="L282">    return this;</span>
   }
 
   /**
    * Get selectable
    * @return selectable
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;selectable&quot;, defaultValue = &quot;&quot;)
 
 
   public Boolean getSelectable() {
-<span class="nc" id="L287">    return selectable;</span>
+<span class="nc" id="L293">    return selectable;</span>
   }
 
   public void setSelectable(Boolean selectable) {
-<span class="nc" id="L291">    this.selectable = selectable;</span>
-<span class="nc" id="L292">  }</span>
+<span class="nc" id="L297">    this.selectable = selectable;</span>
+<span class="nc" id="L298">  }</span>
 
   public Attribute filterable(Boolean filterable) {
-<span class="nc" id="L295">    this.filterable = filterable;</span>
-<span class="nc" id="L296">    return this;</span>
+<span class="nc" id="L301">    this.filterable = filterable;</span>
+<span class="nc" id="L302">    return this;</span>
   }
 
   /**
    * Get filterable
    * @return filterable
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;filterable&quot;, defaultValue = &quot;&quot;)
 
 
   public Boolean getFilterable() {
-<span class="nc" id="L307">    return filterable;</span>
+<span class="nc" id="L313">    return filterable;</span>
   }
 
   public void setFilterable(Boolean filterable) {
-<span class="nc" id="L311">    this.filterable = filterable;</span>
-<span class="nc" id="L312">  }</span>
+<span class="nc" id="L317">    this.filterable = filterable;</span>
+<span class="nc" id="L318">  }</span>
 
   public Attribute folderLabel(String folderLabel) {
-<span class="nc" id="L315">    this.folderLabel = folderLabel;</span>
-<span class="nc" id="L316">    return this;</span>
+<span class="nc" id="L321">    this.folderLabel = folderLabel;</span>
+<span class="nc" id="L322">    return this;</span>
   }
 
   /**
    * Get folderLabel
    * @return folderLabel
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;folderLabel&quot;, defaultValue = &quot;&quot;)
 
 
   public String getFolderLabel() {
-<span class="nc" id="L327">    return folderLabel;</span>
+<span class="nc" id="L333">    return folderLabel;</span>
   }
 
   public void setFolderLabel(String folderLabel) {
-<span class="nc" id="L331">    this.folderLabel = folderLabel;</span>
-<span class="nc" id="L332">  }</span>
+<span class="nc" id="L337">    this.folderLabel = folderLabel;</span>
+<span class="nc" id="L338">  }</span>
 
   public Attribute editable(Boolean editable) {
-<span class="nc" id="L335">    this.editable = editable;</span>
-<span class="nc" id="L336">    return this;</span>
+<span class="nc" id="L341">    this.editable = editable;</span>
+<span class="nc" id="L342">    return this;</span>
   }
 
   /**
    * Get editable
    * @return editable
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;editable&quot;, defaultValue = &quot;&quot;)
 
 
   public Boolean getEditable() {
-<span class="nc" id="L347">    return editable;</span>
+<span class="nc" id="L353">    return editable;</span>
   }
 
   public void setEditable(Boolean editable) {
-<span class="nc" id="L351">    this.editable = editable;</span>
-<span class="nc" id="L352">  }</span>
+<span class="nc" id="L357">    this.editable = editable;</span>
+<span class="nc" id="L358">  }</span>
 
   public Attribute defaultValue(String defaultValue) {
-<span class="nc" id="L355">    this.defaultValue = defaultValue;</span>
-<span class="nc" id="L356">    return this;</span>
+<span class="nc" id="L361">    this.defaultValue = defaultValue;</span>
+<span class="nc" id="L362">    return this;</span>
   }
 
   /**
    * Get defaultValue
    * @return defaultValue
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;defaultValue&quot;, defaultValue = &quot;&quot;)
 
 
   public String getDefaultValue() {
-<span class="nc" id="L367">    return defaultValue;</span>
+<span class="nc" id="L373">    return defaultValue;</span>
   }
 
   public void setDefaultValue(String defaultValue) {
-<span class="nc" id="L371">    this.defaultValue = defaultValue;</span>
-<span class="nc" id="L372">  }</span>
+<span class="nc" id="L377">    this.defaultValue = defaultValue;</span>
+<span class="nc" id="L378">  }</span>
 
   public Attribute disallowNullValue(Boolean disallowNullValue) {
-<span class="nc" id="L375">    this.disallowNullValue = disallowNullValue;</span>
-<span class="nc" id="L376">    return this;</span>
+<span class="nc" id="L381">    this.disallowNullValue = disallowNullValue;</span>
+<span class="nc" id="L382">    return this;</span>
   }
 
   /**
    * Get disallowNullValue
    * @return disallowNullValue
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;disallowNullValue&quot;, defaultValue = &quot;&quot;)
 
 
   public Boolean getDisallowNullValue() {
-<span class="nc" id="L387">    return disallowNullValue;</span>
+<span class="nc" id="L393">    return disallowNullValue;</span>
   }
 
   public void setDisallowNullValue(Boolean disallowNullValue) {
-<span class="nc" id="L391">    this.disallowNullValue = disallowNullValue;</span>
-<span class="nc" id="L392">  }</span>
+<span class="nc" id="L397">    this.disallowNullValue = disallowNullValue;</span>
+<span class="nc" id="L398">  }</span>
 
   public Attribute disableUserEdit(Boolean disableUserEdit) {
-<span class="nc" id="L395">    this.disableUserEdit = disableUserEdit;</span>
-<span class="nc" id="L396">    return this;</span>
+<span class="nc" id="L401">    this.disableUserEdit = disableUserEdit;</span>
+<span class="nc" id="L402">    return this;</span>
   }
 
   /**
    * Get disableUserEdit
    * @return disableUserEdit
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;disableUserEdit&quot;, defaultValue = &quot;&quot;)
 
 
   public Boolean getDisableUserEdit() {
-<span class="nc" id="L407">    return disableUserEdit;</span>
+<span class="nc" id="L413">    return disableUserEdit;</span>
   }
 
   public void setDisableUserEdit(Boolean disableUserEdit) {
-<span class="nc" id="L411">    this.disableUserEdit = disableUserEdit;</span>
-<span class="nc" id="L412">  }</span>
+<span class="nc" id="L417">    this.disableUserEdit = disableUserEdit;</span>
+<span class="nc" id="L418">  }</span>
 
   public Attribute allowValueListOnly(Boolean allowValueListOnly) {
-<span class="nc" id="L415">    this.allowValueListOnly = allowValueListOnly;</span>
-<span class="nc" id="L416">    return this;</span>
+<span class="nc" id="L421">    this.allowValueListOnly = allowValueListOnly;</span>
+<span class="nc" id="L422">    return this;</span>
   }
 
   /**
    * Get allowValueListOnly
    * @return allowValueListOnly
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;allowValueListOnly&quot;, defaultValue = &quot;&quot;)
 
 
   public Boolean getAllowValueListOnly() {
-<span class="nc" id="L427">    return allowValueListOnly;</span>
+<span class="nc" id="L433">    return allowValueListOnly;</span>
   }
 
   public void setAllowValueListOnly(Boolean allowValueListOnly) {
-<span class="nc" id="L431">    this.allowValueListOnly = allowValueListOnly;</span>
-<span class="nc" id="L432">  }</span>
+<span class="nc" id="L437">    this.allowValueListOnly = allowValueListOnly;</span>
+<span class="nc" id="L438">  }</span>
 
   public Attribute automaticValue(Boolean automaticValue) {
-<span class="nc" id="L435">    this.automaticValue = automaticValue;</span>
-<span class="nc" id="L436">    return this;</span>
+<span class="nc" id="L441">    this.automaticValue = automaticValue;</span>
+<span class="nc" id="L442">    return this;</span>
   }
 
   /**
    * Get automaticValue
    * @return automaticValue
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;automaticValue&quot;, defaultValue = &quot;&quot;)
 
 
   public Boolean getAutomaticValue() {
-<span class="nc" id="L447">    return automaticValue;</span>
+<span class="nc" id="L453">    return automaticValue;</span>
   }
 
   public void setAutomaticValue(Boolean automaticValue) {
-<span class="nc" id="L451">    this.automaticValue = automaticValue;</span>
-<span class="nc" id="L452">  }</span>
+<span class="nc" id="L457">    this.automaticValue = automaticValue;</span>
+<span class="nc" id="L458">  }</span>
 
   public Attribute valueList(String valueList) {
-<span class="nc" id="L455">    this.valueList = valueList;</span>
-<span class="nc" id="L456">    return this;</span>
+<span class="nc" id="L461">    this.valueList = valueList;</span>
+<span class="nc" id="L462">    return this;</span>
   }
 
   /**
    * Get valueList
    * @return valueList
   */
-  @ApiModelProperty(example = &quot;static&quot;, value = &quot;&quot;)
+  @Schema(name = &quot;valueList&quot;, example = &quot;static&quot;, defaultValue = &quot;&quot;)
 
 
   public String getValueList() {
-<span class="nc" id="L467">    return valueList;</span>
+<span class="nc" id="L473">    return valueList;</span>
   }
 
   public void setValueList(String valueList) {
-<span class="nc" id="L471">    this.valueList = valueList;</span>
-<span class="nc" id="L472">  }</span>
+<span class="nc" id="L477">    this.valueList = valueList;</span>
+<span class="nc" id="L478">  }</span>
 
   public Attribute editValues(List&lt;String&gt; editValues) {
-<span class="nc" id="L475">    this.editValues = editValues;</span>
-<span class="nc" id="L476">    return this;</span>
+<span class="nc" id="L481">    this.editValues = editValues;</span>
+<span class="nc" id="L482">    return this;</span>
   }
 
   public Attribute addEditValuesItem(String editValuesItem) {
-<span class="nc bnc" id="L480" title="All 2 branches missed.">    if (this.editValues == null) {</span>
-<span class="nc" id="L481">      this.editValues = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L486" title="All 2 branches missed.">    if (this.editValues == null) {</span>
+<span class="nc" id="L487">      this.editValues = new ArrayList&lt;&gt;();</span>
     }
-<span class="nc" id="L483">    this.editValues.add(editValuesItem);</span>
-<span class="nc" id="L484">    return this;</span>
+<span class="nc" id="L489">    this.editValues.add(editValuesItem);</span>
+<span class="nc" id="L490">    return this;</span>
   }
 
   /**
    * Get editValues
    * @return editValues
   */
-  @ApiModelProperty(value = &quot;&quot;)
+  @Schema(name = &quot;editValues&quot;, defaultValue = &quot;&quot;)
 
 
   public List&lt;String&gt; getEditValues() {
-<span class="nc" id="L495">    return editValues;</span>
+<span class="nc" id="L501">    return editValues;</span>
   }
 
   public void setEditValues(List&lt;String&gt; editValues) {
-<span class="nc" id="L499">    this.editValues = editValues;</span>
-<span class="nc" id="L500">  }</span>
+<span class="nc" id="L505">    this.editValues = editValues;</span>
+<span class="nc" id="L506">  }</span>
 
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L505" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L506">      return true;</span>
+<span class="nc bnc" id="L511" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L512">      return true;</span>
     }
-<span class="nc bnc" id="L508" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L509">      return false;</span>
+<span class="nc bnc" id="L514" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L515">      return false;</span>
     }
-<span class="nc" id="L511">    Attribute attribute = (Attribute) o;</span>
-<span class="nc bnc" id="L512" title="All 2 branches missed.">    return Objects.equals(this.id, attribute.id) &amp;&amp;</span>
-<span class="nc bnc" id="L513" title="All 2 branches missed.">        Objects.equals(this.featureType, attribute.featureType) &amp;&amp;</span>
-<span class="nc bnc" id="L514" title="All 2 branches missed.">        Objects.equals(this.name, attribute.name) &amp;&amp;</span>
-<span class="nc bnc" id="L515" title="All 2 branches missed.">        Objects.equals(this.longname, attribute.longname) &amp;&amp;</span>
-<span class="nc bnc" id="L516" title="All 2 branches missed.">        Objects.equals(this.editAlias, attribute.editAlias) &amp;&amp;</span>
-<span class="nc bnc" id="L517" title="All 2 branches missed.">        Objects.equals(this.type, attribute.type) &amp;&amp;</span>
-<span class="nc bnc" id="L518" title="All 2 branches missed.">        Objects.equals(this.visible, attribute.visible) &amp;&amp;</span>
-<span class="nc bnc" id="L519" title="All 2 branches missed.">        Objects.equals(this.selectable, attribute.selectable) &amp;&amp;</span>
-<span class="nc bnc" id="L520" title="All 2 branches missed.">        Objects.equals(this.filterable, attribute.filterable) &amp;&amp;</span>
-<span class="nc bnc" id="L521" title="All 2 branches missed.">        Objects.equals(this.folderLabel, attribute.folderLabel) &amp;&amp;</span>
-<span class="nc bnc" id="L522" title="All 2 branches missed.">        Objects.equals(this.editable, attribute.editable) &amp;&amp;</span>
-<span class="nc bnc" id="L523" title="All 2 branches missed.">        Objects.equals(this.defaultValue, attribute.defaultValue) &amp;&amp;</span>
-<span class="nc bnc" id="L524" title="All 2 branches missed.">        Objects.equals(this.disallowNullValue, attribute.disallowNullValue) &amp;&amp;</span>
-<span class="nc bnc" id="L525" title="All 2 branches missed.">        Objects.equals(this.disableUserEdit, attribute.disableUserEdit) &amp;&amp;</span>
-<span class="nc bnc" id="L526" title="All 2 branches missed.">        Objects.equals(this.allowValueListOnly, attribute.allowValueListOnly) &amp;&amp;</span>
-<span class="nc bnc" id="L527" title="All 2 branches missed.">        Objects.equals(this.automaticValue, attribute.automaticValue) &amp;&amp;</span>
-<span class="nc bnc" id="L528" title="All 2 branches missed.">        Objects.equals(this.valueList, attribute.valueList) &amp;&amp;</span>
-<span class="nc bnc" id="L529" title="All 2 branches missed.">        Objects.equals(this.editValues, attribute.editValues);</span>
+<span class="nc" id="L517">    Attribute attribute = (Attribute) o;</span>
+<span class="nc bnc" id="L518" title="All 2 branches missed.">    return Objects.equals(this.id, attribute.id) &amp;&amp;</span>
+<span class="nc bnc" id="L519" title="All 2 branches missed.">        Objects.equals(this.featureType, attribute.featureType) &amp;&amp;</span>
+<span class="nc bnc" id="L520" title="All 2 branches missed.">        Objects.equals(this.name, attribute.name) &amp;&amp;</span>
+<span class="nc bnc" id="L521" title="All 2 branches missed.">        Objects.equals(this.longname, attribute.longname) &amp;&amp;</span>
+<span class="nc bnc" id="L522" title="All 2 branches missed.">        Objects.equals(this.editAlias, attribute.editAlias) &amp;&amp;</span>
+<span class="nc bnc" id="L523" title="All 2 branches missed.">        Objects.equals(this.type, attribute.type) &amp;&amp;</span>
+<span class="nc bnc" id="L524" title="All 2 branches missed.">        Objects.equals(this.visible, attribute.visible) &amp;&amp;</span>
+<span class="nc bnc" id="L525" title="All 2 branches missed.">        Objects.equals(this.selectable, attribute.selectable) &amp;&amp;</span>
+<span class="nc bnc" id="L526" title="All 2 branches missed.">        Objects.equals(this.filterable, attribute.filterable) &amp;&amp;</span>
+<span class="nc bnc" id="L527" title="All 2 branches missed.">        Objects.equals(this.folderLabel, attribute.folderLabel) &amp;&amp;</span>
+<span class="nc bnc" id="L528" title="All 2 branches missed.">        Objects.equals(this.editable, attribute.editable) &amp;&amp;</span>
+<span class="nc bnc" id="L529" title="All 2 branches missed.">        Objects.equals(this.defaultValue, attribute.defaultValue) &amp;&amp;</span>
+<span class="nc bnc" id="L530" title="All 2 branches missed.">        Objects.equals(this.disallowNullValue, attribute.disallowNullValue) &amp;&amp;</span>
+<span class="nc bnc" id="L531" title="All 2 branches missed.">        Objects.equals(this.disableUserEdit, attribute.disableUserEdit) &amp;&amp;</span>
+<span class="nc bnc" id="L532" title="All 2 branches missed.">        Objects.equals(this.allowValueListOnly, attribute.allowValueListOnly) &amp;&amp;</span>
+<span class="nc bnc" id="L533" title="All 2 branches missed.">        Objects.equals(this.automaticValue, attribute.automaticValue) &amp;&amp;</span>
+<span class="nc bnc" id="L534" title="All 2 branches missed.">        Objects.equals(this.valueList, attribute.valueList) &amp;&amp;</span>
+<span class="nc bnc" id="L535" title="All 2 branches missed.">        Objects.equals(this.editValues, attribute.editValues);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L534">    return Objects.hash(id, featureType, name, longname, editAlias, type, visible, selectable, filterable, folderLabel, editable, defaultValue, disallowNullValue, disableUserEdit, allowValueListOnly, automaticValue, valueList, editValues);</span>
+<span class="nc" id="L540">    return Objects.hash(id, featureType, name, longname, editAlias, type, visible, selectable, filterable, folderLabel, editable, defaultValue, disallowNullValue, disableUserEdit, allowValueListOnly, automaticValue, valueList, editValues);</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L539">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L540">    sb.append(&quot;class Attribute {\n&quot;);</span>
+<span class="nc" id="L545">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L546">    sb.append(&quot;class Attribute {\n&quot;);</span>
     
-<span class="nc" id="L542">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L543">    sb.append(&quot;    featureType: &quot;).append(toIndentedString(featureType)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L544">    sb.append(&quot;    name: &quot;).append(toIndentedString(name)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L545">    sb.append(&quot;    longname: &quot;).append(toIndentedString(longname)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L546">    sb.append(&quot;    editAlias: &quot;).append(toIndentedString(editAlias)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L547">    sb.append(&quot;    type: &quot;).append(toIndentedString(type)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L548">    sb.append(&quot;    visible: &quot;).append(toIndentedString(visible)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L549">    sb.append(&quot;    selectable: &quot;).append(toIndentedString(selectable)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L550">    sb.append(&quot;    filterable: &quot;).append(toIndentedString(filterable)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L551">    sb.append(&quot;    folderLabel: &quot;).append(toIndentedString(folderLabel)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L552">    sb.append(&quot;    editable: &quot;).append(toIndentedString(editable)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L553">    sb.append(&quot;    defaultValue: &quot;).append(toIndentedString(defaultValue)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L554">    sb.append(&quot;    disallowNullValue: &quot;).append(toIndentedString(disallowNullValue)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L555">    sb.append(&quot;    disableUserEdit: &quot;).append(toIndentedString(disableUserEdit)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L556">    sb.append(&quot;    allowValueListOnly: &quot;).append(toIndentedString(allowValueListOnly)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L557">    sb.append(&quot;    automaticValue: &quot;).append(toIndentedString(automaticValue)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L558">    sb.append(&quot;    valueList: &quot;).append(toIndentedString(valueList)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L559">    sb.append(&quot;    editValues: &quot;).append(toIndentedString(editValues)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L560">    sb.append(&quot;}&quot;);</span>
-<span class="nc" id="L561">    return sb.toString();</span>
+<span class="nc" id="L548">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L549">    sb.append(&quot;    featureType: &quot;).append(toIndentedString(featureType)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L550">    sb.append(&quot;    name: &quot;).append(toIndentedString(name)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L551">    sb.append(&quot;    longname: &quot;).append(toIndentedString(longname)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L552">    sb.append(&quot;    editAlias: &quot;).append(toIndentedString(editAlias)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L553">    sb.append(&quot;    type: &quot;).append(toIndentedString(type)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L554">    sb.append(&quot;    visible: &quot;).append(toIndentedString(visible)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L555">    sb.append(&quot;    selectable: &quot;).append(toIndentedString(selectable)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L556">    sb.append(&quot;    filterable: &quot;).append(toIndentedString(filterable)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L557">    sb.append(&quot;    folderLabel: &quot;).append(toIndentedString(folderLabel)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L558">    sb.append(&quot;    editable: &quot;).append(toIndentedString(editable)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L559">    sb.append(&quot;    defaultValue: &quot;).append(toIndentedString(defaultValue)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L560">    sb.append(&quot;    disallowNullValue: &quot;).append(toIndentedString(disallowNullValue)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L561">    sb.append(&quot;    disableUserEdit: &quot;).append(toIndentedString(disableUserEdit)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L562">    sb.append(&quot;    allowValueListOnly: &quot;).append(toIndentedString(allowValueListOnly)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L563">    sb.append(&quot;    automaticValue: &quot;).append(toIndentedString(automaticValue)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L564">    sb.append(&quot;    valueList: &quot;).append(toIndentedString(valueList)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L565">    sb.append(&quot;    editValues: &quot;).append(toIndentedString(editValues)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L566">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L567">    return sb.toString();</span>
   }
 
   /**
@@ -566,10 +572,10 @@ import javax.validation.constraints.*;
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-<span class="nc bnc" id="L569" title="All 2 branches missed.">    if (o == null) {</span>
-<span class="nc" id="L570">      return &quot;null&quot;;</span>
+<span class="nc bnc" id="L575" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L576">      return &quot;null&quot;;</span>
     }
-<span class="nc" id="L572">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+<span class="nc" id="L578">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
   }
 }
 
