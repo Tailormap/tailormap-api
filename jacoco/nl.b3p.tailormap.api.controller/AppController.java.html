@@ -5,8 +5,14 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.repository.MetadataRepository;
+import nl.tailormap.viewer.config.app.Application;
+import nl.tailormap.viewer.config.metadata.Metadata;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,19 +22,33 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import javax.persistence.EntityNotFoundException;
 
 @RestController
 @CrossOrigin
 @RequestMapping(path = &quot;/app&quot;)
-<span class="nc" id="L24">public class AppController {</span>
-<span class="nc" id="L25">    private final Log logger = LogFactory.getLog(getClass());</span>
+<span class="fc" id="L36">public class AppController {</span>
+<span class="fc" id="L37">    private final Log logger = LogFactory.getLog(getClass());</span>
+
+    @Autowired private ApplicationRepository applicationRepository;
+    @Autowired private MetadataRepository metadataRepository;
 
     @Value(&quot;${tailormap-api.apiVersion}&quot;)
     private String apiVersion;
 
+    private Application application;
+
     /**
-     * Produce version information.
+     * Lookup an {@linkplain Application} with given parameters. Use this endpoint to get the id of
+     * the requested or default application. Either call this with `name` and optional `version` or
+     * `appid` alone. Will return general setup information such as name, appid, language, but not
+     * map specific information.
      *
      * @param appid the unique identifier of an app
      * @param name the name of an app
@@ -39,28 +59,95 @@ import java.util.Map;
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map&lt;String, Object&gt; get(
-            @RequestParam(required = false) Integer appid,
+            @RequestParam(required = false) Long appid,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String version) {
 
-<span class="nc" id="L46">        logger.trace(&quot;got: &quot; + appid + &quot;, name: &quot; + name + &quot;, version: &quot; + version);</span>
+<span class="fc" id="L66">        logger.trace(</span>
+                &quot;requested application using: appid: &quot;
+                        + appid
+                        + &quot;, name: &quot;
+                        + name
+                        + &quot;, version: &quot;
+                        + version);
 
-        // TODO implement, for now just echo
-<span class="nc" id="L49">        return Map.of(</span>
-                &quot;id&quot;,
-                appid,
-                &quot;name&quot;,
-                name,
-                &quot;apiVersion&quot;,
-                this.apiVersion,
-                &quot;version&quot;,
-                version,
-                &quot;title&quot;,
-                &quot;This is could be a cool mapping app&quot;,
-                &quot;lang&quot;,
-                &quot;nl_NL&quot;
-                // Note you can only have 10 K/V pairs in this Map.of(...)
-                );
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (null != appid) {</span>
+<span class="fc" id="L75">            Optional&lt;Application&gt; a = applicationRepository.findById(appid);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">            this.application = a.isPresent() ? a.get() : null;</span>
+<span class="fc" id="L77">        } else {</span>
+<span class="fc" id="L78">            this.application = findApplication(name, version);</span>
+        }
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (null == this.application) {</span>
+<span class="fc" id="L82">            this.application = getDefaultViewer();</span>
+        }
+
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        if (null == this.application) {</span>
+<span class="nc" id="L86">            logger.fatal(&quot;Error getting the requested or default application.&quot;);</span>
+<span class="nc" id="L87">            return Map.of(&quot;code&quot;, 500, &quot;message&quot;, &quot;Internal server error&quot;);</span>
+        } else {
+<span class="fc" id="L89">            return Map.of(</span>
+                    &quot;apiVersion&quot;,
+                    this.apiVersion,
+                    &quot;id&quot;,
+<span class="fc" id="L93">                    this.application.getId(),</span>
+                    &quot;name&quot;,
+<span class="fc" id="L95">                    this.application.getName(),</span>
+                    &quot;version&quot;,
+<span class="fc" id="L97">                    this.application.getVersion(),</span>
+                    &quot;lang&quot;,
+<span class="fc" id="L99">                    this.application.getLang(),</span>
+                    &quot;title&quot;,
+<span class="fc" id="L101">                    this.application.getTitle()</span>
+                    // Note you can only have 10 K/V pairs in this Map.of(...)
+                    );
+        }
+    }
+
+    /**
+     * recursive method to find application by name and version.
+     *
+     * @param name user given name
+     * @param version user given version (can be {@code null})
+     * @return found Application (or {@code null} if nothing found)
+     */
+    private Application findApplication(String name, String version) {
+<span class="fc" id="L115">        Application application = null;</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        if (name != null) {</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">            if (null != version) {</span>
+<span class="fc" id="L118">                application = applicationRepository.findByNameAndVersion(name, version);</span>
+            } else {
+<span class="fc" id="L120">                List&lt;Application&gt; applications = applicationRepository.findByName(name);</span>
+<span class="fc" id="L121">                Optional&lt;Application&gt; a = applications.stream().sorted().findFirst();</span>
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">                application = a.isPresent() ? a.get() : null;</span>
+            }
+
+<span class="fc bfc" id="L125" title="All 2 branches covered.">            if (null == application) {</span>
+<span class="fc" id="L126">                logger.warn(&quot;No application found with name &quot; + name + &quot; and version &quot; + version);</span>
+<span class="fc" id="L127">                String decodedName = URLDecoder.decode(name, StandardCharsets.UTF_8);</span>
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">                if (!decodedName.equals(name)) {</span>
+<span class="nc" id="L129">                    return findApplication(decodedName, version);</span>
+                }
+            }
+        }
+<span class="fc" id="L133">        return application;</span>
+    }
+
+    /**
+     * find the default viewer (name and version) in this instance.
+     *
+     * @return either the default Application of {@code null} is not configured
+     */
+    private Application getDefaultViewer() {
+        try {
+<span class="fc" id="L143">            Metadata md = metadataRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);</span>
+<span class="fc" id="L144">            String appId = md.getConfigValue();</span>
+<span class="fc" id="L145">            Long id = Long.parseLong(appId);</span>
+<span class="fc" id="L146">            return applicationRepository.getById(id);</span>
+<span class="nc" id="L147">        } catch (NullPointerException | EntityNotFoundException e) {</span>
+<span class="nc" id="L148">            logger.warn(&quot;No default application configured. &quot; + e.getMessage());</span>
+<span class="nc" id="L149">            return null;</span>
+        }
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
