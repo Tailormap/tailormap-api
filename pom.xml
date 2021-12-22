@@ -124,7 +124,7 @@ SPDX-License-Identifier: MIT
     <skipQA>false</skipQA>
     <pmd.version>6.41.0</pmd.version>
     <errorProne.version>2.10.0</errorProne.version>
-    <errorProneFlags></errorProneFlags>
+    <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
     <compiler.lint>deprecation,unchecked</compiler.lint>
     <failOnValidation>true</failOnValidation>
     <fmt.action>format</fmt.action>
@@ -134,14 +134,6 @@ SPDX-License-Identifier: MIT
   </properties>
   <dependencyManagement>
     <dependencies>
-      <!--      <dependency>-->
-      <!--        <groupId>org.springframework.boot</groupId>-->
-      <!--        &lt;!&ndash;  <artifactId>spring-boot-starter-parent</artifactId> inherits from spring-boot-dependencies &ndash;&gt;-->
-      <!--        <artifactId>spring-boot-dependencies</artifactId>-->
-      <!--        <version>${spring.boot.version}</version>-->
-      <!--        <type>pom</type>-->
-      <!--        <scope>import</scope>-->
-      <!--      </dependency>-->
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
@@ -168,6 +160,10 @@ SPDX-License-Identifier: MIT
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -237,10 +233,6 @@ SPDX-License-Identifier: MIT
       <groupId>io.swagger</groupId>
       <artifactId>swagger-annotations</artifactId>
       <version>1.6.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
     <dependency>
       <groupId>org.hsqldb</groupId>
@@ -314,14 +306,6 @@ SPDX-License-Identifier: MIT
           <groupId>org.owasp</groupId>
           <artifactId>dependency-check-maven</artifactId>
           <version>${dependency-check-maven.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-maven-plugin</artifactId>
-          <version>${spring.boot.version}</version>
-          <configuration>
-            <cleanCache>true</cleanCache>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>com.github.ekryd.sortpom</groupId>
@@ -412,6 +396,24 @@ SPDX-License-Identifier: MIT
     </pluginManagement>
     <plugins>
       <plugin>
+        <groupId>it.ozimov</groupId>
+        <artifactId>yaml-properties-maven-plugin</artifactId>
+        <version>1.1.3</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>read-project-properties</goal>
+            </goals>
+            <phase>initialize</phase>
+            <configuration>
+              <files>
+                <file>${project.basedir}/src/main/resources/tailormap-api.yaml</file>
+              </files>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <configuration>
           <delimiters>
@@ -426,7 +428,7 @@ SPDX-License-Identifier: MIT
           <fork>true</fork>
           <compilerArgs combine.children="append">
             <arg>-XDcompilePolicy=simple</arg>
-            <arg>-Xplugin:ErrorProne</arg>
+            <arg>-Xplugin:ErrorProne -XepExcludedPaths:${project.build.directory}/generated-sources/.* ${errorProneFlags}</arg>
             <arg>-Xlint:${compiler.lint}</arg>
             <arg>-Werror</arg>
             <arg>-Xmaxwarns</arg>
@@ -442,15 +444,63 @@ SPDX-License-Identifier: MIT
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <project.version>${project.version}</project.version>
+          </systemPropertyVariables>
+          <environmentVariables>
+            <API_VERSION>${info.version}</API_VERSION>
+            <!-- TODO read this from persistence -->
+            <DATABASE_VERSION>46</DATABASE_VERSION>
+          </environmentVariables>
+          <cleanCache>true</cleanCache>
+          <!--suppress UnresolvedMavenProperty -->
+          <jvmArguments>${surefireArgLine}</jvmArguments>
+        </configuration>
+        <executions>
+          <execution>
+            <id>start-spring-boot</id>
+            <goals>
+              <goal>start</goal>
+            </goals>
+            <phase>pre-integration-test</phase>
+            <configuration>
+              <!--suppress UnresolvedMavenProperty -->
+              <jvmArguments>${failsafeArgLine}</jvmArguments>
+              <environmentVariables>
+                <API_VERSION>${info.version}</API_VERSION>
+                <!-- TODO read this from persistence -->
+                <DATABASE_VERSION>46</DATABASE_VERSION>
+              </environmentVariables>
+              <systemPropertyVariables>
+                <project.version>${project.version}</project.version>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+          <execution>
+            <id>stop-spring-boot</id>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+            <phase>post-integration-test</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!--suppress UnresolvedMavenProperty -->
           <argLine>${surefireArgLine}</argLine>
           <systemPropertyVariables>
             <project.version>${project.version}</project.version>
-            <!-- TODO read this from property of yaml file -->
-            <api.version>v1</api.version>
           </systemPropertyVariables>
+          <environmentVariables>
+            <API_VERSION>${info.version}</API_VERSION>
+            <!-- TODO read this from persistence -->
+            <DATABASE_VERSION>46</DATABASE_VERSION>
+          </environmentVariables>
           <excludes>
             <exclude>**/*IntegrationTest.java</exclude>
           </excludes>
@@ -469,6 +519,11 @@ SPDX-License-Identifier: MIT
           <systemPropertyVariables>
             <project.version>${project.version}</project.version>
           </systemPropertyVariables>
+          <environmentVariables>
+            <API_VERSION>${info.version}</API_VERSION>
+            <!-- TODO read this from persistence -->
+            <DATABASE_VERSION>46</DATABASE_VERSION>
+          </environmentVariables>
           <useFile>false</useFile>
         </configuration>
         <executions>
