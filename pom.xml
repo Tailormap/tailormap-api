@@ -108,7 +108,7 @@ SPDX-License-Identifier: MIT
     <!--    <project.build.outputTimestamp>2021-11-11T16:01:17Z</project.build.outputTimestamp>-->
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <spring.boot.version>${project.parent.version}</spring.boot.version>
+    <spring.boot.version>2.6.2</spring.boot.version>
     <org.tailormap.version>5.9.12-SNAPSHOT</org.tailormap.version>
     <maven.surefire.version>3.0.0-M5</maven.surefire.version>
     <test.junit-jupiter.version>5.8.2</test.junit-jupiter.version>
