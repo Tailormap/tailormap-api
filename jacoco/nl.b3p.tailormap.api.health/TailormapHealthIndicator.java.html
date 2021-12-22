@@ -25,31 +25,31 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ConditionalOnEnabledHealthIndicator(&quot;tailormap&quot;)
-<span class="nc" id="L28">public class TailormapHealthIndicator implements HealthIndicator {</span>
-<span class="nc" id="L29">    private final Log logger = LogFactory.getLog(getClass());</span>
+<span class="fc" id="L28">public class TailormapHealthIndicator implements HealthIndicator {</span>
+<span class="fc" id="L29">    private final Log logger = LogFactory.getLog(getClass());</span>
     @Autowired private VersionController versionController;
 
-<span class="nc" id="L32">    @Value(&quot;${management.health.tailormap.enabled}&quot;)</span>
+<span class="fc" id="L32">    @Value(&quot;${management.health.tailormap.enabled}&quot;)</span>
     private boolean healthEnabled = false;
 
     @Override
     public Health health() {
-<span class="nc" id="L37">        Health.Builder health = Health.unknown();</span>
+<span class="fc" id="L37">        Health.Builder health = Health.unknown();</span>
 
-<span class="nc bnc" id="L39" title="All 2 branches missed.">        logger.info(&quot;tailormap health indicator &quot; + (healthEnabled ? &quot;enabled&quot; : &quot;disabled&quot;));</span>
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">        logger.info(&quot;tailormap health indicator &quot; + (healthEnabled ? &quot;enabled&quot; : &quot;disabled&quot;));</span>
 
-<span class="nc bnc" id="L41" title="All 2 branches missed.">        if (healthEnabled) {</span>
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">        if (healthEnabled) {</span>
             try {
                 // TODO check some other statistics
-<span class="nc" id="L44">                health.up().withDetails(versionController.getVersion());</span>
+<span class="fc" id="L44">                health.up().withDetails(versionController.getVersion());</span>
 <span class="nc" id="L45">            } catch (Exception e) {</span>
 <span class="nc" id="L46">                logger.fatal(&quot;Error checking Tailormap health. &quot; + e.getMessage());</span>
 <span class="nc" id="L47">                logger.debug(&quot;Error checking Tailormap health&quot;, e);</span>
 <span class="nc" id="L48">                health.outOfService().withDetail(&quot;message&quot;, &quot;Error checking database&quot;);</span>
-<span class="nc" id="L49">            }</span>
+<span class="fc" id="L49">            }</span>
         }
 
-<span class="nc" id="L52">        return health.build();</span>
+<span class="fc" id="L52">        return health.build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

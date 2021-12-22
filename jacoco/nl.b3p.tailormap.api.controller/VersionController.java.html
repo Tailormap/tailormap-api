@@ -8,6 +8,8 @@ package nl.b3p.tailormap.api.controller;
 import nl.b3p.tailormap.api.repository.MetadataRepository;
 import nl.tailormap.viewer.config.metadata.Metadata;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -24,14 +26,15 @@ import java.util.Map;
  */
 @RestController
 @CrossOrigin
-<span class="nc" id="L27">public class VersionController {</span>
+<span class="fc" id="L29">public class VersionController {</span>
+<span class="fc" id="L30">    private final Log logger = LogFactory.getLog(getClass());</span>
     @Autowired private MetadataRepository metadataRepository;
 
     // Maven 'process-resources' takes care of updating these tokens in the application.properties
     @Value(&quot;${tailormap-api.version}&quot;)
     private String version;
 
-    @Value(&quot;${tailormap-api.api_version}&quot;)
+    @Value(&quot;${tailormap-api.apiVersion}&quot;)
     private String apiVersion;
 
     /**
@@ -41,10 +44,15 @@ import java.util.Map;
      */
     @GetMapping(path = &quot;/version&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map&lt;String, String&gt; getVersion() {
-<span class="nc" id="L44">        final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);</span>
-<span class="nc bnc" id="L45" title="All 2 branches missed.">        final String dbVersion = ((null != m) ? m.getConfigValue() : &quot;-1&quot;);</span>
+<span class="fc" id="L47">        final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">        final String dbVersion = ((null != m) ? m.getConfigValue() : &quot;-1&quot;);</span>
 
-<span class="nc" id="L47">        return Map.of(</span>
+<span class="fc" id="L50">        logger.debug(</span>
+<span class="fc" id="L51">                String.format(</span>
+                        &quot;Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s&quot;,
+                        this.version, dbVersion, this.apiVersion));
+
+<span class="fc" id="L55">        return Map.of(</span>
                 &quot;version&quot;,
                 this.version,
                 &quot;databaseversion&quot;,

@@ -67,7 +67,7 @@
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>          }
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>          dbUrl = dbUrl.replace(<span class="jxr_string">"TESTNAMETOKEN"</span>, RandomStringUtils.randomAlphabetic(8));
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>          dataSource.setUrl(dbUrl);
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>          LOG.debug(<span class="jxr_string">"Using test datasource url: "</span> + dataSource.getUrl());
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          LOG.info(<span class="jxr_string">"Using test datasource url: "</span> + dataSource.getUrl());
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          dataSource.setDriverClassName(<span class="jxr_string">"org.hsqldb.jdbcDriver"</span>);
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>          dataSource.setUsername(<span class="jxr_string">"sa"</span>);
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          dataSource.setPassword(<span class="jxr_string">""</span>);
