@@ -59,7 +59,7 @@ public class HSQLDBTestProfileJPAConfiguration {
         }
         dbUrl = dbUrl.replace("TESTNAMETOKEN", RandomStringUtils.randomAlphabetic(8));
         dataSource.setUrl(dbUrl);
-        LOG.debug("Using test datasource url: " + dataSource.getUrl());
+        LOG.info("Using test datasource url: " + dataSource.getUrl());
         dataSource.setDriverClassName("org.hsqldb.jdbcDriver");
         dataSource.setUsername("sa");
         dataSource.setPassword("");

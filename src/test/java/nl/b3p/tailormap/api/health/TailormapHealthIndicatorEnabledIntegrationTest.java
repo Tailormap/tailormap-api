@@ -12,10 +12,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
+import nl.b3p.tailormap.api.controller.VersionController;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.actuate.metrics.AutoConfigureMetrics;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -23,34 +25,43 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest(classes = {HSQLDBTestProfileJPAConfiguration.class})
+@SpringBootTest(
+        classes = {
+            HSQLDBTestProfileJPAConfiguration.class,
+            TailormapHealthIndicator.class,
+            VersionController.class
+        })
 @AutoConfigureMockMvc
-@TestPropertySource(properties = "management.health.tailormap.enabled=true")
+@EnableAutoConfiguration
+@TestPropertySource(properties = {"management.health.tailormap.enabled=true"})
 @ActiveProfiles("test")
+@AutoConfigureMetrics
 class TailormapHealthIndicatorEnabledIntegrationTest {
-
-    private static String projectVersion;
-    private static String apiVersion;
     @Autowired private MockMvc mockMvc;
 
-    @BeforeAll
-    static void getVersionFromPom() {
-        // set through maven surefire/failsafe plugin from pom
-        projectVersion = System.getProperty("project.version");
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @Test
+    void when_enabled_health_should_have_status_and_response_data() throws Exception {
+        String projectVersion = System.getProperty("project.version");
         assumeFalse(
                 null == projectVersion,
-                "Project version unknown, should be set in system environment");
-        apiVersion = System.getProperty("api.version");
+                "Project version unknown, should be set as system property");
+        String databaseVersion = System.getenv("DATABASE_VERSION");
+        assumeFalse(
+                null == databaseVersion,
+                "Database version unknown, should be set in system environment");
+        String apiVersion = System.getenv("API_VERSION");
         assumeFalse(null == apiVersion, "API version unknown, should be set in system environment");
-    }
 
-    @Test
-    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    void when_enabled_health_should_have_status_and_response_data() throws Exception {
-        mockMvc.perform(get("/api/actuator/health/tailormap"))
+        mockMvc.perform(get("/actuator/health/tailormap"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(
+                        content()
+                                .contentType(
+                                        MediaType.parseMediaType(
+                                                "application/vnd.spring-boot.actuator.v3+json")))
                 .andExpect(jsonPath("$.details.version").value(projectVersion))
-                .andExpect(jsonPath("$.details.api_version").value(apiVersion));
+                .andExpect(jsonPath("$.details.apiVersion").value(apiVersion))
+                .andExpect(jsonPath("$.details.databaseversion").value(databaseVersion));
     }
 }

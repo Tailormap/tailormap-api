@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,20 +22,7 @@ import java.util.Map;
 @SpringBootTest(classes = {HSQLDBTestProfileJPAConfiguration.class, VersionController.class})
 @ActiveProfiles("test")
 class VersionControllerIntegrationTest {
-    private static String projectVersion;
-    private static String apiVersion;
     @Autowired private VersionController versionController;
-
-    @BeforeAll
-    static void getVersionFromPom() {
-        // set through maven surefire/failsafe plugin from pom
-        projectVersion = System.getProperty("project.version");
-        assumeFalse(
-                null == projectVersion,
-                "Project version unknown, should be set in system environment");
-        apiVersion = System.getProperty("api.version");
-        assumeFalse(null == apiVersion, "API version unknown, should be set in system environment");
-    }
 
     @Test
     void testGetVersion() {
@@ -44,13 +30,25 @@ class VersionControllerIntegrationTest {
                 versionController, "versionController can not be `null` if Spring Boot works");
         assertNotNull(versionController.getVersion(), "Version info not found");
 
+        String projectVersion = System.getProperty("project.version");
+        assumeFalse(
+                null == projectVersion,
+                "Project version unknown, should be set as system property");
+        String databaseVersion = System.getenv("DATABASE_VERSION");
+        assumeFalse(
+                null == databaseVersion,
+                "Database version unknown, should be set in system environment");
+
+        String apiVersion = System.getenv("API_VERSION");
+        assumeFalse(null == apiVersion, "API version unknown, should be set in system environment");
+
         Map<String, String> expected =
                 Map.of(
                         "version",
                         projectVersion,
                         "databaseversion",
-                        "46",
-                        "api_version",
+                        databaseVersion,
+                        "apiVersion",
                         apiVersion);
 
         assertEquals(expected, versionController.getVersion(), "Unexpected version response.");
