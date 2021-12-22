@@ -230,9 +230,9 @@ SPDX-License-Identifier: MIT
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>io.swagger</groupId>
+      <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-annotations</artifactId>
-      <version>1.6.3</version>
+      <version>2.1.11</version>
     </dependency>
     <dependency>
       <groupId>org.hsqldb</groupId>
@@ -583,6 +583,15 @@ SPDX-License-Identifier: MIT
                 <replace file="target/generated-sources/openapi/src/main/java/nl/b3p/tailormap/api/model/Component.java" summary="true">
                   <replacetoken><![CDATA[private Map<String, String> config = ;]]></replacetoken>
                   <replacevalue><![CDATA[private Map<String, String> config = new HashMap<>();]]></replacevalue>
+                </replace>
+                <!-- remove unused imports -->
+                <replace dir="target/generated-sources/openapi/src/main/java/nl/b3p/tailormap/api/model/" summary="true">
+                  <replacetoken><![CDATA[import io.swagger.annotations.ApiModel;]]></replacetoken>
+                  <replacevalue></replacevalue>
+                </replace>
+                <replace dir="target/generated-sources/openapi/src/main/java/nl/b3p/tailormap/api/model/" summary="true">
+                  <replacetoken><![CDATA[import io.swagger.annotations.ApiModelProperty;]]></replacetoken>
+                  <replacevalue></replacevalue>
                 </replace>
               </target>
             </configuration>
