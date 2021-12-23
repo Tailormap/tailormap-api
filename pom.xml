@@ -544,7 +544,7 @@ SPDX-License-Identifier: MIT
               <goal>generate</goal>
             </goals>
             <configuration>
-              <inputSpec>${project.basedir}/src/main/resources/model.yaml</inputSpec>
+              <inputSpec>${project.basedir}/src/main/resources/tailormap-api.yaml</inputSpec>
               <!-- <generatorName>java</generatorName>-->
               <!-- <library>native</library>-->
               <generatorName>spring</generatorName>
@@ -711,10 +711,6 @@ SPDX-License-Identifier: MIT
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <!-- not bound to any lifecycle, but can be run from commandline using:
