@@ -21,21 +21,21 @@ import java.util.*;
  */
 @Schema(name = &quot;CoordinateReferenceSystem&quot;,description = &quot; Well-known and client-supported EPSG code. Currently Rijksdriehoek/WGS84, new/TODO Web Mercator. &quot;)
 @javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="nc" id="L24">public class CoordinateReferenceSystem  implements Serializable {</span>
+<span class="fc" id="L24">public class CoordinateReferenceSystem  implements Serializable {</span>
   private static final long serialVersionUID = 1L;
 
-<span class="nc" id="L27">  @JsonProperty(&quot;code&quot;)</span>
+<span class="fc" id="L27">  @JsonProperty(&quot;code&quot;)</span>
   private String code = &quot;EPSG:28992&quot;;
 
-<span class="nc" id="L30">  @JsonProperty(&quot;definition&quot;)</span>
+<span class="fc" id="L30">  @JsonProperty(&quot;definition&quot;)</span>
   private String definition = &quot;+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs&quot;;
 
   @JsonProperty(&quot;bounds&quot;)
   private Bounds bounds;
 
   public CoordinateReferenceSystem code(String code) {
-<span class="nc" id="L37">    this.code = code;</span>
-<span class="nc" id="L38">    return this;</span>
+<span class="fc" id="L37">    this.code = code;</span>
+<span class="fc" id="L38">    return this;</span>
   }
 
   /**
@@ -47,7 +47,7 @@ import java.util.*;
 
 
   public String getCode() {
-<span class="nc" id="L50">    return code;</span>
+<span class="fc" id="L50">    return code;</span>
   }
 
   public void setCode(String code) {
@@ -55,8 +55,8 @@ import java.util.*;
 <span class="nc" id="L55">  }</span>
 
   public CoordinateReferenceSystem definition(String definition) {
-<span class="nc" id="L58">    this.definition = definition;</span>
-<span class="nc" id="L59">    return this;</span>
+<span class="fc" id="L58">    this.definition = definition;</span>
+<span class="fc" id="L59">    return this;</span>
   }
 
   /**
@@ -68,7 +68,7 @@ import java.util.*;
 
 
   public String getDefinition() {
-<span class="nc" id="L71">    return definition;</span>
+<span class="fc" id="L71">    return definition;</span>
   }
 
   public void setDefinition(String definition) {
@@ -89,7 +89,7 @@ import java.util.*;
   @Valid
 
   public Bounds getBounds() {
-<span class="nc" id="L92">    return bounds;</span>
+<span class="fc" id="L92">    return bounds;</span>
   }
 
   public void setBounds(Bounds bounds) {

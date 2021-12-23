@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.controller</a> &gt; <span class="el_source">MapController.java</span></div><h1>MapController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2021 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */ package nl.b3p.tailormap.api.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
+import nl.b3p.tailormap.api.model.AppLayer;
+import nl.b3p.tailormap.api.model.Bounds;
+import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
+import nl.b3p.tailormap.api.model.ErrorResponse;
+import nl.b3p.tailormap.api.model.MapResponse;
+import nl.b3p.tailormap.api.model.Service;
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.tailormap.viewer.config.app.Application;
+import nl.tailormap.viewer.config.app.StartLayer;
+import nl.tailormap.viewer.config.services.GeoService;
+import nl.tailormap.viewer.config.services.TileMatrixSet;
+import nl.tailormap.viewer.config.services.TileService;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
+import javax.validation.constraints.NotNull;
+
+@RestController
+@Validated
+@RequestMapping(path = &quot;/map/{appid}&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
+<span class="fc" id="L48">public class MapController {</span>
+<span class="fc" id="L49">    private final Log logger = LogFactory.getLog(getClass());</span>
+    @Autowired private ApplicationRepository applicationRepository;
+
+    @Operation(
+            summary = &quot;&quot;,
+            tags = {},
+            responses = {
+                @ApiResponse(
+                        responseCode = &quot;200&quot;,
+                        description = &quot;OK&quot;,
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = MapResponse.class))),
+                @ApiResponse(
+                        responseCode = &quot;400&quot;,
+                        description = &quot;Bad Request&quot;,
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public MapResponse get(
+            @Parameter(name = &quot;appid&quot;, description = &quot;application id&quot;, required = true)
+                    @PathVariable(&quot;appid&quot;)
+                    Long appid) {
+<span class="fc" id="L77">        logger.trace(&quot;Requesting 'map' for application id: &quot; + appid);</span>
+
+<span class="fc" id="L79">        MapResponse mapResponse = new MapResponse();</span>
+
+        // this could throw EntityNotFound, which is handles by handleEntityNotFoundException
+        // and in a normal flow this should not happen
+        // as appid is (should be) validated by calling the /app/ endpoint
+<span class="fc" id="L84">        Application application = applicationRepository.getById(appid);</span>
+
+<span class="fc" id="L86">        getApplicationParams(application, mapResponse);</span>
+<span class="fc" id="L87">        getLayers(application, mapResponse);</span>
+
+<span class="fc" id="L89">        return mapResponse;</span>
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(
+            value =
+                    HttpStatus
+                            .BAD_REQUEST /*,reason = &quot;Bad Request&quot; -- adding 'reason' will drop the body */)
+    @ResponseBody
+    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
+<span class="fc" id="L99">        logger.warn(</span>
+<span class="fc" id="L100">                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());</span>
+<span class="fc" id="L101">        return new ErrorResponse()</span>
+<span class="fc" id="L102">                .message(&quot;Requested an application that does not exist&quot;)</span>
+<span class="fc" id="L103">                .code(400);</span>
+    }
+
+    private void getApplicationParams(@NotNull Application a, @NotNull MapResponse mapResponse) {
+<span class="fc" id="L107">        final String pCode = a.getProjectionCode();</span>
+        //        final String pCode =
+        //                &quot;EPSG:28992[+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889
+        // +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel
+        // +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs]&quot;;
+<span class="fc" id="L112">        CoordinateReferenceSystem c = new CoordinateReferenceSystem();</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        if (null != pCode) {</span>
+<span class="fc" id="L114">            c.code(pCode.substring(0, pCode.indexOf('[')))</span>
+<span class="fc" id="L115">                    .definition(pCode.substring(pCode.indexOf('[') + 1, pCode.lastIndexOf(']')));</span>
+        }
+<span class="fc" id="L117">        Bounds maxExtent = new Bounds();</span>
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">        if (null != a.getMaxExtent()) {</span>
+<span class="nc" id="L119">            maxExtent</span>
+<span class="nc" id="L120">                    .minx(a.getMaxExtent().getMinx())</span>
+<span class="nc" id="L121">                    .miny(a.getMaxExtent().getMiny())</span>
+<span class="nc" id="L122">                    .maxx(a.getMaxExtent().getMaxx())</span>
+<span class="nc" id="L123">                    .maxy(a.getMaxExtent().getMaxy())</span>
+<span class="nc" id="L124">                    .crs(a.getMaxExtent().getCrs().getName());</span>
+        }
+<span class="fc" id="L126">        Bounds initialExtent = new Bounds();</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (null != a.getStartExtent()) {</span>
+<span class="nc" id="L128">            initialExtent</span>
+<span class="nc" id="L129">                    .minx(a.getStartExtent().getMinx())</span>
+<span class="nc" id="L130">                    .miny(a.getStartExtent().getMiny())</span>
+<span class="nc" id="L131">                    .maxx(a.getStartExtent().getMaxx())</span>
+<span class="nc" id="L132">                    .maxy(a.getStartExtent().getMaxy())</span>
+<span class="nc" id="L133">                    .crs(a.getStartExtent().getCrs().getName());</span>
+        }
+
+<span class="fc" id="L136">        mapResponse.crs(c).maxExtent(maxExtent).initialExtent(initialExtent);</span>
+<span class="fc" id="L137">    }</span>
+
+    private void getLayers(@NotNull Application a, @NotNull MapResponse mapResponse) {
+<span class="fc" id="L140">        List&lt;StartLayer&gt; startLayers = a.getStartLayers();</span>
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">        if (null != a.getStartLayers()) {</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">            for (StartLayer l : startLayers) {</span>
+<span class="fc" id="L143">                AppLayer appLayer =</span>
+                        new AppLayer()
+<span class="fc" id="L145">                                .id(l.getApplicationLayer().getId())</span>
+<span class="fc" id="L146">                                .displayName(l.getApplicationLayer().getLayerName())</span>
+<span class="fc" id="L147">                                .url(l.getApplicationLayer().getService().getUrl())</span>
+<span class="fc" id="L148">                                .serviceId(l.getApplicationLayer().getService().getId())</span>
+                                // TODO fixup hardcoded data
+<span class="fc" id="L150">                                .crs(new CoordinateReferenceSystem())</span>
+<span class="fc" id="L151">                                .visible(true)</span>
+<span class="fc" id="L152">                                .isBaseLayer(true);</span>
+
+<span class="fc" id="L154">                GeoService geoService = l.getApplicationLayer().getService();</span>
+<span class="fc" id="L155">                Service s =</span>
+                        new Service()
+<span class="fc" id="L157">                                .url(geoService.getUrl())</span>
+<span class="fc" id="L158">                                .id(geoService.getId())</span>
+<span class="fc" id="L159">                                .name(geoService.getName())</span>
+<span class="fc" id="L160">                                .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()));</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">                if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {</span>
+<span class="fc" id="L162">                    s.tilingProtocol(</span>
+<span class="fc" id="L163">                            Service.TilingProtocolEnum.fromValue(</span>
+<span class="fc" id="L164">                                    ((TileService) geoService).getTilingProtocol()));</span>
+
+                    // TODO
+                    // find first matrix set that sort of matches on the numeric part of the CRS
+                    // code
+<span class="fc" id="L169">                    TileMatrixSet tileMatrixSet =</span>
+                            ((TileService) geoService)
+<span class="fc" id="L171">                                    .getMatrixSets().stream()</span>
+<span class="fc" id="L172">                                            .filter(</span>
+                                                    tms -&gt;
+<span class="nc" id="L174">                                                            tms.getCrs()</span>
+<span class="nc" id="L175">                                                                    .contains(</span>
+<span class="nc" id="L176">                                                                            appLayer.getCrs()</span>
+<span class="nc" id="L177">                                                                                    .getCode()</span>
+<span class="nc" id="L178">                                                                                    .substring(5)))</span>
+<span class="fc" id="L179">                                            .findFirst()</span>
+<span class="fc" id="L180">                                            .orElse(null);</span>
+<span class="pc bpc" id="L181" title="1 of 2 branches missed.">                    if (null != tileMatrixSet) {</span>
+                        // you cannot add the JSONObject or the tileMatrixSet; that just does not
+                        // work,
+                        // but you can add a Map
+<span class="nc" id="L185">                        s.matrixSet(tileMatrixSet.toJSONObject().toMap());</span>
+                    }
+                }
+<span class="pc bpc" id="L188" title="1 of 2 branches missed.">                if (appLayer.getIsBaseLayer()) {</span>
+<span class="fc" id="L189">                    mapResponse.addBaseLayersItem(appLayer);</span>
+                }
+<span class="fc" id="L191">                mapResponse.addServicesItem(s);</span>
+<span class="fc" id="L192">            }</span>
+        }
+<span class="fc" id="L194">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

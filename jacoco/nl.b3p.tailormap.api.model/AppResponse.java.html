@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AppResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.model</a> &gt; <span class="el_source">AppResponse.java</span></div><h1>AppResponse.java</h1><pre class="source lang-java linenums">package nl.b3p.tailormap.api.model;
+
+import java.net.URI;
+import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
+import java.util.*;
+
+/**
+ * Answers API version and (default|requested) application id.
+ */
+@Schema(name = &quot;AppResponse&quot;,description = &quot;Answers API version and (default|requested) application id.&quot;)
+@javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
+<span class="nc" id="L27">public class AppResponse  implements Serializable {</span>
+  private static final long serialVersionUID = 1L;
+
+  @JsonProperty(&quot;id&quot;)
+  private Long id;
+
+<span class="nc" id="L33">  @JsonProperty(&quot;apiVersion&quot;)</span>
+  private String apiVersion = &quot;v1&quot;;
+
+  @JsonProperty(&quot;name&quot;)
+  private String name;
+
+  @JsonProperty(&quot;title&quot;)
+  private String title;
+
+  /**
+   * language code
+   */
+<span class="nc" id="L45">  public enum LangEnum {</span>
+<span class="nc" id="L46">    NL_NL(&quot;nl_NL&quot;),</span>
+    
+<span class="nc" id="L48">    EN_US(&quot;en_US&quot;);</span>
+
+    private String value;
+
+<span class="nc" id="L52">    LangEnum(String value) {</span>
+<span class="nc" id="L53">      this.value = value;</span>
+<span class="nc" id="L54">    }</span>
+
+    @JsonValue
+    public String getValue() {
+<span class="nc" id="L58">      return value;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L63">      return String.valueOf(value);</span>
+    }
+
+    @JsonCreator
+    public static LangEnum fromValue(String value) {
+<span class="nc bnc" id="L68" title="All 2 branches missed.">      for (LangEnum b : LangEnum.values()) {</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
+<span class="nc" id="L70">          return b;</span>
+        }
+      }
+<span class="nc" id="L73">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
+    }
+  }
+
+<span class="nc" id="L77">  @JsonProperty(&quot;lang&quot;)</span>
+  private LangEnum lang = LangEnum.NL_NL;
+
+<span class="nc" id="L80">  @JsonProperty(&quot;styling&quot;)</span>
+  @Valid
+  private Map&lt;String, String&gt; styling = null;
+
+  public AppResponse id(Long id) {
+<span class="nc" id="L85">    this.id = id;</span>
+<span class="nc" id="L86">    return this;</span>
+  }
+
+  /**
+   * application id
+   * @return id
+  */
+  @Schema(name = &quot;id&quot;, example = &quot;7&quot;, defaultValue = &quot;application id&quot;)
+
+
+  public Long getId() {
+<span class="nc" id="L97">    return id;</span>
+  }
+
+  public void setId(Long id) {
+<span class="nc" id="L101">    this.id = id;</span>
+<span class="nc" id="L102">  }</span>
+
+  public AppResponse apiVersion(String apiVersion) {
+<span class="nc" id="L105">    this.apiVersion = apiVersion;</span>
+<span class="nc" id="L106">    return this;</span>
+  }
+
+  /**
+   * Get apiVersion
+   * @return apiVersion
+  */
+  @Schema(name = &quot;apiVersion&quot;, defaultValue = &quot;&quot;)
+
+
+  public String getApiVersion() {
+<span class="nc" id="L117">    return apiVersion;</span>
+  }
+
+  public void setApiVersion(String apiVersion) {
+<span class="nc" id="L121">    this.apiVersion = apiVersion;</span>
+<span class="nc" id="L122">  }</span>
+
+  public AppResponse name(String name) {
+<span class="nc" id="L125">    this.name = name;</span>
+<span class="nc" id="L126">    return this;</span>
+  }
+
+  /**
+   * Get name
+   * @return name
+  */
+  @Schema(name = &quot;name&quot;, defaultValue = &quot;&quot;)
+
+
+  public String getName() {
+<span class="nc" id="L137">    return name;</span>
+  }
+
+  public void setName(String name) {
+<span class="nc" id="L141">    this.name = name;</span>
+<span class="nc" id="L142">  }</span>
+
+  public AppResponse title(String title) {
+<span class="nc" id="L145">    this.title = title;</span>
+<span class="nc" id="L146">    return this;</span>
+  }
+
+  /**
+   * Get title
+   * @return title
+  */
+  @Schema(name = &quot;title&quot;, defaultValue = &quot;&quot;)
+
+
+  public String getTitle() {
+<span class="nc" id="L157">    return title;</span>
+  }
+
+  public void setTitle(String title) {
+<span class="nc" id="L161">    this.title = title;</span>
+<span class="nc" id="L162">  }</span>
+
+  public AppResponse lang(LangEnum lang) {
+<span class="nc" id="L165">    this.lang = lang;</span>
+<span class="nc" id="L166">    return this;</span>
+  }
+
+  /**
+   * language code
+   * @return lang
+  */
+  @Schema(name = &quot;lang&quot;, defaultValue = &quot;language code&quot;)
+
+
+  public LangEnum getLang() {
+<span class="nc" id="L177">    return lang;</span>
+  }
+
+  public void setLang(LangEnum lang) {
+<span class="nc" id="L181">    this.lang = lang;</span>
+<span class="nc" id="L182">  }</span>
+
+  public AppResponse styling(Map&lt;String, String&gt; styling) {
+<span class="nc" id="L185">    this.styling = styling;</span>
+<span class="nc" id="L186">    return this;</span>
+  }
+
+  public AppResponse putStylingItem(String key, String stylingItem) {
+<span class="nc bnc" id="L190" title="All 2 branches missed.">    if (this.styling == null) {</span>
+<span class="nc" id="L191">      this.styling = new HashMap&lt;&gt;();</span>
+    }
+<span class="nc" id="L193">    this.styling.put(key, stylingItem);</span>
+<span class="nc" id="L194">    return this;</span>
+  }
+
+  /**
+   * styling information such as support- and backing colours etc.
+   * @return styling
+  */
+  @Schema(name = &quot;styling&quot;, defaultValue = &quot;styling information such as support- and backing colours etc.&quot;)
+
+
+  public Map&lt;String, String&gt; getStyling() {
+<span class="nc" id="L205">    return styling;</span>
+  }
+
+  public void setStyling(Map&lt;String, String&gt; styling) {
+<span class="nc" id="L209">    this.styling = styling;</span>
+<span class="nc" id="L210">  }</span>
+
+
+  @Override
+  public boolean equals(Object o) {
+<span class="nc bnc" id="L215" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L216">      return true;</span>
+    }
+<span class="nc bnc" id="L218" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L219">      return false;</span>
+    }
+<span class="nc" id="L221">    AppResponse appResponse = (AppResponse) o;</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">    return Objects.equals(this.id, appResponse.id) &amp;&amp;</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">        Objects.equals(this.apiVersion, appResponse.apiVersion) &amp;&amp;</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">        Objects.equals(this.name, appResponse.name) &amp;&amp;</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">        Objects.equals(this.title, appResponse.title) &amp;&amp;</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">        Objects.equals(this.lang, appResponse.lang) &amp;&amp;</span>
+<span class="nc bnc" id="L227" title="All 2 branches missed.">        Objects.equals(this.styling, appResponse.styling);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L232">    return Objects.hash(id, apiVersion, name, title, lang, styling);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L237">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L238">    sb.append(&quot;class AppResponse {\n&quot;);</span>
+    
+<span class="nc" id="L240">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L241">    sb.append(&quot;    apiVersion: &quot;).append(toIndentedString(apiVersion)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L242">    sb.append(&quot;    name: &quot;).append(toIndentedString(name)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L243">    sb.append(&quot;    title: &quot;).append(toIndentedString(title)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L244">    sb.append(&quot;    lang: &quot;).append(toIndentedString(lang)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L245">    sb.append(&quot;    styling: &quot;).append(toIndentedString(styling)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L246">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L247">    return sb.toString();</span>
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+<span class="nc bnc" id="L255" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L256">      return &quot;null&quot;;</span>
+    }
+<span class="nc" id="L258">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

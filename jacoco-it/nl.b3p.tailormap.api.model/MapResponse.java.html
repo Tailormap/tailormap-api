@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.model</a> &gt; <span class="el_source">MapResponse.java</span></div><h1>MapResponse.java</h1><pre class="source lang-java linenums">package nl.b3p.tailormap.api.model;
+
+import java.net.URI;
+import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+
+import java.util.ArrayList;
+import java.util.List;
+import nl.b3p.tailormap.api.model.AppLayer;
+import nl.b3p.tailormap.api.model.Bounds;
+import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
+import nl.b3p.tailormap.api.model.Service;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
+import java.util.*;
+
+/**
+ * Any information needed to draw a basic map on a page. May include base layers.
+ */
+@Schema(name = &quot;MapResponse&quot;,description = &quot;Any information needed to draw a basic map on a page. May include base layers.&quot;)
+@javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
+<span class="fc" id="L29">public class MapResponse  implements Serializable {</span>
+  private static final long serialVersionUID = 1L;
+
+  @JsonProperty(&quot;initialExtent&quot;)
+  private Bounds initialExtent;
+
+  @JsonProperty(&quot;maxExtent&quot;)
+  private Bounds maxExtent;
+
+<span class="fc" id="L38">  @JsonProperty(&quot;services&quot;)</span>
+  @Valid
+  private List&lt;Service&gt; services = null;
+
+<span class="fc" id="L42">  @JsonProperty(&quot;baseLayers&quot;)</span>
+  @Valid
+  private List&lt;AppLayer&gt; baseLayers = null;
+
+  @JsonProperty(&quot;crs&quot;)
+  private CoordinateReferenceSystem crs;
+
+  public MapResponse initialExtent(Bounds initialExtent) {
+<span class="fc" id="L50">    this.initialExtent = initialExtent;</span>
+<span class="fc" id="L51">    return this;</span>
+  }
+
+  /**
+   * Get initialExtent
+   * @return initialExtent
+  */
+  @Schema(name = &quot;initialExtent&quot;, defaultValue = &quot;&quot;)
+
+  @Valid
+
+  public Bounds getInitialExtent() {
+<span class="fc" id="L63">    return initialExtent;</span>
+  }
+
+  public void setInitialExtent(Bounds initialExtent) {
+<span class="nc" id="L67">    this.initialExtent = initialExtent;</span>
+<span class="nc" id="L68">  }</span>
+
+  public MapResponse maxExtent(Bounds maxExtent) {
+<span class="fc" id="L71">    this.maxExtent = maxExtent;</span>
+<span class="fc" id="L72">    return this;</span>
+  }
+
+  /**
+   * Get maxExtent
+   * @return maxExtent
+  */
+  @Schema(name = &quot;maxExtent&quot;, defaultValue = &quot;&quot;)
+
+  @Valid
+
+  public Bounds getMaxExtent() {
+<span class="fc" id="L84">    return maxExtent;</span>
+  }
+
+  public void setMaxExtent(Bounds maxExtent) {
+<span class="nc" id="L88">    this.maxExtent = maxExtent;</span>
+<span class="nc" id="L89">  }</span>
+
+  public MapResponse services(List&lt;Service&gt; services) {
+<span class="nc" id="L92">    this.services = services;</span>
+<span class="nc" id="L93">    return this;</span>
+  }
+
+  public MapResponse addServicesItem(Service servicesItem) {
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (this.services == null) {</span>
+<span class="fc" id="L98">      this.services = new ArrayList&lt;&gt;();</span>
+    }
+<span class="fc" id="L100">    this.services.add(servicesItem);</span>
+<span class="fc" id="L101">    return this;</span>
+  }
+
+  /**
+   * Get services
+   * @return services
+  */
+  @Schema(name = &quot;services&quot;, defaultValue = &quot;&quot;)
+
+  @Valid
+
+  public List&lt;Service&gt; getServices() {
+<span class="fc" id="L113">    return services;</span>
+  }
+
+  public void setServices(List&lt;Service&gt; services) {
+<span class="nc" id="L117">    this.services = services;</span>
+<span class="nc" id="L118">  }</span>
+
+  public MapResponse baseLayers(List&lt;AppLayer&gt; baseLayers) {
+<span class="nc" id="L121">    this.baseLayers = baseLayers;</span>
+<span class="nc" id="L122">    return this;</span>
+  }
+
+  public MapResponse addBaseLayersItem(AppLayer baseLayersItem) {
+<span class="fc bfc" id="L126" title="All 2 branches covered.">    if (this.baseLayers == null) {</span>
+<span class="fc" id="L127">      this.baseLayers = new ArrayList&lt;&gt;();</span>
+    }
+<span class="fc" id="L129">    this.baseLayers.add(baseLayersItem);</span>
+<span class="fc" id="L130">    return this;</span>
+  }
+
+  /**
+   * Get baseLayers
+   * @return baseLayers
+  */
+  @Schema(name = &quot;baseLayers&quot;, defaultValue = &quot;&quot;)
+
+  @Valid
+
+  public List&lt;AppLayer&gt; getBaseLayers() {
+<span class="fc" id="L142">    return baseLayers;</span>
+  }
+
+  public void setBaseLayers(List&lt;AppLayer&gt; baseLayers) {
+<span class="nc" id="L146">    this.baseLayers = baseLayers;</span>
+<span class="nc" id="L147">  }</span>
+
+  public MapResponse crs(CoordinateReferenceSystem crs) {
+<span class="fc" id="L150">    this.crs = crs;</span>
+<span class="fc" id="L151">    return this;</span>
+  }
+
+  /**
+   * Get crs
+   * @return crs
+  */
+  @Schema(name = &quot;crs&quot;, defaultValue = &quot;&quot;)
+
+  @Valid
+
+  public CoordinateReferenceSystem getCrs() {
+<span class="fc" id="L163">    return crs;</span>
+  }
+
+  public void setCrs(CoordinateReferenceSystem crs) {
+<span class="nc" id="L167">    this.crs = crs;</span>
+<span class="nc" id="L168">  }</span>
+
+
+  @Override
+  public boolean equals(Object o) {
+<span class="nc bnc" id="L173" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L174">      return true;</span>
+    }
+<span class="nc bnc" id="L176" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L177">      return false;</span>
+    }
+<span class="nc" id="L179">    MapResponse mapResponse = (MapResponse) o;</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">    return Objects.equals(this.initialExtent, mapResponse.initialExtent) &amp;&amp;</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        Objects.equals(this.maxExtent, mapResponse.maxExtent) &amp;&amp;</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        Objects.equals(this.services, mapResponse.services) &amp;&amp;</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">        Objects.equals(this.baseLayers, mapResponse.baseLayers) &amp;&amp;</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">        Objects.equals(this.crs, mapResponse.crs);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L189">    return Objects.hash(initialExtent, maxExtent, services, baseLayers, crs);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L194">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L195">    sb.append(&quot;class MapResponse {\n&quot;);</span>
+    
+<span class="nc" id="L197">    sb.append(&quot;    initialExtent: &quot;).append(toIndentedString(initialExtent)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L198">    sb.append(&quot;    maxExtent: &quot;).append(toIndentedString(maxExtent)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L199">    sb.append(&quot;    services: &quot;).append(toIndentedString(services)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L200">    sb.append(&quot;    baseLayers: &quot;).append(toIndentedString(baseLayers)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L201">    sb.append(&quot;    crs: &quot;).append(toIndentedString(crs)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L202">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L203">    return sb.toString();</span>
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+<span class="nc bnc" id="L211" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L212">      return &quot;null&quot;;</span>
+    }
+<span class="nc" id="L214">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
