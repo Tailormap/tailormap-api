@@ -71,7 +71,61 @@
 <h2><a name="CPD_Results"></a>CPD Results</h2>
 <p>The following document contains the results of PMD's  <a class="externalLink" href="https://pmd.github.io/latest/pmd_userdocs_cpd.html">CPD</a> 6.41.0.</p></section><section>
 <h2><a name="Duplications"></a>Duplications</h2>
-<p>CPD found no problems in your source code.</p></section>
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>File</th>
+<th>Line</th></tr>
+<tr class="b">
+<td>nl/b3p/tailormap/api/controller/ComponentsController.java</td>
+<td><a href="./xref/nl/b3p/tailormap/api/controller/ComponentsController.html#L42">42</a></td></tr>
+<tr class="a">
+<td>nl/b3p/tailormap/api/controller/LayersController.java</td>
+<td><a href="./xref/nl/b3p/tailormap/api/controller/LayersController.html#L45">45</a></td></tr>
+<tr class="b"><td colspan='2'>
+<div>
+<pre>public class ComponentsController {
+
+    private final Log logger = LogFactory.getLog(getClass());
+    @Autowired private ApplicationRepository applicationRepository;
+
+    /**
+     * Handle any {@code EntityNotFoundException} that this controller might throw while getting the
+     * application.
+     *
+     * @param exception the exception
+     * @return an error response
+     */
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(
+            value =
+                    HttpStatus
+                            .BAD_REQUEST /*,reason = &quot;Bad Request&quot; -- adding 'reason' will drop the body */)
+    @ResponseBody
+    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
+        logger.warn(
+                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());
+        return new ErrorResponse()
+                .message(&quot;Requested an application that does not exist&quot;)
+                .code(400);
+    }
+
+    /**
+     * GET /components/{appid}
+     *
+     * @param appid application id (required)
+     * @return OK (status code 200)
+     */
+    @Operation(
+            summary = &quot;&quot;,
+            tags = {},
+            responses = {
+                @ApiResponse(
+                        responseCode = &quot;200&quot;,
+                        description = &quot;OK&quot;,
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = Component.class))),</pre></div></td></tr></table></section>
         </main>
       </div>
     </div>

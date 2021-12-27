@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ComponentsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.controller</a> &gt; <span class="el_source">ComponentsController.java</span></div><h1>ComponentsController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2021 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
+import nl.b3p.tailormap.api.model.Component;
+import nl.b3p.tailormap.api.model.ErrorResponse;
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.tailormap.viewer.config.app.Application;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityNotFoundException;
+
+@RestController
+@Validated
+@RequestMapping(path = &quot;/components/{appid}&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
+<span class="fc" id="L42">public class ComponentsController {</span>
+
+<span class="fc" id="L44">    private final Log logger = LogFactory.getLog(getClass());</span>
+    @Autowired private ApplicationRepository applicationRepository;
+
+    /**
+     * Handle any {@code EntityNotFoundException} that this controller might throw while getting the
+     * application.
+     *
+     * @param exception the exception
+     * @return an error response
+     */
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(
+            value =
+                    HttpStatus
+                            .BAD_REQUEST /*,reason = &quot;Bad Request&quot; -- adding 'reason' will drop the body */)
+    @ResponseBody
+    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
+<span class="fc" id="L61">        logger.warn(</span>
+<span class="fc" id="L62">                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());</span>
+<span class="fc" id="L63">        return new ErrorResponse()</span>
+<span class="fc" id="L64">                .message(&quot;Requested an application that does not exist&quot;)</span>
+<span class="fc" id="L65">                .code(400);</span>
+    }
+
+    /**
+     * GET /components/{appid}
+     *
+     * @param appid application id (required)
+     * @return OK (status code 200)
+     */
+    @Operation(
+            summary = &quot;&quot;,
+            tags = {},
+            responses = {
+                @ApiResponse(
+                        responseCode = &quot;200&quot;,
+                        description = &quot;OK&quot;,
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = Component.class))),
+                @ApiResponse(
+                        responseCode = &quot;400&quot;,
+                        description = &quot;Bad Request&quot;,
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List&lt;Component&gt; get(
+            @Parameter(name = &quot;appid&quot;, description = &quot;application id&quot;, required = true)
+                    @PathVariable(&quot;appid&quot;)
+                    Long appid) {
+<span class="fc" id="L98">        logger.trace(&quot;Requesting 'components' for application id: &quot; + appid);</span>
+
+        // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
+        // and in a normal flow this should not happen
+        // as appid is (should be) validated by calling the /app/ endpoint
+<span class="fc" id="L103">        Application application = applicationRepository.getById(appid);</span>
+
+<span class="fc" id="L105">        List&lt;Component&gt; components = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L106">        findComponents(application, components);</span>
+
+<span class="fc" id="L108">        return components;</span>
+    }
+
+    /**
+     * find all configured components for this application.
+     *
+     * @param application the application at hand
+     * @param componentList the list that holds the components
+     */
+    private void findComponents(Application application, List&lt;Component&gt; componentList) {
+        // TODO implementation: mapping from ConfiguredComponent to Component
+        //    componentList.addAll(
+        //        a.getComponents().stream()
+        //            .map(p -&gt; new Component()
+        //                        .type(p.getClassName())
+        //                        .config(p.getDetails())
+        //                        .putConfigItem(&quot;title&quot;, p.getName()))
+        //            .collect(Collectors.toList()));
+
+<span class="fc" id="L127">        logger.trace(&quot;listing components: &quot; + application.getComponents());</span>
+
+<span class="fc" id="L129">        componentList.add(</span>
+                new Component()
+<span class="fc" id="L131">                        .type(&quot;Dummy&quot;)</span>
+<span class="fc" id="L132">                        .config(</span>
+<span class="fc" id="L133">                                Map.of(</span>
+                                        &quot;label&quot;, &quot;dummy component label&quot;,
+                                        &quot;title&quot;, &quot;dummy component title&quot;,
+                                        &quot;tooltip&quot;, &quot;dummy component tooltip&quot;,
+                                        &quot;dummyConfig&quot;, &quot;dummyValue&quot;)));
+<span class="fc" id="L138">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

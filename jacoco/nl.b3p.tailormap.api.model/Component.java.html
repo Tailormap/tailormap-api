@@ -23,19 +23,19 @@ import java.util.*;
  */
 @Schema(name = &quot;Component&quot;,description = &quot;a component to be used in the application&quot;)
 @javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="nc" id="L26">public class Component  implements Serializable {</span>
+<span class="fc" id="L26">public class Component  implements Serializable {</span>
   private static final long serialVersionUID = 1L;
 
   @JsonProperty(&quot;type&quot;)
   private String type;
 
-<span class="nc" id="L32">  @JsonProperty(&quot;config&quot;)</span>
+<span class="fc" id="L32">  @JsonProperty(&quot;config&quot;)</span>
   @Valid
   private Map&lt;String, String&gt; config = new HashMap&lt;&gt;();
 
   public Component type(String type) {
-<span class="nc" id="L37">    this.type = type;</span>
-<span class="nc" id="L38">    return this;</span>
+<span class="fc" id="L37">    this.type = type;</span>
+<span class="fc" id="L38">    return this;</span>
   }
 
   /**
@@ -47,7 +47,7 @@ import java.util.*;
 
 
   public String getType() {
-<span class="nc" id="L50">    return type;</span>
+<span class="fc" id="L50">    return type;</span>
   }
 
   public void setType(String type) {
@@ -55,8 +55,8 @@ import java.util.*;
 <span class="nc" id="L55">  }</span>
 
   public Component config(Map&lt;String, String&gt; config) {
-<span class="nc" id="L58">    this.config = config;</span>
-<span class="nc" id="L59">    return this;</span>
+<span class="fc" id="L58">    this.config = config;</span>
+<span class="fc" id="L59">    return this;</span>
   }
 
   public Component putConfigItem(String key, String configItem) {
@@ -73,7 +73,7 @@ import java.util.*;
 
 
   public Map&lt;String, String&gt; getConfig() {
-<span class="nc" id="L76">    return config;</span>
+<span class="fc" id="L76">    return config;</span>
   }
 
   public void setConfig(Map&lt;String, String&gt; config) {
