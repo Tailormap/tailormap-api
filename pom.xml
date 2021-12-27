@@ -467,6 +467,7 @@ SPDX-License-Identifier: MIT
             </goals>
             <phase>pre-integration-test</phase>
             <configuration>
+              <profiles>test</profiles>
               <!--suppress UnresolvedMavenProperty -->
               <jvmArguments>${failsafeArgLine}</jvmArguments>
               <environmentVariables>
