@@ -26,13 +26,13 @@ SPDX-License-Identifier: MIT
   <licenses>
     <license>
       <name>MIT License</name>
-      <url>https://raw.githubusercontent.com/B3Partners/tailormap-api/main/LICENSES/LICENSE</url>
+      <url>https://raw.githubusercontent.com/B3Partners/tailormap-api/main/LICENSES/MIT.txt</url>
       <distribution>repo</distribution>
       <comments>For the tailormap-api code.</comments>
     </license>
     <license>
       <name>CC0-1.0</name>
-      <url>https://raw.githubusercontent.com/B3Partners/tailormap-api/main/LICENSES/CC0-1.0</url>
+      <url>https://raw.githubusercontent.com/B3Partners/tailormap-api/main/LICENSES/CC0-1.0.txt</url>
       <distribution>repo</distribution>
       <comments>For the tailormap-api documentation.</comments>
     </license>
