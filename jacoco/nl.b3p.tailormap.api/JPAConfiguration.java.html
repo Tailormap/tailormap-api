@@ -93,7 +93,7 @@ import javax.sql.DataSource;
 <span class="fc" id="L93">        return new PersistenceExceptionTranslationPostProcessor();</span>
     }
 
-    final Properties additionalProperties() {
+    private final Properties additionalProperties() {
 <span class="fc" id="L97">        final Properties hibernateProperties = new Properties();</span>
         //    hibernateProperties.setProperty(
         //        &quot;hibernate.hbm2ddl.auto&quot;, env.getProperty(&quot;spring.jpa.hibernate.ddl-auto&quot;, &quot;&quot;));
