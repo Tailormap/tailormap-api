@@ -1,4 +1,5 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Tailormap API,nl.b3p.tailormap.api.controller,LayersController,0,94,0,2,0,26,0,5,0,4
 Tailormap API,nl.b3p.tailormap.api.controller,MapController,61,214,6,10,18,56,7,7,1,5
 Tailormap API,nl.b3p.tailormap.api.controller,AppController,26,146,3,15,6,33,3,10,0,4
 Tailormap API,nl.b3p.tailormap.api.controller,VersionController,1,51,1,1,0,7,1,2,0,2

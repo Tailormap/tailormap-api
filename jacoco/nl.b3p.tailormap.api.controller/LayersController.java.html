@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LayersController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.controller</a> &gt; <span class="el_source">LayersController.java</span></div><h1>LayersController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2021 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
+import nl.b3p.tailormap.api.model.AppLayer;
+import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
+import nl.b3p.tailormap.api.model.ErrorResponse;
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.tailormap.viewer.config.app.Application;
+import nl.tailormap.viewer.config.app.ApplicationLayer;
+import nl.tailormap.viewer.config.app.StartLayer;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
+import javax.validation.constraints.NotNull;
+
+@RestController
+@Validated
+@RequestMapping(path = &quot;/layers/{appid}&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
+<span class="fc" id="L45">public class LayersController {</span>
+<span class="fc" id="L46">    private final Log logger = LogFactory.getLog(getClass());</span>
+    @Autowired private ApplicationRepository applicationRepository;
+
+    /**
+     * Handle any {@code EntityNotFoundException} that this controller might throw while getting the
+     * application.
+     *
+     * @param exception the exception
+     * @return an error response
+     */
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(
+            value =
+                    HttpStatus
+                            .BAD_REQUEST /*,reason = &quot;Bad Request&quot; -- adding 'reason' will drop the body */)
+    @ResponseBody
+    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
+<span class="fc" id="L63">        logger.warn(</span>
+<span class="fc" id="L64">                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());</span>
+<span class="fc" id="L65">        return new ErrorResponse()</span>
+<span class="fc" id="L66">                .message(&quot;Requested an application that does not exist&quot;)</span>
+<span class="fc" id="L67">                .code(400);</span>
+    }
+
+    /**
+     * GET /layers/{appid}.
+     *
+     * @param appid application id (required)
+     * @return OK (status code 200) with list of {@code AppLayer}
+     */
+    @Operation(
+            summary = &quot;&quot;,
+            tags = {},
+            responses = {
+                @ApiResponse(
+                        responseCode = &quot;200&quot;,
+                        description = &quot;OK&quot;,
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = AppLayer.class))),
+                @ApiResponse(
+                        responseCode = &quot;400&quot;,
+                        description = &quot;Bad Request&quot;,
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List&lt;AppLayer&gt; get(
+            @Parameter(name = &quot;appid&quot;, description = &quot;application id&quot;, required = true)
+                    @PathVariable(&quot;appid&quot;)
+                    Long appid) {
+<span class="fc" id="L100">        logger.trace(&quot;Requesting 'layers' for application id: &quot; + appid);</span>
+
+        // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
+        // and in a normal flow this should not happen
+        // as appid is (should be) validated by calling the /app/ endpoint
+<span class="fc" id="L105">        Application application = applicationRepository.getById(appid);</span>
+
+<span class="fc" id="L107">        List&lt;AppLayer&gt; appLayers = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L109">        findApplayers(application, appLayers);</span>
+
+<span class="fc" id="L111">        return appLayers;</span>
+    }
+
+    /**
+     * find any applayers for this application and add them to the list.
+     *
+     * @param application the application
+     * @param list the list that will hold the app layers
+     */
+    private void findApplayers(@NotNull Application application, List&lt;AppLayer&gt; list) {
+        ApplicationLayer apll;
+        AppLayer a;
+        // TODO implement properly
+        // find all
+<span class="fc" id="L125">        List&lt;StartLayer&gt; startLayers = application.getStartLayers();</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        for (StartLayer startLayer : startLayers) {</span>
+<span class="fc" id="L127">            apll = startLayer.getApplicationLayer();</span>
+            // create API object for each
+<span class="fc" id="L129">            a =</span>
+                    new AppLayer()
+<span class="fc" id="L131">                            .id(apll.getId())</span>
+<span class="fc" id="L132">                            .crs(new CoordinateReferenceSystem())</span>
+<span class="fc" id="L133">                            .url(apll.getService().getUrl())</span>
+<span class="fc" id="L134">                            .isBaseLayer(false)</span>
+<span class="fc" id="L135">                            .displayName(apll.getLayerName())</span>
+<span class="fc" id="L136">                            .serviceId(apll.getService().getId())</span>
+<span class="fc" id="L137">                            .visible(true);</span>
+            // add each to list
+<span class="fc" id="L139">            list.add(a);</span>
+<span class="fc" id="L140">        }</span>
+<span class="fc" id="L141">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
