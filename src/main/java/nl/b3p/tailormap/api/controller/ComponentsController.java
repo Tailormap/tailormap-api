@@ -1,0 +1,139 @@
+/*
+ * Copyright (C) 2021 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
+import nl.b3p.tailormap.api.model.Component;
+import nl.b3p.tailormap.api.model.ErrorResponse;
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.tailormap.viewer.config.app.Application;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityNotFoundException;
+
+@RestController
+@Validated
+@RequestMapping(path = "/components/{appid}", produces = MediaType.APPLICATION_JSON_VALUE)
+public class ComponentsController {
+
+    private final Log logger = LogFactory.getLog(getClass());
+    @Autowired private ApplicationRepository applicationRepository;
+
+    /**
+     * Handle any {@code EntityNotFoundException} that this controller might throw while getting the
+     * application.
+     *
+     * @param exception the exception
+     * @return an error response
+     */
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(
+            value =
+                    HttpStatus
+                            .BAD_REQUEST /*,reason = "Bad Request" -- adding 'reason' will drop the body */)
+    @ResponseBody
+    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
+        logger.warn(
+                "Requested an application that does not exist. Message: " + exception.getMessage());
+        return new ErrorResponse()
+                .message("Requested an application that does not exist")
+                .code(400);
+    }
+
+    /**
+     * GET /components/{appid}
+     *
+     * @param appid application id (required)
+     * @return OK (status code 200)
+     */
+    @Operation(
+            summary = "",
+            tags = {},
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "OK",
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = Component.class))),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Bad Request",
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Component> get(
+            @Parameter(name = "appid", description = "application id", required = true)
+                    @PathVariable("appid")
+                    Long appid) {
+        logger.trace("Requesting 'components' for application id: " + appid);
+
+        // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
+        // and in a normal flow this should not happen
+        // as appid is (should be) validated by calling the /app/ endpoint
+        Application application = applicationRepository.getById(appid);
+
+        List<Component> components = new ArrayList<>();
+        findComponents(application, components);
+
+        return components;
+    }
+
+    /**
+     * find all configured components for this application.
+     *
+     * @param application the application at hand
+     * @param componentList the list that holds the components
+     */
+    private void findComponents(Application application, List<Component> componentList) {
+        // TODO implementation: mapping from ConfiguredComponent to Component
+        //    componentList.addAll(
+        //        a.getComponents().stream()
+        //            .map(p -> new Component()
+        //                        .type(p.getClassName())
+        //                        .config(p.getDetails())
+        //                        .putConfigItem("title", p.getName()))
+        //            .collect(Collectors.toList()));
+
+        logger.trace("listing components: " + application.getComponents());
+
+        componentList.add(
+                new Component()
+                        .type("Dummy")
+                        .config(
+                                Map.of(
+                                        "label", "dummy component label",
+                                        "title", "dummy component title",
+                                        "tooltip", "dummy component tooltip",
+                                        "dummyConfig", "dummyValue")));
+    }
+}
