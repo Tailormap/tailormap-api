@@ -67,7 +67,6 @@ SPDX-License-Identifier: MIT
       <organizationUrl>https://www.gnamic.nl/</organizationUrl>
     </developer>
   </developers>
-  <contributors></contributors>
   <scm>
     <connection>scm:git:git@github.com:B3Partners/tailormap-api.git</connection>
     <developerConnection>scm:git:git@github.com:B3Partners/tailormap-api.git</developerConnection>
@@ -109,10 +108,21 @@ SPDX-License-Identifier: MIT
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <spring.boot.version>${project.parent.version}</spring.boot.version>
+    <!-- version overrides. see org.springframework.boot:spring-boot-dependencies -->
+    <hsqldb.version>2.6.1</hsqldb.version>
+    <postgresql.version>42.3.1</postgresql.version>
+    <junit-jupiter.version>5.8.2</junit-jupiter.version>
+    <logback.version>1.2.10</logback.version>
     <org.tailormap.version>5.9.12-SNAPSHOT</org.tailormap.version>
     <maven.surefire.version>3.0.0-M5</maven.surefire.version>
-    <test.junit-jupiter.version>5.8.2</test.junit-jupiter.version>
+    <maven-surefire-plugin.version>${maven.surefire.version}</maven-surefire-plugin.version>
+    <maven-failsafe-plugin.version>${maven.surefire.version}</maven-failsafe-plugin.version>
     <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
+    <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
+    <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
+    <maven-deploy-plugin.version>3.0.0-M2</maven-deploy-plugin.version>
+    <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
+
     <maven-pmd-plugin.version>3.15.0</maven-pmd-plugin.version>
     <versions-maven-plugin.version>2.8.1</versions-maven-plugin.version>
     <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
@@ -137,7 +147,7 @@ SPDX-License-Identifier: MIT
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>${test.junit-jupiter.version}</version>
+        <version>${junit-jupiter.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -188,7 +198,6 @@ SPDX-License-Identifier: MIT
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.3.1</version>
       <exclusions>
         <exclusion>
           <groupId>org.checkerframework</groupId>
@@ -291,14 +300,6 @@ SPDX-License-Identifier: MIT
           <version>5.3.1</version>
         </plugin>
         <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>3.0.0-M2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-pmd-plugin</artifactId>
           <version>${maven-pmd-plugin.version}</version>
         </plugin>
@@ -336,61 +337,8 @@ SPDX-License-Identifier: MIT
           <version>${jacoco-maven-plugin.version}</version>
         </plugin>
         <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.3.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.2.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>3.0.0-M1</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-release-plugin</artifactId>
           <version>3.0.0-M4</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-antrun-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.2.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.2.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>${maven.surefire.version}</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${maven.surefire.version}</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>3.2.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${maven-javadoc-plugin.version}</version>
-          <configuration>
-            <notimestamp>true</notimestamp>
-            <failOnWarnings>${failOnValidation}</failOnWarnings>
-            <failOnError>${failOnValidation}</failOnError>
-          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -451,6 +399,7 @@ SPDX-License-Identifier: MIT
             <project.version>${project.version}</project.version>
           </systemPropertyVariables>
           <environmentVariables>
+            <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
             <!-- TODO read this from persistence -->
             <DATABASE_VERSION>46</DATABASE_VERSION>
@@ -467,10 +416,12 @@ SPDX-License-Identifier: MIT
             </goals>
             <phase>pre-integration-test</phase>
             <configuration>
+              <!-- <skip>${skipQA}</skip> -->
               <profiles>test</profiles>
               <!--suppress UnresolvedMavenProperty -->
               <jvmArguments>${failsafeArgLine}</jvmArguments>
               <environmentVariables>
+                <!--suppress UnresolvedMavenProperty -->
                 <API_VERSION>${info.version}</API_VERSION>
                 <!-- TODO read this from persistence -->
                 <DATABASE_VERSION>46</DATABASE_VERSION>
@@ -486,6 +437,9 @@ SPDX-License-Identifier: MIT
               <goal>stop</goal>
             </goals>
             <phase>post-integration-test</phase>
+            <configuration>
+              <!-- <skip>${skipQA}</skip> -->
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -498,6 +452,7 @@ SPDX-License-Identifier: MIT
             <project.version>${project.version}</project.version>
           </systemPropertyVariables>
           <environmentVariables>
+            <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
             <!-- TODO read this from persistence -->
             <DATABASE_VERSION>46</DATABASE_VERSION>
@@ -521,6 +476,7 @@ SPDX-License-Identifier: MIT
             <project.version>${project.version}</project.version>
           </systemPropertyVariables>
           <environmentVariables>
+            <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
             <!-- TODO read this from persistence -->
             <DATABASE_VERSION>46</DATABASE_VERSION>
@@ -620,11 +576,15 @@ SPDX-License-Identifier: MIT
               <goal>jar</goal>
             </goals>
             <phase>verify</phase>
+            <configuration>
+              <notimestamp>true</notimestamp>
+              <failOnWarnings>${failOnValidation}</failOnWarnings>
+              <failOnError>${failOnValidation}</failOnError>
+            </configuration>
           </execution>
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
@@ -1005,6 +965,8 @@ SPDX-License-Identifier: MIT
         <version>${maven-javadoc-plugin.version}</version>
         <configuration>
           <notimestamp>true</notimestamp>
+          <failOnWarnings>${failOnValidation}</failOnWarnings>
+          <failOnError>${failOnValidation}</failOnError>
         </configuration>
         <reportSets>
           <reportSet>
