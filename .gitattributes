@@ -1,0 +1,16 @@
+*.java          text diff=java
+*.css           text diff=css
+*.htm           text diff=html
+*.html          text diff=html
+*.js            text
+*.properties    text
+*.xml           text
+*.xsd           text
+*.csv           text
+*.apt           text
+*.md            text
+*.txt           text
+*.rst           text
+*.yml           text
+*.yaml          text
+Dockerfile      text
