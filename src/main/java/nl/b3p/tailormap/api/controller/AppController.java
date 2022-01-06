@@ -29,9 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -95,8 +93,7 @@ public class AppController {
                         + version);
 
         if (null != appid) {
-            Optional<Application> a = applicationRepository.findById(appid);
-            this.application = a.isPresent() ? a.get() : null;
+            this.application = applicationRepository.findById(appid).orElse(null);
         } else {
             this.application = findApplication(name, version);
         }
@@ -141,9 +138,11 @@ public class AppController {
             if (null != version) {
                 application = applicationRepository.findByNameAndVersion(name, version);
             } else {
-                List<Application> applications = applicationRepository.findByName(name);
-                Optional<Application> a = applications.stream().sorted().findFirst();
-                application = a.isPresent() ? a.get() : null;
+                application =
+                        applicationRepository.findByName(name).stream()
+                                .sorted()
+                                .findFirst()
+                                .orElse(null);
             }
 
             if (null == application) {
