@@ -11,23 +11,32 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
 import nl.tailormap.viewer.config.app.Application;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 
 /** Testcases for {@link ApplicationRepository}. */
 @ActiveProfiles("test")
-@SpringBootTest(classes = {HSQLDBTestProfileJPAConfiguration.class, Application.class})
-@ExtendWith(SpringExtension.class)
-class ApplicationRepositoryIntegrationTest {
+@DataJpaTest(showSql = false)
+@AutoConfigureTestDatabase
+@EnableJpaRepositories(basePackages = {"nl.b3p.tailormap.api.repository"})
+@EntityScan(
+        basePackages = {
+            "nl.tailormap.viewer.config",
+            "nl.tailormap.viewer.config.app",
+            "nl.tailormap.viewer.config.metadata",
+            "nl.tailormap.viewer.config.security",
+            "nl.tailormap.viewer.config.services"
+        })
+class ApplicationRepositoryTest {
     @Autowired private ApplicationRepository applicationRepository;
 
     @Test
