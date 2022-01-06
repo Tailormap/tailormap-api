@@ -29,7 +29,7 @@ USER spring:spring
 
 WORKDIR /home/spring
 
-COPY ./target/tailormap-api.jar tailormap-api.jar
+COPY ./target/tailormap-api-exec.jar tailormap-api.jar
 
 EXPOSE 8080
 # see https://docs.spring.io/spring-boot/docs/current/actuator-api/htmlsingle/#health

@@ -477,6 +477,7 @@ SPDX-License-Identifier: MIT
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
+          <classifier>exec</classifier>
           <systemPropertyVariables>
             <project.version>${project.version}</project.version>
           </systemPropertyVariables>
@@ -491,6 +492,11 @@ SPDX-License-Identifier: MIT
           <jvmArguments>${surefireArgLine}</jvmArguments>
         </configuration>
         <executions>
+          <execution>
+            <goals>
+              <goal>build-info</goal>
+            </goals>
+          </execution>
           <execution>
             <id>start-spring-boot</id>
             <goals>
