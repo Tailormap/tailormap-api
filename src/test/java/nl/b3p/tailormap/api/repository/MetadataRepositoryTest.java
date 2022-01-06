@@ -7,22 +7,32 @@ package nl.b3p.tailormap.api.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
 import nl.tailormap.viewer.config.metadata.Metadata;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /** Testcases for {@link MetadataRepository}. */
 @ActiveProfiles("test")
-@SpringBootTest(classes = {HSQLDBTestProfileJPAConfiguration.class, Metadata.class})
-@ExtendWith(SpringExtension.class)
-class MetadataRepositoryIntegrationTest {
+@DataJpaTest(showSql = false)
+@AutoConfigureTestDatabase
+@EnableJpaRepositories(basePackages = {"nl.b3p.tailormap.api.repository"})
+@EntityScan(
+        basePackages = {
+            "nl.tailormap.viewer.config",
+            "nl.tailormap.viewer.config.app",
+            "nl.tailormap.viewer.config.metadata",
+            "nl.tailormap.viewer.config.security",
+            "nl.tailormap.viewer.config.services"
+        })
+class MetadataRepositoryTest {
 
     @Autowired private MetadataRepository metadataRepository;
 
@@ -38,5 +48,12 @@ class MetadataRepositoryIntegrationTest {
         final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);
         assertNotNull(m, "we should have found something");
         assertEquals("46", m.getConfigValue(), "version is not 46");
+    }
+
+    @Test
+    void it_should_not_find_value_after_deleting_key() {
+        metadataRepository.deleteMetadataByConfigKey(Metadata.DEFAULT_APPLICATION);
+        final Metadata m = metadataRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);
+        assertNull(m, "we should not have found anything");
     }
 }
