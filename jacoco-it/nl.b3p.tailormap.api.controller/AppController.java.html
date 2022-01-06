@@ -5,6 +5,8 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import nl.b3p.tailormap.api.exception.TailormapConfigurationException;
+import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.MetadataRepository;
 import nl.tailormap.viewer.config.app.Application;
@@ -14,27 +16,28 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
 @RestController
 @CrossOrigin
 @RequestMapping(path = &quot;/app&quot;)
-<span class="fc" id="L36">public class AppController {</span>
-<span class="fc" id="L37">    private final Log logger = LogFactory.getLog(getClass());</span>
+<span class="fc" id="L39">public class AppController {</span>
+<span class="fc" id="L40">    private final Log logger = LogFactory.getLog(getClass());</span>
 
     @Autowired private ApplicationRepository applicationRepository;
     @Autowired private MetadataRepository metadataRepository;
@@ -43,6 +46,22 @@ import javax.persistence.EntityNotFoundException;
     private String apiVersion;
 
     private Application application;
+
+    /**
+     * Handle any {@code TailormapConfigurationException} that this controller might throw while
+     * getting the application.
+     *
+     * @param exception the exception
+     * @return an error response
+     */
+    @ExceptionHandler(TailormapConfigurationException.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorResponse handleTailormapConfigurationException(
+            TailormapConfigurationException exception) {
+<span class="fc" id="L62">        logger.fatal(exception.getMessage());</span>
+<span class="fc" id="L63">        return new ErrorResponse().message(&quot;Internal server error&quot;).code(500);</span>
+    }
 
     /**
      * Lookup an {@linkplain Application} with given parameters. Use this endpoint to get the id of
@@ -55,15 +74,17 @@ import javax.persistence.EntityNotFoundException;
      * @param version the version of an app
      * @return the basic information needed to create an app in the frontend
      * @since 0.1
+     * @throws TailormapConfigurationException when the tailormap configuration is broken
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map&lt;String, Object&gt; get(
             @RequestParam(required = false) Long appid,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String version) {
+            @RequestParam(required = false) String version)
+            throws TailormapConfigurationException {
 
-<span class="fc" id="L66">        logger.trace(</span>
+<span class="fc" id="L87">        logger.trace(</span>
                 &quot;requested application using: appid: &quot;
                         + appid
                         + &quot;, name: &quot;
@@ -71,34 +92,34 @@ import javax.persistence.EntityNotFoundException;
                         + &quot;, version: &quot;
                         + version);
 
-<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (null != appid) {</span>
-<span class="fc" id="L75">            Optional&lt;Application&gt; a = applicationRepository.findById(appid);</span>
-<span class="fc bfc" id="L76" title="All 2 branches covered.">            this.application = a.isPresent() ? a.get() : null;</span>
-<span class="fc" id="L77">        } else {</span>
-<span class="fc" id="L78">            this.application = findApplication(name, version);</span>
-        }
-
-<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (null == this.application) {</span>
-<span class="fc" id="L82">            this.application = getDefaultViewer();</span>
-        }
-
-<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        if (null == this.application) {</span>
-<span class="nc" id="L86">            logger.fatal(&quot;Error getting the requested or default application.&quot;);</span>
-<span class="nc" id="L87">            return Map.of(&quot;code&quot;, 500, &quot;message&quot;, &quot;Internal server error&quot;);</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        if (null != appid) {</span>
+<span class="fc" id="L96">            this.application = applicationRepository.findById(appid).orElse(null);</span>
         } else {
-<span class="fc" id="L89">            return Map.of(</span>
+<span class="fc" id="L98">            this.application = findApplication(name, version);</span>
+        }
+
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (null == this.application) {</span>
+<span class="fc" id="L102">            this.application = getDefaultViewer();</span>
+        }
+
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (null == this.application) {</span>
+            // no default application or something else is very wrong
+<span class="fc" id="L107">            throw new TailormapConfigurationException(</span>
+                    &quot;Error getting the requested or default application.&quot;);
+        } else {
+<span class="fc" id="L110">            return Map.of(</span>
                     &quot;apiVersion&quot;,
                     this.apiVersion,
                     &quot;id&quot;,
-<span class="fc" id="L93">                    this.application.getId(),</span>
+<span class="fc" id="L114">                    this.application.getId(),</span>
                     &quot;name&quot;,
-<span class="fc" id="L95">                    this.application.getName(),</span>
+<span class="fc" id="L116">                    this.application.getName(),</span>
                     &quot;version&quot;,
-<span class="fc" id="L97">                    this.application.getVersion(),</span>
+<span class="fc" id="L118">                    this.application.getVersion(),</span>
                     &quot;lang&quot;,
-<span class="fc" id="L99">                    this.application.getLang(),</span>
+<span class="fc" id="L120">                    this.application.getLang(),</span>
                     &quot;title&quot;,
-<span class="fc" id="L101">                    this.application.getTitle()</span>
+<span class="fc" id="L122">                    this.application.getTitle()</span>
                     // Note you can only have 10 K/V pairs in this Map.of(...)
                     );
         }
@@ -112,25 +133,27 @@ import javax.persistence.EntityNotFoundException;
      * @return found Application (or {@code null} if nothing found)
      */
     private Application findApplication(String name, String version) {
-<span class="fc" id="L115">        Application application = null;</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">        if (name != null) {</span>
-<span class="fc bfc" id="L117" title="All 2 branches covered.">            if (null != version) {</span>
-<span class="fc" id="L118">                application = applicationRepository.findByNameAndVersion(name, version);</span>
+<span class="fc" id="L136">        Application application = null;</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        if (name != null) {</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">            if (null != version) {</span>
+<span class="fc" id="L139">                application = applicationRepository.findByNameAndVersion(name, version);</span>
             } else {
-<span class="fc" id="L120">                List&lt;Application&gt; applications = applicationRepository.findByName(name);</span>
-<span class="fc" id="L121">                Optional&lt;Application&gt; a = applications.stream().sorted().findFirst();</span>
-<span class="pc bpc" id="L122" title="1 of 2 branches missed.">                application = a.isPresent() ? a.get() : null;</span>
+<span class="fc" id="L141">                application =</span>
+<span class="fc" id="L142">                        applicationRepository.findByName(name).stream()</span>
+<span class="fc" id="L143">                                .sorted()</span>
+<span class="fc" id="L144">                                .findFirst()</span>
+<span class="fc" id="L145">                                .orElse(null);</span>
             }
 
-<span class="fc bfc" id="L125" title="All 2 branches covered.">            if (null == application) {</span>
-<span class="fc" id="L126">                logger.warn(&quot;No application found with name &quot; + name + &quot; and version &quot; + version);</span>
-<span class="fc" id="L127">                String decodedName = URLDecoder.decode(name, StandardCharsets.UTF_8);</span>
-<span class="pc bpc" id="L128" title="1 of 2 branches missed.">                if (!decodedName.equals(name)) {</span>
-<span class="nc" id="L129">                    return findApplication(decodedName, version);</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">            if (null == application) {</span>
+<span class="fc" id="L149">                logger.warn(&quot;No application found with name &quot; + name + &quot; and version &quot; + version);</span>
+<span class="fc" id="L150">                String decodedName = URLDecoder.decode(name, StandardCharsets.UTF_8);</span>
+<span class="pc bpc" id="L151" title="1 of 2 branches missed.">                if (!decodedName.equals(name)) {</span>
+<span class="nc" id="L152">                    return findApplication(decodedName, version);</span>
                 }
             }
         }
-<span class="fc" id="L133">        return application;</span>
+<span class="fc" id="L156">        return application;</span>
     }
 
     /**
@@ -140,13 +163,13 @@ import javax.persistence.EntityNotFoundException;
      */
     private Application getDefaultViewer() {
         try {
-<span class="fc" id="L143">            Metadata md = metadataRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);</span>
-<span class="fc" id="L144">            String appId = md.getConfigValue();</span>
-<span class="fc" id="L145">            Long id = Long.parseLong(appId);</span>
-<span class="fc" id="L146">            return applicationRepository.getById(id);</span>
-<span class="nc" id="L147">        } catch (NullPointerException | EntityNotFoundException e) {</span>
-<span class="nc" id="L148">            logger.warn(&quot;No default application configured. &quot; + e.getMessage());</span>
-<span class="nc" id="L149">            return null;</span>
+<span class="fc" id="L166">            Metadata md = metadataRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);</span>
+<span class="fc" id="L167">            String appId = md.getConfigValue();</span>
+<span class="fc" id="L168">            Long id = Long.parseLong(appId);</span>
+<span class="fc" id="L169">            return applicationRepository.getById(id);</span>
+<span class="fc" id="L170">        } catch (NullPointerException | EntityNotFoundException e) {</span>
+<span class="fc" id="L171">            logger.warn(&quot;No default application configured. &quot; + e.getMessage());</span>
+<span class="fc" id="L172">            return null;</span>
         }
     }
 }

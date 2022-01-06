@@ -2,9 +2,11 @@ GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayersController,0,94,0,2,0,26,0,5,0,4
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,ComponentsController,0,69,0,0,0,18,0,4,0,4
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,MapController,61,214,6,10,18,56,7,7,1,5
-Aggregate Test Coverage,nl.b3p.tailormap.api.controller,AppController,26,146,3,15,6,33,3,10,0,4
+Aggregate Test Coverage,nl.b3p.tailormap.api.controller,AppController,5,161,1,13,1,39,1,11,0,5
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,VersionController,1,51,1,1,0,7,1,2,0,2
 Aggregate Test Coverage,nl.b3p.tailormap.api.health,TailormapHealthIndicator,19,36,2,2,4,9,2,2,0,2
+Aggregate Test Coverage,nl.b3p.tailormap.api.exception,TailormapException,19,4,0,0,8,2,4,1,4,1
+Aggregate Test Coverage,nl.b3p.tailormap.api.exception,TailormapConfigurationException,19,4,0,0,8,2,4,1,4,1
 Aggregate Test Coverage,nl.b3p.tailormap.api,JPAConfiguration,0,100,0,0,0,25,0,6,0,6
 Aggregate Test Coverage,nl.b3p.tailormap.api,TailormapApiApplication,5,3,0,0,2,1,1,1,1,1
 Aggregate Test Coverage,nl.b3p.tailormap.api,FilteringConfig,0,36,0,0,0,7,0,2,0,2
