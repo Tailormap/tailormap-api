@@ -41,22 +41,22 @@ import javax.sql.DataSource;
             &quot;nl.tailormap.viewer.config.services&quot;
         })
 @EnableTransactionManagement
-<span class="nc" id="L44">public class JPAConfiguration {</span>
+<span class="fc" id="L44">public class JPAConfiguration {</span>
     @Autowired private Environment env;
 
-<span class="nc" id="L47">    private final Log logger = LogFactory.getLog(getClass());</span>
+<span class="fc" id="L47">    private final Log logger = LogFactory.getLog(getClass());</span>
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-<span class="nc" id="L51">        final LocalContainerEntityManagerFactoryBean em =</span>
+<span class="fc" id="L51">        final LocalContainerEntityManagerFactoryBean em =</span>
                 new LocalContainerEntityManagerFactoryBean();
 
-<span class="nc" id="L54">        em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());</span>
-<span class="nc" id="L55">        em.setJpaProperties(additionalProperties());</span>
-<span class="nc" id="L56">        em.setPersistenceUnitName(&quot;viewer-config-postgresql&quot;);</span>
-<span class="nc" id="L57">        em.setDataSource(dataSource());</span>
+<span class="fc" id="L54">        em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());</span>
+<span class="fc" id="L55">        em.setJpaProperties(additionalProperties());</span>
+<span class="fc" id="L56">        em.setPersistenceUnitName(&quot;viewer-config-postgresql&quot;);</span>
+<span class="fc" id="L57">        em.setDataSource(dataSource());</span>
 
-<span class="nc" id="L59">        return em;</span>
+<span class="fc" id="L59">        return em;</span>
     }
 
     /**
@@ -66,41 +66,41 @@ import javax.sql.DataSource;
      */
     @Bean
     public DataSource dataSource() {
-<span class="nc" id="L69">        final DriverManagerDataSource dataSource = new DriverManagerDataSource();</span>
-<span class="nc" id="L70">        dataSource.setUrl(env.getProperty(&quot;spring.datasource.url&quot;));</span>
-<span class="nc" id="L71">        dataSource.setDriverClassName(env.getProperty(&quot;spring.datasource.driver-class-name&quot;));</span>
-<span class="nc" id="L72">        dataSource.setUsername(env.getProperty(&quot;spring.datasource.username&quot;));</span>
-<span class="nc" id="L73">        dataSource.setPassword(env.getProperty(&quot;spring.datasource.password&quot;));</span>
+<span class="fc" id="L69">        final DriverManagerDataSource dataSource = new DriverManagerDataSource();</span>
+<span class="fc" id="L70">        dataSource.setUrl(env.getProperty(&quot;spring.datasource.url&quot;));</span>
+<span class="fc" id="L71">        dataSource.setDriverClassName(env.getProperty(&quot;spring.datasource.driver-class-name&quot;));</span>
+<span class="fc" id="L72">        dataSource.setUsername(env.getProperty(&quot;spring.datasource.username&quot;));</span>
+<span class="fc" id="L73">        dataSource.setPassword(env.getProperty(&quot;spring.datasource.password&quot;));</span>
 
-<span class="nc" id="L75">        logger.debug(</span>
+<span class="fc" id="L75">        logger.debug(</span>
                 &quot;using database: &quot;
-<span class="nc" id="L77">                        + env.getProperty(&quot;spring.datasource.url&quot;)</span>
+<span class="fc" id="L77">                        + env.getProperty(&quot;spring.datasource.url&quot;)</span>
                         + &quot; with driver: &quot;
-<span class="nc" id="L79">                        + env.getProperty(&quot;spring.datasource.driver-class-name&quot;));</span>
-<span class="nc" id="L80">        return dataSource;</span>
+<span class="fc" id="L79">                        + env.getProperty(&quot;spring.datasource.driver-class-name&quot;));</span>
+<span class="fc" id="L80">        return dataSource;</span>
     }
 
     @Bean
     JpaTransactionManager transactionManager(final EntityManagerFactory entityManagerFactory) {
-<span class="nc" id="L85">        final JpaTransactionManager transactionManager = new JpaTransactionManager();</span>
-<span class="nc" id="L86">        transactionManager.setEntityManagerFactory(entityManagerFactory);</span>
+<span class="fc" id="L85">        final JpaTransactionManager transactionManager = new JpaTransactionManager();</span>
+<span class="fc" id="L86">        transactionManager.setEntityManagerFactory(entityManagerFactory);</span>
 
-<span class="nc" id="L88">        return transactionManager;</span>
+<span class="fc" id="L88">        return transactionManager;</span>
     }
 
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
-<span class="nc" id="L93">        return new PersistenceExceptionTranslationPostProcessor();</span>
+<span class="fc" id="L93">        return new PersistenceExceptionTranslationPostProcessor();</span>
     }
 
     private final Properties additionalProperties() {
-<span class="nc" id="L97">        final Properties hibernateProperties = new Properties();</span>
+<span class="fc" id="L97">        final Properties hibernateProperties = new Properties();</span>
         //    hibernateProperties.setProperty(
         //        &quot;hibernate.hbm2ddl.auto&quot;, env.getProperty(&quot;spring.jpa.hibernate.ddl-auto&quot;, &quot;&quot;));
-<span class="nc" id="L100">        hibernateProperties.setProperty(</span>
-<span class="nc" id="L101">                &quot;hibernate.show_sql&quot;, env.getProperty(&quot;spring.jpa.show-sql&quot;, &quot;false&quot;));</span>
+<span class="fc" id="L100">        hibernateProperties.setProperty(</span>
+<span class="fc" id="L101">                &quot;hibernate.show_sql&quot;, env.getProperty(&quot;spring.jpa.show-sql&quot;, &quot;false&quot;));</span>
 
-<span class="nc" id="L103">        return hibernateProperties;</span>
+<span class="fc" id="L103">        return hibernateProperties;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
