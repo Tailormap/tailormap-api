@@ -9,6 +9,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -28,6 +29,14 @@ import javax.sql.DataSource;
 @Configuration
 @EnableJpaRepositories(basePackages = {"nl.b3p.tailormap.api.repository"})
 @EnableTransactionManagement
+@EntityScan(
+        basePackages = {
+            "nl.tailormap.viewer.config",
+            "nl.tailormap.viewer.config.app",
+            "nl.tailormap.viewer.config.metadata",
+            "nl.tailormap.viewer.config.security",
+            "nl.tailormap.viewer.config.services"
+        })
 @Profile("test")
 public class HSQLDBTestProfileJPAConfiguration {
     private static final Log LOG = LogFactory.getLog(HSQLDBTestProfileJPAConfiguration.class);
@@ -39,7 +48,6 @@ public class HSQLDBTestProfileJPAConfiguration {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         final LocalContainerEntityManagerFactoryBean em =
                 new LocalContainerEntityManagerFactoryBean();
-        em.setPackagesToScan("nl.tailormap.viewer.config");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setJpaProperties(additionalProperties());
         em.setPersistenceUnitName("viewer-config-hsqldb");

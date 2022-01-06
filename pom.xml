@@ -371,74 +371,52 @@ SPDX-License-Identifier: MIT
         </configuration>
       </plugin>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <fork>true</fork>
-          <compilerArgs combine.children="append">
-            <arg>-XDcompilePolicy=simple</arg>
-            <arg>-Xplugin:ErrorProne -XepExcludedPaths:${project.build.directory}/generated-sources/.* ${errorProneFlags}</arg>
-            <arg>-Xlint:${compiler.lint}</arg>
-            <arg>-Werror</arg>
-            <arg>-Xmaxwarns</arg>
-            <arg>1000</arg>
-          </compilerArgs>
-          <annotationProcessorPaths>
-            <path>
-              <groupId>com.google.errorprone</groupId>
-              <artifactId>error_prone_core</artifactId>
-              <version>${errorProne.version}</version>
-            </path>
-          </annotationProcessorPaths>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <systemPropertyVariables>
-            <project.version>${project.version}</project.version>
-          </systemPropertyVariables>
-          <environmentVariables>
-            <!--suppress UnresolvedMavenProperty -->
-            <API_VERSION>${info.version}</API_VERSION>
-            <!-- TODO read this from persistence -->
-            <DATABASE_VERSION>46</DATABASE_VERSION>
-          </environmentVariables>
-          <cleanCache>true</cleanCache>
-          <!--suppress UnresolvedMavenProperty -->
-          <jvmArguments>${surefireArgLine}</jvmArguments>
-        </configuration>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>start-spring-boot</id>
+            <id>pre-unit-test</id>
             <goals>
-              <goal>start</goal>
+              <goal>prepare-agent</goal>
             </goals>
-            <phase>pre-integration-test</phase>
             <configuration>
-              <!-- <skip>${skipQA}</skip> -->
-              <profiles>test</profiles>
-              <!--suppress UnresolvedMavenProperty -->
-              <jvmArguments>${failsafeArgLine}</jvmArguments>
-              <environmentVariables>
-                <!--suppress UnresolvedMavenProperty -->
-                <API_VERSION>${info.version}</API_VERSION>
-                <!-- TODO read this from persistence -->
-                <DATABASE_VERSION>46</DATABASE_VERSION>
-              </environmentVariables>
-              <systemPropertyVariables>
-                <project.version>${project.version}</project.version>
-              </systemPropertyVariables>
+              <propertyName>surefireArgLine</propertyName>
             </configuration>
           </execution>
           <execution>
-            <id>stop-spring-boot</id>
+            <id>pre-integration-test</id>
             <goals>
-              <goal>stop</goal>
+              <goal>prepare-agent-integration</goal>
+            </goals>
+            <phase>pre-integration-test</phase>
+            <configuration>
+              <propertyName>failsafeArgLine</propertyName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>post-unit-test</id>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <phase>test</phase>
+          </execution>
+          <execution>
+            <id>post-integration-test</id>
+            <goals>
+              <goal>merge</goal>
+              <goal>report-integration</goal>
+              <goal>report</goal>
             </goals>
             <phase>post-integration-test</phase>
             <configuration>
-              <!-- <skip>${skipQA}</skip> -->
+              <fileSets>
+                <fileSet>
+                  <directory>${project.build.directory}</directory>
+                  <includes>
+                    <include>*.exec</include>
+                  </includes>
+                </fileSet>
+              </fileSets>
             </configuration>
           </execution>
         </executions>
@@ -482,6 +460,9 @@ SPDX-License-Identifier: MIT
             <DATABASE_VERSION>46</DATABASE_VERSION>
           </environmentVariables>
           <useFile>false</useFile>
+          <classpathDependencyExcludes>
+            <classpathDependencyExclude>org.postgresql:postgresql</classpathDependencyExclude>
+          </classpathDependencyExcludes>
         </configuration>
         <executions>
           <execution>
@@ -491,6 +472,80 @@ SPDX-License-Identifier: MIT
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <project.version>${project.version}</project.version>
+          </systemPropertyVariables>
+          <environmentVariables>
+            <!--suppress UnresolvedMavenProperty -->
+            <API_VERSION>${info.version}</API_VERSION>
+            <!-- TODO read this from persistence -->
+            <DATABASE_VERSION>46</DATABASE_VERSION>
+          </environmentVariables>
+          <cleanCache>true</cleanCache>
+          <!--suppress UnresolvedMavenProperty -->
+          <jvmArguments>${surefireArgLine}</jvmArguments>
+        </configuration>
+        <executions>
+          <execution>
+            <id>start-spring-boot</id>
+            <goals>
+              <goal>start</goal>
+            </goals>
+            <phase>pre-integration-test</phase>
+            <configuration>
+              <!-- <skip>${skipQA}</skip> -->
+              <profiles>test</profiles>
+              <!--suppress UnresolvedMavenProperty -->
+              <jvmArguments>${failsafeArgLine}</jvmArguments>
+              <useTestClasspath>true</useTestClasspath>
+              <environmentVariables>
+                <!--suppress UnresolvedMavenProperty -->
+                <API_VERSION>${info.version}</API_VERSION>
+                <!-- TODO read this from persistence -->
+                <DATABASE_VERSION>46</DATABASE_VERSION>
+              </environmentVariables>
+              <systemPropertyVariables>
+                <project.version>${project.version}</project.version>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+          <execution>
+            <id>stop-spring-boot</id>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+            <phase>post-integration-test</phase>
+            <configuration>
+              <!-- <skip>${skipQA}</skip> -->
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <fork>true</fork>
+          <compilerArgs combine.children="append">
+            <arg>-XDcompilePolicy=simple</arg>
+            <arg>-Xplugin:ErrorProne -XepExcludedPaths:${project.build.directory}/generated-sources/.* ${errorProneFlags}</arg>
+            <arg>-Xlint:${compiler.lint}</arg>
+            <arg>-Werror</arg>
+            <arg>-Xmaxwarns</arg>
+            <arg>1000</arg>
+          </compilerArgs>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_core</artifactId>
+              <version>${errorProne.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.openapitools</groupId>
@@ -618,57 +673,6 @@ SPDX-License-Identifier: MIT
               <outputDirectory>${project.build.directory}/wars</outputDirectory>
               <overWriteReleases>false</overWriteReleases>
               <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>pre-unit-test</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-            <configuration>
-              <propertyName>surefireArgLine</propertyName>
-            </configuration>
-          </execution>
-          <execution>
-            <id>pre-integration-test</id>
-            <goals>
-              <goal>prepare-agent-integration</goal>
-            </goals>
-            <phase>pre-integration-test</phase>
-            <configuration>
-              <propertyName>failsafeArgLine</propertyName>
-            </configuration>
-          </execution>
-          <execution>
-            <id>post-unit-test</id>
-            <goals>
-              <goal>report</goal>
-            </goals>
-            <phase>test</phase>
-          </execution>
-          <execution>
-            <id>post-integration-test</id>
-            <goals>
-              <goal>merge</goal>
-              <goal>report-integration</goal>
-              <goal>report</goal>
-            </goals>
-            <phase>post-integration-test</phase>
-            <configuration>
-              <fileSets>
-                <fileSet>
-                  <directory>${project.build.directory}</directory>
-                  <includes>
-                    <include>*.exec</include>
-                  </includes>
-                </fileSet>
-              </fileSets>
             </configuration>
           </execution>
         </executions>
