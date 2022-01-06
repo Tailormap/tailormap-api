@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6};
+var data = {"i0":6,"i1":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -155,10 +155,17 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;nl.tailormap.vi
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#deleteMetadataByConfigKey(java.lang.String)">deleteMetadataByConfigKey</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;configKey)</code></th>
+<td class="colLast">
+<div class="block">Delete a value from the metadata using a known key such as <code>Metadata.DEFAULT_APPLICATION</code>.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>nl.tailormap.viewer.config.metadata.Metadata</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findByConfigKey(java.lang.String)">findByConfigKey</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;configKey)</code></th>
 <td class="colLast">
-<div class="block">Find a metedata value using a known key such as <code>Metadata.DATABASE_VERSION_KEY</code> or
+<div class="block">Find a metadata value using a known key such as <code>Metadata.DATABASE_VERSION_KEY</code> or
  <code>Metadata.DEFAULT_APPLICATION</code>.</div>
 </td>
 </tr>
@@ -210,17 +217,32 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;nl.tailormap.vi
 <a id="findByConfigKey(java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>findByConfigKey</h4>
 <pre class="methodSignature">nl.tailormap.viewer.config.metadata.Metadata&nbsp;findByConfigKey&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;configKey)</pre>
-<div class="block">Find a metedata value using a known key such as <code>Metadata.DATABASE_VERSION_KEY</code> or
+<div class="block">Find a metadata value using a known key such as <code>Metadata.DATABASE_VERSION_KEY</code> or
  <code>Metadata.DEFAULT_APPLICATION</code>.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>configKey</code> - known key</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the found value or <code>null</code></dd>
+</dl>
+</li>
+</ul>
+<a id="deleteMetadataByConfigKey(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>deleteMetadataByConfigKey</h4>
+<pre class="methodSignature">@Transactional
+void&nbsp;deleteMetadataByConfigKey&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;configKey)</pre>
+<div class="block">Delete a value from the metadata using a known key such as <code>Metadata.DEFAULT_APPLICATION</code>.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>configKey</code> - known key</dd>
 </dl>
 </li>
 </ul>
