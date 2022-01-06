@@ -5,6 +5,8 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import nl.b3p.tailormap.api.exception.TailormapConfigurationException;
+import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.MetadataRepository;
 import nl.tailormap.viewer.config.app.Application;
@@ -14,12 +16,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URLDecoder;
@@ -45,6 +50,22 @@ public class AppController {
     private Application application;
 
     /**
+     * Handle any {@code TailormapConfigurationException} that this controller might throw while
+     * getting the application.
+     *
+     * @param exception the exception
+     * @return an error response
+     */
+    @ExceptionHandler(TailormapConfigurationException.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorResponse handleTailormapConfigurationException(
+            TailormapConfigurationException exception) {
+        logger.fatal(exception.getMessage());
+        return new ErrorResponse().message("Internal server error").code(500);
+    }
+
+    /**
      * Lookup an {@linkplain Application} with given parameters. Use this endpoint to get the id of
      * the requested or default application. Either call this with `name` and optional `version` or
      * `appid` alone. Will return general setup information such as name, appid, language, but not
@@ -55,13 +76,15 @@ public class AppController {
      * @param version the version of an app
      * @return the basic information needed to create an app in the frontend
      * @since 0.1
+     * @throws TailormapConfigurationException when the tailormap configuration is broken
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, Object> get(
             @RequestParam(required = false) Long appid,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String version) {
+            @RequestParam(required = false) String version)
+            throws TailormapConfigurationException {
 
         logger.trace(
                 "requested application using: appid: "
@@ -83,8 +106,9 @@ public class AppController {
         }
 
         if (null == this.application) {
-            logger.fatal("Error getting the requested or default application.");
-            return Map.of("code", 500, "message", "Internal server error");
+            // no default application or something else is very wrong
+            throw new TailormapConfigurationException(
+                    "Error getting the requested or default application.");
         } else {
             return Map.of(
                     "apiVersion",
