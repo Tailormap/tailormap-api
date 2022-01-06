@@ -12,9 +12,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
+import nl.b3p.tailormap.api.repository.MetadataRepository;
+import nl.tailormap.viewer.config.metadata.Metadata;
 
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,8 +31,10 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
 @ActiveProfiles("test")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AppControllerIntegrationTest {
     @Autowired private MockMvc mockMvc;
+    @Autowired MetadataRepository metadataRepository;
 
     private String getApiVersionFromPom() {
         String apiVersion = System.getenv("API_VERSION");
@@ -39,7 +45,7 @@ class AppControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_find_default_when_no_arguments() throws Exception {
-        mockMvc.perform(get("/app"))
+        mockMvc.perform(get("/app").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.apiVersion").value(getApiVersionFromPom()))
@@ -53,7 +59,7 @@ class AppControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_find_default_when_nonexistent_id() throws Exception {
-        mockMvc.perform(get("/app?appid=100"))
+        mockMvc.perform(get("/app").param("appid", "100").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.apiVersion").value(getApiVersionFromPom()))
@@ -67,7 +73,11 @@ class AppControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_find_default_when_nonexistent_name_and_version() throws Exception {
-        mockMvc.perform(get("/app?name=testing123&version=100"))
+        mockMvc.perform(
+                        get("/app")
+                                .param("name", "testing123")
+                                .param("version", "100")
+                                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.apiVersion").value(getApiVersionFromPom()))
@@ -81,7 +91,7 @@ class AppControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_find_by_id() throws Exception {
-        mockMvc.perform(get("/app?appid=1"))
+        mockMvc.perform(get("/app").param("appid", "1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.apiVersion").value(getApiVersionFromPom()))
@@ -95,7 +105,7 @@ class AppControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_find_by_name() throws Exception {
-        mockMvc.perform(get("/app?name=test"))
+        mockMvc.perform(get("/app").param("name", "test").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.apiVersion").value(getApiVersionFromPom()))
@@ -109,7 +119,11 @@ class AppControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_find_by_name_and_version() throws Exception {
-        mockMvc.perform(get("/app?name=test&version=1"))
+        mockMvc.perform(
+                        get("/app")
+                                .param("name", "test")
+                                .param("version", "1")
+                                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.apiVersion").value(getApiVersionFromPom()))
@@ -121,11 +135,14 @@ class AppControllerIntegrationTest {
     }
 
     @Test
-    @Disabled("TODO setup test data for this (delete default application from metadata table)")
+    /* this test changes the database content and should run as the very last */
+    @Order(Integer.MAX_VALUE)
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_error_when_no_default_application_and_using_nonexistent_id() throws Exception {
-        // TODO setup test data for this (delete default application from metadata table)
-        mockMvc.perform(get("/app?appid=666"))
+        // setup test data for this test (delete default application from metadata table)
+        metadataRepository.deleteMetadataByConfigKey(Metadata.DEFAULT_APPLICATION);
+
+        mockMvc.perform(get("/app").param("appid", "666").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
