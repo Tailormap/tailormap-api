@@ -21,7 +21,16 @@ jobs:
           older-than: 7
           keep-last: 1
           untagged: true
-      # maybe also clean up anything older than 14?.. days...
+      - name: "Older than 4 weeks"
+        uses: vlaurin/action-ghcr-prune@v0.3.0
+        with:
+          token: ${{ secrets.GHCR_CLEANUP_PAT }}
+          organization: B3Partners
+          container: tailormap-api
+          dry-run: false
+          older-than: 28
+          keep-last: 0
+          untagged: true
 
   stale:
     runs-on: ubuntu-latest

@@ -14,12 +14,12 @@ ENV SPRING_DATASOURCE_URL="jdbc:postgresql://127.0.0.1/tailormap"
 ENV DB_USER="tailormap"
 ENV DB_PASSWORD="tailormap"
 
-
-LABEL org.opencontainers.image.authors="@mprins" \
-      description="Tailormap API service" \
-      nl.b3p.vendor="B3Partners" \
-      nl.b3p.image="Tailormap API" \
-      nl.b3p.version=$TAILORMAP_API_VERSION
+LABEL org.opencontainers.image.authors="support@b3partners.nl" \
+      org.opencontainers.image.description="Tailormap API service provides OpenAPI REST interface for Tailormap" \
+      org.opencontainers.image.vendor="B3Partners BV" \
+      org.opencontainers.image.title="Tailormap API" \
+      org.opencontainers.image.documentation="https://github.com/B3Partners/tailormap-api/" \
+      org.opencontainers.image.version=$TAILORMAP_API_VERSION
 
 # set-up timezone and local user
 RUN set -eux;ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
