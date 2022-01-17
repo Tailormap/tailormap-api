@@ -3,6 +3,11 @@ name: OWASP
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
 
+concurrency:
+  # More info: https://stackoverflow.com/a/68422069/253468
+  group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-master-{0}', github.sha) || format('ci-master-{0}', github.ref) }}
+  cancel-in-progress: true
+
 on:
   pull_request:
   schedule:

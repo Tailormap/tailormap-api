@@ -802,7 +802,7 @@ SPDX-License-Identifier: MIT
               <rules>
                 <!-- see https://maven.apache.org/enforcer/enforcer-rules/index.html -->
                 <requireMavenVersion>
-                  <version>[3.8,)</version>
+                  <version>3.8</version>
                 </requireMavenVersion>
                 <requireJavaVersion>
                   <version>${java.version}</version>
@@ -811,6 +811,7 @@ SPDX-License-Identifier: MIT
                   <excludes>
                     <exclude>junit:junit</exclude>
                     <exclude>org.hamcrest:hamcrest-core</exclude>
+                    <exclude>log4j:log4j</exclude>
                   </excludes>
                 </bannedDependencies>
                 <banTransitiveDependencies>
