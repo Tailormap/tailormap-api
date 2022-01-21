@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.EntityNotFoundException;
@@ -60,7 +61,9 @@ public class AppController {
     public ErrorResponse handleTailormapConfigurationException(
             TailormapConfigurationException exception) {
         logger.fatal(exception.getMessage());
-        return new ErrorResponse().message("Internal server error").code(500);
+        return new ErrorResponse()
+                .message("Internal server error. " + exception.getMessage())
+                .code(500);
     }
 
     /**
@@ -107,21 +110,34 @@ public class AppController {
             throw new TailormapConfigurationException(
                     "Error getting the requested or default application.");
         } else {
-            return Map.of(
-                    "apiVersion",
-                    this.apiVersion,
-                    "id",
-                    this.application.getId(),
-                    "name",
-                    this.application.getName(),
-                    "version",
-                    this.application.getVersion(),
-                    "lang",
-                    this.application.getLang(),
-                    "title",
-                    this.application.getTitle()
-                    // Note you can only have 10 K/V pairs in this Map.of(...)
-                    );
+            logger.trace(
+                    "found application - id:"
+                            + this.application.getId()
+                            + ", name: "
+                            + this.application.getName()
+                            + ", version: "
+                            + this.application.getVersion()
+                            + ", lang: "
+                            + this.application.getLang()
+                            + ", title: "
+                            + this.application.getTitle());
+
+            Map<String, Object> response =
+                    new HashMap<>(
+                            Map.of(
+                                    // none of these should ever be null
+                                    "apiVersion",
+                                    this.apiVersion,
+                                    "id",
+                                    this.application.getId(),
+                                    "name",
+                                    this.application.getName()));
+            // any of these could be null
+            response.put("version", this.application.getVersion());
+            response.put("lang", this.application.getLang());
+            response.put("title", this.application.getTitle());
+
+            return response;
         }
     }
 
