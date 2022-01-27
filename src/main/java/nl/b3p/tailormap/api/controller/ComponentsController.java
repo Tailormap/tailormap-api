@@ -38,7 +38,7 @@ import javax.persistence.EntityNotFoundException;
 
 @RestController
 @Validated
-@RequestMapping(path = "/components/{appid}", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/components/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ComponentsController {
 
     private final Log logger = LogFactory.getLog(getClass());
@@ -66,9 +66,9 @@ public class ComponentsController {
     }
 
     /**
-     * GET /components/{appid}
+     * GET /components/{appId}
      *
-     * @param appid application id (required)
+     * @param appId application id (required)
      * @return OK (status code 200)
      */
     @Operation(
@@ -92,15 +92,15 @@ public class ComponentsController {
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Component> get(
-            @Parameter(name = "appid", description = "application id", required = true)
-                    @PathVariable("appid")
-                    Long appid) {
-        logger.trace("Requesting 'components' for application id: " + appid);
+            @Parameter(name = "appId", description = "application id", required = true)
+                    @PathVariable("appId")
+                    Long appId) {
+        logger.trace("Requesting 'components' for application id: " + appId);
 
         // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
         // and in a normal flow this should not happen
-        // as appid is (should be) validated by calling the /app/ endpoint
-        Application application = applicationRepository.getById(appid);
+        // as appId is (should be) validated by calling the /app/ endpoint
+        Application application = applicationRepository.getById(appId);
 
         List<Component> components = new ArrayList<>();
         findComponents(application, components);

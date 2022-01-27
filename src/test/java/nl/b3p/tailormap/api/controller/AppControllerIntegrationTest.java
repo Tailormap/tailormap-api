@@ -59,7 +59,7 @@ class AppControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_find_default_when_nonexistent_id() throws Exception {
-        mockMvc.perform(get("/app").param("appid", "100").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/app").param("appId", "100").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.apiVersion").value(getApiVersionFromPom()))
@@ -91,7 +91,7 @@ class AppControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_find_by_id() throws Exception {
-        mockMvc.perform(get("/app").param("appid", "1").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/app").param("appId", "1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.apiVersion").value(getApiVersionFromPom()))
@@ -142,7 +142,7 @@ class AppControllerIntegrationTest {
         // setup test data for this test (delete default application from metadata table)
         metadataRepository.deleteMetadataByConfigKey(Metadata.DEFAULT_APPLICATION);
 
-        mockMvc.perform(get("/app").param("appid", "666").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/app").param("appId", "666").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }

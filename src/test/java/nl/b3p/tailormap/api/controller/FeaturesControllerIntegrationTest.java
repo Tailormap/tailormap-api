@@ -80,7 +80,7 @@ class FeaturesControllerIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    void should_error_when_calling_with_nonexistent_appid() throws Exception {
+    void should_error_when_calling_with_nonexistent_appId() throws Exception {
         mockMvc.perform(get("/features/400/1"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -89,7 +89,7 @@ class FeaturesControllerIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    void should_not_find_when_called_without_appid() throws Exception {
+    void should_not_find_when_called_without_appId() throws Exception {
         mockMvc.perform(get("/features/")).andExpect(status().isNotFound());
     }
 }

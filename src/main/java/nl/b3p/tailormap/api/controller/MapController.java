@@ -45,7 +45,7 @@ import javax.validation.constraints.NotNull;
 
 @RestController
 @Validated
-@RequestMapping(path = "/map/{appid}", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/map/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MapController {
     private final Log logger = LogFactory.getLog(getClass());
     @Autowired private ApplicationRepository applicationRepository;
@@ -72,17 +72,17 @@ public class MapController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public MapResponse get(
-            @Parameter(name = "appid", description = "application id", required = true)
-                    @PathVariable("appid")
-                    Long appid) {
-        logger.trace("Requesting 'map' for application id: " + appid);
+            @Parameter(name = "appId", description = "application id", required = true)
+                    @PathVariable("appId")
+                    Long appId) {
+        logger.trace("Requesting 'map' for application id: " + appId);
 
         MapResponse mapResponse = new MapResponse();
 
         // this could throw EntityNotFound, which is handles by handleEntityNotFoundException
         // and in a normal flow this should not happen
-        // as appid is (should be) validated by calling the /app/ endpoint
-        Application application = applicationRepository.getById(appid);
+        // as appId is (should be) validated by calling the /app/ endpoint
+        Application application = applicationRepository.getById(appId);
 
         getApplicationParams(application, mapResponse);
         getLayers(application, mapResponse);

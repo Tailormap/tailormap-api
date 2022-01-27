@@ -62,7 +62,7 @@ import javax.validation.constraints.NotNull;
 @RestController
 @Validated
 @RequestMapping(
-        path = "/features/{appid}/{applayerid}",
+        path = "/features/{appId}/{appLayerId}",
         produces = MediaType.APPLICATION_JSON_VALUE)
 public class FeaturesController implements Constants {
     private final Log logger = LogFactory.getLog(getClass());
@@ -112,8 +112,8 @@ public class FeaturesController implements Constants {
      * Retrieve features that fulfill the requested conditions (parameters).
      *
      * @return a (possibly empty) list of features
-     * @param appid the application
-     * @param applayerid the application layer id
+     * @param appId the application
+     * @param appLayerId the application layer id
      * @param x x-coordinate
      * @param y y-coordinate
      * @param distance buffer distance for radius around selection point(x,y)
@@ -124,12 +124,12 @@ public class FeaturesController implements Constants {
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public FeaturesResponse getFeatures(
-            @Parameter(name = "appid", description = "application id", required = true)
-                    @PathVariable("appid")
-                    Long appid,
-            @Parameter(name = "applayerid", description = "application layer id", required = true)
-                    @PathVariable("applayerid")
-                    Long applayerid,
+            @Parameter(name = "appId", description = "application id", required = true)
+                    @PathVariable("appId")
+                    Long appId,
+            @Parameter(name = "appLayerId", description = "application layer id", required = true)
+                    @PathVariable("appLayerId")
+                    Long appLayerId,
             @RequestParam(required = false) Double x,
             @RequestParam(required = false) Double y,
             @RequestParam(defaultValue = "4") Double distance,
@@ -140,10 +140,10 @@ public class FeaturesController implements Constants {
 
         // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
         // and in a normal flow this should not happen
-        // as appid is (should be) validated by calling the /app/ endpoint
-        Application application = applicationRepository.getById(appid);
+        // as appId is (should be) validated by calling the /app/ endpoint
+        Application application = applicationRepository.getById(appId);
         assert (null != application);
-        ApplicationLayer appLayer = applicationLayerRepository.getById(applayerid);
+        ApplicationLayer appLayer = applicationLayerRepository.getById(appLayerId);
 
         FeaturesResponse featuresResponse = new FeaturesResponse();
 
@@ -251,7 +251,7 @@ public class FeaturesController implements Constants {
                                     configuredAttribute
                                             .getFeatureType()
                                             .getAttribute(configuredAttribute.getAttributeName());
-                            featuresResponse.addColumnmetadataItem(
+                            featuresResponse.addColumnMetadataItem(
                                     new ColumnMetadata()
                                             .key(attributeDescriptor.getName())
                                             .type(
