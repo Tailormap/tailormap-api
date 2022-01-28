@@ -47,7 +47,7 @@ class MetadataRepositoryTest {
     void it_should_findByConfigKeyDatabaseVersion() {
         final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);
         assertNotNull(m, "we should have found something");
-        assertEquals("46", m.getConfigValue(), "version is not 46");
+        assertEquals("47", m.getConfigValue(), "version is not 47");
     }
 
     @Test

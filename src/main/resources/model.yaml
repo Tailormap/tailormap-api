@@ -344,12 +344,10 @@ components:
           enum:
             - WMTS
             - TMS
-        # in de huidige TM gaan alle matrixsets naar de client,
-        # dat lijkt mij teveel van het goede; er kan er immers maar 1 gebruikt worden.
-        # TODO uitzoeken of openlayers meer dan 1 matrixset per map kan gebruiken,
-        #      anders kan deze hier weg en moet die naar de "map"
-        matrixSet:
-          type: object
+        capabilities:
+          description: 'capabilities document of the service - currently only for WMTS'
+          type: string
+          nullable: true
       required:
         - id
 
