@@ -53,7 +53,7 @@
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  @RestController
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  @Validated
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  @RequestMapping(path = <span class="jxr_string">"/map/{appid}"</span>, produces = MediaType.APPLICATION_JSON_VALUE)
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  @RequestMapping(path = <span class="jxr_string">"/map/{appId}"</span>, produces = MediaType.APPLICATION_JSON_VALUE)
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="MapController" href="../../../../../nl/b3p/tailormap/api/controller/MapController.html#MapController">MapController</a> {
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Log logger = LogFactory.getLog(getClass());
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>      @Autowired <strong class="jxr_keyword">private</strong> <a name="ApplicationRepository" href="../../../../../nl/b3p/tailormap/api/repository/ApplicationRepository.html#ApplicationRepository">ApplicationRepository</a> applicationRepository;
@@ -80,17 +80,17 @@
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>      @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>      @ResponseBody
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      <strong class="jxr_keyword">public</strong> MapResponse get(
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>              @Parameter(name = <span class="jxr_string">"appid"</span>, description = <span class="jxr_string">"application id"</span>, required = <strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>                      @PathVariable(<span class="jxr_string">"appid"</span>)
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>                      Long appid) {
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>          logger.trace(<span class="jxr_string">"Requesting 'map' for application id: "</span> + appid);
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>              @Parameter(name = <span class="jxr_string">"appId"</span>, description = <span class="jxr_string">"application id"</span>, required = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>                      @PathVariable(<span class="jxr_string">"appId"</span>)
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>                      Long appId) {
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>          logger.trace(<span class="jxr_string">"Requesting 'map' for application id: "</span> + appId);
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>          MapResponse mapResponse = <strong class="jxr_keyword">new</strong> MapResponse();
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>  
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>          <em class="jxr_comment">// this could throw EntityNotFound, which is handles by handleEntityNotFoundException</em>
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>          <em class="jxr_comment">// and in a normal flow this should not happen</em>
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>          <em class="jxr_comment">// as appid is (should be) validated by calling the /app/ endpoint</em>
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>          Application application = applicationRepository.getById(appid);
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          <em class="jxr_comment">// as appId is (should be) validated by calling the /app/ endpoint</em>
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          Application application = applicationRepository.getById(appId);
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>          getApplicationParams(application, mapResponse);
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          getLayers(application, mapResponse);

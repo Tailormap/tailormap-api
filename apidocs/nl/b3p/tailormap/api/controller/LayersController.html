@@ -133,7 +133,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>@RestController
 @Validated
-@RequestMapping(path="/layers/{appid}",
+@RequestMapping(path="/layers/{appId}",
                 produces="application/json")
 public class <span class="typeNameLabel">LayersController</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
@@ -180,9 +180,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="../model/AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#get(java.lang.Long)">get</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;appid)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#get(java.lang.Long)">get</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;appId)</code></th>
 <td class="colLast">
-<div class="block">GET /layers/{appid}.</div>
+<div class="block">GET /layers/{appId}.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -263,12 +263,12 @@ public&nbsp;<a href="../model/ErrorResponse.html" title="class in nl.b3p.tailorm
 <li class="blockList">
 <h4>get</h4>
 <pre class="methodSignature">@GetMapping(produces="application/json")
-public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="../model/AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;&nbsp;get&#8203;(@PathVariable("appid")
-                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;appid)</pre>
-<div class="block">GET /layers/{appid}.</div>
+public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="../model/AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;&nbsp;get&#8203;(@PathVariable("appId")
+                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;appId)</pre>
+<div class="block">GET /layers/{appId}.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>appid</code> - application id (required)</dd>
+<dd><code>appId</code> - application id (required)</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>OK (status code 200) with list of <code>AppLayer</code></dd>
 </dl>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeometryProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.geotools.processing</a> &gt; <span class="el_source">GeometryProcessor.java</span></div><h1>GeometryProcessor.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2022 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.geotools.processing;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.precision.GeometryPrecisionReducer;
+import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
+
+import java.nio.charset.StandardCharsets;
+
+import javax.validation.constraints.NotNull;
+
+/**
+ * Utility functions on feature geometries.
+ *
+ * @author mprins
+ * @since 0.1
+ */
+public final class GeometryProcessor {
+<span class="nc" id="L26">    private static final Log LOG = LogFactory.getLog(GeometryProcessor.class);</span>
+
+    private GeometryProcessor() {}
+
+    /**
+     * process the geometry into a (optionally simplified) string representation.
+     *
+     * @param geometry An object representing a geometry
+     * @param simplfyGeometry set to {@code true} to simplify
+     * @return the string representation of the argument - normally WKT, optionally simplified
+     */
+    @NotNull
+    public static String processGeometry(
+            @NotNull final Object geometry, @NotNull final Boolean simplfyGeometry) {
+<span class="nc bnc" id="L40" title="All 4 branches missed.">        if (simplfyGeometry &amp;&amp; Geometry.class.isAssignableFrom(geometry.getClass())) {</span>
+<span class="nc" id="L41">            return simplify((Geometry) geometry);</span>
+        }
+        // return WKT
+<span class="nc" id="L44">        return geometry.toString();</span>
+    }
+
+    /**
+     * Simplifies given geometry to reduce (transfer) size, start off with 1 and each iteration
+     * multiply with 10, max 4 steps, so [1, 10, 100, 1000], if the geomeomtry is still too large
+     * bail out and use bbox. TODO this works for CRS in meters, may not work for degrees
+     *
+     * @param geom gemetry to simplify
+     * @return simplified geometry as WKT string
+     */
+    @NotNull
+    private static String simplify(@NotNull Geometry geom) {
+<span class="nc" id="L57">        final int megabytes = (2097152 /* 2MB is the default tomcat max post size */ - 100 * 1024);</span>
+
+<span class="nc" id="L59">        LOG.debug(geom.getPrecisionModel().getScale());</span>
+<span class="nc" id="L60">        PrecisionModel pm = new PrecisionModel(geom.getPrecisionModel());</span>
+<span class="nc" id="L61">        GeometryPrecisionReducer gpr = new GeometryPrecisionReducer(pm);</span>
+<span class="nc" id="L62">        geom = gpr.reduce(geom);</span>
+<span class="nc" id="L63">        Geometry bbox = geom.getEnvelope();</span>
+
+<span class="nc" id="L65">        double distanceTolerance = 1.0;</span>
+<span class="nc" id="L66">        String geomTxt = geom.toText();</span>
+
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        while ((geomTxt.getBytes(StandardCharsets.UTF_8).length &gt; megabytes</span>
+<span class="nc bnc" id="L69" title="All 4 branches missed.">                        || geom.getCoordinates().length &gt; 600)</span>
+                &amp;&amp; distanceTolerance &lt; 9999) {
+<span class="nc" id="L71">            LOG.debug(&quot;Simplify selected feature geometry with distance of: &quot; + distanceTolerance);</span>
+<span class="nc" id="L72">            geom = TopologyPreservingSimplifier.simplify(geom, distanceTolerance);</span>
+<span class="nc" id="L73">            geom = gpr.reduce(geom);</span>
+<span class="nc" id="L74">            geomTxt = geom.toText();</span>
+<span class="nc" id="L75">            distanceTolerance = 10 * distanceTolerance;</span>
+        }
+
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (distanceTolerance &gt; 9999) {</span>
+<span class="nc" id="L79">            LOG.debug(&quot;Maximum number of simplify cycles reached, returning bounding box instead.&quot;);</span>
+<span class="nc" id="L80">            return bbox.toText();</span>
+        } else {
+<span class="nc" id="L82">            return geomTxt;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

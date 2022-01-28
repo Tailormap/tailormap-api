@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ColumnMetadata.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.model</a> &gt; <span class="el_source">ColumnMetadata.java</span></div><h1>ColumnMetadata.java</h1><pre class="source lang-java linenums">package nl.b3p.tailormap.api.model;
+
+import java.net.URI;
+import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
+import java.util.*;
+
+/**
+ * presentation metadata for a feature
+ */
+@Schema(name = &quot;ColumnMetadata&quot;,description = &quot;presentation metadata for a feature&quot;)
+@javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
+<span class="nc" id="L24">public class ColumnMetadata  implements Serializable {</span>
+  private static final long serialVersionUID = 1L;
+
+  @JsonProperty(&quot;key&quot;)
+  private String key;
+
+<span class="nc" id="L30">  @JsonProperty(&quot;alias&quot;)</span>
+  private String alias = null;
+
+  /**
+   * data type. eg \&quot;date\&quot; or \&quot;string\&quot;. see also: nl.tailormap.viewer.config.services.AttributeDescriptor
+   */
+<span class="nc" id="L36">  public enum TypeEnum {</span>
+<span class="nc" id="L37">    DATE(&quot;date&quot;),</span>
+    
+<span class="nc" id="L39">    TIMESTAMP(&quot;timestamp&quot;),</span>
+    
+<span class="nc" id="L41">    STRING(&quot;string&quot;),</span>
+    
+<span class="nc" id="L43">    DOUBLE(&quot;double&quot;),</span>
+    
+<span class="nc" id="L45">    INTEGER(&quot;integer&quot;),</span>
+    
+<span class="nc" id="L47">    BOOLEAN(&quot;boolean&quot;),</span>
+    
+<span class="nc" id="L49">    GEOMETRY(&quot;geometry&quot;);</span>
+
+    private String value;
+
+<span class="nc" id="L53">    TypeEnum(String value) {</span>
+<span class="nc" id="L54">      this.value = value;</span>
+<span class="nc" id="L55">    }</span>
+
+    @JsonValue
+    public String getValue() {
+<span class="nc" id="L59">      return value;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L64">      return String.valueOf(value);</span>
+    }
+
+    @JsonCreator
+    public static TypeEnum fromValue(String value) {
+<span class="nc bnc" id="L69" title="All 2 branches missed.">      for (TypeEnum b : TypeEnum.values()) {</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
+<span class="nc" id="L71">          return b;</span>
+        }
+      }
+<span class="nc" id="L74">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
+    }
+  }
+
+  @JsonProperty(&quot;type&quot;)
+  private TypeEnum type;
+
+  public ColumnMetadata key(String key) {
+<span class="nc" id="L82">    this.key = key;</span>
+<span class="nc" id="L83">    return this;</span>
+  }
+
+  /**
+   * Get key
+   * @return key
+  */
+  @Schema(name = &quot;key&quot;, defaultValue = &quot;&quot;)
+
+
+  public String getKey() {
+<span class="nc" id="L94">    return key;</span>
+  }
+
+  public void setKey(String key) {
+<span class="nc" id="L98">    this.key = key;</span>
+<span class="nc" id="L99">  }</span>
+
+  public ColumnMetadata alias(String alias) {
+<span class="nc" id="L102">    this.alias = alias;</span>
+<span class="nc" id="L103">    return this;</span>
+  }
+
+  /**
+   * Get alias
+   * @return alias
+  */
+  @Schema(name = &quot;alias&quot;, defaultValue = &quot;&quot;)
+
+
+  public String getAlias() {
+<span class="nc" id="L114">    return alias;</span>
+  }
+
+  public void setAlias(String alias) {
+<span class="nc" id="L118">    this.alias = alias;</span>
+<span class="nc" id="L119">  }</span>
+
+  public ColumnMetadata type(TypeEnum type) {
+<span class="nc" id="L122">    this.type = type;</span>
+<span class="nc" id="L123">    return this;</span>
+  }
+
+  /**
+   * data type. eg \&quot;date\&quot; or \&quot;string\&quot;. see also: nl.tailormap.viewer.config.services.AttributeDescriptor
+   * @return type
+  */
+  @Schema(name = &quot;type&quot;, defaultValue = &quot;data type. eg \&quot;date\&quot; or \&quot;string\&quot;. see also: nl.tailormap.viewer.config.services.AttributeDescriptor&quot;)
+
+
+  public TypeEnum getType() {
+<span class="nc" id="L134">    return type;</span>
+  }
+
+  public void setType(TypeEnum type) {
+<span class="nc" id="L138">    this.type = type;</span>
+<span class="nc" id="L139">  }</span>
+
+
+  @Override
+  public boolean equals(Object o) {
+<span class="nc bnc" id="L144" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L145">      return true;</span>
+    }
+<span class="nc bnc" id="L147" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L148">      return false;</span>
+    }
+<span class="nc" id="L150">    ColumnMetadata columnMetadata = (ColumnMetadata) o;</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">    return Objects.equals(this.key, columnMetadata.key) &amp;&amp;</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        Objects.equals(this.alias, columnMetadata.alias) &amp;&amp;</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        Objects.equals(this.type, columnMetadata.type);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L158">    return Objects.hash(key, alias, type);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L163">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L164">    sb.append(&quot;class ColumnMetadata {\n&quot;);</span>
+    
+<span class="nc" id="L166">    sb.append(&quot;    key: &quot;).append(toIndentedString(key)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L167">    sb.append(&quot;    alias: &quot;).append(toIndentedString(alias)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L168">    sb.append(&quot;    type: &quot;).append(toIndentedString(type)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L169">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L170">    return sb.toString();</span>
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+<span class="nc bnc" id="L178" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L179">      return &quot;null&quot;;</span>
+    }
+<span class="nc" id="L181">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

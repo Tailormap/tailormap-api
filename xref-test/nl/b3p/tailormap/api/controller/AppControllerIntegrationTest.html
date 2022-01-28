@@ -67,7 +67,7 @@
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>      @Test
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>      @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>      <strong class="jxr_keyword">void</strong> should_find_<strong class="jxr_keyword">default</strong>_when_nonexistent_id() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>          mockMvc.perform(get(<span class="jxr_string">"/app"</span>).param(<span class="jxr_string">"appid"</span>, <span class="jxr_string">"100"</span>).accept(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          mockMvc.perform(get(<span class="jxr_string">"/app"</span>).param(<span class="jxr_string">"appId"</span>, <span class="jxr_string">"100"</span>).accept(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>                  .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.apiVersion"</span>).value(getApiVersionFromPom()))
@@ -99,7 +99,7 @@
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>      @Test
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">void</strong> should_find_by_id() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>          mockMvc.perform(get(<span class="jxr_string">"/app"</span>).param(<span class="jxr_string">"appid"</span>, <span class="jxr_string">"1"</span>).accept(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>          mockMvc.perform(get(<span class="jxr_string">"/app"</span>).param(<span class="jxr_string">"appId"</span>, <span class="jxr_string">"1"</span>).accept(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>                  .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.apiVersion"</span>).value(getApiVersionFromPom()))
@@ -150,7 +150,7 @@
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         <em class="jxr_comment">// setup test data for this test (delete default application from metadata table)</em>
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>         metadataRepository.deleteMetadataByConfigKey(Metadata.DEFAULT_APPLICATION);
 <a class="jxr_linenumber" name="L144" href="#L144">144</a> 
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>         mockMvc.perform(get(<span class="jxr_string">"/app"</span>).param(<span class="jxr_string">"appid"</span>, <span class="jxr_string">"666"</span>).accept(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>         mockMvc.perform(get(<span class="jxr_string">"/app"</span>).param(<span class="jxr_string">"appId"</span>, <span class="jxr_string">"666"</span>).accept(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>                 .andExpect(status().is5xxServerError())
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>     }

@@ -69,10 +69,10 @@ import javax.persistence.EntityNotFoundException;
     /**
      * Lookup an {@linkplain Application} with given parameters. Use this endpoint to get the id of
      * the requested or default application. Either call this with `name` and optional `version` or
-     * `appid` alone. Will return general setup information such as name, appid, language, but not
+     * `appId` alone. Will return general setup information such as name, appId, language, but not
      * map specific information.
      *
-     * @param appid the unique identifier of an app
+     * @param appId the unique identifier of an app
      * @param name the name of an app
      * @param version the version of an app
      * @return the basic information needed to create an app in the frontend
@@ -82,21 +82,21 @@ import javax.persistence.EntityNotFoundException;
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map&lt;String, Object&gt; get(
-            @RequestParam(required = false) Long appid,
+            @RequestParam(required = false) Long appId,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String version)
             throws TailormapConfigurationException {
 
 <span class="fc" id="L90">        logger.trace(</span>
-                &quot;requested application using: appid: &quot;
-                        + appid
+                &quot;requested application using: appId: &quot;
+                        + appId
                         + &quot;, name: &quot;
                         + name
                         + &quot;, version: &quot;
                         + version);
 
-<span class="fc bfc" id="L98" title="All 2 branches covered.">        if (null != appid) {</span>
-<span class="fc" id="L99">            this.application = applicationRepository.findById(appid).orElse(null);</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        if (null != appId) {</span>
+<span class="fc" id="L99">            this.application = applicationRepository.findById(appId).orElse(null);</span>
         } else {
 <span class="fc" id="L101">            this.application = findApplication(name, version);</span>
         }

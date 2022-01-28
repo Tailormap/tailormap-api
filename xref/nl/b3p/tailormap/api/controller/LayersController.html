@@ -49,7 +49,7 @@
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  @RestController
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  @Validated
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  @RequestMapping(path = <span class="jxr_string">"/layers/{appid}"</span>, produces = MediaType.APPLICATION_JSON_VALUE)
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  @RequestMapping(path = <span class="jxr_string">"/layers/{appId}"</span>, produces = MediaType.APPLICATION_JSON_VALUE)
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="LayersController" href="../../../../../nl/b3p/tailormap/api/controller/LayersController.html#LayersController">LayersController</a> {
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Log logger = LogFactory.getLog(getClass());
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>      @Autowired <strong class="jxr_keyword">private</strong> <a name="ApplicationRepository" href="../../../../../nl/b3p/tailormap/api/repository/ApplicationRepository.html#ApplicationRepository">ApplicationRepository</a> applicationRepository;
@@ -76,9 +76,9 @@
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      }
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_javadoccomment">     * GET /layers/{appid}.</em>
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_javadoccomment">     * GET /layers/{appId}.</em>
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">     * @param appid application id (required)</em>
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">     * @param appId application id (required)</em>
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">     * @return OK (status code 200) with list of {@code AppLayer}</em>
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>      @Operation(
@@ -102,15 +102,15 @@
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>              })
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>      <strong class="jxr_keyword">public</strong> List&lt;AppLayer&gt; get(
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>              @Parameter(name = <span class="jxr_string">"appid"</span>, description = <span class="jxr_string">"application id"</span>, required = <strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>                      @PathVariable(<span class="jxr_string">"appid"</span>)
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>                      Long appid) {
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>         logger.trace(<span class="jxr_string">"Requesting 'layers' for application id: "</span> + appid);
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>              @Parameter(name = <span class="jxr_string">"appId"</span>, description = <span class="jxr_string">"application id"</span>, required = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>                      @PathVariable(<span class="jxr_string">"appId"</span>)
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>                      Long appId) {
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>         logger.trace(<span class="jxr_string">"Requesting 'layers' for application id: "</span> + appId);
 <a class="jxr_linenumber" name="L101" href="#L101">101</a> 
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>         <em class="jxr_comment">// this could throw EntityNotFound, which is handled by #handleEntityNotFoundException</em>
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         <em class="jxr_comment">// and in a normal flow this should not happen</em>
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>         <em class="jxr_comment">// as appid is (should be) validated by calling the /app/ endpoint</em>
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>         Application application = applicationRepository.getById(appid);
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>         <em class="jxr_comment">// as appId is (should be) validated by calling the /app/ endpoint</em>
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>         Application application = applicationRepository.getById(appId);
 <a class="jxr_linenumber" name="L106" href="#L106">106</a> 
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         List&lt;AppLayer&gt; appLayers = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L108" href="#L108">108</a> 

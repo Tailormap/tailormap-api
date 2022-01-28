@@ -41,7 +41,7 @@ import javax.validation.constraints.NotNull;
 
 @RestController
 @Validated
-@RequestMapping(path = &quot;/layers/{appid}&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = &quot;/layers/{appId}&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
 <span class="fc" id="L45">public class LayersController {</span>
 <span class="fc" id="L46">    private final Log logger = LogFactory.getLog(getClass());</span>
     @Autowired private ApplicationRepository applicationRepository;
@@ -68,9 +68,9 @@ import javax.validation.constraints.NotNull;
     }
 
     /**
-     * GET /layers/{appid}.
+     * GET /layers/{appId}.
      *
-     * @param appid application id (required)
+     * @param appId application id (required)
      * @return OK (status code 200) with list of {@code AppLayer}
      */
     @Operation(
@@ -94,15 +94,15 @@ import javax.validation.constraints.NotNull;
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List&lt;AppLayer&gt; get(
-            @Parameter(name = &quot;appid&quot;, description = &quot;application id&quot;, required = true)
-                    @PathVariable(&quot;appid&quot;)
-                    Long appid) {
-<span class="fc" id="L100">        logger.trace(&quot;Requesting 'layers' for application id: &quot; + appid);</span>
+            @Parameter(name = &quot;appId&quot;, description = &quot;application id&quot;, required = true)
+                    @PathVariable(&quot;appId&quot;)
+                    Long appId) {
+<span class="fc" id="L100">        logger.trace(&quot;Requesting 'layers' for application id: &quot; + appId);</span>
 
         // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
         // and in a normal flow this should not happen
-        // as appid is (should be) validated by calling the /app/ endpoint
-<span class="fc" id="L105">        Application application = applicationRepository.getById(appid);</span>
+        // as appId is (should be) validated by calling the /app/ endpoint
+<span class="fc" id="L105">        Application application = applicationRepository.getById(appId);</span>
 
 <span class="fc" id="L107">        List&lt;AppLayer&gt; appLayers = new ArrayList&lt;&gt;();</span>
 

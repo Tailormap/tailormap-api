@@ -38,7 +38,7 @@ import javax.persistence.EntityNotFoundException;
 
 @RestController
 @Validated
-@RequestMapping(path = &quot;/components/{appid}&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = &quot;/components/{appId}&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
 <span class="fc" id="L42">public class ComponentsController {</span>
 
 <span class="fc" id="L44">    private final Log logger = LogFactory.getLog(getClass());</span>
@@ -66,9 +66,9 @@ import javax.persistence.EntityNotFoundException;
     }
 
     /**
-     * GET /components/{appid}
+     * GET /components/{appId}
      *
-     * @param appid application id (required)
+     * @param appId application id (required)
      * @return OK (status code 200)
      */
     @Operation(
@@ -92,15 +92,15 @@ import javax.persistence.EntityNotFoundException;
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List&lt;Component&gt; get(
-            @Parameter(name = &quot;appid&quot;, description = &quot;application id&quot;, required = true)
-                    @PathVariable(&quot;appid&quot;)
-                    Long appid) {
-<span class="fc" id="L98">        logger.trace(&quot;Requesting 'components' for application id: &quot; + appid);</span>
+            @Parameter(name = &quot;appId&quot;, description = &quot;application id&quot;, required = true)
+                    @PathVariable(&quot;appId&quot;)
+                    Long appId) {
+<span class="fc" id="L98">        logger.trace(&quot;Requesting 'components' for application id: &quot; + appId);</span>
 
         // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
         // and in a normal flow this should not happen
-        // as appid is (should be) validated by calling the /app/ endpoint
-<span class="fc" id="L103">        Application application = applicationRepository.getById(appid);</span>
+        // as appId is (should be) validated by calling the /app/ endpoint
+<span class="fc" id="L103">        Application application = applicationRepository.getById(appId);</span>
 
 <span class="fc" id="L105">        List&lt;Component&gt; components = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L106">        findComponents(application, components);</span>
