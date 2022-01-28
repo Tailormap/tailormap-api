@@ -548,7 +548,7 @@ SPDX-License-Identifier: MIT
             <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
             <!-- TODO read this from persistence -->
-            <DATABASE_VERSION>46</DATABASE_VERSION>
+            <DATABASE_VERSION>47</DATABASE_VERSION>
           </environmentVariables>
           <excludes>
             <exclude>**/*IntegrationTest.java</exclude>
@@ -572,7 +572,7 @@ SPDX-License-Identifier: MIT
             <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
             <!-- TODO read this from persistence -->
-            <DATABASE_VERSION>46</DATABASE_VERSION>
+            <DATABASE_VERSION>47</DATABASE_VERSION>
           </environmentVariables>
           <useFile>false</useFile>
           <classpathDependencyExcludes>
@@ -600,7 +600,7 @@ SPDX-License-Identifier: MIT
             <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
             <!-- TODO read this from persistence -->
-            <DATABASE_VERSION>46</DATABASE_VERSION>
+            <DATABASE_VERSION>47</DATABASE_VERSION>
           </environmentVariables>
           <cleanCache>true</cleanCache>
           <!--suppress UnresolvedMavenProperty -->
@@ -628,7 +628,7 @@ SPDX-License-Identifier: MIT
                 <!--suppress UnresolvedMavenProperty -->
                 <API_VERSION>${info.version}</API_VERSION>
                 <!-- TODO read this from persistence -->
-                <DATABASE_VERSION>46</DATABASE_VERSION>
+                <DATABASE_VERSION>47</DATABASE_VERSION>
               </environmentVariables>
               <systemPropertyVariables>
                 <project.version>${project.version}</project.version>

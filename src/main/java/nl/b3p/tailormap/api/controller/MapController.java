@@ -21,7 +21,6 @@ import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.StartLayer;
 import nl.tailormap.viewer.config.services.GeoService;
-import nl.tailormap.viewer.config.services.TileMatrixSet;
 import nl.tailormap.viewer.config.services.TileService;
 
 import org.apache.commons.logging.Log;
@@ -158,33 +157,12 @@ public class MapController {
                                 .url(geoService.getUrl())
                                 .id(geoService.getId())
                                 .name(geoService.getName())
-                                .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()));
+                                .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))
+                                .capabilities(geoService.getCapabilitiesDoc());
                 if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {
                     s.tilingProtocol(
                             Service.TilingProtocolEnum.fromValue(
                                     ((TileService) geoService).getTilingProtocol()));
-
-                    // TODO
-                    // find first matrix set that sort of matches on the numeric part of the CRS
-                    // code
-                    TileMatrixSet tileMatrixSet =
-                            ((TileService) geoService)
-                                    .getMatrixSets().stream()
-                                            .filter(
-                                                    tms ->
-                                                            tms.getCrs()
-                                                                    .contains(
-                                                                            appLayer.getCrs()
-                                                                                    .getCode()
-                                                                                    .substring(5)))
-                                            .findFirst()
-                                            .orElse(null);
-                    if (null != tileMatrixSet) {
-                        // you cannot add the JSONObject or the tileMatrixSet; that just does not
-                        // work,
-                        // but you can add a Map
-                        s.matrixSet(tileMatrixSet.toJSONObject().toMap());
-                    }
                 }
                 if (appLayer.getIsBaseLayer()) {
                     mapResponse.addBaseLayersItem(appLayer);
