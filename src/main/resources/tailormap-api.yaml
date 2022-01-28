@@ -41,8 +41,7 @@ components:
     MapResponse:
       description: 'Any information needed to draw a basic map on a page. May include base layers.'
       type: object
-      properties:
-        # mostly properties from table "application"
+      properties: # mostly properties from table "application"
         initialExtent:
           description: 'initial bounds for the map'
           $ref: './model.yaml#/components/schemas/Bounds'
@@ -51,8 +50,7 @@ components:
           description: 'maximum bounds for the map'
           $ref: './model.yaml#/components/schemas/Bounds'
           nullable: true
-        services:
-          # TODO in the current implementation this is an object with the id of a service as elemnt
+        services: # TODO in the current implementation this is an object with the id of a service as elemnt
           #      eg. "1": {"protocol": "tiled", "matrixSets":[], "id": 1
           #      an array seems the better option
           # TODO Not sure we actually/still need this...
@@ -116,6 +114,28 @@ components:
           additionalProperties:
             type: string
 
+    FeaturesResponse:
+      description: 'A -possibly empty- list of features with requested attributes and presentation metadata'
+      type: object
+      properties:
+        features:
+          description: 'list of features'
+          type: array
+          minLength: 0
+          items:
+            $ref: './model.yaml#/components/schemas/Feature'
+        columnMetadata:
+          description: 'presentation metadata'
+          type: array
+          minLength: 0
+          items:
+            $ref: './model.yaml#/components/schemas/ColumnMetadata'
+      example:
+        features:
+
+        columnMetadata:
+
+
 paths:
   /version:
     summary: 'Provides version information of the backend'
@@ -133,8 +153,8 @@ paths:
   /app/:
     summary: '
     Use this endpoint to get the id of the requested or default application.
-    Either call this with `name` and optional `version` or `appid` alone.
-    Will return general setup information such as name, appid, language, but not map specific information.
+    Either call this with `name` and optional `version` or `appId` alone.
+    Will return general setup information such as name, appId, language, but not map specific information.
     '
     get:
       parameters:
@@ -152,7 +172,7 @@ paths:
             type: string
         - description: 'app id from application table'
           in: query
-          name: appid
+          name: appId
           required: false
           schema:
             type: integer
@@ -175,8 +195,7 @@ paths:
           description: 'Authentication required.'
           content:
             application/json:
-              schema:
-                # not an actual HTTP redirect, but  provides login url
+              schema: # not an actual HTTP redirect, but  provides login url
                 # we need to rethink login mechanism eg. a login form popover in the
                 # application that is shown on this status
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
@@ -203,7 +222,7 @@ paths:
               example:
                 code: 404
                 message: 'Application not found'
-                url: /app/?appid=1
+                url: /app/?appId=1
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
         '500':
@@ -214,14 +233,14 @@ paths:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
 
-  /map/{appid}:
+  /map/{appId}:
     summary: 'Retrieve the map''s bounding box, projection, language and (optional) base layers.
     This document provides all that is necessary to draw a map with (optional) baselayers.'
     get:
       parameters:
         - description: 'application id'
           in: path
-          name: appid
+          name: appId
           required: true
           schema:
             type: integer
@@ -230,8 +249,7 @@ paths:
         '200':
           description: 'OK'
           content:
-            application/json:
-              # TODO
+            application/json: # TODO
               # example:
               schema:
                 $ref: '#/components/schemas/MapResponse'
@@ -245,13 +263,13 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
-  /components/{appid}:
+  /components/{appId}:
     summary: 'Retrieve all configured components'
     get:
       parameters:
         - description: 'application id'
           in: path
-          name: appid
+          name: appId
           required: true
           schema:
             type: integer
@@ -260,13 +278,12 @@ paths:
         '200':
           description: OK
           content:
-            application/json:
-              # TODO
+            application/json: # TODO
               # example:
               schema:
                 $ref: '#/components/schemas/ComponentsResponse'
 
-  /layers/{appid}:
+  /layers/{appId}:
     summary: '
     Retrieve all configured layers.
     Provides all information to add foreground layers to the map and draw them.
@@ -275,7 +292,7 @@ paths:
       parameters:
         - description: 'application id'
           in: path
-          name: appid
+          name: appId
           required: true
           schema:
             type: integer
@@ -288,7 +305,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Layers'
 
-  /describelayer/{appid}/{layerid}:
+  /describelayer/{appId}/{layerId}:
     summary: '
     Returns metadata and featuretype of the requested app layer, aka. layer details
     '
@@ -296,17 +313,18 @@ paths:
       parameters:
         - description: 'application id'
           in: path
-          name: appid
+          name: appId
           required: true
           schema:
             type: integer
             format: int64
         - description: 'layer id'
           in: path
-          name: layerid
+          name: layerId
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         '200':
           description: OK
@@ -314,3 +332,142 @@ paths:
             application/json:
               schema:
                 $ref: './model.yaml#/components/schemas/LayerDetails'
+
+  /features/{appId}/{appLayerId}:
+    summary: 'Use this endpoint to access features.'
+    get:
+      description: 'retrieve features that fulfill the requested conditions (parameters).'
+      parameters:
+        - description: 'application id'
+          in: path
+          name: appId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - description: 'application layer id'
+          in: path
+          name: appLayerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - description: 'x-coordinate in the coordinate reference system of the attribute source'
+          in: query
+          name: x
+          required: false
+          schema:
+            type: number
+        - description: 'y-coordinate in the coordinate reference system of the attribute source'
+          in: query
+          name: y
+          required: false
+          schema:
+            type: number
+        - description: 'buffer radius in the coordinate reference system of the attribute source'
+          in: query
+          name: distance
+          required: false
+          schema:
+            type: number
+            default: 4
+        - description: 'feature id, the unique and immutable identifier of a feature within an attribute source'
+          in: query
+          name: __fid
+          required: false
+          schema:
+            type: string
+        - description: 'request true to have simplified geometries returned'
+          in: query
+          name: simplify
+          required: false
+          schema:
+            type: boolean
+        - description: 'a filter to be applied, possibly in combination with any other request parameters'
+          in: query
+          name: filter
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeaturesResponse'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters that can not be processed are incomplete.'
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+    post:
+      # TODO elaborate design
+      description: 'update a feature'
+      parameters:
+        - description: 'application id'
+          in: path
+          name: appId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - description: 'application layer id'
+          in: path
+          name: appLayerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '501':
+          description: 'Not Implemented'
+    put:
+      # TODO elaborate design
+      description: 'create a new feature'
+      parameters:
+        - description: 'application id'
+          in: path
+          name: appId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - description: 'application layer id'
+          in: path
+          name: appLayerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '501':
+          description: 'Not Implemented'
+    delete:
+      # TODO elaborate design
+      description: 'delete a feature'
+      parameters:
+        - description: 'application id'
+          in: path
+          name: appId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - description: 'application layer id'
+          in: path
+          name: appLayerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '501':
+          description: 'Not Implemented'

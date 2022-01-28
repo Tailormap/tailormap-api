@@ -262,6 +262,58 @@ components:
           items:
             type: string
 
+    Feature:
+      description: '
+      A possibly complete feature from the attribute source. 
+      The feature could have been filtered to not provide certain attributes.
+      Any geometry attributes will be presented in WKT format
+      '
+      type: object
+      required:
+        - __fid
+        - attributes
+      properties:
+        __fid:
+          description: 'feature id, a non-mutable identifier from the attribute source'
+          readOnly: true
+          type: string
+        attributes:
+          description: 'feature attributes in key/value pairs'
+          type: object
+          minItems: 1
+          additionalProperties: true
+      example:
+        __fid: 1
+        attributes:
+          name: "Utrecht"
+          geom: "POLYGON(...)"
+          surface: 40
+
+    ColumnMetadata:
+      type: object
+      description: 'presentation metadata for a feature'
+      properties:
+        key:
+          type: string
+        alias:
+          type: string
+          nullable: true
+        type:
+          description: 'data type. eg "date" or "string".
+          see also: nl.tailormap.viewer.config.services.AttributeDescriptor'
+          type: string
+          enum:
+            - 'date'
+            - 'timestamp'
+            - 'string'
+            - 'double'
+            - 'integer'
+            - 'boolean'
+            - 'geometry'
+      example:
+        key: 'geom'
+        alias: 'Geometry'
+        type: 'geometry'
 
     Service:
       description: 'A service provides one or more appLayers'
@@ -327,13 +379,11 @@ components:
         - config
       example:
         type: 'featurereport'
-        config: {
-          template: 'FeatureReport.xsl',
-          legendLayers: [ ],
-          numOfRelatedFeatures: 10,
-          reportLayers: [ ],
-          label: '',
-          title: 'FeatureReport',
-          subTitle: 'detail about parcel $1',
-          layers: [ ]
-        }
+        config: { template: 'FeatureReport.xsl',
+                  legendLayers: [ ],
+                  numOfRelatedFeatures: 10,
+                  reportLayers: [ ],
+                  label: '',
+                  title: 'FeatureReport',
+                  subTitle: 'detail about parcel $1',
+                  layers: [ ] }

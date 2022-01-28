@@ -107,13 +107,14 @@ SPDX-License-Identifier: MIT
     <!--    <project.build.outputTimestamp>2021-11-11T16:01:17Z</project.build.outputTimestamp>-->
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
+    <geotools.version>26.2</geotools.version>
     <spring.boot.version>${project.parent.version}</spring.boot.version>
     <!-- version overrides. see org.springframework.boot:spring-boot-dependencies -->
     <hsqldb.version>2.6.1</hsqldb.version>
     <postgresql.version>42.3.1</postgresql.version>
     <junit-jupiter.version>5.8.2</junit-jupiter.version>
     <logback.version>1.2.10</logback.version>
-    <org.tailormap.version>5.9.12</org.tailormap.version>
+    <org.tailormap.version>5.9.13-SNAPSHOT</org.tailormap.version>
     <maven.surefire.version>3.0.0-M5</maven.surefire.version>
     <maven-surefire-plugin.version>${maven.surefire.version}</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>${maven.surefire.version}</maven-failsafe-plugin.version>
@@ -205,6 +206,18 @@ SPDX-License-Identifier: MIT
         </exclusion>
       </exclusions>
     </dependency>
+
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <!--      <version>${mssql.version}</version>-->
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.database.jdbc</groupId>
+      <artifactId>ojdbc11</artifactId>
+      <!--      <version>${oracle.version}</version>-->
+    </dependency>
+
     <dependency>
       <groupId>org.tailormap</groupId>
       <artifactId>viewer-config-persistence</artifactId>
@@ -235,6 +248,108 @@ SPDX-License-Identifier: MIT
           <!-- SLF4J is provided by SpringBoot through logback -->
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-main</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-wfs-ng</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-metadata</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools.xsd</groupId>
+      <artifactId>gt-xsd-core</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools.xsd</groupId>
+      <artifactId>gt-xsd-gml3</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-http</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-cql</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-xml</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-opengis</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-referencing</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <!-- TODO consider using a different referencing library -->
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-epsg-wkt</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-jdbc</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools.jdbc</groupId>
+      <artifactId>gt-jdbc-oracle</artifactId>
+      <version>${geotools.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.oracle.database.jdbc</groupId>
+          <artifactId>ojdbc8</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools.jdbc</groupId>
+      <artifactId>gt-jdbc-postgis</artifactId>
+      <version>${geotools.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools.jdbc</groupId>
+      <artifactId>gt-jdbc-sqlserver</artifactId>
+      <version>${geotools.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>net.sourceforge.jtds</groupId>
+          <artifactId>jtds</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.microsoft.sqlserver</groupId>
+          <artifactId>mssql-jdbc</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -461,7 +576,7 @@ SPDX-License-Identifier: MIT
           </environmentVariables>
           <useFile>false</useFile>
           <classpathDependencyExcludes>
-            <classpathDependencyExclude>org.postgresql:postgresql</classpathDependencyExclude>
+            <!-- not needed for regular hsqldb, but needed for postgres integration tests <classpathDependencyExclude>org.postgresql:postgresql</classpathDependencyExclude> -->
           </classpathDependencyExcludes>
         </configuration>
         <executions>
@@ -835,6 +950,9 @@ SPDX-License-Identifier: MIT
                          org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:jar:1.1.1.Final:compile
                     -->
                     <exclude>org.tailormap:viewer-config-persistence</exclude>
+                    <!-- basically each and every geotools module has a load of transitive dependencies -->
+                    <exclude>org.geotools:*</exclude>
+                    <exclude>org.geotools.xsd:*</exclude>
                   </excludes>
                 </banTransitiveDependencies>
               </rules>

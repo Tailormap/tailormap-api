@@ -69,10 +69,10 @@ public class AppController {
     /**
      * Lookup an {@linkplain Application} with given parameters. Use this endpoint to get the id of
      * the requested or default application. Either call this with `name` and optional `version` or
-     * `appid` alone. Will return general setup information such as name, appid, language, but not
+     * `appId` alone. Will return general setup information such as name, appId, language, but not
      * map specific information.
      *
-     * @param appid the unique identifier of an app
+     * @param appId the unique identifier of an app
      * @param name the name of an app
      * @param version the version of an app
      * @return the basic information needed to create an app in the frontend
@@ -82,21 +82,21 @@ public class AppController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, Object> get(
-            @RequestParam(required = false) Long appid,
+            @RequestParam(required = false) Long appId,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String version)
             throws TailormapConfigurationException {
 
         logger.trace(
-                "requested application using: appid: "
-                        + appid
+                "requested application using: appId: "
+                        + appId
                         + ", name: "
                         + name
                         + ", version: "
                         + version);
 
-        if (null != appid) {
-            this.application = applicationRepository.findById(appid).orElse(null);
+        if (null != appId) {
+            this.application = applicationRepository.findById(appId).orElse(null);
         } else {
             this.application = findApplication(name, version);
         }
