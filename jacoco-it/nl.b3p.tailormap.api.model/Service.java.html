@@ -117,8 +117,8 @@ import java.util.*;
   @JsonProperty(&quot;tilingProtocol&quot;)
   private TilingProtocolEnum tilingProtocol;
 
-  @JsonProperty(&quot;matrixSet&quot;)
-  private Object matrixSet;
+<span class="fc" id="L120">  @JsonProperty(&quot;capabilities&quot;)</span>
+  private String capabilities = null;
 
   public Service id(Long id) {
 <span class="fc" id="L124">    this.id = id;</span>
@@ -261,24 +261,24 @@ import java.util.*;
 <span class="nc" id="L261">    this.tilingProtocol = tilingProtocol;</span>
 <span class="nc" id="L262">  }</span>
 
-  public Service matrixSet(Object matrixSet) {
-<span class="nc" id="L265">    this.matrixSet = matrixSet;</span>
-<span class="nc" id="L266">    return this;</span>
+  public Service capabilities(String capabilities) {
+<span class="fc" id="L265">    this.capabilities = capabilities;</span>
+<span class="fc" id="L266">    return this;</span>
   }
 
   /**
-   * Get matrixSet
-   * @return matrixSet
+   * capabilities document of the service - currently only for WMTS
+   * @return capabilities
   */
-  @Schema(name = &quot;matrixSet&quot;, defaultValue = &quot;&quot;)
+  @Schema(name = &quot;capabilities&quot;, defaultValue = &quot;capabilities document of the service - currently only for WMTS&quot;)
 
 
-  public Object getMatrixSet() {
-<span class="fc" id="L277">    return matrixSet;</span>
+  public String getCapabilities() {
+<span class="fc" id="L277">    return capabilities;</span>
   }
 
-  public void setMatrixSet(Object matrixSet) {
-<span class="nc" id="L281">    this.matrixSet = matrixSet;</span>
+  public void setCapabilities(String capabilities) {
+<span class="nc" id="L281">    this.capabilities = capabilities;</span>
 <span class="nc" id="L282">  }</span>
 
 
@@ -298,12 +298,12 @@ import java.util.*;
 <span class="nc bnc" id="L298" title="All 2 branches missed.">        Objects.equals(this.styleLibraries, service.styleLibraries) &amp;&amp;</span>
 <span class="nc bnc" id="L299" title="All 2 branches missed.">        Objects.equals(this.protocol, service.protocol) &amp;&amp;</span>
 <span class="nc bnc" id="L300" title="All 2 branches missed.">        Objects.equals(this.tilingProtocol, service.tilingProtocol) &amp;&amp;</span>
-<span class="nc bnc" id="L301" title="All 2 branches missed.">        Objects.equals(this.matrixSet, service.matrixSet);</span>
+<span class="nc bnc" id="L301" title="All 2 branches missed.">        Objects.equals(this.capabilities, service.capabilities);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L306">    return Objects.hash(id, name, url, useProxy, styleLibraries, protocol, tilingProtocol, matrixSet);</span>
+<span class="nc" id="L306">    return Objects.hash(id, name, url, useProxy, styleLibraries, protocol, tilingProtocol, capabilities);</span>
   }
 
   @Override
@@ -318,7 +318,7 @@ import java.util.*;
 <span class="nc" id="L318">    sb.append(&quot;    styleLibraries: &quot;).append(toIndentedString(styleLibraries)).append(&quot;\n&quot;);</span>
 <span class="nc" id="L319">    sb.append(&quot;    protocol: &quot;).append(toIndentedString(protocol)).append(&quot;\n&quot;);</span>
 <span class="nc" id="L320">    sb.append(&quot;    tilingProtocol: &quot;).append(toIndentedString(tilingProtocol)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L321">    sb.append(&quot;    matrixSet: &quot;).append(toIndentedString(matrixSet)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L321">    sb.append(&quot;    capabilities: &quot;).append(toIndentedString(capabilities)).append(&quot;\n&quot;);</span>
 <span class="nc" id="L322">    sb.append(&quot;}&quot;);</span>
 <span class="nc" id="L323">    return sb.toString();</span>
   }
