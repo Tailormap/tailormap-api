@@ -4,8 +4,6 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-
-
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import javax.validation.Valid;
@@ -14,33 +12,35 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 
 import java.util.*;
+import javax.annotation.Generated;
 
 /**
  *  General server error response. Can be returned when something goes terribly wrong in the backend. Note that the diagnostic message may be of a general character to prevent disclosure of information about the backend. 
  */
-@Schema(name = &quot;ErrorResponse&quot;,description = &quot; General server error response. Can be returned when something goes terribly wrong in the backend. Note that the diagnostic message may be of a general character to prevent disclosure of information about the backend. &quot;)
-@javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
+
+@Schema(name = &quot;ErrorResponse&quot;, description = &quot; General server error response. Can be returned when something goes terribly wrong in the backend. Note that the diagnostic message may be of a general character to prevent disclosure of information about the backend. &quot;)
+@Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
 <span class="fc" id="L23">public class ErrorResponse  implements Serializable {</span>
+
   private static final long serialVersionUID = 1L;
 
-<span class="fc" id="L26">  @JsonProperty(&quot;code&quot;)</span>
-<span class="fc" id="L27">  private Integer code = 500;</span>
+<span class="fc" id="L27">  @JsonProperty(&quot;code&quot;)</span>
+<span class="fc" id="L28">  private Integer code = 500;</span>
 
-<span class="fc" id="L29">  @JsonProperty(&quot;message&quot;)</span>
+<span class="fc" id="L30">  @JsonProperty(&quot;message&quot;)</span>
   private String message = &quot;Internal server error&quot;;
 
   public ErrorResponse code(Integer code) {
-<span class="fc" id="L33">    this.code = code;</span>
-<span class="fc" id="L34">    return this;</span>
+<span class="fc" id="L34">    this.code = code;</span>
+<span class="fc" id="L35">    return this;</span>
   }
 
   /**
    * Get code
    * @return code
   */
-  @Schema(name = &quot;code&quot;, defaultValue = &quot;&quot;)
-
-
+  
+  @Schema(name = &quot;code&quot;, required = false)
   public Integer getCode() {
 <span class="fc" id="L45">    return code;</span>
   }
@@ -58,45 +58,42 @@ import java.util.*;
    * diagnostic message
    * @return message
   */
-  @Schema(name = &quot;message&quot;, defaultValue = &quot;diagnostic message&quot;)
-
-
+  
+  @Schema(name = &quot;message&quot;, description = &quot;diagnostic message&quot;, required = false)
   public String getMessage() {
-<span class="fc" id="L65">    return message;</span>
+<span class="fc" id="L64">    return message;</span>
   }
 
   public void setMessage(String message) {
-<span class="nc" id="L69">    this.message = message;</span>
-<span class="nc" id="L70">  }</span>
-
+<span class="nc" id="L68">    this.message = message;</span>
+<span class="nc" id="L69">  }</span>
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L75" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L76">      return true;</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L74">      return true;</span>
     }
-<span class="nc bnc" id="L78" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L79">      return false;</span>
+<span class="nc bnc" id="L76" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L77">      return false;</span>
     }
-<span class="nc" id="L81">    ErrorResponse errorResponse = (ErrorResponse) o;</span>
-<span class="nc bnc" id="L82" title="All 2 branches missed.">    return Objects.equals(this.code, errorResponse.code) &amp;&amp;</span>
-<span class="nc bnc" id="L83" title="All 2 branches missed.">        Objects.equals(this.message, errorResponse.message);</span>
+<span class="nc" id="L79">    ErrorResponse errorResponse = (ErrorResponse) o;</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    return Objects.equals(this.code, errorResponse.code) &amp;&amp;</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        Objects.equals(this.message, errorResponse.message);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L88">    return Objects.hash(code, message);</span>
+<span class="nc" id="L86">    return Objects.hash(code, message);</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L93">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L94">    sb.append(&quot;class ErrorResponse {\n&quot;);</span>
-    
-<span class="nc" id="L96">    sb.append(&quot;    code: &quot;).append(toIndentedString(code)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L97">    sb.append(&quot;    message: &quot;).append(toIndentedString(message)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L98">    sb.append(&quot;}&quot;);</span>
-<span class="nc" id="L99">    return sb.toString();</span>
+<span class="nc" id="L91">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L92">    sb.append(&quot;class ErrorResponse {\n&quot;);</span>
+<span class="nc" id="L93">    sb.append(&quot;    code: &quot;).append(toIndentedString(code)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L94">    sb.append(&quot;    message: &quot;).append(toIndentedString(message)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L95">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L96">    return sb.toString();</span>
   }
 
   /**
@@ -104,10 +101,10 @@ import java.util.*;
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-<span class="nc bnc" id="L107" title="All 2 branches missed.">    if (o == null) {</span>
-<span class="nc" id="L108">      return &quot;null&quot;;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L105">      return &quot;null&quot;;</span>
     }
-<span class="nc" id="L110">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+<span class="nc" id="L107">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
   }
 }
 

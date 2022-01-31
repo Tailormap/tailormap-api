@@ -5,8 +5,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-
-
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import javax.validation.Valid;
@@ -15,12 +13,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 
 import java.util.*;
+import javax.annotation.Generated;
 
 /**
  * LayerDetailsRelations
  */
-@javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
+
+@Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
 <span class="nc" id="L23">public class LayerDetailsRelations  implements Serializable {</span>
+
   private static final long serialVersionUID = 1L;
 
   @JsonProperty(&quot;featureType&quot;)
@@ -32,35 +33,35 @@ import java.util.*;
   /**
    * Gets or Sets type
    */
-<span class="nc" id="L35">  public enum TypeEnum {</span>
-<span class="nc" id="L36">    RELATE(&quot;relate&quot;),</span>
+<span class="nc" id="L36">  public enum TypeEnum {</span>
+<span class="nc" id="L37">    RELATE(&quot;relate&quot;),</span>
     
-<span class="nc" id="L38">    JOIN(&quot;join&quot;);</span>
+<span class="nc" id="L39">    JOIN(&quot;join&quot;);</span>
 
     private String value;
 
-<span class="nc" id="L42">    TypeEnum(String value) {</span>
-<span class="nc" id="L43">      this.value = value;</span>
-<span class="nc" id="L44">    }</span>
+<span class="nc" id="L43">    TypeEnum(String value) {</span>
+<span class="nc" id="L44">      this.value = value;</span>
+<span class="nc" id="L45">    }</span>
 
     @JsonValue
     public String getValue() {
-<span class="nc" id="L48">      return value;</span>
+<span class="nc" id="L49">      return value;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L53">      return String.valueOf(value);</span>
+<span class="nc" id="L54">      return String.valueOf(value);</span>
     }
 
     @JsonCreator
     public static TypeEnum fromValue(String value) {
-<span class="nc bnc" id="L58" title="All 2 branches missed.">      for (TypeEnum b : TypeEnum.values()) {</span>
-<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
-<span class="nc" id="L60">          return b;</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">      for (TypeEnum b : TypeEnum.values()) {</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
+<span class="nc" id="L61">          return b;</span>
         }
       }
-<span class="nc" id="L63">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
+<span class="nc" id="L64">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
     }
   }
 
@@ -68,17 +69,16 @@ import java.util.*;
   private TypeEnum type;
 
   public LayerDetailsRelations featureType(Long featureType) {
-<span class="nc" id="L71">    this.featureType = featureType;</span>
-<span class="nc" id="L72">    return this;</span>
+<span class="nc" id="L72">    this.featureType = featureType;</span>
+<span class="nc" id="L73">    return this;</span>
   }
 
   /**
    * Get featureType
    * @return featureType
   */
-  @Schema(name = &quot;featureType&quot;, defaultValue = &quot;&quot;)
-
-
+  
+  @Schema(name = &quot;featureType&quot;, required = false)
   public Long getFeatureType() {
 <span class="nc" id="L83">    return featureType;</span>
   }
@@ -96,67 +96,63 @@ import java.util.*;
    * Get foreignFeatureType
    * @return foreignFeatureType
   */
-  @Schema(name = &quot;foreignFeatureType&quot;, defaultValue = &quot;&quot;)
-
-
+  
+  @Schema(name = &quot;foreignFeatureType&quot;, required = false)
   public Long getForeignFeatureType() {
-<span class="nc" id="L103">    return foreignFeatureType;</span>
+<span class="nc" id="L102">    return foreignFeatureType;</span>
   }
 
   public void setForeignFeatureType(Long foreignFeatureType) {
-<span class="nc" id="L107">    this.foreignFeatureType = foreignFeatureType;</span>
-<span class="nc" id="L108">  }</span>
+<span class="nc" id="L106">    this.foreignFeatureType = foreignFeatureType;</span>
+<span class="nc" id="L107">  }</span>
 
   public LayerDetailsRelations type(TypeEnum type) {
-<span class="nc" id="L111">    this.type = type;</span>
-<span class="nc" id="L112">    return this;</span>
+<span class="nc" id="L110">    this.type = type;</span>
+<span class="nc" id="L111">    return this;</span>
   }
 
   /**
    * Get type
    * @return type
   */
-  @Schema(name = &quot;type&quot;, defaultValue = &quot;&quot;)
-
-
+  
+  @Schema(name = &quot;type&quot;, required = false)
   public TypeEnum getType() {
-<span class="nc" id="L123">    return type;</span>
+<span class="nc" id="L121">    return type;</span>
   }
 
   public void setType(TypeEnum type) {
-<span class="nc" id="L127">    this.type = type;</span>
-<span class="nc" id="L128">  }</span>
-
+<span class="nc" id="L125">    this.type = type;</span>
+<span class="nc" id="L126">  }</span>
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L133" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L134">      return true;</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L131">      return true;</span>
     }
-<span class="nc bnc" id="L136" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L137">      return false;</span>
+<span class="nc bnc" id="L133" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L134">      return false;</span>
     }
-<span class="nc" id="L139">    LayerDetailsRelations layerDetailsRelations = (LayerDetailsRelations) o;</span>
-<span class="nc bnc" id="L140" title="All 2 branches missed.">    return Objects.equals(this.featureType, layerDetailsRelations.featureType) &amp;&amp;</span>
-<span class="nc bnc" id="L141" title="All 2 branches missed.">        Objects.equals(this.foreignFeatureType, layerDetailsRelations.foreignFeatureType) &amp;&amp;</span>
-<span class="nc bnc" id="L142" title="All 2 branches missed.">        Objects.equals(this.type, layerDetailsRelations.type);</span>
+<span class="nc" id="L136">    LayerDetailsRelations layerDetailsRelations = (LayerDetailsRelations) o;</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">    return Objects.equals(this.featureType, layerDetailsRelations.featureType) &amp;&amp;</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        Objects.equals(this.foreignFeatureType, layerDetailsRelations.foreignFeatureType) &amp;&amp;</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        Objects.equals(this.type, layerDetailsRelations.type);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L147">    return Objects.hash(featureType, foreignFeatureType, type);</span>
+<span class="nc" id="L144">    return Objects.hash(featureType, foreignFeatureType, type);</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L152">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L153">    sb.append(&quot;class LayerDetailsRelations {\n&quot;);</span>
-    
-<span class="nc" id="L155">    sb.append(&quot;    featureType: &quot;).append(toIndentedString(featureType)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L156">    sb.append(&quot;    foreignFeatureType: &quot;).append(toIndentedString(foreignFeatureType)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L157">    sb.append(&quot;    type: &quot;).append(toIndentedString(type)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L158">    sb.append(&quot;}&quot;);</span>
-<span class="nc" id="L159">    return sb.toString();</span>
+<span class="nc" id="L149">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L150">    sb.append(&quot;class LayerDetailsRelations {\n&quot;);</span>
+<span class="nc" id="L151">    sb.append(&quot;    featureType: &quot;).append(toIndentedString(featureType)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L152">    sb.append(&quot;    foreignFeatureType: &quot;).append(toIndentedString(foreignFeatureType)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L153">    sb.append(&quot;    type: &quot;).append(toIndentedString(type)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L154">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L155">    return sb.toString();</span>
   }
 
   /**
@@ -164,10 +160,10 @@ import java.util.*;
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-<span class="nc bnc" id="L167" title="All 2 branches missed.">    if (o == null) {</span>
-<span class="nc" id="L168">      return &quot;null&quot;;</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L164">      return &quot;null&quot;;</span>
     }
-<span class="nc" id="L170">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+<span class="nc" id="L166">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
   }
 }
 

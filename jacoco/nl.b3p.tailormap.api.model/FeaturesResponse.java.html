@@ -4,8 +4,6 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-
-
 import java.util.ArrayList;
 import java.util.List;
 import nl.b3p.tailormap.api.model.ColumnMetadata;
@@ -18,109 +16,106 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 
 import java.util.*;
+import javax.annotation.Generated;
 
 /**
  * A -possibly empty- list of features with requested attributes and presentation metadata
  */
-@Schema(name = &quot;FeaturesResponse&quot;,description = &quot;A -possibly empty- list of features with requested attributes and presentation metadata&quot;)
-@javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
+
+@Schema(name = &quot;FeaturesResponse&quot;, description = &quot;A -possibly empty- list of features with requested attributes and presentation metadata&quot;)
+@Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
 <span class="fc" id="L27">public class FeaturesResponse  implements Serializable {</span>
+
   private static final long serialVersionUID = 1L;
 
-<span class="fc" id="L30">  @JsonProperty(&quot;features&quot;)</span>
+<span class="fc" id="L31">  @JsonProperty(&quot;features&quot;)</span>
   @Valid
   private List&lt;Feature&gt; features = null;
 
-<span class="fc" id="L34">  @JsonProperty(&quot;columnMetadata&quot;)</span>
+<span class="fc" id="L35">  @JsonProperty(&quot;columnMetadata&quot;)</span>
   @Valid
   private List&lt;ColumnMetadata&gt; columnMetadata = null;
 
   public FeaturesResponse features(List&lt;Feature&gt; features) {
-<span class="nc" id="L39">    this.features = features;</span>
-<span class="nc" id="L40">    return this;</span>
+<span class="nc" id="L40">    this.features = features;</span>
+<span class="nc" id="L41">    return this;</span>
   }
 
   public FeaturesResponse addFeaturesItem(Feature featuresItem) {
-<span class="nc bnc" id="L44" title="All 2 branches missed.">    if (this.features == null) {</span>
-<span class="nc" id="L45">      this.features = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">    if (this.features == null) {</span>
+<span class="nc" id="L46">      this.features = new ArrayList&lt;&gt;();</span>
     }
-<span class="nc" id="L47">    this.features.add(featuresItem);</span>
-<span class="nc" id="L48">    return this;</span>
+<span class="nc" id="L48">    this.features.add(featuresItem);</span>
+<span class="nc" id="L49">    return this;</span>
   }
 
   /**
    * list of features
    * @return features
   */
-  @Schema(name = &quot;features&quot;, defaultValue = &quot;list of features&quot;)
-
-  @Valid
-
+  @Valid 
+  @Schema(name = &quot;features&quot;, description = &quot;list of features&quot;, required = false)
   public List&lt;Feature&gt; getFeatures() {
-<span class="nc" id="L60">    return features;</span>
+<span class="nc" id="L59">    return features;</span>
   }
 
   public void setFeatures(List&lt;Feature&gt; features) {
-<span class="nc" id="L64">    this.features = features;</span>
-<span class="nc" id="L65">  }</span>
+<span class="nc" id="L63">    this.features = features;</span>
+<span class="nc" id="L64">  }</span>
 
   public FeaturesResponse columnMetadata(List&lt;ColumnMetadata&gt; columnMetadata) {
-<span class="nc" id="L68">    this.columnMetadata = columnMetadata;</span>
-<span class="nc" id="L69">    return this;</span>
+<span class="nc" id="L67">    this.columnMetadata = columnMetadata;</span>
+<span class="nc" id="L68">    return this;</span>
   }
 
   public FeaturesResponse addColumnMetadataItem(ColumnMetadata columnMetadataItem) {
-<span class="nc bnc" id="L73" title="All 2 branches missed.">    if (this.columnMetadata == null) {</span>
-<span class="nc" id="L74">      this.columnMetadata = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">    if (this.columnMetadata == null) {</span>
+<span class="nc" id="L73">      this.columnMetadata = new ArrayList&lt;&gt;();</span>
     }
-<span class="nc" id="L76">    this.columnMetadata.add(columnMetadataItem);</span>
-<span class="nc" id="L77">    return this;</span>
+<span class="nc" id="L75">    this.columnMetadata.add(columnMetadataItem);</span>
+<span class="nc" id="L76">    return this;</span>
   }
 
   /**
    * presentation metadata
    * @return columnMetadata
   */
-  @Schema(name = &quot;columnMetadata&quot;, defaultValue = &quot;presentation metadata&quot;)
-
-  @Valid
-
+  @Valid 
+  @Schema(name = &quot;columnMetadata&quot;, description = &quot;presentation metadata&quot;, required = false)
   public List&lt;ColumnMetadata&gt; getColumnMetadata() {
-<span class="nc" id="L89">    return columnMetadata;</span>
+<span class="nc" id="L86">    return columnMetadata;</span>
   }
 
   public void setColumnMetadata(List&lt;ColumnMetadata&gt; columnMetadata) {
-<span class="nc" id="L93">    this.columnMetadata = columnMetadata;</span>
-<span class="nc" id="L94">  }</span>
-
+<span class="nc" id="L90">    this.columnMetadata = columnMetadata;</span>
+<span class="nc" id="L91">  }</span>
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L99" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L100">      return true;</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L96">      return true;</span>
     }
-<span class="nc bnc" id="L102" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L103">      return false;</span>
+<span class="nc bnc" id="L98" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L99">      return false;</span>
     }
-<span class="nc" id="L105">    FeaturesResponse featuresResponse = (FeaturesResponse) o;</span>
-<span class="nc bnc" id="L106" title="All 2 branches missed.">    return Objects.equals(this.features, featuresResponse.features) &amp;&amp;</span>
-<span class="nc bnc" id="L107" title="All 2 branches missed.">        Objects.equals(this.columnMetadata, featuresResponse.columnMetadata);</span>
+<span class="nc" id="L101">    FeaturesResponse featuresResponse = (FeaturesResponse) o;</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">    return Objects.equals(this.features, featuresResponse.features) &amp;&amp;</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        Objects.equals(this.columnMetadata, featuresResponse.columnMetadata);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L112">    return Objects.hash(features, columnMetadata);</span>
+<span class="nc" id="L108">    return Objects.hash(features, columnMetadata);</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L117">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L118">    sb.append(&quot;class FeaturesResponse {\n&quot;);</span>
-    
-<span class="nc" id="L120">    sb.append(&quot;    features: &quot;).append(toIndentedString(features)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L121">    sb.append(&quot;    columnMetadata: &quot;).append(toIndentedString(columnMetadata)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L122">    sb.append(&quot;}&quot;);</span>
-<span class="nc" id="L123">    return sb.toString();</span>
+<span class="nc" id="L113">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L114">    sb.append(&quot;class FeaturesResponse {\n&quot;);</span>
+<span class="nc" id="L115">    sb.append(&quot;    features: &quot;).append(toIndentedString(features)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L116">    sb.append(&quot;    columnMetadata: &quot;).append(toIndentedString(columnMetadata)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L117">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L118">    return sb.toString();</span>
   }
 
   /**
@@ -128,10 +123,10 @@ import java.util.*;
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-<span class="nc bnc" id="L131" title="All 2 branches missed.">    if (o == null) {</span>
-<span class="nc" id="L132">      return &quot;null&quot;;</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L127">      return &quot;null&quot;;</span>
     }
-<span class="nc" id="L134">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+<span class="nc" id="L129">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
   }
 }
 

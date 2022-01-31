@@ -4,8 +4,6 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-
-
 import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
@@ -15,13 +13,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 
 import java.util.*;
+import javax.annotation.Generated;
 
 /**
  *  A map layer, but only enough information to draw the layer. For advanced functionality that required access to attributes the LayerDetails should be requested. 
  */
-@Schema(name = &quot;AppLayer&quot;,description = &quot; A map layer, but only enough information to draw the layer. For advanced functionality that required access to attributes the LayerDetails should be requested. &quot;)
-@javax.annotation.Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
+
+@Schema(name = &quot;AppLayer&quot;, description = &quot; A map layer, but only enough information to draw the layer. For advanced functionality that required access to attributes the LayerDetails should be requested. &quot;)
+@Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
 <span class="fc" id="L24">public class AppLayer  implements Serializable {</span>
+
   private static final long serialVersionUID = 1L;
 
   @JsonProperty(&quot;id&quot;)
@@ -39,193 +40,181 @@ import java.util.*;
   @JsonProperty(&quot;visible&quot;)
   private Boolean visible;
 
-<span class="fc" id="L42">  @JsonProperty(&quot;isBaseLayer&quot;)</span>
-<span class="fc" id="L43">  private Boolean isBaseLayer = false;</span>
+<span class="fc" id="L43">  @JsonProperty(&quot;isBaseLayer&quot;)</span>
+<span class="fc" id="L44">  private Boolean isBaseLayer = false;</span>
 
   @JsonProperty(&quot;crs&quot;)
   private CoordinateReferenceSystem crs;
 
   public AppLayer id(Long id) {
-<span class="fc" id="L49">    this.id = id;</span>
-<span class="fc" id="L50">    return this;</span>
+<span class="fc" id="L50">    this.id = id;</span>
+<span class="fc" id="L51">    return this;</span>
   }
 
   /**
    * Get id
    * @return id
   */
-  @Schema(name = &quot;id&quot;, required = true, readOnly = true, defaultValue = &quot;&quot;)
-  @NotNull
-
-
+  @NotNull 
+  @Schema(name = &quot;id&quot;, accessMode = Schema.AccessMode.READ_ONLY, required = true)
   public Long getId() {
-<span class="fc" id="L62">    return id;</span>
+<span class="fc" id="L61">    return id;</span>
   }
 
   public void setId(Long id) {
-<span class="nc" id="L66">    this.id = id;</span>
-<span class="nc" id="L67">  }</span>
+<span class="nc" id="L65">    this.id = id;</span>
+<span class="nc" id="L66">  }</span>
 
   public AppLayer url(String url) {
-<span class="fc" id="L70">    this.url = url;</span>
-<span class="fc" id="L71">    return this;</span>
+<span class="fc" id="L69">    this.url = url;</span>
+<span class="fc" id="L70">    return this;</span>
   }
 
   /**
    * Get url
    * @return url
   */
-  @Schema(name = &quot;url&quot;, defaultValue = &quot;&quot;)
-
-
+  
+  @Schema(name = &quot;url&quot;, required = false)
   public String getUrl() {
-<span class="fc" id="L82">    return url;</span>
+<span class="fc" id="L80">    return url;</span>
   }
 
   public void setUrl(String url) {
-<span class="nc" id="L86">    this.url = url;</span>
-<span class="nc" id="L87">  }</span>
+<span class="nc" id="L84">    this.url = url;</span>
+<span class="nc" id="L85">  }</span>
 
   public AppLayer displayName(String displayName) {
-<span class="fc" id="L90">    this.displayName = displayName;</span>
-<span class="fc" id="L91">    return this;</span>
+<span class="fc" id="L88">    this.displayName = displayName;</span>
+<span class="fc" id="L89">    return this;</span>
   }
 
   /**
    * Get displayName
    * @return displayName
   */
-  @Schema(name = &quot;displayName&quot;, defaultValue = &quot;&quot;)
-
-
+  
+  @Schema(name = &quot;displayName&quot;, required = false)
   public String getDisplayName() {
-<span class="fc" id="L102">    return displayName;</span>
+<span class="fc" id="L99">    return displayName;</span>
   }
 
   public void setDisplayName(String displayName) {
-<span class="nc" id="L106">    this.displayName = displayName;</span>
-<span class="nc" id="L107">  }</span>
+<span class="nc" id="L103">    this.displayName = displayName;</span>
+<span class="nc" id="L104">  }</span>
 
   public AppLayer serviceId(Long serviceId) {
-<span class="fc" id="L110">    this.serviceId = serviceId;</span>
-<span class="fc" id="L111">    return this;</span>
+<span class="fc" id="L107">    this.serviceId = serviceId;</span>
+<span class="fc" id="L108">    return this;</span>
   }
 
   /**
    * Get serviceId
    * @return serviceId
   */
-  @Schema(name = &quot;serviceId&quot;, required = true, readOnly = true, defaultValue = &quot;&quot;)
-  @NotNull
-
-
+  @NotNull 
+  @Schema(name = &quot;serviceId&quot;, accessMode = Schema.AccessMode.READ_ONLY, required = true)
   public Long getServiceId() {
-<span class="fc" id="L123">    return serviceId;</span>
+<span class="fc" id="L118">    return serviceId;</span>
   }
 
   public void setServiceId(Long serviceId) {
-<span class="nc" id="L127">    this.serviceId = serviceId;</span>
-<span class="nc" id="L128">  }</span>
+<span class="nc" id="L122">    this.serviceId = serviceId;</span>
+<span class="nc" id="L123">  }</span>
 
   public AppLayer visible(Boolean visible) {
-<span class="fc" id="L131">    this.visible = visible;</span>
-<span class="fc" id="L132">    return this;</span>
+<span class="fc" id="L126">    this.visible = visible;</span>
+<span class="fc" id="L127">    return this;</span>
   }
 
   /**
    * Get visible
    * @return visible
   */
-  @Schema(name = &quot;visible&quot;, defaultValue = &quot;&quot;)
-
-
+  
+  @Schema(name = &quot;visible&quot;, required = false)
   public Boolean getVisible() {
-<span class="fc" id="L143">    return visible;</span>
+<span class="fc" id="L137">    return visible;</span>
   }
 
   public void setVisible(Boolean visible) {
-<span class="nc" id="L147">    this.visible = visible;</span>
-<span class="nc" id="L148">  }</span>
+<span class="nc" id="L141">    this.visible = visible;</span>
+<span class="nc" id="L142">  }</span>
 
   public AppLayer isBaseLayer(Boolean isBaseLayer) {
-<span class="fc" id="L151">    this.isBaseLayer = isBaseLayer;</span>
-<span class="fc" id="L152">    return this;</span>
+<span class="fc" id="L145">    this.isBaseLayer = isBaseLayer;</span>
+<span class="fc" id="L146">    return this;</span>
   }
 
   /**
    * Get isBaseLayer
    * @return isBaseLayer
   */
-  @Schema(name = &quot;isBaseLayer&quot;, defaultValue = &quot;&quot;)
-
-
+  
+  @Schema(name = &quot;isBaseLayer&quot;, required = false)
   public Boolean getIsBaseLayer() {
-<span class="fc" id="L163">    return isBaseLayer;</span>
+<span class="fc" id="L156">    return isBaseLayer;</span>
   }
 
   public void setIsBaseLayer(Boolean isBaseLayer) {
-<span class="nc" id="L167">    this.isBaseLayer = isBaseLayer;</span>
-<span class="nc" id="L168">  }</span>
+<span class="nc" id="L160">    this.isBaseLayer = isBaseLayer;</span>
+<span class="nc" id="L161">  }</span>
 
   public AppLayer crs(CoordinateReferenceSystem crs) {
-<span class="fc" id="L171">    this.crs = crs;</span>
-<span class="fc" id="L172">    return this;</span>
+<span class="fc" id="L164">    this.crs = crs;</span>
+<span class="fc" id="L165">    return this;</span>
   }
 
   /**
    * Get crs
    * @return crs
   */
-  @Schema(name = &quot;crs&quot;, defaultValue = &quot;&quot;)
-
-  @Valid
-
+  @Valid 
+  @Schema(name = &quot;crs&quot;, required = false)
   public CoordinateReferenceSystem getCrs() {
-<span class="fc" id="L184">    return crs;</span>
+<span class="fc" id="L175">    return crs;</span>
   }
 
   public void setCrs(CoordinateReferenceSystem crs) {
-<span class="nc" id="L188">    this.crs = crs;</span>
-<span class="nc" id="L189">  }</span>
-
+<span class="nc" id="L179">    this.crs = crs;</span>
+<span class="nc" id="L180">  }</span>
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L194" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L195">      return true;</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L185">      return true;</span>
     }
-<span class="nc bnc" id="L197" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L198">      return false;</span>
+<span class="nc bnc" id="L187" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L188">      return false;</span>
     }
-<span class="nc" id="L200">    AppLayer appLayer = (AppLayer) o;</span>
-<span class="nc bnc" id="L201" title="All 2 branches missed.">    return Objects.equals(this.id, appLayer.id) &amp;&amp;</span>
-<span class="nc bnc" id="L202" title="All 2 branches missed.">        Objects.equals(this.url, appLayer.url) &amp;&amp;</span>
-<span class="nc bnc" id="L203" title="All 2 branches missed.">        Objects.equals(this.displayName, appLayer.displayName) &amp;&amp;</span>
-<span class="nc bnc" id="L204" title="All 2 branches missed.">        Objects.equals(this.serviceId, appLayer.serviceId) &amp;&amp;</span>
-<span class="nc bnc" id="L205" title="All 2 branches missed.">        Objects.equals(this.visible, appLayer.visible) &amp;&amp;</span>
-<span class="nc bnc" id="L206" title="All 2 branches missed.">        Objects.equals(this.isBaseLayer, appLayer.isBaseLayer) &amp;&amp;</span>
-<span class="nc bnc" id="L207" title="All 2 branches missed.">        Objects.equals(this.crs, appLayer.crs);</span>
+<span class="nc" id="L190">    AppLayer appLayer = (AppLayer) o;</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">    return Objects.equals(this.id, appLayer.id) &amp;&amp;</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">        Objects.equals(this.url, appLayer.url) &amp;&amp;</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        Objects.equals(this.displayName, appLayer.displayName) &amp;&amp;</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        Objects.equals(this.serviceId, appLayer.serviceId) &amp;&amp;</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        Objects.equals(this.visible, appLayer.visible) &amp;&amp;</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">        Objects.equals(this.isBaseLayer, appLayer.isBaseLayer) &amp;&amp;</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        Objects.equals(this.crs, appLayer.crs);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L212">    return Objects.hash(id, url, displayName, serviceId, visible, isBaseLayer, crs);</span>
+<span class="nc" id="L202">    return Objects.hash(id, url, displayName, serviceId, visible, isBaseLayer, crs);</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L217">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L218">    sb.append(&quot;class AppLayer {\n&quot;);</span>
-    
-<span class="nc" id="L220">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L221">    sb.append(&quot;    url: &quot;).append(toIndentedString(url)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L222">    sb.append(&quot;    displayName: &quot;).append(toIndentedString(displayName)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L223">    sb.append(&quot;    serviceId: &quot;).append(toIndentedString(serviceId)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L224">    sb.append(&quot;    visible: &quot;).append(toIndentedString(visible)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L225">    sb.append(&quot;    isBaseLayer: &quot;).append(toIndentedString(isBaseLayer)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L226">    sb.append(&quot;    crs: &quot;).append(toIndentedString(crs)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L227">    sb.append(&quot;}&quot;);</span>
-<span class="nc" id="L228">    return sb.toString();</span>
+<span class="nc" id="L207">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L208">    sb.append(&quot;class AppLayer {\n&quot;);</span>
+<span class="nc" id="L209">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L210">    sb.append(&quot;    url: &quot;).append(toIndentedString(url)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L211">    sb.append(&quot;    displayName: &quot;).append(toIndentedString(displayName)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L212">    sb.append(&quot;    serviceId: &quot;).append(toIndentedString(serviceId)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L213">    sb.append(&quot;    visible: &quot;).append(toIndentedString(visible)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L214">    sb.append(&quot;    isBaseLayer: &quot;).append(toIndentedString(isBaseLayer)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L215">    sb.append(&quot;    crs: &quot;).append(toIndentedString(crs)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L216">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L217">    return sb.toString();</span>
   }
 
   /**
@@ -233,10 +222,10 @@ import java.util.*;
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-<span class="nc bnc" id="L236" title="All 2 branches missed.">    if (o == null) {</span>
-<span class="nc" id="L237">      return &quot;null&quot;;</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L226">      return &quot;null&quot;;</span>
     }
-<span class="nc" id="L239">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+<span class="nc" id="L228">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
   }
 }
 
