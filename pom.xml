@@ -114,7 +114,7 @@ SPDX-License-Identifier: MIT
     <postgresql.version>42.3.1</postgresql.version>
     <junit-jupiter.version>5.8.2</junit-jupiter.version>
     <logback.version>1.2.10</logback.version>
-    <org.tailormap.version>5.9.13-SNAPSHOT</org.tailormap.version>
+    <org.tailormap.version>5.9.13</org.tailormap.version>
     <maven.surefire.version>3.0.0-M5</maven.surefire.version>
     <maven-surefire-plugin.version>${maven.surefire.version}</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>${maven.surefire.version}</maven-failsafe-plugin.version>
