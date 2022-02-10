@@ -1,5 +1,5 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-Aggregate Test Coverage,nl.b3p.tailormap.api.controller,FeaturesController,246,75,15,11,74,14,13,8,4,4
+Aggregate Test Coverage,nl.b3p.tailormap.api.controller,FeaturesController,248,73,16,10,74,14,14,7,4,4
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayersController,0,94,0,2,0,26,0,5,0,4
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,ComponentsController,0,69,0,0,0,18,0,4,0,4
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,MapController,46,202,5,9,12,51,5,7,0,5
@@ -14,7 +14,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.featuresources,WFSFeatureS
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.featuresources,JDBCFeatureSourceHelper,150,0,6,0,29,0,9,0,6,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.featuresources,FeatureSourceHelper,19,0,0,0,3,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api,JPAConfiguration,0,100,0,0,0,25,0,6,0,6
-Aggregate Test Coverage,nl.b3p.tailormap.api,TailormapApiApplication,0,8,0,0,0,3,0,2,0,2
+Aggregate Test Coverage,nl.b3p.tailormap.api,TailormapApiApplication,5,3,0,0,2,1,1,1,1,1
 Aggregate Test Coverage,nl.b3p.tailormap.api,FilteringConfig,0,36,0,0,0,7,0,2,0,2
 Aggregate Test Coverage,nl.b3p.tailormap.api.model,LayerDetailsRelations,155,0,14,0,35,0,21,0,14,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.model,MapResponse,190,69,18,4,37,22,20,13,11,11
