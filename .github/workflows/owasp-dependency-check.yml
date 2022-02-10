@@ -44,5 +44,6 @@ jobs:
           sarif_file: target/dependency-check-report.sarif
 
       - name: Cleanup snapshots
+        if: always()
         run: |
           find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}
