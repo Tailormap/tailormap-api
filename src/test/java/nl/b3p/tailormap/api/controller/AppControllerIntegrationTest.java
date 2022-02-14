@@ -12,6 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
+import nl.b3p.tailormap.api.TestSecurityConfig;
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.MetadataRepository;
 import nl.tailormap.viewer.config.metadata.Metadata;
 
@@ -26,8 +28,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest(classes = {HSQLDBTestProfileJPAConfiguration.class, AppController.class})
+@SpringBootTest(
+        classes = {
+            HSQLDBTestProfileJPAConfiguration.class,
+            AppController.class,
+            TestSecurityConfig.class
+        })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
 @ActiveProfiles("test")
@@ -35,6 +43,7 @@ import org.springframework.test.web.servlet.MockMvc;
 class AppControllerIntegrationTest {
     @Autowired private MockMvc mockMvc;
     @Autowired MetadataRepository metadataRepository;
+    @Autowired ApplicationRepository applicationRepository;
 
     private String getApiVersionFromPom() {
         String apiVersion = System.getenv("API_VERSION");
@@ -132,6 +141,40 @@ class AppControllerIntegrationTest {
                 .andExpect(jsonPath("$.version").value(1))
                 .andExpect(jsonPath("$.lang").value("nl_NL"))
                 .andExpect(jsonPath("$.title").value("test title"));
+    }
+
+    @Test
+    /* this test changes database content */
+    @Transactional
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void should_return_default_lang_when_application_language_not_configured() throws Exception {
+        // unset language
+        applicationRepository.getById(1L).setLang(null);
+
+        mockMvc.perform(get("/app").param("appId", "1").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.apiVersion").value(getApiVersionFromPom()))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("test"))
+                .andExpect(jsonPath("$.version").value(1))
+                .andExpect(jsonPath("$.title").value("test title"))
+                // expect default value
+                .andExpect(jsonPath("$.lang").value("nl_NL"));
+    }
+
+    @Test
+    /* this test changes database content */
+    @Order(Integer.MAX_VALUE - 1)
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void should_send_401_when_application_configured() throws Exception {
+        applicationRepository.setAuthenticatedRequired(1L, true);
+
+        mockMvc.perform(get("/app").param("appId", "1").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(401))
+                .andExpect(jsonPath("$.url").value("/login"));
     }
 
     @Test

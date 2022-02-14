@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.health;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -20,7 +21,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest(classes = {HSQLDBTestProfileJPAConfiguration.class})
 @AutoConfigureMockMvc
-@TestPropertySource(properties = "management.health.tailormap.enabled=false")
+@TestPropertySource(
+        properties = {
+            "management.health.tailormap.enabled=false",
+            "spring.security.user.name=actuator",
+            "spring.security.user.password=actuator"
+        })
 @ActiveProfiles("test")
 class TailormapHealthIndicatorDisabledTest {
     @Autowired private MockMvc mockMvc;
@@ -28,7 +34,9 @@ class TailormapHealthIndicatorDisabledTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void givenADisabledIndicator_whenSendingRequest_thenReturns404() throws Exception {
-
-        mockMvc.perform(get("/api/actuator/health/tailormap")).andExpect(status().isNotFound());
+        mockMvc.perform(
+                        get("/api/actuator/health/tailormap")
+                                .with(user("actuator").password("actuator")))
+                .andExpect(status().isNotFound());
     }
 }
