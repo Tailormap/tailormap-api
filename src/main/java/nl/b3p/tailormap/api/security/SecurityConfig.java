@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2021 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
 package nl.b3p.tailormap.api.security;
 
 import org.springframework.context.annotation.Configuration;

@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2021 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
 package nl.b3p.tailormap.api.security;
 
 import nl.b3p.tailormap.api.repository.UserRepository;
@@ -7,6 +12,7 @@ import nl.tailormap.viewer.config.security.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -17,6 +23,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 @Component
+@Profile("!test")
 public class StartupAdminAccountCreator {
     private final Log logger = LogFactory.getLog(getClass());
 
