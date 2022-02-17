@@ -43,8 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                     throws IOException {
                                 logger.debug("Authentication failure: " + exception.getMessage());
                                 response.sendError(
-                                        HttpServletResponse.SC_UNAUTHORIZED,
-                                        "Authentication error: " + exception.getMessage());
+                                        HttpServletResponse.SC_FORBIDDEN, "Authentication failed");
                             }
                         })
                 .successHandler(
@@ -55,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                     HttpServletResponse response,
                                     Authentication authentication)
                                     throws IOException {
-                                logger.debug(
+                                logger.trace(
                                         "Authentication success for " + authentication.getName());
                                 // Do not send redirect
                                 response.sendError(HttpServletResponse.SC_OK);
