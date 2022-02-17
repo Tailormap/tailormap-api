@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
-package nl.b3p.tailormap.api;
+package nl.b3p.tailormap.api.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
