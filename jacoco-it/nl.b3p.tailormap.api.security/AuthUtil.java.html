@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.security</a> &gt; <span class="el_source">AuthUtil.java</span></div><h1>AuthUtil.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2021 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.security;
+
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+public final class AuthUtil {
+    private AuthUtil() {
+        /* utility class */
+    }
+
+    /**
+     * check if current user is logged in.
+     *
+     * @return {@code true} when current user has a valid session.
+     */
+    public static boolean isAuthenticatedUser() {
+<span class="fc" id="L23">        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="pc bpc" id="L24" title="1 of 2 branches missed.">        if (null == authentication) {</span>
+            // in case no authentication information is available
+<span class="fc" id="L26">            return false;</span>
+        }
+<span class="nc bnc" id="L28" title="All 2 branches missed.">        if (!(authentication instanceof AnonymousAuthenticationToken)) {</span>
+<span class="nc" id="L29">            return authentication.isAuthenticated();</span>
+        }
+<span class="nc" id="L31">        return false;</span>
+    }
+
+    /**
+     * get the username of the current user.
+     *
+     * @return username or an empty string when not logged in
+     */
+    public static String getAuthenticatedUserName() {
+<span class="nc" id="L40">        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="nc bnc" id="L41" title="All 4 branches missed.">        if (null != authentication &amp;&amp; !(authentication instanceof AnonymousAuthenticationToken)) {</span>
+<span class="nc" id="L42">            return authentication.getName();</span>
+<span class="nc" id="L43">        } else return &quot;&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

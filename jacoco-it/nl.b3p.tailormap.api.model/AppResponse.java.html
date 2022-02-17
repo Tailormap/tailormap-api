@@ -24,67 +24,70 @@ import javax.annotation.Generated;
 
 @Schema(name = &quot;AppResponse&quot;, description = &quot;Answers API version and (default|requested) application id.&quot;)
 @Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="nc" id="L27">public class AppResponse  implements Serializable {</span>
+<span class="fc" id="L27">public class AppResponse  implements Serializable {</span>
 
   private static final long serialVersionUID = 1L;
 
   @JsonProperty(&quot;id&quot;)
   private Long id;
 
-<span class="nc" id="L34">  @JsonProperty(&quot;apiVersion&quot;)</span>
+<span class="fc" id="L34">  @JsonProperty(&quot;apiVersion&quot;)</span>
   private String apiVersion = &quot;v1&quot;;
 
   @JsonProperty(&quot;name&quot;)
   private String name;
 
-  @JsonProperty(&quot;title&quot;)
-  private String title;
+<span class="fc" id="L40">  @JsonProperty(&quot;version&quot;)</span>
+  private String version = null;
+
+<span class="fc" id="L43">  @JsonProperty(&quot;title&quot;)</span>
+  private String title = null;
 
   /**
    * language code
    */
-<span class="nc" id="L46">  public enum LangEnum {</span>
-<span class="nc" id="L47">    NL_NL(&quot;nl_NL&quot;),</span>
+<span class="fc" id="L49">  public enum LangEnum {</span>
+<span class="fc" id="L50">    NL_NL(&quot;nl_NL&quot;),</span>
     
-<span class="nc" id="L49">    EN_US(&quot;en_US&quot;);</span>
+<span class="fc" id="L52">    EN_US(&quot;en_US&quot;);</span>
 
     private String value;
 
-<span class="nc" id="L53">    LangEnum(String value) {</span>
-<span class="nc" id="L54">      this.value = value;</span>
-<span class="nc" id="L55">    }</span>
+<span class="fc" id="L56">    LangEnum(String value) {</span>
+<span class="fc" id="L57">      this.value = value;</span>
+<span class="fc" id="L58">    }</span>
 
     @JsonValue
     public String getValue() {
-<span class="nc" id="L59">      return value;</span>
+<span class="fc" id="L62">      return value;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L64">      return String.valueOf(value);</span>
+<span class="nc" id="L67">      return String.valueOf(value);</span>
     }
 
     @JsonCreator
     public static LangEnum fromValue(String value) {
-<span class="nc bnc" id="L69" title="All 2 branches missed.">      for (LangEnum b : LangEnum.values()) {</span>
-<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
-<span class="nc" id="L71">          return b;</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">      for (LangEnum b : LangEnum.values()) {</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (b.value.equals(value)) {</span>
+<span class="fc" id="L74">          return b;</span>
         }
       }
-<span class="nc" id="L74">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
+<span class="nc" id="L77">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
     }
   }
 
-<span class="nc" id="L78">  @JsonProperty(&quot;lang&quot;)</span>
+<span class="fc" id="L81">  @JsonProperty(&quot;lang&quot;)</span>
   private LangEnum lang = LangEnum.NL_NL;
 
-<span class="nc" id="L81">  @JsonProperty(&quot;styling&quot;)</span>
+<span class="fc" id="L84">  @JsonProperty(&quot;styling&quot;)</span>
   @Valid
   private Map&lt;String, String&gt; styling = null;
 
   public AppResponse id(Long id) {
-<span class="nc" id="L86">    this.id = id;</span>
-<span class="nc" id="L87">    return this;</span>
+<span class="fc" id="L89">    this.id = id;</span>
+<span class="fc" id="L90">    return this;</span>
   }
 
   /**
@@ -94,16 +97,16 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;id&quot;, example = &quot;7&quot;, description = &quot;application id&quot;, required = false)
   public Long getId() {
-<span class="nc" id="L97">    return id;</span>
+<span class="fc" id="L100">    return id;</span>
   }
 
   public void setId(Long id) {
-<span class="nc" id="L101">    this.id = id;</span>
-<span class="nc" id="L102">  }</span>
+<span class="nc" id="L104">    this.id = id;</span>
+<span class="nc" id="L105">  }</span>
 
   public AppResponse apiVersion(String apiVersion) {
-<span class="nc" id="L105">    this.apiVersion = apiVersion;</span>
-<span class="nc" id="L106">    return this;</span>
+<span class="fc" id="L108">    this.apiVersion = apiVersion;</span>
+<span class="fc" id="L109">    return this;</span>
   }
 
   /**
@@ -113,16 +116,16 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;apiVersion&quot;, required = false)
   public String getApiVersion() {
-<span class="nc" id="L116">    return apiVersion;</span>
+<span class="fc" id="L119">    return apiVersion;</span>
   }
 
   public void setApiVersion(String apiVersion) {
-<span class="nc" id="L120">    this.apiVersion = apiVersion;</span>
-<span class="nc" id="L121">  }</span>
+<span class="nc" id="L123">    this.apiVersion = apiVersion;</span>
+<span class="nc" id="L124">  }</span>
 
   public AppResponse name(String name) {
-<span class="nc" id="L124">    this.name = name;</span>
-<span class="nc" id="L125">    return this;</span>
+<span class="fc" id="L127">    this.name = name;</span>
+<span class="fc" id="L128">    return this;</span>
   }
 
   /**
@@ -132,16 +135,35 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;name&quot;, required = false)
   public String getName() {
-<span class="nc" id="L135">    return name;</span>
+<span class="fc" id="L138">    return name;</span>
   }
 
   public void setName(String name) {
-<span class="nc" id="L139">    this.name = name;</span>
-<span class="nc" id="L140">  }</span>
+<span class="nc" id="L142">    this.name = name;</span>
+<span class="nc" id="L143">  }</span>
+
+  public AppResponse version(String version) {
+<span class="fc" id="L146">    this.version = version;</span>
+<span class="fc" id="L147">    return this;</span>
+  }
+
+  /**
+   * Get version
+   * @return version
+  */
+  
+  @Schema(name = &quot;version&quot;, required = false)
+  public String getVersion() {
+<span class="fc" id="L157">    return version;</span>
+  }
+
+  public void setVersion(String version) {
+<span class="nc" id="L161">    this.version = version;</span>
+<span class="nc" id="L162">  }</span>
 
   public AppResponse title(String title) {
-<span class="nc" id="L143">    this.title = title;</span>
-<span class="nc" id="L144">    return this;</span>
+<span class="fc" id="L165">    this.title = title;</span>
+<span class="fc" id="L166">    return this;</span>
   }
 
   /**
@@ -151,16 +173,16 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;title&quot;, required = false)
   public String getTitle() {
-<span class="nc" id="L154">    return title;</span>
+<span class="fc" id="L176">    return title;</span>
   }
 
   public void setTitle(String title) {
-<span class="nc" id="L158">    this.title = title;</span>
-<span class="nc" id="L159">  }</span>
+<span class="nc" id="L180">    this.title = title;</span>
+<span class="nc" id="L181">  }</span>
 
   public AppResponse lang(LangEnum lang) {
-<span class="nc" id="L162">    this.lang = lang;</span>
-<span class="nc" id="L163">    return this;</span>
+<span class="fc" id="L184">    this.lang = lang;</span>
+<span class="fc" id="L185">    return this;</span>
   }
 
   /**
@@ -170,24 +192,24 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;lang&quot;, description = &quot;language code&quot;, required = false)
   public LangEnum getLang() {
-<span class="nc" id="L173">    return lang;</span>
+<span class="fc" id="L195">    return lang;</span>
   }
 
   public void setLang(LangEnum lang) {
-<span class="nc" id="L177">    this.lang = lang;</span>
-<span class="nc" id="L178">  }</span>
+<span class="nc" id="L199">    this.lang = lang;</span>
+<span class="nc" id="L200">  }</span>
 
   public AppResponse styling(Map&lt;String, String&gt; styling) {
-<span class="nc" id="L181">    this.styling = styling;</span>
-<span class="nc" id="L182">    return this;</span>
+<span class="nc" id="L203">    this.styling = styling;</span>
+<span class="nc" id="L204">    return this;</span>
   }
 
   public AppResponse putStylingItem(String key, String stylingItem) {
-<span class="nc bnc" id="L186" title="All 2 branches missed.">    if (this.styling == null) {</span>
-<span class="nc" id="L187">      this.styling = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L208" title="All 2 branches missed.">    if (this.styling == null) {</span>
+<span class="nc" id="L209">      this.styling = new HashMap&lt;&gt;();</span>
     }
-<span class="nc" id="L189">    this.styling.put(key, stylingItem);</span>
-<span class="nc" id="L190">    return this;</span>
+<span class="nc" id="L211">    this.styling.put(key, stylingItem);</span>
+<span class="nc" id="L212">    return this;</span>
   }
 
   /**
@@ -197,47 +219,49 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;styling&quot;, description = &quot;styling information such as support- and backing colours etc.&quot;, required = false)
   public Map&lt;String, String&gt; getStyling() {
-<span class="nc" id="L200">    return styling;</span>
+<span class="fc" id="L222">    return styling;</span>
   }
 
   public void setStyling(Map&lt;String, String&gt; styling) {
-<span class="nc" id="L204">    this.styling = styling;</span>
-<span class="nc" id="L205">  }</span>
+<span class="nc" id="L226">    this.styling = styling;</span>
+<span class="nc" id="L227">  }</span>
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L209" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L210">      return true;</span>
+<span class="nc bnc" id="L231" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L232">      return true;</span>
     }
-<span class="nc bnc" id="L212" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L213">      return false;</span>
+<span class="nc bnc" id="L234" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L235">      return false;</span>
     }
-<span class="nc" id="L215">    AppResponse appResponse = (AppResponse) o;</span>
-<span class="nc bnc" id="L216" title="All 2 branches missed.">    return Objects.equals(this.id, appResponse.id) &amp;&amp;</span>
-<span class="nc bnc" id="L217" title="All 2 branches missed.">        Objects.equals(this.apiVersion, appResponse.apiVersion) &amp;&amp;</span>
-<span class="nc bnc" id="L218" title="All 2 branches missed.">        Objects.equals(this.name, appResponse.name) &amp;&amp;</span>
-<span class="nc bnc" id="L219" title="All 2 branches missed.">        Objects.equals(this.title, appResponse.title) &amp;&amp;</span>
-<span class="nc bnc" id="L220" title="All 2 branches missed.">        Objects.equals(this.lang, appResponse.lang) &amp;&amp;</span>
-<span class="nc bnc" id="L221" title="All 2 branches missed.">        Objects.equals(this.styling, appResponse.styling);</span>
+<span class="nc" id="L237">    AppResponse appResponse = (AppResponse) o;</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">    return Objects.equals(this.id, appResponse.id) &amp;&amp;</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">        Objects.equals(this.apiVersion, appResponse.apiVersion) &amp;&amp;</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">        Objects.equals(this.name, appResponse.name) &amp;&amp;</span>
+<span class="nc bnc" id="L241" title="All 2 branches missed.">        Objects.equals(this.version, appResponse.version) &amp;&amp;</span>
+<span class="nc bnc" id="L242" title="All 2 branches missed.">        Objects.equals(this.title, appResponse.title) &amp;&amp;</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">        Objects.equals(this.lang, appResponse.lang) &amp;&amp;</span>
+<span class="nc bnc" id="L244" title="All 2 branches missed.">        Objects.equals(this.styling, appResponse.styling);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L226">    return Objects.hash(id, apiVersion, name, title, lang, styling);</span>
+<span class="nc" id="L249">    return Objects.hash(id, apiVersion, name, version, title, lang, styling);</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L231">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L232">    sb.append(&quot;class AppResponse {\n&quot;);</span>
-<span class="nc" id="L233">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L234">    sb.append(&quot;    apiVersion: &quot;).append(toIndentedString(apiVersion)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L235">    sb.append(&quot;    name: &quot;).append(toIndentedString(name)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L236">    sb.append(&quot;    title: &quot;).append(toIndentedString(title)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L237">    sb.append(&quot;    lang: &quot;).append(toIndentedString(lang)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L238">    sb.append(&quot;    styling: &quot;).append(toIndentedString(styling)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L239">    sb.append(&quot;}&quot;);</span>
-<span class="nc" id="L240">    return sb.toString();</span>
+<span class="nc" id="L254">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L255">    sb.append(&quot;class AppResponse {\n&quot;);</span>
+<span class="nc" id="L256">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L257">    sb.append(&quot;    apiVersion: &quot;).append(toIndentedString(apiVersion)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L258">    sb.append(&quot;    name: &quot;).append(toIndentedString(name)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L259">    sb.append(&quot;    version: &quot;).append(toIndentedString(version)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L260">    sb.append(&quot;    title: &quot;).append(toIndentedString(title)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L261">    sb.append(&quot;    lang: &quot;).append(toIndentedString(lang)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L262">    sb.append(&quot;    styling: &quot;).append(toIndentedString(styling)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L263">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L264">    return sb.toString();</span>
   }
 
   /**
@@ -245,10 +269,10 @@ import javax.annotation.Generated;
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-<span class="nc bnc" id="L248" title="All 2 branches missed.">    if (o == null) {</span>
-<span class="nc" id="L249">      return &quot;null&quot;;</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L273">      return &quot;null&quot;;</span>
     }
-<span class="nc" id="L251">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+<span class="nc" id="L275">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
   }
 }
 
