@@ -43,7 +43,7 @@ class LayersControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_return_data_for_configured_app() throws Exception {
-        mockMvc.perform(get("/layers/1"))
+        mockMvc.perform(get("/1/layers"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
@@ -54,7 +54,7 @@ class LayersControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_error_when_calling_with_nonexistent_id() throws Exception {
-        mockMvc.perform(get("/layers/400"))
+        mockMvc.perform(get("/400/layers"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(400))
@@ -76,7 +76,7 @@ class LayersControllerIntegrationTest {
     void should_send_401_when_application_login_required() throws Exception {
         applicationRepository.setAuthenticatedRequired(1L, true);
 
-        mockMvc.perform(get("/layers/1").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/1/layers").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(401))

@@ -66,7 +66,7 @@ import javax.validation.constraints.NotNull;
 @RestController
 @Validated
 @RequestMapping(
-        path = "/features/{appId}/{appLayerId}",
+        path = "/{appId}/features/{appLayerId}",
         produces = MediaType.APPLICATION_JSON_VALUE)
 public class FeaturesController implements Constants {
     private final Log logger = LogFactory.getLog(getClass());

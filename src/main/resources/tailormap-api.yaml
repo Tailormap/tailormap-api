@@ -237,7 +237,7 @@ paths:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
 
-  /map/{appId}:
+  /{appId}/map:
     summary: 'Retrieve the map''s bounding box, projection, language and (optional) base layers.
     This document provides all that is necessary to draw a map with (optional) baselayers.'
     get:
@@ -273,7 +273,7 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
-  /components/{appId}:
+  /{appId}/components:
     summary: 'Retrieve all configured components'
     get:
       parameters:
@@ -305,7 +305,7 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
-  /layers/{appId}:
+  /{appId}/layers:
     summary: '
     Retrieve all configured layers.
     Provides all information to add foreground layers to the map and draw them.
@@ -333,7 +333,7 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
-  /describelayer/{appId}/{layerId}:
+  /{appId}/describelayer/{layerId}:
     summary: '
     Returns metadata and featuretype of the requested app layer, aka. layer details
     '
@@ -361,7 +361,7 @@ paths:
               schema:
                 $ref: './model.yaml#/components/schemas/LayerDetails'
 
-  /features/{appId}/{appLayerId}:
+  /{appId}/features/{appLayerId}:
     summary: 'Use this endpoint to access features.'
     get:
       description: 'retrieve features that fulfill the requested conditions (parameters).'
