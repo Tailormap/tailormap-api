@@ -36,6 +36,11 @@ servers:
         default: '/api'
 
 components:
+  securitySchemes:
+    formAuth:
+      type: http
+      scheme: form
+
   schemas:
 
     MapResponse:
@@ -144,6 +149,7 @@ paths:
   /version:
     summary: 'Provides version information of the backend'
     get:
+      security: []
       responses:
         '200':
           description: 'OK'
@@ -161,6 +167,8 @@ paths:
     Will return general setup information such as name, appId, language, but not map specific information.
     '
     get:
+      security:
+        - formAuth: []
       parameters:
         - description: 'app name from applications list'
           in: query
@@ -241,6 +249,8 @@ paths:
     summary: 'Retrieve the map''s bounding box, projection, language and (optional) base layers.
     This document provides all that is necessary to draw a map with (optional) baselayers.'
     get:
+      security:
+        - formAuth: []
       parameters:
         - description: 'application id'
           in: path
@@ -282,6 +292,8 @@ paths:
   /app/{appId}/components:
     summary: 'Retrieve all configured components'
     get:
+      security:
+        - formAuth: [ ]
       parameters:
         - description: 'application id'
           in: path
@@ -317,6 +329,8 @@ paths:
     Provides all information to add foreground layers to the map and draw them.
     '
     get:
+      security:
+        - formAuth: [ ]
       parameters:
         - description: 'application id'
           in: path
@@ -350,6 +364,8 @@ paths:
     Returns metadata and featuretype of the requested app layer, aka. layer details
     '
     get:
+      security:
+        - formAuth: []
       parameters:
         - description: 'application id'
           in: path
@@ -372,11 +388,19 @@ paths:
             application/json:
               schema:
                 $ref: './model.yaml#/components/schemas/LayerDetails'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
   /app/{appId}/layer/{layerId}/features:
     summary: 'Use this endpoint to access features.'
     get:
       description: 'retrieve features that fulfill the requested conditions (parameters).'
+      security:
+        - formAuth: []
       parameters:
         - description: 'application id'
           in: path
@@ -457,6 +481,8 @@ paths:
     post:
       # TODO elaborate design
       description: 'update a feature'
+      security:
+        - formAuth: []
       parameters:
         - description: 'application id'
           in: path
@@ -475,9 +501,17 @@ paths:
       responses:
         '501':
           description: 'Not Implemented'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
     put:
       # TODO elaborate design
       description: 'create a new feature'
+      security:
+        - formAuth: []
       parameters:
         - description: 'application id'
           in: path
@@ -496,8 +530,16 @@ paths:
       responses:
         '501':
           description: 'Not Implemented'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
     delete:
       # TODO elaborate design
+      security:
+        - formAuth: []
       description: 'delete a feature'
       parameters:
         - description: 'application id'
@@ -517,3 +559,9 @@ paths:
       responses:
         '501':
           description: 'Not Implemented'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
