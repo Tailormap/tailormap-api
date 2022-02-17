@@ -38,8 +38,9 @@ servers:
 components:
   securitySchemes:
     formAuth:
-      type: http
-      scheme: form
+      type: apiKey
+      in: cookie
+      name: JSESSIONID
 
   schemas:
 
@@ -160,7 +161,41 @@ paths:
                 databaseversion: '47'
                 apiVersion: 'v1'
 
-  /app:
+  /login:
+    summary: form login url
+    post:
+      summary: Logs in and returns the authentication cookie
+      security: []
+      requestBody:
+        required: true
+        description: A JSON object containing the login and password.
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: >
+            Successfully authenticated.
+            The session ID is returned in a cookie named `JSESSIONID`. You need to include this cookie in subsequent requests.
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                # TODO need to set 'SameSite' and 'Secure'
+                example: JSESSIONID=abcde12345; Path=/; HttpOnly
+        '403':
+          description: 'Authentication failed'
+
+  /app/:
     summary: '
     Use this endpoint to get the id of the requested or default application.
     Either call this with `name` and optional `version` or `appId` alone.
