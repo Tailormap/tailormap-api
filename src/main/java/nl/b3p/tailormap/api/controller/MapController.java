@@ -16,8 +16,10 @@ import nl.b3p.tailormap.api.model.Bounds;
 import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
 import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.model.MapResponse;
+import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.model.Service;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.security.AuthUtil;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.StartLayer;
 import nl.tailormap.viewer.config.services.GeoService;
@@ -28,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
@@ -66,27 +70,37 @@ public class MapController {
                         content =
                                 @Content(
                                         mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                        schema = @Schema(implementation = ErrorResponse.class)))
+                                        schema = @Schema(implementation = ErrorResponse.class))),
+                @ApiResponse(
+                        responseCode = "401",
+                        description = "Unauthorized",
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = RedirectResponse.class)))
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public MapResponse get(
+    public ResponseEntity<Serializable> get(
             @Parameter(name = "appId", description = "application id", required = true)
                     @PathVariable("appId")
                     Long appId) {
         logger.trace("Requesting 'map' for application id: " + appId);
 
-        MapResponse mapResponse = new MapResponse();
-
         // this could throw EntityNotFound, which is handles by handleEntityNotFoundException
         // and in a normal flow this should not happen
         // as appId is (should be) validated by calling the /app/ endpoint
         Application application = applicationRepository.getById(appId);
+        if (application.isAuthenticatedRequired() && !AuthUtil.isAuthenticatedUser()) {
+            // login required, send RedirectResponse
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
+        } else {
+            MapResponse mapResponse = new MapResponse();
+            getApplicationParams(application, mapResponse);
+            getLayers(application, mapResponse);
 
-        getApplicationParams(application, mapResponse);
-        getLayers(application, mapResponse);
-
-        return mapResponse;
+            return ResponseEntity.status(HttpStatus.OK).body(mapResponse);
+        }
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

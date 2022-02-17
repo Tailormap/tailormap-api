@@ -14,8 +14,10 @@ import nl.b3p.tailormap.api.model.ColumnMetadata;
 import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.model.Feature;
 import nl.b3p.tailormap.api.model.FeaturesResponse;
+import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.security.AuthUtil;
 import nl.b3p.tailormap.api.util.Constants;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
@@ -40,6 +42,7 @@ import org.opengis.filter.FilterFactory2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,6 +54,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -123,7 +127,7 @@ public class FeaturesController implements Constants {
      * @throws BadRequestException when invalid parameters are passed
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public FeaturesResponse getFeatures(
+    public ResponseEntity<Serializable> getFeatures(
             @Parameter(name = "appId", description = "application id", required = true)
                     @PathVariable("appId")
                     Long appId,
@@ -142,26 +146,30 @@ public class FeaturesController implements Constants {
         // and in a normal flow this should not happen
         // as appId is (should be) validated by calling the /app/ endpoint
         Application application = applicationRepository.getById(appId);
-        assert (null != application);
-        ApplicationLayer appLayer = applicationLayerRepository.getById(appLayerId);
-
-        FeaturesResponse featuresResponse = new FeaturesResponse();
-
-        if (null != filter) {
-            throw new BadRequestException("filter is not currently supported");
-        }
-        if (null != __fid) {
-            throw new BadRequestException("__fid is not currently supported");
-        }
-
-        if (null != x && null != y) {
-            featuresResponse = getFeaturesByXY(appLayer, x, y, distance, simplify);
+        if (application.isAuthenticatedRequired() && !AuthUtil.isAuthenticatedUser()) {
+            // login required, send RedirectResponse
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
         } else {
-            // TODO other implementations
-            throw new BadRequestException("Only x/y/distance/simplify parameters are supported");
-        }
+            ApplicationLayer appLayer = applicationLayerRepository.getById(appLayerId);
+            FeaturesResponse featuresResponse = new FeaturesResponse();
 
-        return featuresResponse;
+            if (null != filter) {
+                throw new BadRequestException("filter is not currently supported");
+            }
+            if (null != __fid) {
+                throw new BadRequestException("__fid is not currently supported");
+            }
+
+            if (null != x && null != y) {
+                featuresResponse = getFeaturesByXY(appLayer, x, y, distance, simplify);
+            } else {
+                // TODO other implementations
+                throw new BadRequestException(
+                        "Only x/y/distance/simplify parameters are supported");
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(featuresResponse);
+        }
     }
 
     @NotNull

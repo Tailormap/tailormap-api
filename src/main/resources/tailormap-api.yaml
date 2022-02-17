@@ -99,8 +99,12 @@ components:
           default: 'v1'
         name:
           type: string
+        version:
+          type: string
+          nullable: true
         title:
           type: string
+          nullable: true
         lang:
           description: 'language code'
           type: string
@@ -253,6 +257,12 @@ paths:
               # example:
               schema:
                 $ref: '#/components/schemas/MapResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
         '500':
           description: 'Error'
           content:
@@ -282,6 +292,18 @@ paths:
               # example:
               schema:
                 $ref: '#/components/schemas/ComponentsResponse'
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
   /layers/{appId}:
     summary: '
@@ -304,6 +326,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Layers'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
   /describelayer/{appId}/{layerId}:
     summary: '
@@ -402,6 +430,12 @@ paths:
             application/json:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
         '500':
           description: 'Internal server error'
           content:

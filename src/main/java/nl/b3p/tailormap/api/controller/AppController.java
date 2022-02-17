@@ -6,9 +6,12 @@
 package nl.b3p.tailormap.api.controller;
 
 import nl.b3p.tailormap.api.exception.TailormapConfigurationException;
+import nl.b3p.tailormap.api.model.AppResponse;
 import nl.b3p.tailormap.api.model.ErrorResponse;
+import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.MetadataRepository;
+import nl.b3p.tailormap.api.security.AuthUtil;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.metadata.Metadata;
 
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +31,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.Serializable;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -70,7 +73,7 @@ public class AppController {
      * Lookup an {@linkplain Application} with given parameters. Use this endpoint to get the id of
      * the requested or default application. Either call this with `name` and optional `version` or
      * `appId` alone. Will return general setup information such as name, appId, language, but not
-     * map specific information.
+     * map specific information, may return a redirect response for login.
      *
      * @param appId the unique identifier of an app
      * @param name the name of an app
@@ -80,8 +83,7 @@ public class AppController {
      * @throws TailormapConfigurationException when the tailormap configuration is broken
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public Map<String, Object> get(
+    public ResponseEntity<Serializable> get(
             @RequestParam(required = false) Long appId,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String version)
@@ -109,6 +111,9 @@ public class AppController {
             // no default application or something else is very wrong
             throw new TailormapConfigurationException(
                     "Error getting the requested or default application.");
+        } else if (this.application.isAuthenticatedRequired() && !AuthUtil.isAuthenticatedUser()) {
+            // login required, send RedirectResponse
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
         } else {
             logger.trace(
                     "found application - id:"
@@ -122,22 +127,20 @@ public class AppController {
                             + ", title: "
                             + this.application.getTitle());
 
-            Map<String, Object> response =
-                    new HashMap<>(
-                            Map.of(
-                                    // none of these should ever be null
-                                    "apiVersion",
-                                    this.apiVersion,
-                                    "id",
-                                    this.application.getId(),
-                                    "name",
-                                    this.application.getName()));
-            // any of these could be null
-            response.put("version", this.application.getVersion());
-            response.put("lang", this.application.getLang());
-            response.put("title", this.application.getTitle());
+            AppResponse appResponse =
+                    new AppResponse()
+                            .apiVersion(this.apiVersion)
+                            .id(this.application.getId())
+                            .name(this.application.getName())
+                            // any of these 2 below + language could be null
+                            .version(this.application.getVersion())
+                            .title(this.application.getTitle());
 
-            return response;
+            // null check language bacause it's an enumerated value
+            if (null != this.application.getLang())
+                appResponse.lang(AppResponse.LangEnum.fromValue(this.application.getLang()));
+
+            return ResponseEntity.ok(appResponse);
         }
     }
 

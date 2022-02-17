@@ -13,7 +13,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import nl.b3p.tailormap.api.model.Component;
 import nl.b3p.tailormap.api.model.ErrorResponse;
+import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.security.AuthUtil;
 import nl.tailormap.viewer.config.app.Application;
 
 import org.apache.commons.logging.Log;
@@ -21,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -88,10 +91,17 @@ public class ComponentsController {
                         content =
                                 @Content(
                                         mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                        schema = @Schema(implementation = ErrorResponse.class)))
+                                        schema = @Schema(implementation = ErrorResponse.class))),
+                @ApiResponse(
+                        responseCode = "401",
+                        description = "Unauthorized",
+                        content =
+                                @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = RedirectResponse.class)))
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Component> get(
+    public ResponseEntity<?> get(
             @Parameter(name = "appId", description = "application id", required = true)
                     @PathVariable("appId")
                     Long appId) {
@@ -101,11 +111,14 @@ public class ComponentsController {
         // and in a normal flow this should not happen
         // as appId is (should be) validated by calling the /app/ endpoint
         Application application = applicationRepository.getById(appId);
-
-        List<Component> components = new ArrayList<>();
-        findComponents(application, components);
-
-        return components;
+        if (application.isAuthenticatedRequired() && !AuthUtil.isAuthenticatedUser()) {
+            // login required, send RedirectResponse
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
+        } else {
+            List<Component> components = new ArrayList<>();
+            findComponents(application, components);
+            return ResponseEntity.status(HttpStatus.OK).body(components);
+        }
     }
 
     /**
