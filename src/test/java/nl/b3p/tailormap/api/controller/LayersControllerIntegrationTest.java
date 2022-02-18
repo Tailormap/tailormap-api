@@ -55,9 +55,9 @@ class LayersControllerIntegrationTest {
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_error_when_calling_with_nonexistent_id() throws Exception {
         mockMvc.perform(get("/app/400/layers"))
-                .andExpect(status().is4xxClientError())
+                .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.code").value(404))
                 .andExpect(
                         jsonPath("$.message")
                                 .value("Requested an application that does not exist"));

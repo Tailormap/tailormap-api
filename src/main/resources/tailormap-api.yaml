@@ -263,6 +263,12 @@ paths:
             application/json:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
         '500':
           description: 'Error'
           content:
@@ -292,8 +298,8 @@ paths:
               # example:
               schema:
                 $ref: '#/components/schemas/ComponentsResponse'
-        '400':
-          description: "Bad Request"
+        '404':
+          description: Not Found
           content:
             application/json:
               schema:
@@ -332,6 +338,12 @@ paths:
             application/json:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
   /app/{appId}/layers/{layerId}/describe:
     summary: '

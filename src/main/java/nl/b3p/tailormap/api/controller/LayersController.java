@@ -60,14 +60,14 @@ public class LayersController {
     @ResponseStatus(
             value =
                     HttpStatus
-                            .BAD_REQUEST /*,reason = "Bad Request" -- adding 'reason' will drop the body */)
+                            .NOT_FOUND /*,reason = "Not Found" -- adding 'reason' will drop the body */)
     @ResponseBody
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
         logger.warn(
                 "Requested an application that does not exist. Message: " + exception.getMessage());
         return new ErrorResponse()
                 .message("Requested an application that does not exist")
-                .code(400);
+                .code(HttpStatus.NOT_FOUND.value());
     }
 
     /**
