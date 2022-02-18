@@ -154,7 +154,7 @@ paths:
                 databaseversion: '47'
                 apiVersion: 'v1'
 
-  /app/:
+  /app:
     summary: '
     Use this endpoint to get the id of the requested or default application.
     Either call this with `name` and optional `version` or `appId` alone.
@@ -237,7 +237,7 @@ paths:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
 
-  /{appId}/map:
+  /app/{appId}/map:
     summary: 'Retrieve the map''s bounding box, projection, language and (optional) base layers.
     This document provides all that is necessary to draw a map with (optional) baselayers.'
     get:
@@ -273,7 +273,7 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
-  /{appId}/components:
+  /app/{appId}/components:
     summary: 'Retrieve all configured components'
     get:
       parameters:
@@ -305,7 +305,7 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
-  /{appId}/layers:
+  /app/{appId}/layers:
     summary: '
     Retrieve all configured layers.
     Provides all information to add foreground layers to the map and draw them.
@@ -333,7 +333,7 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
-  /{appId}/describelayer/{layerId}:
+  /app/{appId}/layers/{layerId}/describe:
     summary: '
     Returns metadata and featuretype of the requested app layer, aka. layer details
     '
@@ -361,7 +361,7 @@ paths:
               schema:
                 $ref: './model.yaml#/components/schemas/LayerDetails'
 
-  /{appId}/features/{appLayerId}:
+  /app/{appId}/layer/{layerId}/features:
     summary: 'Use this endpoint to access features.'
     get:
       description: 'retrieve features that fulfill the requested conditions (parameters).'
@@ -375,7 +375,7 @@ paths:
             format: int64
         - description: 'application layer id'
           in: path
-          name: appLayerId
+          name: layerId
           required: true
           schema:
             type: integer
@@ -455,7 +455,7 @@ paths:
             format: int64
         - description: 'application layer id'
           in: path
-          name: appLayerId
+          name: layerId
           required: true
           schema:
             type: integer
@@ -476,7 +476,7 @@ paths:
             format: int64
         - description: 'application layer id'
           in: path
-          name: appLayerId
+          name: layerId
           required: true
           schema:
             type: integer
@@ -497,7 +497,7 @@ paths:
             format: int64
         - description: 'application layer id'
           in: path
-          name: appLayerId
+          name: layerId
           required: true
           schema:
             type: integer

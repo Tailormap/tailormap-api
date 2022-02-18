@@ -41,7 +41,7 @@ import javax.persistence.EntityNotFoundException;
 
 @RestController
 @Validated
-@RequestMapping(path = "/{appId}/components", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/app/{appId}/components", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ComponentsController {
 
     private final Log logger = LogFactory.getLog(getClass());

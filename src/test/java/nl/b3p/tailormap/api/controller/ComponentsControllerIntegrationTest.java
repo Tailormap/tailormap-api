@@ -43,7 +43,7 @@ class ComponentsControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_return_data_for_configured_app() throws Exception {
-        mockMvc.perform(get("/1/components"))
+        mockMvc.perform(get("/app/1/components"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
@@ -55,7 +55,7 @@ class ComponentsControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_error_when_calling_with_nonexistent_id() throws Exception {
-        mockMvc.perform(get("/400/components"))
+        mockMvc.perform(get("/app/400/components"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(400))
@@ -67,7 +67,7 @@ class ComponentsControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_not_find_when_called_without_id() throws Exception {
-        mockMvc.perform(get("/components/")).andExpect(status().isNotFound());
+        mockMvc.perform(get("/app/components/")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -77,7 +77,7 @@ class ComponentsControllerIntegrationTest {
     void should_send_401_when_application_login_required() throws Exception {
         applicationRepository.setAuthenticatedRequired(1L, true);
 
-        mockMvc.perform(get("/1/components").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/app/1/components").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(401))

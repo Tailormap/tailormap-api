@@ -42,7 +42,7 @@ class MapControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_return_data_for_configured_app() throws Exception {
-        mockMvc.perform(get("/1/map"))
+        mockMvc.perform(get("/app/1/map"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.initialExtent").isMap())
@@ -55,7 +55,7 @@ class MapControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_error_when_calling_with_nonexistent_id() throws Exception {
-        mockMvc.perform(get("/400/map"))
+        mockMvc.perform(get("/app/400/map"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(400))
@@ -67,7 +67,7 @@ class MapControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_not_find_when_called_without_id() throws Exception {
-        mockMvc.perform(get("/map/")).andExpect(status().isNotFound());
+        mockMvc.perform(get("/app/map")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -77,7 +77,7 @@ class MapControllerIntegrationTest {
     void should_send_401_when_application_login_required() throws Exception {
         applicationRepository.setAuthenticatedRequired(1L, true);
 
-        mockMvc.perform(get("/1/map").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/app/1/map").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(401))

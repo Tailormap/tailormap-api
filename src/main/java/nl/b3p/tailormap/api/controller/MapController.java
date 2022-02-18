@@ -48,7 +48,7 @@ import javax.validation.constraints.NotNull;
 
 @RestController
 @Validated
-@RequestMapping(path = "/{appId}/map", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/app/{appId}/map", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MapController {
     private final Log logger = LogFactory.getLog(getClass());
     @Autowired private ApplicationRepository applicationRepository;

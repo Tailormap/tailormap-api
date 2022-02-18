@@ -43,7 +43,7 @@ class FeaturesControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void filter_not_supported() throws Exception {
-        mockMvc.perform(get("/1/features/2").param("filter", "naam=Utrecht"))
+        mockMvc.perform(get("/app/1/layer/2/features").param("filter", "naam=Utrecht"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(400));
@@ -53,7 +53,7 @@ class FeaturesControllerIntegrationTest {
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void fid_not_supported() throws Exception {
         mockMvc.perform(
-                        get("/1/features/2")
+                        get("/app/1/layer/2/features")
                                 .param(
                                         "__fid",
                                         "Provinciegebied.19ce551e-bc01-46e9-b953-929318dcdf87"))
@@ -65,12 +65,12 @@ class FeaturesControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void givenOnly_XorY_shouldError() throws Exception {
-        mockMvc.perform(get("/1/features/2").param("x", "3"))
+        mockMvc.perform(get("/app/1/layer/2/features").param("x", "3"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(400));
 
-        mockMvc.perform(get("/1/features/2").param("y", "3"))
+        mockMvc.perform(get("/app/1/layer/2/features").param("y", "3"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(400));
@@ -79,12 +79,12 @@ class FeaturesControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void given_distance_NotGreaterThanZero() throws Exception {
-        mockMvc.perform(get("/1/features/2?y=3&y=3").param("distance", "0"))
+        mockMvc.perform(get("/app/1/layer/2/features?y=3&y=3").param("distance", "0"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(400));
 
-        mockMvc.perform(get("/1/features/2?y=3&y=3").param("distance", "-1"))
+        mockMvc.perform(get("/app/1/layer/2/features?y=3&y=3").param("distance", "-1"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(400));
@@ -93,7 +93,7 @@ class FeaturesControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_error_when_calling_with_nonexistent_appId() throws Exception {
-        mockMvc.perform(get("/400/features/1"))
+        mockMvc.perform(get("/app/400/layer/1/features"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(400));
@@ -102,7 +102,7 @@ class FeaturesControllerIntegrationTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_not_find_when_called_without_appId() throws Exception {
-        mockMvc.perform(get("/features/")).andExpect(status().isNotFound());
+        mockMvc.perform(get("/app/layer/features")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -112,7 +112,7 @@ class FeaturesControllerIntegrationTest {
     void should_send_401_when_application_login_required() throws Exception {
         applicationRepository.setAuthenticatedRequired(1L, true);
 
-        mockMvc.perform(get("/1/features/2").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/app/1/layer/2/features").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(401))
