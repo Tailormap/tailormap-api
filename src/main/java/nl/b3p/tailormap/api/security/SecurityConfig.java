@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import java.io.IOException;
 
@@ -24,8 +25,17 @@ import javax.servlet.http.HttpServletResponse;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
+        // Note: CSRF protection only required when using cookies for authentication
+        // This requires an X-XSRF-TOKEN header read from the XSRF-TOKEN cookie by JavaScript so set
+        // HttpOnly to false.
+        // Angular has automatic XSRF protection support:
+        // https://angular.io/guide/http#security-xsrf-protection
+        CookieCsrfTokenRepository csrfTokenRepository =
+                CookieCsrfTokenRepository.withHttpOnlyFalse();
+        csrfTokenRepository.setCookiePath("/");
         http.csrf()
-                .disable()
+                .csrfTokenRepository(csrfTokenRepository)
+                .and()
                 .authorizeRequests()
                 .antMatchers("/admin/**")
                 .hasRole("ADMIN")

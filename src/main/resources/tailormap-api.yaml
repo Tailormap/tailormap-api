@@ -11,6 +11,9 @@ info:
   Tailormap API contains the calls necessary to draw a basic map on the screen.
   This API will be augmented with component specific API calls that can retrieve
   and or manipulate data.
+  
+  Note: you need to send an X-XSRF-TOKEN header with the value from the XSRF-TOKEN
+  cookie for non-GET requests. The Angular HttpClient does this automatically.
   '
   contact:
     name: 'B3Partners BV'
