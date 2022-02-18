@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import nl.b3p.tailormap.api.JPAConfiguration;
+import nl.b3p.tailormap.api.security.SecurityConfig;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest(classes = {JPAConfiguration.class, FeaturesController.class})
+@SpringBootTest(classes = {JPAConfiguration.class, FeaturesController.class, SecurityConfig.class})
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
 @ActiveProfiles("default")

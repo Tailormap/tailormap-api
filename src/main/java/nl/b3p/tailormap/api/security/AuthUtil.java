@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 B3Partners B.V.
+ * Copyright (C) 2022 B3Partners B.V.
  *
  * SPDX-License-Identifier: MIT
  */

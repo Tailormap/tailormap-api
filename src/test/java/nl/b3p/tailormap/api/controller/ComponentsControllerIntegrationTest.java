@@ -11,8 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
-import nl.b3p.tailormap.api.TestSecurityConfig;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.security.SecurityConfig;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
         classes = {
             HSQLDBTestProfileJPAConfiguration.class,
             ComponentsController.class,
-            TestSecurityConfig.class
+            SecurityConfig.class
         })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
