@@ -44,7 +44,7 @@ import javax.validation.constraints.NotNull;
 
 @RestController
 @Validated
-@RequestMapping(path = &quot;/layers/{appId}&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = &quot;/app/{appId}/layers&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
 <span class="fc" id="L48">public class LayersController {</span>
 <span class="fc" id="L49">    private final Log logger = LogFactory.getLog(getClass());</span>
     @Autowired private ApplicationRepository applicationRepository;
@@ -60,14 +60,14 @@ import javax.validation.constraints.NotNull;
     @ResponseStatus(
             value =
                     HttpStatus
-                            .BAD_REQUEST /*,reason = &quot;Bad Request&quot; -- adding 'reason' will drop the body */)
+                            .NOT_FOUND /*,reason = &quot;Not Found&quot; -- adding 'reason' will drop the body */)
     @ResponseBody
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
 <span class="fc" id="L66">        logger.warn(</span>
 <span class="fc" id="L67">                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());</span>
 <span class="fc" id="L68">        return new ErrorResponse()</span>
 <span class="fc" id="L69">                .message(&quot;Requested an application that does not exist&quot;)</span>
-<span class="fc" id="L70">                .code(400);</span>
+<span class="fc" id="L70">                .code(HttpStatus.NOT_FOUND.value());</span>
     }
 
     /**

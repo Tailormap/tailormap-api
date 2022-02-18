@@ -94,7 +94,7 @@
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>          <em class="jxr_comment">//              "type": "string"</em>
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>          <em class="jxr_comment">//      }</em>
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          <em class="jxr_comment">//    ]}</em>
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>          mockMvc.perform(get(<span class="jxr_string">"/features/1/2"</span>).param(<span class="jxr_string">"x"</span>, <span class="jxr_string">"141247"</span>).param(<span class="jxr_string">"y"</span>, <span class="jxr_string">"458118"</span>))
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          mockMvc.perform(get(<span class="jxr_string">"/1/features/2"</span>).param(<span class="jxr_string">"x"</span>, <span class="jxr_string">"141247"</span>).param(<span class="jxr_string">"y"</span>, <span class="jxr_string">"458118"</span>))
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>                  .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())

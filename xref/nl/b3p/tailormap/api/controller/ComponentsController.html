@@ -49,7 +49,7 @@
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  @RestController
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  @Validated
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  @RequestMapping(path = <span class="jxr_string">"/components/{appId}"</span>, produces = MediaType.APPLICATION_JSON_VALUE)
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  @RequestMapping(path = <span class="jxr_string">"/app/{appId}/components"</span>, produces = MediaType.APPLICATION_JSON_VALUE)
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="ComponentsController" href="../../../../../nl/b3p/tailormap/api/controller/ComponentsController.html#ComponentsController">ComponentsController</a> {
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Log logger = LogFactory.getLog(getClass());
@@ -66,14 +66,14 @@
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      @ResponseStatus(
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>              value =
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>                      HttpStatus
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>                              .BAD_REQUEST <em class="jxr_comment">/*,reason = "Bad Request" -- adding 'reason' will drop the body */</em>)
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>                              .NOT_FOUND <em class="jxr_comment">/*,reason = "Not Found" -- adding 'reason' will drop the body */</em>)
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      @ResponseBody
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">public</strong> ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>          logger.warn(
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>                  <span class="jxr_string">"Requested an application that does not exist. Message: "</span> + exception.getMessage());
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ErrorResponse()
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>                  .message(<span class="jxr_string">"Requested an application that does not exist"</span>)
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>                  .code(400);
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>                  .code(HttpStatus.NOT_FOUND.value());
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      }
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      <em class="jxr_javadoccomment">/**</em>

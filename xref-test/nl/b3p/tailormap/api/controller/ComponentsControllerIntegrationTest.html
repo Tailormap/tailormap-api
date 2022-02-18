@@ -51,7 +51,7 @@
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>      @Test
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>      @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>      <strong class="jxr_keyword">void</strong> should_<strong class="jxr_keyword">return</strong>_data_<strong class="jxr_keyword">for</strong>_configured_app() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>          mockMvc.perform(get(<span class="jxr_string">"/components/1"</span>))
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>          mockMvc.perform(get(<span class="jxr_string">"/app/1/components"</span>))
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>                  .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>                  .andExpect(jsonPath(<span class="jxr_string">"$"</span>).isArray())
@@ -63,10 +63,10 @@
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>      @Test
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>      @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">void</strong> should_error_when_calling_with_nonexistent_id() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>          mockMvc.perform(get(<span class="jxr_string">"/components/400"</span>))
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>                  .andExpect(status().is4xxClientError())
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          mockMvc.perform(get(<span class="jxr_string">"/app/400/components"</span>))
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>                  .andExpect(status().isNotFound())
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(400))
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(404))
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>                  .andExpect(
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>                          jsonPath(<span class="jxr_string">"$.message"</span>)
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>                                  .value(<span class="jxr_string">"Requested an application that does not exist"</span>));
@@ -75,7 +75,7 @@
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      @Test
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">void</strong> should_not_find_when_called_without_id() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          mockMvc.perform(get(<span class="jxr_string">"/components/"</span>)).andExpect(status().isNotFound());
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          mockMvc.perform(get(<span class="jxr_string">"/app/components/"</span>)).andExpect(status().isNotFound());
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      }
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>      @Test
@@ -85,7 +85,7 @@
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>      <strong class="jxr_keyword">void</strong> should_send_401_when_application_login_required() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>          applicationRepository.setAuthenticatedRequired(1L, <strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>          mockMvc.perform(get(<span class="jxr_string">"/components/1"</span>).accept(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          mockMvc.perform(get(<span class="jxr_string">"/app/1/components"</span>).accept(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>                  .andExpect(status().isUnauthorized())
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(401))
