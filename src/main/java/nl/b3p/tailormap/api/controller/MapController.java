@@ -48,7 +48,7 @@ import javax.validation.constraints.NotNull;
 
 @RestController
 @Validated
-@RequestMapping(path = "/map/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/app/{appId}/map", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MapController {
     private final Log logger = LogFactory.getLog(getClass());
     @Autowired private ApplicationRepository applicationRepository;
@@ -107,14 +107,14 @@ public class MapController {
     @ResponseStatus(
             value =
                     HttpStatus
-                            .BAD_REQUEST /*,reason = "Bad Request" -- adding 'reason' will drop the body */)
+                            .NOT_FOUND /*,reason = "Not Found" -- adding 'reason' will drop the body */)
     @ResponseBody
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
         logger.warn(
                 "Requested an application that does not exist. Message: " + exception.getMessage());
         return new ErrorResponse()
                 .message("Requested an application that does not exist")
-                .code(400);
+                .code(HttpStatus.NOT_FOUND.value());
     }
 
     private void getApplicationParams(@NotNull Application a, @NotNull MapResponse mapResponse) {

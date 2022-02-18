@@ -66,7 +66,7 @@ import javax.validation.constraints.NotNull;
 @RestController
 @Validated
 @RequestMapping(
-        path = "/features/{appId}/{appLayerId}",
+        path = "/app/{appId}/layer/{appLayerId}/features",
         produces = MediaType.APPLICATION_JSON_VALUE)
 public class FeaturesController implements Constants {
     private final Log logger = LogFactory.getLog(getClass());
@@ -84,7 +84,7 @@ public class FeaturesController implements Constants {
     @ResponseStatus(
             value =
                     HttpStatus
-                            .BAD_REQUEST /*,reason = "Bad Request" -- adding 'reason' will drop the body */)
+                            .NOT_FOUND /*,reason = "Not Found" -- adding 'reason' will drop the body */)
     @ResponseBody
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
         logger.warn(
@@ -92,7 +92,7 @@ public class FeaturesController implements Constants {
                         + exception.getMessage());
         return new ErrorResponse()
                 .message("Requested an application or appLayer that does not exist")
-                .code(400);
+                .code(HttpStatus.NOT_FOUND.value());
     }
 
     /**

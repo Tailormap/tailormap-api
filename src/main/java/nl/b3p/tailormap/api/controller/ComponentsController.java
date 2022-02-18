@@ -41,7 +41,7 @@ import javax.persistence.EntityNotFoundException;
 
 @RestController
 @Validated
-@RequestMapping(path = "/components/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/app/{appId}/components", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ComponentsController {
 
     private final Log logger = LogFactory.getLog(getClass());
@@ -58,14 +58,14 @@ public class ComponentsController {
     @ResponseStatus(
             value =
                     HttpStatus
-                            .BAD_REQUEST /*,reason = "Bad Request" -- adding 'reason' will drop the body */)
+                            .NOT_FOUND /*,reason = "Not Found" -- adding 'reason' will drop the body */)
     @ResponseBody
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
         logger.warn(
                 "Requested an application that does not exist. Message: " + exception.getMessage());
         return new ErrorResponse()
                 .message("Requested an application that does not exist")
-                .code(400);
+                .code(HttpStatus.NOT_FOUND.value());
     }
 
     /**

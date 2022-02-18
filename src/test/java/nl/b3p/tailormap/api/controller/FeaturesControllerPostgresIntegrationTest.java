@@ -86,7 +86,7 @@ class FeaturesControllerPostgresIntegrationTest {
         //              "type": "string"
         //      }
         //    ]}
-        mockMvc.perform(get("/features/1/2").param("x", "141247").param("y", "458118"))
+        mockMvc.perform(get("/1/features/2").param("x", "141247").param("y", "458118"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.features").isArray())

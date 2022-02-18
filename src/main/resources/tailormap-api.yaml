@@ -154,7 +154,7 @@ paths:
                 databaseversion: '47'
                 apiVersion: 'v1'
 
-  /app/:
+  /app:
     summary: '
     Use this endpoint to get the id of the requested or default application.
     Either call this with `name` and optional `version` or `appId` alone.
@@ -237,7 +237,7 @@ paths:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
 
-  /map/{appId}:
+  /app/{appId}/map:
     summary: 'Retrieve the map''s bounding box, projection, language and (optional) base layers.
     This document provides all that is necessary to draw a map with (optional) baselayers.'
     get:
@@ -263,6 +263,12 @@ paths:
             application/json:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
         '500':
           description: 'Error'
           content:
@@ -273,7 +279,7 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
-  /components/{appId}:
+  /app/{appId}/components:
     summary: 'Retrieve all configured components'
     get:
       parameters:
@@ -292,8 +298,8 @@ paths:
               # example:
               schema:
                 $ref: '#/components/schemas/ComponentsResponse'
-        '400':
-          description: "Bad Request"
+        '404':
+          description: Not Found
           content:
             application/json:
               schema:
@@ -305,7 +311,7 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
-  /layers/{appId}:
+  /app/{appId}/layers:
     summary: '
     Retrieve all configured layers.
     Provides all information to add foreground layers to the map and draw them.
@@ -332,8 +338,14 @@ paths:
             application/json:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
-  /describelayer/{appId}/{layerId}:
+  /app/{appId}/layers/{layerId}/describe:
     summary: '
     Returns metadata and featuretype of the requested app layer, aka. layer details
     '
@@ -361,7 +373,7 @@ paths:
               schema:
                 $ref: './model.yaml#/components/schemas/LayerDetails'
 
-  /features/{appId}/{appLayerId}:
+  /app/{appId}/layer/{layerId}/features:
     summary: 'Use this endpoint to access features.'
     get:
       description: 'retrieve features that fulfill the requested conditions (parameters).'
@@ -375,7 +387,7 @@ paths:
             format: int64
         - description: 'application layer id'
           in: path
-          name: appLayerId
+          name: layerId
           required: true
           schema:
             type: integer
@@ -455,7 +467,7 @@ paths:
             format: int64
         - description: 'application layer id'
           in: path
-          name: appLayerId
+          name: layerId
           required: true
           schema:
             type: integer
@@ -476,7 +488,7 @@ paths:
             format: int64
         - description: 'application layer id'
           in: path
-          name: appLayerId
+          name: layerId
           required: true
           schema:
             type: integer
@@ -497,7 +509,7 @@ paths:
             format: int64
         - description: 'application layer id'
           in: path
-          name: appLayerId
+          name: layerId
           required: true
           schema:
             type: integer
