@@ -9,20 +9,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
-<span class="fc" id="L25">public class SecurityConfig extends WebSecurityConfigurerAdapter {</span>
+<span class="fc" id="L16">public class SecurityConfig extends WebSecurityConfigurerAdapter {</span>
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         // Note: CSRF protection only required when using cookies for authentication
@@ -31,45 +22,18 @@ import javax.servlet.http.HttpServletResponse;
         // Angular has automatic XSRF protection support:
         // https://angular.io/guide/http#security-xsrf-protection
         CookieCsrfTokenRepository csrfTokenRepository =
-<span class="fc" id="L34">                CookieCsrfTokenRepository.withHttpOnlyFalse();</span>
-<span class="fc" id="L35">        csrfTokenRepository.setCookiePath(&quot;/&quot;);</span>
-<span class="fc" id="L36">        http.csrf()</span>
-<span class="fc" id="L37">                .csrfTokenRepository(csrfTokenRepository)</span>
-<span class="fc" id="L38">                .and()</span>
-<span class="fc" id="L39">                .authorizeRequests()</span>
-<span class="fc" id="L40">                .antMatchers(&quot;/admin/**&quot;)</span>
-<span class="fc" id="L41">                .hasRole(&quot;ADMIN&quot;)</span>
-<span class="fc" id="L42">                .anyRequest()</span>
-<span class="fc" id="L43">                .permitAll()</span>
-<span class="fc" id="L44">                .and()</span>
-<span class="fc" id="L45">                .formLogin()</span>
-<span class="fc" id="L46">                .failureHandler(</span>
-<span class="fc" id="L47">                        new SimpleUrlAuthenticationFailureHandler() {</span>
-                            @Override
-                            public void onAuthenticationFailure(
-                                    HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    AuthenticationException exception)
-                                    throws IOException {
-<span class="nc" id="L54">                                logger.debug(&quot;Authentication failure: &quot; + exception.getMessage());</span>
-<span class="nc" id="L55">                                response.sendError(</span>
-                                        HttpServletResponse.SC_FORBIDDEN, &quot;Authentication failed&quot;);
-<span class="nc" id="L57">                            }</span>
-                        })
-<span class="fc" id="L59">                .successHandler(</span>
-<span class="fc" id="L60">                        new SimpleUrlAuthenticationSuccessHandler() {</span>
-                            @Override
-                            public void onAuthenticationSuccess(
-                                    HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    Authentication authentication)
-                                    throws IOException {
-<span class="nc" id="L67">                                logger.trace(</span>
-<span class="nc" id="L68">                                        &quot;Authentication success for &quot; + authentication.getName());</span>
-                                // Do not send redirect
-<span class="nc" id="L70">                                response.sendError(HttpServletResponse.SC_OK);</span>
-<span class="nc" id="L71">                            }</span>
-                        });
-<span class="fc" id="L73">    }</span>
+<span class="fc" id="L25">                CookieCsrfTokenRepository.withHttpOnlyFalse();</span>
+<span class="fc" id="L26">        csrfTokenRepository.setCookiePath(&quot;/&quot;);</span>
+<span class="fc" id="L27">        http.csrf()</span>
+<span class="fc" id="L28">                .csrfTokenRepository(csrfTokenRepository)</span>
+<span class="fc" id="L29">                .and()</span>
+<span class="fc" id="L30">                .authorizeRequests()</span>
+<span class="fc" id="L31">                .antMatchers(&quot;/admin/**&quot;)</span>
+<span class="fc" id="L32">                .hasRole(&quot;ADMIN&quot;)</span>
+<span class="fc" id="L33">                .anyRequest()</span>
+<span class="fc" id="L34">                .permitAll()</span>
+<span class="fc" id="L35">                .and()</span>
+<span class="fc" id="L36">                .formLogin();</span>
+<span class="fc" id="L37">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
