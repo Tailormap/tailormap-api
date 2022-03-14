@@ -47,7 +47,7 @@ class FeaturesControllerPostgresIntegrationTest {
     @Disabled("needs postgres database setup")
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_produce_for_valid_input_pdok_betuurlijkegebieden() throws Exception {
-        // calling: http://localhost:8080/api/features/1/2?x=141247&y=458118
+        // calling: http://localhost:8080/api/app/1/layer/2/features?x=141247&y=458118
         // produces:
         //  {
         //    "features": [{
@@ -87,7 +87,69 @@ class FeaturesControllerPostgresIntegrationTest {
         //              "type": "string"
         //      }
         //    ]}
-        mockMvc.perform(get("/1/features/2").param("x", "141247").param("y", "458118"))
+        mockMvc.perform(get("/app/1/layer/2/features").param("x", "141247").param("y", "458118"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.features").isArray())
+                .andExpect(jsonPath("$.features[0]").isMap())
+                .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
+                .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
+    }
+
+    /* test EPSG:28992 (RD New/Amersfoort) */
+    @Test
+    @Disabled("needs postgres database setup")
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void should_produce_for_valid_input_with_native_crs_pdok_betuurlijkegebieden()
+            throws Exception {
+        mockMvc.perform(
+                        get("/app/1/layer/2/features")
+                                .param("x", "141247")
+                                .param("y", "458118")
+                                .param("crs", "EPSG:28992"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.features").isArray())
+                .andExpect(jsonPath("$.features[0]").isMap())
+                .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
+                .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
+    }
+
+    /* test EPSG:3857 (web mercator) */
+    @Test
+    @Disabled("needs postgres database setup")
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void should_produce_for_valid_input_with_alien_crs_pdok_betuurlijkegebieden() throws Exception {
+        mockMvc.perform(
+                        get("/app/1/layer/2/features")
+                                .param("x", "577351")
+                                .param("y", "6820242")
+                                .param("crs", "EPSG:3857"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.features").isArray())
+                .andExpect(jsonPath("$.features[0]").isMap())
+                .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
+                .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
+    }
+
+    /* test EPSG:4326 (WGS84) */
+    @Test
+    @Disabled("needs postgres database setup")
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void should_produce_for_valid_input_with_alien_crs_2_pdok_betuurlijkegebieden()
+            throws Exception {
+        mockMvc.perform(
+                        get("/app/1/layer/2/features")
+                                .param("x", "5.04173")
+                                .param("y", "52.11937")
+                                .param("crs", "EPSG:4326"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.features").isArray())
