@@ -136,7 +136,7 @@ public class AppController {
                             .version(this.application.getVersion())
                             .title(this.application.getTitle());
 
-            // null check language bacause it's an enumerated value
+            // null check language because it's an enumerated value
             if (null != this.application.getLang())
                 appResponse.lang(AppResponse.LangEnum.fromValue(this.application.getLang()));
 
@@ -178,7 +178,7 @@ public class AppController {
     /**
      * find the default viewer (name and version) in this instance.
      *
-     * @return either the default Application of {@code null} is not configured
+     * @return either the default Application or {@code null} if not configured
      */
     private Application getDefaultViewer() {
         try {
