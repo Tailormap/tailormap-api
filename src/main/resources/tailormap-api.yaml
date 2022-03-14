@@ -161,7 +161,7 @@ paths:
             application/json:
               example:
                 version: '0.1-SNAPSHOT'
-                databaseversion: '47'
+                databaseversion: '49'
                 apiVersion: 'v1'
 
   /login:

@@ -48,7 +48,7 @@ class ComponentsControllerIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0]").isMap())
-                .andExpect(jsonPath("$[0].type").value("Dummy"))
+                .andExpect(jsonPath("$[0].type").value("viewer.mapcomponents.OpenLayers5Map"))
                 .andExpect(jsonPath("$[0].config").isMap());
     }
 
