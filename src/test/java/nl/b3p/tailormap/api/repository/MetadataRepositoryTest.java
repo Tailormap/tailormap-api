@@ -8,6 +8,7 @@ package nl.b3p.tailormap.api.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import nl.tailormap.viewer.config.metadata.Metadata;
 
@@ -47,7 +48,12 @@ class MetadataRepositoryTest {
     void it_should_findByConfigKeyDatabaseVersion() {
         final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);
         assertNotNull(m, "we should have found something");
-        assertEquals("47", m.getConfigValue(), "version is not 47");
+
+        String databaseVersion = System.getenv("DATABASE_VERSION");
+        assumeFalse(
+                null == databaseVersion,
+                "Database version unknown, should be set in system environment");
+        assertEquals(databaseVersion, m.getConfigValue(), "version is not correct");
     }
 
     @Test

@@ -107,8 +107,10 @@ SPDX-License-Identifier: MIT
     <!--    <project.build.outputTimestamp>2021-11-11T16:01:17Z</project.build.outputTimestamp>-->
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
+    <org.tailormap.version>5.9.16-SNAPSHOT</org.tailormap.version>
+    <!-- TODO read this from persistence -->
+    <org.tailormap.database.version>49</org.tailormap.database.version>
     <!-- make sure to keep geotools version and tailormap version in sync -->
-    <org.tailormap.version>5.9.15</org.tailormap.version>
     <geotools.version>26.3</geotools.version>
     <spring.boot.version>${project.parent.version}</spring.boot.version>
     <!-- version overrides. see org.springframework.boot:spring-boot-dependencies eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
@@ -552,8 +554,7 @@ SPDX-License-Identifier: MIT
           <environmentVariables>
             <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
-            <!-- TODO read this from persistence -->
-            <DATABASE_VERSION>47</DATABASE_VERSION>
+            <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
           </environmentVariables>
           <excludes>
             <exclude>**/*IntegrationTest.java</exclude>
@@ -576,8 +577,7 @@ SPDX-License-Identifier: MIT
           <environmentVariables>
             <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
-            <!-- TODO read this from persistence -->
-            <DATABASE_VERSION>47</DATABASE_VERSION>
+            <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
           </environmentVariables>
           <useFile>false</useFile>
           <classpathDependencyExcludes>
@@ -604,8 +604,7 @@ SPDX-License-Identifier: MIT
           <environmentVariables>
             <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
-            <!-- TODO read this from persistence -->
-            <DATABASE_VERSION>47</DATABASE_VERSION>
+            <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
           </environmentVariables>
           <cleanCache>true</cleanCache>
           <!--suppress UnresolvedMavenProperty -->
@@ -633,8 +632,7 @@ SPDX-License-Identifier: MIT
               <environmentVariables>
                 <!--suppress UnresolvedMavenProperty -->
                 <API_VERSION>${info.version}</API_VERSION>
-                <!-- TODO read this from persistence -->
-                <DATABASE_VERSION>47</DATABASE_VERSION>
+                <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
               </environmentVariables>
               <systemPropertyVariables>
                 <project.version>${project.version}</project.version>

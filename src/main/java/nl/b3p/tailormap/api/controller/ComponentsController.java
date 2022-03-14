@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -128,25 +128,15 @@ public class ComponentsController {
      * @param componentList the list that holds the components
      */
     private void findComponents(Application application, List<Component> componentList) {
-        // TODO implementation: mapping from ConfiguredComponent to Component
-        //    componentList.addAll(
-        //        a.getComponents().stream()
-        //            .map(p -> new Component()
-        //                        .type(p.getClassName())
-        //                        .config(p.getDetails())
-        //                        .putConfigItem("title", p.getName()))
-        //            .collect(Collectors.toList()));
-
         logger.trace("listing components: " + application.getComponents());
-
-        componentList.add(
-                new Component()
-                        .type("Dummy")
-                        .config(
-                                Map.of(
-                                        "label", "dummy component label",
-                                        "title", "dummy component title",
-                                        "tooltip", "dummy component tooltip",
-                                        "dummyConfig", "dummyValue")));
+        componentList.addAll(
+                application.getComponents().stream()
+                        .map(
+                                p ->
+                                        new Component()
+                                                .putConfigItem("title", p.getName())
+                                                .type(p.getClassName())
+                                                .config(p.getDetails()))
+                        .collect(Collectors.toList()));
     }
 }
