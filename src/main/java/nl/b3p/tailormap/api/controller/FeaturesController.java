@@ -33,12 +33,19 @@ import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultProjectedCRS;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.util.GeometricShapeFactory;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -120,6 +127,7 @@ public class FeaturesController implements Constants {
      * @param appLayerId the application layer id
      * @param x x-coordinate
      * @param y y-coordinate
+     * @param crs CRS for x- and y-coordinate
      * @param distance buffer distance for radius around selection point(x,y)
      * @param __fid id of feature to get
      * @param simplify set to {@code true} to simplify geometry, defaults to {@code false}
@@ -136,6 +144,7 @@ public class FeaturesController implements Constants {
                     Long appLayerId,
             @RequestParam(required = false) Double x,
             @RequestParam(required = false) Double y,
+            @RequestParam(required = false) String crs,
             @RequestParam(defaultValue = "4") Double distance,
             @RequestParam(required = false) String __fid,
             @RequestParam(defaultValue = "false") Boolean simplify,
@@ -161,7 +170,7 @@ public class FeaturesController implements Constants {
             }
 
             if (null != x && null != y) {
-                featuresResponse = getFeaturesByXY(appLayer, x, y, distance, simplify);
+                featuresResponse = getFeaturesByXY(appLayer, x, y, crs, distance, simplify);
             } else {
                 // TODO other implementations
                 throw new BadRequestException(
@@ -177,6 +186,7 @@ public class FeaturesController implements Constants {
             @NotNull ApplicationLayer appLayer,
             @NotNull Double x,
             @NotNull Double y,
+            String crs,
             @NotNull Double distance,
             @NotNull Boolean simplifyGeometry)
             throws BadRequestException {
@@ -209,7 +219,30 @@ public class FeaturesController implements Constants {
             shapeFact.setNumPoints(32);
             shapeFact.setCentre(new Coordinate(x, y));
             shapeFact.setSize(distance * 2d);
-            Polygon p = shapeFact.createCircle();
+            Geometry p = shapeFact.createCircle();
+            logger.debug("created geometry: " + p);
+
+            if (null != crs) {
+                // reproject to feature source CRS
+                try {
+                    // this is the CRS of the "default geometry"
+                    final CoordinateReferenceSystem toCRS =
+                            fs.getSchema().getCoordinateReferenceSystem();
+                    if (!((DefaultProjectedCRS) toCRS)
+                            .getIdentifier(null)
+                            .toString()
+                            .equalsIgnoreCase(crs)) {
+                        final CoordinateReferenceSystem fromCRS = CRS.decode(crs);
+                        MathTransform transform = CRS.findMathTransform(fromCRS, toCRS, true);
+                        p = JTS.transform(p, transform);
+                        logger.debug("reprojected geometry to: " + p);
+                    }
+                } catch (FactoryException | TransformException e) {
+                    logger.warn(
+                            "Unable to transform query geometry to desired CRS, trying with original CRS");
+                }
+            }
+            logger.debug("using geometry: " + p);
             Filter spatialFilter = ff.intersects(ff.property(geomAttribute), ff.literal(p));
 
             // TODO flamingo does some fancy stuff to combine with existing filters using

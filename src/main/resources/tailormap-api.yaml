@@ -454,15 +454,21 @@ paths:
           schema:
             type: integer
             format: int64
-        - description: 'x-coordinate in the coordinate reference system of the attribute source'
+        - description: 'x-coordinate, assumed in the coordinate reference system of the attribute source if crs is omitted'
           in: query
           name: x
           required: false
           schema:
             type: number
-        - description: 'y-coordinate in the coordinate reference system of the attribute source'
+        - description: 'y-coordinate, assumed in the coordinate reference system of the attribute source if crs is omitted'
           in: query
           name: y
+          required: false
+          schema:
+            type: number
+        - description: 'EPSG code for the given x- and y-coodinates, the backend will transform to attribute source if required'
+          in: query
+          name: crs
           required: false
           schema:
             type: number
