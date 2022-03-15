@@ -11,12 +11,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import nl.b3p.tailormap.api.geotools.referencing.ReferencingHelper;
 import nl.b3p.tailormap.api.model.AppLayer;
 import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
 import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.security.AuthUtil;
+import nl.b3p.tailormap.api.util.ParseUtil;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.StartLayer;
@@ -130,25 +132,38 @@ public class LayersController {
      * @param list the list that will hold the app layers
      */
     private void findApplayers(@NotNull Application application, List<AppLayer> list) {
+
+        CoordinateReferenceSystem appCRS =
+                new CoordinateReferenceSystem()
+                        // TODO use app projection, as TM model does not store
+                        //      app layer projection
+                        .code(ParseUtil.parseEpsgCode(application.getProjectionCode()))
+                        .definition(ParseUtil.parseProjDefintion(application.getProjectionCode()))
+                        .bounds(
+                                ReferencingHelper.crsBoundsExtractor(
+                                        ParseUtil.parseEpsgCode(application.getProjectionCode())));
+
+        // find all applayers
+        List<StartLayer> startLayers = application.getStartLayers();
         ApplicationLayer apll;
         AppLayer a;
-        // TODO implement properly
-        // find all
-        List<StartLayer> startLayers = application.getStartLayers();
         for (StartLayer startLayer : startLayers) {
             apll = startLayer.getApplicationLayer();
-            // create API object for each
-            a =
-                    new AppLayer()
-                            .id(apll.getId())
-                            .crs(new CoordinateReferenceSystem())
-                            .url(apll.getService().getUrl())
-                            .isBaseLayer(false)
-                            .displayName(apll.getLayerName())
-                            .serviceId(apll.getService().getId())
-                            .visible(true);
-            // add each to list
-            list.add(a);
+            if (!startLayer.isRemoved()) {
+                // create API object for each
+                a =
+                        new AppLayer()
+                                .id(apll.getId())
+                                .crs(/* application CRS */ appCRS)
+                                .url(apll.getService().getUrl())
+                                .displayName(apll.getLayerName())
+                                .serviceId(apll.getService().getId())
+                                .visible(startLayer.isChecked())
+                                .isBaseLayer(
+                                        /*TODO fix hardcoded data, depends on HTM-247 */ false);
+                // add each to list
+                list.add(a);
+            }
         }
     }
 }
