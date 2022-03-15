@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import nl.b3p.tailormap.api.geotools.referencing.ReferencingHelper;
 import nl.b3p.tailormap.api.model.AppLayer;
 import nl.b3p.tailormap.api.model.Bounds;
 import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
@@ -20,6 +21,7 @@ import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.model.Service;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.security.AuthUtil;
+import nl.b3p.tailormap.api.util.ParseUtil;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.StartLayer;
 import nl.tailormap.viewer.config.services.GeoService;
@@ -119,14 +121,10 @@ public class MapController {
 
     private void getApplicationParams(@NotNull Application a, @NotNull MapResponse mapResponse) {
         final String pCode = a.getProjectionCode();
-        //        final String pCode =
-        //                "EPSG:28992[+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889
-        // +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel
-        // +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs]";
+
         CoordinateReferenceSystem c = new CoordinateReferenceSystem();
         if (null != pCode) {
-            c.code(pCode.substring(0, pCode.indexOf('[')))
-                    .definition(pCode.substring(pCode.indexOf('[') + 1, pCode.lastIndexOf(']')));
+            c.code(ParseUtil.parseEpsgCode(pCode)).definition(ParseUtil.parseProjDefintion(pCode));
         }
         Bounds maxExtent = new Bounds();
         if (null != a.getMaxExtent()) {
@@ -152,7 +150,18 @@ public class MapController {
 
     private void getLayers(@NotNull Application a, @NotNull MapResponse mapResponse) {
         List<StartLayer> startLayers = a.getStartLayers();
+
         if (null != a.getStartLayers()) {
+            CoordinateReferenceSystem appCRS =
+                    new CoordinateReferenceSystem()
+                            // TODO use app projection, as TM model does not store
+                            //      app layer projection
+                            .code(ParseUtil.parseEpsgCode(a.getProjectionCode()))
+                            .definition(ParseUtil.parseProjDefintion(a.getProjectionCode()))
+                            .bounds(
+                                    ReferencingHelper.crsBoundsExtractor(
+                                            ParseUtil.parseEpsgCode(a.getProjectionCode())));
+
             for (StartLayer l : startLayers) {
                 AppLayer appLayer =
                         new AppLayer()
@@ -160,10 +169,9 @@ public class MapController {
                                 .displayName(l.getApplicationLayer().getLayerName())
                                 .url(l.getApplicationLayer().getService().getUrl())
                                 .serviceId(l.getApplicationLayer().getService().getId())
-                                // TODO fixup hardcoded data
-                                .crs(new CoordinateReferenceSystem())
-                                .visible(true)
-                                .isBaseLayer(true);
+                                .visible(l.isChecked())
+                                .crs(appCRS)
+                                .isBaseLayer(/*TODO fix hardcoded data, depends on HTM-247 */ true);
 
                 GeoService geoService = l.getApplicationLayer().getService();
                 Service s =
