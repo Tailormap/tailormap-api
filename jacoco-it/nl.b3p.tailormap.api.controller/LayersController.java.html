@@ -11,12 +11,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import nl.b3p.tailormap.api.geotools.referencing.ReferencingHelper;
 import nl.b3p.tailormap.api.model.AppLayer;
 import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
 import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.security.AuthUtil;
+import nl.b3p.tailormap.api.util.ParseUtil;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.StartLayer;
@@ -45,8 +47,8 @@ import javax.validation.constraints.NotNull;
 @RestController
 @Validated
 @RequestMapping(path = &quot;/app/{appId}/layers&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
-<span class="fc" id="L48">public class LayersController {</span>
-<span class="fc" id="L49">    private final Log logger = LogFactory.getLog(getClass());</span>
+<span class="fc" id="L50">public class LayersController {</span>
+<span class="fc" id="L51">    private final Log logger = LogFactory.getLog(getClass());</span>
     @Autowired private ApplicationRepository applicationRepository;
 
     /**
@@ -63,11 +65,11 @@ import javax.validation.constraints.NotNull;
                             .NOT_FOUND /*,reason = &quot;Not Found&quot; -- adding 'reason' will drop the body */)
     @ResponseBody
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
-<span class="fc" id="L66">        logger.warn(</span>
-<span class="fc" id="L67">                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());</span>
-<span class="fc" id="L68">        return new ErrorResponse()</span>
-<span class="fc" id="L69">                .message(&quot;Requested an application that does not exist&quot;)</span>
-<span class="fc" id="L70">                .code(HttpStatus.NOT_FOUND.value());</span>
+<span class="fc" id="L68">        logger.warn(</span>
+<span class="fc" id="L69">                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());</span>
+<span class="fc" id="L70">        return new ErrorResponse()</span>
+<span class="fc" id="L71">                .message(&quot;Requested an application that does not exist&quot;)</span>
+<span class="fc" id="L72">                .code(HttpStatus.NOT_FOUND.value());</span>
     }
 
     /**
@@ -107,19 +109,19 @@ import javax.validation.constraints.NotNull;
             @Parameter(name = &quot;appId&quot;, description = &quot;application id&quot;, required = true)
                     @PathVariable(&quot;appId&quot;)
                     Long appId) {
-<span class="fc" id="L110">        logger.trace(&quot;Requesting 'layers' for application id: &quot; + appId);</span>
+<span class="fc" id="L112">        logger.trace(&quot;Requesting 'layers' for application id: &quot; + appId);</span>
 
         // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
         // and in a normal flow this should not happen
         // as appId is (should be) validated by calling the /app/ endpoint
-<span class="fc" id="L115">        Application application = applicationRepository.getById(appId);</span>
-<span class="pc bpc" id="L116" title="1 of 4 branches missed.">        if (application.isAuthenticatedRequired() &amp;&amp; !AuthUtil.isAuthenticatedUser()) {</span>
+<span class="fc" id="L117">        Application application = applicationRepository.getById(appId);</span>
+<span class="pc bpc" id="L118" title="1 of 4 branches missed.">        if (application.isAuthenticatedRequired() &amp;&amp; !AuthUtil.isAuthenticatedUser()) {</span>
             // login required, send RedirectResponse
-<span class="fc" id="L118">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());</span>
+<span class="fc" id="L120">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());</span>
         } else {
-<span class="fc" id="L120">            List&lt;AppLayer&gt; appLayers = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L121">            findApplayers(application, appLayers);</span>
-<span class="fc" id="L122">            return ResponseEntity.status(HttpStatus.OK).body(appLayers);</span>
+<span class="fc" id="L122">            List&lt;AppLayer&gt; appLayers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L123">            findApplayers(application, appLayers);</span>
+<span class="fc" id="L124">            return ResponseEntity.status(HttpStatus.OK).body(appLayers);</span>
         }
     }
 
@@ -130,26 +132,39 @@ import javax.validation.constraints.NotNull;
      * @param list the list that will hold the app layers
      */
     private void findApplayers(@NotNull Application application, List&lt;AppLayer&gt; list) {
+
+<span class="fc" id="L136">        CoordinateReferenceSystem appCRS =</span>
+                new CoordinateReferenceSystem()
+                        // TODO use app projection, as TM model does not store
+                        //      app layer projection
+<span class="fc" id="L140">                        .code(ParseUtil.parseEpsgCode(application.getProjectionCode()))</span>
+<span class="fc" id="L141">                        .definition(ParseUtil.parseProjDefintion(application.getProjectionCode()))</span>
+<span class="fc" id="L142">                        .bounds(</span>
+<span class="fc" id="L143">                                ReferencingHelper.crsBoundsExtractor(</span>
+<span class="fc" id="L144">                                        ParseUtil.parseEpsgCode(application.getProjectionCode())));</span>
+
+        // find all applayers
+<span class="fc" id="L147">        List&lt;StartLayer&gt; startLayers = application.getStartLayers();</span>
         ApplicationLayer apll;
         AppLayer a;
-        // TODO implement properly
-        // find all
-<span class="fc" id="L137">        List&lt;StartLayer&gt; startLayers = application.getStartLayers();</span>
-<span class="fc bfc" id="L138" title="All 2 branches covered.">        for (StartLayer startLayer : startLayers) {</span>
-<span class="fc" id="L139">            apll = startLayer.getApplicationLayer();</span>
-            // create API object for each
-<span class="fc" id="L141">            a =</span>
-                    new AppLayer()
-<span class="fc" id="L143">                            .id(apll.getId())</span>
-<span class="fc" id="L144">                            .crs(new CoordinateReferenceSystem())</span>
-<span class="fc" id="L145">                            .url(apll.getService().getUrl())</span>
-<span class="fc" id="L146">                            .isBaseLayer(false)</span>
-<span class="fc" id="L147">                            .displayName(apll.getLayerName())</span>
-<span class="fc" id="L148">                            .serviceId(apll.getService().getId())</span>
-<span class="fc" id="L149">                            .visible(true);</span>
-            // add each to list
-<span class="fc" id="L151">            list.add(a);</span>
-<span class="fc" id="L152">        }</span>
-<span class="fc" id="L153">    }</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">        for (StartLayer startLayer : startLayers) {</span>
+<span class="fc" id="L151">            apll = startLayer.getApplicationLayer();</span>
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">            if (!startLayer.isRemoved()) {</span>
+                // create API object for each
+<span class="fc" id="L154">                a =</span>
+                        new AppLayer()
+<span class="fc" id="L156">                                .id(apll.getId())</span>
+<span class="fc" id="L157">                                .crs(/* application CRS */ appCRS)</span>
+<span class="fc" id="L158">                                .url(apll.getService().getUrl())</span>
+<span class="fc" id="L159">                                .displayName(apll.getLayerName())</span>
+<span class="fc" id="L160">                                .serviceId(apll.getService().getId())</span>
+<span class="fc" id="L161">                                .visible(startLayer.isChecked())</span>
+<span class="fc" id="L162">                                .isBaseLayer(</span>
+<span class="fc" id="L163">                                        /*TODO fix hardcoded data, depends on HTM-247 */ false);</span>
+                // add each to list
+<span class="fc" id="L165">                list.add(a);</span>
+            }
+<span class="fc" id="L167">        }</span>
+<span class="fc" id="L168">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

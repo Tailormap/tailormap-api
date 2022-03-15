@@ -144,7 +144,7 @@
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>                             .version(<strong class="jxr_keyword">this</strong>.application.getVersion())
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>                             .title(<strong class="jxr_keyword">this</strong>.application.getTitle());
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> 
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>             <em class="jxr_comment">// null check language bacause it's an enumerated value</em>
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>             <em class="jxr_comment">// null check language because it's an enumerated value</em>
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>             <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> != <strong class="jxr_keyword">this</strong>.application.getLang())
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>                 appResponse.lang(AppResponse.LangEnum.fromValue(<strong class="jxr_keyword">this</strong>.application.getLang()));
 <a class="jxr_linenumber" name="L142" href="#L142">142</a> 
@@ -186,7 +186,7 @@
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L179" href="#L179">179</a> <em class="jxr_javadoccomment">     * find the default viewer (name and version) in this instance.</em>
 <a class="jxr_linenumber" name="L180" href="#L180">180</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L181" href="#L181">181</a> <em class="jxr_javadoccomment">     * @return either the default Application of {@code null} is not configured</em>
+<a class="jxr_linenumber" name="L181" href="#L181">181</a> <em class="jxr_javadoccomment">     * @return either the default Application or {@code null} if not configured</em>
 <a class="jxr_linenumber" name="L182" href="#L182">182</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>     <strong class="jxr_keyword">private</strong> Application getDefaultViewer() {
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>         <strong class="jxr_keyword">try</strong> {

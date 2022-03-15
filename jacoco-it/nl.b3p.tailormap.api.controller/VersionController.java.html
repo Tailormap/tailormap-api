@@ -45,14 +45,17 @@ import java.util.Map;
     @GetMapping(path = &quot;/version&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map&lt;String, String&gt; getVersion() {
 <span class="fc" id="L47">        final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);</span>
-<span class="pc bpc" id="L48" title="1 of 2 branches missed.">        final String dbVersion = ((null != m) ? m.getConfigValue() : &quot;-1&quot;);</span>
+        final String dbVersion =
+<span class="fc bfc" id="L49" title="All 2 branches covered.">                ((null != m)</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">                        ? (null == m.getConfigValue() ? &quot;unknown&quot; : m.getConfigValue())</span>
+<span class="fc" id="L51">                        : &quot;unknown&quot;);</span>
 
-<span class="fc" id="L50">        logger.debug(</span>
-<span class="fc" id="L51">                String.format(</span>
+<span class="fc" id="L53">        logger.debug(</span>
+<span class="fc" id="L54">                String.format(</span>
                         &quot;Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s&quot;,
                         this.version, dbVersion, this.apiVersion));
 
-<span class="fc" id="L55">        return Map.of(</span>
+<span class="fc" id="L58">        return Map.of(</span>
                 &quot;version&quot;,
                 this.version,
                 &quot;databaseversion&quot;,

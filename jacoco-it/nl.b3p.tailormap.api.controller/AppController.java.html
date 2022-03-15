@@ -136,7 +136,7 @@ import javax.persistence.EntityNotFoundException;
 <span class="fc" id="L136">                            .version(this.application.getVersion())</span>
 <span class="fc" id="L137">                            .title(this.application.getTitle());</span>
 
-            // null check language bacause it's an enumerated value
+            // null check language because it's an enumerated value
 <span class="fc bfc" id="L140" title="All 2 branches covered.">            if (null != this.application.getLang())</span>
 <span class="fc" id="L141">                appResponse.lang(AppResponse.LangEnum.fromValue(this.application.getLang()));</span>
 
@@ -178,7 +178,7 @@ import javax.persistence.EntityNotFoundException;
     /**
      * find the default viewer (name and version) in this instance.
      *
-     * @return either the default Application of {@code null} is not configured
+     * @return either the default Application or {@code null} if not configured
      */
     private Application getDefaultViewer() {
         try {

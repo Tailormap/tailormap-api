@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import nl.b3p.tailormap.api.geotools.referencing.ReferencingHelper;
 import nl.b3p.tailormap.api.model.AppLayer;
 import nl.b3p.tailormap.api.model.Bounds;
 import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
@@ -20,6 +21,7 @@ import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.model.Service;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.security.AuthUtil;
+import nl.b3p.tailormap.api.util.ParseUtil;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.StartLayer;
 import nl.tailormap.viewer.config.services.GeoService;
@@ -49,8 +51,8 @@ import javax.validation.constraints.NotNull;
 @RestController
 @Validated
 @RequestMapping(path = &quot;/app/{appId}/map&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
-<span class="fc" id="L52">public class MapController {</span>
-<span class="fc" id="L53">    private final Log logger = LogFactory.getLog(getClass());</span>
+<span class="fc" id="L54">public class MapController {</span>
+<span class="fc" id="L55">    private final Log logger = LogFactory.getLog(getClass());</span>
     @Autowired private ApplicationRepository applicationRepository;
 
     @Operation(
@@ -85,21 +87,21 @@ import javax.validation.constraints.NotNull;
             @Parameter(name = &quot;appId&quot;, description = &quot;application id&quot;, required = true)
                     @PathVariable(&quot;appId&quot;)
                     Long appId) {
-<span class="fc" id="L88">        logger.trace(&quot;Requesting 'map' for application id: &quot; + appId);</span>
+<span class="fc" id="L90">        logger.trace(&quot;Requesting 'map' for application id: &quot; + appId);</span>
 
         // this could throw EntityNotFound, which is handles by handleEntityNotFoundException
         // and in a normal flow this should not happen
         // as appId is (should be) validated by calling the /app/ endpoint
-<span class="fc" id="L93">        Application application = applicationRepository.getById(appId);</span>
-<span class="pc bpc" id="L94" title="1 of 4 branches missed.">        if (application.isAuthenticatedRequired() &amp;&amp; !AuthUtil.isAuthenticatedUser()) {</span>
+<span class="fc" id="L95">        Application application = applicationRepository.getById(appId);</span>
+<span class="pc bpc" id="L96" title="1 of 4 branches missed.">        if (application.isAuthenticatedRequired() &amp;&amp; !AuthUtil.isAuthenticatedUser()) {</span>
             // login required, send RedirectResponse
-<span class="fc" id="L96">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());</span>
+<span class="fc" id="L98">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());</span>
         } else {
-<span class="fc" id="L98">            MapResponse mapResponse = new MapResponse();</span>
-<span class="fc" id="L99">            getApplicationParams(application, mapResponse);</span>
-<span class="fc" id="L100">            getLayers(application, mapResponse);</span>
+<span class="fc" id="L100">            MapResponse mapResponse = new MapResponse();</span>
+<span class="fc" id="L101">            getApplicationParams(application, mapResponse);</span>
+<span class="fc" id="L102">            getLayers(application, mapResponse);</span>
 
-<span class="fc" id="L102">            return ResponseEntity.status(HttpStatus.OK).body(mapResponse);</span>
+<span class="fc" id="L104">            return ResponseEntity.status(HttpStatus.OK).body(mapResponse);</span>
         }
     }
 
@@ -110,80 +112,86 @@ import javax.validation.constraints.NotNull;
                             .NOT_FOUND /*,reason = &quot;Not Found&quot; -- adding 'reason' will drop the body */)
     @ResponseBody
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
-<span class="fc" id="L113">        logger.warn(</span>
-<span class="fc" id="L114">                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());</span>
-<span class="fc" id="L115">        return new ErrorResponse()</span>
-<span class="fc" id="L116">                .message(&quot;Requested an application that does not exist&quot;)</span>
-<span class="fc" id="L117">                .code(HttpStatus.NOT_FOUND.value());</span>
+<span class="fc" id="L115">        logger.warn(</span>
+<span class="fc" id="L116">                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());</span>
+<span class="fc" id="L117">        return new ErrorResponse()</span>
+<span class="fc" id="L118">                .message(&quot;Requested an application that does not exist&quot;)</span>
+<span class="fc" id="L119">                .code(HttpStatus.NOT_FOUND.value());</span>
     }
 
     private void getApplicationParams(@NotNull Application a, @NotNull MapResponse mapResponse) {
-<span class="fc" id="L121">        final String pCode = a.getProjectionCode();</span>
-        //        final String pCode =
-        //                &quot;EPSG:28992[+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889
-        // +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel
-        // +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs]&quot;;
-<span class="fc" id="L126">        CoordinateReferenceSystem c = new CoordinateReferenceSystem();</span>
-<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (null != pCode) {</span>
-<span class="fc" id="L128">            c.code(pCode.substring(0, pCode.indexOf('[')))</span>
-<span class="fc" id="L129">                    .definition(pCode.substring(pCode.indexOf('[') + 1, pCode.lastIndexOf(']')));</span>
+<span class="fc" id="L123">        final String pCode = a.getProjectionCode();</span>
+
+<span class="fc" id="L125">        CoordinateReferenceSystem c = new CoordinateReferenceSystem();</span>
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">        if (null != pCode) {</span>
+<span class="fc" id="L127">            c.code(ParseUtil.parseEpsgCode(pCode)).definition(ParseUtil.parseProjDefintion(pCode));</span>
         }
-<span class="fc" id="L131">        Bounds maxExtent = new Bounds();</span>
-<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        if (null != a.getMaxExtent()) {</span>
-<span class="nc" id="L133">            maxExtent</span>
-<span class="nc" id="L134">                    .minx(a.getMaxExtent().getMinx())</span>
-<span class="nc" id="L135">                    .miny(a.getMaxExtent().getMiny())</span>
-<span class="nc" id="L136">                    .maxx(a.getMaxExtent().getMaxx())</span>
-<span class="nc" id="L137">                    .maxy(a.getMaxExtent().getMaxy())</span>
-<span class="nc" id="L138">                    .crs(a.getMaxExtent().getCrs().getName());</span>
+<span class="fc" id="L129">        Bounds maxExtent = new Bounds();</span>
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">        if (null != a.getMaxExtent()) {</span>
+<span class="nc" id="L131">            maxExtent</span>
+<span class="nc" id="L132">                    .minx(a.getMaxExtent().getMinx())</span>
+<span class="nc" id="L133">                    .miny(a.getMaxExtent().getMiny())</span>
+<span class="nc" id="L134">                    .maxx(a.getMaxExtent().getMaxx())</span>
+<span class="nc" id="L135">                    .maxy(a.getMaxExtent().getMaxy())</span>
+<span class="nc" id="L136">                    .crs(a.getMaxExtent().getCrs().getName());</span>
         }
-<span class="fc" id="L140">        Bounds initialExtent = new Bounds();</span>
-<span class="pc bpc" id="L141" title="1 of 2 branches missed.">        if (null != a.getStartExtent()) {</span>
-<span class="nc" id="L142">            initialExtent</span>
-<span class="nc" id="L143">                    .minx(a.getStartExtent().getMinx())</span>
-<span class="nc" id="L144">                    .miny(a.getStartExtent().getMiny())</span>
-<span class="nc" id="L145">                    .maxx(a.getStartExtent().getMaxx())</span>
-<span class="nc" id="L146">                    .maxy(a.getStartExtent().getMaxy())</span>
-<span class="nc" id="L147">                    .crs(a.getStartExtent().getCrs().getName());</span>
+<span class="fc" id="L138">        Bounds initialExtent = new Bounds();</span>
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">        if (null != a.getStartExtent()) {</span>
+<span class="nc" id="L140">            initialExtent</span>
+<span class="nc" id="L141">                    .minx(a.getStartExtent().getMinx())</span>
+<span class="nc" id="L142">                    .miny(a.getStartExtent().getMiny())</span>
+<span class="nc" id="L143">                    .maxx(a.getStartExtent().getMaxx())</span>
+<span class="nc" id="L144">                    .maxy(a.getStartExtent().getMaxy())</span>
+<span class="nc" id="L145">                    .crs(a.getStartExtent().getCrs().getName());</span>
         }
 
-<span class="fc" id="L150">        mapResponse.crs(c).maxExtent(maxExtent).initialExtent(initialExtent);</span>
-<span class="fc" id="L151">    }</span>
+<span class="fc" id="L148">        mapResponse.crs(c).maxExtent(maxExtent).initialExtent(initialExtent);</span>
+<span class="fc" id="L149">    }</span>
 
     private void getLayers(@NotNull Application a, @NotNull MapResponse mapResponse) {
-<span class="fc" id="L154">        List&lt;StartLayer&gt; startLayers = a.getStartLayers();</span>
-<span class="pc bpc" id="L155" title="1 of 2 branches missed.">        if (null != a.getStartLayers()) {</span>
-<span class="fc bfc" id="L156" title="All 2 branches covered.">            for (StartLayer l : startLayers) {</span>
-<span class="fc" id="L157">                AppLayer appLayer =</span>
-                        new AppLayer()
-<span class="fc" id="L159">                                .id(l.getApplicationLayer().getId())</span>
-<span class="fc" id="L160">                                .displayName(l.getApplicationLayer().getLayerName())</span>
-<span class="fc" id="L161">                                .url(l.getApplicationLayer().getService().getUrl())</span>
-<span class="fc" id="L162">                                .serviceId(l.getApplicationLayer().getService().getId())</span>
-                                // TODO fixup hardcoded data
-<span class="fc" id="L164">                                .crs(new CoordinateReferenceSystem())</span>
-<span class="fc" id="L165">                                .visible(true)</span>
-<span class="fc" id="L166">                                .isBaseLayer(true);</span>
+<span class="fc" id="L152">        List&lt;StartLayer&gt; startLayers = a.getStartLayers();</span>
 
-<span class="fc" id="L168">                GeoService geoService = l.getApplicationLayer().getService();</span>
-<span class="fc" id="L169">                Service s =</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">        if (null != a.getStartLayers()) {</span>
+<span class="fc" id="L155">            CoordinateReferenceSystem appCRS =</span>
+                    new CoordinateReferenceSystem()
+                            // TODO use app projection, as TM model does not store
+                            //      app layer projection
+<span class="fc" id="L159">                            .code(ParseUtil.parseEpsgCode(a.getProjectionCode()))</span>
+<span class="fc" id="L160">                            .definition(ParseUtil.parseProjDefintion(a.getProjectionCode()))</span>
+<span class="fc" id="L161">                            .bounds(</span>
+<span class="fc" id="L162">                                    ReferencingHelper.crsBoundsExtractor(</span>
+<span class="fc" id="L163">                                            ParseUtil.parseEpsgCode(a.getProjectionCode())));</span>
+
+<span class="fc bfc" id="L165" title="All 2 branches covered.">            for (StartLayer l : startLayers) {</span>
+<span class="fc" id="L166">                AppLayer appLayer =</span>
+                        new AppLayer()
+<span class="fc" id="L168">                                .id(l.getApplicationLayer().getId())</span>
+<span class="fc" id="L169">                                .displayName(l.getApplicationLayer().getLayerName())</span>
+<span class="fc" id="L170">                                .url(l.getApplicationLayer().getService().getUrl())</span>
+<span class="fc" id="L171">                                .serviceId(l.getApplicationLayer().getService().getId())</span>
+<span class="fc" id="L172">                                .visible(l.isChecked())</span>
+<span class="fc" id="L173">                                .crs(appCRS)</span>
+<span class="fc" id="L174">                                .isBaseLayer(/*TODO fix hardcoded data, depends on HTM-247 */ true);</span>
+
+<span class="fc" id="L176">                GeoService geoService = l.getApplicationLayer().getService();</span>
+<span class="fc" id="L177">                Service s =</span>
                         new Service()
-<span class="fc" id="L171">                                .url(geoService.getUrl())</span>
-<span class="fc" id="L172">                                .id(geoService.getId())</span>
-<span class="fc" id="L173">                                .name(geoService.getName())</span>
-<span class="fc" id="L174">                                .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))</span>
-<span class="fc" id="L175">                                .capabilities(geoService.getCapabilitiesDoc());</span>
-<span class="fc bfc" id="L176" title="All 2 branches covered.">                if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {</span>
-<span class="fc" id="L177">                    s.tilingProtocol(</span>
-<span class="fc" id="L178">                            Service.TilingProtocolEnum.fromValue(</span>
-<span class="fc" id="L179">                                    ((TileService) geoService).getTilingProtocol()));</span>
+<span class="fc" id="L179">                                .url(geoService.getUrl())</span>
+<span class="fc" id="L180">                                .id(geoService.getId())</span>
+<span class="fc" id="L181">                                .name(geoService.getName())</span>
+<span class="fc" id="L182">                                .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))</span>
+<span class="fc" id="L183">                                .capabilities(geoService.getCapabilitiesDoc());</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">                if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {</span>
+<span class="fc" id="L185">                    s.tilingProtocol(</span>
+<span class="fc" id="L186">                            Service.TilingProtocolEnum.fromValue(</span>
+<span class="fc" id="L187">                                    ((TileService) geoService).getTilingProtocol()));</span>
                 }
-<span class="pc bpc" id="L181" title="1 of 2 branches missed.">                if (appLayer.getIsBaseLayer()) {</span>
-<span class="fc" id="L182">                    mapResponse.addBaseLayersItem(appLayer);</span>
+<span class="pc bpc" id="L189" title="1 of 2 branches missed.">                if (appLayer.getIsBaseLayer()) {</span>
+<span class="fc" id="L190">                    mapResponse.addBaseLayersItem(appLayer);</span>
                 }
-<span class="fc" id="L184">                mapResponse.addServicesItem(s);</span>
-<span class="fc" id="L185">            }</span>
+<span class="fc" id="L192">                mapResponse.addServicesItem(s);</span>
+<span class="fc" id="L193">            }</span>
         }
-<span class="fc" id="L187">    }</span>
+<span class="fc" id="L195">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
