@@ -277,6 +277,9 @@ components:
           description: 'feature id, a non-mutable identifier from the attribute source'
           readOnly: true
           type: string
+        geometry:
+          description: 'default geometry as WKT, possibly simplified'
+          type: string
         attributes:
           description: 'feature attributes in key/value pairs'
           type: object
@@ -284,6 +287,7 @@ components:
           additionalProperties: true
       example:
         __fid: 1
+        geometry: "POLYGON(...)"
         attributes:
           name: "Utrecht"
           geom: "POLYGON(...)"

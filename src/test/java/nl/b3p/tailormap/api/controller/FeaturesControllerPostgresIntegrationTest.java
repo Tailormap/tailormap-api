@@ -94,6 +94,7 @@ class FeaturesControllerPostgresIntegrationTest {
                 .andExpect(jsonPath("$.features[0]").isMap())
                 .andExpect(jsonPath("$.features[0]").isNotEmpty())
                 .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
                 .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
                 .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
     }
@@ -115,6 +116,7 @@ class FeaturesControllerPostgresIntegrationTest {
                 .andExpect(jsonPath("$.features[0]").isMap())
                 .andExpect(jsonPath("$.features[0]").isNotEmpty())
                 .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
                 .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
                 .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
     }
@@ -135,6 +137,7 @@ class FeaturesControllerPostgresIntegrationTest {
                 .andExpect(jsonPath("$.features[0]").isMap())
                 .andExpect(jsonPath("$.features[0]").isNotEmpty())
                 .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
                 .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
                 .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
     }
@@ -156,6 +159,7 @@ class FeaturesControllerPostgresIntegrationTest {
                 .andExpect(jsonPath("$.features[0]").isMap())
                 .andExpect(jsonPath("$.features[0]").isNotEmpty())
                 .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
                 .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
                 .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
     }
