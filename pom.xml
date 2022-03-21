@@ -1060,7 +1060,7 @@ SPDX-License-Identifier: MIT
     <plugins>
       <plugin>
         <artifactId>maven-jxr-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>3.2.0</version>
       </plugin>
       <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
