@@ -30,13 +30,16 @@ import javax.annotation.Generated;
   @JsonProperty(&quot;__fid&quot;)
   private String fid;
 
-<span class="nc" id="L33">  @JsonProperty(&quot;attributes&quot;)</span>
+  @JsonProperty(&quot;geometry&quot;)
+  private String geometry;
+
+<span class="nc" id="L36">  @JsonProperty(&quot;attributes&quot;)</span>
   @Valid
   private Map&lt;String, Object&gt; attributes = new HashMap&lt;&gt;();
 
   public Feature fid(String fid) {
-<span class="nc" id="L38">    this.fid = fid;</span>
-<span class="nc" id="L39">    return this;</span>
+<span class="nc" id="L41">    this.fid = fid;</span>
+<span class="nc" id="L42">    return this;</span>
   }
 
   /**
@@ -46,21 +49,40 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;__fid&quot;, accessMode = Schema.AccessMode.READ_ONLY, description = &quot;feature id, a non-mutable identifier from the attribute source&quot;, required = true)
   public String getFid() {
-<span class="nc" id="L49">    return fid;</span>
+<span class="nc" id="L52">    return fid;</span>
   }
 
   public void setFid(String fid) {
-<span class="nc" id="L53">    this.fid = fid;</span>
-<span class="nc" id="L54">  }</span>
+<span class="nc" id="L56">    this.fid = fid;</span>
+<span class="nc" id="L57">  }</span>
+
+  public Feature geometry(String geometry) {
+<span class="nc" id="L60">    this.geometry = geometry;</span>
+<span class="nc" id="L61">    return this;</span>
+  }
+
+  /**
+   * default geometry as WKT, possibly simplified
+   * @return geometry
+  */
+  
+  @Schema(name = &quot;geometry&quot;, description = &quot;default geometry as WKT, possibly simplified&quot;, required = false)
+  public String getGeometry() {
+<span class="nc" id="L71">    return geometry;</span>
+  }
+
+  public void setGeometry(String geometry) {
+<span class="nc" id="L75">    this.geometry = geometry;</span>
+<span class="nc" id="L76">  }</span>
 
   public Feature attributes(Map&lt;String, Object&gt; attributes) {
-<span class="nc" id="L57">    this.attributes = attributes;</span>
-<span class="nc" id="L58">    return this;</span>
+<span class="nc" id="L79">    this.attributes = attributes;</span>
+<span class="nc" id="L80">    return this;</span>
   }
 
   public Feature putAttributesItem(String key, Object attributesItem) {
-<span class="nc" id="L62">    this.attributes.put(key, attributesItem);</span>
-<span class="nc" id="L63">    return this;</span>
+<span class="nc" id="L84">    this.attributes.put(key, attributesItem);</span>
+<span class="nc" id="L85">    return this;</span>
   }
 
   /**
@@ -70,39 +92,41 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;attributes&quot;, description = &quot;feature attributes in key/value pairs&quot;, required = true)
   public Map&lt;String, Object&gt; getAttributes() {
-<span class="nc" id="L73">    return attributes;</span>
+<span class="nc" id="L95">    return attributes;</span>
   }
 
   public void setAttributes(Map&lt;String, Object&gt; attributes) {
-<span class="nc" id="L77">    this.attributes = attributes;</span>
-<span class="nc" id="L78">  }</span>
+<span class="nc" id="L99">    this.attributes = attributes;</span>
+<span class="nc" id="L100">  }</span>
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L82" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L83">      return true;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L105">      return true;</span>
     }
-<span class="nc bnc" id="L85" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L86">      return false;</span>
+<span class="nc bnc" id="L107" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L108">      return false;</span>
     }
-<span class="nc" id="L88">    Feature feature = (Feature) o;</span>
-<span class="nc bnc" id="L89" title="All 2 branches missed.">    return Objects.equals(this.fid, feature.fid) &amp;&amp;</span>
-<span class="nc bnc" id="L90" title="All 2 branches missed.">        Objects.equals(this.attributes, feature.attributes);</span>
+<span class="nc" id="L110">    Feature feature = (Feature) o;</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">    return Objects.equals(this.fid, feature.fid) &amp;&amp;</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        Objects.equals(this.geometry, feature.geometry) &amp;&amp;</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        Objects.equals(this.attributes, feature.attributes);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L95">    return Objects.hash(fid, attributes);</span>
+<span class="nc" id="L118">    return Objects.hash(fid, geometry, attributes);</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L100">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L101">    sb.append(&quot;class Feature {\n&quot;);</span>
-<span class="nc" id="L102">    sb.append(&quot;    fid: &quot;).append(toIndentedString(fid)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L103">    sb.append(&quot;    attributes: &quot;).append(toIndentedString(attributes)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L104">    sb.append(&quot;}&quot;);</span>
-<span class="nc" id="L105">    return sb.toString();</span>
+<span class="nc" id="L123">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L124">    sb.append(&quot;class Feature {\n&quot;);</span>
+<span class="nc" id="L125">    sb.append(&quot;    fid: &quot;).append(toIndentedString(fid)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L126">    sb.append(&quot;    geometry: &quot;).append(toIndentedString(geometry)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L127">    sb.append(&quot;    attributes: &quot;).append(toIndentedString(attributes)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L128">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L129">    return sb.toString();</span>
   }
 
   /**
@@ -110,10 +134,10 @@ import javax.annotation.Generated;
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-<span class="nc bnc" id="L113" title="All 2 branches missed.">    if (o == null) {</span>
-<span class="nc" id="L114">      return &quot;null&quot;;</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L138">      return &quot;null&quot;;</span>
     }
-<span class="nc" id="L116">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+<span class="nc" id="L140">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
   }
 }
 
