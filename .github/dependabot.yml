@@ -44,5 +44,4 @@ updates:
     ignore:
       # stay on Java 11 for now
       - dependency-name: "eclipse-temurin"
-        versions:
-          - "17.x"
+        update-types: ["version-update:semver-major"]
