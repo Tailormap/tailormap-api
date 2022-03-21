@@ -212,12 +212,14 @@ public class FeaturesController implements Constants {
         try {
             SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
             Query q = new Query(fs.getName().toString());
-            String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
+            // String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
+            String geomAttribute = sft.getGeometryAttribute();
             FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
 
             GeometricShapeFactory shapeFact = new GeometricShapeFactory();
             shapeFact.setNumPoints(32);
             shapeFact.setCentre(new Coordinate(x, y));
+            //noinspection ConstantConditions
             shapeFact.setSize(distance * 2d);
             Geometry p = shapeFact.createCircle();
             logger.debug("created geometry: " + p);
@@ -248,10 +250,16 @@ public class FeaturesController implements Constants {
             // TODO flamingo does some fancy stuff to combine with existing filters using
             //      TailormapCQL and some filter visitors
 
-            q.setPropertyNames(
+            List<String> propNames =
                     configuredAttributes.stream()
                             .map(ConfiguredAttribute::getAttributeName)
-                            .collect(Collectors.toList()));
+                            .collect(Collectors.toList());
+            if (!propNames.contains(geomAttribute)) {
+                // add geom attribute for highlighting
+                propNames.add(geomAttribute);
+            }
+
+            q.setPropertyNames(propNames);
             q.setFilter(spatialFilter);
             q.setMaxFeatures(DEFAULT_MAX_FEATURES);
 
@@ -262,7 +270,13 @@ public class FeaturesController implements Constants {
                     addFields = true;
                     // reformat found features to list of Feature, filtering on configuredAttributes
                     SimpleFeature feature = feats.next();
-                    Feature newFeat = new Feature().fid(feature.getIdentifier().getID());
+                    String processedGeometry =
+                            GeometryProcessor.processGeometry(
+                                    feature.getAttribute(geomAttribute), simplifyGeometry);
+                    Feature newFeat =
+                            new Feature()
+                                    .fid(feature.getIdentifier().getID())
+                                    .geometry(processedGeometry);
                     configuredAttributes.forEach(
                             configuredAttribute -> {
                                 if (configuredAttribute
@@ -270,10 +284,7 @@ public class FeaturesController implements Constants {
                                         .equals(sft.getGeometryAttribute())) {
                                     newFeat.putAttributesItem(
                                             configuredAttribute.getAttributeName(),
-                                            GeometryProcessor.processGeometry(
-                                                    feature.getAttribute(
-                                                            configuredAttribute.getAttributeName()),
-                                                    simplifyGeometry));
+                                            processedGeometry);
                                 } else {
                                     newFeat.putAttributesItem(
                                             configuredAttribute.getAttributeName(),
