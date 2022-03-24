@@ -114,6 +114,7 @@ SPDX-License-Identifier: MIT
     <geotools.version>26.3</geotools.version>
     <spring.boot.version>${project.parent.version}</spring.boot.version>
     <!-- version overrides. see org.springframework.boot:spring-boot-dependencies eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
+    <jackson-bom.version>2.13.2</jackson-bom.version>
     <hsqldb.version>2.6.1</hsqldb.version>
     <postgresql.version>42.3.3</postgresql.version>
     <!-- junit-jupiter.version>5.8.2</junit-jupiter.version -->
