@@ -1,8 +1,7 @@
 name: Trivy Security Scan
 on:
-  push:
-    branches:
-      - main
+  # use pull request so this workflow dos not fail when triggered by dependabot PR's
+  pull_request:
   schedule:
     - cron: "17 23 * * 0"
   workflow_dispatch:
