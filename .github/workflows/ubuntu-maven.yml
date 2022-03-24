@@ -61,6 +61,49 @@ jobs:
           retention-days: 2
           path: target/site/
 
+  postgresql-test:
+    name: PostgrSQL verify
+    runs-on: ubuntu-20.04
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'temurin'
+
+      - name: Get Docker compose for database
+        uses: actions/checkout@v3
+        with:
+          repository: 'B3Partners/tailormap-viewer'
+          ref: main
+          path: 'tailormap-viewer'
+          fetch-depth: 1
+          lfs: true
+
+      - name: start config database
+        # use sed to open up a local port
+        run: |
+          sed -i '/\/var\/lib\/postgresql\/data/a\    ports: [ "127.0.0.1:5432:5432" ]'  ./tailormap-viewer/docker-compose.yml
+          docker-compose -f ./tailormap-viewer/docker-compose.yml up -d --build db
+
+      - name: Test PostgreSQL with Maven
+        run: |
+          mvn -B -fae -e -DskipQA=true -Pqa-skip -Ddocker.skip=true -Ppostgresql verify
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          verbose: true
 
   site-deploy:
     name: Publish gh-pages

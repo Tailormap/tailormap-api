@@ -568,6 +568,9 @@ SPDX-License-Identifier: MIT
           <includes>
             <include>**/*IntegrationTest.java</include>
           </includes>
+          <excludes>
+            <exclude>**/*PostgresIntegrationTest.java</exclude>
+          </excludes>
           <!--suppress UnresolvedMavenProperty -->
           <argLine>${failsafeArgLine}</argLine>
           <trimStackTrace>false</trimStackTrace>
@@ -581,7 +584,7 @@ SPDX-License-Identifier: MIT
           </environmentVariables>
           <useFile>false</useFile>
           <classpathDependencyExcludes>
-            <!-- not needed for regular hsqldb, but needed for postgres integration tests <classpathDependencyExclude>org.postgresql:postgresql</classpathDependencyExclude> -->
+            <!-- not needed for regular hsqldb, but needed for postgresql integration tests <classpathDependencyExclude>org.postgresql:postgresql</classpathDependencyExclude> -->
           </classpathDependencyExcludes>
         </configuration>
         <executions>
@@ -625,7 +628,9 @@ SPDX-License-Identifier: MIT
             <configuration>
               <!-- <skip>${skipQA}</skip> -->
               <skip>${skipTests}</skip>
-              <profiles>test</profiles>
+              <profiles>
+                <profile>test</profile>
+              </profiles>
               <!--suppress UnresolvedMavenProperty -->
               <jvmArguments>${failsafeArgLine}</jvmArguments>
               <useTestClasspath>true</useTestClasspath>
@@ -1300,6 +1305,86 @@ SPDX-License-Identifier: MIT
                 <arg>-Xlint:${compiler.lint}</arg>
               </compilerArgs>
             </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>postgresql</id>
+      <properties>
+        <spring.profiles.active>postgresql</spring.profiles.active>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <!-- explicitly run any and all postgresql tests; includes does not work -->
+              <test>*PostgresIntegrationTest</test>
+              <!-- <includes><include>**/*PostgresIntegrationTest.java</include></includes>-->
+              <!--suppress UnresolvedMavenProperty -->
+              <argLine>${failsafeArgLine} -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql</argLine>
+              <trimStackTrace>false</trimStackTrace>
+              <systemPropertyVariables>
+                <project.version>${project.version}</project.version>
+              </systemPropertyVariables>
+              <environmentVariables>
+                <!--suppress UnresolvedMavenProperty -->
+                <API_VERSION>${info.version}</API_VERSION>
+                <!-- TODO read this from persistence -->
+                <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
+              </environmentVariables>
+              <useFile>false</useFile>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>start-spring-boot</id>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+                <phase>pre-integration-test</phase>
+                <configuration>
+                  <skip>${skipTests}</skip>
+                  <profiles>
+                    <profile>postgresql</profile>
+                  </profiles>
+                  <!--suppress UnresolvedMavenProperty -->
+                  <jvmArguments>${failsafeArgLine} -Dspring.profiles.active=postgresql</jvmArguments>
+                  <useTestClasspath>true</useTestClasspath>
+                  <environmentVariables>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <API_VERSION>${info.version}</API_VERSION>
+                    <!-- TODO read this from persistence -->
+                    <DATABASE_VERSION>47</DATABASE_VERSION>
+                  </environmentVariables>
+                  <systemPropertyVariables>
+                    <project.version>${project.version}</project.version>
+                  </systemPropertyVariables>
+                </configuration>
+              </execution>
+              <execution>
+                <id>stop-spring-boot</id>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+                <phase>post-integration-test</phase>
+                <configuration>
+                  <skip>${skipTests}</skip>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
