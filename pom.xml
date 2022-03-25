@@ -114,15 +114,16 @@ SPDX-License-Identifier: MIT
     <geotools.version>26.3</geotools.version>
     <spring.boot.version>${project.parent.version}</spring.boot.version>
     <!-- version overrides. see org.springframework.boot:spring-boot-dependencies eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
-    <jackson-bom.version>2.13.2</jackson-bom.version>
-    <hsqldb.version>2.6.1</hsqldb.version>
-    <postgresql.version>42.3.3</postgresql.version>
+    <!-- <jackson-bom.version>2.13.2</jackson-bom.version> -->
+    <!-- <hsqldb.version>2.6.1</hsqldb.version> -->
+    <!-- <postgresql.version>42.3.3</postgresql.version> -->
     <!-- junit-jupiter.version>5.8.2</junit-jupiter.version -->
     <maven.surefire.version>3.0.0-M5</maven.surefire.version>
     <maven-surefire-plugin.version>${maven.surefire.version}</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>${maven.surefire.version}</maven-failsafe-plugin.version>
     <maven-deploy-plugin.version>3.0.0-M2</maven-deploy-plugin.version>
     <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
+    <!-- end version overrides -->
     <maven-pmd-plugin.version>3.16.0</maven-pmd-plugin.version>
     <versions-maven-plugin.version>2.10.0</versions-maven-plugin.version>
     <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
