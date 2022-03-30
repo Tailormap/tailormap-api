@@ -107,7 +107,7 @@ SPDX-License-Identifier: MIT
     <!--    <project.build.outputTimestamp>2021-11-11T16:01:17Z</project.build.outputTimestamp>-->
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <org.tailormap.version>5.9.16-SNAPSHOT</org.tailormap.version>
+    <org.tailormap.version>5.9.16</org.tailormap.version>
     <!-- TODO read this from persistence -->
     <org.tailormap.database.version>49</org.tailormap.database.version>
     <!-- make sure to keep geotools version and tailormap version in sync -->
