@@ -163,15 +163,14 @@ public class MapController {
                                             ParseUtil.parseEpsgCode(a.getProjectionCode())));
 
             for (StartLayer l : startLayers) {
+                // TODO: find Layer from Service and set properties
                 AppLayer appLayer =
                         new AppLayer()
                                 .id(l.getApplicationLayer().getId())
-                                .displayName(l.getApplicationLayer().getLayerName())
-                                .url(l.getApplicationLayer().getService().getUrl())
+                                .layerName(l.getApplicationLayer().getLayerName())
+                                .title(l.getApplicationLayer().getLayerName())
                                 .serviceId(l.getApplicationLayer().getService().getId())
-                                .visible(l.isChecked())
-                                .crs(appCRS)
-                                .isBaseLayer(/*TODO fix hardcoded data, depends on HTM-247 */ true);
+                                .visible(l.isChecked());
 
                 GeoService geoService = l.getApplicationLayer().getService();
                 Service s =
@@ -185,9 +184,6 @@ public class MapController {
                     s.tilingProtocol(
                             Service.TilingProtocolEnum.fromValue(
                                     ((TileService) geoService).getTilingProtocol()));
-                }
-                if (appLayer.getIsBaseLayer()) {
-                    mapResponse.addBaseLayersItem(appLayer);
                 }
                 mapResponse.addServicesItem(s);
             }
