@@ -103,29 +103,67 @@ components:
       For advanced functionality that required access to attributes the LayerDetails should be requested.
       '
       type: object
-      properties: # TODO aanvullen?
+      properties:
         id:
           type: integer
           format: int64
-          readOnly: true
-        url:
+        layerName:
+          description: Layer name as known by the service.
           type: string
-        displayName:
+        title:
+          description: Layer title or display name.
           type: string
         serviceId:
+          description: A reference to a Service id.
           type: integer
           format: int64
-          readOnly: true
         visible:
           type: boolean
-        isBaseLayer:
-          type: boolean
-          default: false
-        crs: # Since at some point in time we may support client-side reprojection eg. for vector-tiles'
-          $ref: '#/components/schemas/CoordinateReferenceSystem'
+        minScale:
+          description: Minimum scale at which this layer should be shown or is not blank. When absent there is no minimum. As reported by the service (ScaleHint or MinScaleDenominator).
+          type: number
+        maxScale:
+          description: Maximum scale denominator at which this layer should be shown or is not blank. When absent there is no maximum. As reported by the service (ScaleHint or MaxScaleDenominator).
+          type: number
+        legendImageUrl:
+          description: URL to an image with the layer legend.
+          type: string
       required:
         - id
+        - layerName
+        - title
         - serviceId
+        - visible
+
+    LayerGroup:
+      description: Grouping of layers in a tree structure.
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        baseLayers:
+          description: True when this group contains groups of base layers of the entire application as children.
+          type: boolean
+        childrenIds:
+          description: Ordered list of ids of LayerGroup that are children of this group.
+          type: array
+          items:
+            type: integer
+            format: int64
+        appLayerIds:
+          description: Ordered list of id's of AppLayers in this group.
+          type: array
+          items:
+            type: integer
+            format: int64
+      required:
+        - id
+        - name
+        - childrenIds
+        - appLayerIds
 
     LayerDetails:
       description: 'All details of an app layer.'

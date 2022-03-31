@@ -154,13 +154,9 @@ public class LayersController {
                 a =
                         new AppLayer()
                                 .id(apll.getId())
-                                .crs(/* application CRS */ appCRS)
-                                .url(apll.getService().getUrl())
-                                .displayName(apll.getLayerName())
+                                .title(apll.getLayerName())
                                 .serviceId(apll.getService().getId())
-                                .visible(startLayer.isChecked())
-                                .isBaseLayer(
-                                        /*TODO fix hardcoded data, depends on HTM-247 */ false);
+                                .visible(startLayer.isChecked());
                 // add each to list
                 list.add(a);
             }

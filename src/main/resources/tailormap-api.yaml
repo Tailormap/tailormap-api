@@ -66,13 +66,30 @@ components:
           type: array
           items:
             $ref: './model.yaml#/components/schemas/Service'
-        baseLayers:
+        noBaseLayerOption:
+          description: Whether the user should be shown the option of not showing a base layer at all.
+          type: boolean
+        rootBaseLayerGroup:
+          $ref: './model.yaml#/components/schemas/LayerGroup'
+        rootLayerGroup:
+          $ref: './model.yaml#/components/schemas/LayerGroup'
+        appLayers:
+          description: 'Unordered list of all AppLayers referenced from rootBaseLayerGruop and rootLayerGroup. Note that
+            you need to lookup these by id, but OpenAPI only supports a map by using strings as keys, so an array is 
+            used instead.'
           type: array
           items:
             $ref: './model.yaml#/components/schemas/AppLayer'
         crs:
           $ref: './model.yaml#/components/schemas/CoordinateReferenceSystem'
-
+      required:
+        - initialExtent
+        - services
+        - noBaseLayerOption
+        - rootBaseLayerGroup
+        - rootLayerGroup
+        - appLayers
+        - crs
 
     Layers:
       description: 'An array of app layers.'
@@ -363,8 +380,11 @@ paths:
 
   /app/{appId}/layers:
     summary: '
-    Retrieve all configured layers.
+    Retrieve all configured layers in a tree.
     Provides all information to add foreground layers to the map and draw them.
+    This layer tree may differ from the root layer group in from the /app/{appId}/map API and include layers which 
+    should not be part of the startup tree as configured by the admin, but to be added later.
+    There is a special layer group containing all background layers, see the background property.
     '
     get:
       security:
@@ -383,7 +403,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Layers'
+                $ref: './model.yaml#/components/schemas/LayerGroup'
         '401':
           description: Unauthorized
           content:
