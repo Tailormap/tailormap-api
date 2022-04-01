@@ -11,8 +11,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
-import nl.b3p.tailormap.api.geotools.referencing.ReferencingHelper;
-import nl.b3p.tailormap.api.model.AppLayer;
 import nl.b3p.tailormap.api.model.Bounds;
 import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
 import nl.b3p.tailormap.api.model.ErrorResponse;
@@ -152,25 +150,28 @@ public class MapController {
         List<StartLayer> startLayers = a.getStartLayers();
 
         if (null != a.getStartLayers()) {
-            CoordinateReferenceSystem appCRS =
-                    new CoordinateReferenceSystem()
-                            // TODO use app projection, as TM model does not store
-                            //      app layer projection
-                            .code(ParseUtil.parseEpsgCode(a.getProjectionCode()))
-                            .definition(ParseUtil.parseProjDefintion(a.getProjectionCode()))
-                            .bounds(
-                                    ReferencingHelper.crsBoundsExtractor(
-                                            ParseUtil.parseEpsgCode(a.getProjectionCode())));
+            //            CoordinateReferenceSystem appCRS =
+            //                    new CoordinateReferenceSystem()
+            //                            // TODO use app projection, as TM model does not store
+            //                            //      app layer projection
+            //                            .code(ParseUtil.parseEpsgCode(a.getProjectionCode()))
+            //
+            // .definition(ParseUtil.parseProjDefintion(a.getProjectionCode()))
+            //                            .bounds(
+            //                                    ReferencingHelper.crsBoundsExtractor(
+            //
+            // ParseUtil.parseEpsgCode(a.getProjectionCode())));
 
             for (StartLayer l : startLayers) {
                 // TODO: find Layer from Service and set properties
-                AppLayer appLayer =
-                        new AppLayer()
-                                .id(l.getApplicationLayer().getId())
-                                .layerName(l.getApplicationLayer().getLayerName())
-                                .title(l.getApplicationLayer().getLayerName())
-                                .serviceId(l.getApplicationLayer().getService().getId())
-                                .visible(l.isChecked());
+                //                AppLayer appLayer =
+                //                        new AppLayer()
+                //                                .id(l.getApplicationLayer().getId())
+                //                                .layerName(l.getApplicationLayer().getLayerName())
+                //                                .title(l.getApplicationLayer().getLayerName())
+                //
+                // .serviceId(l.getApplicationLayer().getService().getId())
+                //                                .visible(l.isChecked());
 
                 GeoService geoService = l.getApplicationLayer().getService();
                 Service s =

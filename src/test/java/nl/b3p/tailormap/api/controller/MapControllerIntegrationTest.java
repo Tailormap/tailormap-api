@@ -48,7 +48,6 @@ class MapControllerIntegrationTest {
                 .andExpect(jsonPath("$.initialExtent").isMap())
                 .andExpect(jsonPath("$.maxExtent").isMap())
                 .andExpect(jsonPath("$.services").isArray())
-                .andExpect(jsonPath("$.baseLayers").isArray())
                 .andExpect(jsonPath("$.crs.code").value("EPSG:28992"));
     }
 
