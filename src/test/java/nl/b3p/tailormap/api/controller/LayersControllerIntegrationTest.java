@@ -47,8 +47,7 @@ class LayersControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0]").isMap())
-                .andExpect(jsonPath("$[0].crs").isMap());
+                .andExpect(jsonPath("$[0]").isMap());
     }
 
     @Test

@@ -11,14 +11,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
-import nl.b3p.tailormap.api.geotools.referencing.ReferencingHelper;
 import nl.b3p.tailormap.api.model.AppLayer;
-import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
 import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.security.AuthUtil;
-import nl.b3p.tailormap.api.util.ParseUtil;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.StartLayer;
@@ -133,15 +130,17 @@ public class LayersController {
      */
     private void findApplayers(@NotNull Application application, List<AppLayer> list) {
 
-        CoordinateReferenceSystem appCRS =
-                new CoordinateReferenceSystem()
-                        // TODO use app projection, as TM model does not store
-                        //      app layer projection
-                        .code(ParseUtil.parseEpsgCode(application.getProjectionCode()))
-                        .definition(ParseUtil.parseProjDefintion(application.getProjectionCode()))
-                        .bounds(
-                                ReferencingHelper.crsBoundsExtractor(
-                                        ParseUtil.parseEpsgCode(application.getProjectionCode())));
+        //        CoordinateReferenceSystem appCRS =
+        //                new CoordinateReferenceSystem()
+        //                        // TODO use app projection, as TM model does not store
+        //                        //      app layer projection
+        //                        .code(ParseUtil.parseEpsgCode(application.getProjectionCode()))
+        //
+        // .definition(ParseUtil.parseProjDefintion(application.getProjectionCode()))
+        //                        .bounds(
+        //                                ReferencingHelper.crsBoundsExtractor(
+        //
+        // ParseUtil.parseEpsgCode(application.getProjectionCode())));
 
         // find all applayers
         List<StartLayer> startLayers = application.getStartLayers();
