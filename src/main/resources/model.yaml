@@ -135,35 +135,29 @@ components:
         - serviceId
         - visible
 
-    LayerGroup:
+    LayerTreeNode:
       description: Grouping of layers in a tree structure.
       type: object
       properties:
         id:
-          type: integer
-          format: int64
-        name:
+          description: A unique identifier across all tree nodes.
           type: string
-        baseLayers:
-          description: True when this group contains groups of base layers of the entire application as children.
+        appLayerId:
+          type: integer
+        root:
+          description: Only a single node in a tree will have this set to true.
           type: boolean
+        name:
+          description: Display name of this tree node. If appLayerId is present, this is the title of that AppLayer.
+          type: string
         childrenIds:
-          description: Ordered list of ids of LayerGroup that are children of this group.
+          description: Ordered list of ids of LayerTreeNodes that are children of this node.
           type: array
           items:
-            type: integer
-            format: int64
-        appLayerIds:
-          description: Ordered list of id's of AppLayers in this group.
-          type: array
-          items:
-            type: integer
-            format: int64
+            type: string
       required:
         - id
         - name
-        - childrenIds
-        - appLayerIds
 
     LayerDetails:
       description: 'All details of an app layer.'
