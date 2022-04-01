@@ -66,15 +66,21 @@ components:
           type: array
           items:
             $ref: './model.yaml#/components/schemas/Service'
-        noBaseLayerOption:
-          description: Whether the user should be shown the option of not showing a base layer at all.
-          type: boolean
-        rootBaseLayerGroup:
-          $ref: './model.yaml#/components/schemas/LayerGroup'
-        rootLayerGroup:
-          $ref: './model.yaml#/components/schemas/LayerGroup'
+        baseLayerTreeNodes:
+          description: 'Unordered list of all tree nodes of base layers. Start with the node with root set to true and 
+            use the ordered children array property to order the tree. For base layers, only one child node (with all
+            its'' child layers) of the root should be displayed at one time.'
+          type: array
+          items:
+            $ref: './model.yaml#/components/schemas/LayerTreeNode'
+        layerTreeNodes:
+          description: 'Unordered list of all tree nodes of overlay/thematic/transparent layers. Start with the node 
+            with root set to true and use the ordered children array property to order the tree.'
+          type: array
+          items:
+            $ref: './model.yaml#/components/schemas/LayerTreeNode'
         appLayers:
-          description: 'Unordered list of all AppLayers referenced from rootBaseLayerGruop and rootLayerGroup. Note that
+          description: 'Unordered list of all AppLayers referenced from baseLayerTreeNodes and layerTreeNodes. Note that
             you need to lookup these by id, but OpenAPI only supports a map by using strings as keys, so an array is 
             used instead.'
           type: array
@@ -85,9 +91,8 @@ components:
       required:
         - initialExtent
         - services
-        - noBaseLayerOption
-        - rootBaseLayerGroup
-        - rootLayerGroup
+        - baseLayerTreeNodes
+        - layerTreeNodes
         - appLayers
         - crs
 
@@ -378,46 +383,7 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
-  /app/{appId}/layers:
-    summary: '
-    Retrieve all configured layers in a tree.
-    Provides all information to add foreground layers to the map and draw them.
-    This layer tree may differ from the root layer group in from the /app/{appId}/map API and include layers which 
-    should not be part of the startup tree as configured by the admin, but to be added later.
-    There is a special layer group containing all background layers, see the background property.
-    '
-    get:
-      security:
-        - formAuth: [ ]
-      parameters:
-        - description: 'application id'
-          in: path
-          name: appId
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: './model.yaml#/components/schemas/LayerGroup'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
-
-  /app/{appId}/layers/{layerId}/describe:
+  /app/{appId}/layer/{layerId}/describe:
     summary: '
     Returns metadata and featuretype of the requested app layer, aka. layer details
     '
