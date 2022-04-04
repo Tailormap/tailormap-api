@@ -223,7 +223,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGeometry()">getGeometry</a></span>()</code></th>
 <td class="colLast">
-<div class="block">default geometry as WKT, possibly simplified</div>
+<div class="block">Default geometry of the feature as WKT, possibly simplified.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
@@ -349,7 +349,7 @@ public&nbsp;@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api
 <li class="blockList">
 <h4>getGeometry</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getGeometry()</pre>
-<div class="block">default geometry as WKT, possibly simplified</div>
+<div class="block">Default geometry of the feature as WKT, possibly simplified. Always linearized to make sure that it only holds a specification valid WKT. Can be used for highlighting or buffer/selection, not for editing.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>geometry</dd>

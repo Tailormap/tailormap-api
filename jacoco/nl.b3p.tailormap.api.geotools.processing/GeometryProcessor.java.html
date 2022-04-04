@@ -9,6 +9,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.io.WKTConstants;
+import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.precision.GeometryPrecisionReducer;
 import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
 
@@ -23,7 +25,7 @@ import javax.validation.constraints.NotNull;
  * @since 0.1
  */
 public final class GeometryProcessor {
-<span class="fc" id="L26">    private static final Log LOG = LogFactory.getLog(GeometryProcessor.class);</span>
+<span class="fc" id="L28">    private static final Log LOG = LogFactory.getLog(GeometryProcessor.class);</span>
 
     private GeometryProcessor() {}
 
@@ -31,55 +33,69 @@ public final class GeometryProcessor {
      * process the geometry into a (optionally simplified) string representation.
      *
      * @param geometry An object representing a geometry
-     * @param simplfyGeometry set to {@code true} to simplify
+     * @param simplifyGeometry set to {@code true} to simplify
      * @return the string representation of the argument - normally WKT, optionally simplified
      */
     @NotNull
     public static String processGeometry(
-            @NotNull final Object geometry, @NotNull final Boolean simplfyGeometry) {
-<span class="pc bpc" id="L40" title="1 of 4 branches missed.">        if (simplfyGeometry &amp;&amp; Geometry.class.isAssignableFrom(geometry.getClass())) {</span>
-<span class="fc" id="L41">            return simplify((Geometry) geometry);</span>
+            @NotNull final Object geometry, @NotNull final Boolean simplifyGeometry) {
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if (Geometry.class.isAssignableFrom(geometry.getClass())) {</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">            if (simplifyGeometry) {</span>
+<span class="fc" id="L44">                return simplify((Geometry) geometry);</span>
+            }
+<span class="fc" id="L46">            return linearizeGeomToWKT((Geometry) geometry);</span>
         }
-        // return WKT
-<span class="fc" id="L44">        return geometry.toString();</span>
+        // cannot cast to JTS geom
+<span class="nc" id="L49">        return geometry.toString();</span>
+    }
+
+    private static String linearizeGeomToWKT(Geometry geometry) {
+        // return linearized WKT
+<span class="fc" id="L54">        final WKTWriter writer = new WKTWriter(2);</span>
+<span class="fc" id="L55">        String wkt = writer.write(geometry);</span>
+        // LINEARRING is non-standard WKT, but the JTS WKTWriter will write it anyway!
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        if (wkt.startsWith(WKTConstants.LINEARRING)) {</span>
+<span class="fc" id="L58">            wkt = WKTConstants.LINESTRING + wkt.substring(WKTConstants.LINEARRING.length());</span>
+        }
+<span class="fc" id="L60">        return wkt;</span>
     }
 
     /**
      * Simplifies given geometry to reduce (transfer) size, start off with 1 and each iteration
-     * multiply with 10, max 4 steps, so [1, 10, 100, 1000], if the geomeomtry is still too large
-     * bail out and use bbox. TODO this works for CRS in meters, may not work for degrees
+     * multiply with 10, max 4 steps, so [1, 10, 100, 1000], if the geometry is still too large bail
+     * out and use bbox. TODO this works for CRS in meters, may not work for degrees
      *
-     * @param geom gemetry to simplify
+     * @param geom geometry to simplify
      * @return simplified geometry as WKT string
      */
     @NotNull
     private static String simplify(@NotNull Geometry geom) {
-<span class="fc" id="L57">        final int megabytes = (2097152 /* 2MB is the default tomcat max post size */ - 100 * 1024);</span>
+<span class="fc" id="L73">        final int megabytes = (2097152 /* 2MB is the default tomcat max post size */ - 100 * 1024);</span>
 
-<span class="fc" id="L59">        LOG.debug(geom.getPrecisionModel().getScale());</span>
-<span class="fc" id="L60">        PrecisionModel pm = new PrecisionModel(geom.getPrecisionModel());</span>
-<span class="fc" id="L61">        GeometryPrecisionReducer gpr = new GeometryPrecisionReducer(pm);</span>
-<span class="fc" id="L62">        geom = gpr.reduce(geom);</span>
-<span class="fc" id="L63">        Geometry bbox = geom.getEnvelope();</span>
+<span class="fc" id="L75">        LOG.debug(geom.getPrecisionModel().getScale());</span>
+<span class="fc" id="L76">        PrecisionModel pm = new PrecisionModel(geom.getPrecisionModel());</span>
+<span class="fc" id="L77">        GeometryPrecisionReducer gpr = new GeometryPrecisionReducer(pm);</span>
+<span class="fc" id="L78">        geom = gpr.reduce(geom);</span>
+<span class="fc" id="L79">        Geometry bbox = geom.getEnvelope();</span>
 
-<span class="fc" id="L65">        double distanceTolerance = 1.0;</span>
-<span class="fc" id="L66">        String geomTxt = geom.toText();</span>
+<span class="fc" id="L81">        double distanceTolerance = 1.0;</span>
+<span class="fc" id="L82">        String geomTxt = geom.toText();</span>
 
-<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        while ((geomTxt.getBytes(StandardCharsets.UTF_8).length &gt; megabytes</span>
-<span class="pc bpc" id="L69" title="1 of 4 branches missed.">                        || geom.getCoordinates().length &gt; 600)</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        while ((geomTxt.getBytes(StandardCharsets.UTF_8).length &gt; megabytes</span>
+<span class="pc bpc" id="L85" title="1 of 4 branches missed.">                        || geom.getCoordinates().length &gt; 600)</span>
                 &amp;&amp; distanceTolerance &lt; 9999) {
-<span class="fc" id="L71">            LOG.debug(&quot;Simplify selected feature geometry with distance of: &quot; + distanceTolerance);</span>
-<span class="fc" id="L72">            geom = TopologyPreservingSimplifier.simplify(geom, distanceTolerance);</span>
-<span class="fc" id="L73">            geom = gpr.reduce(geom);</span>
-<span class="fc" id="L74">            geomTxt = geom.toText();</span>
-<span class="fc" id="L75">            distanceTolerance = 10 * distanceTolerance;</span>
+<span class="fc" id="L87">            LOG.debug(&quot;Simplify selected feature geometry with distance of: &quot; + distanceTolerance);</span>
+<span class="fc" id="L88">            geom = TopologyPreservingSimplifier.simplify(geom, distanceTolerance);</span>
+<span class="fc" id="L89">            geom = gpr.reduce(geom);</span>
+<span class="fc" id="L90">            geomTxt = geom.toText();</span>
+<span class="fc" id="L91">            distanceTolerance = 10 * distanceTolerance;</span>
         }
 
-<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        if (distanceTolerance &gt; 9999) {</span>
-<span class="nc" id="L79">            LOG.debug(&quot;Maximum number of simplify cycles reached, returning bounding box instead.&quot;);</span>
-<span class="nc" id="L80">            return bbox.toText();</span>
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        if (distanceTolerance &gt; 9999) {</span>
+<span class="nc" id="L95">            LOG.debug(&quot;Maximum number of simplify cycles reached, returning bounding box instead.&quot;);</span>
+<span class="nc" id="L96">            return bbox.toText();</span>
         } else {
-<span class="fc" id="L82">            return geomTxt;</span>
+<span class="fc" id="L98">            return linearizeGeomToWKT(geom);</span>
         }
     }
 }
