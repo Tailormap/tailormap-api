@@ -11,17 +11,23 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import nl.b3p.tailormap.api.model.AppLayer;
 import nl.b3p.tailormap.api.model.Bounds;
 import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
 import nl.b3p.tailormap.api.model.ErrorResponse;
+import nl.b3p.tailormap.api.model.LayerTreeNode;
 import nl.b3p.tailormap.api.model.MapResponse;
 import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.model.Service;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.repository.LevelRepository;
 import nl.b3p.tailormap.api.security.AuthUtil;
 import nl.b3p.tailormap.api.util.ParseUtil;
 import nl.tailormap.viewer.config.app.Application;
+import nl.tailormap.viewer.config.app.ApplicationLayer;
+import nl.tailormap.viewer.config.app.Level;
 import nl.tailormap.viewer.config.app.StartLayer;
+import nl.tailormap.viewer.config.app.StartLevel;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.TileService;
 
@@ -41,7 +47,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotNull;
@@ -52,6 +64,7 @@ import javax.validation.constraints.NotNull;
 public class MapController {
     private final Log logger = LogFactory.getLog(getClass());
     @Autowired private ApplicationRepository applicationRepository;
+    @Autowired private LevelRepository levelRepository;
 
     @Operation(
             summary = "",
@@ -147,47 +160,128 @@ public class MapController {
     }
 
     private void getLayers(@NotNull Application a, @NotNull MapResponse mapResponse) {
+        LayerTreeNode rootNode = new LayerTreeNode().id("root").root(true).name("Foreground");
+        mapResponse.addLayerTreeNodesItem(rootNode);
+
+        LayerTreeNode rootBackgroundNode =
+                new LayerTreeNode().id("rootbg").root(true).name("Background");
+        mapResponse.addBaseLayerTreeNodesItem(rootBackgroundNode);
+
+        levelRepository.findByLevelTree(a.getRoot().getId());
         List<StartLayer> startLayers = a.getStartLayers();
+        List<StartLevel> startLevels = a.getStartLevels();
 
-        if (null != a.getStartLayers()) {
-            //            CoordinateReferenceSystem appCRS =
-            //                    new CoordinateReferenceSystem()
-            //                            // TODO use app projection, as TM model does not store
-            //                            //      app layer projection
-            //                            .code(ParseUtil.parseEpsgCode(a.getProjectionCode()))
-            //
-            // .definition(ParseUtil.parseProjDefintion(a.getProjectionCode()))
-            //                            .bounds(
-            //                                    ReferencingHelper.crsBoundsExtractor(
-            //
-            // ParseUtil.parseEpsgCode(a.getProjectionCode())));
-
-            for (StartLayer l : startLayers) {
-                // TODO: find Layer from Service and set properties
-                //                AppLayer appLayer =
-                //                        new AppLayer()
-                //                                .id(l.getApplicationLayer().getId())
-                //                                .layerName(l.getApplicationLayer().getLayerName())
-                //                                .title(l.getApplicationLayer().getLayerName())
-                //
-                // .serviceId(l.getApplicationLayer().getService().getId())
-                //                                .visible(l.isChecked());
-
-                GeoService geoService = l.getApplicationLayer().getService();
-                Service s =
-                        new Service()
-                                .url(geoService.getUrl())
-                                .id(geoService.getId())
-                                .name(geoService.getName())
-                                .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))
-                                .capabilities(geoService.getCapabilitiesDoc());
-                if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {
-                    s.tilingProtocol(
-                            Service.TilingProtocolEnum.fromValue(
-                                    ((TileService) geoService).getTilingProtocol()));
-                }
-                mapResponse.addServicesItem(s);
+        // Build a map of layer id -> StartLayer.
+        Map<Long, StartLayer> layerMap = new HashMap<>(startLayers.size());
+        for (StartLayer startLayer : startLayers) {
+            if (startLayer.isRemoved()) {
+                continue;
             }
+
+            layerMap.put(startLayer.getApplicationLayer().getId(), startLayer);
+        }
+
+        // Remove any startLevels that aren't assigned in the startkaartbeeld
+        startLevels.removeIf((StartLevel t) -> t.isRemoved() || t.getSelectedIndex() == null);
+        startLevels.sort(Comparator.comparingLong(StartLevel::getSelectedIndex));
+
+        Map<Long, LayerTreeNode> treeNodeMap = new HashMap<>();
+        Deque<Level> levelQueue = new ArrayDeque<>();
+        List<StartLayer> visibleStartLayers = new ArrayList<>();
+
+        for (StartLevel l : startLevels) {
+            // Check if this level is a background level.
+            boolean isBackground = false;
+            Level parentLevel = l.getLevel();
+            while (parentLevel != null && !isBackground) {
+                isBackground |= parentLevel.isBackground();
+                parentLevel = parentLevel.getParent();
+            }
+
+            Level startLevel = l.getLevel();
+            List<LayerTreeNode> treeNodeList;
+            LayerTreeNode chosenRoot;
+            if (isBackground) {
+                treeNodeList = mapResponse.getBaseLayerTreeNodes();
+                chosenRoot = rootBackgroundNode;
+            } else {
+                treeNodeList = mapResponse.getLayerTreeNodes();
+                chosenRoot = rootNode;
+            }
+
+            levelQueue.add(startLevel);
+            while (!levelQueue.isEmpty()) {
+                Level level = levelQueue.pop();
+                if (treeNodeMap.containsKey(level.getId())) {
+                    continue;
+                }
+
+                LayerTreeNode childNode =
+                        new LayerTreeNode()
+                                .id(String.format("lvl_%d", level.getId()))
+                                .name(level.getName())
+                                .root(false)
+                                .childrenIds(new ArrayList<>());
+
+                treeNodeList.add(childNode);
+                treeNodeMap.put(level.getId(), childNode);
+
+                LayerTreeNode parentNode;
+                if (level == startLevel) {
+                    parentNode = chosenRoot;
+                } else {
+                    parentNode = treeNodeMap.get(level.getParent().getId());
+                }
+                parentNode.addChildrenIdsItem(childNode.getId());
+
+                levelQueue.addAll(level.getChildren());
+                for (ApplicationLayer layer : level.getLayers()) {
+                    StartLayer startLayer = layerMap.get(layer.getId());
+                    if (startLayer == null) {
+                        continue;
+                    }
+
+                    LayerTreeNode layerNode =
+                            new LayerTreeNode()
+                                    .id(String.format("lyr_%d", layer.getId()))
+                                    .name(layer.getLayerName())
+                                    .appLayerId((int) (long) layer.getId())
+                                    .root(false)
+                                    .childrenIds(new ArrayList<>());
+
+                    treeNodeList.add(layerNode);
+                    childNode.addChildrenIdsItem(layerNode.getId());
+                    visibleStartLayers.add(startLayer);
+                }
+            }
+        }
+
+        // Only add AppLayers visible in the LayerTreeNode graph to the response
+        for (StartLayer l : visibleStartLayers) {
+            AppLayer appLayer =
+                    new AppLayer()
+                            .id(l.getApplicationLayer().getId())
+                            .layerName(l.getApplicationLayer().getLayerName())
+                            .title(l.getApplicationLayer().getLayerName())
+                            .serviceId(l.getApplicationLayer().getService().getId())
+                            .visible(l.isChecked());
+
+            mapResponse.addAppLayersItem(appLayer);
+
+            GeoService geoService = l.getApplicationLayer().getService();
+            Service s =
+                    new Service()
+                            .url(geoService.getUrl())
+                            .id(geoService.getId())
+                            .name(geoService.getName())
+                            .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))
+                            .capabilities(geoService.getCapabilitiesDoc());
+            if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {
+                s.tilingProtocol(
+                        Service.TilingProtocolEnum.fromValue(
+                                ((TileService) geoService).getTilingProtocol()));
+            }
+            mapResponse.addServicesItem(s);
         }
     }
 }
