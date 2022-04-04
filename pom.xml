@@ -142,6 +142,7 @@ SPDX-License-Identifier: MIT
     <pom.fmt.action>sort</pom.fmt.action>
     <docker.skip>false</docker.skip>
     <maven-fluido-skin.version>1.10.0</maven-fluido-skin.version>
+    <swagger-ui.version>4.9.1</swagger-ui.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -215,7 +216,6 @@ SPDX-License-Identifier: MIT
         </exclusion>
       </exclusions>
     </dependency>
-
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
       <artifactId>mssql-jdbc</artifactId>
@@ -226,7 +226,6 @@ SPDX-License-Identifier: MIT
       <artifactId>ojdbc11</artifactId>
       <!--      <version>${oracle.version}</version>-->
     </dependency>
-
     <dependency>
       <groupId>org.tailormap</groupId>
       <artifactId>viewer-config-persistence</artifactId>
@@ -368,6 +367,15 @@ SPDX-License-Identifier: MIT
       <version>2.2.0</version>
     </dependency>
     <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>swagger-ui</artifactId>
+      <version>${swagger-ui.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>webjars-locator-core</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <scope>test</scope>
@@ -399,6 +407,14 @@ SPDX-License-Identifier: MIT
           <exclude>**/application*.properties</exclude>
           <exclude>**/index.html</exclude>
         </excludes>
+      </resource>
+      <resource>
+        <targetPath>static/swagger-ui</targetPath>
+        <filtering>false</filtering>
+        <directory>${basedir}/src/main/resources</directory>
+        <includes>
+          <include>*.yaml</include>
+        </includes>
       </resource>
     </resources>
     <testResources>
@@ -684,6 +700,7 @@ SPDX-License-Identifier: MIT
         <artifactId>openapi-generator-maven-plugin</artifactId>
         <executions>
           <execution>
+            <id>generate-code</id>
             <goals>
               <goal>generate</goal>
             </goals>
@@ -708,6 +725,17 @@ SPDX-License-Identifier: MIT
                 <serializableModel>true</serializableModel>
                 <useOptional>true</useOptional>
               </configOptions>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-spec</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>${project.basedir}/src/main/resources/tailormap-api.yaml</inputSpec>
+              <generatorName>openapi</generatorName>
+              <output>${project.build.directory}/classes/static/swagger-ui</output>
             </configuration>
           </execution>
         </executions>
@@ -781,7 +809,7 @@ SPDX-License-Identifier: MIT
             <goals>
               <goal>unpack</goal>
             </goals>
-            <phase>process-test-classes</phase>
+            <phase>generate-test-resources</phase>
             <configuration>
               <artifactItems>
                 <artifactItem>
@@ -801,11 +829,28 @@ SPDX-License-Identifier: MIT
                   </fileMappers>
                 </artifactItem>
               </artifactItems>
-              <includes>**/*.java</includes>
-              <excludes>**/*.properties</excludes>
-              <outputDirectory>${project.build.directory}/wars</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-webjars</id>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <!-- for some reason we need to manuall extract some webjar stuff to make things work... -->
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars</groupId>
+                  <artifactId>swagger-ui</artifactId>
+                  <version>${swagger-ui.version}</version>
+                  <includes>META-INF/resources/webjars/**/*</includes>
+                  <excludes>META-INF/resources/webjars/**/*index.html</excludes>
+                  <excludes>META-INF/resources/webjars/**/**.gz</excludes>
+                  <excludes>META-INF/resources/webjars/**/*.map</excludes>
+                  <outputDirectory>${project.basedir}/target/classes/</outputDirectory>
+                </artifactItem>
+              </artifactItems>
             </configuration>
           </execution>
         </executions>
@@ -950,6 +995,7 @@ SPDX-License-Identifier: MIT
                     <exclude>org.springframework.boot:spring-boot-starter-validation</exclude>
                     <exclude>org.springframework.boot:spring-boot-starter-security</exclude>
                     <exclude>org.springframework.security:spring-security-test</exclude>
+                    <exclude>org.webjars:webjars-locator-core</exclude>
                     <!--
                     TODO this should be fixed; either by importing or exluding the transitive dependencies
                    org.tailormap:viewer-config-persistence:jar:5.9.12-SNAPSHOT:compile has transitive dependencies:
