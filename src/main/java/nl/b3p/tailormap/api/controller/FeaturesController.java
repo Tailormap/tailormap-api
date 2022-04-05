@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Parameter;
 
 import nl.b3p.tailormap.api.exception.BadRequestException;
@@ -181,6 +182,7 @@ public class FeaturesController implements Constants {
         }
     }
 
+    @Timed(value = "features.by.xy", description = "Time taken to retrieve features by XY")
     @NotNull
     private FeaturesResponse getFeaturesByXY(
             @NotNull ApplicationLayer appLayer,
