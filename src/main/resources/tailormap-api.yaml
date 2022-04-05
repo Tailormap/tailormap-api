@@ -64,6 +64,7 @@ components:
           #      an array seems the better option
           # TODO Not sure we actually/still need this...
           type: array
+          uniqueItems: true
           items:
             $ref: './model.yaml#/components/schemas/Service'
         baseLayerTreeNodes:
