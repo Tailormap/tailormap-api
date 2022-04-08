@@ -1,4 +1,4 @@
-name: Ubuntu QA Maven build
+name: 'Ubuntu QA Maven build'
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
@@ -14,8 +14,10 @@ on:
 
 jobs:
   build:
-    name: QA check
+    name: 'QA check'
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v3
 
@@ -26,15 +28,18 @@ jobs:
           restore-keys: |
             maven-
 
-      - name: Set up JDK
+      - name: 'Dependency Review'
+        uses: actions/dependency-review-action@v1
+
+      - name: 'Set up JDK'
         uses: actions/setup-java@v2
         with:
           java-version: 11
           distribution: 'temurin'
 
-      - name: QA build with Maven
+      - name: 'QA build with Maven'
         run: mvn -B -V -fae -DskipQA=false -Dfmt.action=check -Dpom.fmt.action=verify -Ddocker.skip=true -DskipTests -DskipITs clean install
 
-      - name: Cleanup snapshots
+      - name: 'Cleanup snapshots'
         run: |
           find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}

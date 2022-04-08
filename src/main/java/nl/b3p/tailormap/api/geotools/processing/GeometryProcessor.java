@@ -9,6 +9,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.io.WKTConstants;
+import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.precision.GeometryPrecisionReducer;
 import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
 
@@ -31,25 +33,39 @@ public final class GeometryProcessor {
      * process the geometry into a (optionally simplified) string representation.
      *
      * @param geometry An object representing a geometry
-     * @param simplfyGeometry set to {@code true} to simplify
+     * @param simplifyGeometry set to {@code true} to simplify
      * @return the string representation of the argument - normally WKT, optionally simplified
      */
     @NotNull
     public static String processGeometry(
-            @NotNull final Object geometry, @NotNull final Boolean simplfyGeometry) {
-        if (simplfyGeometry && Geometry.class.isAssignableFrom(geometry.getClass())) {
-            return simplify((Geometry) geometry);
+            @NotNull final Object geometry, @NotNull final Boolean simplifyGeometry) {
+        if (Geometry.class.isAssignableFrom(geometry.getClass())) {
+            if (simplifyGeometry) {
+                return simplify((Geometry) geometry);
+            }
+            return linearizeGeomToWKT((Geometry) geometry);
         }
-        // return WKT
+        // cannot cast to JTS geom
         return geometry.toString();
+    }
+
+    private static String linearizeGeomToWKT(Geometry geometry) {
+        // return linearized WKT
+        final WKTWriter writer = new WKTWriter(2);
+        String wkt = writer.write(geometry);
+        // LINEARRING is non-standard WKT, but the JTS WKTWriter will write it anyway!
+        if (wkt.startsWith(WKTConstants.LINEARRING)) {
+            wkt = WKTConstants.LINESTRING + wkt.substring(WKTConstants.LINEARRING.length());
+        }
+        return wkt;
     }
 
     /**
      * Simplifies given geometry to reduce (transfer) size, start off with 1 and each iteration
-     * multiply with 10, max 4 steps, so [1, 10, 100, 1000], if the geomeomtry is still too large
-     * bail out and use bbox. TODO this works for CRS in meters, may not work for degrees
+     * multiply with 10, max 4 steps, so [1, 10, 100, 1000], if the geometry is still too large bail
+     * out and use bbox. TODO this works for CRS in meters, may not work for degrees
      *
-     * @param geom gemetry to simplify
+     * @param geom geometry to simplify
      * @return simplified geometry as WKT string
      */
     @NotNull
@@ -79,7 +95,7 @@ public final class GeometryProcessor {
             LOG.debug("Maximum number of simplify cycles reached, returning bounding box instead.");
             return bbox.toText();
         } else {
-            return geomTxt;
+            return linearizeGeomToWKT(geom);
         }
     }
 }

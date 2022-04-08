@@ -310,7 +310,11 @@ components:
           readOnly: true
           type: string
         geometry:
-          description: 'default geometry as WKT, possibly simplified'
+          description: '
+            Default geometry of the feature as WKT, possibly simplified. 
+            Always linearized to make sure that it only holds a specification valid WKT.
+            Can be used for highlighting or buffer/selection, not for editing.
+            '
           type: string
         attributes:
           description: 'feature attributes in key/value pairs'
