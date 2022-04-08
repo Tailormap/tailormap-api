@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -187,110 +187,154 @@ implements <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addBaseLayersItem(nl.b3p.tailormap.api.model.AppLayer)">addBaseLayersItem</a></span>&#8203;(<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;baseLayersItem)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addAppLayersItem(nl.b3p.tailormap.api.model.AppLayer)">addAppLayersItem</a></span>&#8203;(<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;appLayersItem)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addServicesItem(nl.b3p.tailormap.api.model.Service)">addServicesItem</a></span>&#8203;(<a href="Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&nbsp;servicesItem)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addBaseLayerTreeNodesItem(nl.b3p.tailormap.api.model.LayerTreeNode)">addBaseLayerTreeNodesItem</a></span>&#8203;(<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&nbsp;baseLayerTreeNodesItem)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#baseLayers(java.util.List)">baseLayers</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;&nbsp;baseLayers)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addLayerTreeNodesItem(nl.b3p.tailormap.api.model.LayerTreeNode)">addLayerTreeNodesItem</a></span>&#8203;(<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&nbsp;layerTreeNodesItem)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#crs(nl.b3p.tailormap.api.model.CoordinateReferenceSystem)">crs</a></span>&#8203;(<a href="CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">CoordinateReferenceSystem</a>&nbsp;crs)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addServicesItem(nl.b3p.tailormap.api.model.Service)">addServicesItem</a></span>&#8203;(<a href="Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&nbsp;servicesItem)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#appLayers(java.util.List)">appLayers</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;&nbsp;appLayers)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#baseLayerTreeNodes(java.util.List)">baseLayerTreeNodes</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&gt;&nbsp;baseLayerTreeNodes)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#crs(nl.b3p.tailormap.api.model.CoordinateReferenceSystem)">crs</a></span>&#8203;(<a href="CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">CoordinateReferenceSystem</a>&nbsp;crs)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#equals(java.lang.Object)">equals</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>&nbsp;o)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBaseLayers()">getBaseLayers</a></span>()</code></th>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>@NotNull @Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAppLayers()">getAppLayers</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Get baseLayers</div>
+<div class="block">Unordered list of all AppLayers referenced from baseLayerTreeNodes and layerTreeNodes.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>@Valid <a href="CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">CoordinateReferenceSystem</a></code></td>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>@NotNull @Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBaseLayerTreeNodes()">getBaseLayerTreeNodes</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Unordered list of all tree nodes of base layers.</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>@NotNull @Valid <a href="CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">CoordinateReferenceSystem</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCrs()">getCrs</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get crs</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>@Valid <a href="Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a></code></td>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>@NotNull @Valid <a href="Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getInitialExtent()">getInitialExtent</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get initialExtent</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i12" class="altColor">
+<td class="colFirst"><code>@NotNull @Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLayerTreeNodes()">getLayerTreeNodes</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Unordered list of all tree nodes of overlay/thematic/transparent layers.</div>
+</td>
+</tr>
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>@Valid <a href="Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMaxExtent()">getMaxExtent</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get maxExtent</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&gt;</code></td>
+<tr id="i14" class="altColor">
+<td class="colFirst"><code>@NotNull @Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServices()">getServices</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get services</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hashCode()">hashCode</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initialExtent(nl.b3p.tailormap.api.model.Bounds)">initialExtent</a></span>&#8203;(<a href="Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a>&nbsp;initialExtent)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i17" class="rowColor">
+<td class="colFirst"><code><a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#layerTreeNodes(java.util.List)">layerTreeNodes</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&gt;&nbsp;layerTreeNodes)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#maxExtent(nl.b3p.tailormap.api.model.Bounds)">maxExtent</a></span>&#8203;(<a href="Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a>&nbsp;maxExtent)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code><a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#services(java.util.List)">services</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&gt;&nbsp;services)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#services(java.util.Set)">services</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&gt;&nbsp;services)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBaseLayers(java.util.List)">setBaseLayers</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;&nbsp;baseLayers)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAppLayers(java.util.List)">setAppLayers</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;&nbsp;appLayers)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i21" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBaseLayerTreeNodes(java.util.List)">setBaseLayerTreeNodes</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&gt;&nbsp;baseLayerTreeNodes)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCrs(nl.b3p.tailormap.api.model.CoordinateReferenceSystem)">setCrs</a></span>&#8203;(<a href="CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">CoordinateReferenceSystem</a>&nbsp;crs)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setInitialExtent(nl.b3p.tailormap.api.model.Bounds)">setInitialExtent</a></span>&#8203;(<a href="Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a>&nbsp;initialExtent)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i24" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLayerTreeNodes(java.util.List)">setLayerTreeNodes</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&gt;&nbsp;layerTreeNodes)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setMaxExtent(nl.b3p.tailormap.api.model.Bounds)">setMaxExtent</a></span>&#8203;(<a href="Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a>&nbsp;maxExtent)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setServices(java.util.List)">setServices</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&gt;&nbsp;services)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setServices(java.util.Set)">setServices</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&gt;&nbsp;services)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -353,8 +397,9 @@ implements <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base
 <ul class="blockList">
 <li class="blockList">
 <h4>getInitialExtent</h4>
-<pre class="methodSignature">@Valid
-public&nbsp;@Valid <a href="Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a>&nbsp;getInitialExtent()</pre>
+<pre class="methodSignature">@NotNull
+@Valid
+public&nbsp;@NotNull @Valid <a href="Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a>&nbsp;getInitialExtent()</pre>
 <div class="block">Get initialExtent</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -404,13 +449,13 @@ public&nbsp;@Valid <a href="Bounds.html" title="class in nl.b3p.tailormap.api.mo
 <pre class="methodSignature">public&nbsp;void&nbsp;setMaxExtent&#8203;(<a href="Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a>&nbsp;maxExtent)</pre>
 </li>
 </ul>
-<a id="services(java.util.List)">
+<a id="services(java.util.Set)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>services</h4>
-<pre class="methodSignature">public&nbsp;<a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a>&nbsp;services&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&gt;&nbsp;services)</pre>
+<pre class="methodSignature">public&nbsp;<a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a>&nbsp;services&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&gt;&nbsp;services)</pre>
 </li>
 </ul>
 <a id="addServicesItem(nl.b3p.tailormap.api.model.Service)">
@@ -428,8 +473,9 @@ public&nbsp;@Valid <a href="Bounds.html" title="class in nl.b3p.tailormap.api.mo
 <ul class="blockList">
 <li class="blockList">
 <h4>getServices</h4>
-<pre class="methodSignature">@Valid
-public&nbsp;@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&gt;&nbsp;getServices()</pre>
+<pre class="methodSignature">@NotNull
+@Valid
+public&nbsp;@NotNull @Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&gt;&nbsp;getServices()</pre>
 <div class="block">Get services</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -437,55 +483,142 @@ public&nbsp;@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/j
 </dl>
 </li>
 </ul>
-<a id="setServices(java.util.List)">
+<a id="setServices(java.util.Set)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>setServices</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setServices&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&gt;&nbsp;services)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;setServices&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&gt;&nbsp;services)</pre>
 </li>
 </ul>
-<a id="baseLayers(java.util.List)">
+<a id="baseLayerTreeNodes(java.util.List)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>baseLayers</h4>
-<pre class="methodSignature">public&nbsp;<a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a>&nbsp;baseLayers&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;&nbsp;baseLayers)</pre>
+<h4>baseLayerTreeNodes</h4>
+<pre class="methodSignature">public&nbsp;<a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a>&nbsp;baseLayerTreeNodes&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&gt;&nbsp;baseLayerTreeNodes)</pre>
 </li>
 </ul>
-<a id="addBaseLayersItem(nl.b3p.tailormap.api.model.AppLayer)">
+<a id="addBaseLayerTreeNodesItem(nl.b3p.tailormap.api.model.LayerTreeNode)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>addBaseLayersItem</h4>
-<pre class="methodSignature">public&nbsp;<a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a>&nbsp;addBaseLayersItem&#8203;(<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;baseLayersItem)</pre>
+<h4>addBaseLayerTreeNodesItem</h4>
+<pre class="methodSignature">public&nbsp;<a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a>&nbsp;addBaseLayerTreeNodesItem&#8203;(<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&nbsp;baseLayerTreeNodesItem)</pre>
 </li>
 </ul>
-<a id="getBaseLayers()">
+<a id="getBaseLayerTreeNodes()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getBaseLayers</h4>
-<pre class="methodSignature">@Valid
-public&nbsp;@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;&nbsp;getBaseLayers()</pre>
-<div class="block">Get baseLayers</div>
+<h4>getBaseLayerTreeNodes</h4>
+<pre class="methodSignature">@NotNull
+@Valid
+public&nbsp;@NotNull @Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&gt;&nbsp;getBaseLayerTreeNodes()</pre>
+<div class="block">Unordered list of all tree nodes of base layers. Start with the node with root set to true and use the ordered children array property to order the tree. For base layers, only one child node (with all its' child layers) of the root should be displayed at one time.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>baseLayers</dd>
+<dd>baseLayerTreeNodes</dd>
 </dl>
 </li>
 </ul>
-<a id="setBaseLayers(java.util.List)">
+<a id="setBaseLayerTreeNodes(java.util.List)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setBaseLayers</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setBaseLayers&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;&nbsp;baseLayers)</pre>
+<h4>setBaseLayerTreeNodes</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setBaseLayerTreeNodes&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&gt;&nbsp;baseLayerTreeNodes)</pre>
+</li>
+</ul>
+<a id="layerTreeNodes(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>layerTreeNodes</h4>
+<pre class="methodSignature">public&nbsp;<a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a>&nbsp;layerTreeNodes&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&gt;&nbsp;layerTreeNodes)</pre>
+</li>
+</ul>
+<a id="addLayerTreeNodesItem(nl.b3p.tailormap.api.model.LayerTreeNode)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addLayerTreeNodesItem</h4>
+<pre class="methodSignature">public&nbsp;<a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a>&nbsp;addLayerTreeNodesItem&#8203;(<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&nbsp;layerTreeNodesItem)</pre>
+</li>
+</ul>
+<a id="getLayerTreeNodes()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getLayerTreeNodes</h4>
+<pre class="methodSignature">@NotNull
+@Valid
+public&nbsp;@NotNull @Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&gt;&nbsp;getLayerTreeNodes()</pre>
+<div class="block">Unordered list of all tree nodes of overlay/thematic/transparent layers. Start with the node with root set to true and use the ordered children array property to order the tree.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>layerTreeNodes</dd>
+</dl>
+</li>
+</ul>
+<a id="setLayerTreeNodes(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setLayerTreeNodes</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setLayerTreeNodes&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&gt;&nbsp;layerTreeNodes)</pre>
+</li>
+</ul>
+<a id="appLayers(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>appLayers</h4>
+<pre class="methodSignature">public&nbsp;<a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a>&nbsp;appLayers&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;&nbsp;appLayers)</pre>
+</li>
+</ul>
+<a id="addAppLayersItem(nl.b3p.tailormap.api.model.AppLayer)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addAppLayersItem</h4>
+<pre class="methodSignature">public&nbsp;<a href="MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a>&nbsp;addAppLayersItem&#8203;(<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;appLayersItem)</pre>
+</li>
+</ul>
+<a id="getAppLayers()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAppLayers</h4>
+<pre class="methodSignature">@NotNull
+@Valid
+public&nbsp;@NotNull @Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;&nbsp;getAppLayers()</pre>
+<div class="block">Unordered list of all AppLayers referenced from baseLayerTreeNodes and layerTreeNodes. Note that you need to lookup these by id, but OpenAPI only supports a map by using strings as keys, so an array is used instead.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>appLayers</dd>
+</dl>
+</li>
+</ul>
+<a id="setAppLayers(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setAppLayers</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setAppLayers&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt;&nbsp;appLayers)</pre>
 </li>
 </ul>
 <a id="crs(nl.b3p.tailormap.api.model.CoordinateReferenceSystem)">
@@ -503,8 +636,9 @@ public&nbsp;@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/j
 <ul class="blockList">
 <li class="blockList">
 <h4>getCrs</h4>
-<pre class="methodSignature">@Valid
-public&nbsp;@Valid <a href="CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">CoordinateReferenceSystem</a>&nbsp;getCrs()</pre>
+<pre class="methodSignature">@NotNull
+@Valid
+public&nbsp;@NotNull @Valid <a href="CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">CoordinateReferenceSystem</a>&nbsp;getCrs()</pre>
 <div class="block">Get crs</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>

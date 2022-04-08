@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
+import java.math.BigDecimal;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import javax.validation.Valid;
@@ -28,11 +28,11 @@ import javax.annotation.Generated;
   @JsonProperty(&quot;id&quot;)
   private Long id;
 
-  @JsonProperty(&quot;url&quot;)
-  private String url;
+  @JsonProperty(&quot;layerName&quot;)
+  private String layerName;
 
-  @JsonProperty(&quot;displayName&quot;)
-  private String displayName;
+  @JsonProperty(&quot;title&quot;)
+  private String title;
 
   @JsonProperty(&quot;serviceId&quot;)
   private Long serviceId;
@@ -40,15 +40,18 @@ import javax.annotation.Generated;
   @JsonProperty(&quot;visible&quot;)
   private Boolean visible;
 
-<span class="fc" id="L43">  @JsonProperty(&quot;isBaseLayer&quot;)</span>
-<span class="fc" id="L44">  private Boolean isBaseLayer = false;</span>
+  @JsonProperty(&quot;minScale&quot;)
+  private BigDecimal minScale;
 
-  @JsonProperty(&quot;crs&quot;)
-  private CoordinateReferenceSystem crs;
+  @JsonProperty(&quot;maxScale&quot;)
+  private BigDecimal maxScale;
+
+  @JsonProperty(&quot;legendImageUrl&quot;)
+  private String legendImageUrl;
 
   public AppLayer id(Long id) {
-<span class="fc" id="L50">    this.id = id;</span>
-<span class="fc" id="L51">    return this;</span>
+<span class="fc" id="L53">    this.id = id;</span>
+<span class="fc" id="L54">    return this;</span>
   }
 
   /**
@@ -56,165 +59,186 @@ import javax.annotation.Generated;
    * @return id
   */
   @NotNull 
-  @Schema(name = &quot;id&quot;, accessMode = Schema.AccessMode.READ_ONLY, required = true)
+  @Schema(name = &quot;id&quot;, required = true)
   public Long getId() {
-<span class="fc" id="L61">    return id;</span>
+<span class="fc" id="L64">    return id;</span>
   }
 
   public void setId(Long id) {
-<span class="nc" id="L65">    this.id = id;</span>
-<span class="nc" id="L66">  }</span>
+<span class="nc" id="L68">    this.id = id;</span>
+<span class="nc" id="L69">  }</span>
 
-  public AppLayer url(String url) {
-<span class="fc" id="L69">    this.url = url;</span>
-<span class="fc" id="L70">    return this;</span>
+  public AppLayer layerName(String layerName) {
+<span class="fc" id="L72">    this.layerName = layerName;</span>
+<span class="fc" id="L73">    return this;</span>
   }
 
   /**
-   * Get url
-   * @return url
+   * Layer name as known by the service.
+   * @return layerName
   */
-  
-  @Schema(name = &quot;url&quot;, required = false)
-  public String getUrl() {
-<span class="fc" id="L80">    return url;</span>
+  @NotNull 
+  @Schema(name = &quot;layerName&quot;, description = &quot;Layer name as known by the service.&quot;, required = true)
+  public String getLayerName() {
+<span class="fc" id="L83">    return layerName;</span>
   }
 
-  public void setUrl(String url) {
-<span class="nc" id="L84">    this.url = url;</span>
-<span class="nc" id="L85">  }</span>
+  public void setLayerName(String layerName) {
+<span class="nc" id="L87">    this.layerName = layerName;</span>
+<span class="nc" id="L88">  }</span>
 
-  public AppLayer displayName(String displayName) {
-<span class="fc" id="L88">    this.displayName = displayName;</span>
-<span class="fc" id="L89">    return this;</span>
+  public AppLayer title(String title) {
+<span class="fc" id="L91">    this.title = title;</span>
+<span class="fc" id="L92">    return this;</span>
   }
 
   /**
-   * Get displayName
-   * @return displayName
+   * Layer title or display name.
+   * @return title
   */
-  
-  @Schema(name = &quot;displayName&quot;, required = false)
-  public String getDisplayName() {
-<span class="fc" id="L99">    return displayName;</span>
+  @NotNull 
+  @Schema(name = &quot;title&quot;, description = &quot;Layer title or display name.&quot;, required = true)
+  public String getTitle() {
+<span class="fc" id="L102">    return title;</span>
   }
 
-  public void setDisplayName(String displayName) {
-<span class="nc" id="L103">    this.displayName = displayName;</span>
-<span class="nc" id="L104">  }</span>
+  public void setTitle(String title) {
+<span class="nc" id="L106">    this.title = title;</span>
+<span class="nc" id="L107">  }</span>
 
   public AppLayer serviceId(Long serviceId) {
-<span class="fc" id="L107">    this.serviceId = serviceId;</span>
-<span class="fc" id="L108">    return this;</span>
+<span class="fc" id="L110">    this.serviceId = serviceId;</span>
+<span class="fc" id="L111">    return this;</span>
   }
 
   /**
-   * Get serviceId
+   * A reference to a Service id.
    * @return serviceId
   */
   @NotNull 
-  @Schema(name = &quot;serviceId&quot;, accessMode = Schema.AccessMode.READ_ONLY, required = true)
+  @Schema(name = &quot;serviceId&quot;, description = &quot;A reference to a Service id.&quot;, required = true)
   public Long getServiceId() {
-<span class="fc" id="L118">    return serviceId;</span>
+<span class="fc" id="L121">    return serviceId;</span>
   }
 
   public void setServiceId(Long serviceId) {
-<span class="nc" id="L122">    this.serviceId = serviceId;</span>
-<span class="nc" id="L123">  }</span>
+<span class="nc" id="L125">    this.serviceId = serviceId;</span>
+<span class="nc" id="L126">  }</span>
 
   public AppLayer visible(Boolean visible) {
-<span class="fc" id="L126">    this.visible = visible;</span>
-<span class="fc" id="L127">    return this;</span>
+<span class="fc" id="L129">    this.visible = visible;</span>
+<span class="fc" id="L130">    return this;</span>
   }
 
   /**
    * Get visible
    * @return visible
   */
-  
-  @Schema(name = &quot;visible&quot;, required = false)
+  @NotNull 
+  @Schema(name = &quot;visible&quot;, required = true)
   public Boolean getVisible() {
-<span class="fc" id="L137">    return visible;</span>
+<span class="fc" id="L140">    return visible;</span>
   }
 
   public void setVisible(Boolean visible) {
-<span class="nc" id="L141">    this.visible = visible;</span>
-<span class="nc" id="L142">  }</span>
+<span class="nc" id="L144">    this.visible = visible;</span>
+<span class="nc" id="L145">  }</span>
 
-  public AppLayer isBaseLayer(Boolean isBaseLayer) {
-<span class="fc" id="L145">    this.isBaseLayer = isBaseLayer;</span>
-<span class="fc" id="L146">    return this;</span>
+  public AppLayer minScale(BigDecimal minScale) {
+<span class="nc" id="L148">    this.minScale = minScale;</span>
+<span class="nc" id="L149">    return this;</span>
   }
 
   /**
-   * Get isBaseLayer
-   * @return isBaseLayer
-  */
-  
-  @Schema(name = &quot;isBaseLayer&quot;, required = false)
-  public Boolean getIsBaseLayer() {
-<span class="fc" id="L156">    return isBaseLayer;</span>
-  }
-
-  public void setIsBaseLayer(Boolean isBaseLayer) {
-<span class="nc" id="L160">    this.isBaseLayer = isBaseLayer;</span>
-<span class="nc" id="L161">  }</span>
-
-  public AppLayer crs(CoordinateReferenceSystem crs) {
-<span class="fc" id="L164">    this.crs = crs;</span>
-<span class="fc" id="L165">    return this;</span>
-  }
-
-  /**
-   * Get crs
-   * @return crs
+   * Minimum scale at which this layer should be shown or is not blank. When absent there is no minimum. As reported by the service (ScaleHint or MinScaleDenominator).
+   * @return minScale
   */
   @Valid 
-  @Schema(name = &quot;crs&quot;, required = false)
-  public CoordinateReferenceSystem getCrs() {
-<span class="fc" id="L175">    return crs;</span>
+  @Schema(name = &quot;minScale&quot;, description = &quot;Minimum scale at which this layer should be shown or is not blank. When absent there is no minimum. As reported by the service (ScaleHint or MinScaleDenominator).&quot;, required = false)
+  public BigDecimal getMinScale() {
+<span class="fc" id="L159">    return minScale;</span>
   }
 
-  public void setCrs(CoordinateReferenceSystem crs) {
-<span class="nc" id="L179">    this.crs = crs;</span>
-<span class="nc" id="L180">  }</span>
+  public void setMinScale(BigDecimal minScale) {
+<span class="nc" id="L163">    this.minScale = minScale;</span>
+<span class="nc" id="L164">  }</span>
+
+  public AppLayer maxScale(BigDecimal maxScale) {
+<span class="nc" id="L167">    this.maxScale = maxScale;</span>
+<span class="nc" id="L168">    return this;</span>
+  }
+
+  /**
+   * Maximum scale denominator at which this layer should be shown or is not blank. When absent there is no maximum. As reported by the service (ScaleHint or MaxScaleDenominator).
+   * @return maxScale
+  */
+  @Valid 
+  @Schema(name = &quot;maxScale&quot;, description = &quot;Maximum scale denominator at which this layer should be shown or is not blank. When absent there is no maximum. As reported by the service (ScaleHint or MaxScaleDenominator).&quot;, required = false)
+  public BigDecimal getMaxScale() {
+<span class="fc" id="L178">    return maxScale;</span>
+  }
+
+  public void setMaxScale(BigDecimal maxScale) {
+<span class="nc" id="L182">    this.maxScale = maxScale;</span>
+<span class="nc" id="L183">  }</span>
+
+  public AppLayer legendImageUrl(String legendImageUrl) {
+<span class="nc" id="L186">    this.legendImageUrl = legendImageUrl;</span>
+<span class="nc" id="L187">    return this;</span>
+  }
+
+  /**
+   * URL to an image with the layer legend.
+   * @return legendImageUrl
+  */
+  
+  @Schema(name = &quot;legendImageUrl&quot;, description = &quot;URL to an image with the layer legend.&quot;, required = false)
+  public String getLegendImageUrl() {
+<span class="fc" id="L197">    return legendImageUrl;</span>
+  }
+
+  public void setLegendImageUrl(String legendImageUrl) {
+<span class="nc" id="L201">    this.legendImageUrl = legendImageUrl;</span>
+<span class="nc" id="L202">  }</span>
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L184" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L185">      return true;</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L207">      return true;</span>
     }
-<span class="nc bnc" id="L187" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L188">      return false;</span>
+<span class="nc bnc" id="L209" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L210">      return false;</span>
     }
-<span class="nc" id="L190">    AppLayer appLayer = (AppLayer) o;</span>
-<span class="nc bnc" id="L191" title="All 2 branches missed.">    return Objects.equals(this.id, appLayer.id) &amp;&amp;</span>
-<span class="nc bnc" id="L192" title="All 2 branches missed.">        Objects.equals(this.url, appLayer.url) &amp;&amp;</span>
-<span class="nc bnc" id="L193" title="All 2 branches missed.">        Objects.equals(this.displayName, appLayer.displayName) &amp;&amp;</span>
-<span class="nc bnc" id="L194" title="All 2 branches missed.">        Objects.equals(this.serviceId, appLayer.serviceId) &amp;&amp;</span>
-<span class="nc bnc" id="L195" title="All 2 branches missed.">        Objects.equals(this.visible, appLayer.visible) &amp;&amp;</span>
-<span class="nc bnc" id="L196" title="All 2 branches missed.">        Objects.equals(this.isBaseLayer, appLayer.isBaseLayer) &amp;&amp;</span>
-<span class="nc bnc" id="L197" title="All 2 branches missed.">        Objects.equals(this.crs, appLayer.crs);</span>
+<span class="nc" id="L212">    AppLayer appLayer = (AppLayer) o;</span>
+<span class="nc bnc" id="L213" title="All 2 branches missed.">    return Objects.equals(this.id, appLayer.id) &amp;&amp;</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">        Objects.equals(this.layerName, appLayer.layerName) &amp;&amp;</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        Objects.equals(this.title, appLayer.title) &amp;&amp;</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">        Objects.equals(this.serviceId, appLayer.serviceId) &amp;&amp;</span>
+<span class="nc bnc" id="L217" title="All 2 branches missed.">        Objects.equals(this.visible, appLayer.visible) &amp;&amp;</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        Objects.equals(this.minScale, appLayer.minScale) &amp;&amp;</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">        Objects.equals(this.maxScale, appLayer.maxScale) &amp;&amp;</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">        Objects.equals(this.legendImageUrl, appLayer.legendImageUrl);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L202">    return Objects.hash(id, url, displayName, serviceId, visible, isBaseLayer, crs);</span>
+<span class="nc" id="L225">    return Objects.hash(id, layerName, title, serviceId, visible, minScale, maxScale, legendImageUrl);</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L207">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L208">    sb.append(&quot;class AppLayer {\n&quot;);</span>
-<span class="nc" id="L209">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L210">    sb.append(&quot;    url: &quot;).append(toIndentedString(url)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L211">    sb.append(&quot;    displayName: &quot;).append(toIndentedString(displayName)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L212">    sb.append(&quot;    serviceId: &quot;).append(toIndentedString(serviceId)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L213">    sb.append(&quot;    visible: &quot;).append(toIndentedString(visible)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L214">    sb.append(&quot;    isBaseLayer: &quot;).append(toIndentedString(isBaseLayer)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L215">    sb.append(&quot;    crs: &quot;).append(toIndentedString(crs)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L216">    sb.append(&quot;}&quot;);</span>
-<span class="nc" id="L217">    return sb.toString();</span>
+<span class="nc" id="L230">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L231">    sb.append(&quot;class AppLayer {\n&quot;);</span>
+<span class="nc" id="L232">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L233">    sb.append(&quot;    layerName: &quot;).append(toIndentedString(layerName)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L234">    sb.append(&quot;    title: &quot;).append(toIndentedString(title)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L235">    sb.append(&quot;    serviceId: &quot;).append(toIndentedString(serviceId)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L236">    sb.append(&quot;    visible: &quot;).append(toIndentedString(visible)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L237">    sb.append(&quot;    minScale: &quot;).append(toIndentedString(minScale)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L238">    sb.append(&quot;    maxScale: &quot;).append(toIndentedString(maxScale)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L239">    sb.append(&quot;    legendImageUrl: &quot;).append(toIndentedString(legendImageUrl)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L240">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L241">    return sb.toString();</span>
   }
 
   /**
@@ -222,10 +246,10 @@ import javax.annotation.Generated;
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-<span class="nc bnc" id="L225" title="All 2 branches missed.">    if (o == null) {</span>
-<span class="nc" id="L226">      return &quot;null&quot;;</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L250">      return &quot;null&quot;;</span>
     }
-<span class="nc" id="L228">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+<span class="nc" id="L252">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
   }
 }
 

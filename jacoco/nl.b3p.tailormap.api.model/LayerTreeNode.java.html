@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LayerTreeNode.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.model</a> &gt; <span class="el_source">LayerTreeNode.java</span></div><h1>LayerTreeNode.java</h1><pre class="source lang-java linenums">package nl.b3p.tailormap.api.model;
+
+import java.net.URI;
+import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
+import java.util.*;
+import javax.annotation.Generated;
+
+/**
+ * Grouping of layers in a tree structure.
+ */
+
+@Schema(name = &quot;LayerTreeNode&quot;, description = &quot;Grouping of layers in a tree structure.&quot;)
+@Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
+<span class="fc" id="L25">public class LayerTreeNode  implements Serializable {</span>
+
+  private static final long serialVersionUID = 1L;
+
+  @JsonProperty(&quot;id&quot;)
+  private String id;
+
+  @JsonProperty(&quot;appLayerId&quot;)
+  private Integer appLayerId;
+
+  @JsonProperty(&quot;root&quot;)
+  private Boolean root;
+
+  @JsonProperty(&quot;name&quot;)
+  private String name;
+
+<span class="fc" id="L41">  @JsonProperty(&quot;childrenIds&quot;)</span>
+  @Valid
+  private List&lt;String&gt; childrenIds = null;
+
+  public LayerTreeNode id(String id) {
+<span class="fc" id="L46">    this.id = id;</span>
+<span class="fc" id="L47">    return this;</span>
+  }
+
+  /**
+   * A unique identifier across all tree nodes.
+   * @return id
+  */
+  @NotNull 
+  @Schema(name = &quot;id&quot;, description = &quot;A unique identifier across all tree nodes.&quot;, required = true)
+  public String getId() {
+<span class="fc" id="L57">    return id;</span>
+  }
+
+  public void setId(String id) {
+<span class="nc" id="L61">    this.id = id;</span>
+<span class="nc" id="L62">  }</span>
+
+  public LayerTreeNode appLayerId(Integer appLayerId) {
+<span class="fc" id="L65">    this.appLayerId = appLayerId;</span>
+<span class="fc" id="L66">    return this;</span>
+  }
+
+  /**
+   * Get appLayerId
+   * @return appLayerId
+  */
+  
+  @Schema(name = &quot;appLayerId&quot;, required = false)
+  public Integer getAppLayerId() {
+<span class="fc" id="L76">    return appLayerId;</span>
+  }
+
+  public void setAppLayerId(Integer appLayerId) {
+<span class="nc" id="L80">    this.appLayerId = appLayerId;</span>
+<span class="nc" id="L81">  }</span>
+
+  public LayerTreeNode root(Boolean root) {
+<span class="fc" id="L84">    this.root = root;</span>
+<span class="fc" id="L85">    return this;</span>
+  }
+
+  /**
+   * Only a single node in a tree will have this set to true.
+   * @return root
+  */
+  
+  @Schema(name = &quot;root&quot;, description = &quot;Only a single node in a tree will have this set to true.&quot;, required = false)
+  public Boolean getRoot() {
+<span class="fc" id="L95">    return root;</span>
+  }
+
+  public void setRoot(Boolean root) {
+<span class="nc" id="L99">    this.root = root;</span>
+<span class="nc" id="L100">  }</span>
+
+  public LayerTreeNode name(String name) {
+<span class="fc" id="L103">    this.name = name;</span>
+<span class="fc" id="L104">    return this;</span>
+  }
+
+  /**
+   * Display name of this tree node. If appLayerId is present, this is the title of that AppLayer.
+   * @return name
+  */
+  @NotNull 
+  @Schema(name = &quot;name&quot;, description = &quot;Display name of this tree node. If appLayerId is present, this is the title of that AppLayer.&quot;, required = true)
+  public String getName() {
+<span class="fc" id="L114">    return name;</span>
+  }
+
+  public void setName(String name) {
+<span class="nc" id="L118">    this.name = name;</span>
+<span class="nc" id="L119">  }</span>
+
+  public LayerTreeNode childrenIds(List&lt;String&gt; childrenIds) {
+<span class="fc" id="L122">    this.childrenIds = childrenIds;</span>
+<span class="fc" id="L123">    return this;</span>
+  }
+
+  public LayerTreeNode addChildrenIdsItem(String childrenIdsItem) {
+<span class="fc bfc" id="L127" title="All 2 branches covered.">    if (this.childrenIds == null) {</span>
+<span class="fc" id="L128">      this.childrenIds = new ArrayList&lt;&gt;();</span>
+    }
+<span class="fc" id="L130">    this.childrenIds.add(childrenIdsItem);</span>
+<span class="fc" id="L131">    return this;</span>
+  }
+
+  /**
+   * Ordered list of ids of LayerTreeNodes that are children of this node.
+   * @return childrenIds
+  */
+  
+  @Schema(name = &quot;childrenIds&quot;, description = &quot;Ordered list of ids of LayerTreeNodes that are children of this node.&quot;, required = false)
+  public List&lt;String&gt; getChildrenIds() {
+<span class="fc" id="L141">    return childrenIds;</span>
+  }
+
+  public void setChildrenIds(List&lt;String&gt; childrenIds) {
+<span class="nc" id="L145">    this.childrenIds = childrenIds;</span>
+<span class="nc" id="L146">  }</span>
+
+  @Override
+  public boolean equals(Object o) {
+<span class="nc bnc" id="L150" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L151">      return true;</span>
+    }
+<span class="nc bnc" id="L153" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L154">      return false;</span>
+    }
+<span class="nc" id="L156">    LayerTreeNode layerTreeNode = (LayerTreeNode) o;</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">    return Objects.equals(this.id, layerTreeNode.id) &amp;&amp;</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">        Objects.equals(this.appLayerId, layerTreeNode.appLayerId) &amp;&amp;</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        Objects.equals(this.root, layerTreeNode.root) &amp;&amp;</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        Objects.equals(this.name, layerTreeNode.name) &amp;&amp;</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">        Objects.equals(this.childrenIds, layerTreeNode.childrenIds);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L166">    return Objects.hash(id, appLayerId, root, name, childrenIds);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L171">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L172">    sb.append(&quot;class LayerTreeNode {\n&quot;);</span>
+<span class="nc" id="L173">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L174">    sb.append(&quot;    appLayerId: &quot;).append(toIndentedString(appLayerId)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L175">    sb.append(&quot;    root: &quot;).append(toIndentedString(root)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L176">    sb.append(&quot;    name: &quot;).append(toIndentedString(name)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L177">    sb.append(&quot;    childrenIds: &quot;).append(toIndentedString(childrenIds)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L178">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L179">    return sb.toString();</span>
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+<span class="nc bnc" id="L187" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L188">      return &quot;null&quot;;</span>
+    }
+<span class="nc" id="L190">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

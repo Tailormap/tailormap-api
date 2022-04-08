@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -186,97 +186,99 @@ implements <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#crs(nl.b3p.tailormap.api.model.CoordinateReferenceSystem)">crs</a></span>&#8203;(<a href="CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">CoordinateReferenceSystem</a>&nbsp;crs)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#displayName(java.lang.String)">displayName</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;displayName)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#equals(java.lang.Object)">equals</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>&nbsp;o)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>@Valid <a href="CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">CoordinateReferenceSystem</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCrs()">getCrs</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Get crs</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDisplayName()">getDisplayName</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Get displayName</div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getId()">getId</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get id</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getIsBaseLayer()">getIsBaseLayer</a></span>()</code></th>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLayerName()">getLayerName</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Get isBaseLayer</div>
+<div class="block">Layer name as known by the service.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLegendImageUrl()">getLegendImageUrl</a></span>()</code></th>
+<td class="colLast">
+<div class="block">URL to an image with the layer legend.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMaxScale()">getMaxScale</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Maximum scale denominator at which this layer should be shown or is not blank.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMinScale()">getMinScale</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Minimum scale at which this layer should be shown or is not blank.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServiceId()">getServiceId</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Get serviceId</div>
+<div class="block">A reference to a Service id.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTitle()">getTitle</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Layer title or display name.</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUrl()">getUrl</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Get url</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a></code></td>
+<td class="colFirst"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVisible()">getVisible</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get visible</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hashCode()">hashCode</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#id(java.lang.Long)">id</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#layerName(java.lang.String)">layerName</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;layerName)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isBaseLayer(java.lang.Boolean)">isBaseLayer</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;isBaseLayer)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#legendImageUrl(java.lang.String)">legendImageUrl</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;legendImageUrl)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#serviceId(java.lang.Long)">serviceId</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;serviceId)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#maxScale(java.math.BigDecimal)">maxScale</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;maxScale)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i14" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCrs(nl.b3p.tailormap.api.model.CoordinateReferenceSystem)">setCrs</a></span>&#8203;(<a href="CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">CoordinateReferenceSystem</a>&nbsp;crs)</code></th>
+<td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#minScale(java.math.BigDecimal)">minScale</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;minScale)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i15" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setDisplayName(java.lang.String)">setDisplayName</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;displayName)</code></th>
+<td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#serviceId(java.lang.Long)">serviceId</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;serviceId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i16" class="altColor">
@@ -286,35 +288,50 @@ implements <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base
 </tr>
 <tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setIsBaseLayer(java.lang.Boolean)">setIsBaseLayer</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;isBaseLayer)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLayerName(java.lang.String)">setLayerName</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;layerName)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i18" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setServiceId(java.lang.Long)">setServiceId</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;serviceId)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLegendImageUrl(java.lang.String)">setLegendImageUrl</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;legendImageUrl)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setUrl(java.lang.String)">setUrl</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;url)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setMaxScale(java.math.BigDecimal)">setMaxScale</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;maxScale)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setVisible(java.lang.Boolean)">setVisible</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;visible)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setMinScale(java.math.BigDecimal)">setMinScale</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;minScale)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i21" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setServiceId(java.lang.Long)">setServiceId</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;serviceId)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i22" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setTitle(java.lang.String)">setTitle</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;title)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i23" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setVisible(java.lang.Boolean)">setVisible</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;visible)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i24" class="altColor">
+<td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#title(java.lang.String)">title</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;title)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i22" class="altColor">
-<td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#url(java.lang.String)">url</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;url)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i23" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#visible(java.lang.Boolean)">visible</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;visible)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -395,68 +412,70 @@ public&nbsp;@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api
 <pre class="methodSignature">public&nbsp;void&nbsp;setId&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id)</pre>
 </li>
 </ul>
-<a id="url(java.lang.String)">
+<a id="layerName(java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>url</h4>
-<pre class="methodSignature">public&nbsp;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;url&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;url)</pre>
+<h4>layerName</h4>
+<pre class="methodSignature">public&nbsp;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;layerName&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;layerName)</pre>
 </li>
 </ul>
-<a id="getUrl()">
+<a id="getLayerName()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getUrl</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getUrl()</pre>
-<div class="block">Get url</div>
+<h4>getLayerName</h4>
+<pre class="methodSignature">@NotNull
+public&nbsp;@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getLayerName()</pre>
+<div class="block">Layer name as known by the service.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>url</dd>
+<dd>layerName</dd>
 </dl>
 </li>
 </ul>
-<a id="setUrl(java.lang.String)">
+<a id="setLayerName(java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setUrl</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setUrl&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;url)</pre>
+<h4>setLayerName</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setLayerName&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;layerName)</pre>
 </li>
 </ul>
-<a id="displayName(java.lang.String)">
+<a id="title(java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>displayName</h4>
-<pre class="methodSignature">public&nbsp;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;displayName&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;displayName)</pre>
+<h4>title</h4>
+<pre class="methodSignature">public&nbsp;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;title&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;title)</pre>
 </li>
 </ul>
-<a id="getDisplayName()">
+<a id="getTitle()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getDisplayName</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getDisplayName()</pre>
-<div class="block">Get displayName</div>
+<h4>getTitle</h4>
+<pre class="methodSignature">@NotNull
+public&nbsp;@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getTitle()</pre>
+<div class="block">Layer title or display name.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>displayName</dd>
+<dd>title</dd>
 </dl>
 </li>
 </ul>
-<a id="setDisplayName(java.lang.String)">
+<a id="setTitle(java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setDisplayName</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setDisplayName&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;displayName)</pre>
+<h4>setTitle</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setTitle&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;title)</pre>
 </li>
 </ul>
 <a id="serviceId(java.lang.Long)">
@@ -476,7 +495,7 @@ public&nbsp;@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api
 <h4>getServiceId</h4>
 <pre class="methodSignature">@NotNull
 public&nbsp;@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;getServiceId()</pre>
-<div class="block">Get serviceId</div>
+<div class="block">A reference to a Service id.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>serviceId</dd>
@@ -507,7 +526,8 @@ public&nbsp;@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api
 <ul class="blockList">
 <li class="blockList">
 <h4>getVisible</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;getVisible()</pre>
+<pre class="methodSignature">@NotNull
+public&nbsp;@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;getVisible()</pre>
 <div class="block">Get visible</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -524,69 +544,102 @@ public&nbsp;@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api
 <pre class="methodSignature">public&nbsp;void&nbsp;setVisible&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;visible)</pre>
 </li>
 </ul>
-<a id="isBaseLayer(java.lang.Boolean)">
+<a id="minScale(java.math.BigDecimal)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>isBaseLayer</h4>
-<pre class="methodSignature">public&nbsp;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;isBaseLayer&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;isBaseLayer)</pre>
+<h4>minScale</h4>
+<pre class="methodSignature">public&nbsp;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;minScale&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;minScale)</pre>
 </li>
 </ul>
-<a id="getIsBaseLayer()">
+<a id="getMinScale()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getIsBaseLayer</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;getIsBaseLayer()</pre>
-<div class="block">Get isBaseLayer</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>isBaseLayer</dd>
-</dl>
-</li>
-</ul>
-<a id="setIsBaseLayer(java.lang.Boolean)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setIsBaseLayer</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setIsBaseLayer&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;isBaseLayer)</pre>
-</li>
-</ul>
-<a id="crs(nl.b3p.tailormap.api.model.CoordinateReferenceSystem)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>crs</h4>
-<pre class="methodSignature">public&nbsp;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;crs&#8203;(<a href="CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">CoordinateReferenceSystem</a>&nbsp;crs)</pre>
-</li>
-</ul>
-<a id="getCrs()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getCrs</h4>
+<h4>getMinScale</h4>
 <pre class="methodSignature">@Valid
-public&nbsp;@Valid <a href="CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">CoordinateReferenceSystem</a>&nbsp;getCrs()</pre>
-<div class="block">Get crs</div>
+public&nbsp;@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;getMinScale()</pre>
+<div class="block">Minimum scale at which this layer should be shown or is not blank. When absent there is no minimum. As reported by the service (ScaleHint or MinScaleDenominator).</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>crs</dd>
+<dd>minScale</dd>
 </dl>
 </li>
 </ul>
-<a id="setCrs(nl.b3p.tailormap.api.model.CoordinateReferenceSystem)">
+<a id="setMinScale(java.math.BigDecimal)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setCrs</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setCrs&#8203;(<a href="CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">CoordinateReferenceSystem</a>&nbsp;crs)</pre>
+<h4>setMinScale</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setMinScale&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;minScale)</pre>
+</li>
+</ul>
+<a id="maxScale(java.math.BigDecimal)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>maxScale</h4>
+<pre class="methodSignature">public&nbsp;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;maxScale&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;maxScale)</pre>
+</li>
+</ul>
+<a id="getMaxScale()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMaxScale</h4>
+<pre class="methodSignature">@Valid
+public&nbsp;@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;getMaxScale()</pre>
+<div class="block">Maximum scale denominator at which this layer should be shown or is not blank. When absent there is no maximum. As reported by the service (ScaleHint or MaxScaleDenominator).</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>maxScale</dd>
+</dl>
+</li>
+</ul>
+<a id="setMaxScale(java.math.BigDecimal)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setMaxScale</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setMaxScale&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;maxScale)</pre>
+</li>
+</ul>
+<a id="legendImageUrl(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>legendImageUrl</h4>
+<pre class="methodSignature">public&nbsp;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;legendImageUrl&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;legendImageUrl)</pre>
+</li>
+</ul>
+<a id="getLegendImageUrl()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getLegendImageUrl</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getLegendImageUrl()</pre>
+<div class="block">URL to an image with the layer legend.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>legendImageUrl</dd>
+</dl>
+</li>
+</ul>
+<a id="setLegendImageUrl(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setLegendImageUrl</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setLegendImageUrl&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;legendImageUrl)</pre>
 </li>
 </ul>
 <a id="equals(java.lang.Object)">
