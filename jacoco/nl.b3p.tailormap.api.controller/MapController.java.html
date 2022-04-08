@@ -191,109 +191,106 @@ import javax.validation.constraints.NotNull;
 
 <span class="fc bfc" id="L192" title="All 2 branches covered.">        for (StartLevel l : startLevels) {</span>
             // Check if this level is a child of a background level. In the API background levels
-            // are returned in a
-            // separate tree.
+            // are returned in a separate tree.
             // Only children of the Level with isBackground() set to true can be a StartLevel, so we
-            // need to check all
-            // parents only (not the Level of the StartLevel itself).
-<span class="fc" id="L199">            boolean isBackground = false;</span>
-<span class="fc" id="L200">            Level parentLevel = l.getLevel();</span>
-<span class="fc bfc" id="L201" title="All 4 branches covered.">            while (parentLevel != null &amp;&amp; !isBackground) {</span>
-<span class="fc" id="L202">                isBackground = parentLevel.isBackground();</span>
-<span class="fc" id="L203">                parentLevel = parentLevel.getParent();</span>
+            // need to check all parents only (not the Level of the StartLevel itself).
+<span class="fc" id="L197">            boolean isBackground = false;</span>
+<span class="fc" id="L198">            Level parentLevel = l.getLevel();</span>
+<span class="fc bfc" id="L199" title="All 4 branches covered.">            while (parentLevel != null &amp;&amp; !isBackground) {</span>
+<span class="fc" id="L200">                isBackground = parentLevel.isBackground();</span>
+<span class="fc" id="L201">                parentLevel = parentLevel.getParent();</span>
             }
 
-<span class="fc" id="L206">            Level startLevel = l.getLevel();</span>
+<span class="fc" id="L204">            Level startLevel = l.getLevel();</span>
             List&lt;LayerTreeNode&gt; treeNodeList;
             LayerTreeNode chosenRoot;
-<span class="fc bfc" id="L209" title="All 2 branches covered.">            if (isBackground) {</span>
-<span class="fc" id="L210">                treeNodeList = mapResponse.getBaseLayerTreeNodes();</span>
-<span class="fc" id="L211">                chosenRoot = rootBackgroundNode;</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">            if (isBackground) {</span>
+<span class="fc" id="L208">                treeNodeList = mapResponse.getBaseLayerTreeNodes();</span>
+<span class="fc" id="L209">                chosenRoot = rootBackgroundNode;</span>
             } else {
-<span class="fc" id="L213">                treeNodeList = mapResponse.getLayerTreeNodes();</span>
-<span class="fc" id="L214">                chosenRoot = rootNode;</span>
+<span class="fc" id="L211">                treeNodeList = mapResponse.getLayerTreeNodes();</span>
+<span class="fc" id="L212">                chosenRoot = rootNode;</span>
             }
 
-<span class="fc" id="L217">            levelQueue.add(startLevel);</span>
-<span class="fc bfc" id="L218" title="All 2 branches covered.">            while (!levelQueue.isEmpty()) {</span>
-<span class="fc" id="L219">                Level level = levelQueue.pop();</span>
-<span class="pc bpc" id="L220" title="1 of 2 branches missed.">                if (treeNodeMap.containsKey(level.getId())) {</span>
-<span class="nc" id="L221">                    continue;</span>
+<span class="fc" id="L215">            levelQueue.add(startLevel);</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">            while (!levelQueue.isEmpty()) {</span>
+<span class="fc" id="L217">                Level level = levelQueue.pop();</span>
+<span class="pc bpc" id="L218" title="1 of 2 branches missed.">                if (treeNodeMap.containsKey(level.getId())) {</span>
+<span class="nc" id="L219">                    continue;</span>
                 }
 
                 // Use a prefix to make the LayerTreeNode ids in the tree containing both Level and
-                // ApplicationLayer
-                // nodes unique
+                // ApplicationLayer nodes unique
 
-<span class="fc" id="L228">                LayerTreeNode childNode =</span>
+<span class="fc" id="L225">                LayerTreeNode childNode =</span>
                         new LayerTreeNode()
-<span class="fc" id="L230">                                .id(String.format(&quot;lvl_%d&quot;, level.getId()))</span>
-<span class="fc" id="L231">                                .name(level.getName())</span>
-<span class="fc" id="L232">                                .root(false)</span>
-<span class="fc" id="L233">                                .childrenIds(new ArrayList&lt;&gt;());</span>
+<span class="fc" id="L227">                                .id(String.format(&quot;lvl_%d&quot;, level.getId()))</span>
+<span class="fc" id="L228">                                .name(level.getName())</span>
+<span class="fc" id="L229">                                .root(false)</span>
+<span class="fc" id="L230">                                .childrenIds(new ArrayList&lt;&gt;());</span>
 
-<span class="fc" id="L235">                treeNodeList.add(childNode);</span>
-<span class="fc" id="L236">                treeNodeMap.put(level.getId(), childNode);</span>
+<span class="fc" id="L232">                treeNodeList.add(childNode);</span>
+<span class="fc" id="L233">                treeNodeMap.put(level.getId(), childNode);</span>
 
                 LayerTreeNode parentNode;
-<span class="pc bpc" id="L239" title="1 of 2 branches missed.">                if (level == startLevel) {</span>
-<span class="fc" id="L240">                    parentNode = chosenRoot;</span>
+<span class="pc bpc" id="L236" title="1 of 2 branches missed.">                if (level == startLevel) {</span>
+<span class="fc" id="L237">                    parentNode = chosenRoot;</span>
                 } else {
-<span class="nc" id="L242">                    parentNode = treeNodeMap.get(level.getParent().getId());</span>
+<span class="nc" id="L239">                    parentNode = treeNodeMap.get(level.getParent().getId());</span>
                 }
-<span class="fc" id="L244">                parentNode.addChildrenIdsItem(childNode.getId());</span>
+<span class="fc" id="L241">                parentNode.addChildrenIdsItem(childNode.getId());</span>
 
-<span class="fc" id="L246">                levelQueue.addAll(level.getChildren());</span>
-<span class="fc bfc" id="L247" title="All 2 branches covered.">                for (ApplicationLayer layer : level.getLayers()) {</span>
-<span class="fc" id="L248">                    StartLayer startLayer = layerMap.get(layer.getId());</span>
-<span class="pc bpc" id="L249" title="1 of 2 branches missed.">                    if (startLayer == null) {</span>
-<span class="nc" id="L250">                        continue;</span>
+<span class="fc" id="L243">                levelQueue.addAll(level.getChildren());</span>
+<span class="fc bfc" id="L244" title="All 2 branches covered.">                for (ApplicationLayer layer : level.getLayers()) {</span>
+<span class="fc" id="L245">                    StartLayer startLayer = layerMap.get(layer.getId());</span>
+<span class="pc bpc" id="L246" title="1 of 2 branches missed.">                    if (startLayer == null) {</span>
+<span class="nc" id="L247">                        continue;</span>
                     }
 
-<span class="fc" id="L253">                    LayerTreeNode layerNode =</span>
+<span class="fc" id="L250">                    LayerTreeNode layerNode =</span>
                             new LayerTreeNode()
-<span class="fc" id="L255">                                    .id(String.format(&quot;lyr_%d&quot;, layer.getId()))</span>
-<span class="fc" id="L256">                                    .name(layer.getLayerName())</span>
-<span class="fc" id="L257">                                    .appLayerId((int) (long) layer.getId())</span>
-<span class="fc" id="L258">                                    .root(false)</span>
-<span class="fc" id="L259">                                    .childrenIds(new ArrayList&lt;&gt;());</span>
+<span class="fc" id="L252">                                    .id(String.format(&quot;lyr_%d&quot;, layer.getId()))</span>
+<span class="fc" id="L253">                                    .name(layer.getLayerName())</span>
+<span class="fc" id="L254">                                    .appLayerId((int) (long) layer.getId())</span>
+<span class="fc" id="L255">                                    .root(false)</span>
+<span class="fc" id="L256">                                    .childrenIds(new ArrayList&lt;&gt;());</span>
 
-<span class="fc" id="L261">                    treeNodeList.add(layerNode);</span>
-<span class="fc" id="L262">                    childNode.addChildrenIdsItem(layerNode.getId());</span>
-<span class="fc" id="L263">                    visibleStartLayers.add(startLayer);</span>
-<span class="fc" id="L264">                }</span>
-<span class="fc" id="L265">            }</span>
-<span class="fc" id="L266">        }</span>
+<span class="fc" id="L258">                    treeNodeList.add(layerNode);</span>
+<span class="fc" id="L259">                    childNode.addChildrenIdsItem(layerNode.getId());</span>
+<span class="fc" id="L260">                    visibleStartLayers.add(startLayer);</span>
+<span class="fc" id="L261">                }</span>
+<span class="fc" id="L262">            }</span>
+<span class="fc" id="L263">        }</span>
 
         // Only add AppLayers visible in the LayerTreeNode graph to the response
-<span class="fc bfc" id="L269" title="All 2 branches covered.">        for (StartLayer l : visibleStartLayers) {</span>
-<span class="fc" id="L270">            AppLayer appLayer =</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">        for (StartLayer l : visibleStartLayers) {</span>
+<span class="fc" id="L267">            AppLayer appLayer =</span>
                     new AppLayer()
-<span class="fc" id="L272">                            .id(l.getApplicationLayer().getId())</span>
-<span class="fc" id="L273">                            .layerName(l.getApplicationLayer().getLayerName())</span>
+<span class="fc" id="L269">                            .id(l.getApplicationLayer().getId())</span>
+<span class="fc" id="L270">                            .layerName(l.getApplicationLayer().getLayerName())</span>
                             // TODO: see ApplicationLayer.getDisplayName(), but this method requires
                             // an EntityManager
-<span class="fc" id="L276">                            .title(l.getApplicationLayer().getLayerName())</span>
-<span class="fc" id="L277">                            .serviceId(l.getApplicationLayer().getService().getId())</span>
-<span class="fc" id="L278">                            .visible(l.isChecked());</span>
+<span class="fc" id="L273">                            .title(l.getApplicationLayer().getLayerName())</span>
+<span class="fc" id="L274">                            .serviceId(l.getApplicationLayer().getService().getId())</span>
+<span class="fc" id="L275">                            .visible(l.isChecked());</span>
 
-<span class="fc" id="L280">            mapResponse.addAppLayersItem(appLayer);</span>
+<span class="fc" id="L277">            mapResponse.addAppLayersItem(appLayer);</span>
 
-<span class="fc" id="L282">            GeoService geoService = l.getApplicationLayer().getService();</span>
-<span class="fc" id="L283">            Service s =</span>
+<span class="fc" id="L279">            GeoService geoService = l.getApplicationLayer().getService();</span>
+<span class="fc" id="L280">            Service s =</span>
                     new Service()
-<span class="fc" id="L285">                            .url(geoService.getUrl())</span>
-<span class="fc" id="L286">                            .id(geoService.getId())</span>
-<span class="fc" id="L287">                            .name(geoService.getName())</span>
-<span class="fc" id="L288">                            .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))</span>
-<span class="fc" id="L289">                            .capabilities(geoService.getCapabilitiesDoc());</span>
-<span class="fc bfc" id="L290" title="All 2 branches covered.">            if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {</span>
-<span class="fc" id="L291">                s.tilingProtocol(</span>
-<span class="fc" id="L292">                        Service.TilingProtocolEnum.fromValue(</span>
-<span class="fc" id="L293">                                ((TileService) geoService).getTilingProtocol()));</span>
+<span class="fc" id="L282">                            .url(geoService.getUrl())</span>
+<span class="fc" id="L283">                            .id(geoService.getId())</span>
+<span class="fc" id="L284">                            .name(geoService.getName())</span>
+<span class="fc" id="L285">                            .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))</span>
+<span class="fc" id="L286">                            .capabilities(geoService.getCapabilitiesDoc());</span>
+<span class="fc bfc" id="L287" title="All 2 branches covered.">            if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {</span>
+<span class="fc" id="L288">                s.tilingProtocol(</span>
+<span class="fc" id="L289">                        Service.TilingProtocolEnum.fromValue(</span>
+<span class="fc" id="L290">                                ((TileService) geoService).getTilingProtocol()));</span>
             }
-<span class="fc" id="L295">            mapResponse.addServicesItem(s);</span>
-<span class="fc" id="L296">        }</span>
-<span class="fc" id="L297">    }</span>
+<span class="fc" id="L292">            mapResponse.addServicesItem(s);</span>
+<span class="fc" id="L293">        }</span>
+<span class="fc" id="L294">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
