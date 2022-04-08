@@ -114,11 +114,14 @@ SPDX-License-Identifier: MIT
     <geotools.version>26.3</geotools.version>
     <spring.boot.version>${project.parent.version}</spring.boot.version>
     <!-- version overrides. see org.springframework.boot:spring-boot-dependencies eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
-    <!-- <jackson-bom.version>2.13.2</jackson-bom.version> -->
-    <!-- <hsqldb.version>2.6.1</hsqldb.version> -->
+    <jackson-bom.version>2.13.2.1</jackson-bom.version>
+    <hsqldb.version>2.6.1</hsqldb.version>
     <!-- <postgresql.version>42.3.3</postgresql.version> -->
+    <oracle-database.version>21.5.0.0</oracle-database.version>
+    <mssql-jdbc.version>9.4.1.jre11</mssql-jdbc.version>
+    <webjars-locator-core.version>0.50</webjars-locator-core.version>
     <!-- junit-jupiter.version>5.8.2</junit-jupiter.version -->
-    <maven.surefire.version>3.0.0-M5</maven.surefire.version>
+    <maven.surefire.version>3.0.0-M6</maven.surefire.version>
     <maven-surefire-plugin.version>${maven.surefire.version}</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>${maven.surefire.version}</maven-failsafe-plugin.version>
     <maven-deploy-plugin.version>3.0.0-M2</maven-deploy-plugin.version>
@@ -219,12 +222,10 @@ SPDX-License-Identifier: MIT
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
       <artifactId>mssql-jdbc</artifactId>
-      <!--      <version>${mssql.version}</version>-->
     </dependency>
     <dependency>
       <groupId>com.oracle.database.jdbc</groupId>
       <artifactId>ojdbc11</artifactId>
-      <!--      <version>${oracle.version}</version>-->
     </dependency>
     <dependency>
       <groupId>org.tailormap</groupId>
