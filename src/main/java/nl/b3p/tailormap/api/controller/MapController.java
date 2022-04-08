@@ -190,11 +190,14 @@ public class MapController {
         List<StartLayer> visibleStartLayers = new ArrayList<>();
 
         for (StartLevel l : startLevels) {
-            // Check if this level is a background level.
+            // Check if this level is a child of a background level. In the API background levels are returned in a
+            // separate tree.
+            // Only children of the Level with isBackground() set to true can be a StartLevel, so we need to check all
+            // parents only (not the Level of the StartLevel itself).
             boolean isBackground = false;
             Level parentLevel = l.getLevel();
             while (parentLevel != null && !isBackground) {
-                isBackground |= parentLevel.isBackground();
+                isBackground = parentLevel.isBackground();
                 parentLevel = parentLevel.getParent();
             }
 
@@ -215,6 +218,9 @@ public class MapController {
                 if (treeNodeMap.containsKey(level.getId())) {
                     continue;
                 }
+
+                // Use a prefix to make the LayerTreeNode ids in the tree containing both Level and ApplicationLayer
+                // nodes unique
 
                 LayerTreeNode childNode =
                         new LayerTreeNode()
@@ -262,6 +268,7 @@ public class MapController {
                     new AppLayer()
                             .id(l.getApplicationLayer().getId())
                             .layerName(l.getApplicationLayer().getLayerName())
+                            // TODO: see ApplicationLayer.getDisplayName(), but this method requires an EntityManager
                             .title(l.getApplicationLayer().getLayerName())
                             .serviceId(l.getApplicationLayer().getService().getId())
                             .visible(l.isChecked());
