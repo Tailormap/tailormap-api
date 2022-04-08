@@ -37,6 +37,12 @@ servers:
       basePath:
         description: base path
         default: '/api'
+  - description: 'test server'
+    url: 'https://snapshot.tailormap.nl{basePath}'
+    variables:
+      basePath:
+        description: base path
+        default: '/api'
 
 components:
   securitySchemes:
@@ -176,7 +182,9 @@ paths:
   /version:
     summary: 'Provides version information of the backend'
     get:
-      security: []
+      operationId: 'getVersion'
+      summary: 'Provides version information of the backend'
+      security: [ ]
       responses:
         '200':
           description: 'OK'
@@ -187,10 +195,12 @@ paths:
                 databaseversion: '49'
                 apiVersion: 'v1'
 
+
   /login:
-    summary: form login url
+    summary: 'form login url'
     post:
-      summary: Logs in and returns the authentication cookie
+      operationId: 'login'
+      summary: 'Logs in and returns the authentication cookie'
       security: []
       requestBody:
         required: true
@@ -209,9 +219,10 @@ paths:
                 - password
       responses:
         '200':
-          description: >
-            Successfully authenticated.
-            The session ID is returned in a cookie named `JSESSIONID`. You need to include this cookie in subsequent requests.
+          description: '
+            Successfully authenticated. The session ID is returned in a cookie named `JSESSIONID`. 
+            You need to include this cookie in subsequent requests.
+            '
           headers:
             Set-Cookie:
               schema:
@@ -221,15 +232,17 @@ paths:
         '403':
           description: 'Authentication failed'
 
+
   /app/:
-    summary: '
-    Use this endpoint to get the id of the requested or default application.
-    Either call this with `name` and optional `version` or `appId` alone.
-    Will return general setup information such as name, appId, language, but not map specific information.
-    '
+    description: 'Will return general setup information such as name, appId, language, but not map specific information.'
     get:
+      operationId: 'validateApp'
+      description: '
+        Use this endpoint to get the id of the requested or default application.
+        Either call this with `name` and optional `version` or `appId` alone.
+        '
       security:
-        - formAuth: []
+        - formAuth: [ ]
       parameters:
         - description: 'app name from applications list'
           in: query
@@ -307,11 +320,12 @@ paths:
 
 
   /app/{appId}/map:
-    summary: 'Retrieve the map''s bounding box, projection, language and (optional) base layers.
-    This document provides all that is necessary to draw a map with (optional) baselayers.'
     get:
+      description: 'Retrieve the map''s bounding box, projection, language and (optional) base layers.
+        This document provides all that is necessary to draw a map with (optional) baselayers.'
+      operationId: 'getMap'
       security:
-        - formAuth: []
+        - formAuth: [ ]
       parameters:
         - description: 'application id'
           in: path
@@ -350,9 +364,11 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
+
   /app/{appId}/components:
-    summary: 'Retrieve all configured components'
     get:
+      summary: 'Retrieve all configured components'
+      operationId: 'getComponents'
       security:
         - formAuth: [ ]
       parameters:
@@ -384,13 +400,16 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
+
   /app/{appId}/layer/{layerId}/describe:
-    summary: '
+    description: '
     Returns metadata and featuretype of the requested app layer, aka. layer details
     '
     get:
+      operationId: 'describeLayer'
+      description: 'provides layer details'
       security:
-        - formAuth: []
+        - formAuth: [ ]
       parameters:
         - description: 'application id'
           in: path
@@ -420,12 +439,14 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
+
   /app/{appId}/layer/{layerId}/features:
     summary: 'Use this endpoint to access features.'
     get:
+      operationId: 'getFeatures'
       description: 'retrieve features that fulfill the requested conditions (parameters).'
       security:
-        - formAuth: []
+        - formAuth: [ ]
       parameters:
         - description: 'application id'
           in: path
@@ -509,11 +530,12 @@ paths:
             application/json:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+    # TODO elaborate design
     post:
-      # TODO elaborate design
+      operationId: 'editFeature'
       description: 'update a feature'
       security:
-        - formAuth: []
+        - formAuth: [ ]
       parameters:
         - description: 'application id'
           in: path
@@ -538,11 +560,12 @@ paths:
             application/json:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+    # TODO elaborate design
     put:
-      # TODO elaborate design
+      operationId: 'createFeature'
       description: 'create a new feature'
       security:
-        - formAuth: []
+        - formAuth: [ ]
       parameters:
         - description: 'application id'
           in: path
@@ -567,10 +590,11 @@ paths:
             application/json:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+    # TODO elaborate design
     delete:
-      # TODO elaborate design
+      operationId: 'deleteFeature'
       security:
-        - formAuth: []
+        - formAuth: [ ]
       description: 'delete a feature'
       parameters:
         - description: 'application id'
