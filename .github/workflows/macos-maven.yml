@@ -40,7 +40,7 @@ jobs:
           mvn -B -fae -e verify
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
 
       - name: Cleanup snapshots
         run: |
