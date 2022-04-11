@@ -55,7 +55,7 @@ jobs:
       - name: Archive Maven Site
         if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
         id: archive-site
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: archive-site
           retention-days: 2
