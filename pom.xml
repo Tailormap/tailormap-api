@@ -177,6 +177,14 @@ SPDX-License-Identifier: MIT
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-aop</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
@@ -501,6 +509,10 @@ SPDX-License-Identifier: MIT
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>pl.project13.maven</groupId>
+        <artifactId>git-commit-id-plugin</artifactId>
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -997,6 +1009,8 @@ SPDX-License-Identifier: MIT
                     <exclude>org.springframework.boot:spring-boot-starter-security</exclude>
                     <exclude>org.springframework.security:spring-security-test</exclude>
                     <exclude>org.webjars:webjars-locator-core</exclude>
+                    <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
+                    <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
                     <!--
                     TODO this should be fixed; either by importing or exluding the transitive dependencies
                    org.tailormap:viewer-config-persistence:jar:5.9.12-SNAPSHOT:compile has transitive dependencies:
