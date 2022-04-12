@@ -4,6 +4,10 @@
  * SPDX-License-Identifier: MIT
  */ package nl.b3p.tailormap.api.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -13,6 +17,7 @@ import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.security.SecurityConfig;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -24,6 +29,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootTest(
         classes = {
@@ -49,6 +58,115 @@ class MapControllerIntegrationTest {
                 .andExpect(jsonPath("$.maxExtent").isMap())
                 .andExpect(jsonPath("$.services").isArray())
                 .andExpect(jsonPath("$.crs.code").value("EPSG:28992"));
+    }
+
+    @Test
+    void should_show_filtered_layer_tree() throws Exception {
+        MvcResult result =
+                mockMvc.perform(get("/app/1/map"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn();
+
+        Map<String, JSONObject> treeNodeMap = new HashMap<>();
+        String body = result.getResponse().getContentAsString();
+        JSONObject rootNode = null;
+        for (Object _node : (new JSONObject(body)).getJSONArray("layerTreeNodes")) {
+            JSONObject node = (JSONObject) _node;
+            String id = node.getString("id");
+            assertFalse(
+                    treeNodeMap.containsKey(id),
+                    String.format("node %s appears multiple times", id));
+            treeNodeMap.put(id, node);
+
+            if (node.getBoolean("root")) {
+                assertNull(rootNode, "Root node already exists");
+                rootNode = node;
+            }
+        }
+
+        assertNotNull(rootNode, "no root node found");
+        assertEquals(
+                rootNode.getJSONArray("childrenIds").length(),
+                2,
+                "root node had wrong amount of children");
+
+        JSONObject groenNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(0));
+        assertNotNull(groenNode, "first child of root is not valid");
+        assertEquals(
+                groenNode.getJSONArray("childrenIds").length(),
+                3,
+                "first node of root had wrong amount of children");
+        assertEquals(
+                treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(0)).getInt("appLayerId"),
+                2,
+                "incorrect appLayerId for first child");
+        assertEquals(
+                treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(1)).getInt("appLayerId"),
+                3,
+                "incorrect appLayerId for second child");
+        assertEquals(
+                treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(2)).getInt("appLayerId"),
+                4,
+                "incorrect appLayerId for third child");
+
+        JSONObject woonplaatsenNode =
+                treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(1));
+        assertNotNull(woonplaatsenNode, "second child of root is not valid");
+        assertEquals(
+                woonplaatsenNode.getJSONArray("childrenIds").length(),
+                1,
+                "second node of root had wrong amount of children");
+        assertEquals(
+                treeNodeMap
+                        .get(woonplaatsenNode.getJSONArray("childrenIds").get(0))
+                        .getInt("appLayerId"),
+                5,
+                "incorrect appLayerId for first child (of second child)");
+    }
+
+    @Test
+    void should_show_filtered_base_layer_tree() throws Exception {
+        MvcResult result =
+                mockMvc.perform(get("/app/1/map"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn();
+
+        Map<String, JSONObject> treeNodeMap = new HashMap<>();
+        String body = result.getResponse().getContentAsString();
+        JSONObject rootNode = null;
+
+        for (Object _node : (new JSONObject(body)).getJSONArray("baseLayerTreeNodes")) {
+            JSONObject node = (JSONObject) _node;
+            String id = node.getString("id");
+            assertFalse(
+                    treeNodeMap.containsKey(id),
+                    String.format("node %s appears multiple times", id));
+            treeNodeMap.put(id, node);
+
+            if (node.getBoolean("root")) {
+                assertNull(rootNode, "Root node already exists");
+                rootNode = node;
+            }
+        }
+
+        assertNotNull(rootNode, "no root node found");
+        assertEquals(
+                rootNode.getJSONArray("childrenIds").length(),
+                1,
+                "root node had wrong amount of children");
+
+        JSONObject osmNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").get(0));
+        assertNotNull(osmNode, "first child of root is not valid");
+        assertEquals(
+                osmNode.getJSONArray("childrenIds").length(),
+                1,
+                "first node of root had wrong amount of children");
+        assertEquals(
+                treeNodeMap.get(osmNode.getJSONArray("childrenIds").get(0)).getInt("appLayerId"),
+                1,
+                "incorrect appLayerId for first child");
     }
 
     @Test
