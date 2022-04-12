@@ -61,7 +61,6 @@ class MapControllerIntegrationTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_show_filtered_layer_tree() throws Exception {
         MvcResult result =
                 mockMvc.perform(get("/app/1/map"))
@@ -127,7 +126,6 @@ class MapControllerIntegrationTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_show_filtered_base_layer_tree() throws Exception {
         MvcResult result =
                 mockMvc.perform(get("/app/1/map"))
