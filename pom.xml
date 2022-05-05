@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.6.6</version>
+    <version>2.6.7</version>
   </parent>
   <groupId>nl.b3p.tailormap</groupId>
   <artifactId>tailormap-api</artifactId>
@@ -116,7 +116,7 @@ SPDX-License-Identifier: MIT
     <!-- version overrides. see org.springframework.boot:spring-boot-dependencies eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
     <jackson-bom.version>2.13.2.1</jackson-bom.version>
     <hsqldb.version>2.6.1</hsqldb.version>
-    <!-- <postgresql.version>42.3.3</postgresql.version> -->
+    <postgresql.version>42.3.5</postgresql.version>
     <oracle-database.version>21.5.0.0</oracle-database.version>
     <mssql-jdbc.version>9.4.1.jre11</mssql-jdbc.version>
     <webjars-locator-core.version>0.50</webjars-locator-core.version>
