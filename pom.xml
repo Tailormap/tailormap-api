@@ -107,7 +107,7 @@ SPDX-License-Identifier: MIT
     <!--    <project.build.outputTimestamp>2021-11-11T16:01:17Z</project.build.outputTimestamp>-->
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <org.tailormap.version>5.9.18</org.tailormap.version>
+    <org.tailormap.version>5.9.21</org.tailormap.version>
     <!-- TODO read this from persistence -->
     <org.tailormap.database.version>49</org.tailormap.database.version>
     <!-- make sure to keep geotools version and tailormap version in sync -->
@@ -130,13 +130,13 @@ SPDX-License-Identifier: MIT
     <maven-pmd-plugin.version>3.16.0</maven-pmd-plugin.version>
     <versions-maven-plugin.version>2.10.0</versions-maven-plugin.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
-    <dependency-check-maven.version>7.0.4</dependency-check-maven.version>
+    <dependency-check-maven.version>7.1.0</dependency-check-maven.version>
     <modernizer-maven-plugin.version>2.4.0</modernizer-maven-plugin.version>
     <!-- docker.b3p.nl or alternatively ghcr.io  -->
     <docker.deploy.repo>ghcr.io</docker.deploy.repo>
     <!-- skip QA checks -->
     <skipQA>false</skipQA>
-    <pmd.version>6.44.0</pmd.version>
+    <pmd.version>6.45.0</pmd.version>
     <errorProne.version>2.10.0</errorProne.version>
     <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
     <compiler.lint>deprecation,unchecked</compiler.lint>
@@ -478,7 +478,7 @@ SPDX-License-Identifier: MIT
         </plugin>
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.11.0</version>
+          <version>3.12.0</version>
         </plugin>
         <plugin>
           <groupId>org.jacoco</groupId>
@@ -1143,7 +1143,7 @@ SPDX-License-Identifier: MIT
       </plugin>
       <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>3.3.0</version>
         <reportSets>
           <reportSet>
             <reports>
