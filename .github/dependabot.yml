@@ -23,6 +23,8 @@ updates:
       day: saturday
       time: "21:00"
       timezone: Europe/Amsterdam
+    assignees:
+      - mprins
     labels:
       - infrastucture
 
@@ -33,7 +35,6 @@ updates:
       day: saturday
       time: "21:00"
       timezone: Europe/Amsterdam
-    open-pull-requests-limit: 25
     target-branch: main
     reviewers:
       - mprins
@@ -44,4 +45,5 @@ updates:
     ignore:
       # stay on Java 11 for now
       - dependency-name: "eclipse-temurin"
-        update-types: ["version-update:semver-major"]
+        versions:
+          - ">= 12"
