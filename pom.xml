@@ -115,6 +115,7 @@ SPDX-License-Identifier: MIT
     <spring.boot.version>${project.parent.version}</spring.boot.version>
     <!-- version overrides. see org.springframework.boot:spring-boot-dependencies eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
     <jackson-bom.version>2.13.2.1</jackson-bom.version>
+    <micrometer.version>1.9.0</micrometer.version>
     <hsqldb.version>2.6.1</hsqldb.version>
     <postgresql.version>42.3.5</postgresql.version>
     <oracle-database.version>21.5.0.0</oracle-database.version>
@@ -264,7 +265,7 @@ SPDX-License-Identifier: MIT
         <exclusion>
           <!-- SLF4J is provided by SpringBoot through logback -->
           <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
+          <artifactId>slf4j-reload4j12</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -319,9 +320,8 @@ SPDX-License-Identifier: MIT
       <version>${geotools.version}</version>
     </dependency>
     <dependency>
-      <!-- TODO consider using a different referencing library -->
       <groupId>org.geotools</groupId>
-      <artifactId>gt-epsg-wkt</artifactId>
+      <artifactId>gt-epsg-hsql</artifactId>
       <version>${geotools.version}</version>
     </dependency>
     <dependency>
@@ -851,7 +851,7 @@ SPDX-License-Identifier: MIT
             </goals>
             <phase>generate-resources</phase>
             <configuration>
-              <!-- for some reason we need to manuall extract some webjar stuff to make things work... -->
+              <!-- for some reason we need to manually extract some webjar stuff to make things work... -->
               <artifactItems>
                 <artifactItem>
                   <groupId>org.webjars</groupId>
@@ -997,6 +997,7 @@ SPDX-License-Identifier: MIT
                     <exclude>junit:junit</exclude>
                     <exclude>org.hamcrest:hamcrest-core</exclude>
                     <exclude>log4j:log4j</exclude>
+                    <exclude>joda-time:joda-time</exclude>
                   </excludes>
                 </bannedDependencies>
                 <banTransitiveDependencies>
@@ -1012,7 +1013,7 @@ SPDX-License-Identifier: MIT
                     <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
                     <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
                     <!--
-                    TODO this should be fixed; either by importing or exluding the transitive dependencies
+                    TODO this should be fixed; either by importing or excluding the transitive dependencies
                    org.tailormap:viewer-config-persistence:jar:5.9.12-SNAPSHOT:compile has transitive dependencies:
                       org.apache.commons:commons-lang3:jar:3.12.0:compile
                       commons-beanutils:commons-beanutils:jar:1.9.4:compile
