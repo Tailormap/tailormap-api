@@ -127,6 +127,7 @@ SPDX-License-Identifier: MIT
     <maven-failsafe-plugin.version>${maven.surefire.version}</maven-failsafe-plugin.version>
     <maven-deploy-plugin.version>3.0.0-M2</maven-deploy-plugin.version>
     <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
+    <maven-javadoc-plugin.version>3.4.0</maven-javadoc-plugin.version>
     <!-- end version overrides -->
     <maven-pmd-plugin.version>3.16.0</maven-pmd-plugin.version>
     <versions-maven-plugin.version>2.10.0</versions-maven-plugin.version>
@@ -244,7 +245,7 @@ SPDX-License-Identifier: MIT
         <exclusion>
           <!-- SLF4J is provided by SpringBoot through logback -->
           <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
+          <artifactId>slf4j-reload4j12</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -478,7 +479,7 @@ SPDX-License-Identifier: MIT
         </plugin>
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.12.0</version>
+          <version>4.0.0-M1</version>
         </plugin>
         <plugin>
           <groupId>org.jacoco</groupId>
