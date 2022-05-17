@@ -112,22 +112,23 @@
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>             <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>         mockMvc.perform(
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>                         get(<span class="jxr_string">"/app/1/layer/2/features"</span>)
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>                                 .param(<span class="jxr_string">"x"</span>, <span class="jxr_string">"5.04173"</span>)
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>                                 .param(<span class="jxr_string">"y"</span>, <span class="jxr_string">"52.11937"</span>)
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>                                 .param(<span class="jxr_string">"crs"</span>, <span class="jxr_string">"EPSG:4326"</span>)
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>                                 .param(<span class="jxr_string">"simplify"</span>, <span class="jxr_string">"true"</span>)
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>                                 .param(<span class="jxr_string">"distance"</span>, <em class="jxr_comment">/*~ 4 meter*/</em> <span class="jxr_string">"0.00004"</span>))
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>                 .andExpect(status().isOk())
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isMap())
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attributes.naam"</span>).value(<span class="jxr_string">"Utrecht"</span>))
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attributes.ligtInLandNaam"</span>).value(<span class="jxr_string">"Nederland"</span>));
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>     }
-<a class="jxr_linenumber" name="L122" href="#L122">122</a> }
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>                                 <em class="jxr_comment">// note flipped axis</em>
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>                                 .param(<span class="jxr_string">"y"</span>, <span class="jxr_string">"5.04173"</span>)
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>                                 .param(<span class="jxr_string">"x"</span>, <span class="jxr_string">"52.11937"</span>)
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>                                 .param(<span class="jxr_string">"crs"</span>, <span class="jxr_string">"EPSG:4326"</span>)
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>                                 .param(<span class="jxr_string">"simplify"</span>, <span class="jxr_string">"true"</span>)
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>                                 .param(<span class="jxr_string">"distance"</span>, <em class="jxr_comment">/*~ 4 meter*/</em> <span class="jxr_string">"0.00004"</span>))
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>                 .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isMap())
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attributes.naam"</span>).value(<span class="jxr_string">"Utrecht"</span>))
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attributes.ligtInLandNaam"</span>).value(<span class="jxr_string">"Nederland"</span>));
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>     }
+<a class="jxr_linenumber" name="L123" href="#L123">123</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2022 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

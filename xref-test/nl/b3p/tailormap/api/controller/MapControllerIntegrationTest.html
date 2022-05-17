@@ -79,7 +79,7 @@
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          Map&lt;String, JSONObject&gt; treeNodeMap = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          String body = result.getResponse().getContentAsString();
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>          JSONObject rootNode = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>          <strong class="jxr_keyword">for</strong> (Object _node : (<strong class="jxr_keyword">new</strong> JSONObject(body)).getJSONArray(<span class="jxr_string">"layerTreeNodes"</span>)) {
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          <strong class="jxr_keyword">for</strong> (Object _node : <strong class="jxr_keyword">new</strong> JSONObject(body).getJSONArray(<span class="jxr_string">"layerTreeNodes"</span>)) {
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>              JSONObject node = (JSONObject) _node;
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>              String id = node.getString(<span class="jxr_string">"id"</span>);
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>              assertFalse(
@@ -145,7 +145,7 @@
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         String body = result.getResponse().getContentAsString();
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>         JSONObject rootNode = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> 
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>         <strong class="jxr_keyword">for</strong> (Object _node : (<strong class="jxr_keyword">new</strong> JSONObject(body)).getJSONArray(<span class="jxr_string">"baseLayerTreeNodes"</span>)) {
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>         <strong class="jxr_keyword">for</strong> (Object _node : <strong class="jxr_keyword">new</strong> JSONObject(body).getJSONArray(<span class="jxr_string">"baseLayerTreeNodes"</span>)) {
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>             JSONObject node = (JSONObject) _node;
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>             String id = node.getString(<span class="jxr_string">"id"</span>);
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>             assertFalse(

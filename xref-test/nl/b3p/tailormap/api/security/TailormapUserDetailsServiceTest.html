@@ -88,13 +88,11 @@
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>          UsernameNotFoundException thrown =
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>                  assertThrows(
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>                          UsernameNotFoundException.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>                          () -&gt; {
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>                              userDetailsService.loadUserByUsername(<span class="jxr_string">"doesnotexist"</span>);
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>                          },
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>                          <span class="jxr_string">"UsernameNotFoundException was expected"</span>);
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>          assertNotNull(thrown, <span class="jxr_string">"thrown exception should not be null"</span>);
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>      }
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>  }
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>                          () -&gt; userDetailsService.loadUserByUsername(<span class="jxr_string">"doesnotexist"</span>),
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>                          <span class="jxr_string">"UsernameNotFoundException was expected"</span>);
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          assertNotNull(thrown, <span class="jxr_string">"thrown exception should not be null"</span>);
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      }
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2022 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

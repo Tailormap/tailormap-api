@@ -37,7 +37,7 @@ import java.util.Map;
         // Params which can not be overridden below
 <span class="nc" id="L38">        String wfsUrl = fs.getUrl();</span>
 <span class="nc bnc" id="L39" title="All 4 branches missed.">        if (!wfsUrl.endsWith(&quot;&amp;&quot;) &amp;&amp; !wfsUrl.endsWith(&quot;?&quot;)) {</span>
-<span class="nc bnc" id="L40" title="All 2 branches missed.">            wfsUrl += wfsUrl.indexOf(&quot;?&quot;) &gt;= 0 ? &quot;&amp;&quot; : &quot;?&quot;;</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">            wfsUrl += wfsUrl.contains(&quot;?&quot;) ? &quot;&amp;&quot; : &quot;?&quot;;</span>
         }
 <span class="nc" id="L42">        wfsUrl = wfsUrl + &quot;REQUEST=GetCapabilities&amp;SERVICE=WFS&quot;;</span>
 <span class="nc bnc" id="L43" title="All 2 branches missed.">        if (!wfsUrl.toUpperCase().contains(&quot;VERSION&quot;)) {</span>

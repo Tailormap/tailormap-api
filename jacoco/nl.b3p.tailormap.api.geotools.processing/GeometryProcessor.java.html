@@ -72,7 +72,7 @@ public final class GeometryProcessor {
     private static String simplify(@NotNull Geometry geom) {
 <span class="fc" id="L73">        final int megabytes = (2097152 /* 2MB is the default tomcat max post size */ - 100 * 1024);</span>
 
-<span class="fc" id="L75">        LOG.debug(geom.getPrecisionModel().getScale());</span>
+<span class="fc" id="L75">        LOG.debug(&quot;PrecisionModel scale: &quot; + geom.getPrecisionModel().getScale());</span>
 <span class="fc" id="L76">        PrecisionModel pm = new PrecisionModel(geom.getPrecisionModel());</span>
 <span class="fc" id="L77">        GeometryPrecisionReducer gpr = new GeometryPrecisionReducer(pm);</span>
 <span class="fc" id="L78">        geom = gpr.reduce(geom);</span>
