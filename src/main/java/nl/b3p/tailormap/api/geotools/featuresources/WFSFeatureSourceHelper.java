@@ -37,7 +37,7 @@ public class WFSFeatureSourceHelper implements FeatureSourceHelper {
         // Params which can not be overridden below
         String wfsUrl = fs.getUrl();
         if (!wfsUrl.endsWith("&") && !wfsUrl.endsWith("?")) {
-            wfsUrl += wfsUrl.indexOf("?") >= 0 ? "&" : "?";
+            wfsUrl += wfsUrl.contains("?") ? "&" : "?";
         }
         wfsUrl = wfsUrl + "REQUEST=GetCapabilities&SERVICE=WFS";
         if (!wfsUrl.toUpperCase().contains("VERSION")) {

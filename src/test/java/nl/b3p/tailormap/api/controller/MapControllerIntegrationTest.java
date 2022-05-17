@@ -71,7 +71,7 @@ class MapControllerIntegrationTest {
         Map<String, JSONObject> treeNodeMap = new HashMap<>();
         String body = result.getResponse().getContentAsString();
         JSONObject rootNode = null;
-        for (Object _node : (new JSONObject(body)).getJSONArray("layerTreeNodes")) {
+        for (Object _node : new JSONObject(body).getJSONArray("layerTreeNodes")) {
             JSONObject node = (JSONObject) _node;
             String id = node.getString("id");
             assertFalse(
@@ -137,7 +137,7 @@ class MapControllerIntegrationTest {
         String body = result.getResponse().getContentAsString();
         JSONObject rootNode = null;
 
-        for (Object _node : (new JSONObject(body)).getJSONArray("baseLayerTreeNodes")) {
+        for (Object _node : new JSONObject(body).getJSONArray("baseLayerTreeNodes")) {
             JSONObject node = (JSONObject) _node;
             String id = node.getString("id");
             assertFalse(

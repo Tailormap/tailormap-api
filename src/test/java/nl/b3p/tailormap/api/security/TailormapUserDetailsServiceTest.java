@@ -80,9 +80,7 @@ class TailormapUserDetailsServiceTest {
         UsernameNotFoundException thrown =
                 assertThrows(
                         UsernameNotFoundException.class,
-                        () -> {
-                            userDetailsService.loadUserByUsername("doesnotexist");
-                        },
+                        () -> userDetailsService.loadUserByUsername("doesnotexist"),
                         "UsernameNotFoundException was expected");
         assertNotNull(thrown, "thrown exception should not be null");
     }
