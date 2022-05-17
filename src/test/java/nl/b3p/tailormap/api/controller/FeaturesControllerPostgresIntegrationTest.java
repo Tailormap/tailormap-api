@@ -104,8 +104,9 @@ class FeaturesControllerPostgresIntegrationTest {
             throws Exception {
         mockMvc.perform(
                         get("/app/1/layer/2/features")
-                                .param("x", "5.04173")
-                                .param("y", "52.11937")
+                                // note flipped axis
+                                .param("y", "5.04173")
+                                .param("x", "52.11937")
                                 .param("crs", "EPSG:4326")
                                 .param("simplify", "true")
                                 .param("distance", /*~ 4 meter*/ "0.00004"))

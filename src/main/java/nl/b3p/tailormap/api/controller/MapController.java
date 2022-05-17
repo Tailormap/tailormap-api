@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import nl.b3p.tailormap.api.geotools.referencing.ReferencingHelper;
 import nl.b3p.tailormap.api.model.AppLayer;
 import nl.b3p.tailormap.api.model.Bounds;
 import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
@@ -145,6 +146,8 @@ public class MapController {
                     .maxx(a.getMaxExtent().getMaxx())
                     .maxy(a.getMaxExtent().getMaxy())
                     .crs(a.getMaxExtent().getCrs().getName());
+        } else {
+            maxExtent = ReferencingHelper.crsBoundsExtractor(c.getCode());
         }
         Bounds initialExtent = new Bounds();
         if (null != a.getStartExtent()) {
@@ -154,6 +157,8 @@ public class MapController {
                     .maxx(a.getStartExtent().getMaxx())
                     .maxy(a.getStartExtent().getMaxy())
                     .crs(a.getStartExtent().getCrs().getName());
+        } else {
+            initialExtent = maxExtent;
         }
 
         mapResponse.crs(c).maxExtent(maxExtent).initialExtent(initialExtent);

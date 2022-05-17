@@ -83,7 +83,7 @@ public class HSQLDBTestProfileJPAConfiguration {
         return transactionManager;
     }
 
-    private final Properties additionalProperties() {
+    private Properties additionalProperties() {
         final Properties hibernateProperties = new Properties();
 
         hibernateProperties.setProperty(
