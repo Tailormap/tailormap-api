@@ -107,11 +107,11 @@ SPDX-License-Identifier: MIT
     <!--    <project.build.outputTimestamp>2021-11-11T16:01:17Z</project.build.outputTimestamp>-->
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <org.tailormap.version>5.9.22-SNAPSHOT</org.tailormap.version>
+    <org.tailormap.version>5.9.22</org.tailormap.version>
     <!-- TODO read this from persistence -->
     <org.tailormap.database.version>49</org.tailormap.database.version>
     <!-- make sure to keep geotools version and tailormap version in sync -->
-    <geotools.version>27-RC</geotools.version>
+    <geotools.version>27.0</geotools.version>
     <spring.boot.version>${project.parent.version}</spring.boot.version>
     <!-- version overrides. see org.springframework.boot:spring-boot-dependencies eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
     <jackson-bom.version>2.13.2.1</jackson-bom.version>
