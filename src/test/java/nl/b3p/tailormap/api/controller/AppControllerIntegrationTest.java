@@ -149,7 +149,7 @@ class AppControllerIntegrationTest {
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_return_default_lang_when_application_language_not_configured() throws Exception {
         // unset language
-        applicationRepository.getById(1L).setLang(null);
+        applicationRepository.getReferenceById(1L).setLang(null);
 
         mockMvc.perform(get("/app").param("appId", "1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

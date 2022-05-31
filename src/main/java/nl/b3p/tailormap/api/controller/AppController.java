@@ -185,7 +185,7 @@ public class AppController {
             Metadata md = metadataRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);
             String appId = md.getConfigValue();
             Long id = Long.parseLong(appId);
-            return applicationRepository.getById(id);
+            return applicationRepository.getReferenceById(id);
         } catch (NullPointerException | EntityNotFoundException e) {
             logger.warn("No default application configured. " + e.getMessage());
             return null;
