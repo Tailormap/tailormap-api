@@ -185,7 +185,7 @@ import javax.persistence.EntityNotFoundException;
 <span class="fc" id="L185">            Metadata md = metadataRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);</span>
 <span class="fc" id="L186">            String appId = md.getConfigValue();</span>
 <span class="fc" id="L187">            Long id = Long.parseLong(appId);</span>
-<span class="fc" id="L188">            return applicationRepository.getById(id);</span>
+<span class="fc" id="L188">            return applicationRepository.getReferenceById(id);</span>
 <span class="fc" id="L189">        } catch (NullPointerException | EntityNotFoundException e) {</span>
 <span class="fc" id="L190">            logger.warn(&quot;No default application configured. &quot; + e.getMessage());</span>
 <span class="fc" id="L191">            return null;</span>

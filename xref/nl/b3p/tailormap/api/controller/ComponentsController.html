@@ -118,7 +118,7 @@
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         <em class="jxr_comment">// this could throw EntityNotFound, which is handled by #handleEntityNotFoundException</em>
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         <em class="jxr_comment">// and in a normal flow this should not happen</em>
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         <em class="jxr_comment">// as appId is (should be) validated by calling the /app/ endpoint</em>
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>         Application application = applicationRepository.getById(appId);
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>         Application application = applicationRepository.getReferenceById(appId);
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>         <strong class="jxr_keyword">if</strong> (application.isAuthenticatedRequired() &amp;&amp; !AuthUtil.isAuthenticatedUser()) {
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>             <em class="jxr_comment">// login required, send RedirectResponse</em>
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>             <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(<strong class="jxr_keyword">new</strong> RedirectResponse());

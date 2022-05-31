@@ -157,7 +157,7 @@
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>     @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>     <strong class="jxr_keyword">void</strong> should_<strong class="jxr_keyword">return</strong>_<strong class="jxr_keyword">default</strong>_lang_when_application_language_not_configured() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>         <em class="jxr_comment">// unset language</em>
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>         applicationRepository.getById(1L).setLang(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>         applicationRepository.getReferenceById(1L).setLang(<strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L153" href="#L153">153</a> 
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>         mockMvc.perform(get(<span class="jxr_string">"/app"</span>).param(<span class="jxr_string">"appId"</span>, <span class="jxr_string">"1"</span>).accept(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>                 .andExpect(status().isOk())

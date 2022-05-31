@@ -11,7 +11,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.security,AuthUtil,19,11,6,2,6,4,5,1
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,TailormapUserDetails,0,38,0,0,0,12,0,9,0,9
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,StartupAdminAccountCreator,75,0,2,0,17,0,3,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,TailormapUserDetailsService,0,34,0,2,0,7,0,3,0,2
-Aggregate Test Coverage,nl.b3p.tailormap.api.security,SecurityConfig,0,33,0,0,0,14,0,2,0,2
+Aggregate Test Coverage,nl.b3p.tailormap.api.security,SecurityConfig,0,36,0,0,0,14,0,2,0,2
 Aggregate Test Coverage,nl.b3p.tailormap.api.exception,TailormapException,19,4,0,0,8,2,4,1,4,1
 Aggregate Test Coverage,nl.b3p.tailormap.api.exception,TailormapConfigurationException,19,4,0,0,8,2,4,1,4,1
 Aggregate Test Coverage,nl.b3p.tailormap.api.exception,BadRequestException,19,4,0,0,8,2,4,1,4,1

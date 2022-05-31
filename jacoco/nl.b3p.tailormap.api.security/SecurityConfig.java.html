@@ -5,35 +5,37 @@
  */
 package nl.b3p.tailormap.api.security;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
-<span class="fc" id="L16">public class SecurityConfig extends WebSecurityConfigurerAdapter {</span>
-    @Override
-    protected void configure(final HttpSecurity http) throws Exception {
+<span class="fc" id="L17">public class SecurityConfig {</span>
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // Note: CSRF protection only required when using cookies for authentication
         // This requires an X-XSRF-TOKEN header read from the XSRF-TOKEN cookie by JavaScript so set
         // HttpOnly to false.
         // Angular has automatic XSRF protection support:
         // https://angular.io/guide/http#security-xsrf-protection
         CookieCsrfTokenRepository csrfTokenRepository =
-<span class="fc" id="L25">                CookieCsrfTokenRepository.withHttpOnlyFalse();</span>
-<span class="fc" id="L26">        csrfTokenRepository.setCookiePath(&quot;/&quot;);</span>
-<span class="fc" id="L27">        http.csrf()</span>
-<span class="fc" id="L28">                .csrfTokenRepository(csrfTokenRepository)</span>
-<span class="fc" id="L29">                .and()</span>
-<span class="fc" id="L30">                .authorizeRequests()</span>
-<span class="fc" id="L31">                .antMatchers(&quot;/admin/**&quot;)</span>
-<span class="fc" id="L32">                .hasRole(&quot;ADMIN&quot;)</span>
-<span class="fc" id="L33">                .anyRequest()</span>
-<span class="fc" id="L34">                .permitAll()</span>
-<span class="fc" id="L35">                .and()</span>
-<span class="fc" id="L36">                .formLogin();</span>
-<span class="fc" id="L37">    }</span>
+<span class="fc" id="L26">                CookieCsrfTokenRepository.withHttpOnlyFalse();</span>
+<span class="fc" id="L27">        csrfTokenRepository.setCookiePath(&quot;/&quot;);</span>
+<span class="fc" id="L28">        http.csrf()</span>
+<span class="fc" id="L29">                .csrfTokenRepository(csrfTokenRepository)</span>
+<span class="fc" id="L30">                .and()</span>
+<span class="fc" id="L31">                .authorizeRequests()</span>
+<span class="fc" id="L32">                .antMatchers(&quot;/admin/**&quot;)</span>
+<span class="fc" id="L33">                .hasRole(&quot;ADMIN&quot;)</span>
+<span class="fc" id="L34">                .anyRequest()</span>
+<span class="fc" id="L35">                .permitAll()</span>
+<span class="fc" id="L36">                .and()</span>
+<span class="fc" id="L37">                .formLogin();</span>
+<span class="fc" id="L38">        return http.build();</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
