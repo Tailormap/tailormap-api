@@ -110,7 +110,7 @@ public class ComponentsController {
         // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
         // and in a normal flow this should not happen
         // as appId is (should be) validated by calling the /app/ endpoint
-        Application application = applicationRepository.getById(appId);
+        Application application = applicationRepository.getReferenceById(appId);
         if (application.isAuthenticatedRequired() && !AuthUtil.isAuthenticatedUser()) {
             // login required, send RedirectResponse
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
