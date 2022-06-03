@@ -40,6 +40,7 @@ ruleset.
   <rule ref="category/java/codestyle.xml/IdenticalCatchBranches" />
   <rule ref="category/java/codestyle.xml/UseShortArrayInitializer" />
   <rule ref="category/java/codestyle.xml/UnnecessaryImport" />
+  <rule ref="category/java/codestyle.xml/EmptyControlStatement" />
   <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/>
   <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators"/>
   <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues"/>
@@ -47,15 +48,7 @@ ruleset.
   <rule ref="category/java/errorprone.xml/CheckSkipResult"/>
   <rule ref="category/java/errorprone.xml/ClassCastExceptionWithToArray"/>
   <rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices"/>
-  <rule ref="category/java/errorprone.xml/EmptyFinallyBlock"/>
-  <rule ref="category/java/errorprone.xml/EmptyIfStmt"/>
-  <rule ref="category/java/errorprone.xml/EmptyInitializer"/>
-  <rule ref="category/java/errorprone.xml/EmptyStatementBlock"/>
   <rule ref="category/java/errorprone.xml/EmptyStatementNotInLoop"/>
-  <rule ref="category/java/errorprone.xml/EmptySwitchStatements"/>
-  <rule ref="category/java/errorprone.xml/EmptySynchronizedBlock"/>
-  <rule ref="category/java/errorprone.xml/EmptyTryBlock"/>
-  <rule ref="category/java/errorprone.xml/EmptyWhileStmt"/>
   <rule ref="category/java/errorprone.xml/JumbledIncrementer"/>
   <rule ref="category/java/errorprone.xml/MisplacedNullCheck"/>
   <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode"/>
@@ -76,8 +69,9 @@ ruleset.
   <rule ref="category/java/multithreading.xml/DoubleCheckedLocking"/>
   <rule ref="category/java/performance.xml/BigIntegerInstantiation"/>
   <rule ref="category/java/performance.xml/StringInstantiation"/>
-  <!-- deprecated, but no replacement yet: https://pmd.github.io/latest/pmd_rules_java_performance.html#unnecessarywrapperobjectcreation -->
-  <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation" />
+  <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation">
+    <!-- deprecated, but no replacement yet: https://pmd.github.io/latest/pmd_rules_java_performance.html#unnecessarywrapperobjectcreation -->
+  </rule>
   <rule name="wildcards" language="java" message="No Wildcard Imports" class="net.sourceforge.pmd.lang.rule.XPathRule">
     <description>
       Don't use wildcard imports
