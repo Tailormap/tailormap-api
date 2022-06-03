@@ -446,7 +446,7 @@ SPDX-License-Identifier: MIT
         <plugin>
           <groupId>org.openapitools</groupId>
           <artifactId>openapi-generator-maven-plugin</artifactId>
-          <version>5.4.0</version>
+          <version>6.0.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-pmd-plugin</artifactId>
@@ -718,26 +718,28 @@ SPDX-License-Identifier: MIT
               <goal>generate</goal>
             </goals>
             <configuration>
+              <!-- see https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin -->
               <inputSpec>${project.basedir}/src/main/resources/tailormap-api.yaml</inputSpec>
-              <!-- <generatorName>java</generatorName>-->
-              <!-- <library>native</library>-->
               <generatorName>spring</generatorName>
-              <library>spring-boot</library>
-              <generateModels>true</generateModels>
-              <generateModelTests>true</generateModelTests>
               <modelPackage>nl.b3p.tailormap.api.model</modelPackage>
-              <generateApis>false</generateApis>
               <invokerPackage>nl.b3p.tailormap.api.invoker</invokerPackage>
-              <generateSupportingFiles>false</generateSupportingFiles>
-              <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+              <library>spring-boot</library>
+              <!--              <generateAliasAsModel>false</generateAliasAsModel>-->
               <configOptions>
+                <!-- see https://openapi-generator.tech/docs/generators/spring/ -->
                 <dateLibrary>java8</dateLibrary>
                 <hideGenerationTimestamp>true</hideGenerationTimestamp>
                 <openApiNullable>false</openApiNullable>
-                <oas3>true</oas3>
                 <serializableModel>true</serializableModel>
                 <useOptional>true</useOptional>
               </configOptions>
+              <!--              <instantiationTypes>array=ArrayList,map=HashMap,object=Map</instantiationTypes>-->
+              <!--              <typeMappings>array=List,map=Map,object=Map</typeMappings>-->
+              <generateApis>false</generateApis>
+              <generateModels>true</generateModels>
+              <generateSupportingFiles>false</generateSupportingFiles>
+              <generateModelTests>true</generateModelTests>
+              <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
             </configuration>
           </execution>
           <execution>
@@ -765,10 +767,10 @@ SPDX-License-Identifier: MIT
             <configuration>
               <target name="fix-generated-sources">
                 <!-- work around a stupid bug in the openapi generator plugin that can't do this right -->
-                <replace file="target/generated-sources/openapi/src/main/java/nl/b3p/tailormap/api/model/Component.java" summary="true">
-                  <replacetoken><![CDATA[private Map<String, String> config = ;]]></replacetoken>
-                  <replacevalue><![CDATA[private Map<String, String> config = new HashMap<>();]]></replacevalue>
-                </replace>
+                <!--                <replace file="target/generated-sources/openapi/src/main/java/nl/b3p/tailormap/api/model/Component.java" summary="true">-->
+                <!--                  <replacetoken><![CDATA[private Map<String, String> config = ;]]></replacetoken>-->
+                <!--                  <replacevalue><![CDATA[private Map<String, String> config = new HashMap<>();]]></replacevalue>-->
+                <!--                </replace>-->
                 <!-- remove unused imports, this bug seems to be resolved in openapi-generator-maven-plugin 5.4.0
                 <replace dir="target/generated-sources/openapi/src/main/java/nl/b3p/tailormap/api/model/" summary="true">
                   <replacetoken><![CDATA[import io.swagger.annotations.ApiModel;]]></replacetoken>
