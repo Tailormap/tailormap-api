@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import nl.b3p.tailormap.api.model.Component;
+import nl.b3p.tailormap.api.model.ComponentConfig;
 import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
@@ -75,8 +76,6 @@ public class ComponentsController {
      * @return OK (status code 200)
      */
     @Operation(
-            summary = "",
-            tags = {},
             responses = {
                 @ApiResponse(
                         responseCode = "200",
@@ -125,18 +124,21 @@ public class ComponentsController {
      * find all configured components for this application.
      *
      * @param application the application at hand
-     * @param componentList the list that holds the components
+     * @param componentList the list that holds the configured components
      */
     private void findComponents(Application application, List<Component> componentList) {
         logger.trace("listing components: " + application.getComponents());
         componentList.addAll(
                 application.getComponents().stream()
                         .map(
-                                p ->
-                                        new Component()
-                                                .putConfigItem("title", p.getName())
-                                                .type(p.getClassName())
-                                                .config(p.getDetails()))
+                                p -> {
+                                    ComponentConfig componentConfig =
+                                            new ComponentConfig().title(p.getName());
+                                    componentConfig.putAll(p.getDetails());
+                                    return new Component()
+                                            .type(p.getClassName())
+                                            .config(componentConfig);
+                                })
                         .collect(Collectors.toList()));
     }
 }
