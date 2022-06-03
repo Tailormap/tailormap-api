@@ -159,9 +159,32 @@ components:
     FeaturesResponse:
       description: 'A -possibly empty- list of features with requested attributes and presentation metadata'
       type: object
+      required: [
+        features,
+        columnMetadata
+      ]
       properties:
+        total:
+          description: '
+            the total number of available features, can be an estimated value. 
+            Can be missing when unknown or irrelevant (eg. featureinfo request)
+          '
+          type: integer
+          nullable: true
+        page:
+          description: 'current page, this will allow the client to request the next or previous page by adding or removing 1 or more'
+          type: integer
+          nullable: true
+          minimum: 1
+        pageSize:
+          description: 'number of features in a page, this will allow calculating the offset (page * pagesize)'
+          type: integer
+          nullable: true
+          readOnly: true
+          default: 100
+          minimum: 1
         features:
-          description: 'list of features'
+          description: 'list of features. When the pagenumber*pagesize exceeds the number of features this list will be empty'
           type: array
           minLength: 0
           items:
@@ -173,9 +196,11 @@ components:
           items:
             $ref: './model.yaml#/components/schemas/ColumnMetadata'
       example:
-        features:
-
-        columnMetadata:
+        total: 400
+        page: 5
+        pageSize: 100
+        features: []
+        columnMetadata: []
 
 
 paths:
@@ -506,6 +531,18 @@ paths:
           required: false
           schema:
             type: string
+        - description: 'a flag to retrieve all features'
+          in: query
+          name: all
+          required: false
+          schema:
+            type: boolean
+        - description: 'pagenumber to retrieve'
+          in: query
+          name: page
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: 'OK'
