@@ -199,6 +199,7 @@ components:
           type: string
           nullable: true
         relations:
+          title: 'layerDetailsRelations'
           type: array
           minLength: 0
           items:
@@ -401,6 +402,7 @@ components:
           nullable: false
         config:
           description: 'component specific configuration'
+          title: 'componentConfig'
           type: object
           properties:
             label:
