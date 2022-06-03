@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.ArrayList;
 import java.util.List;
 import nl.b3p.tailormap.api.model.Attribute;
-import nl.b3p.tailormap.api.model.LayerDetailsRelations;
+import nl.b3p.tailormap.api.model.LayerDetailsRelationsInner;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import javax.validation.Valid;
@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 
 @Schema(name = &quot;LayerDetails&quot;, description = &quot;All details of an app layer.&quot;)
 @Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="nc" id="L28">public class LayerDetails  implements Serializable {</span>
+<span class="nc" id="L28">public class LayerDetails implements Serializable {</span>
 
   private static final long serialVersionUID = 1L;
 
@@ -100,7 +100,7 @@ import javax.annotation.Generated;
 
 <span class="nc" id="L101">  @JsonProperty(&quot;relations&quot;)</span>
   @Valid
-  private List&lt;LayerDetailsRelations&gt; relations = null;
+  private List&lt;LayerDetailsRelationsInner&gt; relations = null;
 
 <span class="nc" id="L105">  @JsonProperty(&quot;attributes&quot;)</span>
   @Valid
@@ -115,7 +115,7 @@ import javax.annotation.Generated;
    * Get id
    * @return id
   */
-  @NotNull 
+  
   @Schema(name = &quot;id&quot;, accessMode = Schema.AccessMode.READ_ONLY, required = true)
   public Long getId() {
 <span class="nc" id="L121">    return id;</span>
@@ -153,7 +153,7 @@ import javax.annotation.Generated;
    * Get serviceId
    * @return serviceId
   */
-  @NotNull 
+  
   @Schema(name = &quot;serviceId&quot;, accessMode = Schema.AccessMode.READ_ONLY, required = true)
   public Long getServiceId() {
 <span class="nc" id="L159">    return serviceId;</span>
@@ -258,12 +258,12 @@ import javax.annotation.Generated;
 <span class="nc" id="L258">    this.metadata = metadata;</span>
 <span class="nc" id="L259">  }</span>
 
-  public LayerDetails relations(List&lt;LayerDetailsRelations&gt; relations) {
+  public LayerDetails relations(List&lt;LayerDetailsRelationsInner&gt; relations) {
 <span class="nc" id="L262">    this.relations = relations;</span>
 <span class="nc" id="L263">    return this;</span>
   }
 
-  public LayerDetails addRelationsItem(LayerDetailsRelations relationsItem) {
+  public LayerDetails addRelationsItem(LayerDetailsRelationsInner relationsItem) {
 <span class="nc bnc" id="L267" title="All 2 branches missed.">    if (this.relations == null) {</span>
 <span class="nc" id="L268">      this.relations = new ArrayList&lt;&gt;();</span>
     }
@@ -277,11 +277,11 @@ import javax.annotation.Generated;
   */
   @Valid 
   @Schema(name = &quot;relations&quot;, required = false)
-  public List&lt;LayerDetailsRelations&gt; getRelations() {
+  public List&lt;LayerDetailsRelationsInner&gt; getRelations() {
 <span class="nc" id="L281">    return relations;</span>
   }
 
-  public void setRelations(List&lt;LayerDetailsRelations&gt; relations) {
+  public void setRelations(List&lt;LayerDetailsRelationsInner&gt; relations) {
 <span class="nc" id="L285">    this.relations = relations;</span>
 <span class="nc" id="L286">  }</span>
 

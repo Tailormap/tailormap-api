@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 
 @Schema(name = &quot;Feature&quot;, description = &quot; A possibly complete feature from the attribute source. The feature could have been filtered to not provide certain attributes. Any geometry attributes will be presented in WKT format &quot;)
 @Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="nc" id="L26">public class Feature  implements Serializable {</span>
+<span class="nc" id="L26">public class Feature implements Serializable {</span>
 
   private static final long serialVersionUID = 1L;
 
@@ -46,7 +46,7 @@ import javax.annotation.Generated;
    * feature id, a non-mutable identifier from the attribute source
    * @return fid
   */
-  @NotNull 
+  
   @Schema(name = &quot;__fid&quot;, accessMode = Schema.AccessMode.READ_ONLY, description = &quot;feature id, a non-mutable identifier from the attribute source&quot;, required = true)
   public String getFid() {
 <span class="nc" id="L52">    return fid;</span>
