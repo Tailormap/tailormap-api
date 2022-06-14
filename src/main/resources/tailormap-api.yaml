@@ -525,24 +525,22 @@ paths:
           required: false
           schema:
             type: boolean
+            default: false
         - description: 'a filter to be applied, possibly in combination with any other request parameters'
           in: query
           name: filter
           required: false
           schema:
             type: string
-        - description: 'a flag to retrieve all features'
-          in: query
-          name: all
-          required: false
-          schema:
-            type: boolean
-        - description: 'pagenumber to retrieve'
+        - description: '
+            Page number to retrieve. For the initial request this should be 1 which will 
+            then give the pageSize and total of features so addintional pages can be retrieved.'
           in: query
           name: page
           required: false
           schema:
             type: integer
+            minimum: 1
       responses:
         '200':
           description: 'OK'
