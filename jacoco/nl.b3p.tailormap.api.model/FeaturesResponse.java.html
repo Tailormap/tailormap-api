@@ -28,94 +28,168 @@ import javax.annotation.Generated;
 
   private static final long serialVersionUID = 1L;
 
-<span class="fc" id="L31">  @JsonProperty(&quot;features&quot;)</span>
+<span class="fc" id="L31">  @JsonProperty(&quot;total&quot;)</span>
+  private Integer total = null;
+
+<span class="fc" id="L34">  @JsonProperty(&quot;page&quot;)</span>
+  private Integer page = null;
+
+<span class="fc" id="L37">  @JsonProperty(&quot;pageSize&quot;)</span>
+  private Integer pageSize = null;
+
+<span class="fc" id="L40">  @JsonProperty(&quot;features&quot;)</span>
   @Valid
-  private List&lt;Feature&gt; features = null;
+  private List&lt;Feature&gt; features = new ArrayList&lt;&gt;();
 
-<span class="fc" id="L35">  @JsonProperty(&quot;columnMetadata&quot;)</span>
+<span class="fc" id="L44">  @JsonProperty(&quot;columnMetadata&quot;)</span>
   @Valid
-  private List&lt;ColumnMetadata&gt; columnMetadata = null;
+  private List&lt;ColumnMetadata&gt; columnMetadata = new ArrayList&lt;&gt;();
 
-  public FeaturesResponse features(List&lt;Feature&gt; features) {
-<span class="nc" id="L40">    this.features = features;</span>
-<span class="nc" id="L41">    return this;</span>
-  }
-
-  public FeaturesResponse addFeaturesItem(Feature featuresItem) {
-<span class="nc bnc" id="L45" title="All 2 branches missed.">    if (this.features == null) {</span>
-<span class="nc" id="L46">      this.features = new ArrayList&lt;&gt;();</span>
-    }
-<span class="nc" id="L48">    this.features.add(featuresItem);</span>
-<span class="nc" id="L49">    return this;</span>
+  public FeaturesResponse total(Integer total) {
+<span class="nc" id="L49">    this.total = total;</span>
+<span class="nc" id="L50">    return this;</span>
   }
 
   /**
-   * list of features
+   *  the total number of available features, can be an estimated value. Can be missing when unknown or irrelevant (eg. featureinfo request) 
+   * @return total
+  */
+  
+  @Schema(name = &quot;total&quot;, description = &quot; the total number of available features, can be an estimated value. Can be missing when unknown or irrelevant (eg. featureinfo request) &quot;, required = false)
+  public Integer getTotal() {
+<span class="fc" id="L60">    return total;</span>
+  }
+
+  public void setTotal(Integer total) {
+<span class="nc" id="L64">    this.total = total;</span>
+<span class="nc" id="L65">  }</span>
+
+  public FeaturesResponse page(Integer page) {
+<span class="nc" id="L68">    this.page = page;</span>
+<span class="nc" id="L69">    return this;</span>
+  }
+
+  /**
+   * current page, this will allow the client to request the next or previous page by adding or removing 1 or more
+   * minimum: 1
+   * @return page
+  */
+  @Min(1) 
+  @Schema(name = &quot;page&quot;, description = &quot;current page, this will allow the client to request the next or previous page by adding or removing 1 or more&quot;, required = false)
+  public Integer getPage() {
+<span class="fc" id="L80">    return page;</span>
+  }
+
+  public void setPage(Integer page) {
+<span class="nc" id="L84">    this.page = page;</span>
+<span class="nc" id="L85">  }</span>
+
+  public FeaturesResponse pageSize(Integer pageSize) {
+<span class="nc" id="L88">    this.pageSize = pageSize;</span>
+<span class="nc" id="L89">    return this;</span>
+  }
+
+  /**
+   * number of features in a page, this will allow calculating the offset (page * pagesize)
+   * minimum: 1
+   * @return pageSize
+  */
+  @Min(1) 
+  @Schema(name = &quot;pageSize&quot;, accessMode = Schema.AccessMode.READ_ONLY, description = &quot;number of features in a page, this will allow calculating the offset (page * pagesize)&quot;, required = false)
+  public Integer getPageSize() {
+<span class="fc" id="L100">    return pageSize;</span>
+  }
+
+  public void setPageSize(Integer pageSize) {
+<span class="nc" id="L104">    this.pageSize = pageSize;</span>
+<span class="nc" id="L105">  }</span>
+
+  public FeaturesResponse features(List&lt;Feature&gt; features) {
+<span class="nc" id="L108">    this.features = features;</span>
+<span class="nc" id="L109">    return this;</span>
+  }
+
+  public FeaturesResponse addFeaturesItem(Feature featuresItem) {
+<span class="nc bnc" id="L113" title="All 2 branches missed.">    if (this.features == null) {</span>
+<span class="nc" id="L114">      this.features = new ArrayList&lt;&gt;();</span>
+    }
+<span class="nc" id="L116">    this.features.add(featuresItem);</span>
+<span class="nc" id="L117">    return this;</span>
+  }
+
+  /**
+   * list of features. When the pagenumber*pagesize exceeds the number of features this list will be empty
    * @return features
   */
-  @Valid 
-  @Schema(name = &quot;features&quot;, description = &quot;list of features&quot;, required = false)
+  @NotNull @Valid 
+  @Schema(name = &quot;features&quot;, description = &quot;list of features. When the pagenumber*pagesize exceeds the number of features this list will be empty&quot;, required = true)
   public List&lt;Feature&gt; getFeatures() {
-<span class="nc" id="L59">    return features;</span>
+<span class="fc" id="L127">    return features;</span>
   }
 
   public void setFeatures(List&lt;Feature&gt; features) {
-<span class="nc" id="L63">    this.features = features;</span>
-<span class="nc" id="L64">  }</span>
+<span class="nc" id="L131">    this.features = features;</span>
+<span class="nc" id="L132">  }</span>
 
   public FeaturesResponse columnMetadata(List&lt;ColumnMetadata&gt; columnMetadata) {
-<span class="nc" id="L67">    this.columnMetadata = columnMetadata;</span>
-<span class="nc" id="L68">    return this;</span>
+<span class="nc" id="L135">    this.columnMetadata = columnMetadata;</span>
+<span class="nc" id="L136">    return this;</span>
   }
 
   public FeaturesResponse addColumnMetadataItem(ColumnMetadata columnMetadataItem) {
-<span class="nc bnc" id="L72" title="All 2 branches missed.">    if (this.columnMetadata == null) {</span>
-<span class="nc" id="L73">      this.columnMetadata = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">    if (this.columnMetadata == null) {</span>
+<span class="nc" id="L141">      this.columnMetadata = new ArrayList&lt;&gt;();</span>
     }
-<span class="nc" id="L75">    this.columnMetadata.add(columnMetadataItem);</span>
-<span class="nc" id="L76">    return this;</span>
+<span class="nc" id="L143">    this.columnMetadata.add(columnMetadataItem);</span>
+<span class="nc" id="L144">    return this;</span>
   }
 
   /**
    * presentation metadata
    * @return columnMetadata
   */
-  @Valid 
-  @Schema(name = &quot;columnMetadata&quot;, description = &quot;presentation metadata&quot;, required = false)
+  @NotNull @Valid 
+  @Schema(name = &quot;columnMetadata&quot;, description = &quot;presentation metadata&quot;, required = true)
   public List&lt;ColumnMetadata&gt; getColumnMetadata() {
-<span class="nc" id="L86">    return columnMetadata;</span>
+<span class="fc" id="L154">    return columnMetadata;</span>
   }
 
   public void setColumnMetadata(List&lt;ColumnMetadata&gt; columnMetadata) {
-<span class="nc" id="L90">    this.columnMetadata = columnMetadata;</span>
-<span class="nc" id="L91">  }</span>
+<span class="nc" id="L158">    this.columnMetadata = columnMetadata;</span>
+<span class="nc" id="L159">  }</span>
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L95" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L96">      return true;</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L164">      return true;</span>
     }
-<span class="nc bnc" id="L98" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L99">      return false;</span>
+<span class="nc bnc" id="L166" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L167">      return false;</span>
     }
-<span class="nc" id="L101">    FeaturesResponse featuresResponse = (FeaturesResponse) o;</span>
-<span class="nc bnc" id="L102" title="All 2 branches missed.">    return Objects.equals(this.features, featuresResponse.features) &amp;&amp;</span>
-<span class="nc bnc" id="L103" title="All 2 branches missed.">        Objects.equals(this.columnMetadata, featuresResponse.columnMetadata);</span>
+<span class="nc" id="L169">    FeaturesResponse featuresResponse = (FeaturesResponse) o;</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">    return Objects.equals(this.total, featuresResponse.total) &amp;&amp;</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">        Objects.equals(this.page, featuresResponse.page) &amp;&amp;</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        Objects.equals(this.pageSize, featuresResponse.pageSize) &amp;&amp;</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        Objects.equals(this.features, featuresResponse.features) &amp;&amp;</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">        Objects.equals(this.columnMetadata, featuresResponse.columnMetadata);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L108">    return Objects.hash(features, columnMetadata);</span>
+<span class="nc" id="L179">    return Objects.hash(total, page, pageSize, features, columnMetadata);</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L113">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L114">    sb.append(&quot;class FeaturesResponse {\n&quot;);</span>
-<span class="nc" id="L115">    sb.append(&quot;    features: &quot;).append(toIndentedString(features)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L116">    sb.append(&quot;    columnMetadata: &quot;).append(toIndentedString(columnMetadata)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L117">    sb.append(&quot;}&quot;);</span>
-<span class="nc" id="L118">    return sb.toString();</span>
+<span class="nc" id="L184">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L185">    sb.append(&quot;class FeaturesResponse {\n&quot;);</span>
+<span class="nc" id="L186">    sb.append(&quot;    total: &quot;).append(toIndentedString(total)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L187">    sb.append(&quot;    page: &quot;).append(toIndentedString(page)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L188">    sb.append(&quot;    pageSize: &quot;).append(toIndentedString(pageSize)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L189">    sb.append(&quot;    features: &quot;).append(toIndentedString(features)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L190">    sb.append(&quot;    columnMetadata: &quot;).append(toIndentedString(columnMetadata)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L191">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L192">    return sb.toString();</span>
   }
 
   /**
@@ -123,10 +197,10 @@ import javax.annotation.Generated;
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-<span class="nc bnc" id="L126" title="All 2 branches missed.">    if (o == null) {</span>
-<span class="nc" id="L127">      return &quot;null&quot;;</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L201">      return &quot;null&quot;;</span>
     }
-<span class="nc" id="L129">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+<span class="nc" id="L203">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
   }
 }
 

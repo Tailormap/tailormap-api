@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -211,37 +211,90 @@ implements <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="ColumnMetadata.html" title="class in nl.b3p.tailormap.api.model">ColumnMetadata</a>&gt;</code></td>
+<td class="colFirst"><code>@NotNull @Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="ColumnMetadata.html" title="class in nl.b3p.tailormap.api.model">ColumnMetadata</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getColumnMetadata()">getColumnMetadata</a></span>()</code></th>
 <td class="colLast">
 <div class="block">presentation metadata</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Feature.html" title="class in nl.b3p.tailormap.api.model">Feature</a>&gt;</code></td>
+<td class="colFirst"><code>@NotNull @Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Feature.html" title="class in nl.b3p.tailormap.api.model">Feature</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFeatures()">getFeatures</a></span>()</code></th>
 <td class="colLast">
-<div class="block">list of features</div>
+<div class="block">list of features.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
+<td class="colFirst"><code>@Min(1L) <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPage()">getPage</a></span>()</code></th>
+<td class="colLast">
+<div class="block">current page, this will allow the client to request the next or previous page by adding or removing 1 or more
+ minimum: 1</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>@Min(1L) <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPageSize()">getPageSize</a></span>()</code></th>
+<td class="colLast">
+<div class="block">number of features in a page, this will allow calculating the offset (page * pagesize)
+ minimum: 1</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTotal()">getTotal</a></span>()</code></th>
+<td class="colLast">
+<div class="block">the total number of available features, can be an estimated value.</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hashCode()">hashCode</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code><a href="FeaturesResponse.html" title="class in nl.b3p.tailormap.api.model">FeaturesResponse</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#page(java.lang.Integer)">page</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;page)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i12" class="altColor">
+<td class="colFirst"><code><a href="FeaturesResponse.html" title="class in nl.b3p.tailormap.api.model">FeaturesResponse</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#pageSize(java.lang.Integer)">pageSize</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;pageSize)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setColumnMetadata(java.util.List)">setColumnMetadata</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="ColumnMetadata.html" title="class in nl.b3p.tailormap.api.model">ColumnMetadata</a>&gt;&nbsp;columnMetadata)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setFeatures(java.util.List)">setFeatures</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Feature.html" title="class in nl.b3p.tailormap.api.model">Feature</a>&gt;&nbsp;features)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i15" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setPage(java.lang.Integer)">setPage</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;page)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i16" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setPageSize(java.lang.Integer)">setPageSize</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;pageSize)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i17" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setTotal(java.lang.Integer)">setTotal</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;total)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i19" class="rowColor">
+<td class="colFirst"><code><a href="FeaturesResponse.html" title="class in nl.b3p.tailormap.api.model">FeaturesResponse</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#total(java.lang.Integer)">total</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;total)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -287,6 +340,106 @@ implements <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="total(java.lang.Integer)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>total</h4>
+<pre class="methodSignature">public&nbsp;<a href="FeaturesResponse.html" title="class in nl.b3p.tailormap.api.model">FeaturesResponse</a>&nbsp;total&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;total)</pre>
+</li>
+</ul>
+<a id="getTotal()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getTotal</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;getTotal()</pre>
+<div class="block">the total number of available features, can be an estimated value. Can be missing when unknown or irrelevant (eg. featureinfo request)</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>total</dd>
+</dl>
+</li>
+</ul>
+<a id="setTotal(java.lang.Integer)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setTotal</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setTotal&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;total)</pre>
+</li>
+</ul>
+<a id="page(java.lang.Integer)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>page</h4>
+<pre class="methodSignature">public&nbsp;<a href="FeaturesResponse.html" title="class in nl.b3p.tailormap.api.model">FeaturesResponse</a>&nbsp;page&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;page)</pre>
+</li>
+</ul>
+<a id="getPage()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPage</h4>
+<pre class="methodSignature">@Min(1L)
+public&nbsp;@Min(1L) <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;getPage()</pre>
+<div class="block">current page, this will allow the client to request the next or previous page by adding or removing 1 or more
+ minimum: 1</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>page</dd>
+</dl>
+</li>
+</ul>
+<a id="setPage(java.lang.Integer)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setPage</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setPage&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;page)</pre>
+</li>
+</ul>
+<a id="pageSize(java.lang.Integer)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>pageSize</h4>
+<pre class="methodSignature">public&nbsp;<a href="FeaturesResponse.html" title="class in nl.b3p.tailormap.api.model">FeaturesResponse</a>&nbsp;pageSize&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;pageSize)</pre>
+</li>
+</ul>
+<a id="getPageSize()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPageSize</h4>
+<pre class="methodSignature">@Min(1L)
+public&nbsp;@Min(1L) <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;getPageSize()</pre>
+<div class="block">number of features in a page, this will allow calculating the offset (page * pagesize)
+ minimum: 1</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>pageSize</dd>
+</dl>
+</li>
+</ul>
+<a id="setPageSize(java.lang.Integer)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setPageSize</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setPageSize&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a>&nbsp;pageSize)</pre>
+</li>
+</ul>
 <a id="features(java.util.List)">
 <!--   -->
 </a>
@@ -311,9 +464,10 @@ implements <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base
 <ul class="blockList">
 <li class="blockList">
 <h4>getFeatures</h4>
-<pre class="methodSignature">@Valid
-public&nbsp;@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Feature.html" title="class in nl.b3p.tailormap.api.model">Feature</a>&gt;&nbsp;getFeatures()</pre>
-<div class="block">list of features</div>
+<pre class="methodSignature">@NotNull
+@Valid
+public&nbsp;@NotNull @Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Feature.html" title="class in nl.b3p.tailormap.api.model">Feature</a>&gt;&nbsp;getFeatures()</pre>
+<div class="block">list of features. When the pagenumber*pagesize exceeds the number of features this list will be empty</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>features</dd>
@@ -353,8 +507,9 @@ public&nbsp;@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/j
 <ul class="blockList">
 <li class="blockList">
 <h4>getColumnMetadata</h4>
-<pre class="methodSignature">@Valid
-public&nbsp;@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="ColumnMetadata.html" title="class in nl.b3p.tailormap.api.model">ColumnMetadata</a>&gt;&nbsp;getColumnMetadata()</pre>
+<pre class="methodSignature">@NotNull
+@Valid
+public&nbsp;@NotNull @Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="ColumnMetadata.html" title="class in nl.b3p.tailormap.api.model">ColumnMetadata</a>&gt;&nbsp;getColumnMetadata()</pre>
 <div class="block">presentation metadata</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
