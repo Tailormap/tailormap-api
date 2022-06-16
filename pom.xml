@@ -245,7 +245,7 @@ SPDX-License-Identifier: MIT
         <exclusion>
           <!-- SLF4J is provided by SpringBoot through logback -->
           <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-reload4j12</artifactId>
+          <artifactId>slf4j-reload4j</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
