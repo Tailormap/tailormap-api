@@ -24,12 +24,14 @@ import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.LevelRepository;
 import nl.b3p.tailormap.api.security.AuthUtil;
 import nl.b3p.tailormap.api.util.ParseUtil;
+import nl.tailormap.viewer.config.ClobElement;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.Level;
 import nl.tailormap.viewer.config.app.StartLayer;
 import nl.tailormap.viewer.config.app.StartLevel;
 import nl.tailormap.viewer.config.services.GeoService;
+import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.TileService;
 
 import org.apache.commons.logging.Log;
@@ -269,6 +271,36 @@ public class MapController {
 
         // Only add AppLayers visible in the LayerTreeNode graph to the response
         for (StartLayer l : visibleStartLayers) {
+
+            Layer serviceLayer =
+                    findLayer(
+                            l.getApplicationLayer().getService().getTopLayer(),
+                            l.getApplicationLayer().getLayerName());
+
+            AppLayer.HiDpiModeEnum hiDpiMode = null;
+            String hiDpiSubstituteLayer = null;
+
+            if (serviceLayer != null) {
+                ClobElement ce = serviceLayer.getDetails().get("hidpi.mode");
+                if (ce != null) {
+                    try {
+                        hiDpiMode = AppLayer.HiDpiModeEnum.fromValue(ce.getValue());
+                    } catch (IllegalArgumentException e) {
+                        logger.warn(
+                                String.format(
+                                        "App #%s (%s): invalid hidpi.mode enum value for app layer #%s, service layer #%s (%s)",
+                                        a.getId(),
+                                        a.getNameWithVersion(),
+                                        l.getId(),
+                                        serviceLayer.getId(),
+                                        serviceLayer.getName()));
+                    }
+                }
+                ce = serviceLayer.getDetails().get("hidpi.substitute_layer");
+                if (ce != null) {
+                    hiDpiSubstituteLayer = ce.getValue();
+                }
+            }
             AppLayer appLayer =
                     new AppLayer()
                             .id(l.getApplicationLayer().getId())
@@ -277,17 +309,57 @@ public class MapController {
                             // an EntityManager
                             .title(l.getApplicationLayer().getLayerName())
                             .serviceId(l.getApplicationLayer().getService().getId())
+                            .hiDpiMode(hiDpiMode)
+                            .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
                             .visible(l.isChecked());
 
             mapResponse.addAppLayersItem(appLayer);
 
             GeoService geoService = l.getApplicationLayer().getService();
+
+            // Use this default if saved before the form default was added in admin
+            Service.HiDpiModeEnum serviceHiDpiMode = Service.HiDpiModeEnum.AUTO;
+            ClobElement ce = geoService.getDetails().get("hidpi.mode");
+            if (ce != null) {
+                try {
+                    serviceHiDpiMode = Service.HiDpiModeEnum.fromValue(ce.getValue());
+                } catch (IllegalArgumentException e) {
+                    logger.warn(
+                            String.format(
+                                    "App #%s (%s): invalid hidpi.mode enum value for service #%s (%s)",
+                                    a.getId(),
+                                    a.getNameWithVersion(),
+                                    geoService.getId(),
+                                    geoService.getName()));
+                }
+            }
+            Integer tilingGutter = null;
+            ce = geoService.getDetails().get("tiling.gutter");
+            if (ce != null) {
+                try {
+                    tilingGutter = Integer.parseInt(ce.getValue());
+                } catch (NumberFormatException ignored) {
+                    // ignored
+                }
+            }
+
             Service s =
                     new Service()
                             .url(geoService.getUrl())
                             .id(geoService.getId())
                             .name(geoService.getName())
                             .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))
+                            .hiDpiMode(serviceHiDpiMode)
+                            .tilingDisabled(
+                                    "true"
+                                            .equals(
+                                                    geoService
+                                                            .getDetails()
+                                                            .getOrDefault(
+                                                                    "tiling.disable",
+                                                                    new ClobElement("false)"))
+                                                            .getValue()))
+                            .tilingGutter(tilingGutter)
                             .capabilities(geoService.getCapabilitiesDoc());
             if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {
                 s.tilingProtocol(
@@ -296,5 +368,26 @@ public class MapController {
             }
             mapResponse.addServicesItem(s);
         }
+    }
+
+    /**
+     * Recursive and naive way to search for a layer by name in the layer tree of a service. Needs
+     * to be replaced by an algorithm that does not cause a lot of queries.
+     *
+     * @param l Layer to start searching for including children
+     * @param name The layer name to search for
+     * @return null if not found in this subtree or a Layer if found
+     */
+    private static Layer findLayer(Layer l, String name) {
+        if (name.equals(l.getName())) {
+            return l;
+        }
+        for (Layer child : l.getChildren()) {
+            Layer childResult = findLayer(child, name);
+            if (childResult != null) {
+                return childResult;
+            }
+        }
+        return null;
     }
 }
