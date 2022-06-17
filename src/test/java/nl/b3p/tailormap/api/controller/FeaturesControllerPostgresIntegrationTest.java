@@ -270,8 +270,6 @@ class FeaturesControllerPostgresIntegrationTest {
             name =
                     "should_return_non_empty_featurecollections_for_valid_page_from_database #{index}: database: {0}, featuretype: {1}")
     @MethodSource("argumentsProvider")
-    @Disabled(
-            "Until https://b3partners.atlassian.net/browse/HTM-391 -Set-up integration test data for CI/CD- is resolved")
     void should_return_non_empty_featurecollections_for_valid_page_from_database(
             String database, String tableName, String applayerUrl, int totalCcount)
             throws Exception {
@@ -354,8 +352,6 @@ class FeaturesControllerPostgresIntegrationTest {
             name =
                     "should_return_empty_featurecollection_for_out_of_range_page_database #{index}: database: {0}, featuretype: {1}")
     @MethodSource("argumentsProvider")
-    @Disabled(
-            "Until https://b3partners.atlassian.net/browse/HTM-391 -Set-up integration test data for CI/CD- is resolved")
     void should_return_empty_featurecollection_for_out_of_range_page_database(
             String database, String tableName, String applayerUrl, int totalCcount)
             throws Exception {
