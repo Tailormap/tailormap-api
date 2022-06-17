@@ -41,39 +41,87 @@ import javax.annotation.Generated;
   private Object styleLibraries;
 
   /**
-   * Gets or Sets protocol
+   * Gets or Sets hiDpiMode
    */
-<span class="fc" id="L46">  public enum ProtocolEnum {</span>
-<span class="fc" id="L47">    TILED(&quot;tiled&quot;),</span>
+<span class="fc" id="L46">  public enum HiDpiModeEnum {</span>
+<span class="fc" id="L47">    AUTO(&quot;auto&quot;),</span>
     
-<span class="fc" id="L49">    WMS(&quot;wms&quot;),</span>
+<span class="fc" id="L49">    DISABLED(&quot;disabled&quot;),</span>
     
-<span class="fc" id="L51">    ARCGIS(&quot;arcgis&quot;);</span>
+<span class="fc" id="L51">    GEOSERVER(&quot;geoserver&quot;),</span>
+    
+<span class="fc" id="L53">    MAPSERVER(&quot;mapserver&quot;);</span>
 
     private String value;
 
-<span class="fc" id="L55">    ProtocolEnum(String value) {</span>
-<span class="fc" id="L56">      this.value = value;</span>
-<span class="fc" id="L57">    }</span>
+<span class="fc" id="L57">    HiDpiModeEnum(String value) {</span>
+<span class="fc" id="L58">      this.value = value;</span>
+<span class="fc" id="L59">    }</span>
 
     @JsonValue
     public String getValue() {
-<span class="fc" id="L61">      return value;</span>
+<span class="fc" id="L63">      return value;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L66">      return String.valueOf(value);</span>
+<span class="nc" id="L68">      return String.valueOf(value);</span>
+    }
+
+    @JsonCreator
+    public static HiDpiModeEnum fromValue(String value) {
+<span class="nc bnc" id="L73" title="All 2 branches missed.">      for (HiDpiModeEnum b : HiDpiModeEnum.values()) {</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
+<span class="nc" id="L75">          return b;</span>
+        }
+      }
+<span class="nc" id="L78">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
+    }
+  }
+
+  @JsonProperty(&quot;hiDpiMode&quot;)
+  private HiDpiModeEnum hiDpiMode;
+
+  @JsonProperty(&quot;tilingDisabled&quot;)
+  private Boolean tilingDisabled;
+
+  @JsonProperty(&quot;tilingGutter&quot;)
+  private Integer tilingGutter;
+
+  /**
+   * Gets or Sets protocol
+   */
+<span class="fc" id="L94">  public enum ProtocolEnum {</span>
+<span class="fc" id="L95">    TILED(&quot;tiled&quot;),</span>
+    
+<span class="fc" id="L97">    WMS(&quot;wms&quot;),</span>
+    
+<span class="fc" id="L99">    ARCGIS(&quot;arcgis&quot;);</span>
+
+    private String value;
+
+<span class="fc" id="L103">    ProtocolEnum(String value) {</span>
+<span class="fc" id="L104">      this.value = value;</span>
+<span class="fc" id="L105">    }</span>
+
+    @JsonValue
+    public String getValue() {
+<span class="fc" id="L109">      return value;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L114">      return String.valueOf(value);</span>
     }
 
     @JsonCreator
     public static ProtocolEnum fromValue(String value) {
-<span class="pc bpc" id="L71" title="1 of 2 branches missed.">      for (ProtocolEnum b : ProtocolEnum.values()) {</span>
-<span class="fc bfc" id="L72" title="All 2 branches covered.">        if (b.value.equals(value)) {</span>
-<span class="fc" id="L73">          return b;</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">      for (ProtocolEnum b : ProtocolEnum.values()) {</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        if (b.value.equals(value)) {</span>
+<span class="fc" id="L121">          return b;</span>
         }
       }
-<span class="nc" id="L76">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
+<span class="nc" id="L124">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
     }
   }
 
@@ -83,47 +131,47 @@ import javax.annotation.Generated;
   /**
    * Gets or Sets tilingProtocol
    */
-<span class="fc" id="L86">  public enum TilingProtocolEnum {</span>
-<span class="fc" id="L87">    WMTS(&quot;WMTS&quot;),</span>
+<span class="fc" id="L134">  public enum TilingProtocolEnum {</span>
+<span class="fc" id="L135">    WMTS(&quot;WMTS&quot;),</span>
     
-<span class="fc" id="L89">    TMS(&quot;TMS&quot;);</span>
+<span class="fc" id="L137">    TMS(&quot;TMS&quot;);</span>
 
     private String value;
 
-<span class="fc" id="L93">    TilingProtocolEnum(String value) {</span>
-<span class="fc" id="L94">      this.value = value;</span>
-<span class="fc" id="L95">    }</span>
+<span class="fc" id="L141">    TilingProtocolEnum(String value) {</span>
+<span class="fc" id="L142">      this.value = value;</span>
+<span class="fc" id="L143">    }</span>
 
     @JsonValue
     public String getValue() {
-<span class="fc" id="L99">      return value;</span>
+<span class="fc" id="L147">      return value;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L104">      return String.valueOf(value);</span>
+<span class="nc" id="L152">      return String.valueOf(value);</span>
     }
 
     @JsonCreator
     public static TilingProtocolEnum fromValue(String value) {
-<span class="pc bpc" id="L109" title="1 of 2 branches missed.">      for (TilingProtocolEnum b : TilingProtocolEnum.values()) {</span>
-<span class="fc bfc" id="L110" title="All 2 branches covered.">        if (b.value.equals(value)) {</span>
-<span class="fc" id="L111">          return b;</span>
+<span class="pc bpc" id="L157" title="1 of 2 branches missed.">      for (TilingProtocolEnum b : TilingProtocolEnum.values()) {</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        if (b.value.equals(value)) {</span>
+<span class="fc" id="L159">          return b;</span>
         }
       }
-<span class="nc" id="L114">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
+<span class="nc" id="L162">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
     }
   }
 
   @JsonProperty(&quot;tilingProtocol&quot;)
   private TilingProtocolEnum tilingProtocol;
 
-<span class="fc" id="L121">  @JsonProperty(&quot;capabilities&quot;)</span>
+<span class="fc" id="L169">  @JsonProperty(&quot;capabilities&quot;)</span>
   private String capabilities = null;
 
   public Service id(Long id) {
-<span class="fc" id="L125">    this.id = id;</span>
-<span class="fc" id="L126">    return this;</span>
+<span class="fc" id="L173">    this.id = id;</span>
+<span class="fc" id="L174">    return this;</span>
   }
 
   /**
@@ -133,16 +181,16 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;id&quot;, required = true)
   public Long getId() {
-<span class="fc" id="L136">    return id;</span>
+<span class="fc" id="L184">    return id;</span>
   }
 
   public void setId(Long id) {
-<span class="nc" id="L140">    this.id = id;</span>
-<span class="nc" id="L141">  }</span>
+<span class="nc" id="L188">    this.id = id;</span>
+<span class="nc" id="L189">  }</span>
 
   public Service name(String name) {
-<span class="fc" id="L144">    this.name = name;</span>
-<span class="fc" id="L145">    return this;</span>
+<span class="fc" id="L192">    this.name = name;</span>
+<span class="fc" id="L193">    return this;</span>
   }
 
   /**
@@ -152,16 +200,16 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;name&quot;, required = false)
   public String getName() {
-<span class="fc" id="L155">    return name;</span>
+<span class="fc" id="L203">    return name;</span>
   }
 
   public void setName(String name) {
-<span class="nc" id="L159">    this.name = name;</span>
-<span class="nc" id="L160">  }</span>
+<span class="nc" id="L207">    this.name = name;</span>
+<span class="nc" id="L208">  }</span>
 
   public Service url(String url) {
-<span class="fc" id="L163">    this.url = url;</span>
-<span class="fc" id="L164">    return this;</span>
+<span class="fc" id="L211">    this.url = url;</span>
+<span class="fc" id="L212">    return this;</span>
   }
 
   /**
@@ -171,16 +219,16 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;url&quot;, required = false)
   public String getUrl() {
-<span class="fc" id="L174">    return url;</span>
+<span class="fc" id="L222">    return url;</span>
   }
 
   public void setUrl(String url) {
-<span class="nc" id="L178">    this.url = url;</span>
-<span class="nc" id="L179">  }</span>
+<span class="nc" id="L226">    this.url = url;</span>
+<span class="nc" id="L227">  }</span>
 
   public Service useProxy(Boolean useProxy) {
-<span class="nc" id="L182">    this.useProxy = useProxy;</span>
-<span class="nc" id="L183">    return this;</span>
+<span class="nc" id="L230">    this.useProxy = useProxy;</span>
+<span class="nc" id="L231">    return this;</span>
   }
 
   /**
@@ -190,16 +238,16 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;useProxy&quot;, required = false)
   public Boolean getUseProxy() {
-<span class="fc" id="L193">    return useProxy;</span>
+<span class="fc" id="L241">    return useProxy;</span>
   }
 
   public void setUseProxy(Boolean useProxy) {
-<span class="nc" id="L197">    this.useProxy = useProxy;</span>
-<span class="nc" id="L198">  }</span>
+<span class="nc" id="L245">    this.useProxy = useProxy;</span>
+<span class="nc" id="L246">  }</span>
 
   public Service styleLibraries(Object styleLibraries) {
-<span class="nc" id="L201">    this.styleLibraries = styleLibraries;</span>
-<span class="nc" id="L202">    return this;</span>
+<span class="nc" id="L249">    this.styleLibraries = styleLibraries;</span>
+<span class="nc" id="L250">    return this;</span>
   }
 
   /**
@@ -209,16 +257,73 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;styleLibraries&quot;, required = false)
   public Object getStyleLibraries() {
-<span class="fc" id="L212">    return styleLibraries;</span>
+<span class="fc" id="L260">    return styleLibraries;</span>
   }
 
   public void setStyleLibraries(Object styleLibraries) {
-<span class="nc" id="L216">    this.styleLibraries = styleLibraries;</span>
-<span class="nc" id="L217">  }</span>
+<span class="nc" id="L264">    this.styleLibraries = styleLibraries;</span>
+<span class="nc" id="L265">  }</span>
+
+  public Service hiDpiMode(HiDpiModeEnum hiDpiMode) {
+<span class="fc" id="L268">    this.hiDpiMode = hiDpiMode;</span>
+<span class="fc" id="L269">    return this;</span>
+  }
+
+  /**
+   * Get hiDpiMode
+   * @return hiDpiMode
+  */
+  
+  @Schema(name = &quot;hiDpiMode&quot;, required = false)
+  public HiDpiModeEnum getHiDpiMode() {
+<span class="fc" id="L279">    return hiDpiMode;</span>
+  }
+
+  public void setHiDpiMode(HiDpiModeEnum hiDpiMode) {
+<span class="nc" id="L283">    this.hiDpiMode = hiDpiMode;</span>
+<span class="nc" id="L284">  }</span>
+
+  public Service tilingDisabled(Boolean tilingDisabled) {
+<span class="fc" id="L287">    this.tilingDisabled = tilingDisabled;</span>
+<span class="fc" id="L288">    return this;</span>
+  }
+
+  /**
+   * Get tilingDisabled
+   * @return tilingDisabled
+  */
+  
+  @Schema(name = &quot;tilingDisabled&quot;, required = false)
+  public Boolean getTilingDisabled() {
+<span class="fc" id="L298">    return tilingDisabled;</span>
+  }
+
+  public void setTilingDisabled(Boolean tilingDisabled) {
+<span class="nc" id="L302">    this.tilingDisabled = tilingDisabled;</span>
+<span class="nc" id="L303">  }</span>
+
+  public Service tilingGutter(Integer tilingGutter) {
+<span class="fc" id="L306">    this.tilingGutter = tilingGutter;</span>
+<span class="fc" id="L307">    return this;</span>
+  }
+
+  /**
+   * Get tilingGutter
+   * @return tilingGutter
+  */
+  
+  @Schema(name = &quot;tilingGutter&quot;, required = false)
+  public Integer getTilingGutter() {
+<span class="fc" id="L317">    return tilingGutter;</span>
+  }
+
+  public void setTilingGutter(Integer tilingGutter) {
+<span class="nc" id="L321">    this.tilingGutter = tilingGutter;</span>
+<span class="nc" id="L322">  }</span>
 
   public Service protocol(ProtocolEnum protocol) {
-<span class="fc" id="L220">    this.protocol = protocol;</span>
-<span class="fc" id="L221">    return this;</span>
+<span class="fc" id="L325">    this.protocol = protocol;</span>
+<span class="fc" id="L326">    return this;</span>
   }
 
   /**
@@ -228,16 +333,16 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;protocol&quot;, required = false)
   public ProtocolEnum getProtocol() {
-<span class="fc" id="L231">    return protocol;</span>
+<span class="fc" id="L336">    return protocol;</span>
   }
 
   public void setProtocol(ProtocolEnum protocol) {
-<span class="nc" id="L235">    this.protocol = protocol;</span>
-<span class="nc" id="L236">  }</span>
+<span class="nc" id="L340">    this.protocol = protocol;</span>
+<span class="nc" id="L341">  }</span>
 
   public Service tilingProtocol(TilingProtocolEnum tilingProtocol) {
-<span class="fc" id="L239">    this.tilingProtocol = tilingProtocol;</span>
-<span class="fc" id="L240">    return this;</span>
+<span class="fc" id="L344">    this.tilingProtocol = tilingProtocol;</span>
+<span class="fc" id="L345">    return this;</span>
   }
 
   /**
@@ -247,16 +352,16 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;tilingProtocol&quot;, required = false)
   public TilingProtocolEnum getTilingProtocol() {
-<span class="fc" id="L250">    return tilingProtocol;</span>
+<span class="fc" id="L355">    return tilingProtocol;</span>
   }
 
   public void setTilingProtocol(TilingProtocolEnum tilingProtocol) {
-<span class="nc" id="L254">    this.tilingProtocol = tilingProtocol;</span>
-<span class="nc" id="L255">  }</span>
+<span class="nc" id="L359">    this.tilingProtocol = tilingProtocol;</span>
+<span class="nc" id="L360">  }</span>
 
   public Service capabilities(String capabilities) {
-<span class="fc" id="L258">    this.capabilities = capabilities;</span>
-<span class="fc" id="L259">    return this;</span>
+<span class="fc" id="L363">    this.capabilities = capabilities;</span>
+<span class="fc" id="L364">    return this;</span>
   }
 
   /**
@@ -266,51 +371,57 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;capabilities&quot;, description = &quot;capabilities document of the service - currently only for WMTS&quot;, required = false)
   public String getCapabilities() {
-<span class="fc" id="L269">    return capabilities;</span>
+<span class="fc" id="L374">    return capabilities;</span>
   }
 
   public void setCapabilities(String capabilities) {
-<span class="nc" id="L273">    this.capabilities = capabilities;</span>
-<span class="nc" id="L274">  }</span>
+<span class="nc" id="L378">    this.capabilities = capabilities;</span>
+<span class="nc" id="L379">  }</span>
 
   @Override
   public boolean equals(Object o) {
-<span class="pc bpc" id="L278" title="1 of 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L279">      return true;</span>
+<span class="pc bpc" id="L383" title="1 of 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L384">      return true;</span>
     }
-<span class="pc bpc" id="L281" title="2 of 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L282">      return false;</span>
+<span class="pc bpc" id="L386" title="2 of 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L387">      return false;</span>
     }
-<span class="fc" id="L284">    Service service = (Service) o;</span>
-<span class="pc bpc" id="L285" title="1 of 2 branches missed.">    return Objects.equals(this.id, service.id) &amp;&amp;</span>
-<span class="pc bpc" id="L286" title="1 of 2 branches missed.">        Objects.equals(this.name, service.name) &amp;&amp;</span>
-<span class="pc bpc" id="L287" title="1 of 2 branches missed.">        Objects.equals(this.url, service.url) &amp;&amp;</span>
-<span class="pc bpc" id="L288" title="1 of 2 branches missed.">        Objects.equals(this.useProxy, service.useProxy) &amp;&amp;</span>
-<span class="pc bpc" id="L289" title="1 of 2 branches missed.">        Objects.equals(this.styleLibraries, service.styleLibraries) &amp;&amp;</span>
-<span class="pc bpc" id="L290" title="1 of 2 branches missed.">        Objects.equals(this.protocol, service.protocol) &amp;&amp;</span>
-<span class="pc bpc" id="L291" title="1 of 2 branches missed.">        Objects.equals(this.tilingProtocol, service.tilingProtocol) &amp;&amp;</span>
-<span class="pc bpc" id="L292" title="1 of 2 branches missed.">        Objects.equals(this.capabilities, service.capabilities);</span>
+<span class="fc" id="L389">    Service service = (Service) o;</span>
+<span class="pc bpc" id="L390" title="1 of 2 branches missed.">    return Objects.equals(this.id, service.id) &amp;&amp;</span>
+<span class="pc bpc" id="L391" title="1 of 2 branches missed.">        Objects.equals(this.name, service.name) &amp;&amp;</span>
+<span class="pc bpc" id="L392" title="1 of 2 branches missed.">        Objects.equals(this.url, service.url) &amp;&amp;</span>
+<span class="pc bpc" id="L393" title="1 of 2 branches missed.">        Objects.equals(this.useProxy, service.useProxy) &amp;&amp;</span>
+<span class="pc bpc" id="L394" title="1 of 2 branches missed.">        Objects.equals(this.styleLibraries, service.styleLibraries) &amp;&amp;</span>
+<span class="pc bpc" id="L395" title="1 of 2 branches missed.">        Objects.equals(this.hiDpiMode, service.hiDpiMode) &amp;&amp;</span>
+<span class="pc bpc" id="L396" title="1 of 2 branches missed.">        Objects.equals(this.tilingDisabled, service.tilingDisabled) &amp;&amp;</span>
+<span class="pc bpc" id="L397" title="1 of 2 branches missed.">        Objects.equals(this.tilingGutter, service.tilingGutter) &amp;&amp;</span>
+<span class="pc bpc" id="L398" title="1 of 2 branches missed.">        Objects.equals(this.protocol, service.protocol) &amp;&amp;</span>
+<span class="pc bpc" id="L399" title="1 of 2 branches missed.">        Objects.equals(this.tilingProtocol, service.tilingProtocol) &amp;&amp;</span>
+<span class="pc bpc" id="L400" title="1 of 2 branches missed.">        Objects.equals(this.capabilities, service.capabilities);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="fc" id="L297">    return Objects.hash(id, name, url, useProxy, styleLibraries, protocol, tilingProtocol, capabilities);</span>
+<span class="fc" id="L405">    return Objects.hash(id, name, url, useProxy, styleLibraries, hiDpiMode, tilingDisabled, tilingGutter, protocol, tilingProtocol, capabilities);</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L302">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L303">    sb.append(&quot;class Service {\n&quot;);</span>
-<span class="nc" id="L304">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L305">    sb.append(&quot;    name: &quot;).append(toIndentedString(name)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L306">    sb.append(&quot;    url: &quot;).append(toIndentedString(url)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L307">    sb.append(&quot;    useProxy: &quot;).append(toIndentedString(useProxy)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L308">    sb.append(&quot;    styleLibraries: &quot;).append(toIndentedString(styleLibraries)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L309">    sb.append(&quot;    protocol: &quot;).append(toIndentedString(protocol)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L310">    sb.append(&quot;    tilingProtocol: &quot;).append(toIndentedString(tilingProtocol)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L311">    sb.append(&quot;    capabilities: &quot;).append(toIndentedString(capabilities)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L312">    sb.append(&quot;}&quot;);</span>
-<span class="nc" id="L313">    return sb.toString();</span>
+<span class="nc" id="L410">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L411">    sb.append(&quot;class Service {\n&quot;);</span>
+<span class="nc" id="L412">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L413">    sb.append(&quot;    name: &quot;).append(toIndentedString(name)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L414">    sb.append(&quot;    url: &quot;).append(toIndentedString(url)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L415">    sb.append(&quot;    useProxy: &quot;).append(toIndentedString(useProxy)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L416">    sb.append(&quot;    styleLibraries: &quot;).append(toIndentedString(styleLibraries)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L417">    sb.append(&quot;    hiDpiMode: &quot;).append(toIndentedString(hiDpiMode)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L418">    sb.append(&quot;    tilingDisabled: &quot;).append(toIndentedString(tilingDisabled)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L419">    sb.append(&quot;    tilingGutter: &quot;).append(toIndentedString(tilingGutter)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L420">    sb.append(&quot;    protocol: &quot;).append(toIndentedString(protocol)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L421">    sb.append(&quot;    tilingProtocol: &quot;).append(toIndentedString(tilingProtocol)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L422">    sb.append(&quot;    capabilities: &quot;).append(toIndentedString(capabilities)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L423">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L424">    return sb.toString();</span>
   }
 
   /**
@@ -318,10 +429,10 @@ import javax.annotation.Generated;
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-<span class="nc bnc" id="L321" title="All 2 branches missed.">    if (o == null) {</span>
-<span class="nc" id="L322">      return &quot;null&quot;;</span>
+<span class="nc bnc" id="L432" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L433">      return &quot;null&quot;;</span>
     }
-<span class="nc" id="L324">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+<span class="nc" id="L435">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
   }
 }
 

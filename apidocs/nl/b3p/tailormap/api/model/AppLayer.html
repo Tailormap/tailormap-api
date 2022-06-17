@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -88,7 +88,7 @@ loadScripts(document, 'script');</script>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
@@ -150,6 +150,31 @@ implements <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="nested.class.summary">
+<!--   -->
+</a>
+<h3>Nested Class Summary</h3>
+<table class="memberSummary">
+<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Class</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static class&nbsp;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="AppLayer.HiDpiModeEnum.html" title="enum in nl.b3p.tailormap.api.model">AppLayer.HiDpiModeEnum</a></span></code></th>
+<td class="colLast">
+<div class="block">For tiled services only</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
+</section>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <section role="region">
 <ul class="blockList">
@@ -191,147 +216,181 @@ implements <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code><a href="AppLayer.HiDpiModeEnum.html" title="enum in nl.b3p.tailormap.api.model">AppLayer.HiDpiModeEnum</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHiDpiMode()">getHiDpiMode</a></span>()</code></th>
+<td class="colLast">
+<div class="block">For tiled services only</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHiDpiSubstituteLayer()">getHiDpiSubstituteLayer</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The layer name of this service to substitute when the device pixel ratio is higher</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getId()">getId</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get id</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLayerName()">getLayerName</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Layer name as known by the service.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLegendImageUrl()">getLegendImageUrl</a></span>()</code></th>
 <td class="colLast">
 <div class="block">URL to an image with the layer legend.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMaxScale()">getMaxScale</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Maximum scale denominator at which this layer should be shown or is not blank.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMinScale()">getMinScale</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Minimum scale at which this layer should be shown or is not blank.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServiceId()">getServiceId</a></span>()</code></th>
 <td class="colLast">
 <div class="block">A reference to a Service id.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTitle()">getTitle</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Layer title or display name.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVisible()">getVisible</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get visible</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hashCode()">hashCode</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#id(java.lang.Long)">id</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i11" class="rowColor">
-<td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#layerName(java.lang.String)">layerName</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;layerName)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#legendImageUrl(java.lang.String)">legendImageUrl</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;legendImageUrl)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hiDpiMode(nl.b3p.tailormap.api.model.AppLayer.HiDpiModeEnum)">hiDpiMode</a></span>&#8203;(<a href="AppLayer.HiDpiModeEnum.html" title="enum in nl.b3p.tailormap.api.model">AppLayer.HiDpiModeEnum</a>&nbsp;hiDpiMode)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#maxScale(java.math.BigDecimal)">maxScale</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;maxScale)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hiDpiSubstituteLayer(java.lang.String)">hiDpiSubstituteLayer</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;hiDpiSubstituteLayer)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#minScale(java.math.BigDecimal)">minScale</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;minScale)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#id(java.lang.Long)">id</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#serviceId(java.lang.Long)">serviceId</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;serviceId)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#layerName(java.lang.String)">layerName</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;layerName)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i16" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setId(java.lang.Long)">setId</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id)</code></th>
+<td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#legendImageUrl(java.lang.String)">legendImageUrl</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;legendImageUrl)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i17" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLayerName(java.lang.String)">setLayerName</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;layerName)</code></th>
+<td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#maxScale(java.math.BigDecimal)">maxScale</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;maxScale)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i18" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLegendImageUrl(java.lang.String)">setLegendImageUrl</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;legendImageUrl)</code></th>
+<td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#minScale(java.math.BigDecimal)">minScale</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;minScale)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i19" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setMaxScale(java.math.BigDecimal)">setMaxScale</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;maxScale)</code></th>
+<td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#serviceId(java.lang.Long)">serviceId</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;serviceId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setMinScale(java.math.BigDecimal)">setMinScale</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;minScale)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setHiDpiMode(nl.b3p.tailormap.api.model.AppLayer.HiDpiModeEnum)">setHiDpiMode</a></span>&#8203;(<a href="AppLayer.HiDpiModeEnum.html" title="enum in nl.b3p.tailormap.api.model">AppLayer.HiDpiModeEnum</a>&nbsp;hiDpiMode)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i21" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setServiceId(java.lang.Long)">setServiceId</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;serviceId)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setHiDpiSubstituteLayer(java.lang.String)">setHiDpiSubstituteLayer</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;hiDpiSubstituteLayer)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i22" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setTitle(java.lang.String)">setTitle</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;title)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setId(java.lang.Long)">setId</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i23" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setVisible(java.lang.Boolean)">setVisible</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;visible)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLayerName(java.lang.String)">setLayerName</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;layerName)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i24" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLegendImageUrl(java.lang.String)">setLegendImageUrl</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;legendImageUrl)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i25" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setMaxScale(java.math.BigDecimal)">setMaxScale</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;maxScale)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i26" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setMinScale(java.math.BigDecimal)">setMinScale</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html?is-external=true" title="class or interface in java.math" class="externalLink">BigDecimal</a>&nbsp;minScale)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i27" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setServiceId(java.lang.Long)">setServiceId</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;serviceId)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i28" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setTitle(java.lang.String)">setTitle</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;title)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i29" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setVisible(java.lang.Boolean)">setVisible</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;visible)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i30" class="altColor">
 <td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#title(java.lang.String)">title</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;title)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code><a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#visible(java.lang.Boolean)">visible</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;visible)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -642,6 +701,70 @@ public&nbsp;@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/j
 <pre class="methodSignature">public&nbsp;void&nbsp;setLegendImageUrl&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;legendImageUrl)</pre>
 </li>
 </ul>
+<a id="hiDpiMode(nl.b3p.tailormap.api.model.AppLayer.HiDpiModeEnum)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hiDpiMode</h4>
+<pre class="methodSignature">public&nbsp;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;hiDpiMode&#8203;(<a href="AppLayer.HiDpiModeEnum.html" title="enum in nl.b3p.tailormap.api.model">AppLayer.HiDpiModeEnum</a>&nbsp;hiDpiMode)</pre>
+</li>
+</ul>
+<a id="getHiDpiMode()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getHiDpiMode</h4>
+<pre class="methodSignature">public&nbsp;<a href="AppLayer.HiDpiModeEnum.html" title="enum in nl.b3p.tailormap.api.model">AppLayer.HiDpiModeEnum</a>&nbsp;getHiDpiMode()</pre>
+<div class="block">For tiled services only</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>hiDpiMode</dd>
+</dl>
+</li>
+</ul>
+<a id="setHiDpiMode(nl.b3p.tailormap.api.model.AppLayer.HiDpiModeEnum)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setHiDpiMode</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setHiDpiMode&#8203;(<a href="AppLayer.HiDpiModeEnum.html" title="enum in nl.b3p.tailormap.api.model">AppLayer.HiDpiModeEnum</a>&nbsp;hiDpiMode)</pre>
+</li>
+</ul>
+<a id="hiDpiSubstituteLayer(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hiDpiSubstituteLayer</h4>
+<pre class="methodSignature">public&nbsp;<a href="AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&nbsp;hiDpiSubstituteLayer&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;hiDpiSubstituteLayer)</pre>
+</li>
+</ul>
+<a id="getHiDpiSubstituteLayer()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getHiDpiSubstituteLayer</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getHiDpiSubstituteLayer()</pre>
+<div class="block">The layer name of this service to substitute when the device pixel ratio is higher</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>hiDpiSubstituteLayer</dd>
+</dl>
+</li>
+</ul>
+<a id="setHiDpiSubstituteLayer(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setHiDpiSubstituteLayer</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setHiDpiSubstituteLayer&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;hiDpiSubstituteLayer)</pre>
+</li>
+</ul>
 <a id="equals(java.lang.Object)">
 <!--   -->
 </a>
@@ -733,7 +856,7 @@ public&nbsp;@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/j
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>

@@ -24,12 +24,14 @@ import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.LevelRepository;
 import nl.b3p.tailormap.api.security.AuthUtil;
 import nl.b3p.tailormap.api.util.ParseUtil;
+import nl.tailormap.viewer.config.ClobElement;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.Level;
 import nl.tailormap.viewer.config.app.StartLayer;
 import nl.tailormap.viewer.config.app.StartLevel;
 import nl.tailormap.viewer.config.services.GeoService;
+import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.TileService;
 
 import org.apache.commons.logging.Log;
@@ -62,8 +64,8 @@ import javax.validation.constraints.NotNull;
 @RestController
 @Validated
 @RequestMapping(path = &quot;/app/{appId}/map&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
-<span class="fc" id="L65">public class MapController {</span>
-<span class="fc" id="L66">    private final Log logger = LogFactory.getLog(getClass());</span>
+<span class="fc" id="L67">public class MapController {</span>
+<span class="fc" id="L68">    private final Log logger = LogFactory.getLog(getClass());</span>
     @Autowired private ApplicationRepository applicationRepository;
     @Autowired private LevelRepository levelRepository;
 
@@ -99,21 +101,21 @@ import javax.validation.constraints.NotNull;
             @Parameter(name = &quot;appId&quot;, description = &quot;application id&quot;, required = true)
                     @PathVariable(&quot;appId&quot;)
                     Long appId) {
-<span class="fc" id="L102">        logger.trace(&quot;Requesting 'map' for application id: &quot; + appId);</span>
+<span class="fc" id="L104">        logger.trace(&quot;Requesting 'map' for application id: &quot; + appId);</span>
 
         // this could throw EntityNotFound, which is handles by handleEntityNotFoundException
         // and in a normal flow this should not happen
         // as appId is (should be) validated by calling the /app/ endpoint
-<span class="fc" id="L107">        Application application = applicationRepository.getReferenceById(appId);</span>
-<span class="pc bpc" id="L108" title="1 of 4 branches missed.">        if (application.isAuthenticatedRequired() &amp;&amp; !AuthUtil.isAuthenticatedUser()) {</span>
+<span class="fc" id="L109">        Application application = applicationRepository.getReferenceById(appId);</span>
+<span class="pc bpc" id="L110" title="1 of 4 branches missed.">        if (application.isAuthenticatedRequired() &amp;&amp; !AuthUtil.isAuthenticatedUser()) {</span>
             // login required, send RedirectResponse
-<span class="fc" id="L110">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());</span>
+<span class="fc" id="L112">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());</span>
         } else {
-<span class="fc" id="L112">            MapResponse mapResponse = new MapResponse();</span>
-<span class="fc" id="L113">            getApplicationParams(application, mapResponse);</span>
-<span class="fc" id="L114">            getLayers(application, mapResponse);</span>
+<span class="fc" id="L114">            MapResponse mapResponse = new MapResponse();</span>
+<span class="fc" id="L115">            getApplicationParams(application, mapResponse);</span>
+<span class="fc" id="L116">            getLayers(application, mapResponse);</span>
 
-<span class="fc" id="L116">            return ResponseEntity.status(HttpStatus.OK).body(mapResponse);</span>
+<span class="fc" id="L118">            return ResponseEntity.status(HttpStatus.OK).body(mapResponse);</span>
         }
     }
 
@@ -124,178 +126,269 @@ import javax.validation.constraints.NotNull;
                             .NOT_FOUND /*,reason = &quot;Not Found&quot; -- adding 'reason' will drop the body */)
     @ResponseBody
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
-<span class="fc" id="L127">        logger.warn(</span>
-<span class="fc" id="L128">                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());</span>
-<span class="fc" id="L129">        return new ErrorResponse()</span>
-<span class="fc" id="L130">                .message(&quot;Requested an application that does not exist&quot;)</span>
-<span class="fc" id="L131">                .code(HttpStatus.NOT_FOUND.value());</span>
+<span class="fc" id="L129">        logger.warn(</span>
+<span class="fc" id="L130">                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());</span>
+<span class="fc" id="L131">        return new ErrorResponse()</span>
+<span class="fc" id="L132">                .message(&quot;Requested an application that does not exist&quot;)</span>
+<span class="fc" id="L133">                .code(HttpStatus.NOT_FOUND.value());</span>
     }
 
     private void getApplicationParams(@NotNull Application a, @NotNull MapResponse mapResponse) {
-<span class="fc" id="L135">        final String pCode = a.getProjectionCode();</span>
+<span class="fc" id="L137">        final String pCode = a.getProjectionCode();</span>
 
-<span class="fc" id="L137">        CoordinateReferenceSystem c = new CoordinateReferenceSystem();</span>
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">        if (null != pCode) {</span>
-<span class="fc" id="L139">            c.code(ParseUtil.parseEpsgCode(pCode)).definition(ParseUtil.parseProjDefintion(pCode));</span>
+<span class="fc" id="L139">        CoordinateReferenceSystem c = new CoordinateReferenceSystem();</span>
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">        if (null != pCode) {</span>
+<span class="fc" id="L141">            c.code(ParseUtil.parseEpsgCode(pCode)).definition(ParseUtil.parseProjDefintion(pCode));</span>
         }
-<span class="fc" id="L141">        Bounds maxExtent = new Bounds();</span>
-<span class="pc bpc" id="L142" title="1 of 2 branches missed.">        if (null != a.getMaxExtent()) {</span>
-<span class="nc" id="L143">            maxExtent</span>
-<span class="nc" id="L144">                    .minx(a.getMaxExtent().getMinx())</span>
-<span class="nc" id="L145">                    .miny(a.getMaxExtent().getMiny())</span>
-<span class="nc" id="L146">                    .maxx(a.getMaxExtent().getMaxx())</span>
-<span class="nc" id="L147">                    .maxy(a.getMaxExtent().getMaxy())</span>
-<span class="nc" id="L148">                    .crs(a.getMaxExtent().getCrs().getName());</span>
+<span class="fc" id="L143">        Bounds maxExtent = new Bounds();</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if (null != a.getMaxExtent()) {</span>
+<span class="nc" id="L145">            maxExtent</span>
+<span class="nc" id="L146">                    .minx(a.getMaxExtent().getMinx())</span>
+<span class="nc" id="L147">                    .miny(a.getMaxExtent().getMiny())</span>
+<span class="nc" id="L148">                    .maxx(a.getMaxExtent().getMaxx())</span>
+<span class="nc" id="L149">                    .maxy(a.getMaxExtent().getMaxy())</span>
+<span class="nc" id="L150">                    .crs(a.getMaxExtent().getCrs().getName());</span>
         } else {
-<span class="fc" id="L150">            maxExtent = ReferencingHelper.crsBoundsExtractor(c.getCode());</span>
+<span class="fc" id="L152">            maxExtent = ReferencingHelper.crsBoundsExtractor(c.getCode());</span>
         }
-<span class="fc" id="L152">        Bounds initialExtent = new Bounds();</span>
-<span class="pc bpc" id="L153" title="1 of 2 branches missed.">        if (null != a.getStartExtent()) {</span>
-<span class="nc" id="L154">            initialExtent</span>
-<span class="nc" id="L155">                    .minx(a.getStartExtent().getMinx())</span>
-<span class="nc" id="L156">                    .miny(a.getStartExtent().getMiny())</span>
-<span class="nc" id="L157">                    .maxx(a.getStartExtent().getMaxx())</span>
-<span class="nc" id="L158">                    .maxy(a.getStartExtent().getMaxy())</span>
-<span class="nc" id="L159">                    .crs(a.getStartExtent().getCrs().getName());</span>
+<span class="fc" id="L154">        Bounds initialExtent = new Bounds();</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">        if (null != a.getStartExtent()) {</span>
+<span class="nc" id="L156">            initialExtent</span>
+<span class="nc" id="L157">                    .minx(a.getStartExtent().getMinx())</span>
+<span class="nc" id="L158">                    .miny(a.getStartExtent().getMiny())</span>
+<span class="nc" id="L159">                    .maxx(a.getStartExtent().getMaxx())</span>
+<span class="nc" id="L160">                    .maxy(a.getStartExtent().getMaxy())</span>
+<span class="nc" id="L161">                    .crs(a.getStartExtent().getCrs().getName());</span>
         } else {
-<span class="fc" id="L161">            initialExtent = maxExtent;</span>
+<span class="fc" id="L163">            initialExtent = maxExtent;</span>
         }
 
-<span class="fc" id="L164">        mapResponse.crs(c).maxExtent(maxExtent).initialExtent(initialExtent);</span>
-<span class="fc" id="L165">    }</span>
+<span class="fc" id="L166">        mapResponse.crs(c).maxExtent(maxExtent).initialExtent(initialExtent);</span>
+<span class="fc" id="L167">    }</span>
 
     private void getLayers(@NotNull Application a, @NotNull MapResponse mapResponse) {
-<span class="fc" id="L168">        LayerTreeNode rootNode = new LayerTreeNode().id(&quot;root&quot;).root(true).name(&quot;Foreground&quot;);</span>
-<span class="fc" id="L169">        mapResponse.addLayerTreeNodesItem(rootNode);</span>
+<span class="fc" id="L170">        LayerTreeNode rootNode = new LayerTreeNode().id(&quot;root&quot;).root(true).name(&quot;Foreground&quot;);</span>
+<span class="fc" id="L171">        mapResponse.addLayerTreeNodesItem(rootNode);</span>
 
-<span class="fc" id="L171">        LayerTreeNode rootBackgroundNode =</span>
-<span class="fc" id="L172">                new LayerTreeNode().id(&quot;rootbg&quot;).root(true).name(&quot;Background&quot;);</span>
-<span class="fc" id="L173">        mapResponse.addBaseLayerTreeNodesItem(rootBackgroundNode);</span>
+<span class="fc" id="L173">        LayerTreeNode rootBackgroundNode =</span>
+<span class="fc" id="L174">                new LayerTreeNode().id(&quot;rootbg&quot;).root(true).name(&quot;Background&quot;);</span>
+<span class="fc" id="L175">        mapResponse.addBaseLayerTreeNodesItem(rootBackgroundNode);</span>
 
-<span class="fc" id="L175">        levelRepository.findByLevelTree(a.getRoot().getId());</span>
-<span class="fc" id="L176">        List&lt;StartLayer&gt; startLayers = a.getStartLayers();</span>
-<span class="fc" id="L177">        List&lt;StartLevel&gt; startLevels = a.getStartLevels();</span>
+<span class="fc" id="L177">        levelRepository.findByLevelTree(a.getRoot().getId());</span>
+<span class="fc" id="L178">        List&lt;StartLayer&gt; startLayers = a.getStartLayers();</span>
+<span class="fc" id="L179">        List&lt;StartLevel&gt; startLevels = a.getStartLevels();</span>
 
         // Build a map of layer id -&gt; StartLayer.
-<span class="fc" id="L180">        Map&lt;Long, StartLayer&gt; layerMap = new HashMap&lt;&gt;(startLayers.size());</span>
-<span class="fc bfc" id="L181" title="All 2 branches covered.">        for (StartLayer startLayer : startLayers) {</span>
-<span class="pc bpc" id="L182" title="1 of 2 branches missed.">            if (startLayer.isRemoved()) {</span>
-<span class="nc" id="L183">                continue;</span>
+<span class="fc" id="L182">        Map&lt;Long, StartLayer&gt; layerMap = new HashMap&lt;&gt;(startLayers.size());</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">        for (StartLayer startLayer : startLayers) {</span>
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">            if (startLayer.isRemoved()) {</span>
+<span class="nc" id="L185">                continue;</span>
             }
 
-<span class="fc" id="L186">            layerMap.put(startLayer.getApplicationLayer().getId(), startLayer);</span>
-<span class="fc" id="L187">        }</span>
+<span class="fc" id="L188">            layerMap.put(startLayer.getApplicationLayer().getId(), startLayer);</span>
+<span class="fc" id="L189">        }</span>
 
         // Remove any startLevels that aren't assigned in the startkaartbeeld
-<span class="pc bpc" id="L190" title="1 of 4 branches missed.">        startLevels.removeIf((StartLevel t) -&gt; t.isRemoved() || t.getSelectedIndex() == null);</span>
-<span class="fc" id="L191">        startLevels.sort(Comparator.comparingLong(StartLevel::getSelectedIndex));</span>
+<span class="pc bpc" id="L192" title="1 of 4 branches missed.">        startLevels.removeIf((StartLevel t) -&gt; t.isRemoved() || t.getSelectedIndex() == null);</span>
+<span class="fc" id="L193">        startLevels.sort(Comparator.comparingLong(StartLevel::getSelectedIndex));</span>
 
-<span class="fc" id="L193">        Map&lt;Long, LayerTreeNode&gt; treeNodeMap = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L194">        Deque&lt;Level&gt; levelQueue = new ArrayDeque&lt;&gt;();</span>
-<span class="fc" id="L195">        List&lt;StartLayer&gt; visibleStartLayers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L195">        Map&lt;Long, LayerTreeNode&gt; treeNodeMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L196">        Deque&lt;Level&gt; levelQueue = new ArrayDeque&lt;&gt;();</span>
+<span class="fc" id="L197">        List&lt;StartLayer&gt; visibleStartLayers = new ArrayList&lt;&gt;();</span>
 
-<span class="fc bfc" id="L197" title="All 2 branches covered.">        for (StartLevel l : startLevels) {</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        for (StartLevel l : startLevels) {</span>
             // Check if this level is a child of a background level. In the API background levels
             // are returned in a separate tree.
             // Only children of the Level with isBackground() set to true can be a StartLevel, so we
             // need to check all parents only (not the Level of the StartLevel itself).
-<span class="fc" id="L202">            boolean isBackground = false;</span>
-<span class="fc" id="L203">            Level parentLevel = l.getLevel();</span>
-<span class="fc bfc" id="L204" title="All 4 branches covered.">            while (parentLevel != null &amp;&amp; !isBackground) {</span>
-<span class="fc" id="L205">                isBackground = parentLevel.isBackground();</span>
-<span class="fc" id="L206">                parentLevel = parentLevel.getParent();</span>
+<span class="fc" id="L204">            boolean isBackground = false;</span>
+<span class="fc" id="L205">            Level parentLevel = l.getLevel();</span>
+<span class="fc bfc" id="L206" title="All 4 branches covered.">            while (parentLevel != null &amp;&amp; !isBackground) {</span>
+<span class="fc" id="L207">                isBackground = parentLevel.isBackground();</span>
+<span class="fc" id="L208">                parentLevel = parentLevel.getParent();</span>
             }
 
-<span class="fc" id="L209">            Level startLevel = l.getLevel();</span>
+<span class="fc" id="L211">            Level startLevel = l.getLevel();</span>
             List&lt;LayerTreeNode&gt; treeNodeList;
             LayerTreeNode chosenRoot;
-<span class="fc bfc" id="L212" title="All 2 branches covered.">            if (isBackground) {</span>
-<span class="fc" id="L213">                treeNodeList = mapResponse.getBaseLayerTreeNodes();</span>
-<span class="fc" id="L214">                chosenRoot = rootBackgroundNode;</span>
+<span class="fc bfc" id="L214" title="All 2 branches covered.">            if (isBackground) {</span>
+<span class="fc" id="L215">                treeNodeList = mapResponse.getBaseLayerTreeNodes();</span>
+<span class="fc" id="L216">                chosenRoot = rootBackgroundNode;</span>
             } else {
-<span class="fc" id="L216">                treeNodeList = mapResponse.getLayerTreeNodes();</span>
-<span class="fc" id="L217">                chosenRoot = rootNode;</span>
+<span class="fc" id="L218">                treeNodeList = mapResponse.getLayerTreeNodes();</span>
+<span class="fc" id="L219">                chosenRoot = rootNode;</span>
             }
 
-<span class="fc" id="L220">            levelQueue.add(startLevel);</span>
-<span class="fc bfc" id="L221" title="All 2 branches covered.">            while (!levelQueue.isEmpty()) {</span>
-<span class="fc" id="L222">                Level level = levelQueue.pop();</span>
-<span class="pc bpc" id="L223" title="1 of 2 branches missed.">                if (treeNodeMap.containsKey(level.getId())) {</span>
-<span class="nc" id="L224">                    continue;</span>
+<span class="fc" id="L222">            levelQueue.add(startLevel);</span>
+<span class="fc bfc" id="L223" title="All 2 branches covered.">            while (!levelQueue.isEmpty()) {</span>
+<span class="fc" id="L224">                Level level = levelQueue.pop();</span>
+<span class="pc bpc" id="L225" title="1 of 2 branches missed.">                if (treeNodeMap.containsKey(level.getId())) {</span>
+<span class="nc" id="L226">                    continue;</span>
                 }
 
                 // Use a prefix to make the LayerTreeNode ids in the tree containing both Level and
                 // ApplicationLayer nodes unique
 
-<span class="fc" id="L230">                LayerTreeNode childNode =</span>
+<span class="fc" id="L232">                LayerTreeNode childNode =</span>
                         new LayerTreeNode()
-<span class="fc" id="L232">                                .id(String.format(&quot;lvl_%d&quot;, level.getId()))</span>
-<span class="fc" id="L233">                                .name(level.getName())</span>
-<span class="fc" id="L234">                                .root(false)</span>
-<span class="fc" id="L235">                                .childrenIds(new ArrayList&lt;&gt;());</span>
+<span class="fc" id="L234">                                .id(String.format(&quot;lvl_%d&quot;, level.getId()))</span>
+<span class="fc" id="L235">                                .name(level.getName())</span>
+<span class="fc" id="L236">                                .root(false)</span>
+<span class="fc" id="L237">                                .childrenIds(new ArrayList&lt;&gt;());</span>
 
-<span class="fc" id="L237">                treeNodeList.add(childNode);</span>
-<span class="fc" id="L238">                treeNodeMap.put(level.getId(), childNode);</span>
+<span class="fc" id="L239">                treeNodeList.add(childNode);</span>
+<span class="fc" id="L240">                treeNodeMap.put(level.getId(), childNode);</span>
 
                 LayerTreeNode parentNode;
-<span class="pc bpc" id="L241" title="1 of 2 branches missed.">                if (level == startLevel) {</span>
-<span class="fc" id="L242">                    parentNode = chosenRoot;</span>
+<span class="pc bpc" id="L243" title="1 of 2 branches missed.">                if (level == startLevel) {</span>
+<span class="fc" id="L244">                    parentNode = chosenRoot;</span>
                 } else {
-<span class="nc" id="L244">                    parentNode = treeNodeMap.get(level.getParent().getId());</span>
+<span class="nc" id="L246">                    parentNode = treeNodeMap.get(level.getParent().getId());</span>
                 }
-<span class="fc" id="L246">                parentNode.addChildrenIdsItem(childNode.getId());</span>
+<span class="fc" id="L248">                parentNode.addChildrenIdsItem(childNode.getId());</span>
 
-<span class="fc" id="L248">                levelQueue.addAll(level.getChildren());</span>
-<span class="fc bfc" id="L249" title="All 2 branches covered.">                for (ApplicationLayer layer : level.getLayers()) {</span>
-<span class="fc" id="L250">                    StartLayer startLayer = layerMap.get(layer.getId());</span>
-<span class="pc bpc" id="L251" title="1 of 2 branches missed.">                    if (startLayer == null) {</span>
-<span class="nc" id="L252">                        continue;</span>
+<span class="fc" id="L250">                levelQueue.addAll(level.getChildren());</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">                for (ApplicationLayer layer : level.getLayers()) {</span>
+<span class="fc" id="L252">                    StartLayer startLayer = layerMap.get(layer.getId());</span>
+<span class="pc bpc" id="L253" title="1 of 2 branches missed.">                    if (startLayer == null) {</span>
+<span class="nc" id="L254">                        continue;</span>
                     }
 
-<span class="fc" id="L255">                    LayerTreeNode layerNode =</span>
+<span class="fc" id="L257">                    LayerTreeNode layerNode =</span>
                             new LayerTreeNode()
-<span class="fc" id="L257">                                    .id(String.format(&quot;lyr_%d&quot;, layer.getId()))</span>
-<span class="fc" id="L258">                                    .name(layer.getLayerName())</span>
-<span class="fc" id="L259">                                    .appLayerId((int) (long) layer.getId())</span>
-<span class="fc" id="L260">                                    .root(false)</span>
-<span class="fc" id="L261">                                    .childrenIds(new ArrayList&lt;&gt;());</span>
+<span class="fc" id="L259">                                    .id(String.format(&quot;lyr_%d&quot;, layer.getId()))</span>
+<span class="fc" id="L260">                                    .name(layer.getLayerName())</span>
+<span class="fc" id="L261">                                    .appLayerId((int) (long) layer.getId())</span>
+<span class="fc" id="L262">                                    .root(false)</span>
+<span class="fc" id="L263">                                    .childrenIds(new ArrayList&lt;&gt;());</span>
 
-<span class="fc" id="L263">                    treeNodeList.add(layerNode);</span>
-<span class="fc" id="L264">                    childNode.addChildrenIdsItem(layerNode.getId());</span>
-<span class="fc" id="L265">                    visibleStartLayers.add(startLayer);</span>
-<span class="fc" id="L266">                }</span>
-<span class="fc" id="L267">            }</span>
-<span class="fc" id="L268">        }</span>
+<span class="fc" id="L265">                    treeNodeList.add(layerNode);</span>
+<span class="fc" id="L266">                    childNode.addChildrenIdsItem(layerNode.getId());</span>
+<span class="fc" id="L267">                    visibleStartLayers.add(startLayer);</span>
+<span class="fc" id="L268">                }</span>
+<span class="fc" id="L269">            }</span>
+<span class="fc" id="L270">        }</span>
 
         // Only add AppLayers visible in the LayerTreeNode graph to the response
-<span class="fc bfc" id="L271" title="All 2 branches covered.">        for (StartLayer l : visibleStartLayers) {</span>
-<span class="fc" id="L272">            AppLayer appLayer =</span>
+<span class="fc bfc" id="L273" title="All 2 branches covered.">        for (StartLayer l : visibleStartLayers) {</span>
+
+<span class="fc" id="L275">            Layer serviceLayer =</span>
+<span class="fc" id="L276">                    findLayer(</span>
+<span class="fc" id="L277">                            l.getApplicationLayer().getService().getTopLayer(),</span>
+<span class="fc" id="L278">                            l.getApplicationLayer().getLayerName());</span>
+
+<span class="fc" id="L280">            AppLayer.HiDpiModeEnum hiDpiMode = null;</span>
+<span class="fc" id="L281">            String hiDpiSubstituteLayer = null;</span>
+
+<span class="pc bpc" id="L283" title="1 of 2 branches missed.">            if (serviceLayer != null) {</span>
+<span class="fc" id="L284">                ClobElement ce = serviceLayer.getDetails().get(&quot;hidpi.mode&quot;);</span>
+<span class="pc bpc" id="L285" title="1 of 2 branches missed.">                if (ce != null) {</span>
+                    try {
+<span class="nc" id="L287">                        hiDpiMode = AppLayer.HiDpiModeEnum.fromValue(ce.getValue());</span>
+<span class="nc" id="L288">                    } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L289">                        logger.warn(</span>
+<span class="nc" id="L290">                                String.format(</span>
+                                        &quot;App #%s (%s): invalid hidpi.mode enum value for app layer #%s, service layer #%s (%s)&quot;,
+<span class="nc" id="L292">                                        a.getId(),</span>
+<span class="nc" id="L293">                                        a.getNameWithVersion(),</span>
+<span class="nc" id="L294">                                        l.getId(),</span>
+<span class="nc" id="L295">                                        serviceLayer.getId(),</span>
+<span class="nc" id="L296">                                        serviceLayer.getName()));</span>
+<span class="nc" id="L297">                    }</span>
+                }
+<span class="fc" id="L299">                ce = serviceLayer.getDetails().get(&quot;hidpi.substitute_layer&quot;);</span>
+<span class="pc bpc" id="L300" title="1 of 2 branches missed.">                if (ce != null) {</span>
+<span class="nc" id="L301">                    hiDpiSubstituteLayer = ce.getValue();</span>
+                }
+            }
+<span class="fc" id="L304">            AppLayer appLayer =</span>
                     new AppLayer()
-<span class="fc" id="L274">                            .id(l.getApplicationLayer().getId())</span>
-<span class="fc" id="L275">                            .layerName(l.getApplicationLayer().getLayerName())</span>
+<span class="fc" id="L306">                            .id(l.getApplicationLayer().getId())</span>
+<span class="fc" id="L307">                            .layerName(l.getApplicationLayer().getLayerName())</span>
                             // TODO: see ApplicationLayer.getDisplayName(), but this method requires
                             // an EntityManager
-<span class="fc" id="L278">                            .title(l.getApplicationLayer().getLayerName())</span>
-<span class="fc" id="L279">                            .serviceId(l.getApplicationLayer().getService().getId())</span>
-<span class="fc" id="L280">                            .visible(l.isChecked());</span>
+<span class="fc" id="L310">                            .title(l.getApplicationLayer().getLayerName())</span>
+<span class="fc" id="L311">                            .serviceId(l.getApplicationLayer().getService().getId())</span>
+<span class="fc" id="L312">                            .hiDpiMode(hiDpiMode)</span>
+<span class="fc" id="L313">                            .hiDpiSubstituteLayer(hiDpiSubstituteLayer)</span>
+<span class="fc" id="L314">                            .visible(l.isChecked());</span>
 
-<span class="fc" id="L282">            mapResponse.addAppLayersItem(appLayer);</span>
+<span class="fc" id="L316">            mapResponse.addAppLayersItem(appLayer);</span>
 
-<span class="fc" id="L284">            GeoService geoService = l.getApplicationLayer().getService();</span>
-<span class="fc" id="L285">            Service s =</span>
-                    new Service()
-<span class="fc" id="L287">                            .url(geoService.getUrl())</span>
-<span class="fc" id="L288">                            .id(geoService.getId())</span>
-<span class="fc" id="L289">                            .name(geoService.getName())</span>
-<span class="fc" id="L290">                            .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))</span>
-<span class="fc" id="L291">                            .capabilities(geoService.getCapabilitiesDoc());</span>
-<span class="fc bfc" id="L292" title="All 2 branches covered.">            if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {</span>
-<span class="fc" id="L293">                s.tilingProtocol(</span>
-<span class="fc" id="L294">                        Service.TilingProtocolEnum.fromValue(</span>
-<span class="fc" id="L295">                                ((TileService) geoService).getTilingProtocol()));</span>
+<span class="fc" id="L318">            GeoService geoService = l.getApplicationLayer().getService();</span>
+
+            // Use this default if saved before the form default was added in admin
+<span class="fc" id="L321">            Service.HiDpiModeEnum serviceHiDpiMode = Service.HiDpiModeEnum.AUTO;</span>
+<span class="fc" id="L322">            ClobElement ce = geoService.getDetails().get(&quot;hidpi.mode&quot;);</span>
+<span class="pc bpc" id="L323" title="1 of 2 branches missed.">            if (ce != null) {</span>
+                try {
+<span class="nc" id="L325">                    serviceHiDpiMode = Service.HiDpiModeEnum.fromValue(ce.getValue());</span>
+<span class="nc" id="L326">                } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L327">                    logger.warn(</span>
+<span class="nc" id="L328">                            String.format(</span>
+                                    &quot;App #%s (%s): invalid hidpi.mode enum value for service #%s (%s)&quot;,
+<span class="nc" id="L330">                                    a.getId(),</span>
+<span class="nc" id="L331">                                    a.getNameWithVersion(),</span>
+<span class="nc" id="L332">                                    geoService.getId(),</span>
+<span class="nc" id="L333">                                    geoService.getName()));</span>
+<span class="nc" id="L334">                }</span>
             }
-<span class="fc" id="L297">            mapResponse.addServicesItem(s);</span>
-<span class="fc" id="L298">        }</span>
-<span class="fc" id="L299">    }</span>
+<span class="fc" id="L336">            Integer tilingGutter = null;</span>
+<span class="fc" id="L337">            ce = geoService.getDetails().get(&quot;tiling.gutter&quot;);</span>
+<span class="pc bpc" id="L338" title="1 of 2 branches missed.">            if (ce != null) {</span>
+                try {
+<span class="nc" id="L340">                    tilingGutter = Integer.parseInt(ce.getValue());</span>
+<span class="nc" id="L341">                } catch (NumberFormatException ignored) {</span>
+                    // ignored
+<span class="nc" id="L343">                }</span>
+            }
+
+<span class="fc" id="L346">            Service s =</span>
+                    new Service()
+<span class="fc" id="L348">                            .url(geoService.getUrl())</span>
+<span class="fc" id="L349">                            .id(geoService.getId())</span>
+<span class="fc" id="L350">                            .name(geoService.getName())</span>
+<span class="fc" id="L351">                            .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))</span>
+<span class="fc" id="L352">                            .hiDpiMode(serviceHiDpiMode)</span>
+<span class="fc" id="L353">                            .tilingDisabled(</span>
+<span class="fc" id="L354">                                    &quot;true&quot;</span>
+<span class="fc" id="L355">                                            .equals(</span>
+                                                    geoService
+<span class="fc" id="L357">                                                            .getDetails()</span>
+<span class="fc" id="L358">                                                            .getOrDefault(</span>
+                                                                    &quot;tiling.disable&quot;,
+                                                                    new ClobElement(&quot;false)&quot;))
+<span class="fc" id="L361">                                                            .getValue()))</span>
+<span class="fc" id="L362">                            .tilingGutter(tilingGutter)</span>
+<span class="fc" id="L363">                            .capabilities(geoService.getCapabilitiesDoc());</span>
+<span class="fc bfc" id="L364" title="All 2 branches covered.">            if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {</span>
+<span class="fc" id="L365">                s.tilingProtocol(</span>
+<span class="fc" id="L366">                        Service.TilingProtocolEnum.fromValue(</span>
+<span class="fc" id="L367">                                ((TileService) geoService).getTilingProtocol()));</span>
+            }
+<span class="fc" id="L369">            mapResponse.addServicesItem(s);</span>
+<span class="fc" id="L370">        }</span>
+<span class="fc" id="L371">    }</span>
+
+    /**
+     * Recursive and naive way to search for a layer by name in the layer tree of a service. Needs
+     * to be replaced by an algorithm that does not cause a lot of queries.
+     *
+     * @param l Layer to start searching for including children
+     * @param name The layer name to search for
+     * @return null if not found in this subtree or a Layer if found
+     */
+    private static Layer findLayer(Layer l, String name) {
+<span class="fc bfc" id="L382" title="All 2 branches covered.">        if (name.equals(l.getName())) {</span>
+<span class="fc" id="L383">            return l;</span>
+        }
+<span class="fc bfc" id="L385" title="All 2 branches covered.">        for (Layer child : l.getChildren()) {</span>
+<span class="fc" id="L386">            Layer childResult = findLayer(child, name);</span>
+<span class="fc bfc" id="L387" title="All 2 branches covered.">            if (childResult != null) {</span>
+<span class="fc" id="L388">                return childResult;</span>
+            }
+<span class="fc" id="L390">        }</span>
+<span class="fc" id="L391">        return null;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
