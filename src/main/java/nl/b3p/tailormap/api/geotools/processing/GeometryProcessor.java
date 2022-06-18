@@ -34,11 +34,15 @@ public final class GeometryProcessor {
      *
      * @param geometry An object representing a geometry
      * @param simplifyGeometry set to {@code true} to simplify
-     * @return the string representation of the argument - normally WKT, optionally simplified
+     * @return the string representation of the argument - normally WKT, optionally simplified or
+     *     {@code null} when the given geometry was {@code null}
      */
     @NotNull
     public static String processGeometry(
-            @NotNull final Object geometry, @NotNull final Boolean simplifyGeometry) {
+            final Object geometry, @NotNull final Boolean simplifyGeometry) {
+        if (null == geometry) {
+            return null;
+        }
         if (Geometry.class.isAssignableFrom(geometry.getClass())) {
             if (simplifyGeometry) {
                 return simplify((Geometry) geometry);

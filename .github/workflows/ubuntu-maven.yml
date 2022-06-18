@@ -2,6 +2,9 @@ name: Ubuntu Maven build
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
+  PGPASSWORD: tailormap
+  PGUSER: tailormap
+  PGDATABASE: tailormap
 
 concurrency:
   # More info: https://stackoverflow.com/a/68422069/253468

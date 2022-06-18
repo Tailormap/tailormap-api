@@ -37,17 +37,20 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultProjectedCRS;
+import org.geotools.util.factory.GeoTools;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.util.GeometricShapeFactory;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.sort.SortOrder;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -77,6 +80,10 @@ import javax.validation.constraints.NotNull;
         path = "/app/{appId}/layer/{appLayerId}/features",
         produces = MediaType.APPLICATION_JSON_VALUE)
 public class FeaturesController implements Constants {
+    @Value("${tailormap-api.pageSize}")
+    private int pageSize;
+
+    private FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
     private final Log logger = LogFactory.getLog(getClass());
     @Autowired private ApplicationRepository applicationRepository;
     @Autowired private ApplicationLayerRepository applicationLayerRepository;
@@ -133,6 +140,7 @@ public class FeaturesController implements Constants {
      * @param __fid id of feature to get
      * @param simplify set to {@code true} to simplify geometry, defaults to {@code false}
      * @param filter CQL? filter to apply
+     * @param page Page number to retrieve, starts at 1
      * @throws BadRequestException when invalid parameters are passed
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -149,7 +157,8 @@ public class FeaturesController implements Constants {
             @RequestParam(defaultValue = "4") Double distance,
             @RequestParam(required = false) String __fid,
             @RequestParam(defaultValue = "false") Boolean simplify,
-            @RequestParam(required = false) String filter)
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) Integer page)
             throws BadRequestException {
 
         // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
@@ -172,6 +181,8 @@ public class FeaturesController implements Constants {
 
             if (null != x && null != y) {
                 featuresResponse = getFeaturesByXY(appLayer, x, y, crs, distance, simplify);
+            } else if (null != page && page > 0) {
+                featuresResponse = getAllFeatures(appLayer, page);
             } else {
                 // TODO other implementations
                 throw new BadRequestException(
@@ -180,6 +191,75 @@ public class FeaturesController implements Constants {
 
             return ResponseEntity.status(HttpStatus.OK).body(featuresResponse);
         }
+    }
+
+    @Timed(
+            value = "features.all.pages",
+            description = "Time taken to retrieve all features per page")
+    @NotNull
+    private FeaturesResponse getAllFeatures(@NotNull ApplicationLayer appLayer, Integer page) {
+        FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);
+
+        // find attribute source of layer
+        final GeoService geoService = appLayer.getService();
+        final Layer layer = geoService.getLayer(appLayer.getLayerName(), entityManager);
+        final SimpleFeatureType sft = layer.getFeatureType();
+        if (null == sft) {
+            return featuresResponse;
+        }
+        List<ConfiguredAttribute> configuredAttributes = appLayer.getAttributes(sft);
+        configuredAttributes =
+                configuredAttributes.stream()
+                        .filter(ConfiguredAttribute::isVisible)
+                        .collect(Collectors.toList());
+        try {
+            SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
+            // can be -1 if too costly
+            int featureCount = fs.getCount(Query.ALL);
+            featuresResponse.setTotal(featureCount);
+
+            List<String> propNames =
+                    configuredAttributes.stream()
+                            .map(ConfiguredAttribute::getAttributeName)
+                            .collect(Collectors.toList());
+
+            // TODO evaluate; do we want geometry in this response or not?
+            //  if we do the geometry attribute must not be removed from propNames
+            propNames.remove(sft.getGeometryAttribute());
+
+            // determine sorting attribute, default to first attribute
+            String sortAttrName = propNames.get(0);
+            if (propNames.contains(sft.getPrimaryKeyAttribute())) {
+                // there is a primary key and it is known, use that for sorting
+                sortAttrName = sft.getPrimaryKeyAttribute();
+                logger.trace("Sorting by primary key");
+            } else {
+                // there is no primary key we known of
+                // pick the first one from sft that is not geometry and is in the list of configured
+                // attributes
+                // note that propNames does not have the default geometry attribute (see above)
+                for (AttributeDescriptor attrDesc : sft.getAttributes()) {
+                    if (propNames.contains(attrDesc.getName())) {
+                        sortAttrName = attrDesc.getName();
+                        break;
+                    }
+                }
+            }
+
+            // setup page query
+            Query q = new Query(fs.getName().toString());
+            q.setPropertyNames(propNames);
+            q.setSortBy(ff.sort(sortAttrName, SortOrder.ASCENDING));
+            q.setMaxFeatures(pageSize);
+            q.setStartIndex((page - 1) * pageSize);
+            logger.debug("Attribute query: " + q);
+
+            executeQueryOnFeatureSource(false, featuresResponse, sft, configuredAttributes, fs, q);
+        } catch (IOException e) {
+            logger.error("Could not retrieve attribute data.", e);
+        }
+
+        return featuresResponse;
     }
 
     @Timed(value = "features.by.xy", description = "Time taken to retrieve features by XY")
@@ -214,9 +294,6 @@ public class FeaturesController implements Constants {
         try {
             SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
             Query q = new Query(fs.getName().toString());
-            // String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
-            String geomAttribute = sft.getGeometryAttribute();
-            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
 
             GeometricShapeFactory shapeFact = new GeometricShapeFactory();
             shapeFact.setNumPoints(32);
@@ -247,7 +324,8 @@ public class FeaturesController implements Constants {
                 }
             }
             logger.debug("using geometry: " + p);
-            Filter spatialFilter = ff.intersects(ff.property(geomAttribute), ff.literal(p));
+            Filter spatialFilter =
+                    ff.intersects(ff.property(sft.getGeometryAttribute()), ff.literal(p));
 
             // TODO flamingo does some fancy stuff to combine with existing filters using
             //      TailormapCQL and some filter visitors
@@ -256,67 +334,80 @@ public class FeaturesController implements Constants {
                     configuredAttributes.stream()
                             .map(ConfiguredAttribute::getAttributeName)
                             .collect(Collectors.toList());
-            if (!propNames.contains(geomAttribute)) {
+            if (!propNames.contains(sft.getGeometryAttribute())) {
                 // add geom attribute for highlighting
-                propNames.add(geomAttribute);
+                propNames.add(sft.getGeometryAttribute());
             }
 
             q.setPropertyNames(propNames);
             q.setFilter(spatialFilter);
             q.setMaxFeatures(DEFAULT_MAX_FEATURES);
 
-            boolean addFields = false;
-            // send request to attribute source
-            try (SimpleFeatureIterator feats = fs.getFeatures(q).features()) {
-                while (feats.hasNext()) {
-                    addFields = true;
-                    // reformat found features to list of Feature, filtering on configuredAttributes
-                    SimpleFeature feature = feats.next();
-                    String processedGeometry =
-                            GeometryProcessor.processGeometry(
-                                    feature.getAttribute(geomAttribute), simplifyGeometry);
-                    Feature newFeat =
-                            new Feature()
-                                    .fid(feature.getIdentifier().getID())
-                                    .geometry(processedGeometry);
-                    configuredAttributes.forEach(
-                            configuredAttribute -> {
-                                if (configuredAttribute
-                                        .getAttributeName()
-                                        .equals(sft.getGeometryAttribute())) {
-                                    newFeat.putAttributesItem(
-                                            configuredAttribute.getAttributeName(),
-                                            processedGeometry);
-                                } else {
-                                    newFeat.putAttributesItem(
-                                            configuredAttribute.getAttributeName(),
-                                            feature.getAttribute(
-                                                    configuredAttribute.getAttributeName()));
-                                }
-                            });
-                    featuresResponse.addFeaturesItem(newFeat);
-                }
-            }
-            if (addFields) {
-                // get attributes from feature type
-                configuredAttributes.forEach(
-                        configuredAttribute -> {
-                            AttributeDescriptor attributeDescriptor =
-                                    configuredAttribute
-                                            .getFeatureType()
-                                            .getAttribute(configuredAttribute.getAttributeName());
-                            featuresResponse.addColumnMetadataItem(
-                                    new ColumnMetadata()
-                                            .key(attributeDescriptor.getName())
-                                            .type(
-                                                    ColumnMetadata.TypeEnum.fromValue(
-                                                            attributeDescriptor.getType()))
-                                            .alias(attributeDescriptor.getAlias()));
-                        });
-            }
+            executeQueryOnFeatureSource(
+                    simplifyGeometry, featuresResponse, sft, configuredAttributes, fs, q);
         } catch (IOException e) {
             logger.error("Could not retrieve attribute data.", e);
         }
         return featuresResponse;
+    }
+
+    private void executeQueryOnFeatureSource(
+            boolean simplifyGeometry,
+            @NotNull FeaturesResponse featuresResponse,
+            @NotNull SimpleFeatureType sft,
+            List<ConfiguredAttribute> configuredAttributes,
+            @NotNull SimpleFeatureSource fs,
+            @NotNull Query q)
+            throws IOException {
+        boolean addFields = false;
+        // send request to attribute source
+        try (SimpleFeatureIterator feats = fs.getFeatures(q).features()) {
+            while (feats.hasNext()) {
+                addFields = true;
+                // reformat found features to list of Feature, filtering on configuredAttributes
+                SimpleFeature feature = feats.next();
+                // processedGeometry can be null
+                String processedGeometry =
+                        GeometryProcessor.processGeometry(
+                                feature.getAttribute(sft.getGeometryAttribute()), simplifyGeometry);
+                Feature newFeat =
+                        new Feature()
+                                .fid(feature.getIdentifier().getID())
+                                .geometry(processedGeometry);
+
+                configuredAttributes.forEach(
+                        configuredAttribute -> {
+                            if (configuredAttribute
+                                    .getAttributeName()
+                                    .equals(sft.getGeometryAttribute())) {
+                                newFeat.putAttributesItem(
+                                        configuredAttribute.getAttributeName(), processedGeometry);
+                            } else {
+                                newFeat.putAttributesItem(
+                                        configuredAttribute.getAttributeName(),
+                                        feature.getAttribute(
+                                                configuredAttribute.getAttributeName()));
+                            }
+                        });
+                featuresResponse.addFeaturesItem(newFeat);
+            }
+        }
+        if (addFields) {
+            // get attributes from feature type
+            configuredAttributes.forEach(
+                    configuredAttribute -> {
+                        AttributeDescriptor attributeDescriptor =
+                                configuredAttribute
+                                        .getFeatureType()
+                                        .getAttribute(configuredAttribute.getAttributeName());
+                        featuresResponse.addColumnMetadataItem(
+                                new ColumnMetadata()
+                                        .key(attributeDescriptor.getName())
+                                        .type(
+                                                ColumnMetadata.TypeEnum.fromValue(
+                                                        attributeDescriptor.getType()))
+                                        .alias(attributeDescriptor.getAlias()));
+                    });
+        }
     }
 }
