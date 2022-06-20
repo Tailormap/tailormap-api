@@ -21,7 +21,6 @@ import nl.b3p.tailormap.api.security.SecurityConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -268,9 +267,9 @@ class FeaturesControllerPostgresIntegrationTest {
      */
     @ParameterizedTest(
             name =
-                    "should_return_non_empty_featurecollections_for_valid_page_from_database #{index}: database: {0}, featuretype: {1}")
+                    "should return non empty featurecollections for valid page from database #{index}: database: {0}, featuretype: {1}")
     @MethodSource("argumentsProvider")
-    void should_return_non_empty_featurecollections_for_valid_page_from_database(
+    void should_return_non_empty_featurecollections_for_valid_pages_from_database(
             String database, String tableName, String applayerUrl, int totalCcount)
             throws Exception {
         // page 1
@@ -344,13 +343,77 @@ class FeaturesControllerPostgresIntegrationTest {
     }
 
     /**
+     * request the same page of data from a database featuretype twice and compare.
+     *
+     * @throws Exception if any
+     */
+    @ParameterizedTest(
+            name =
+                    "should return same featurecollection for same page from database #{index}: database: {0}, featuretype: {1}")
+    @MethodSource("argumentsProvider")
+    void should_return_same_featurecollection_for_same_page_database(
+            String database, String tableName, String applayerUrl, int totalCcount)
+            throws Exception {
+        // page 1
+        MvcResult result =
+                mockMvc.perform(get(applayerUrl).param("page", "1"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(jsonPath("$.total").value(totalCcount))
+                        .andExpect(jsonPath("$.page").value(1))
+                        .andExpect(jsonPath("$.pageSize").value(pageSize))
+                        .andExpect(jsonPath("$.features").isArray())
+                        .andExpect(jsonPath("$.features").isNotEmpty())
+                        .andExpect(jsonPath("$.features[0]").isMap())
+                        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+                        .andExpect(jsonPath("$.columnMetadata").isArray())
+                        .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
+                        .andReturn();
+
+        String body = result.getResponse().getContentAsString();
+        logger.trace(body);
+        assertNotNull(body, "response body should not be null");
+        List<Service> page1Features = JsonPath.read(body, "$.features");
+
+        // page 1 again
+        result =
+                mockMvc.perform(get(applayerUrl).param("page", "1"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(jsonPath("$.total").value(totalCcount))
+                        .andExpect(jsonPath("$.page").value(1))
+                        .andExpect(jsonPath("$.pageSize").value(pageSize))
+                        .andExpect(jsonPath("$.features").isArray())
+                        .andExpect(jsonPath("$.features").isNotEmpty())
+                        .andExpect(jsonPath("$.features[0]").isMap())
+                        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+                        .andExpect(jsonPath("$.columnMetadata").isArray())
+                        .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
+                        .andReturn();
+
+        body = result.getResponse().getContentAsString();
+        logger.trace(body);
+        assertNotNull(body, "response body should not be null");
+        List<Service> page2Features = JsonPath.read(body, "$.features");
+
+        assertEquals(
+                page1Features,
+                page2Features,
+                "2 identical page requests should give two identical lists of features");
+    }
+
+    /**
      * request an out-of-range page of data from a database featuretype.
      *
      * @throws Exception if any
      */
     @ParameterizedTest(
             name =
-                    "should_return_empty_featurecollection_for_out_of_range_page_database #{index}: database: {0}, featuretype: {1}")
+                    "should return empty featurecollection for out of range page from database #{index}: database: {0}, featuretype: {1}")
     @MethodSource("argumentsProvider")
     void should_return_empty_featurecollection_for_out_of_range_page_database(
             String database, String tableName, String applayerUrl, int totalCcount)

@@ -1,0 +1,83 @@
+# Copyright (C) 2022 B3Partners B.V.
+#
+# SPDX-License-Identifier: MIT
+version: '3.9'
+
+volumes:
+  postgis-db:
+  sqlserver-db:
+  oracle-db:
+
+
+networks:
+  tailormap-data:
+    name: tailormap-data
+
+
+services:
+  postgis:
+    container_name: postgis
+    image: docker.b3p.nl/b3partners/tailormap-data_postgis:snapshot
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fa6efb5b-075b-4b7b-aab0-96108cd77e76}
+      GEODATA_PASSWORD: ${GEODATA_PASSWORD:-980f1c8A-25933b2}
+    volumes:
+      - postgis-db:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:54322:5432"
+    networks:
+      - tailormap-data
+    healthcheck:
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+      test: su postgres -c pg_isready
+    restart: unless-stopped
+
+  sqlserver:
+    container_name: sqlserver
+    image: docker.b3p.nl/b3partners/tailormap-data_sqlserver:snapshot
+    environment:
+      SA_PASSWORD: ${SA_PASSWORD:-fa6efb5b-075b-4b7b-aab0-96108cd77e76}
+      GEODATA_PASSWORD: ${GEODATA_PASSWORD:-980f1c8A-25933b2}
+      ACCEPT_EULA: Y
+    volumes:
+      - sqlserver-db:/var/opt/mssql
+    ports:
+      - "127.0.0.1:1433:1433"
+    networks:
+      - tailormap-data
+    healthcheck:
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+      test: /opt/mssql-tools/bin/sqlcmd -U sa -P $$SA_PASSWORD -Q "select 1" -b -o /dev/null
+    restart: unless-stopped
+
+  oracle:
+    container_name: oracle
+    image: docker.b3p.nl/b3partners/tailormap-data_oracle:snapshot
+    environment:
+      # Note Oracle has default maximum password length of 16!
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD:-fa6efb5b-075b-4b}
+      # this user is created in XEPDB1, not in XE
+      APP_USER: "geodata"
+      APP_USER_PASSWORD: ${GEODATA_PASSWORD:-980f1c8A-25933b2}
+      GEODATA_PASSWORD: ${GEODATA_PASSWORD:-980f1c8A-25933b2}
+    volumes:
+      - oracle-db:/opt/oracle/oradata
+    ports:
+      - "127.0.0.1:1521:1521"
+    networks:
+      - tailormap-data
+    labels:
+      traefik.enable: false
+    healthcheck:
+      interval: 1m
+      timeout: 5s
+      retries: 5
+      start_period: 1m
+      test: healthcheck.sh
+    restart: unless-stopped

@@ -1383,6 +1383,12 @@ SPDX-License-Identifier: MIT
       <build>
         <plugins>
           <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+          <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
               <!-- explicitly run any and all postgresql tests; includes does not work -->
