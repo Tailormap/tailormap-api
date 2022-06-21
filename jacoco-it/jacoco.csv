@@ -27,8 +27,8 @@ Tailormap API,nl.b3p.tailormap.api.model,MapResponse,272,99,26,4,53,30,30,15,15,
 Tailormap API,nl.b3p.tailormap.api.model,ColumnMetadata.TypeEnum,125,0,4,0,17,0,7,0,5,0
 Tailormap API,nl.b3p.tailormap.api.model,LayerDetails.GeometryTypeEnum,125,0,4,0,17,0,7,0,5,0
 Tailormap API,nl.b3p.tailormap.api.model,LayerTreeNode,180,61,18,2,33,21,18,13,9,12
-Tailormap API,nl.b3p.tailormap.api.model,ComponentConfig,168,8,16,0,34,3,20,2,12,2
 Tailormap API,nl.b3p.tailormap.api.model,Service.TilingProtocolEnum,10,60,1,3,2,10,2,5,1,4
+Tailormap API,nl.b3p.tailormap.api.model,ComponentConfig,168,8,16,0,34,3,20,2,12,2
 Tailormap API,nl.b3p.tailormap.api.model,RedirectResponse,112,16,12,0,25,6,14,3,8,3
 Tailormap API,nl.b3p.tailormap.api.model,Component,102,19,12,0,21,7,12,5,6,5
 Tailormap API,nl.b3p.tailormap.api.model,Service,205,229,16,14,46,48,30,23,15,23
@@ -40,8 +40,8 @@ Tailormap API,nl.b3p.tailormap.api.model,Feature,168,0,14,0,38,0,22,0,15,0
 Tailormap API,nl.b3p.tailormap.api.model,CoordinateReferenceSystem,133,28,14,0,27,10,15,6,8,6
 Tailormap API,nl.b3p.tailormap.api.model,Attribute,683,0,46,0,145,0,83,0,60,0
 Tailormap API,nl.b3p.tailormap.api.model,AppResponse,253,69,24,0,47,25,25,14,13,14
-Tailormap API,nl.b3p.tailormap.api.model,LayerDetails,436,0,32,0,97,0,53,0,37,0
 Tailormap API,nl.b3p.tailormap.api.model,Service.HiDpiModeEnum,33,59,4,0,5,9,4,3,2,3
+Tailormap API,nl.b3p.tailormap.api.model,LayerDetails,436,0,32,0,97,0,53,0,37,0
 Tailormap API,nl.b3p.tailormap.api.model,Bounds,180,46,18,0,33,17,18,11,9,11
 Tailormap API,nl.b3p.tailormap.api.model,LayerDetailsRelationsInner,155,0,14,0,35,0,21,0,14,0
 Tailormap API,nl.b3p.tailormap.api.model,AppLayer.HiDpiModeEnum,92,0,4,0,14,0,7,0,5,0
