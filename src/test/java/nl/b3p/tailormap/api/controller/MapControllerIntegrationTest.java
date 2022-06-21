@@ -27,6 +27,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -50,6 +51,9 @@ class MapControllerIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_return_data_for_configured_app() throws Exception {
         mockMvc.perform(get("/app/1/map"))
                 .andExpect(status().isOk())
@@ -67,6 +71,9 @@ class MapControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_show_filtered_layer_tree() throws Exception {
         MvcResult result =
                 mockMvc.perform(get("/app/1/map"))
@@ -129,6 +136,56 @@ class MapControllerIntegrationTest {
                         .getInt("appLayerId"),
                 5,
                 "incorrect appLayerId for first child (of second child)");
+    }
+
+    @Test
+    @WithMockUser(
+            username = "admin",
+            authorities = {"NotAdmin"})
+    void should_show_filtered_layer_tree_unauthorized() throws Exception {
+        MvcResult result =
+                mockMvc.perform(get("/app/1/map"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn();
+
+        Map<String, JSONObject> treeNodeMap = new HashMap<>();
+        String body = result.getResponse().getContentAsString();
+        JSONObject rootNode = null;
+        for (Object _node : new JSONObject(body).getJSONArray("layerTreeNodes")) {
+            JSONObject node = (JSONObject) _node;
+            String id = node.getString("id");
+            assertFalse(
+                    treeNodeMap.containsKey(id),
+                    String.format("node %s appears multiple times", id));
+            treeNodeMap.put(id, node);
+
+            if (node.getBoolean("root")) {
+                assertNull(rootNode, "Root node already exists");
+                rootNode = node;
+            }
+        }
+
+        assertNotNull(rootNode, "no root node found");
+        assertEquals(
+                rootNode.getJSONArray("childrenIds").length(),
+                2,
+                "root node had wrong amount of children");
+
+        JSONObject groenNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(0));
+        assertNotNull(groenNode, "first child of root is not valid");
+        assertEquals(
+                groenNode.getJSONArray("childrenIds").length(),
+                0,
+                "first node of root had wrong amount of children");
+
+        JSONObject woonplaatsenNode =
+                treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(1));
+        assertNotNull(woonplaatsenNode, "second child of root is not valid");
+        assertEquals(
+                woonplaatsenNode.getJSONArray("childrenIds").length(),
+                1,
+                "second node of root had wrong amount of children");
     }
 
     @Test
