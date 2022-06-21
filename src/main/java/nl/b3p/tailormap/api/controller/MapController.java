@@ -22,6 +22,7 @@ import nl.b3p.tailormap.api.model.MapResponse;
 import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.model.Service;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.repository.LayerRepository;
 import nl.b3p.tailormap.api.repository.LevelRepository;
 import nl.b3p.tailormap.api.security.AuthUtil;
 import nl.b3p.tailormap.api.util.ParseUtil;
@@ -69,6 +70,7 @@ public class MapController {
     private final Log logger = LogFactory.getLog(getClass());
     @Autowired private ApplicationRepository applicationRepository;
     @Autowired private LevelRepository levelRepository;
+    @Autowired private LayerRepository layerRepository;
 
     @Operation(
             summary = "",
@@ -168,6 +170,20 @@ public class MapController {
         mapResponse.crs(c).maxExtent(maxExtent).initialExtent(initialExtent);
     }
 
+    private String getNameForAppLayer(@NotNull ApplicationLayer layer) {
+        if (ClobElement.isNotBlank(layer.getDetails().get("titleAlias"))) {
+            return layer.getDetails().get("titleAlias").getValue();
+        } else {
+            Layer serviceLayer =
+                    layerRepository.getByServiceAndName(layer.getService(), layer.getLayerName());
+            if (serviceLayer != null) {
+                return serviceLayer.getDisplayName();
+            } else {
+                return layer.getLayerName();
+            }
+        }
+    }
+
     private void getLayers(@NotNull Application a, @NotNull MapResponse mapResponse) {
         LayerTreeNode rootNode = new LayerTreeNode().id("root").root(true).name("Foreground");
         mapResponse.addLayerTreeNodesItem(rootNode);
@@ -259,7 +275,7 @@ public class MapController {
                     LayerTreeNode layerNode =
                             new LayerTreeNode()
                                     .id(String.format("lyr_%d", layer.getId()))
-                                    .name(layer.getLayerName())
+                                    .name(getNameForAppLayer(layer))
                                     .appLayerId((int) (long) layer.getId())
                                     .root(false)
                                     .childrenIds(new ArrayList<>());
@@ -273,10 +289,9 @@ public class MapController {
 
         // Only add AppLayers visible in the LayerTreeNode graph to the response
         for (StartLayer l : visibleStartLayers) {
-
             Layer serviceLayer =
-                    findLayer(
-                            l.getApplicationLayer().getService().getTopLayer(),
+                    layerRepository.getByServiceAndName(
+                            l.getApplicationLayer().getService(),
                             l.getApplicationLayer().getLayerName());
 
             AppLayer.HiDpiModeEnum hiDpiMode = null;
@@ -303,13 +318,12 @@ public class MapController {
                     hiDpiSubstituteLayer = ce.getValue();
                 }
             }
+
             AppLayer appLayer =
                     new AppLayer()
                             .id(l.getApplicationLayer().getId())
                             .layerName(l.getApplicationLayer().getLayerName())
-                            // TODO: see ApplicationLayer.getDisplayName(), but this method requires
-                            // an EntityManager
-                            .title(l.getApplicationLayer().getLayerName())
+                            .title(getNameForAppLayer(l.getApplicationLayer()))
                             .serviceId(l.getApplicationLayer().getService().getId())
                             .hiDpiMode(hiDpiMode)
                             .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
@@ -371,26 +385,5 @@ public class MapController {
             }
             mapResponse.addServicesItem(s);
         }
-    }
-
-    /**
-     * Recursive and naive way to search for a layer by name in the layer tree of a service. Needs
-     * to be replaced by an algorithm that does not cause a lot of queries.
-     *
-     * @param l Layer to start searching for including children
-     * @param name The layer name to search for
-     * @return null if not found in this subtree or a Layer if found
-     */
-    private static Layer findLayer(Layer l, String name) {
-        if (name.equals(l.getName())) {
-            return l;
-        }
-        for (Layer child : l.getChildren()) {
-            Layer childResult = findLayer(child, name);
-            if (childResult != null) {
-                return childResult;
-            }
-        }
-        return null;
     }
 }
