@@ -65,7 +65,7 @@ jobs:
           path: target/site/
 
   postgresql-test:
-    name: PostgrSQL verify
+    name: PostgreSQL verify
     runs-on: ubuntu-20.04
     needs: build
     steps:
@@ -94,14 +94,22 @@ jobs:
           lfs: true
 
       - name: start config database
-        # use sed to open up a local port
+        env:
+          DB_PORT: '5432:5432'
         run: |
-          sed -i '/\/var\/lib\/postgresql\/data/a\    ports: [ "127.0.0.1:5432:5432" ]'  ./tailormap-viewer/docker-compose.yml
-          docker-compose -f ./tailormap-viewer/docker-compose.yml up -d --build db
+          docker compose -f ./tailormap-viewer/docker-compose.yml -f ./tailormap-viewer/docker-compose-db-ports.yml up -d --build db
+
+      - name: start gisdata databases
+        env:
+          APP_USER_PASSWORD: 980f1c8A-25933b2
+          GEODATA_PASSWORD: 980f1c8A-25933b2
+        run: |
+          echo "${{ secrets.REPO_B3P_TOKEN }}" | docker login docker.b3p.nl -u "${{ secrets.REPO_B3P_ACTOR }}" --password-stdin
+          ./build/ci/testdata-setup.sh
 
       - name: Test PostgreSQL with Maven
         run: |
-          mvn -B -fae -e -DskipQA=true -Pqa-skip -Ddocker.skip=true -Ppostgresql verify
+          mvn -B -fae -e -DskipQA=true -Pqa-skip -Ddocker.skip=true -Ppostgresql verify 
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -229,7 +237,7 @@ jobs:
   cleanup:
     name: Maven cache cleanup
     if: ${{ always() }}
-    needs: [ build, deploy ]
+    needs: [ build, deploy, postgresql-test ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/cache@v3
