@@ -139,12 +139,16 @@ components:
         hiDpiSubstituteLayer:
           description: 'The layer name of this service to substitute when the device pixel ratio is higher'
           type: string
+        hasAttributes:
+          description: 'Whether this layer has attributes that can be accessed eg. for feature info or attribute list'
+          type: boolean
       required:
         - id
         - layerName
         - title
         - serviceId
         - visible
+        - hasAtributes
 
     LayerTreeNode:
       description: Grouping of layers in a tree structure.
