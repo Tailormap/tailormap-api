@@ -113,9 +113,9 @@ SPDX-License-Identifier: MIT
     <!-- make sure to keep geotools version and tailormap version in sync -->
     <geotools.version>27.0</geotools.version>
     <spring.boot.version>${project.parent.version}</spring.boot.version>
-    <!-- version overrides. see org.springframework.boot:spring-boot-dependencies eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
-    <jackson-bom.version>2.13.2.1</jackson-bom.version>
-    <micrometer.version>1.9.1</micrometer.version>
+    <!-- Spring-Boot version overrides. see org.springframework.boot:spring-boot-dependencies eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
+    <!-- jackson-bom.version>2.13.2.1</jackson-bom.version -->
+    <!-- micrometer.version>1.9.1</micrometer.version -->
     <hsqldb.version>2.6.1</hsqldb.version>
     <postgresql.version>42.4.0</postgresql.version>
     <oracle-database.version>21.6.0.0.1</oracle-database.version>
