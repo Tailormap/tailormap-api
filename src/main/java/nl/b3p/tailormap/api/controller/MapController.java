@@ -311,7 +311,8 @@ public class MapController {
                             .serviceId(l.getApplicationLayer().getService().getId())
                             .hiDpiMode(hiDpiMode)
                             .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
-                            .visible(l.isChecked());
+                            .visible(l.isChecked())
+                            .hasAttributes(!l.getApplicationLayer().getAttributes().isEmpty());
 
             mapResponse.addAppLayersItem(appLayer);
 

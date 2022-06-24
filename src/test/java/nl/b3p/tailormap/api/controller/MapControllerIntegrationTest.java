@@ -57,7 +57,13 @@ class MapControllerIntegrationTest {
                 .andExpect(jsonPath("$.initialExtent").isMap())
                 .andExpect(jsonPath("$.maxExtent").isMap())
                 .andExpect(jsonPath("$.services").isArray())
-                .andExpect(jsonPath("$.crs.code").value("EPSG:28992"));
+                .andExpect(jsonPath("$.appLayers").isArray())
+                .andExpect(jsonPath("$.appLayers[0]").isMap())
+                .andExpect(jsonPath("$.appLayers.length()").value(5))
+                .andExpect(jsonPath("$.appLayers[0].hasAttributes").value(false))
+                .andExpect(jsonPath("$.appLayers[1].hasAttributes").value(true))
+                .andExpect(jsonPath("$.crs.code").value("EPSG:28992"))
+                .andReturn();
     }
 
     @Test
