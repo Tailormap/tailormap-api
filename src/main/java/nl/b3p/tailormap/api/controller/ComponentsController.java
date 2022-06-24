@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -100,6 +101,7 @@ public class ComponentsController {
                                         schema = @Schema(implementation = RedirectResponse.class)))
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed(value = "get_components", description = "time spent to get the application components")
     public ResponseEntity<?> get(
             @Parameter(name = "appId", description = "application id", required = true)
                     @PathVariable("appId")
