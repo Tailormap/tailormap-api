@@ -319,86 +319,87 @@
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>                             .serviceId(l.getApplicationLayer().getService().getId())
 <a class="jxr_linenumber" name="L312" href="#L312">312</a>                             .hiDpiMode(hiDpiMode)
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>                             .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>                             .visible(l.isChecked());
-<a class="jxr_linenumber" name="L315" href="#L315">315</a> 
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>             mapResponse.addAppLayersItem(appLayer);
-<a class="jxr_linenumber" name="L317" href="#L317">317</a> 
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>             GeoService geoService = l.getApplicationLayer().getService();
-<a class="jxr_linenumber" name="L319" href="#L319">319</a> 
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>             <em class="jxr_comment">// Use this default if saved before the form default was added in admin</em>
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>             Service.HiDpiModeEnum serviceHiDpiMode = Service.HiDpiModeEnum.AUTO;
-<a class="jxr_linenumber" name="L322" href="#L322">322</a>             ClobElement ce = geoService.getDetails().get(<span class="jxr_string">"hidpi.mode"</span>);
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>             <strong class="jxr_keyword">if</strong> (ce != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>                 <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>                     serviceHiDpiMode = Service.HiDpiModeEnum.fromValue(ce.getValue());
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>                 } <strong class="jxr_keyword">catch</strong> (IllegalArgumentException e) {
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>                     logger.warn(
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>                             String.format(
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>                                     <span class="jxr_string">"App #%s (%s): invalid hidpi.mode enum value for service #%s (%s)"</span>,
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>                                     a.getId(),
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>                                     a.getNameWithVersion(),
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>                                     geoService.getId(),
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>                                     geoService.getName()));
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>                 }
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>             }
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>             Integer tilingGutter = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>             ce = geoService.getDetails().get(<span class="jxr_string">"tiling.gutter"</span>);
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>             <strong class="jxr_keyword">if</strong> (ce != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>                 <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>                     tilingGutter = Integer.parseInt(ce.getValue());
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>                 } <strong class="jxr_keyword">catch</strong> (NumberFormatException ignored) {
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>                     <em class="jxr_comment">// ignored</em>
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>                 }
-<a class="jxr_linenumber" name="L344" href="#L344">344</a>             }
-<a class="jxr_linenumber" name="L345" href="#L345">345</a> 
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>             Service s =
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>                     <strong class="jxr_keyword">new</strong> Service()
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>                             .url(geoService.getUrl())
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>                             .id(geoService.getId())
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>                             .name(geoService.getName())
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>                             .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>                             .hiDpiMode(serviceHiDpiMode)
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>                             .tilingDisabled(
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>                                     <span class="jxr_string">"true"</span>
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>                                             .equals(
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>                                                     geoService
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>                                                             .getDetails()
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>                                                             .getOrDefault(
-<a class="jxr_linenumber" name="L359" href="#L359">359</a>                                                                     <span class="jxr_string">"tiling.disable"</span>,
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>                                                                     <strong class="jxr_keyword">new</strong> ClobElement(<span class="jxr_string">"false)"</span>))
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>                                                             .getValue()))
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>                             .tilingGutter(tilingGutter)
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>                             .capabilities(geoService.getCapabilitiesDoc());
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>             <strong class="jxr_keyword">if</strong> (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>                 s.tilingProtocol(
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>                         Service.TilingProtocolEnum.fromValue(
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>                                 ((TileService) geoService).getTilingProtocol()));
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>             }
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>             mapResponse.addServicesItem(s);
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>         }
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>     }
-<a class="jxr_linenumber" name="L372" href="#L372">372</a> 
-<a class="jxr_linenumber" name="L373" href="#L373">373</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L374" href="#L374">374</a> <em class="jxr_javadoccomment">     * Recursive and naive way to search for a layer by name in the layer tree of a service. Needs</em>
-<a class="jxr_linenumber" name="L375" href="#L375">375</a> <em class="jxr_javadoccomment">     * to be replaced by an algorithm that does not cause a lot of queries.</em>
-<a class="jxr_linenumber" name="L376" href="#L376">376</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L377" href="#L377">377</a> <em class="jxr_javadoccomment">     * @param l Layer to start searching for including children</em>
-<a class="jxr_linenumber" name="L378" href="#L378">378</a> <em class="jxr_javadoccomment">     * @param name The layer name to search for</em>
-<a class="jxr_linenumber" name="L379" href="#L379">379</a> <em class="jxr_javadoccomment">     * @return null if not found in this subtree or a Layer if found</em>
-<a class="jxr_linenumber" name="L380" href="#L380">380</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Layer findLayer(Layer l, String name) {
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>         <strong class="jxr_keyword">if</strong> (name.equals(l.getName())) {
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>             <strong class="jxr_keyword">return</strong> l;
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>         }
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>         <strong class="jxr_keyword">for</strong> (Layer child : l.getChildren()) {
-<a class="jxr_linenumber" name="L386" href="#L386">386</a>             Layer childResult = findLayer(child, name);
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>             <strong class="jxr_keyword">if</strong> (childResult != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L388" href="#L388">388</a>                 <strong class="jxr_keyword">return</strong> childResult;
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>             }
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>         }
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>     }
-<a class="jxr_linenumber" name="L393" href="#L393">393</a> }
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>                             .visible(l.isChecked())
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>                             .hasAttributes(!l.getApplicationLayer().getAttributes().isEmpty());
+<a class="jxr_linenumber" name="L316" href="#L316">316</a> 
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>             mapResponse.addAppLayersItem(appLayer);
+<a class="jxr_linenumber" name="L318" href="#L318">318</a> 
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>             GeoService geoService = l.getApplicationLayer().getService();
+<a class="jxr_linenumber" name="L320" href="#L320">320</a> 
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>             <em class="jxr_comment">// Use this default if saved before the form default was added in admin</em>
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>             Service.HiDpiModeEnum serviceHiDpiMode = Service.HiDpiModeEnum.AUTO;
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>             ClobElement ce = geoService.getDetails().get(<span class="jxr_string">"hidpi.mode"</span>);
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>             <strong class="jxr_keyword">if</strong> (ce != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>                 <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>                     serviceHiDpiMode = Service.HiDpiModeEnum.fromValue(ce.getValue());
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>                 } <strong class="jxr_keyword">catch</strong> (IllegalArgumentException e) {
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>                     logger.warn(
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>                             String.format(
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>                                     <span class="jxr_string">"App #%s (%s): invalid hidpi.mode enum value for service #%s (%s)"</span>,
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>                                     a.getId(),
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>                                     a.getNameWithVersion(),
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>                                     geoService.getId(),
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>                                     geoService.getName()));
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>                 }
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>             }
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>             Integer tilingGutter = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>             ce = geoService.getDetails().get(<span class="jxr_string">"tiling.gutter"</span>);
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>             <strong class="jxr_keyword">if</strong> (ce != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>                 <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>                     tilingGutter = Integer.parseInt(ce.getValue());
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>                 } <strong class="jxr_keyword">catch</strong> (NumberFormatException ignored) {
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>                     <em class="jxr_comment">// ignored</em>
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>                 }
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>             }
+<a class="jxr_linenumber" name="L346" href="#L346">346</a> 
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>             Service s =
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>                     <strong class="jxr_keyword">new</strong> Service()
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>                             .url(geoService.getUrl())
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>                             .id(geoService.getId())
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>                             .name(geoService.getName())
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>                             .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>                             .hiDpiMode(serviceHiDpiMode)
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>                             .tilingDisabled(
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>                                     <span class="jxr_string">"true"</span>
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>                                             .equals(
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>                                                     geoService
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>                                                             .getDetails()
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>                                                             .getOrDefault(
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>                                                                     <span class="jxr_string">"tiling.disable"</span>,
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>                                                                     <strong class="jxr_keyword">new</strong> ClobElement(<span class="jxr_string">"false)"</span>))
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>                                                             .getValue()))
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>                             .tilingGutter(tilingGutter)
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>                             .capabilities(geoService.getCapabilitiesDoc());
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>             <strong class="jxr_keyword">if</strong> (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>                 s.tilingProtocol(
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>                         Service.TilingProtocolEnum.fromValue(
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>                                 ((TileService) geoService).getTilingProtocol()));
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>             }
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>             mapResponse.addServicesItem(s);
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>         }
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>     }
+<a class="jxr_linenumber" name="L373" href="#L373">373</a> 
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L375" href="#L375">375</a> <em class="jxr_javadoccomment">     * Recursive and naive way to search for a layer by name in the layer tree of a service. Needs</em>
+<a class="jxr_linenumber" name="L376" href="#L376">376</a> <em class="jxr_javadoccomment">     * to be replaced by an algorithm that does not cause a lot of queries.</em>
+<a class="jxr_linenumber" name="L377" href="#L377">377</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L378" href="#L378">378</a> <em class="jxr_javadoccomment">     * @param l Layer to start searching for including children</em>
+<a class="jxr_linenumber" name="L379" href="#L379">379</a> <em class="jxr_javadoccomment">     * @param name The layer name to search for</em>
+<a class="jxr_linenumber" name="L380" href="#L380">380</a> <em class="jxr_javadoccomment">     * @return null if not found in this subtree or a Layer if found</em>
+<a class="jxr_linenumber" name="L381" href="#L381">381</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Layer findLayer(Layer l, String name) {
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>         <strong class="jxr_keyword">if</strong> (name.equals(l.getName())) {
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>             <strong class="jxr_keyword">return</strong> l;
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>         }
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>         <strong class="jxr_keyword">for</strong> (Layer child : l.getChildren()) {
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>             Layer childResult = findLayer(child, name);
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>             <strong class="jxr_keyword">if</strong> (childResult != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>                 <strong class="jxr_keyword">return</strong> childResult;
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>             }
+<a class="jxr_linenumber" name="L391" href="#L391">391</a>         }
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>     }
+<a class="jxr_linenumber" name="L394" href="#L394">394</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2022 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

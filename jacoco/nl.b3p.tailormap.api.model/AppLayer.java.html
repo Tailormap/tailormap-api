@@ -95,9 +95,12 @@ import javax.annotation.Generated;
   @JsonProperty(&quot;hiDpiSubstituteLayer&quot;)
   private String hiDpiSubstituteLayer;
 
+  @JsonProperty(&quot;hasAttributes&quot;)
+  private Boolean hasAttributes;
+
   public AppLayer id(Long id) {
-<span class="fc" id="L99">    this.id = id;</span>
-<span class="fc" id="L100">    return this;</span>
+<span class="fc" id="L102">    this.id = id;</span>
+<span class="fc" id="L103">    return this;</span>
   }
 
   /**
@@ -107,16 +110,16 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;id&quot;, required = true)
   public Long getId() {
-<span class="fc" id="L110">    return id;</span>
+<span class="fc" id="L113">    return id;</span>
   }
 
   public void setId(Long id) {
-<span class="nc" id="L114">    this.id = id;</span>
-<span class="nc" id="L115">  }</span>
+<span class="nc" id="L117">    this.id = id;</span>
+<span class="nc" id="L118">  }</span>
 
   public AppLayer layerName(String layerName) {
-<span class="fc" id="L118">    this.layerName = layerName;</span>
-<span class="fc" id="L119">    return this;</span>
+<span class="fc" id="L121">    this.layerName = layerName;</span>
+<span class="fc" id="L122">    return this;</span>
   }
 
   /**
@@ -126,16 +129,16 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;layerName&quot;, description = &quot;Layer name as known by the service.&quot;, required = true)
   public String getLayerName() {
-<span class="fc" id="L129">    return layerName;</span>
+<span class="fc" id="L132">    return layerName;</span>
   }
 
   public void setLayerName(String layerName) {
-<span class="nc" id="L133">    this.layerName = layerName;</span>
-<span class="nc" id="L134">  }</span>
+<span class="nc" id="L136">    this.layerName = layerName;</span>
+<span class="nc" id="L137">  }</span>
 
   public AppLayer title(String title) {
-<span class="fc" id="L137">    this.title = title;</span>
-<span class="fc" id="L138">    return this;</span>
+<span class="fc" id="L140">    this.title = title;</span>
+<span class="fc" id="L141">    return this;</span>
   }
 
   /**
@@ -145,16 +148,16 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;title&quot;, description = &quot;Layer title or display name.&quot;, required = true)
   public String getTitle() {
-<span class="fc" id="L148">    return title;</span>
+<span class="fc" id="L151">    return title;</span>
   }
 
   public void setTitle(String title) {
-<span class="nc" id="L152">    this.title = title;</span>
-<span class="nc" id="L153">  }</span>
+<span class="nc" id="L155">    this.title = title;</span>
+<span class="nc" id="L156">  }</span>
 
   public AppLayer serviceId(Long serviceId) {
-<span class="fc" id="L156">    this.serviceId = serviceId;</span>
-<span class="fc" id="L157">    return this;</span>
+<span class="fc" id="L159">    this.serviceId = serviceId;</span>
+<span class="fc" id="L160">    return this;</span>
   }
 
   /**
@@ -164,16 +167,16 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;serviceId&quot;, description = &quot;A reference to a Service id.&quot;, required = true)
   public Long getServiceId() {
-<span class="fc" id="L167">    return serviceId;</span>
+<span class="fc" id="L170">    return serviceId;</span>
   }
 
   public void setServiceId(Long serviceId) {
-<span class="nc" id="L171">    this.serviceId = serviceId;</span>
-<span class="nc" id="L172">  }</span>
+<span class="nc" id="L174">    this.serviceId = serviceId;</span>
+<span class="nc" id="L175">  }</span>
 
   public AppLayer visible(Boolean visible) {
-<span class="fc" id="L175">    this.visible = visible;</span>
-<span class="fc" id="L176">    return this;</span>
+<span class="fc" id="L178">    this.visible = visible;</span>
+<span class="fc" id="L179">    return this;</span>
   }
 
   /**
@@ -183,16 +186,16 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;visible&quot;, required = true)
   public Boolean getVisible() {
-<span class="fc" id="L186">    return visible;</span>
+<span class="fc" id="L189">    return visible;</span>
   }
 
   public void setVisible(Boolean visible) {
-<span class="nc" id="L190">    this.visible = visible;</span>
-<span class="nc" id="L191">  }</span>
+<span class="nc" id="L193">    this.visible = visible;</span>
+<span class="nc" id="L194">  }</span>
 
   public AppLayer minScale(BigDecimal minScale) {
-<span class="nc" id="L194">    this.minScale = minScale;</span>
-<span class="nc" id="L195">    return this;</span>
+<span class="nc" id="L197">    this.minScale = minScale;</span>
+<span class="nc" id="L198">    return this;</span>
   }
 
   /**
@@ -202,16 +205,16 @@ import javax.annotation.Generated;
   @Valid 
   @Schema(name = &quot;minScale&quot;, description = &quot;Minimum scale at which this layer should be shown or is not blank. When absent there is no minimum. As reported by the service (ScaleHint or MinScaleDenominator).&quot;, required = false)
   public BigDecimal getMinScale() {
-<span class="fc" id="L205">    return minScale;</span>
+<span class="fc" id="L208">    return minScale;</span>
   }
 
   public void setMinScale(BigDecimal minScale) {
-<span class="nc" id="L209">    this.minScale = minScale;</span>
-<span class="nc" id="L210">  }</span>
+<span class="nc" id="L212">    this.minScale = minScale;</span>
+<span class="nc" id="L213">  }</span>
 
   public AppLayer maxScale(BigDecimal maxScale) {
-<span class="nc" id="L213">    this.maxScale = maxScale;</span>
-<span class="nc" id="L214">    return this;</span>
+<span class="nc" id="L216">    this.maxScale = maxScale;</span>
+<span class="nc" id="L217">    return this;</span>
   }
 
   /**
@@ -221,16 +224,16 @@ import javax.annotation.Generated;
   @Valid 
   @Schema(name = &quot;maxScale&quot;, description = &quot;Maximum scale denominator at which this layer should be shown or is not blank. When absent there is no maximum. As reported by the service (ScaleHint or MaxScaleDenominator).&quot;, required = false)
   public BigDecimal getMaxScale() {
-<span class="fc" id="L224">    return maxScale;</span>
+<span class="fc" id="L227">    return maxScale;</span>
   }
 
   public void setMaxScale(BigDecimal maxScale) {
-<span class="nc" id="L228">    this.maxScale = maxScale;</span>
-<span class="nc" id="L229">  }</span>
+<span class="nc" id="L231">    this.maxScale = maxScale;</span>
+<span class="nc" id="L232">  }</span>
 
   public AppLayer legendImageUrl(String legendImageUrl) {
-<span class="nc" id="L232">    this.legendImageUrl = legendImageUrl;</span>
-<span class="nc" id="L233">    return this;</span>
+<span class="nc" id="L235">    this.legendImageUrl = legendImageUrl;</span>
+<span class="nc" id="L236">    return this;</span>
   }
 
   /**
@@ -240,16 +243,16 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;legendImageUrl&quot;, description = &quot;URL to an image with the layer legend.&quot;, required = false)
   public String getLegendImageUrl() {
-<span class="fc" id="L243">    return legendImageUrl;</span>
+<span class="fc" id="L246">    return legendImageUrl;</span>
   }
 
   public void setLegendImageUrl(String legendImageUrl) {
-<span class="nc" id="L247">    this.legendImageUrl = legendImageUrl;</span>
-<span class="nc" id="L248">  }</span>
+<span class="nc" id="L250">    this.legendImageUrl = legendImageUrl;</span>
+<span class="nc" id="L251">  }</span>
 
   public AppLayer hiDpiMode(HiDpiModeEnum hiDpiMode) {
-<span class="fc" id="L251">    this.hiDpiMode = hiDpiMode;</span>
-<span class="fc" id="L252">    return this;</span>
+<span class="fc" id="L254">    this.hiDpiMode = hiDpiMode;</span>
+<span class="fc" id="L255">    return this;</span>
   }
 
   /**
@@ -259,16 +262,16 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;hiDpiMode&quot;, description = &quot;For tiled services only&quot;, required = false)
   public HiDpiModeEnum getHiDpiMode() {
-<span class="fc" id="L262">    return hiDpiMode;</span>
+<span class="fc" id="L265">    return hiDpiMode;</span>
   }
 
   public void setHiDpiMode(HiDpiModeEnum hiDpiMode) {
-<span class="nc" id="L266">    this.hiDpiMode = hiDpiMode;</span>
-<span class="nc" id="L267">  }</span>
+<span class="nc" id="L269">    this.hiDpiMode = hiDpiMode;</span>
+<span class="nc" id="L270">  }</span>
 
   public AppLayer hiDpiSubstituteLayer(String hiDpiSubstituteLayer) {
-<span class="fc" id="L270">    this.hiDpiSubstituteLayer = hiDpiSubstituteLayer;</span>
-<span class="fc" id="L271">    return this;</span>
+<span class="fc" id="L273">    this.hiDpiSubstituteLayer = hiDpiSubstituteLayer;</span>
+<span class="fc" id="L274">    return this;</span>
   }
 
   /**
@@ -278,55 +281,76 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;hiDpiSubstituteLayer&quot;, description = &quot;The layer name of this service to substitute when the device pixel ratio is higher&quot;, required = false)
   public String getHiDpiSubstituteLayer() {
-<span class="fc" id="L281">    return hiDpiSubstituteLayer;</span>
+<span class="fc" id="L284">    return hiDpiSubstituteLayer;</span>
   }
 
   public void setHiDpiSubstituteLayer(String hiDpiSubstituteLayer) {
-<span class="nc" id="L285">    this.hiDpiSubstituteLayer = hiDpiSubstituteLayer;</span>
-<span class="nc" id="L286">  }</span>
+<span class="nc" id="L288">    this.hiDpiSubstituteLayer = hiDpiSubstituteLayer;</span>
+<span class="nc" id="L289">  }</span>
+
+  public AppLayer hasAttributes(Boolean hasAttributes) {
+<span class="fc" id="L292">    this.hasAttributes = hasAttributes;</span>
+<span class="fc" id="L293">    return this;</span>
+  }
+
+  /**
+   * Whether this layer has attributes that can be accessed eg. for feature info or attribute list
+   * @return hasAttributes
+  */
+  
+  @Schema(name = &quot;hasAttributes&quot;, description = &quot;Whether this layer has attributes that can be accessed eg. for feature info or attribute list&quot;, required = false)
+  public Boolean getHasAttributes() {
+<span class="fc" id="L303">    return hasAttributes;</span>
+  }
+
+  public void setHasAttributes(Boolean hasAttributes) {
+<span class="nc" id="L307">    this.hasAttributes = hasAttributes;</span>
+<span class="nc" id="L308">  }</span>
 
   @Override
   public boolean equals(Object o) {
-<span class="nc bnc" id="L290" title="All 2 branches missed.">    if (this == o) {</span>
-<span class="nc" id="L291">      return true;</span>
+<span class="nc bnc" id="L312" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L313">      return true;</span>
     }
-<span class="nc bnc" id="L293" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
-<span class="nc" id="L294">      return false;</span>
+<span class="nc bnc" id="L315" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L316">      return false;</span>
     }
-<span class="nc" id="L296">    AppLayer appLayer = (AppLayer) o;</span>
-<span class="nc bnc" id="L297" title="All 2 branches missed.">    return Objects.equals(this.id, appLayer.id) &amp;&amp;</span>
-<span class="nc bnc" id="L298" title="All 2 branches missed.">        Objects.equals(this.layerName, appLayer.layerName) &amp;&amp;</span>
-<span class="nc bnc" id="L299" title="All 2 branches missed.">        Objects.equals(this.title, appLayer.title) &amp;&amp;</span>
-<span class="nc bnc" id="L300" title="All 2 branches missed.">        Objects.equals(this.serviceId, appLayer.serviceId) &amp;&amp;</span>
-<span class="nc bnc" id="L301" title="All 2 branches missed.">        Objects.equals(this.visible, appLayer.visible) &amp;&amp;</span>
-<span class="nc bnc" id="L302" title="All 2 branches missed.">        Objects.equals(this.minScale, appLayer.minScale) &amp;&amp;</span>
-<span class="nc bnc" id="L303" title="All 2 branches missed.">        Objects.equals(this.maxScale, appLayer.maxScale) &amp;&amp;</span>
-<span class="nc bnc" id="L304" title="All 2 branches missed.">        Objects.equals(this.legendImageUrl, appLayer.legendImageUrl) &amp;&amp;</span>
-<span class="nc bnc" id="L305" title="All 2 branches missed.">        Objects.equals(this.hiDpiMode, appLayer.hiDpiMode) &amp;&amp;</span>
-<span class="nc bnc" id="L306" title="All 2 branches missed.">        Objects.equals(this.hiDpiSubstituteLayer, appLayer.hiDpiSubstituteLayer);</span>
+<span class="nc" id="L318">    AppLayer appLayer = (AppLayer) o;</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">    return Objects.equals(this.id, appLayer.id) &amp;&amp;</span>
+<span class="nc bnc" id="L320" title="All 2 branches missed.">        Objects.equals(this.layerName, appLayer.layerName) &amp;&amp;</span>
+<span class="nc bnc" id="L321" title="All 2 branches missed.">        Objects.equals(this.title, appLayer.title) &amp;&amp;</span>
+<span class="nc bnc" id="L322" title="All 2 branches missed.">        Objects.equals(this.serviceId, appLayer.serviceId) &amp;&amp;</span>
+<span class="nc bnc" id="L323" title="All 2 branches missed.">        Objects.equals(this.visible, appLayer.visible) &amp;&amp;</span>
+<span class="nc bnc" id="L324" title="All 2 branches missed.">        Objects.equals(this.minScale, appLayer.minScale) &amp;&amp;</span>
+<span class="nc bnc" id="L325" title="All 2 branches missed.">        Objects.equals(this.maxScale, appLayer.maxScale) &amp;&amp;</span>
+<span class="nc bnc" id="L326" title="All 2 branches missed.">        Objects.equals(this.legendImageUrl, appLayer.legendImageUrl) &amp;&amp;</span>
+<span class="nc bnc" id="L327" title="All 2 branches missed.">        Objects.equals(this.hiDpiMode, appLayer.hiDpiMode) &amp;&amp;</span>
+<span class="nc bnc" id="L328" title="All 2 branches missed.">        Objects.equals(this.hiDpiSubstituteLayer, appLayer.hiDpiSubstituteLayer) &amp;&amp;</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">        Objects.equals(this.hasAttributes, appLayer.hasAttributes);</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L311">    return Objects.hash(id, layerName, title, serviceId, visible, minScale, maxScale, legendImageUrl, hiDpiMode, hiDpiSubstituteLayer);</span>
+<span class="nc" id="L334">    return Objects.hash(id, layerName, title, serviceId, visible, minScale, maxScale, legendImageUrl, hiDpiMode, hiDpiSubstituteLayer, hasAttributes);</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L316">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L317">    sb.append(&quot;class AppLayer {\n&quot;);</span>
-<span class="nc" id="L318">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L319">    sb.append(&quot;    layerName: &quot;).append(toIndentedString(layerName)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L320">    sb.append(&quot;    title: &quot;).append(toIndentedString(title)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L321">    sb.append(&quot;    serviceId: &quot;).append(toIndentedString(serviceId)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L322">    sb.append(&quot;    visible: &quot;).append(toIndentedString(visible)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L323">    sb.append(&quot;    minScale: &quot;).append(toIndentedString(minScale)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L324">    sb.append(&quot;    maxScale: &quot;).append(toIndentedString(maxScale)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L325">    sb.append(&quot;    legendImageUrl: &quot;).append(toIndentedString(legendImageUrl)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L326">    sb.append(&quot;    hiDpiMode: &quot;).append(toIndentedString(hiDpiMode)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L327">    sb.append(&quot;    hiDpiSubstituteLayer: &quot;).append(toIndentedString(hiDpiSubstituteLayer)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L328">    sb.append(&quot;}&quot;);</span>
-<span class="nc" id="L329">    return sb.toString();</span>
+<span class="nc" id="L339">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L340">    sb.append(&quot;class AppLayer {\n&quot;);</span>
+<span class="nc" id="L341">    sb.append(&quot;    id: &quot;).append(toIndentedString(id)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L342">    sb.append(&quot;    layerName: &quot;).append(toIndentedString(layerName)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L343">    sb.append(&quot;    title: &quot;).append(toIndentedString(title)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L344">    sb.append(&quot;    serviceId: &quot;).append(toIndentedString(serviceId)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L345">    sb.append(&quot;    visible: &quot;).append(toIndentedString(visible)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L346">    sb.append(&quot;    minScale: &quot;).append(toIndentedString(minScale)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L347">    sb.append(&quot;    maxScale: &quot;).append(toIndentedString(maxScale)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L348">    sb.append(&quot;    legendImageUrl: &quot;).append(toIndentedString(legendImageUrl)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L349">    sb.append(&quot;    hiDpiMode: &quot;).append(toIndentedString(hiDpiMode)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L350">    sb.append(&quot;    hiDpiSubstituteLayer: &quot;).append(toIndentedString(hiDpiSubstituteLayer)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L351">    sb.append(&quot;    hasAttributes: &quot;).append(toIndentedString(hasAttributes)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L352">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L353">    return sb.toString();</span>
   }
 
   /**
@@ -334,10 +358,10 @@ import javax.annotation.Generated;
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-<span class="nc bnc" id="L337" title="All 2 branches missed.">    if (o == null) {</span>
-<span class="nc" id="L338">      return &quot;null&quot;;</span>
+<span class="nc bnc" id="L361" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L362">      return &quot;null&quot;;</span>
     }
-<span class="nc" id="L340">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+<span class="nc" id="L364">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
   }
 }
 
