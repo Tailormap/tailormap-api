@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -43,9 +44,9 @@ import javax.persistence.EntityNotFoundException;
 @RestController
 @Validated
 @RequestMapping(path = &quot;/app/{appId}/components&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
-<span class="fc" id="L46">public class ComponentsController {</span>
+<span class="fc" id="L47">public class ComponentsController {</span>
 
-<span class="fc" id="L48">    private final Log logger = LogFactory.getLog(getClass());</span>
+<span class="fc" id="L49">    private final Log logger = LogFactory.getLog(getClass());</span>
     @Autowired private ApplicationRepository applicationRepository;
 
     /**
@@ -62,11 +63,11 @@ import javax.persistence.EntityNotFoundException;
                             .NOT_FOUND /*,reason = &quot;Not Found&quot; -- adding 'reason' will drop the body */)
     @ResponseBody
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
-<span class="fc" id="L65">        logger.warn(</span>
-<span class="fc" id="L66">                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());</span>
-<span class="fc" id="L67">        return new ErrorResponse()</span>
-<span class="fc" id="L68">                .message(&quot;Requested an application that does not exist&quot;)</span>
-<span class="fc" id="L69">                .code(HttpStatus.NOT_FOUND.value());</span>
+<span class="fc" id="L66">        logger.warn(</span>
+<span class="fc" id="L67">                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());</span>
+<span class="fc" id="L68">        return new ErrorResponse()</span>
+<span class="fc" id="L69">                .message(&quot;Requested an application that does not exist&quot;)</span>
+<span class="fc" id="L70">                .code(HttpStatus.NOT_FOUND.value());</span>
     }
 
     /**
@@ -100,23 +101,24 @@ import javax.persistence.EntityNotFoundException;
                                         schema = @Schema(implementation = RedirectResponse.class)))
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed(value = &quot;get_components&quot;, description = &quot;time spent to get the application components&quot;)
     public ResponseEntity&lt;?&gt; get(
             @Parameter(name = &quot;appId&quot;, description = &quot;application id&quot;, required = true)
                     @PathVariable(&quot;appId&quot;)
                     Long appId) {
-<span class="fc" id="L107">        logger.trace(&quot;Requesting 'components' for application id: &quot; + appId);</span>
+<span class="fc" id="L109">        logger.trace(&quot;Requesting 'components' for application id: &quot; + appId);</span>
 
         // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
         // and in a normal flow this should not happen
         // as appId is (should be) validated by calling the /app/ endpoint
-<span class="fc" id="L112">        Application application = applicationRepository.getReferenceById(appId);</span>
-<span class="pc bpc" id="L113" title="1 of 4 branches missed.">        if (application.isAuthenticatedRequired() &amp;&amp; !AuthUtil.isAuthenticatedUser()) {</span>
+<span class="fc" id="L114">        Application application = applicationRepository.getReferenceById(appId);</span>
+<span class="pc bpc" id="L115" title="1 of 4 branches missed.">        if (application.isAuthenticatedRequired() &amp;&amp; !AuthUtil.isAuthenticatedUser()) {</span>
             // login required, send RedirectResponse
-<span class="fc" id="L115">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());</span>
+<span class="fc" id="L117">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());</span>
         } else {
-<span class="fc" id="L117">            List&lt;Component&gt; components = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L118">            findComponents(application, components);</span>
-<span class="fc" id="L119">            return ResponseEntity.status(HttpStatus.OK).body(components);</span>
+<span class="fc" id="L119">            List&lt;Component&gt; components = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L120">            findComponents(application, components);</span>
+<span class="fc" id="L121">            return ResponseEntity.status(HttpStatus.OK).body(components);</span>
         }
     }
 
@@ -127,19 +129,19 @@ import javax.persistence.EntityNotFoundException;
      * @param componentList the list that holds the configured components
      */
     private void findComponents(Application application, List&lt;Component&gt; componentList) {
-<span class="fc" id="L130">        logger.trace(&quot;listing components: &quot; + application.getComponents());</span>
-<span class="fc" id="L131">        componentList.addAll(</span>
-<span class="fc" id="L132">                application.getComponents().stream()</span>
-<span class="fc" id="L133">                        .map(</span>
+<span class="fc" id="L132">        logger.trace(&quot;listing components: &quot; + application.getComponents());</span>
+<span class="fc" id="L133">        componentList.addAll(</span>
+<span class="fc" id="L134">                application.getComponents().stream()</span>
+<span class="fc" id="L135">                        .map(</span>
                                 p -&gt; {
-<span class="fc" id="L135">                                    ComponentConfig componentConfig =</span>
-<span class="fc" id="L136">                                            new ComponentConfig().title(p.getName());</span>
-<span class="fc" id="L137">                                    componentConfig.putAll(p.getDetails());</span>
-<span class="fc" id="L138">                                    return new Component()</span>
-<span class="fc" id="L139">                                            .type(p.getClassName())</span>
-<span class="fc" id="L140">                                            .config(componentConfig);</span>
+<span class="fc" id="L137">                                    ComponentConfig componentConfig =</span>
+<span class="fc" id="L138">                                            new ComponentConfig().title(p.getName());</span>
+<span class="fc" id="L139">                                    componentConfig.putAll(p.getDetails());</span>
+<span class="fc" id="L140">                                    return new Component()</span>
+<span class="fc" id="L141">                                            .type(p.getClassName())</span>
+<span class="fc" id="L142">                                            .config(componentConfig);</span>
                                 })
-<span class="fc" id="L142">                        .collect(Collectors.toList()));</span>
-<span class="fc" id="L143">    }</span>
+<span class="fc" id="L144">                        .collect(Collectors.toList()));</span>
+<span class="fc" id="L145">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
