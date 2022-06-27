@@ -215,6 +215,12 @@ SPDX-License-Identifier: MIT
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.junit-pioneer</groupId>
+      <artifactId>junit-pioneer</artifactId>
+      <version>1.7.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <!-- provides @SuppressModernizer that can be used on method to suppress the Modernizer plugin -->
       <groupId>org.gaul</groupId>
       <artifactId>modernizer-maven-annotations</artifactId>
@@ -1031,6 +1037,7 @@ SPDX-License-Identifier: MIT
                     <!-- basically each and every geotools module has a load of transitive dependencies -->
                     <exclude>org.geotools:*</exclude>
                     <exclude>org.geotools.xsd:*</exclude>
+                    <exclude>org.junit-pioneer:junit-pioneer</exclude>
                   </excludes>
                 </banTransitiveDependencies>
               </rules>

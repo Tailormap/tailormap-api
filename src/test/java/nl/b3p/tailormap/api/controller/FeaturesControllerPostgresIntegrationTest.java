@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -43,6 +44,7 @@ import java.util.stream.Stream;
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
 @ActiveProfiles("postgresql")
+@Stopwatch
 class FeaturesControllerPostgresIntegrationTest {
     /** bestuurlijke gebieden WFS; provincies . */
     private static final String provinciesWFS = "/app/1/layer/2/features";
