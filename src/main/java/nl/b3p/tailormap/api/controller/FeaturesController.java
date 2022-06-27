@@ -144,6 +144,7 @@ public class FeaturesController implements Constants {
      * @throws BadRequestException when invalid parameters are passed
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed(value = "get_features", description = "time spent to process get features call")
     public ResponseEntity<Serializable> getFeatures(
             @Parameter(name = "appId", description = "application id", required = true)
                     @PathVariable("appId")
@@ -193,9 +194,6 @@ public class FeaturesController implements Constants {
         }
     }
 
-    @Timed(
-            value = "features.all.pages",
-            description = "Time taken to retrieve all features per page")
     @NotNull
     private FeaturesResponse getAllFeatures(@NotNull ApplicationLayer appLayer, Integer page) {
         FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);
@@ -262,7 +260,6 @@ public class FeaturesController implements Constants {
         return featuresResponse;
     }
 
-    @Timed(value = "features.by.xy", description = "Time taken to retrieve features by XY")
     @NotNull
     private FeaturesResponse getFeaturesByXY(
             @NotNull ApplicationLayer appLayer,

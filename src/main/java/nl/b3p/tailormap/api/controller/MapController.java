@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -97,6 +98,7 @@ public class MapController {
             })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
+    @Timed(value = "get_map", description = "time spent to process get the map of an application")
     public ResponseEntity<Serializable> get(
             @Parameter(name = "appId", description = "application id", required = true)
                     @PathVariable("appId")

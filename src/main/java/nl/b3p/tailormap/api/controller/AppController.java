@@ -5,6 +5,8 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import io.micrometer.core.annotation.Timed;
+
 import nl.b3p.tailormap.api.exception.TailormapConfigurationException;
 import nl.b3p.tailormap.api.model.AppResponse;
 import nl.b3p.tailormap.api.model.ErrorResponse;
@@ -83,6 +85,7 @@ public class AppController {
      * @throws TailormapConfigurationException when the tailormap configuration is broken
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed(value = "get_app", description = "time spent to find an app")
     public ResponseEntity<Serializable> get(
             @RequestParam(required = false) Long appId,
             @RequestParam(required = false) String name,
