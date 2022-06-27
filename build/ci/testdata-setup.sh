@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT
 set -e
 
-docker compose -f ./build/ci/docker-compose.yml up -d
+docker compose -f ./build/ci/docker-compose.yml up -d --wait
 
 POSTGIS_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" postgis)
 ORACLE_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" oracle)
@@ -15,6 +15,7 @@ while :
 do
   printf " $_WAIT"
   if [ "$POSTGIS_HEALTHY" == "healthy" ] && [ "$ORACLE_HEALTHY" == "healthy" ] && [ "$SQLSERVER_HEALTHY" == "healthy" ]; then
+    printf " Done waiting for databases to be ready\n"
     break
   fi
 
