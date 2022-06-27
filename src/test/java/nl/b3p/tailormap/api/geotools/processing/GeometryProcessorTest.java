@@ -15,11 +15,13 @@ import nl.b3p.tailormap.api.StaticTestData;
 
 import org.geotools.geometry.jts.WKTReader2;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.Stopwatch;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 
 class GeometryProcessorTest extends StaticTestData {
 
+    @Stopwatch
     @Test
     void simplifyPoint() throws ParseException {
         final Geometry p = new WKTReader2().read(testData.getProperty("RDpointWkt"));
@@ -38,6 +40,7 @@ class GeometryProcessorTest extends StaticTestData {
                 "simplified geometry should match");
     }
 
+    @Stopwatch
     @Test
     void simplifyPolygon() throws ParseException {
         final Geometry p = new WKTReader2().read(testData.getProperty("RDpolygonWkt"));
