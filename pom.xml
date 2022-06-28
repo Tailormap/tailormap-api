@@ -517,8 +517,20 @@ SPDX-License-Identifier: MIT
         </executions>
       </plugin>
       <plugin>
-        <groupId>pl.project13.maven</groupId>
-        <artifactId>git-commit-id-plugin</artifactId>
+        <groupId>io.github.git-commit-id</groupId>
+        <artifactId>git-commit-id-maven-plugin</artifactId>
+        <version>5.0.0</version>
+        <configuration>
+          <generateGitPropertiesFile>false</generateGitPropertiesFile>
+        </configuration>
+        <executions>
+          <execution>
+            <id>get-the-git-infos</id>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -592,6 +604,8 @@ SPDX-License-Identifier: MIT
             <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
             <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
+            <!--suppress UnresolvedMavenProperty -->
+            <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
           </environmentVariables>
           <excludes>
             <exclude>**/*IntegrationTest.java</exclude>
@@ -618,6 +632,8 @@ SPDX-License-Identifier: MIT
             <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
             <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
+            <!--suppress UnresolvedMavenProperty -->
+            <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
           </environmentVariables>
           <useFile>false</useFile>
           <classpathDependencyExcludes>
@@ -645,6 +661,8 @@ SPDX-License-Identifier: MIT
             <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
             <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
+            <!--suppress UnresolvedMavenProperty -->
+            <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
           </environmentVariables>
           <cleanCache>true</cleanCache>
           <!--suppress UnresolvedMavenProperty -->
@@ -668,6 +686,7 @@ SPDX-License-Identifier: MIT
             <phase>pre-integration-test</phase>
             <configuration>
               <!-- <skip>${skipQA}</skip> -->
+              <!--suppress UnresolvedMavenProperty -->
               <skip>${skipTests}</skip>
               <profiles>
                 <profile>test</profile>
@@ -679,6 +698,8 @@ SPDX-License-Identifier: MIT
                 <!--suppress UnresolvedMavenProperty -->
                 <API_VERSION>${info.version}</API_VERSION>
                 <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
+                <!--suppress UnresolvedMavenProperty -->
+                <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
               </environmentVariables>
               <systemPropertyVariables>
                 <project.version>${project.version}</project.version>
@@ -1416,6 +1437,8 @@ SPDX-License-Identifier: MIT
                 <API_VERSION>${info.version}</API_VERSION>
                 <!-- TODO read this from persistence -->
                 <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
+                <!--suppress UnresolvedMavenProperty -->
+                <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
               </environmentVariables>
               <useFile>false</useFile>
             </configuration>
@@ -1439,6 +1462,7 @@ SPDX-License-Identifier: MIT
                 </goals>
                 <phase>pre-integration-test</phase>
                 <configuration>
+                  <!--suppress UnresolvedMavenProperty -->
                   <skip>${skipTests}</skip>
                   <profiles>
                     <profile>postgresql</profile>
@@ -1450,7 +1474,9 @@ SPDX-License-Identifier: MIT
                     <!--suppress UnresolvedMavenProperty -->
                     <API_VERSION>${info.version}</API_VERSION>
                     <!-- TODO read this from persistence -->
-                    <DATABASE_VERSION>47</DATABASE_VERSION>
+                    <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
                   </environmentVariables>
                   <systemPropertyVariables>
                     <project.version>${project.version}</project.version>
@@ -1464,6 +1490,7 @@ SPDX-License-Identifier: MIT
                 </goals>
                 <phase>post-integration-test</phase>
                 <configuration>
+                  <!--suppress UnresolvedMavenProperty -->
                   <skip>${skipTests}</skip>
                 </configuration>
               </execution>
