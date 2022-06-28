@@ -46,6 +46,9 @@ class VersionControllerIntegrationTest {
         String apiVersion = System.getenv("API_VERSION");
         assumeFalse(null == apiVersion, "API version unknown, should be set in system environment");
 
+        String commitSha = System.getenv("GIT_COMMIT_ID");
+        assumeFalse(null == commitSha, "Git commit unknown, should be set in system environment");
+
         Map<String, String> expected =
                 Map.of(
                         "version",
@@ -53,7 +56,9 @@ class VersionControllerIntegrationTest {
                         "databaseversion",
                         databaseVersion,
                         "apiVersion",
-                        apiVersion);
+                        apiVersion,
+                        "commitSha",
+                        commitSha);
 
         assertEquals(expected, versionController.getVersion(), "Unexpected version response.");
     }
@@ -72,6 +77,9 @@ class VersionControllerIntegrationTest {
         String apiVersion = System.getenv("API_VERSION");
         assumeFalse(null == apiVersion, "API version unknown, should be set in system environment");
 
+        String commitSha = System.getenv("GIT_COMMIT_ID");
+        assumeFalse(null == commitSha, "Git commit unknown, should be set in system environment");
+
         assertNotNull(versionController.getVersion(), "Version info not found");
         Map<String, String> expected =
                 Map.of(
@@ -80,7 +88,9 @@ class VersionControllerIntegrationTest {
                         "databaseversion",
                         "unknown",
                         "apiVersion",
-                        apiVersion);
+                        apiVersion,
+                        "commitSha",
+                        commitSha);
 
         assertEquals(expected, versionController.getVersion(), "Unexpected version response.");
     }

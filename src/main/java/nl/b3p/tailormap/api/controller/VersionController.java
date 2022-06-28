@@ -37,6 +37,9 @@ public class VersionController {
     @Value("${tailormap-api.apiVersion}")
     private String apiVersion;
 
+    @Value("${tailormap-api.commitSha}")
+    private String commitSha;
+
     /**
      * get API version.
      *
@@ -52,8 +55,8 @@ public class VersionController {
 
         logger.debug(
                 String.format(
-                        "Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s",
-                        this.version, dbVersion, this.apiVersion));
+                        "Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s\n\tgit commit: %s",
+                        this.version, dbVersion, this.apiVersion, this.commitSha));
 
         return Map.of(
                 "version",
@@ -61,6 +64,8 @@ public class VersionController {
                 "databaseversion",
                 dbVersion,
                 "apiVersion",
-                this.apiVersion);
+                this.apiVersion,
+                "commitSha",
+                this.commitSha);
     }
 }
