@@ -649,6 +649,10 @@ SPDX-License-Identifier: MIT
           <cleanCache>true</cleanCache>
           <!--suppress UnresolvedMavenProperty -->
           <jvmArguments>${surefireArgLine}</jvmArguments>
+          <!-- wait between attempts, default 500 ms -->
+          <wait>1000</wait>
+          <!-- max attempts to check if application is up, default 60 -->
+          <maxAttempts>120</maxAttempts>
         </configuration>
         <executions>
           <execution>
