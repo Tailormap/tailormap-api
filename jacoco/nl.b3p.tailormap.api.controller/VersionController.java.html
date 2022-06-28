@@ -37,6 +37,9 @@ import java.util.Map;
     @Value(&quot;${tailormap-api.apiVersion}&quot;)
     private String apiVersion;
 
+    @Value(&quot;${tailormap-api.commitSha}&quot;)
+    private String commitSha;
+
     /**
      * get API version.
      *
@@ -44,24 +47,26 @@ import java.util.Map;
      */
     @GetMapping(path = &quot;/version&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map&lt;String, String&gt; getVersion() {
-<span class="fc" id="L47">        final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);</span>
+<span class="fc" id="L50">        final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);</span>
         final String dbVersion =
-<span class="fc bfc" id="L49" title="All 2 branches covered.">                ((null != m)</span>
-<span class="pc bpc" id="L50" title="1 of 2 branches missed.">                        ? (null == m.getConfigValue() ? &quot;unknown&quot; : m.getConfigValue())</span>
-<span class="fc" id="L51">                        : &quot;unknown&quot;);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">                ((null != m)</span>
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">                        ? (null == m.getConfigValue() ? &quot;unknown&quot; : m.getConfigValue())</span>
+<span class="fc" id="L54">                        : &quot;unknown&quot;);</span>
 
-<span class="fc" id="L53">        logger.debug(</span>
-<span class="fc" id="L54">                String.format(</span>
-                        &quot;Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s&quot;,
-                        this.version, dbVersion, this.apiVersion));
+<span class="fc" id="L56">        logger.debug(</span>
+<span class="fc" id="L57">                String.format(</span>
+                        &quot;Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s\n\tgit commit: %s&quot;,
+                        this.version, dbVersion, this.apiVersion, this.commitSha));
 
-<span class="fc" id="L58">        return Map.of(</span>
+<span class="fc" id="L61">        return Map.of(</span>
                 &quot;version&quot;,
                 this.version,
                 &quot;databaseversion&quot;,
                 dbVersion,
                 &quot;apiVersion&quot;,
-                this.apiVersion);
+                this.apiVersion,
+                &quot;commitSha&quot;,
+                this.commitSha);
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

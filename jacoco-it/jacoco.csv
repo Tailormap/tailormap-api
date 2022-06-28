@@ -4,7 +4,7 @@ Tailormap API,nl.b3p.tailormap.api.controller,ComponentsController,0,98,1,3,0,26
 Tailormap API,nl.b3p.tailormap.api.controller,MapController,139,579,14,44,39,145,14,22,0,7
 Tailormap API,nl.b3p.tailormap.api.controller,FeaturesController,473,97,31,11,132,21,22,8,5,4
 Tailormap API,nl.b3p.tailormap.api.controller,AppController,5,208,2,18,1,52,2,13,0,5
-Tailormap API,nl.b3p.tailormap.api.controller,VersionController,2,56,1,3,0,9,1,3,0,2
+Tailormap API,nl.b3p.tailormap.api.controller,VersionController,2,64,1,3,0,9,1,3,0,2
 Tailormap API,nl.b3p.tailormap.api.health,TailormapHealthIndicator,19,36,2,2,4,9,2,2,0,2
 Tailormap API,nl.b3p.tailormap.api.health,MonitoringConfiguration,8,0,0,0,2,0,2,0,2,0
 Tailormap API,nl.b3p.tailormap.api.security,AuthUtil,19,11,6,2,6,4,5,1,1,1
