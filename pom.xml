@@ -139,7 +139,7 @@ SPDX-License-Identifier: MIT
     <fmt.action>format</fmt.action>
     <pom.fmt.action>sort</pom.fmt.action>
     <docker.skip>false</docker.skip>
-    <maven-fluido-skin.version>1.11.0</maven-fluido-skin.version>
+    <maven-fluido-skin.version>1.11.1</maven-fluido-skin.version>
     <swagger-ui.version>4.11.1</swagger-ui.version>
   </properties>
   <dependencyManagement>
