@@ -190,7 +190,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:14.1-alpine
+        image: postgres:14-alpine
         env:
           POSTGRES_USER: ${{ env.DB_USER }}
           POSTGRES_PASSWORD: ${{ env.DB_PASS }}
