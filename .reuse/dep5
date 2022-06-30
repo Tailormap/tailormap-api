@@ -4,6 +4,6 @@ Files: src/main/resources/* src/test/resources/*
 Copyright: Copyright (C) 2021 B3Partners B.V.
 License: MIT
 
-Files: .github/* .mvn/* README.md .gitignore src/site/* SECURITY.md .gitattributes
+Files: .github/* .mvn/* README.md .gitignore src/site/* SECURITY.md .gitattributes codecov.yml
 Copyright: none
 License: CC0-1.0
