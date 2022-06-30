@@ -535,13 +535,29 @@ paths:
             type: string
         - description: '
             Page number to retrieve. For the initial request this should be 1 which will 
-            then give the pageSize and total of features so addintional pages can be retrieved.'
+            then give the pageSize and total of features so additional pages can be retrieved.'
           in: query
           name: page
           required: false
           schema:
             type: integer
             minimum: 1
+        - description: 'The attribute name (not alias) to sort by.'
+          in: query
+          name: sortBy
+          required: false
+          schema:
+            type: string
+        - description: 'Sort order for sortBy'
+          in: query
+          name: sortOrder
+          required: false
+          schema:
+            type: string
+            default: asc
+            enum:
+              - asc
+              - desc
       responses:
         '200':
           description: 'OK'
