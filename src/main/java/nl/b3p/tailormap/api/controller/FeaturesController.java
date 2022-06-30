@@ -141,6 +141,8 @@ public class FeaturesController implements Constants {
      * @param simplify set to {@code true} to simplify geometry, defaults to {@code false}
      * @param filter CQL? filter to apply
      * @param page Page number to retrieve, starts at 1
+     * @param sortBy attribute to sort by
+     * @param sortOrder sort order of features, defaults to {@code ASC}
      * @throws BadRequestException when invalid parameters are passed
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -159,7 +161,9 @@ public class FeaturesController implements Constants {
             @RequestParam(required = false) String __fid,
             @RequestParam(defaultValue = "false") Boolean simplify,
             @RequestParam(required = false) String filter,
-            @RequestParam(required = false) Integer page)
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String sortOrder)
             throws BadRequestException {
 
         // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
@@ -178,6 +182,9 @@ public class FeaturesController implements Constants {
             }
             if (null != __fid) {
                 throw new BadRequestException("__fid is not currently supported");
+            }
+            if (null != sortBy) {
+                throw new BadRequestException("sortBy is not currently supported");
             }
 
             if (null != x && null != y) {
