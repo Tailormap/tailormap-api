@@ -53,13 +53,6 @@ SPDX-License-Identifier: MIT
       <organizationUrl>https://www.b3partners.nl</organizationUrl>
     </developer>
     <developer>
-      <id>mvdstruijk</id>
-      <name>Martijn van de Struijk</name>
-      <email>martijn@b3partners.nl</email>
-      <organization>B3Partners B.V.</organization>
-      <organizationUrl>https://www.b3partners.nl</organizationUrl>
-    </developer>
-    <developer>
       <id>geertplaisier</id>
       <name>Geert Plaisier</name>
       <email>geert@b3partners.nl</email>
@@ -122,7 +115,7 @@ SPDX-License-Identifier: MIT
     <mssql-jdbc.version>10.2.1.jre11</mssql-jdbc.version>
     <webjars-locator-core.version>0.51</webjars-locator-core.version>
     <!-- junit-jupiter.version>5.8.2</junit-jupiter.version -->
-    <maven.surefire.version>3.0.0-M6</maven.surefire.version>
+    <maven.surefire.version>3.0.0-M7</maven.surefire.version>
     <maven-surefire-plugin.version>${maven.surefire.version}</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>${maven.surefire.version}</maven-failsafe-plugin.version>
     <maven-deploy-plugin.version>3.0.0-M2</maven-deploy-plugin.version>
@@ -198,7 +191,8 @@ SPDX-License-Identifier: MIT
         <exclusion>
           <!--
           this (broken!) transitive dependency from org.skyscreamer:jsonassert:jar:1.5.0:test conflicts
-          with org.json.json from org.tailormap:viewer-config-persistence
+          with org.json.json from nl.b3p.tailormap:tailormap-persistence
+
           -->
           <groupId>com.vaadin.external.google</groupId>
           <artifactId>android-json</artifactId>
@@ -244,9 +238,9 @@ SPDX-License-Identifier: MIT
       <artifactId>ojdbc11</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.tailormap</groupId>
-      <artifactId>viewer-config-persistence</artifactId>
-      <version>${org.tailormap.version}</version>
+      <groupId>nl.b3p.tailormap</groupId>
+      <artifactId>tailormap-persistence</artifactId>
+      <version>10.0-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <!-- SLF4J is provided by SpringBoot through logback -->
@@ -262,9 +256,9 @@ SPDX-License-Identifier: MIT
     </dependency>
     <dependency>
       <!-- this has "testdata.sql" that can be use to setup a HSQLDB test database -->
-      <groupId>org.tailormap</groupId>
-      <artifactId>viewer-config-persistence</artifactId>
-      <version>${org.tailormap.version}</version>
+      <groupId>nl.b3p.tailormap</groupId>
+      <artifactId>tailormap-persistence</artifactId>
+      <version>10.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
@@ -851,7 +845,7 @@ SPDX-License-Identifier: MIT
         <executions>
           <execution>
             <id>unpack-test-resources</id>
-            <!-- extract testdata.sql from viewer-config-persistence:tests to import.sql -->
+            <!-- extract testdata.sql from tailormap-persistence:tests to import.sql -->
             <goals>
               <goal>unpack</goal>
             </goals>
@@ -859,8 +853,8 @@ SPDX-License-Identifier: MIT
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.tailormap</groupId>
-                  <artifactId>viewer-config-persistence</artifactId>
+                  <groupId>nl.b3p.tailormap</groupId>
+                  <artifactId>tailormap-persistence</artifactId>
                   <type>test-jar</type>
                   <classifier>tests</classifier>
                   <overWrite>true</overWrite>
@@ -1058,7 +1052,7 @@ SPDX-License-Identifier: MIT
                          javax.persistence:javax.persistence-api:jar:2.2:compile
                          org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:jar:1.1.1.Final:compile
                     -->
-                    <exclude>org.tailormap:viewer-config-persistence</exclude>
+                    <exclude>nl.b3p.tailormap:tailormap-persistence</exclude>
                     <!-- basically each and every geotools module has a load of transitive dependencies -->
                     <exclude>org.geotools:*</exclude>
                     <exclude>org.geotools.xsd:*</exclude>
