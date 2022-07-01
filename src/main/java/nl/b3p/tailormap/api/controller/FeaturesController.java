@@ -42,6 +42,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.util.GeometricShapeFactory;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.sort.SortOrder;
@@ -183,14 +184,11 @@ public class FeaturesController implements Constants {
             if (null != __fid) {
                 throw new BadRequestException("__fid is not currently supported");
             }
-            if (null != sortBy) {
-                throw new BadRequestException("sortBy is not currently supported");
-            }
 
             if (null != x && null != y) {
                 featuresResponse = getFeaturesByXY(appLayer, x, y, crs, distance, simplify);
             } else if (null != page && page > 0) {
-                featuresResponse = getAllFeatures(appLayer, page);
+                featuresResponse = getAllFeatures(appLayer, page, sortBy, sortOrder);
             } else {
                 // TODO other implementations
                 throw new BadRequestException(
@@ -202,7 +200,8 @@ public class FeaturesController implements Constants {
     }
 
     @NotNull
-    private FeaturesResponse getAllFeatures(@NotNull ApplicationLayer appLayer, Integer page) {
+    private FeaturesResponse getAllFeatures(
+            @NotNull ApplicationLayer appLayer, Integer page, String sortBy, String sortOrder) {
         FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);
 
         // find attribute source of layer
@@ -232,8 +231,9 @@ public class FeaturesController implements Constants {
             //  if we do the geometry attribute must not be removed from propNames
             propNames.remove(sft.getGeometryAttribute());
 
-            // determine sorting attribute, default to first attribute
-            String sortAttrName = propNames.get(0);
+            String sortAttrName;
+            // determine sorting attribute, default to first attribute or primary key
+            sortAttrName = propNames.get(0);
             if (propNames.contains(sft.getPrimaryKeyAttribute())) {
                 // there is a primary key and it is known, use that for sorting
                 sortAttrName = sft.getPrimaryKeyAttribute();
@@ -251,10 +251,31 @@ public class FeaturesController implements Constants {
                 }
             }
 
+            if (null != sortBy) {
+                // validate sortBy attribute is in the list of configured attributes
+                // and not a geometry type
+
+                if (propNames.contains(sortBy)
+                        && !(sft.getAttribute(sortBy) instanceof GeometryDescriptor)) {
+                    sortAttrName = sortBy;
+                } else {
+                    logger.warn(
+                            "Requested sortBy attribute "
+                                    + sortBy
+                                    + " was not found in configured attributes or is a geometry attribute.");
+                }
+            }
+
+            SortOrder _sortOrder = SortOrder.ASCENDING;
+            if (null != sortOrder
+                    && (sortOrder.equalsIgnoreCase("desc") || sortOrder.equalsIgnoreCase("asc"))) {
+                _sortOrder = SortOrder.valueOf(sortOrder.toUpperCase());
+            }
+
             // setup page query
             Query q = new Query(fs.getName().toString());
             q.setPropertyNames(propNames);
-            q.setSortBy(ff.sort(sortAttrName, SortOrder.ASCENDING));
+            q.setSortBy(ff.sort(sortAttrName, _sortOrder));
             q.setMaxFeatures(pageSize);
             q.setStartIndex((page - 1) * pageSize);
             logger.debug("Attribute query: " + q);

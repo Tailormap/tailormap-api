@@ -542,7 +542,10 @@ paths:
           schema:
             type: integer
             minimum: 1
-        - description: 'The attribute name (not alias) to sort by.'
+        - description: '
+            The attribute name (not alias) to sort by. 
+            The name must be of a configured attribute and not a geometry type.
+            The default is to sort by the primary key of the feature.'
           in: query
           name: sortBy
           required: false

@@ -236,7 +236,7 @@ class FeaturesControllerPostgresIntegrationTest {
     }
 
     /**
-     * request an ot-of-range page of data from the bestuurlijke gebieden WFS featuretype
+     * request an out-of-range page of data from the bestuurlijke gebieden WFS featuretype
      * provincies.
      *
      * @throws Exception if any
@@ -262,6 +262,169 @@ class FeaturesControllerPostgresIntegrationTest {
         assertEquals(0, features.size(), "there should be 0 provinces in the list");
     }
 
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void should_return_default_sorted_featurecollections_for_no_or_invalid_sorting_from_wfs()
+            throws Exception {
+        // page 1, sort by naam, no direction
+        mockMvc.perform(get(provinciesWFS).param("page", "1").param("sortBy", "naam"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
+                .andExpect(jsonPath("$.page").value(1))
+                .andExpect(jsonPath("$.pageSize").value(pageSize))
+                .andExpect(jsonPath("$.features").isArray())
+                .andExpect(jsonPath("$.features").isNotEmpty())
+                .andExpect(jsonPath("$.features[0]").isMap())
+                .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+                .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
+                .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+                .andExpect(jsonPath("$.features[9]").isMap())
+                .andExpect(jsonPath("$.features[9]").isNotEmpty())
+                .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[9].geometry").isEmpty())
+                .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
+                .andExpect(jsonPath("$.features[9].attributes.ligtInLandNaam").value("Nederland"))
+                .andExpect(jsonPath("$.columnMetadata").isArray())
+                .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
+
+        // page 1, sort by naam, invalid direction
+        mockMvc.perform(
+                        get(provinciesWFS)
+                                .param("page", "1")
+                                .param("sortBy", "naam")
+                                .param("sortOrder", "invalid"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
+                .andExpect(jsonPath("$.page").value(1))
+                .andExpect(jsonPath("$.pageSize").value(pageSize))
+                .andExpect(jsonPath("$.features").isArray())
+                .andExpect(jsonPath("$.features").isNotEmpty())
+                .andExpect(jsonPath("$.features[0]").isMap())
+                .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+                .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
+                .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+                .andExpect(jsonPath("$.features[9]").isMap())
+                .andExpect(jsonPath("$.features[9]").isNotEmpty())
+                .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[9].geometry").isEmpty())
+                .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
+                .andExpect(jsonPath("$.features[9].attributes.ligtInLandNaam").value("Nederland"))
+                .andExpect(jsonPath("$.columnMetadata").isArray())
+                .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
+    }
+
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void should_return_sorted_featurecollections_for_valid_sorting_from_wfs() throws Exception {
+        // bestuurlijke gebieden WFS; provincies
+        // page 1, sort ascending by naam
+        mockMvc.perform(
+                        get(provinciesWFS)
+                                .param("page", "1")
+                                .param("sortBy", "naam")
+                                .param("sortOrder", "asc"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
+                .andExpect(jsonPath("$.page").value(1))
+                .andExpect(jsonPath("$.pageSize").value(pageSize))
+                .andExpect(jsonPath("$.features").isArray())
+                .andExpect(jsonPath("$.features").isNotEmpty())
+                .andExpect(jsonPath("$.features[0]").isMap())
+                .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+                .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
+                .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+                .andExpect(jsonPath("$.features[9]").isMap())
+                .andExpect(jsonPath("$.features[9]").isNotEmpty())
+                .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[9].geometry").isEmpty())
+                .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
+                .andExpect(jsonPath("$.features[9].attributes.ligtInLandNaam").value("Nederland"))
+                .andExpect(jsonPath("$.columnMetadata").isArray())
+                .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
+
+        // page 1, sort descending by naam
+        mockMvc.perform(
+                        get(provinciesWFS)
+                                .param("page", "1")
+                                .param("sortBy", "naam")
+                                .param("sortOrder", "desc"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
+                .andExpect(jsonPath("$.page").value(1))
+                .andExpect(jsonPath("$.pageSize").value(pageSize))
+                .andExpect(jsonPath("$.features").isArray())
+                .andExpect(jsonPath("$.features").isNotEmpty())
+                .andExpect(jsonPath("$.features[0]").isMap())
+                .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+                .andExpect(jsonPath("$.features[0].attributes.naam").value("Zuid-Holland"))
+                .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+                .andExpect(jsonPath("$.features[8]").isMap())
+                .andExpect(jsonPath("$.features[8]").isNotEmpty())
+                .andExpect(jsonPath("$.features[8].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[8].geometry").isEmpty())
+                .andExpect(jsonPath("$.features[8].attributes.naam").value("gELDERLAND"))
+                .andExpect(jsonPath("$.features[8].attributes.ligtInLandNaam").value("Nederland"))
+                .andExpect(jsonPath("$.columnMetadata").isArray())
+                .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
+    }
+
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void should_return_sorted_featurecollections_for_valid_sorting_from_database()
+            throws Exception {
+        // begroeidterreindeel from postgis
+        // page 1, sort ascending by gmlid
+        mockMvc.perform(
+                        get("/app/1/layer/6/features")
+                                .param("page", "1")
+                                .param("sortBy", "gmlid")
+                                .param("sortOrder", "asc"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.total").value(3662))
+                .andExpect(jsonPath("$.page").value(1))
+                .andExpect(jsonPath("$.pageSize").value(pageSize))
+                .andExpect(jsonPath("$.features").isArray())
+                .andExpect(jsonPath("$.features").isNotEmpty())
+                .andExpect(jsonPath("$.features[0]").isMap())
+                .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(
+                        jsonPath("$.features[0].__fid")
+                                .value("begroeidterreindeel.000f22d5ea3eace21bd39111a7212bd9"));
+
+        // page 1, sort descending by gmlid
+        mockMvc.perform(
+                        get("/app/1/layer/6/features")
+                                .param("page", "1")
+                                .param("sortBy", "gmlid")
+                                .param("sortOrder", "asc"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.total").value(3662))
+                .andExpect(jsonPath("$.page").value(1))
+                .andExpect(jsonPath("$.pageSize").value(pageSize))
+                .andExpect(jsonPath("$.features").isArray())
+                .andExpect(jsonPath("$.features").isNotEmpty())
+                .andExpect(jsonPath("$.features[0]").isMap())
+                .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(
+                        jsonPath("$.features[0].__fid")
+                                .value("begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"));
+    }
     /**
      * request 2 pages of data from a database featuretype.
      *
