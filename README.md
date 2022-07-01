@@ -6,7 +6,7 @@ Tailormap API provides the OpenAPI for Tailormap.
 
 Basic procedure:
 
-1. do your thing, if possible use `aosp` styling
+1. do your thing, if possible use `aosp` styling (run `mvn com.coveo:fmt-maven-plugin:format` to fix all formatting)
 2. run `mvn clean install` to make sure all required formatting is applied and all tests pass
 3. commit and push your branch to create a pull request
 4. wait for code review to pass, possibly amend your PR and merge your PR

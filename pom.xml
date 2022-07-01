@@ -100,7 +100,6 @@ SPDX-License-Identifier: MIT
     <!--    <project.build.outputTimestamp>2021-11-11T16:01:17Z</project.build.outputTimestamp>-->
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <org.tailormap.version>5.9.22</org.tailormap.version>
     <!-- TODO read this from persistence -->
     <org.tailormap.database.version>49</org.tailormap.database.version>
     <!-- make sure to keep geotools version and tailormap version in sync -->
@@ -113,7 +112,7 @@ SPDX-License-Identifier: MIT
     <postgresql.version>42.4.0</postgresql.version>
     <oracle-database.version>21.6.0.0.1</oracle-database.version>
     <mssql-jdbc.version>10.2.1.jre11</mssql-jdbc.version>
-    <webjars-locator-core.version>0.51</webjars-locator-core.version>
+    <webjars-locator-core.version>0.52</webjars-locator-core.version>
     <!-- junit-jupiter.version>5.8.2</junit-jupiter.version -->
     <maven.surefire.version>3.0.0-M7</maven.surefire.version>
     <maven-surefire-plugin.version>${maven.surefire.version}</maven-surefire-plugin.version>
