@@ -410,7 +410,7 @@ class FeaturesControllerPostgresIntegrationTest {
                         get("/app/1/layer/6/features")
                                 .param("page", "1")
                                 .param("sortBy", "gmlid")
-                                .param("sortOrder", "asc"))
+                                .param("sortOrder", "desc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.total").value(3662))
