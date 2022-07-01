@@ -374,7 +374,7 @@ class FeaturesControllerPostgresIntegrationTest {
                 .andExpect(jsonPath("$.features[8]").isNotEmpty())
                 .andExpect(jsonPath("$.features[8].__fid").isNotEmpty())
                 .andExpect(jsonPath("$.features[8].geometry").isEmpty())
-                .andExpect(jsonPath("$.features[8].attributes.naam").value("gELDERLAND"))
+                .andExpect(jsonPath("$.features[8].attributes.naam").value("Gelderland"))
                 .andExpect(jsonPath("$.features[8].attributes.ligtInLandNaam").value("Nederland"))
                 .andExpect(jsonPath("$.columnMetadata").isArray())
                 .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
@@ -425,6 +425,54 @@ class FeaturesControllerPostgresIntegrationTest {
                         jsonPath("$.features[0].__fid")
                                 .value("begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"));
     }
+
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void get_by_fid_from_database() throws Exception {
+        mockMvc.perform(
+                        get("/app/1/layer/6/features")
+                                .param(
+                                        "__fid",
+                                        "begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457")
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.features").isArray())
+                .andExpect(jsonPath("$.features").isNotEmpty())
+                .andExpect(jsonPath("$.features[0]").isMap())
+                .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+                .andExpect(
+                        jsonPath("$.features[0].__fid")
+                                .value("begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"));
+    }
+
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void get_by_fid_from_wfs() throws Exception {
+        // note that this test may break when pdok decides to opdate the data or the service.
+        // you can get the fid by clicking on the Utrecht feature in the map.
+        // alternatively this test could be written to use the wfs service to first get Utrecht
+        // feature
+        // by naam and then do the fid test.
+        final String utrecht__fid = "Provinciegebied.a26f9059-b076-4658-aa87-c78a63f1c827";
+        mockMvc.perform(
+                        get(provinciesWFS)
+                                .param("__fid", utrecht__fid)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.features").isArray())
+                .andExpect(jsonPath("$.features").isNotEmpty())
+                .andExpect(jsonPath("$.features[0]").isMap())
+                .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
+                .andExpect(jsonPath("$.features[0].__fid").value(utrecht__fid));
+    }
+
     /**
      * request 2 pages of data from a database featuretype.
      *

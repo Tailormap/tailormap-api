@@ -181,11 +181,10 @@ public class FeaturesController implements Constants {
             if (null != filter) {
                 throw new BadRequestException("filter is not currently supported");
             }
-            if (null != __fid) {
-                throw new BadRequestException("__fid is not currently supported");
-            }
 
-            if (null != x && null != y) {
+            if (null != __fid) {
+                featuresResponse = getFeatureByFID(appLayer, __fid);
+            } else if (null != x && null != y) {
                 featuresResponse = getFeaturesByXY(appLayer, x, y, crs, distance, simplify);
             } else if (null != page && page > 0) {
                 featuresResponse = getAllFeatures(appLayer, page, sortBy, sortOrder);
@@ -279,6 +278,50 @@ public class FeaturesController implements Constants {
             q.setMaxFeatures(pageSize);
             q.setStartIndex((page - 1) * pageSize);
             logger.debug("Attribute query: " + q);
+
+            executeQueryOnFeatureSource(false, featuresResponse, sft, configuredAttributes, fs, q);
+        } catch (IOException e) {
+            logger.error("Could not retrieve attribute data.", e);
+        }
+
+        return featuresResponse;
+    }
+
+    @NotNull
+    private FeaturesResponse getFeatureByFID(
+            @NotNull ApplicationLayer appLayer, @NotNull String fid) {
+        FeaturesResponse featuresResponse = new FeaturesResponse();
+
+        // find attribute source of layer
+        final GeoService geoService = appLayer.getService();
+        final Layer layer = geoService.getLayer(appLayer.getLayerName(), entityManager);
+        final SimpleFeatureType sft = layer.getFeatureType();
+        if (null == sft) {
+            return featuresResponse;
+        }
+        List<ConfiguredAttribute> configuredAttributes = appLayer.getAttributes(sft);
+        configuredAttributes =
+                configuredAttributes.stream()
+                        .filter(ConfiguredAttribute::isVisible)
+                        .collect(Collectors.toList());
+        try {
+            SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
+
+            List<String> propNames =
+                    configuredAttributes.stream()
+                            .map(ConfiguredAttribute::getAttributeName)
+                            .collect(Collectors.toList());
+            if (!propNames.contains(sft.getGeometryAttribute())) {
+                // add geom attribute for highlighting
+                propNames.add(sft.getGeometryAttribute());
+            }
+
+            // setup page query
+            Query q = new Query(fs.getName().toString());
+            q.setFilter(ff.id(ff.featureId(fid)));
+            q.setPropertyNames(propNames);
+            q.setMaxFeatures(1);
+            logger.debug("FID query: " + q);
 
             executeQueryOnFeatureSource(false, featuresResponse, sft, configuredAttributes, fs, q);
         } catch (IOException e) {
