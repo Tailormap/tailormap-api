@@ -118,16 +118,4 @@ class FeaturesControllerIntegrationTest {
                 .andExpect(jsonPath("$.code").value(401))
                 .andExpect(jsonPath("$.url").value("/login"));
     }
-
-    @Test
-    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    void should_error_when_calling_unsupported_sortBy() throws Exception {
-        mockMvc.perform(
-                        get("/app/1/layer/2/features")
-                                .param("sortBy", "naam")
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(400));
-    }
 }
