@@ -382,7 +382,7 @@
 <a class="jxr_linenumber" name="L374" href="#L374">374</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[8]"</span>).isNotEmpty())
 <a class="jxr_linenumber" name="L375" href="#L375">375</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[8].__fid"</span>).isNotEmpty())
 <a class="jxr_linenumber" name="L376" href="#L376">376</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[8].geometry"</span>).isEmpty())
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[8].attributes.naam"</span>).value(<span class="jxr_string">"gELDERLAND"</span>))
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[8].attributes.naam"</span>).value(<span class="jxr_string">"Gelderland"</span>))
 <a class="jxr_linenumber" name="L378" href="#L378">378</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[8].attributes.ligtInLandNaam"</span>).value(<span class="jxr_string">"Nederland"</span>))
 <a class="jxr_linenumber" name="L379" href="#L379">379</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isArray())
 <a class="jxr_linenumber" name="L380" href="#L380">380</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isNotEmpty());
@@ -433,184 +433,232 @@
 <a class="jxr_linenumber" name="L425" href="#L425">425</a>                         jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>)
 <a class="jxr_linenumber" name="L426" href="#L426">426</a>                                 .value(<span class="jxr_string">"begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"</span>));
 <a class="jxr_linenumber" name="L427" href="#L427">427</a>     }
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L429" href="#L429">429</a> <em class="jxr_javadoccomment">     * request 2 pages of data from a database featuretype.</em>
-<a class="jxr_linenumber" name="L430" href="#L430">430</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L431" href="#L431">431</a> <em class="jxr_javadoccomment">     * @throws Exception if any</em>
-<a class="jxr_linenumber" name="L432" href="#L432">432</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>     @ParameterizedTest(
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>             name =
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>                     <span class="jxr_string">"should return non empty featurecollections for valid page from database #{index}: database: {0}, featuretype: {1}"</span>)
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>     @MethodSource(<span class="jxr_string">"argumentsProvider"</span>)
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>     <strong class="jxr_keyword">void</strong> should_<strong class="jxr_keyword">return</strong>_non_empty_featurecollections_<strong class="jxr_keyword">for</strong>_valid_pages_from_database(
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>             String database, String tableName, String applayerUrl, <strong class="jxr_keyword">int</strong> totalCcount)
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>             <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>         <em class="jxr_comment">// page 1</em>
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>         MvcResult result =
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>                 mockMvc.perform(get(applayerUrl).param(<span class="jxr_string">"page"</span>, <span class="jxr_string">"1"</span>))
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>                         .andExpect(status().isOk())
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.total"</span>).value(totalCcount))
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.page"</span>).value(1))
-<a class="jxr_linenumber" name="L447" href="#L447">447</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.pageSize"</span>).value(pageSize))
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isMap())
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isEmpty())
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isArray())
-<a class="jxr_linenumber" name="L455" href="#L455">455</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L456" href="#L456">456</a>                         .andReturn();
-<a class="jxr_linenumber" name="L457" href="#L457">457</a> 
-<a class="jxr_linenumber" name="L458" href="#L458">458</a>         String body = result.getResponse().getContentAsString();
-<a class="jxr_linenumber" name="L459" href="#L459">459</a>         logger.trace(body);
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>         assertNotNull(body, <span class="jxr_string">"response body should not be null"</span>);
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>         List&lt;Service&gt; page1Features = JsonPath.read(body, <span class="jxr_string">"$.features"</span>);
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>         assertEquals(
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>                 pageSize,
-<a class="jxr_linenumber" name="L464" href="#L464">464</a>                 page1Features.size(),
-<a class="jxr_linenumber" name="L465" href="#L465">465</a>                 () -&gt;
-<a class="jxr_linenumber" name="L466" href="#L466">466</a>                         <span class="jxr_string">"there should be "</span>
-<a class="jxr_linenumber" name="L467" href="#L467">467</a>                                 + pageSize
-<a class="jxr_linenumber" name="L468" href="#L468">468</a>                                 + <span class="jxr_string">" features in the list, but was "</span>
-<a class="jxr_linenumber" name="L469" href="#L469">469</a>                                 + page1Features.size());
-<a class="jxr_linenumber" name="L470" href="#L470">470</a> 
-<a class="jxr_linenumber" name="L471" href="#L471">471</a>         <em class="jxr_comment">// page 2</em>
-<a class="jxr_linenumber" name="L472" href="#L472">472</a>         result =
-<a class="jxr_linenumber" name="L473" href="#L473">473</a>                 mockMvc.perform(get(applayerUrl).param(<span class="jxr_string">"page"</span>, <span class="jxr_string">"2"</span>))
-<a class="jxr_linenumber" name="L474" href="#L474">474</a>                         .andExpect(status().isOk())
-<a class="jxr_linenumber" name="L475" href="#L475">475</a>                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.total"</span>).value(totalCcount))
-<a class="jxr_linenumber" name="L477" href="#L477">477</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.page"</span>).value(2))
-<a class="jxr_linenumber" name="L478" href="#L478">478</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.pageSize"</span>).value(pageSize))
-<a class="jxr_linenumber" name="L479" href="#L479">479</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
-<a class="jxr_linenumber" name="L480" href="#L480">480</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L481" href="#L481">481</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isMap())
-<a class="jxr_linenumber" name="L482" href="#L482">482</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L483" href="#L483">483</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L484" href="#L484">484</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isEmpty())
-<a class="jxr_linenumber" name="L485" href="#L485">485</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isArray())
-<a class="jxr_linenumber" name="L486" href="#L486">486</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L487" href="#L487">487</a>                         .andReturn();
-<a class="jxr_linenumber" name="L488" href="#L488">488</a> 
-<a class="jxr_linenumber" name="L489" href="#L489">489</a>         body = result.getResponse().getContentAsString();
-<a class="jxr_linenumber" name="L490" href="#L490">490</a>         logger.trace(body);
-<a class="jxr_linenumber" name="L491" href="#L491">491</a>         assertNotNull(body, <span class="jxr_string">"response body should not be null"</span>);
-<a class="jxr_linenumber" name="L492" href="#L492">492</a>         List&lt;Service&gt; page2Features = JsonPath.read(body, <span class="jxr_string">"$.features"</span>);
-<a class="jxr_linenumber" name="L493" href="#L493">493</a>         assertEquals(
-<a class="jxr_linenumber" name="L494" href="#L494">494</a>                 pageSize,
-<a class="jxr_linenumber" name="L495" href="#L495">495</a>                 page2Features.size(),
-<a class="jxr_linenumber" name="L496" href="#L496">496</a>                 () -&gt;
-<a class="jxr_linenumber" name="L497" href="#L497">497</a>                         <span class="jxr_string">"there should be "</span>
-<a class="jxr_linenumber" name="L498" href="#L498">498</a>                                 + pageSize
-<a class="jxr_linenumber" name="L499" href="#L499">499</a>                                 + <span class="jxr_string">" features in the list, but was "</span>
-<a class="jxr_linenumber" name="L500" href="#L500">500</a>                                 + page2Features.size());
-<a class="jxr_linenumber" name="L501" href="#L501">501</a> 
-<a class="jxr_linenumber" name="L502" href="#L502">502</a>         <em class="jxr_comment">// check for duplicates</em>
-<a class="jxr_linenumber" name="L503" href="#L503">503</a>         page2Features.addAll(page1Features);
-<a class="jxr_linenumber" name="L504" href="#L504">504</a>         assertEquals(
-<a class="jxr_linenumber" name="L505" href="#L505">505</a>                 2 * pageSize,
-<a class="jxr_linenumber" name="L506" href="#L506">506</a>                 page2Features.stream().distinct().collect(Collectors.toList()).size(),
-<a class="jxr_linenumber" name="L507" href="#L507">507</a>                 <span class="jxr_string">"there should be no duplicates in 2 sequential pages"</span>);
-<a class="jxr_linenumber" name="L508" href="#L508">508</a>     }
-<a class="jxr_linenumber" name="L509" href="#L509">509</a> 
-<a class="jxr_linenumber" name="L510" href="#L510">510</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L511" href="#L511">511</a> <em class="jxr_javadoccomment">     * request the same page of data from a database featuretype twice and compare.</em>
-<a class="jxr_linenumber" name="L512" href="#L512">512</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L513" href="#L513">513</a> <em class="jxr_javadoccomment">     * @throws Exception if any</em>
-<a class="jxr_linenumber" name="L514" href="#L514">514</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L515" href="#L515">515</a>     @ParameterizedTest(
-<a class="jxr_linenumber" name="L516" href="#L516">516</a>             name =
-<a class="jxr_linenumber" name="L517" href="#L517">517</a>                     <span class="jxr_string">"should return same featurecollection for same page from database #{index}: database: {0}, featuretype: {1}"</span>)
-<a class="jxr_linenumber" name="L518" href="#L518">518</a>     @MethodSource(<span class="jxr_string">"argumentsProvider"</span>)
-<a class="jxr_linenumber" name="L519" href="#L519">519</a>     <strong class="jxr_keyword">void</strong> should_<strong class="jxr_keyword">return</strong>_same_featurecollection_<strong class="jxr_keyword">for</strong>_same_page_database(
-<a class="jxr_linenumber" name="L520" href="#L520">520</a>             String database, String tableName, String applayerUrl, <strong class="jxr_keyword">int</strong> totalCcount)
-<a class="jxr_linenumber" name="L521" href="#L521">521</a>             <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L522" href="#L522">522</a>         <em class="jxr_comment">// page 1</em>
-<a class="jxr_linenumber" name="L523" href="#L523">523</a>         MvcResult result =
-<a class="jxr_linenumber" name="L524" href="#L524">524</a>                 mockMvc.perform(get(applayerUrl).param(<span class="jxr_string">"page"</span>, <span class="jxr_string">"1"</span>))
-<a class="jxr_linenumber" name="L525" href="#L525">525</a>                         .andExpect(status().isOk())
-<a class="jxr_linenumber" name="L526" href="#L526">526</a>                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L527" href="#L527">527</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.total"</span>).value(totalCcount))
-<a class="jxr_linenumber" name="L528" href="#L528">528</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.page"</span>).value(1))
-<a class="jxr_linenumber" name="L529" href="#L529">529</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.pageSize"</span>).value(pageSize))
-<a class="jxr_linenumber" name="L530" href="#L530">530</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
-<a class="jxr_linenumber" name="L531" href="#L531">531</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L532" href="#L532">532</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isMap())
-<a class="jxr_linenumber" name="L533" href="#L533">533</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L534" href="#L534">534</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L535" href="#L535">535</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isEmpty())
-<a class="jxr_linenumber" name="L536" href="#L536">536</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isArray())
-<a class="jxr_linenumber" name="L537" href="#L537">537</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L538" href="#L538">538</a>                         .andReturn();
-<a class="jxr_linenumber" name="L539" href="#L539">539</a> 
-<a class="jxr_linenumber" name="L540" href="#L540">540</a>         String body = result.getResponse().getContentAsString();
-<a class="jxr_linenumber" name="L541" href="#L541">541</a>         logger.trace(body);
-<a class="jxr_linenumber" name="L542" href="#L542">542</a>         assertNotNull(body, <span class="jxr_string">"response body should not be null"</span>);
-<a class="jxr_linenumber" name="L543" href="#L543">543</a>         List&lt;Service&gt; page1Features = JsonPath.read(body, <span class="jxr_string">"$.features"</span>);
-<a class="jxr_linenumber" name="L544" href="#L544">544</a> 
-<a class="jxr_linenumber" name="L545" href="#L545">545</a>         <em class="jxr_comment">// page 1 again</em>
-<a class="jxr_linenumber" name="L546" href="#L546">546</a>         result =
-<a class="jxr_linenumber" name="L547" href="#L547">547</a>                 mockMvc.perform(get(applayerUrl).param(<span class="jxr_string">"page"</span>, <span class="jxr_string">"1"</span>))
-<a class="jxr_linenumber" name="L548" href="#L548">548</a>                         .andExpect(status().isOk())
-<a class="jxr_linenumber" name="L549" href="#L549">549</a>                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L550" href="#L550">550</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.total"</span>).value(totalCcount))
-<a class="jxr_linenumber" name="L551" href="#L551">551</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.page"</span>).value(1))
-<a class="jxr_linenumber" name="L552" href="#L552">552</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.pageSize"</span>).value(pageSize))
-<a class="jxr_linenumber" name="L553" href="#L553">553</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
-<a class="jxr_linenumber" name="L554" href="#L554">554</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L555" href="#L555">555</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isMap())
-<a class="jxr_linenumber" name="L556" href="#L556">556</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L557" href="#L557">557</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L558" href="#L558">558</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isEmpty())
-<a class="jxr_linenumber" name="L559" href="#L559">559</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isArray())
-<a class="jxr_linenumber" name="L560" href="#L560">560</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L561" href="#L561">561</a>                         .andReturn();
-<a class="jxr_linenumber" name="L562" href="#L562">562</a> 
-<a class="jxr_linenumber" name="L563" href="#L563">563</a>         body = result.getResponse().getContentAsString();
-<a class="jxr_linenumber" name="L564" href="#L564">564</a>         logger.trace(body);
-<a class="jxr_linenumber" name="L565" href="#L565">565</a>         assertNotNull(body, <span class="jxr_string">"response body should not be null"</span>);
-<a class="jxr_linenumber" name="L566" href="#L566">566</a>         List&lt;Service&gt; page2Features = JsonPath.read(body, <span class="jxr_string">"$.features"</span>);
-<a class="jxr_linenumber" name="L567" href="#L567">567</a> 
-<a class="jxr_linenumber" name="L568" href="#L568">568</a>         assertEquals(
-<a class="jxr_linenumber" name="L569" href="#L569">569</a>                 page1Features,
-<a class="jxr_linenumber" name="L570" href="#L570">570</a>                 page2Features,
-<a class="jxr_linenumber" name="L571" href="#L571">571</a>                 <span class="jxr_string">"2 identical page requests should give two identical lists of features"</span>);
-<a class="jxr_linenumber" name="L572" href="#L572">572</a>     }
-<a class="jxr_linenumber" name="L573" href="#L573">573</a> 
-<a class="jxr_linenumber" name="L574" href="#L574">574</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L575" href="#L575">575</a> <em class="jxr_javadoccomment">     * request an out-of-range page of data from a database featuretype.</em>
-<a class="jxr_linenumber" name="L576" href="#L576">576</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L577" href="#L577">577</a> <em class="jxr_javadoccomment">     * @throws Exception if any</em>
-<a class="jxr_linenumber" name="L578" href="#L578">578</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L579" href="#L579">579</a>     @ParameterizedTest(
-<a class="jxr_linenumber" name="L580" href="#L580">580</a>             name =
-<a class="jxr_linenumber" name="L581" href="#L581">581</a>                     <span class="jxr_string">"should return empty featurecollection for out of range page from database #{index}: database: {0}, featuretype: {1}"</span>)
-<a class="jxr_linenumber" name="L582" href="#L582">582</a>     @MethodSource(<span class="jxr_string">"argumentsProvider"</span>)
-<a class="jxr_linenumber" name="L583" href="#L583">583</a>     <strong class="jxr_keyword">void</strong> should_<strong class="jxr_keyword">return</strong>_empty_featurecollection_<strong class="jxr_keyword">for</strong>_out_of_range_page_database(
-<a class="jxr_linenumber" name="L584" href="#L584">584</a>             String database, String tableName, String applayerUrl, <strong class="jxr_keyword">int</strong> totalCcount)
-<a class="jxr_linenumber" name="L585" href="#L585">585</a>             <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L586" href="#L586">586</a> 
-<a class="jxr_linenumber" name="L587" href="#L587">587</a>         <em class="jxr_comment">// request page ...</em>
-<a class="jxr_linenumber" name="L588" href="#L588">588</a>         <strong class="jxr_keyword">int</strong> page = (totalCcount / pageSize) + 5;
-<a class="jxr_linenumber" name="L589" href="#L589">589</a>         MvcResult result =
-<a class="jxr_linenumber" name="L590" href="#L590">590</a>                 mockMvc.perform(get(applayerUrl).param(<span class="jxr_string">"page"</span>, <span class="jxr_string">""</span> + page))
-<a class="jxr_linenumber" name="L591" href="#L591">591</a>                         .andExpect(status().isOk())
-<a class="jxr_linenumber" name="L592" href="#L592">592</a>                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L593" href="#L593">593</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.total"</span>).value(totalCcount))
-<a class="jxr_linenumber" name="L594" href="#L594">594</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.page"</span>).value(page))
-<a class="jxr_linenumber" name="L595" href="#L595">595</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.pageSize"</span>).value(pageSize))
-<a class="jxr_linenumber" name="L596" href="#L596">596</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
-<a class="jxr_linenumber" name="L597" href="#L597">597</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isEmpty())
-<a class="jxr_linenumber" name="L598" href="#L598">598</a>                         .andReturn();
-<a class="jxr_linenumber" name="L599" href="#L599">599</a>         String body = result.getResponse().getContentAsString();
-<a class="jxr_linenumber" name="L600" href="#L600">600</a>         logger.trace(body);
-<a class="jxr_linenumber" name="L601" href="#L601">601</a>         assertNotNull(body, <span class="jxr_string">"response body should not be null"</span>);
-<a class="jxr_linenumber" name="L602" href="#L602">602</a>         List&lt;Service&gt; features = JsonPath.read(body, <span class="jxr_string">"$.features"</span>);
-<a class="jxr_linenumber" name="L603" href="#L603">603</a>         assertEquals(0, features.size(), <span class="jxr_string">"there should be 0 features in the list"</span>);
-<a class="jxr_linenumber" name="L604" href="#L604">604</a>     }
-<a class="jxr_linenumber" name="L605" href="#L605">605</a> }
+<a class="jxr_linenumber" name="L428" href="#L428">428</a> 
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>     @Test
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>     @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>     <strong class="jxr_keyword">void</strong> get_by_fid_from_database() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>         mockMvc.perform(
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>                         get(<span class="jxr_string">"/app/1/layer/6/features"</span>)
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>                                 .param(
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>                                         <span class="jxr_string">"__fid"</span>,
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>                                         <span class="jxr_string">"begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"</span>)
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>                                 .accept(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>                 .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isMap())
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>                 .andExpect(
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>                         jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>)
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>                                 .value(<span class="jxr_string">"begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"</span>));
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>     }
+<a class="jxr_linenumber" name="L450" href="#L450">450</a> 
+<a class="jxr_linenumber" name="L451" href="#L451">451</a>     @Test
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>     @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>     <strong class="jxr_keyword">void</strong> get_by_fid_from_wfs() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>         <em class="jxr_comment">// note that this test may break when pdok decides to opdate the data or the service.</em>
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>         <em class="jxr_comment">// you can get the fid by clicking on the Utrecht feature in the map.</em>
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>         <em class="jxr_comment">// alternatively this test could be written to use the wfs service to first get Utrecht</em>
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>         <em class="jxr_comment">// feature</em>
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>         <em class="jxr_comment">// by naam and then do the fid test.</em>
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>         <strong class="jxr_keyword">final</strong> String utrecht__fid = <span class="jxr_string">"Provinciegebied.a26f9059-b076-4658-aa87-c78a63f1c827"</span>;
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>         mockMvc.perform(
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>                         get(provinciesWFS)
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>                                 .param(<span class="jxr_string">"__fid"</span>, utrecht__fid)
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>                                 .accept(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>                 .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isMap())
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L471" href="#L471">471</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].attributes.naam"</span>).value(<span class="jxr_string">"Utrecht"</span>))
+<a class="jxr_linenumber" name="L473" href="#L473">473</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>).value(utrecht__fid));
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>     }
+<a class="jxr_linenumber" name="L475" href="#L475">475</a> 
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L477" href="#L477">477</a> <em class="jxr_javadoccomment">     * request 2 pages of data from a database featuretype.</em>
+<a class="jxr_linenumber" name="L478" href="#L478">478</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L479" href="#L479">479</a> <em class="jxr_javadoccomment">     * @throws Exception if any</em>
+<a class="jxr_linenumber" name="L480" href="#L480">480</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>     @ParameterizedTest(
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>             name =
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>                     <span class="jxr_string">"should return non empty featurecollections for valid page from database #{index}: database: {0}, featuretype: {1}"</span>)
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>     @MethodSource(<span class="jxr_string">"argumentsProvider"</span>)
+<a class="jxr_linenumber" name="L485" href="#L485">485</a>     <strong class="jxr_keyword">void</strong> should_<strong class="jxr_keyword">return</strong>_non_empty_featurecollections_<strong class="jxr_keyword">for</strong>_valid_pages_from_database(
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>             String database, String tableName, String applayerUrl, <strong class="jxr_keyword">int</strong> totalCcount)
+<a class="jxr_linenumber" name="L487" href="#L487">487</a>             <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L488" href="#L488">488</a>         <em class="jxr_comment">// page 1</em>
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>         MvcResult result =
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>                 mockMvc.perform(get(applayerUrl).param(<span class="jxr_string">"page"</span>, <span class="jxr_string">"1"</span>))
+<a class="jxr_linenumber" name="L491" href="#L491">491</a>                         .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.total"</span>).value(totalCcount))
+<a class="jxr_linenumber" name="L494" href="#L494">494</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.page"</span>).value(1))
+<a class="jxr_linenumber" name="L495" href="#L495">495</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.pageSize"</span>).value(pageSize))
+<a class="jxr_linenumber" name="L496" href="#L496">496</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isMap())
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L500" href="#L500">500</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L501" href="#L501">501</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isEmpty())
+<a class="jxr_linenumber" name="L502" href="#L502">502</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isArray())
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L504" href="#L504">504</a>                         .andReturn();
+<a class="jxr_linenumber" name="L505" href="#L505">505</a> 
+<a class="jxr_linenumber" name="L506" href="#L506">506</a>         String body = result.getResponse().getContentAsString();
+<a class="jxr_linenumber" name="L507" href="#L507">507</a>         logger.trace(body);
+<a class="jxr_linenumber" name="L508" href="#L508">508</a>         assertNotNull(body, <span class="jxr_string">"response body should not be null"</span>);
+<a class="jxr_linenumber" name="L509" href="#L509">509</a>         List&lt;Service&gt; page1Features = JsonPath.read(body, <span class="jxr_string">"$.features"</span>);
+<a class="jxr_linenumber" name="L510" href="#L510">510</a>         assertEquals(
+<a class="jxr_linenumber" name="L511" href="#L511">511</a>                 pageSize,
+<a class="jxr_linenumber" name="L512" href="#L512">512</a>                 page1Features.size(),
+<a class="jxr_linenumber" name="L513" href="#L513">513</a>                 () -&gt;
+<a class="jxr_linenumber" name="L514" href="#L514">514</a>                         <span class="jxr_string">"there should be "</span>
+<a class="jxr_linenumber" name="L515" href="#L515">515</a>                                 + pageSize
+<a class="jxr_linenumber" name="L516" href="#L516">516</a>                                 + <span class="jxr_string">" features in the list, but was "</span>
+<a class="jxr_linenumber" name="L517" href="#L517">517</a>                                 + page1Features.size());
+<a class="jxr_linenumber" name="L518" href="#L518">518</a> 
+<a class="jxr_linenumber" name="L519" href="#L519">519</a>         <em class="jxr_comment">// page 2</em>
+<a class="jxr_linenumber" name="L520" href="#L520">520</a>         result =
+<a class="jxr_linenumber" name="L521" href="#L521">521</a>                 mockMvc.perform(get(applayerUrl).param(<span class="jxr_string">"page"</span>, <span class="jxr_string">"2"</span>))
+<a class="jxr_linenumber" name="L522" href="#L522">522</a>                         .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L524" href="#L524">524</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.total"</span>).value(totalCcount))
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.page"</span>).value(2))
+<a class="jxr_linenumber" name="L526" href="#L526">526</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.pageSize"</span>).value(pageSize))
+<a class="jxr_linenumber" name="L527" href="#L527">527</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
+<a class="jxr_linenumber" name="L528" href="#L528">528</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L529" href="#L529">529</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isMap())
+<a class="jxr_linenumber" name="L530" href="#L530">530</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L531" href="#L531">531</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L532" href="#L532">532</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isEmpty())
+<a class="jxr_linenumber" name="L533" href="#L533">533</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isArray())
+<a class="jxr_linenumber" name="L534" href="#L534">534</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L535" href="#L535">535</a>                         .andReturn();
+<a class="jxr_linenumber" name="L536" href="#L536">536</a> 
+<a class="jxr_linenumber" name="L537" href="#L537">537</a>         body = result.getResponse().getContentAsString();
+<a class="jxr_linenumber" name="L538" href="#L538">538</a>         logger.trace(body);
+<a class="jxr_linenumber" name="L539" href="#L539">539</a>         assertNotNull(body, <span class="jxr_string">"response body should not be null"</span>);
+<a class="jxr_linenumber" name="L540" href="#L540">540</a>         List&lt;Service&gt; page2Features = JsonPath.read(body, <span class="jxr_string">"$.features"</span>);
+<a class="jxr_linenumber" name="L541" href="#L541">541</a>         assertEquals(
+<a class="jxr_linenumber" name="L542" href="#L542">542</a>                 pageSize,
+<a class="jxr_linenumber" name="L543" href="#L543">543</a>                 page2Features.size(),
+<a class="jxr_linenumber" name="L544" href="#L544">544</a>                 () -&gt;
+<a class="jxr_linenumber" name="L545" href="#L545">545</a>                         <span class="jxr_string">"there should be "</span>
+<a class="jxr_linenumber" name="L546" href="#L546">546</a>                                 + pageSize
+<a class="jxr_linenumber" name="L547" href="#L547">547</a>                                 + <span class="jxr_string">" features in the list, but was "</span>
+<a class="jxr_linenumber" name="L548" href="#L548">548</a>                                 + page2Features.size());
+<a class="jxr_linenumber" name="L549" href="#L549">549</a> 
+<a class="jxr_linenumber" name="L550" href="#L550">550</a>         <em class="jxr_comment">// check for duplicates</em>
+<a class="jxr_linenumber" name="L551" href="#L551">551</a>         page2Features.addAll(page1Features);
+<a class="jxr_linenumber" name="L552" href="#L552">552</a>         assertEquals(
+<a class="jxr_linenumber" name="L553" href="#L553">553</a>                 2 * pageSize,
+<a class="jxr_linenumber" name="L554" href="#L554">554</a>                 page2Features.stream().distinct().collect(Collectors.toList()).size(),
+<a class="jxr_linenumber" name="L555" href="#L555">555</a>                 <span class="jxr_string">"there should be no duplicates in 2 sequential pages"</span>);
+<a class="jxr_linenumber" name="L556" href="#L556">556</a>     }
+<a class="jxr_linenumber" name="L557" href="#L557">557</a> 
+<a class="jxr_linenumber" name="L558" href="#L558">558</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L559" href="#L559">559</a> <em class="jxr_javadoccomment">     * request the same page of data from a database featuretype twice and compare.</em>
+<a class="jxr_linenumber" name="L560" href="#L560">560</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L561" href="#L561">561</a> <em class="jxr_javadoccomment">     * @throws Exception if any</em>
+<a class="jxr_linenumber" name="L562" href="#L562">562</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L563" href="#L563">563</a>     @ParameterizedTest(
+<a class="jxr_linenumber" name="L564" href="#L564">564</a>             name =
+<a class="jxr_linenumber" name="L565" href="#L565">565</a>                     <span class="jxr_string">"should return same featurecollection for same page from database #{index}: database: {0}, featuretype: {1}"</span>)
+<a class="jxr_linenumber" name="L566" href="#L566">566</a>     @MethodSource(<span class="jxr_string">"argumentsProvider"</span>)
+<a class="jxr_linenumber" name="L567" href="#L567">567</a>     <strong class="jxr_keyword">void</strong> should_<strong class="jxr_keyword">return</strong>_same_featurecollection_<strong class="jxr_keyword">for</strong>_same_page_database(
+<a class="jxr_linenumber" name="L568" href="#L568">568</a>             String database, String tableName, String applayerUrl, <strong class="jxr_keyword">int</strong> totalCcount)
+<a class="jxr_linenumber" name="L569" href="#L569">569</a>             <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L570" href="#L570">570</a>         <em class="jxr_comment">// page 1</em>
+<a class="jxr_linenumber" name="L571" href="#L571">571</a>         MvcResult result =
+<a class="jxr_linenumber" name="L572" href="#L572">572</a>                 mockMvc.perform(get(applayerUrl).param(<span class="jxr_string">"page"</span>, <span class="jxr_string">"1"</span>))
+<a class="jxr_linenumber" name="L573" href="#L573">573</a>                         .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L574" href="#L574">574</a>                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L575" href="#L575">575</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.total"</span>).value(totalCcount))
+<a class="jxr_linenumber" name="L576" href="#L576">576</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.page"</span>).value(1))
+<a class="jxr_linenumber" name="L577" href="#L577">577</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.pageSize"</span>).value(pageSize))
+<a class="jxr_linenumber" name="L578" href="#L578">578</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
+<a class="jxr_linenumber" name="L579" href="#L579">579</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L580" href="#L580">580</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isMap())
+<a class="jxr_linenumber" name="L581" href="#L581">581</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L582" href="#L582">582</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L583" href="#L583">583</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isEmpty())
+<a class="jxr_linenumber" name="L584" href="#L584">584</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isArray())
+<a class="jxr_linenumber" name="L585" href="#L585">585</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L586" href="#L586">586</a>                         .andReturn();
+<a class="jxr_linenumber" name="L587" href="#L587">587</a> 
+<a class="jxr_linenumber" name="L588" href="#L588">588</a>         String body = result.getResponse().getContentAsString();
+<a class="jxr_linenumber" name="L589" href="#L589">589</a>         logger.trace(body);
+<a class="jxr_linenumber" name="L590" href="#L590">590</a>         assertNotNull(body, <span class="jxr_string">"response body should not be null"</span>);
+<a class="jxr_linenumber" name="L591" href="#L591">591</a>         List&lt;Service&gt; page1Features = JsonPath.read(body, <span class="jxr_string">"$.features"</span>);
+<a class="jxr_linenumber" name="L592" href="#L592">592</a> 
+<a class="jxr_linenumber" name="L593" href="#L593">593</a>         <em class="jxr_comment">// page 1 again</em>
+<a class="jxr_linenumber" name="L594" href="#L594">594</a>         result =
+<a class="jxr_linenumber" name="L595" href="#L595">595</a>                 mockMvc.perform(get(applayerUrl).param(<span class="jxr_string">"page"</span>, <span class="jxr_string">"1"</span>))
+<a class="jxr_linenumber" name="L596" href="#L596">596</a>                         .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L597" href="#L597">597</a>                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L598" href="#L598">598</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.total"</span>).value(totalCcount))
+<a class="jxr_linenumber" name="L599" href="#L599">599</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.page"</span>).value(1))
+<a class="jxr_linenumber" name="L600" href="#L600">600</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.pageSize"</span>).value(pageSize))
+<a class="jxr_linenumber" name="L601" href="#L601">601</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
+<a class="jxr_linenumber" name="L602" href="#L602">602</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L603" href="#L603">603</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isMap())
+<a class="jxr_linenumber" name="L604" href="#L604">604</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0]"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L605" href="#L605">605</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].__fid"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L606" href="#L606">606</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isEmpty())
+<a class="jxr_linenumber" name="L607" href="#L607">607</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isArray())
+<a class="jxr_linenumber" name="L608" href="#L608">608</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L609" href="#L609">609</a>                         .andReturn();
+<a class="jxr_linenumber" name="L610" href="#L610">610</a> 
+<a class="jxr_linenumber" name="L611" href="#L611">611</a>         body = result.getResponse().getContentAsString();
+<a class="jxr_linenumber" name="L612" href="#L612">612</a>         logger.trace(body);
+<a class="jxr_linenumber" name="L613" href="#L613">613</a>         assertNotNull(body, <span class="jxr_string">"response body should not be null"</span>);
+<a class="jxr_linenumber" name="L614" href="#L614">614</a>         List&lt;Service&gt; page2Features = JsonPath.read(body, <span class="jxr_string">"$.features"</span>);
+<a class="jxr_linenumber" name="L615" href="#L615">615</a> 
+<a class="jxr_linenumber" name="L616" href="#L616">616</a>         assertEquals(
+<a class="jxr_linenumber" name="L617" href="#L617">617</a>                 page1Features,
+<a class="jxr_linenumber" name="L618" href="#L618">618</a>                 page2Features,
+<a class="jxr_linenumber" name="L619" href="#L619">619</a>                 <span class="jxr_string">"2 identical page requests should give two identical lists of features"</span>);
+<a class="jxr_linenumber" name="L620" href="#L620">620</a>     }
+<a class="jxr_linenumber" name="L621" href="#L621">621</a> 
+<a class="jxr_linenumber" name="L622" href="#L622">622</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L623" href="#L623">623</a> <em class="jxr_javadoccomment">     * request an out-of-range page of data from a database featuretype.</em>
+<a class="jxr_linenumber" name="L624" href="#L624">624</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L625" href="#L625">625</a> <em class="jxr_javadoccomment">     * @throws Exception if any</em>
+<a class="jxr_linenumber" name="L626" href="#L626">626</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L627" href="#L627">627</a>     @ParameterizedTest(
+<a class="jxr_linenumber" name="L628" href="#L628">628</a>             name =
+<a class="jxr_linenumber" name="L629" href="#L629">629</a>                     <span class="jxr_string">"should return empty featurecollection for out of range page from database #{index}: database: {0}, featuretype: {1}"</span>)
+<a class="jxr_linenumber" name="L630" href="#L630">630</a>     @MethodSource(<span class="jxr_string">"argumentsProvider"</span>)
+<a class="jxr_linenumber" name="L631" href="#L631">631</a>     <strong class="jxr_keyword">void</strong> should_<strong class="jxr_keyword">return</strong>_empty_featurecollection_<strong class="jxr_keyword">for</strong>_out_of_range_page_database(
+<a class="jxr_linenumber" name="L632" href="#L632">632</a>             String database, String tableName, String applayerUrl, <strong class="jxr_keyword">int</strong> totalCcount)
+<a class="jxr_linenumber" name="L633" href="#L633">633</a>             <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L634" href="#L634">634</a> 
+<a class="jxr_linenumber" name="L635" href="#L635">635</a>         <em class="jxr_comment">// request page ...</em>
+<a class="jxr_linenumber" name="L636" href="#L636">636</a>         <strong class="jxr_keyword">int</strong> page = (totalCcount / pageSize) + 5;
+<a class="jxr_linenumber" name="L637" href="#L637">637</a>         MvcResult result =
+<a class="jxr_linenumber" name="L638" href="#L638">638</a>                 mockMvc.perform(get(applayerUrl).param(<span class="jxr_string">"page"</span>, <span class="jxr_string">""</span> + page))
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>                         .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L640" href="#L640">640</a>                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L641" href="#L641">641</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.total"</span>).value(totalCcount))
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.page"</span>).value(page))
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.pageSize"</span>).value(pageSize))
+<a class="jxr_linenumber" name="L644" href="#L644">644</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isEmpty())
+<a class="jxr_linenumber" name="L646" href="#L646">646</a>                         .andReturn();
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>         String body = result.getResponse().getContentAsString();
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>         logger.trace(body);
+<a class="jxr_linenumber" name="L649" href="#L649">649</a>         assertNotNull(body, <span class="jxr_string">"response body should not be null"</span>);
+<a class="jxr_linenumber" name="L650" href="#L650">650</a>         List&lt;Service&gt; features = JsonPath.read(body, <span class="jxr_string">"$.features"</span>);
+<a class="jxr_linenumber" name="L651" href="#L651">651</a>         assertEquals(0, features.size(), <span class="jxr_string">"there should be 0 features in the list"</span>);
+<a class="jxr_linenumber" name="L652" href="#L652">652</a>     }
+<a class="jxr_linenumber" name="L653" href="#L653">653</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2022 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>
