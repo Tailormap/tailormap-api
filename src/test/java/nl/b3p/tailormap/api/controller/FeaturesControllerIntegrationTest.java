@@ -51,19 +51,6 @@ class FeaturesControllerIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    void fid_not_supported() throws Exception {
-        mockMvc.perform(
-                        get("/app/1/layer/2/features")
-                                .param(
-                                        "__fid",
-                                        "Provinciegebied.19ce551e-bc01-46e9-b953-929318dcdf87"))
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(400));
-    }
-
-    @Test
-    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void givenOnly_XorY_shouldError() throws Exception {
         mockMvc.perform(get("/app/1/layer/2/features").param("x", "3"))
                 .andExpect(status().is4xxClientError())
