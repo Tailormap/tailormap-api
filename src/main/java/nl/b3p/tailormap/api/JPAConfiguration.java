@@ -20,6 +20,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -68,7 +69,8 @@ public class JPAConfiguration {
     public DataSource dataSource() {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl(env.getProperty("spring.datasource.url"));
-        dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+        dataSource.setDriverClassName(
+                Objects.requireNonNull(env.getProperty("spring.datasource.driver-class-name")));
         dataSource.setUsername(env.getProperty("spring.datasource.username"));
         dataSource.setPassword(env.getProperty("spring.datasource.password"));
 
@@ -99,6 +101,9 @@ public class JPAConfiguration {
         //        "hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.hibernate.ddl-auto", ""));
         hibernateProperties.setProperty(
                 "hibernate.show_sql", env.getProperty("spring.jpa.show-sql", "false"));
+        hibernateProperties.setProperty(
+                "hibernate.generate_statistics",
+                env.getProperty("spring.jpa.properties.hibernate.enable_metrics", "true"));
 
         return hibernateProperties;
     }
