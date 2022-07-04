@@ -21,7 +21,7 @@ Tailormap API,nl.b3p.tailormap.api.geotools.featuresources,JDBCFeatureSourceHelp
 Tailormap API,nl.b3p.tailormap.api.geotools.featuresources,FeatureSourceHelper,19,0,0,0,3,0,3,0,3,0
 Tailormap API,nl.b3p.tailormap.api.geotools.featuresources,WFSFeatureSourceHelper,145,0,14,0,31,0,13,0,6,0
 Tailormap API,nl.b3p.tailormap.api,TailormapApiApplication,8,0,0,0,3,0,2,0,2,0
-Tailormap API,nl.b3p.tailormap.api,JPAConfiguration,100,0,0,0,25,0,6,0,6,0
+Tailormap API,nl.b3p.tailormap.api,JPAConfiguration,111,0,0,0,28,0,6,0,6,0
 Tailormap API,nl.b3p.tailormap.api,FilteringConfig,36,0,0,0,7,0,2,0,2,0
 Tailormap API,nl.b3p.tailormap.api.model,MapResponse,272,99,26,4,53,30,30,15,15,15
 Tailormap API,nl.b3p.tailormap.api.model,ColumnMetadata.TypeEnum,125,0,4,0,17,0,7,0,5,0
