@@ -180,6 +180,8 @@ jobs:
     name: Deploy stack
     runs-on: ubuntu-latest
     needs: publish
+    permissions:
+      actions:write
     if: ${{ github.ref == 'refs/heads/main' &&  github.event_name == 'push' }}
     steps:
       - name: Deploy compose stack
