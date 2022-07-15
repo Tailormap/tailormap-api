@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api.repository;
 
 import nl.tailormap.viewer.config.app.Level;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -23,4 +24,7 @@ public interface LevelRepository extends JpaRepository<Level, Long> {
                     "select * from level_ where id in (with recursive level_tree(id) as (select id from level_ where id = ?1 union all select l.id from level_tree, level_ l where l.parent = level_tree.id) select * from level_tree)",
             nativeQuery = true)
     List<Level> findByLevelTree(Long rootId);
+
+    @EntityGraph(attributePaths = {"readers", "layers.service", "layers.readers"})
+    List<Level> findWithAuthorizationDataByIdIn(Iterable<Long> ids);
 }
