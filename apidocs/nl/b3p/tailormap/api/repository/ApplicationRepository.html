@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6};
+var data = {"i0":6,"i1":6,"i2":6,"i3":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -166,6 +166,14 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;nl.tailormap.vi
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>nl.tailormap.viewer.config.app.Application</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findWithGeoservicesById(java.lang.Long)">findWithGeoservicesById</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id)</code></th>
+<td class="colLast">
+<div class="block">Equivalent to findById, but preloads some of the necessary entities to limit the amount of
+ roundtrips.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAuthenticatedRequired(java.lang.Long,java.lang.Boolean)">setAuthenticatedRequired</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id,
                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;required)</code></th>
@@ -233,6 +241,24 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;nl.tailormap.vi
 <h4>findByNameAndVersion</h4>
 <pre class="methodSignature">nl.tailormap.viewer.config.app.Application&nbsp;findByNameAndVersion&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name,
                                                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;version)</pre>
+</li>
+</ul>
+<a id="findWithGeoservicesById(java.lang.Long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>findWithGeoservicesById</h4>
+<pre class="methodSignature">@EntityGraph(attributePaths={"startLayers.applicationLayer.service.details","startLayers.applicationLayer.service.readers","startLayers.applicationLayer.readers"})
+nl.tailormap.viewer.config.app.Application&nbsp;findWithGeoservicesById&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id)</pre>
+<div class="block">Equivalent to findById, but preloads some of the necessary entities to limit the amount of
+ roundtrips.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>id</code> - the ID of the Application to return</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the Application entity, with extra cached attributes.</dd>
+</dl>
 </li>
 </ul>
 <a id="setAuthenticatedRequired(java.lang.Long,java.lang.Boolean)">

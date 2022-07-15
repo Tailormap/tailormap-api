@@ -1,7 +1,7 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.referencing,ReferencingHelper,17,43,1,1,5,10,2,2,1,2
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,ComponentsController,0,98,1,3,0,26,1,6,0,5
-Aggregate Test Coverage,nl.b3p.tailormap.api.controller,MapController,139,579,14,44,39,145,14,22,0,7
+Aggregate Test Coverage,nl.b3p.tailormap.api.controller,MapController,156,916,26,94,47,219,26,44,0,10
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,FeaturesController,622,92,48,10,170,20,32,7,6,4
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,AppController,5,208,2,18,1,52,2,13,0,5
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,VersionController,2,64,1,3,0,9,1,3,0,2
@@ -40,8 +40,8 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.model,Feature,168,0,14,0,38,0,22,0,
 Aggregate Test Coverage,nl.b3p.tailormap.api.model,CoordinateReferenceSystem,133,28,14,0,27,10,15,6,8,6
 Aggregate Test Coverage,nl.b3p.tailormap.api.model,Attribute,683,0,46,0,145,0,83,0,60,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.model,AppResponse,253,69,24,0,47,25,25,14,13,14
-Aggregate Test Coverage,nl.b3p.tailormap.api.model,Service.HiDpiModeEnum,33,59,4,0,5,9,4,3,2,3
 Aggregate Test Coverage,nl.b3p.tailormap.api.model,LayerDetails,436,0,32,0,97,0,53,0,37,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.model,Service.HiDpiModeEnum,33,59,4,0,5,9,4,3,2,3
 Aggregate Test Coverage,nl.b3p.tailormap.api.model,Bounds,180,46,18,0,33,17,18,11,9,11
 Aggregate Test Coverage,nl.b3p.tailormap.api.model,LayerDetailsRelationsInner,155,0,14,0,35,0,21,0,14,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.model,AppLayer.HiDpiModeEnum,92,0,4,0,14,0,7,0,5,0
