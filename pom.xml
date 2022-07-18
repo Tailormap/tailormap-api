@@ -1177,7 +1177,7 @@ SPDX-License-Identifier: MIT
       </plugin>
       <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.4.0</version>
         <reportSets>
           <reportSet>
             <reports>
