@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.1</version>
+    <version>2.7.2</version>
   </parent>
   <groupId>nl.b3p.tailormap</groupId>
   <artifactId>tailormap-api</artifactId>
@@ -102,17 +102,17 @@ SPDX-License-Identifier: MIT
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <!-- TODO read this from persistence -->
     <org.tailormap.database.version>49</org.tailormap.database.version>
-    <geotools.version>27.0</geotools.version>
+    <geotools.version>27.1</geotools.version>
     <spring.boot.version>${project.parent.version}</spring.boot.version>
     <!-- Spring-Boot version overrides. see org.springframework.boot:spring-boot-dependencies eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
-    <!-- jackson-bom.version>2.13.2.1</jackson-bom.version -->
-    <!-- micrometer.version>1.9.1</micrometer.version -->
+    <!-- jackson-bom.version>2.13.3</jackson-bom.version -->
+    <micrometer.version>1.9.3</micrometer.version>
     <!-- make sure to keep this hibernate version and that of tailormap persistence version in sync -->
     <hibernate.version>5.6.10.Final</hibernate.version>
-    <hsqldb.version>2.6.1</hsqldb.version>
-    <postgresql.version>42.4.0</postgresql.version>
+    <hsqldb.version>2.7.0</hsqldb.version>
+    <postgresql.version>42.4.1</postgresql.version>
     <oracle-database.version>21.6.0.0.1</oracle-database.version>
-    <mssql-jdbc.version>10.2.1.jre11</mssql-jdbc.version>
+    <mssql-jdbc.version>11.2.0.jre11</mssql-jdbc.version>
     <webjars-locator-core.version>0.52</webjars-locator-core.version>
     <!-- junit-jupiter.version>5.8.2</junit-jupiter.version -->
     <maven.surefire.version>3.0.0-M7</maven.surefire.version>
@@ -378,7 +378,7 @@ SPDX-License-Identifier: MIT
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-annotations</artifactId>
-      <version>2.2.1</version>
+      <version>2.2.2</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
@@ -1044,6 +1044,7 @@ SPDX-License-Identifier: MIT
                     <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
                     <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
                     <exclude>org.hibernate:hibernate-micrometer</exclude>
+                    <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
                     <!--
                     TODO this should be fixed; either by importing or excluding the transitive dependencies
                    org.tailormap:viewer-config-persistence:jar:5.9.12-SNAPSHOT:compile has transitive dependencies:
