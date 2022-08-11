@@ -102,7 +102,7 @@ SPDX-License-Identifier: MIT
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <!-- TODO read this from persistence -->
     <org.tailormap.database.version>49</org.tailormap.database.version>
-    <geotools.version>27.0</geotools.version>
+    <geotools.version>27.1</geotools.version>
     <spring.boot.version>${project.parent.version}</spring.boot.version>
     <!-- Spring-Boot version overrides. see org.springframework.boot:spring-boot-dependencies eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
     <!-- jackson-bom.version>2.13.3</jackson-bom.version -->
