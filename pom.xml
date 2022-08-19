@@ -104,13 +104,22 @@ SPDX-License-Identifier: MIT
     <org.tailormap.database.version>49</org.tailormap.database.version>
     <geotools.version>27.1</geotools.version>
     <spring.boot.version>${project.parent.version}</spring.boot.version>
-    <!-- Spring-Boot version overrides. see org.springframework.boot:spring-boot-dependencies eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies -->
+    <!--
+    Spring-Boot version overrides. see org.springframework.boot:spring-boot-dependencies
+    eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies
+
+    and use
+        mvn -U org.codehaus.mojo:versions-maven-plugin:2.11.0:display-dependency-updates
+    and
+        mvn -U org.codehaus.mojo:versions-maven-plugin:2.11.0:display-plugin-updates
+    to check
+    -->
     <!-- jackson-bom.version>2.13.3</jackson-bom.version -->
     <micrometer.version>1.9.3</micrometer.version>
     <!-- make sure to keep this hibernate version and that of tailormap persistence version in sync -->
     <hibernate.version>5.6.10.Final</hibernate.version>
     <hsqldb.version>2.7.0</hsqldb.version>
-    <postgresql.version>42.4.1</postgresql.version>
+    <postgresql.version>42.4.2</postgresql.version>
     <oracle-database.version>21.6.0.0.1</oracle-database.version>
     <mssql-jdbc.version>11.2.0.jre11</mssql-jdbc.version>
     <webjars-locator-core.version>0.52</webjars-locator-core.version>
