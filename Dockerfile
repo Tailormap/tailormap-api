@@ -6,7 +6,7 @@
 FROM eclipse-temurin:11.0.15_10-jre-alpine
      
 
-ARG TAILORMAP_API_VERSION="0.1-SNAPSHOT"
+ARG TAILORMAP_API_VERSION="10.0-SNAPSHOT"
 ARG TZ="Europe/Amsterdam"
 ARG DEBIAN_FRONTEND="noninteractive"
 

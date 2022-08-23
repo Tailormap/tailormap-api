@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT
   </parent>
   <groupId>nl.b3p.tailormap</groupId>
   <artifactId>tailormap-api</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>10.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Tailormap API</name>
   <description>Tailormap API provides the OpenAPI for Tailormap</description>
@@ -149,7 +149,7 @@ SPDX-License-Identifier: MIT
     <pom.fmt.action>sort</pom.fmt.action>
     <docker.skip>false</docker.skip>
     <maven-fluido-skin.version>1.11.1</maven-fluido-skin.version>
-    <swagger-ui.version>4.13.2</swagger-ui.version>
+    <swagger-ui.version>4.14.0</swagger-ui.version>
   </properties>
   <dependencyManagement>
     <dependencies>
