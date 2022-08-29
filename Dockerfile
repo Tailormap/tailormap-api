@@ -19,7 +19,10 @@ LABEL org.opencontainers.image.authors="support@b3partners.nl" \
       org.opencontainers.image.description="Tailormap API service provides OpenAPI REST interface for Tailormap" \
       org.opencontainers.image.vendor="B3Partners BV" \
       org.opencontainers.image.title="Tailormap API" \
+      org.opencontainers.image.url="https://github.com/B3Partners/tailormap-api/" \
+      org.opencontainers.image.source="https://github.com/B3Partners/tailormap-api/" \
       org.opencontainers.image.documentation="https://github.com/B3Partners/tailormap-api/" \
+      org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.version=$TAILORMAP_API_VERSION
 
 # set-up timezone and local user
