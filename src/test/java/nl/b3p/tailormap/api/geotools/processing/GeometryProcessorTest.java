@@ -14,10 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import nl.b3p.tailormap.api.StaticTestData;
 
 import org.geotools.geometry.jts.WKTReader2;
+import org.geotools.referencing.CRS;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.MathTransform;
 
 class GeometryProcessorTest extends StaticTestData {
 
@@ -38,6 +41,28 @@ class GeometryProcessorTest extends StaticTestData {
                 testData.getProperty("RDpointWkt"),
                 GeometryProcessor.processGeometry(p, false, null),
                 "simplified geometry should match");
+    }
+
+    @Stopwatch
+    @Test
+    void reprojectPoint() throws ParseException, FactoryException {
+        final Geometry p = new WKTReader2().read(testData.getProperty("RDpointWkt"));
+        MathTransform transform =
+                CRS.findMathTransform(CRS.decode("EPSG:28992"), CRS.decode("EPSG:4326"), true);
+
+        final Geometry reprojected =
+                new WKTReader2().read(GeometryProcessor.processGeometry(p, true, transform));
+        final Geometry expected = new WKTReader2().read(testData.getProperty("WGS84pointWkt"));
+        assertEquals(
+                expected.getCoordinate().getX(),
+                reprojected.getCoordinate().getX(),
+                .1,
+                "X-coord of simplified, reprojected geometry should match");
+        assertEquals(
+                expected.getCoordinate().getY(),
+                reprojected.getCoordinate().getY(),
+                .1,
+                "Y-coord of simplified, reprojected geometry should match");
     }
 
     @Stopwatch
