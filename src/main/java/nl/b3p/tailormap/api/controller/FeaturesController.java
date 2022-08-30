@@ -279,7 +279,8 @@ public class FeaturesController implements Constants {
             q.setStartIndex((page - 1) * pageSize);
             logger.debug("Attribute query: " + q);
 
-            executeQueryOnFeatureSource(false, featuresResponse, sft, configuredAttributes, fs, q);
+            executeQueryOnFeatureSource(
+                    false, featuresResponse, sft, configuredAttributes, fs, q, null);
         } catch (IOException e) {
             logger.error("Could not retrieve attribute data.", e);
         }
@@ -323,7 +324,8 @@ public class FeaturesController implements Constants {
             q.setMaxFeatures(1);
             logger.debug("FID query: " + q);
 
-            executeQueryOnFeatureSource(false, featuresResponse, sft, configuredAttributes, fs, q);
+            executeQueryOnFeatureSource(
+                    false, featuresResponse, sft, configuredAttributes, fs, q, null);
         } catch (IOException e) {
             logger.error("Could not retrieve attribute data.", e);
         }
@@ -371,17 +373,18 @@ public class FeaturesController implements Constants {
             Geometry p = shapeFact.createCircle();
             logger.debug("created geometry: " + p);
 
+            CoordinateReferenceSystem fromCRS = null;
             if (null != crs) {
-                // reproject to feature source CRS
+                // reproject to feature source CRS if different from source CRS
                 try {
-                    // this is the CRS of the "default geometry"
+                    // this is the CRS of the "default geometry" attribute
                     final CoordinateReferenceSystem toCRS =
                             fs.getSchema().getCoordinateReferenceSystem();
                     if (!((DefaultProjectedCRS) toCRS)
                             .getIdentifier(null)
                             .toString()
                             .equalsIgnoreCase(crs)) {
-                        final CoordinateReferenceSystem fromCRS = CRS.decode(crs);
+                        fromCRS = CRS.decode(crs);
                         MathTransform transform = CRS.findMathTransform(fromCRS, toCRS, true);
                         p = JTS.transform(p, transform);
                         logger.debug("reprojected geometry to: " + p);
@@ -412,7 +415,7 @@ public class FeaturesController implements Constants {
             q.setMaxFeatures(DEFAULT_MAX_FEATURES);
 
             executeQueryOnFeatureSource(
-                    simplifyGeometry, featuresResponse, sft, configuredAttributes, fs, q);
+                    simplifyGeometry, featuresResponse, sft, configuredAttributes, fs, q, fromCRS);
         } catch (IOException e) {
             logger.error("Could not retrieve attribute data.", e);
         }
@@ -425,9 +428,22 @@ public class FeaturesController implements Constants {
             @NotNull SimpleFeatureType sft,
             List<ConfiguredAttribute> configuredAttributes,
             @NotNull SimpleFeatureSource fs,
-            @NotNull Query q)
+            @NotNull Query q,
+            CoordinateReferenceSystem projectToCRS)
             throws IOException {
         boolean addFields = false;
+
+        MathTransform transform = null;
+        if (null != projectToCRS) {
+            try {
+                transform =
+                        CRS.findMathTransform(
+                                fs.getSchema().getCoordinateReferenceSystem(), projectToCRS, true);
+            } catch (FactoryException e) {
+                logger.error("Can not transform geometry to desired CRS.", e);
+            }
+        }
+
         // send request to attribute source
         try (SimpleFeatureIterator feats = fs.getFeatures(q).features()) {
             while (feats.hasNext()) {
@@ -437,7 +453,9 @@ public class FeaturesController implements Constants {
                 // processedGeometry can be null
                 String processedGeometry =
                         GeometryProcessor.processGeometry(
-                                feature.getAttribute(sft.getGeometryAttribute()), simplifyGeometry);
+                                feature.getAttribute(sft.getGeometryAttribute()),
+                                simplifyGeometry,
+                                transform);
                 Feature newFeat =
                         new Feature()
                                 .fid(feature.getIdentifier().getID())

@@ -7,12 +7,15 @@ package nl.b3p.tailormap.api.geotools.processing;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geotools.geometry.jts.JTS;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTConstants;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.precision.GeometryPrecisionReducer;
 import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 
 import java.nio.charset.StandardCharsets;
 
@@ -27,6 +30,8 @@ import javax.validation.constraints.NotNull;
 public final class GeometryProcessor {
     private static final Log LOG = LogFactory.getLog(GeometryProcessor.class);
 
+    private static final Log logger = LogFactory.getLog(GeometryProcessor.class);
+
     private GeometryProcessor() {}
 
     /**
@@ -34,16 +39,25 @@ public final class GeometryProcessor {
      *
      * @param geometry An object representing a geometry
      * @param simplifyGeometry set to {@code true} to simplify
+     * @param transform the transformation that should be applied to the geometry, can be {@code
+     *     null}
      * @return the string representation of the argument - normally WKT, optionally simplified or
      *     {@code null} when the given geometry was {@code null}
      */
     @NotNull
     public static String processGeometry(
-            final Object geometry, @NotNull final Boolean simplifyGeometry) {
+            Object geometry, @NotNull final Boolean simplifyGeometry, MathTransform transform) {
         if (null == geometry) {
             return null;
         }
         if (Geometry.class.isAssignableFrom(geometry.getClass())) {
+            if (null != transform) {
+                try {
+                    geometry = JTS.transform((Geometry) geometry, transform);
+                } catch (TransformException e) {
+                    logger.error("Failed to transform geometry", e);
+                }
+            }
             if (simplifyGeometry) {
                 return simplify((Geometry) geometry);
             }

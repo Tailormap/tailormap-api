@@ -27,7 +27,7 @@ class GeometryProcessorTest extends StaticTestData {
         final Geometry p = new WKTReader2().read(testData.getProperty("RDpointWkt"));
         assertEquals(
                 testData.getProperty("RDpointWkt"),
-                GeometryProcessor.processGeometry(p, true),
+                GeometryProcessor.processGeometry(p, true, null),
                 "simplified geometry should match");
     }
 
@@ -36,7 +36,7 @@ class GeometryProcessorTest extends StaticTestData {
         final Geometry p = new WKTReader2().read(testData.getProperty("RDpointWkt"));
         assertEquals(
                 testData.getProperty("RDpointWkt"),
-                GeometryProcessor.processGeometry(p, false),
+                GeometryProcessor.processGeometry(p, false, null),
                 "simplified geometry should match");
     }
 
@@ -44,7 +44,7 @@ class GeometryProcessorTest extends StaticTestData {
     @Test
     void simplifyPolygon() throws ParseException {
         final Geometry p = new WKTReader2().read(testData.getProperty("RDpolygonWkt"));
-        final String simplified = GeometryProcessor.processGeometry(p, true);
+        final String simplified = GeometryProcessor.processGeometry(p, true, null);
         assertNotEquals(
                 testData.getProperty("RDpolygonWkt"),
                 simplified,
@@ -63,7 +63,7 @@ class GeometryProcessorTest extends StaticTestData {
         final Geometry p = new WKTReader2().read(testData.getProperty("RDpolygonWkt"));
         assertEquals(
                 testData.getProperty("RDpolygonWkt"),
-                GeometryProcessor.processGeometry(p, false),
+                GeometryProcessor.processGeometry(p, false, null),
                 "simplified geometry does not match");
     }
 
@@ -72,7 +72,7 @@ class GeometryProcessorTest extends StaticTestData {
         final Geometry c = new WKTReader2().read(testData.getProperty("curvePolygon"));
         assertEquals(
                 testData.getProperty("curvePolygonLinearized"),
-                GeometryProcessor.processGeometry(c, false),
+                GeometryProcessor.processGeometry(c, false, null),
                 "geometry should be linearized");
     }
 
@@ -81,7 +81,7 @@ class GeometryProcessorTest extends StaticTestData {
         final Geometry p = new WKTReader2().read(testData.getProperty("multiPolygon"));
         assertEquals(
                 testData.getProperty("multiPolygon"),
-                GeometryProcessor.processGeometry(p, false),
+                GeometryProcessor.processGeometry(p, false, null),
                 "geometry should be the same");
     }
 
@@ -90,7 +90,7 @@ class GeometryProcessorTest extends StaticTestData {
         final Geometry ring = new WKTReader2().read(testData.getProperty("linearRing"));
         assertEquals(
                 testData.getProperty("lineString"),
-                GeometryProcessor.processGeometry(ring, false),
+                GeometryProcessor.processGeometry(ring, false, null),
                 "geometry does not match");
     }
 }

@@ -26,6 +26,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.Stopwatch;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.io.WKTReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -553,6 +556,129 @@ class FeaturesControllerPostgresIntegrationTest {
                 2 * pageSize,
                 page2Features.stream().distinct().collect(Collectors.toList()).size(),
                 "there should be no duplicates in 2 sequential pages");
+    }
+
+    static Stream<Arguments> projectionArgumentsProvider() {
+        return Stream.of(
+                // x, y, projection, distance,expected1stCoordinate, expected2ndCoordinate
+                arguments(130794, 459169, "EPSG:28992", 5, 130873.9, 459308.9),
+                arguments(52.12021, 5.03377, "EPSG:4326", /*~ 5 meter*/ 0.00005, 52.1, 5.0),
+                arguments(560356, 6821890, "EPSG:3857", 5, 560485.3, 6822118.8));
+    }
+
+    @ParameterizedTest(
+            name =
+                    "should return expected polygon feature for valid coordinates and crs from database #{index}: x: {0}, y: {1}, crs: {2}")
+    @MethodSource("projectionArgumentsProvider")
+    void should_produce_reprojected_features_from_database_using_different_crs(
+            double x,
+            double y,
+            String crs,
+            double distance,
+            double expected1stCoordinate,
+            double expected2ndCoordinate)
+            throws Exception {
+        // https://snapshot.tailormap.nl/api/app/1/layer/6/features?x=130794&y=459169&crs=EPSG:28992&distance=5&simplify=false
+        // https://snapshot.tailormap.nl/api/app/1/layer/6/features?x=52.12021y=5.03377&&crs=EPSG:4326&distance=.00005&simplify=false
+        // https://snapshot.tailormap.nl/api/app/1/layer/6/features?x=560356&y=6821890&crs=EPSG:3857&distance=5&simplify=false
+        final String expectedFid = "begroeidterreindeel.3fdcbafb5c4c1d7481e916ae5200fcc4";
+
+        MvcResult result =
+                mockMvc.perform(
+                                get("/app/1/layer/6/features")
+                                        .param("x", String.valueOf(x))
+                                        .param("y", String.valueOf(y))
+                                        .param("crs", crs)
+                                        .param("distance", String.valueOf(distance))
+                                        .param("simplify", "true")
+                                        .accept(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(jsonPath("$.features").isArray())
+                        .andExpect(jsonPath("$.features").isNotEmpty())
+                        .andExpect(jsonPath("$.features[0]").isMap())
+                        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                        .andExpect(jsonPath("$.features[0].__fid").value(expectedFid))
+                        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+                        .andReturn();
+        String body = result.getResponse().getContentAsString();
+        String geometry = JsonPath.read(body, "$.features[0].geometry");
+        Geometry g = new WKTReader().read(geometry);
+        assertEquals(Polygon.class, g.getClass(), "Did not find expected geometry type");
+        assertEquals(
+                expected1stCoordinate,
+                g.getCoordinate().getX(),
+                .1,
+                "x coordinate should be " + expected1stCoordinate);
+        assertEquals(
+                expected2ndCoordinate,
+                g.getCoordinate().getY(),
+                .1,
+                "y coordinate should be " + expected2ndCoordinate);
+    }
+
+    static Stream<Arguments> wfsProjectionArgumentsProvider() {
+        return Stream.of(
+                // x, y, projection, distance,expected1stCoordinate, expected2ndCoordinate
+                arguments(141247, 458118, "EPSG:28992", 5, 130179.9, 430066.3),
+                arguments(52.11937, 5.04173, "EPSG:4326", /*~ 5 meter*/ 0.00005, 51.9, 5.2),
+                arguments(577351, 6820242, "EPSG:3857", 5, 561478.9, 6774711.6));
+    }
+
+    @ParameterizedTest(
+            name =
+                    "should return expected polygon feature for valid coordinates and crs from WFS #{index}: x: {0}, y: {1}, crs: {2}")
+    @MethodSource("wfsProjectionArgumentsProvider")
+    void should_produce_reprojected_features_from_wfs_using_different_crs(
+            double x,
+            double y,
+            String crs,
+            double distance,
+            double expected1stCoordinate,
+            double expected2ndCoordinate)
+            throws Exception {
+
+        final String expectedFid = "Provinciegebied.a26f9059-b076-4658-aa87-c78a63f1c827";
+
+        MvcResult result =
+                mockMvc.perform(
+                                get(provinciesWFS)
+                                        .param("x", String.valueOf(x))
+                                        .param("y", String.valueOf(y))
+                                        .param("crs", crs)
+                                        .param("distance", String.valueOf(distance))
+                                        .param("simplify", "true")
+                                        .accept(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(jsonPath("$.features").isArray())
+                        .andExpect(jsonPath("$.features").isNotEmpty())
+                        .andExpect(jsonPath("$.features[0]").isMap())
+                        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+                        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+                        .andExpect(jsonPath("$.features[0].__fid").value(expectedFid))
+                        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+                        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
+                        .andExpect(
+                                jsonPath("$.features[0].attributes.ligtInLandNaam")
+                                        .value("Nederland"))
+                        .andReturn();
+
+        String body = result.getResponse().getContentAsString();
+        String geometry = JsonPath.read(body, "$.features[0].geometry");
+        Geometry g = new WKTReader().read(geometry);
+        assertEquals(Polygon.class, g.getClass(), "Did not find expected geometry type");
+        assertEquals(
+                expected1stCoordinate,
+                g.getCoordinate().getX(),
+                .1,
+                "x coordinate should be " + expected1stCoordinate);
+        assertEquals(
+                expected2ndCoordinate,
+                g.getCoordinate().getY(),
+                .1,
+                "y coordinate should be " + expected2ndCoordinate);
     }
 
     /**
