@@ -117,7 +117,7 @@ SPDX-License-Identifier: MIT
     <!-- jackson-bom.version>2.13.3</jackson-bom.version -->
     <micrometer.version>1.9.3</micrometer.version>
     <!-- make sure to keep this hibernate version and that of tailormap persistence version in sync -->
-    <hibernate.version>5.6.10.Final</hibernate.version>
+    <hibernate.version>5.6.11.Final</hibernate.version>
     <hsqldb.version>2.7.0</hsqldb.version>
     <postgresql.version>42.5.0</postgresql.version>
     <oracle-database.version>21.6.0.0.1</oracle-database.version>
