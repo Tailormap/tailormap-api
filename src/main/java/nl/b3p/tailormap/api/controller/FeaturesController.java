@@ -183,11 +183,11 @@ public class FeaturesController implements Constants {
             }
 
             if (null != __fid) {
-                featuresResponse = getFeatureByFID(appLayer, __fid);
+                featuresResponse = getFeatureByFID(appLayer, __fid, crs);
             } else if (null != x && null != y) {
                 featuresResponse = getFeaturesByXY(appLayer, x, y, crs, distance, simplify);
             } else if (null != page && page > 0) {
-                featuresResponse = getAllFeatures(appLayer, page, sortBy, sortOrder);
+                featuresResponse = getAllFeatures(appLayer, crs, page, sortBy, sortOrder);
             } else {
                 // TODO other implementations
                 throw new BadRequestException(
@@ -200,7 +200,11 @@ public class FeaturesController implements Constants {
 
     @NotNull
     private FeaturesResponse getAllFeatures(
-            @NotNull ApplicationLayer appLayer, Integer page, String sortBy, String sortOrder) {
+            @NotNull ApplicationLayer appLayer,
+            String crs,
+            Integer page,
+            String sortBy,
+            String sortOrder) {
         FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);
 
         // find attribute source of layer
@@ -279,7 +283,14 @@ public class FeaturesController implements Constants {
             q.setStartIndex((page - 1) * pageSize);
             logger.debug("Attribute query: " + q);
 
-            executeQueryOnFeatureSource(false, featuresResponse, sft, configuredAttributes, fs, q);
+            executeQueryOnFeatureSource(
+                    false,
+                    featuresResponse,
+                    sft,
+                    configuredAttributes,
+                    fs,
+                    q,
+                    determineProjectToCRS(crs, fs));
         } catch (IOException e) {
             logger.error("Could not retrieve attribute data.", e);
         }
@@ -289,7 +300,7 @@ public class FeaturesController implements Constants {
 
     @NotNull
     private FeaturesResponse getFeatureByFID(
-            @NotNull ApplicationLayer appLayer, @NotNull String fid) {
+            @NotNull ApplicationLayer appLayer, @NotNull String fid, String crs) {
         FeaturesResponse featuresResponse = new FeaturesResponse();
 
         // find attribute source of layer
@@ -323,12 +334,47 @@ public class FeaturesController implements Constants {
             q.setMaxFeatures(1);
             logger.debug("FID query: " + q);
 
-            executeQueryOnFeatureSource(false, featuresResponse, sft, configuredAttributes, fs, q);
+            executeQueryOnFeatureSource(
+                    false,
+                    featuresResponse,
+                    sft,
+                    configuredAttributes,
+                    fs,
+                    q,
+                    determineProjectToCRS(crs, fs));
         } catch (IOException e) {
             logger.error("Could not retrieve attribute data.", e);
         }
 
         return featuresResponse;
+    }
+
+    /**
+     * @param requestCrs requeste CRS, may be null
+     * @param fs the feature source to query
+     * @return the CRS to use for the reprojection of query results, {@code null} if no CRS is
+     *     requested or when datasource CRS is the same as the requested crs
+     */
+    private CoordinateReferenceSystem determineProjectToCRS(
+            String requestCrs, SimpleFeatureSource fs) {
+        CoordinateReferenceSystem projectToCRS = null;
+        if (null != requestCrs) {
+            // reproject to feature source CRS if different from source CRS
+            try {
+                // this is the CRS of the "default geometry" attribute
+                final CoordinateReferenceSystem dataSourceCRS =
+                        fs.getSchema().getCoordinateReferenceSystem();
+                if (!((DefaultProjectedCRS) dataSourceCRS)
+                        .getIdentifier(null)
+                        .toString()
+                        .equalsIgnoreCase(requestCrs)) {
+                    projectToCRS = CRS.decode(requestCrs);
+                }
+            } catch (FactoryException e) {
+                logger.warn("Unable to transform query geometry to desired CRS", e);
+            }
+        }
+        return projectToCRS;
     }
 
     @NotNull
@@ -371,21 +417,16 @@ public class FeaturesController implements Constants {
             Geometry p = shapeFact.createCircle();
             logger.debug("created geometry: " + p);
 
-            if (null != crs) {
-                // reproject to feature source CRS
+            CoordinateReferenceSystem fromCRS = determineProjectToCRS(crs, fs);
+            if (null != fromCRS) {
+                // reproject requested x/y-geom to feature source CRS if different from source CRS
                 try {
-                    // this is the CRS of the "default geometry"
+                    // this is the CRS of the "default geometry" attribute
                     final CoordinateReferenceSystem toCRS =
                             fs.getSchema().getCoordinateReferenceSystem();
-                    if (!((DefaultProjectedCRS) toCRS)
-                            .getIdentifier(null)
-                            .toString()
-                            .equalsIgnoreCase(crs)) {
-                        final CoordinateReferenceSystem fromCRS = CRS.decode(crs);
-                        MathTransform transform = CRS.findMathTransform(fromCRS, toCRS, true);
-                        p = JTS.transform(p, transform);
-                        logger.debug("reprojected geometry to: " + p);
-                    }
+                    MathTransform transform = CRS.findMathTransform(fromCRS, toCRS, true);
+                    p = JTS.transform(p, transform);
+                    logger.debug("reprojected geometry to: " + p);
                 } catch (FactoryException | TransformException e) {
                     logger.warn(
                             "Unable to transform query geometry to desired CRS, trying with original CRS");
@@ -412,7 +453,7 @@ public class FeaturesController implements Constants {
             q.setMaxFeatures(DEFAULT_MAX_FEATURES);
 
             executeQueryOnFeatureSource(
-                    simplifyGeometry, featuresResponse, sft, configuredAttributes, fs, q);
+                    simplifyGeometry, featuresResponse, sft, configuredAttributes, fs, q, fromCRS);
         } catch (IOException e) {
             logger.error("Could not retrieve attribute data.", e);
         }
@@ -425,9 +466,22 @@ public class FeaturesController implements Constants {
             @NotNull SimpleFeatureType sft,
             List<ConfiguredAttribute> configuredAttributes,
             @NotNull SimpleFeatureSource fs,
-            @NotNull Query q)
+            @NotNull Query q,
+            CoordinateReferenceSystem projectToCRS)
             throws IOException {
         boolean addFields = false;
+
+        MathTransform transform = null;
+        if (null != projectToCRS) {
+            try {
+                transform =
+                        CRS.findMathTransform(
+                                fs.getSchema().getCoordinateReferenceSystem(), projectToCRS, true);
+            } catch (FactoryException e) {
+                logger.error("Can not transform geometry to desired CRS.", e);
+            }
+        }
+
         // send request to attribute source
         try (SimpleFeatureIterator feats = fs.getFeatures(q).features()) {
             while (feats.hasNext()) {
@@ -437,7 +491,9 @@ public class FeaturesController implements Constants {
                 // processedGeometry can be null
                 String processedGeometry =
                         GeometryProcessor.processGeometry(
-                                feature.getAttribute(sft.getGeometryAttribute()), simplifyGeometry);
+                                feature.getAttribute(sft.getGeometryAttribute()),
+                                simplifyGeometry,
+                                transform);
                 Feature newFeat =
                         new Feature()
                                 .fid(feature.getIdentifier().getID())

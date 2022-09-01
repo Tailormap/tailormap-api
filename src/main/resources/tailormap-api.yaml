@@ -501,7 +501,11 @@ paths:
           required: false
           schema:
             type: number
-        - description: 'EPSG code for the given x- and y-coodinates, the backend will transform to attribute source if required'
+        - description:
+            '
+            EPSG code for the given x- and y-coodinates, the backend will transform to attribute source if required. 
+            Also the CRS to be used to reproject the hightlight gemometry if not in the same CRS as the attribute source.
+            '
           in: query
           name: crs
           required: false

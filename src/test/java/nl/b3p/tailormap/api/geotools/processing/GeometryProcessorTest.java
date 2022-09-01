@@ -14,10 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import nl.b3p.tailormap.api.StaticTestData;
 
 import org.geotools.geometry.jts.WKTReader2;
+import org.geotools.referencing.CRS;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.MathTransform;
 
 class GeometryProcessorTest extends StaticTestData {
 
@@ -27,7 +30,7 @@ class GeometryProcessorTest extends StaticTestData {
         final Geometry p = new WKTReader2().read(testData.getProperty("RDpointWkt"));
         assertEquals(
                 testData.getProperty("RDpointWkt"),
-                GeometryProcessor.processGeometry(p, true),
+                GeometryProcessor.processGeometry(p, true, null),
                 "simplified geometry should match");
     }
 
@@ -36,15 +39,37 @@ class GeometryProcessorTest extends StaticTestData {
         final Geometry p = new WKTReader2().read(testData.getProperty("RDpointWkt"));
         assertEquals(
                 testData.getProperty("RDpointWkt"),
-                GeometryProcessor.processGeometry(p, false),
+                GeometryProcessor.processGeometry(p, false, null),
                 "simplified geometry should match");
+    }
+
+    @Stopwatch
+    @Test
+    void reprojectPoint() throws ParseException, FactoryException {
+        final Geometry p = new WKTReader2().read(testData.getProperty("RDpointWkt"));
+        MathTransform transform =
+                CRS.findMathTransform(CRS.decode("EPSG:28992"), CRS.decode("EPSG:4326"), true);
+
+        final Geometry reprojected =
+                new WKTReader2().read(GeometryProcessor.processGeometry(p, true, transform));
+        final Geometry expected = new WKTReader2().read(testData.getProperty("WGS84pointWkt"));
+        assertEquals(
+                expected.getCoordinate().getX(),
+                reprojected.getCoordinate().getX(),
+                .1,
+                "X-coord of simplified, reprojected geometry should match");
+        assertEquals(
+                expected.getCoordinate().getY(),
+                reprojected.getCoordinate().getY(),
+                .1,
+                "Y-coord of simplified, reprojected geometry should match");
     }
 
     @Stopwatch
     @Test
     void simplifyPolygon() throws ParseException {
         final Geometry p = new WKTReader2().read(testData.getProperty("RDpolygonWkt"));
-        final String simplified = GeometryProcessor.processGeometry(p, true);
+        final String simplified = GeometryProcessor.processGeometry(p, true, null);
         assertNotEquals(
                 testData.getProperty("RDpolygonWkt"),
                 simplified,
@@ -63,7 +88,7 @@ class GeometryProcessorTest extends StaticTestData {
         final Geometry p = new WKTReader2().read(testData.getProperty("RDpolygonWkt"));
         assertEquals(
                 testData.getProperty("RDpolygonWkt"),
-                GeometryProcessor.processGeometry(p, false),
+                GeometryProcessor.processGeometry(p, false, null),
                 "simplified geometry does not match");
     }
 
@@ -72,7 +97,7 @@ class GeometryProcessorTest extends StaticTestData {
         final Geometry c = new WKTReader2().read(testData.getProperty("curvePolygon"));
         assertEquals(
                 testData.getProperty("curvePolygonLinearized"),
-                GeometryProcessor.processGeometry(c, false),
+                GeometryProcessor.processGeometry(c, false, null),
                 "geometry should be linearized");
     }
 
@@ -81,7 +106,7 @@ class GeometryProcessorTest extends StaticTestData {
         final Geometry p = new WKTReader2().read(testData.getProperty("multiPolygon"));
         assertEquals(
                 testData.getProperty("multiPolygon"),
-                GeometryProcessor.processGeometry(p, false),
+                GeometryProcessor.processGeometry(p, false, null),
                 "geometry should be the same");
     }
 
@@ -90,7 +115,7 @@ class GeometryProcessorTest extends StaticTestData {
         final Geometry ring = new WKTReader2().read(testData.getProperty("linearRing"));
         assertEquals(
                 testData.getProperty("lineString"),
-                GeometryProcessor.processGeometry(ring, false),
+                GeometryProcessor.processGeometry(ring, false, null),
                 "geometry does not match");
     }
 }
