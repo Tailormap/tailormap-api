@@ -389,8 +389,9 @@ components:
           default: false
         styleLibraries:
           type: object
-        hiDpiMode:
+        serverType:
           type: string
+          nullable: false
           enum:
             - auto
             - disabled

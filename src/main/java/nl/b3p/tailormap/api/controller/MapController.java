@@ -478,15 +478,15 @@ public class MapController {
             GeoService geoService = applicationLayer.getService();
 
             // Use this default if saved before the form default was added in admin
-            Service.HiDpiModeEnum serviceHiDpiMode = Service.HiDpiModeEnum.AUTO;
-            ClobElement ce = geoService.getDetails().get("hidpi.mode");
+            Service.ServerTypeEnum serviceServerType = Service.ServerTypeEnum.AUTO;
+            ClobElement ce = geoService.getDetails().get("serverType");
             if (ce != null) {
                 try {
-                    serviceHiDpiMode = Service.HiDpiModeEnum.fromValue(ce.getValue());
+                    serviceServerType = Service.ServerTypeEnum.fromValue(ce.getValue());
                 } catch (IllegalArgumentException e) {
                     logger.warn(
                             String.format(
-                                    "App #%s (%s): invalid hidpi.mode enum value for service #%s (%s)",
+                                    "App #%s (%s): invalid serverType enum value for service #%s (%s)",
                                     a.getId(),
                                     a.getNameWithVersion(),
                                     geoService.getId(),
@@ -509,7 +509,7 @@ public class MapController {
                             .id(geoService.getId())
                             .name(geoService.getName())
                             .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))
-                            .hiDpiMode(serviceHiDpiMode)
+                            .serverType(serviceServerType)
                             .tilingDisabled(
                                     "true"
                                             .equals(
