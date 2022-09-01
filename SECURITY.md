@@ -5,13 +5,12 @@
 Use this section to tell people about which versions of your project are
 currently being supported with security updates.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 0.1     | :green_check_mark: |
-| ??      | :x:                |
+| Version                   | Supported          |
+|---------------------------| ------------------ |
+| `main` development branch | :green_check_mark: |
+| 10.0                      | :green_check_mark: |
+| ??                        | :x:                |
 
-
-## Reporting a Vulnerability
 
 ## Reporting a Vulnerability
 
