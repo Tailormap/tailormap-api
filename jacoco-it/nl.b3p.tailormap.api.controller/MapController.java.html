@@ -478,15 +478,15 @@ import javax.validation.constraints.NotNull;
 <span class="fc" id="L478">            GeoService geoService = applicationLayer.getService();</span>
 
             // Use this default if saved before the form default was added in admin
-<span class="fc" id="L481">            Service.HiDpiModeEnum serviceHiDpiMode = Service.HiDpiModeEnum.AUTO;</span>
-<span class="fc" id="L482">            ClobElement ce = geoService.getDetails().get(&quot;hidpi.mode&quot;);</span>
+<span class="fc" id="L481">            Service.ServerTypeEnum serviceServerType = Service.ServerTypeEnum.AUTO;</span>
+<span class="fc" id="L482">            ClobElement ce = geoService.getDetails().get(&quot;serverType&quot;);</span>
 <span class="pc bpc" id="L483" title="1 of 2 branches missed.">            if (ce != null) {</span>
                 try {
-<span class="nc" id="L485">                    serviceHiDpiMode = Service.HiDpiModeEnum.fromValue(ce.getValue());</span>
+<span class="nc" id="L485">                    serviceServerType = Service.ServerTypeEnum.fromValue(ce.getValue());</span>
 <span class="nc" id="L486">                } catch (IllegalArgumentException e) {</span>
 <span class="nc" id="L487">                    logger.warn(</span>
 <span class="nc" id="L488">                            String.format(</span>
-                                    &quot;App #%s (%s): invalid hidpi.mode enum value for service #%s (%s)&quot;,
+                                    &quot;App #%s (%s): invalid serverType enum value for service #%s (%s)&quot;,
 <span class="nc" id="L490">                                    a.getId(),</span>
 <span class="nc" id="L491">                                    a.getNameWithVersion(),</span>
 <span class="nc" id="L492">                                    geoService.getId(),</span>
@@ -509,7 +509,7 @@ import javax.validation.constraints.NotNull;
 <span class="fc" id="L509">                            .id(geoService.getId())</span>
 <span class="fc" id="L510">                            .name(geoService.getName())</span>
 <span class="fc" id="L511">                            .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))</span>
-<span class="fc" id="L512">                            .hiDpiMode(serviceHiDpiMode)</span>
+<span class="fc" id="L512">                            .serverType(serviceServerType)</span>
 <span class="fc" id="L513">                            .tilingDisabled(</span>
 <span class="fc" id="L514">                                    &quot;true&quot;</span>
 <span class="fc" id="L515">                                            .equals(</span>

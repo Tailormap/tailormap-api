@@ -486,15 +486,15 @@
 <a class="jxr_linenumber" name="L478" href="#L478">478</a>             GeoService geoService = applicationLayer.getService();
 <a class="jxr_linenumber" name="L479" href="#L479">479</a> 
 <a class="jxr_linenumber" name="L480" href="#L480">480</a>             <em class="jxr_comment">// Use this default if saved before the form default was added in admin</em>
-<a class="jxr_linenumber" name="L481" href="#L481">481</a>             Service.HiDpiModeEnum serviceHiDpiMode = Service.HiDpiModeEnum.AUTO;
-<a class="jxr_linenumber" name="L482" href="#L482">482</a>             ClobElement ce = geoService.getDetails().get(<span class="jxr_string">"hidpi.mode"</span>);
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>             Service.ServerTypeEnum serviceServerType = Service.ServerTypeEnum.AUTO;
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>             ClobElement ce = geoService.getDetails().get(<span class="jxr_string">"serverType"</span>);
 <a class="jxr_linenumber" name="L483" href="#L483">483</a>             <strong class="jxr_keyword">if</strong> (ce != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L484" href="#L484">484</a>                 <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L485" href="#L485">485</a>                     serviceHiDpiMode = Service.HiDpiModeEnum.fromValue(ce.getValue());
+<a class="jxr_linenumber" name="L485" href="#L485">485</a>                     serviceServerType = Service.ServerTypeEnum.fromValue(ce.getValue());
 <a class="jxr_linenumber" name="L486" href="#L486">486</a>                 } <strong class="jxr_keyword">catch</strong> (IllegalArgumentException e) {
 <a class="jxr_linenumber" name="L487" href="#L487">487</a>                     logger.warn(
 <a class="jxr_linenumber" name="L488" href="#L488">488</a>                             String.format(
-<a class="jxr_linenumber" name="L489" href="#L489">489</a>                                     <span class="jxr_string">"App #%s (%s): invalid hidpi.mode enum value for service #%s (%s)"</span>,
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>                                     <span class="jxr_string">"App #%s (%s): invalid serverType enum value for service #%s (%s)"</span>,
 <a class="jxr_linenumber" name="L490" href="#L490">490</a>                                     a.getId(),
 <a class="jxr_linenumber" name="L491" href="#L491">491</a>                                     a.getNameWithVersion(),
 <a class="jxr_linenumber" name="L492" href="#L492">492</a>                                     geoService.getId(),
@@ -517,7 +517,7 @@
 <a class="jxr_linenumber" name="L509" href="#L509">509</a>                             .id(geoService.getId())
 <a class="jxr_linenumber" name="L510" href="#L510">510</a>                             .name(geoService.getName())
 <a class="jxr_linenumber" name="L511" href="#L511">511</a>                             .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))
-<a class="jxr_linenumber" name="L512" href="#L512">512</a>                             .hiDpiMode(serviceHiDpiMode)
+<a class="jxr_linenumber" name="L512" href="#L512">512</a>                             .serverType(serviceServerType)
 <a class="jxr_linenumber" name="L513" href="#L513">513</a>                             .tilingDisabled(
 <a class="jxr_linenumber" name="L514" href="#L514">514</a>                                     <span class="jxr_string">"true"</span>
 <a class="jxr_linenumber" name="L515" href="#L515">515</a>                                             .equals(

@@ -41,9 +41,9 @@ import javax.annotation.Generated;
   private Object styleLibraries;
 
   /**
-   * Gets or Sets hiDpiMode
+   * Gets or Sets serverType
    */
-<span class="fc" id="L46">  public enum HiDpiModeEnum {</span>
+<span class="fc" id="L46">  public enum ServerTypeEnum {</span>
 <span class="fc" id="L47">    AUTO(&quot;auto&quot;),</span>
     
 <span class="fc" id="L49">    DISABLED(&quot;disabled&quot;),</span>
@@ -54,7 +54,7 @@ import javax.annotation.Generated;
 
     private String value;
 
-<span class="fc" id="L57">    HiDpiModeEnum(String value) {</span>
+<span class="fc" id="L57">    ServerTypeEnum(String value) {</span>
 <span class="fc" id="L58">      this.value = value;</span>
 <span class="fc" id="L59">    }</span>
 
@@ -69,8 +69,8 @@ import javax.annotation.Generated;
     }
 
     @JsonCreator
-    public static HiDpiModeEnum fromValue(String value) {
-<span class="nc bnc" id="L73" title="All 2 branches missed.">      for (HiDpiModeEnum b : HiDpiModeEnum.values()) {</span>
+    public static ServerTypeEnum fromValue(String value) {
+<span class="nc bnc" id="L73" title="All 2 branches missed.">      for (ServerTypeEnum b : ServerTypeEnum.values()) {</span>
 <span class="nc bnc" id="L74" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
 <span class="nc" id="L75">          return b;</span>
         }
@@ -79,8 +79,8 @@ import javax.annotation.Generated;
     }
   }
 
-  @JsonProperty(&quot;hiDpiMode&quot;)
-  private HiDpiModeEnum hiDpiMode;
+  @JsonProperty(&quot;serverType&quot;)
+  private ServerTypeEnum serverType;
 
   @JsonProperty(&quot;tilingDisabled&quot;)
   private Boolean tilingDisabled;
@@ -264,23 +264,23 @@ import javax.annotation.Generated;
 <span class="nc" id="L264">    this.styleLibraries = styleLibraries;</span>
 <span class="nc" id="L265">  }</span>
 
-  public Service hiDpiMode(HiDpiModeEnum hiDpiMode) {
-<span class="fc" id="L268">    this.hiDpiMode = hiDpiMode;</span>
+  public Service serverType(ServerTypeEnum serverType) {
+<span class="fc" id="L268">    this.serverType = serverType;</span>
 <span class="fc" id="L269">    return this;</span>
   }
 
   /**
-   * Get hiDpiMode
-   * @return hiDpiMode
+   * Get serverType
+   * @return serverType
   */
   
-  @Schema(name = &quot;hiDpiMode&quot;, required = false)
-  public HiDpiModeEnum getHiDpiMode() {
-<span class="fc" id="L279">    return hiDpiMode;</span>
+  @Schema(name = &quot;serverType&quot;, required = false)
+  public ServerTypeEnum getServerType() {
+<span class="fc" id="L279">    return serverType;</span>
   }
 
-  public void setHiDpiMode(HiDpiModeEnum hiDpiMode) {
-<span class="nc" id="L283">    this.hiDpiMode = hiDpiMode;</span>
+  public void setServerType(ServerTypeEnum serverType) {
+<span class="nc" id="L283">    this.serverType = serverType;</span>
 <span class="nc" id="L284">  }</span>
 
   public Service tilingDisabled(Boolean tilingDisabled) {
@@ -392,7 +392,7 @@ import javax.annotation.Generated;
 <span class="pc bpc" id="L392" title="1 of 2 branches missed.">        Objects.equals(this.url, service.url) &amp;&amp;</span>
 <span class="pc bpc" id="L393" title="1 of 2 branches missed.">        Objects.equals(this.useProxy, service.useProxy) &amp;&amp;</span>
 <span class="pc bpc" id="L394" title="1 of 2 branches missed.">        Objects.equals(this.styleLibraries, service.styleLibraries) &amp;&amp;</span>
-<span class="pc bpc" id="L395" title="1 of 2 branches missed.">        Objects.equals(this.hiDpiMode, service.hiDpiMode) &amp;&amp;</span>
+<span class="pc bpc" id="L395" title="1 of 2 branches missed.">        Objects.equals(this.serverType, service.serverType) &amp;&amp;</span>
 <span class="pc bpc" id="L396" title="1 of 2 branches missed.">        Objects.equals(this.tilingDisabled, service.tilingDisabled) &amp;&amp;</span>
 <span class="pc bpc" id="L397" title="1 of 2 branches missed.">        Objects.equals(this.tilingGutter, service.tilingGutter) &amp;&amp;</span>
 <span class="pc bpc" id="L398" title="1 of 2 branches missed.">        Objects.equals(this.protocol, service.protocol) &amp;&amp;</span>
@@ -402,7 +402,7 @@ import javax.annotation.Generated;
 
   @Override
   public int hashCode() {
-<span class="fc" id="L405">    return Objects.hash(id, name, url, useProxy, styleLibraries, hiDpiMode, tilingDisabled, tilingGutter, protocol, tilingProtocol, capabilities);</span>
+<span class="fc" id="L405">    return Objects.hash(id, name, url, useProxy, styleLibraries, serverType, tilingDisabled, tilingGutter, protocol, tilingProtocol, capabilities);</span>
   }
 
   @Override
@@ -414,7 +414,7 @@ import javax.annotation.Generated;
 <span class="nc" id="L414">    sb.append(&quot;    url: &quot;).append(toIndentedString(url)).append(&quot;\n&quot;);</span>
 <span class="nc" id="L415">    sb.append(&quot;    useProxy: &quot;).append(toIndentedString(useProxy)).append(&quot;\n&quot;);</span>
 <span class="nc" id="L416">    sb.append(&quot;    styleLibraries: &quot;).append(toIndentedString(styleLibraries)).append(&quot;\n&quot;);</span>
-<span class="nc" id="L417">    sb.append(&quot;    hiDpiMode: &quot;).append(toIndentedString(hiDpiMode)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L417">    sb.append(&quot;    serverType: &quot;).append(toIndentedString(serverType)).append(&quot;\n&quot;);</span>
 <span class="nc" id="L418">    sb.append(&quot;    tilingDisabled: &quot;).append(toIndentedString(tilingDisabled)).append(&quot;\n&quot;);</span>
 <span class="nc" id="L419">    sb.append(&quot;    tilingGutter: &quot;).append(toIndentedString(tilingGutter)).append(&quot;\n&quot;);</span>
 <span class="nc" id="L420">    sb.append(&quot;    protocol: &quot;).append(toIndentedString(protocol)).append(&quot;\n&quot;);</span>

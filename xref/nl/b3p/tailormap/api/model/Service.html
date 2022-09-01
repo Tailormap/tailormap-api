@@ -49,9 +49,9 @@
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>    <strong class="jxr_keyword">private</strong> Object styleLibraries;
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">   * Gets or Sets hiDpiMode</em>
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">   * Gets or Sets serverType</em>
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">public</strong> enum HiDpiModeEnum {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">public</strong> enum ServerTypeEnum {
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>      AUTO(<span class="jxr_string">"auto"</span>),
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>      
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      DISABLED(<span class="jxr_string">"disabled"</span>),
@@ -62,7 +62,7 @@
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">private</strong> String value;
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      HiDpiModeEnum(String value) {
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      ServerTypeEnum(String value) {
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>        <strong class="jxr_keyword">this</strong>.value = value;
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>      }
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  
@@ -77,8 +77,8 @@
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      }
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      @JsonCreator
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> HiDpiModeEnum fromValue(String value) {
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>        <strong class="jxr_keyword">for</strong> (HiDpiModeEnum b : HiDpiModeEnum.values()) {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> ServerTypeEnum fromValue(String value) {
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>        <strong class="jxr_keyword">for</strong> (ServerTypeEnum b : ServerTypeEnum.values()) {
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          <strong class="jxr_keyword">if</strong> (b.value.equals(value)) {
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>            <strong class="jxr_keyword">return</strong> b;
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          }
@@ -87,8 +87,8 @@
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      }
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>    }
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>  
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>    @JsonProperty(<span class="jxr_string">"hiDpiMode"</span>)
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>    <strong class="jxr_keyword">private</strong> HiDpiModeEnum hiDpiMode;
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>    @JsonProperty(<span class="jxr_string">"serverType"</span>)
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>    <strong class="jxr_keyword">private</strong> ServerTypeEnum serverType;
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>  
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>    @JsonProperty(<span class="jxr_string">"tilingDisabled"</span>)
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>    <strong class="jxr_keyword">private</strong> Boolean tilingDisabled;
@@ -272,23 +272,23 @@
 <a class="jxr_linenumber" name="L264" href="#L264">264</a>     <strong class="jxr_keyword">this</strong>.styleLibraries = styleLibraries;
 <a class="jxr_linenumber" name="L265" href="#L265">265</a>   }
 <a class="jxr_linenumber" name="L266" href="#L266">266</a> 
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>   <strong class="jxr_keyword">public</strong> <a name="Service" href="../../../../../nl/b3p/tailormap/api/model/Service.html#Service">Service</a> hiDpiMode(HiDpiModeEnum hiDpiMode) {
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>     <strong class="jxr_keyword">this</strong>.hiDpiMode = hiDpiMode;
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>   <strong class="jxr_keyword">public</strong> <a name="Service" href="../../../../../nl/b3p/tailormap/api/model/Service.html#Service">Service</a> serverType(ServerTypeEnum serverType) {
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>     <strong class="jxr_keyword">this</strong>.serverType = serverType;
 <a class="jxr_linenumber" name="L269" href="#L269">269</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L270" href="#L270">270</a>   }
 <a class="jxr_linenumber" name="L271" href="#L271">271</a> 
 <a class="jxr_linenumber" name="L272" href="#L272">272</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L273" href="#L273">273</a> <em class="jxr_javadoccomment">   * Get hiDpiMode</em>
-<a class="jxr_linenumber" name="L274" href="#L274">274</a> <em class="jxr_javadoccomment">   * @return hiDpiMode</em>
+<a class="jxr_linenumber" name="L273" href="#L273">273</a> <em class="jxr_javadoccomment">   * Get serverType</em>
+<a class="jxr_linenumber" name="L274" href="#L274">274</a> <em class="jxr_javadoccomment">   * @return serverType</em>
 <a class="jxr_linenumber" name="L275" href="#L275">275</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>   
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>   @Schema(name = <span class="jxr_string">"hiDpiMode"</span>, required = false)
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>   <strong class="jxr_keyword">public</strong> HiDpiModeEnum getHiDpiMode() {
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>     <strong class="jxr_keyword">return</strong> hiDpiMode;
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>   @Schema(name = <span class="jxr_string">"serverType"</span>, required = false)
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>   <strong class="jxr_keyword">public</strong> ServerTypeEnum getServerType() {
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>     <strong class="jxr_keyword">return</strong> serverType;
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>   }
 <a class="jxr_linenumber" name="L281" href="#L281">281</a> 
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setHiDpiMode(HiDpiModeEnum hiDpiMode) {
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>     <strong class="jxr_keyword">this</strong>.hiDpiMode = hiDpiMode;
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setServerType(ServerTypeEnum serverType) {
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>     <strong class="jxr_keyword">this</strong>.serverType = serverType;
 <a class="jxr_linenumber" name="L284" href="#L284">284</a>   }
 <a class="jxr_linenumber" name="L285" href="#L285">285</a> 
 <a class="jxr_linenumber" name="L286" href="#L286">286</a>   <strong class="jxr_keyword">public</strong> <a name="Service" href="../../../../../nl/b3p/tailormap/api/model/Service.html#Service">Service</a> tilingDisabled(Boolean tilingDisabled) {
@@ -400,7 +400,7 @@
 <a class="jxr_linenumber" name="L392" href="#L392">392</a>         Objects.equals(<strong class="jxr_keyword">this</strong>.url, service.url) &amp;&amp;
 <a class="jxr_linenumber" name="L393" href="#L393">393</a>         Objects.equals(<strong class="jxr_keyword">this</strong>.useProxy, service.useProxy) &amp;&amp;
 <a class="jxr_linenumber" name="L394" href="#L394">394</a>         Objects.equals(<strong class="jxr_keyword">this</strong>.styleLibraries, service.styleLibraries) &amp;&amp;
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>         Objects.equals(<strong class="jxr_keyword">this</strong>.hiDpiMode, service.hiDpiMode) &amp;&amp;
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>         Objects.equals(<strong class="jxr_keyword">this</strong>.serverType, service.serverType) &amp;&amp;
 <a class="jxr_linenumber" name="L396" href="#L396">396</a>         Objects.equals(<strong class="jxr_keyword">this</strong>.tilingDisabled, service.tilingDisabled) &amp;&amp;
 <a class="jxr_linenumber" name="L397" href="#L397">397</a>         Objects.equals(<strong class="jxr_keyword">this</strong>.tilingGutter, service.tilingGutter) &amp;&amp;
 <a class="jxr_linenumber" name="L398" href="#L398">398</a>         Objects.equals(<strong class="jxr_keyword">this</strong>.protocol, service.protocol) &amp;&amp;
@@ -410,7 +410,7 @@
 <a class="jxr_linenumber" name="L402" href="#L402">402</a> 
 <a class="jxr_linenumber" name="L403" href="#L403">403</a>   @Override
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>     <strong class="jxr_keyword">return</strong> Objects.hash(id, name, url, useProxy, styleLibraries, hiDpiMode, tilingDisabled, tilingGutter, protocol, tilingProtocol, capabilities);
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>     <strong class="jxr_keyword">return</strong> Objects.hash(id, name, url, useProxy, styleLibraries, serverType, tilingDisabled, tilingGutter, protocol, tilingProtocol, capabilities);
 <a class="jxr_linenumber" name="L406" href="#L406">406</a>   }
 <a class="jxr_linenumber" name="L407" href="#L407">407</a> 
 <a class="jxr_linenumber" name="L408" href="#L408">408</a>   @Override
@@ -422,7 +422,7 @@
 <a class="jxr_linenumber" name="L414" href="#L414">414</a>     sb.append(<span class="jxr_string">"    url: "</span>).append(toIndentedString(url)).append(<span class="jxr_string">"\n"</span>);
 <a class="jxr_linenumber" name="L415" href="#L415">415</a>     sb.append(<span class="jxr_string">"    useProxy: "</span>).append(toIndentedString(useProxy)).append(<span class="jxr_string">"\n"</span>);
 <a class="jxr_linenumber" name="L416" href="#L416">416</a>     sb.append(<span class="jxr_string">"    styleLibraries: "</span>).append(toIndentedString(styleLibraries)).append(<span class="jxr_string">"\n"</span>);
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>     sb.append(<span class="jxr_string">"    hiDpiMode: "</span>).append(toIndentedString(hiDpiMode)).append(<span class="jxr_string">"\n"</span>);
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>     sb.append(<span class="jxr_string">"    serverType: "</span>).append(toIndentedString(serverType)).append(<span class="jxr_string">"\n"</span>);
 <a class="jxr_linenumber" name="L418" href="#L418">418</a>     sb.append(<span class="jxr_string">"    tilingDisabled: "</span>).append(toIndentedString(tilingDisabled)).append(<span class="jxr_string">"\n"</span>);
 <a class="jxr_linenumber" name="L419" href="#L419">419</a>     sb.append(<span class="jxr_string">"    tilingGutter: "</span>).append(toIndentedString(tilingGutter)).append(<span class="jxr_string">"\n"</span>);
 <a class="jxr_linenumber" name="L420" href="#L420">420</a>     sb.append(<span class="jxr_string">"    protocol: "</span>).append(toIndentedString(protocol)).append(<span class="jxr_string">"\n"</span>);
