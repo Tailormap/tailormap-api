@@ -162,8 +162,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static @NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processGeometry(java.lang.Object,java.lang.Boolean)">processGeometry</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>&nbsp;geometry,
-               @NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;simplifyGeometry)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processGeometry(java.lang.Object,java.lang.Boolean,org.opengis.referencing.operation.MathTransform)">processGeometry</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>&nbsp;geometry,
+               @NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;simplifyGeometry,
+               org.opengis.referencing.operation.MathTransform&nbsp;transform)</code></th>
 <td class="colLast">
 <div class="block">process the geometry into a (optionally simplified) string representation.</div>
 </td>
@@ -192,7 +193,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="processGeometry(java.lang.Object,java.lang.Boolean)">
+<a id="processGeometry(java.lang.Object,java.lang.Boolean,org.opengis.referencing.operation.MathTransform)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -201,12 +202,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">@NotNull
 public static&nbsp;@NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;processGeometry&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>&nbsp;geometry,
                                               @NotNull
-                                              @NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;simplifyGeometry)</pre>
+                                              @NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;simplifyGeometry,
+                                              org.opengis.referencing.operation.MathTransform&nbsp;transform)</pre>
 <div class="block">process the geometry into a (optionally simplified) string representation.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>geometry</code> - An object representing a geometry</dd>
 <dd><code>simplifyGeometry</code> - set to <code>true</code> to simplify</dd>
+<dd><code>transform</code> - the transformation that should be applied to the geometry, can be <code>
+     null</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the string representation of the argument - normally WKT, optionally simplified or
      <code>null</code> when the given geometry was <code>null</code></dd>
