@@ -471,6 +471,8 @@ public class MapController {
                             .hiDpiMode(hiDpiMode)
                             .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
                             .visible(l.isChecked())
+                            .maxScale(serviceLayer.getMaxScale())
+                            .minScale(serviceLayer.getMinScale())
                             .hasAttributes(!l.getApplicationLayer().getAttributes().isEmpty());
 
             mapResponse.addAppLayersItem(appLayer);
