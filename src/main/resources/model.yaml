@@ -122,9 +122,11 @@ components:
         minScale:
           description: Minimum scale at which this layer should be shown or is not blank. When absent there is no minimum. As reported by the service (ScaleHint or MinScaleDenominator).
           type: number
+          format: double
         maxScale:
           description: Maximum scale denominator at which this layer should be shown or is not blank. When absent there is no maximum. As reported by the service (ScaleHint or MaxScaleDenominator).
           type: number
+          format: double
         legendImageUrl:
           description: URL to an image with the layer legend.
           type: string
