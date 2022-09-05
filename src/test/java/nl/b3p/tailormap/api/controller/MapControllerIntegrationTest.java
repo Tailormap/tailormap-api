@@ -66,6 +66,14 @@ class MapControllerIntegrationTest {
                 .andExpect(jsonPath("$.appLayers.length()").value(5))
                 .andExpect(jsonPath("$.appLayers[0].hasAttributes").value(false))
                 .andExpect(jsonPath("$.appLayers[1].hasAttributes").value(true))
+                .andExpect(jsonPath("$.appLayers[2].legendImageUrl").exists())
+                .andExpect(jsonPath("$.appLayers[2].legendImageUrl").isNotEmpty())
+                .andExpect(jsonPath("$.appLayers[2].visible").value(false))
+                .andExpect(jsonPath("$.appLayers[2].minScale").isEmpty())
+                .andExpect(jsonPath("$.appLayers[2].maxScale").isEmpty())
+                .andExpect(jsonPath("$.appLayers[2].id").value(3))
+                .andExpect(jsonPath("$.appLayers[2].hiDpiMode").isEmpty())
+                .andExpect(jsonPath("$.appLayers[2].hiDpiSubstituteLayer").isEmpty())
                 .andExpect(jsonPath("$.crs.code").value("EPSG:28992"))
                 .andReturn();
     }
