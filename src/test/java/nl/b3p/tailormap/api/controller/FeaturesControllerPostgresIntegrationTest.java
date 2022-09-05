@@ -22,6 +22,8 @@ import nl.b3p.tailormap.api.security.SecurityConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -40,34 +42,244 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SpringBootTest(classes = {JPAConfiguration.class, FeaturesController.class, SecurityConfig.class})
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
 @ActiveProfiles("postgresql")
+@Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
 class FeaturesControllerPostgresIntegrationTest {
     /** bestuurlijke gebieden WFS; provincies . */
     private static final String provinciesWFS = "/app/1/layer/2/features";
 
-    /** note that for WFS 2.0.0 this is -1 and for WFS 1.0.0 this is 12! */
-    private static final int provinciesWFSTotalCount = -1;
+    private static final String begroeidterreindeelUrlPostgis = "/app/1/layer/6/features";
+    private static final String waterdeelUrlOracle = "/app/1/layer/7/features";
+    private static final String wegdeelUrlSqlserver = "/app/1/layer/9/features";
+    /**
+     * note that for WFS 2.0.0 this is -1 and for WFS 1.0.0 this is 12! depending on the value of
+     * {@link #exactWfsCounts}.
+     */
+    private static final int provinciesWFSTotalCount = 12;
 
-    static Stream<Arguments> argumentsProvider() {
-        return Stream.of(
-                // docker host,table,url, feature count
-                arguments("postgis", "begroeidterreindeel", "/app/1/layer/6/features", 3662),
-                arguments("oracle", "waterdeel", "/app/1/layer/7/features", 282),
-                arguments("sqlserver", "wegdeel", "/app/1/layer/9/features", 5934));
-    }
-
+    private static final int begroeidterreindeelTotalCount = 3662;
+    private static final int waterdeelTotalCount = 282;
+    private static final int wegdeelTotalCount = 5934;
     private final Log logger = LogFactory.getLog(getClass());
+
+    @Value("${tailormap-api.wfs.count.exact}")
+    private boolean exactWfsCounts;
+
     @Autowired private MockMvc mockMvc;
 
     @Value("${tailormap-api.pageSize}")
     private int pageSize;
+
+    static Stream<Arguments> argumentsProvider() {
+        return Stream.of(
+                // docker host,table,url, feature count
+                arguments(
+                        "postgis",
+                        "begroeidterreindeel",
+                        begroeidterreindeelUrlPostgis,
+                        begroeidterreindeelTotalCount),
+                arguments("oracle", "waterdeel", waterdeelUrlOracle, waterdeelTotalCount),
+                arguments("sqlserver", "wegdeel", wegdeelUrlSqlserver, wegdeelTotalCount));
+    }
+
+    static Stream<Arguments> projectionArgumentsProvider() {
+        return Stream.of(
+                // x, y, projection, distance,expected1stCoordinate, expected2ndCoordinate
+                arguments(130794, 459169, "EPSG:28992", 5, 130873.9, 459308.9),
+                arguments(52.12021, 5.03377, "EPSG:4326", /*~ 5 meter*/ 0.00005, 52.1, 5.0),
+                arguments(560356, 6821890, "EPSG:3857", 5, 560485.3, 6822118.8));
+    }
+
+    static Stream<Arguments> wfsProjectionArgumentsProvider() {
+        return Stream.of(
+                // x, y, projection, distance,expected1stCoordinate, expected2ndCoordinate
+                arguments(141247, 458118, "EPSG:28992", 5, 130179.9, 430066.3),
+                arguments(52.11937, 5.04173, "EPSG:4326", /*~ 5 meter*/ 0.00005, 51.9, 5.2),
+                arguments(577351, 6820242, "EPSG:3857", 5, 561478.9, 6774711.6));
+    }
+
+    /**
+     * some test queries for the applayers (database/wfs featuretypes).
+     *
+     * @return a list of arguments for the test methods
+     *     <p>see <a href="https://docs.geotools.org/latest/userguide/library/cql/ecql.html">CQL</a>
+     */
+    static Stream<Arguments> filtersProvider() {
+        return Stream.of(
+                // equals
+                arguments(
+                        begroeidterreindeelUrlPostgis,
+                        "identificatie='L0002.5854010e82af4892986b8ec57bde6413'",
+                        1),
+                arguments(
+                        waterdeelUrlOracle,
+                        "IDENTIFICATIE='W0636.729e31bc9e154f2c9fb72a9c733e7d64'",
+                        1),
+                arguments(
+                        wegdeelUrlSqlserver,
+                        "identificatie='G0344.9cbe9a54d127406087e76c102c6ddc45'",
+                        1),
+                arguments(provinciesWFS, "naam='Noord-Holland'", 1),
+                arguments(provinciesWFS, "ligtInLandNaam='Nederland'", 12),
+                // greater than
+                arguments(begroeidterreindeelUrlPostgis, "relatievehoogteligging > 0", 2),
+                arguments(waterdeelUrlOracle, "RELATIEVEHOOGTELIGGING > 0", 0),
+                arguments(wegdeelUrlSqlserver, "relatievehoogteligging > 0", 152),
+                // less than
+                arguments(begroeidterreindeelUrlPostgis, "relatievehoogteligging < 0", 0),
+                arguments(waterdeelUrlOracle, "RELATIEVEHOOGTELIGGING < 0", 1),
+                arguments(wegdeelUrlSqlserver, "relatievehoogteligging < 0", 0),
+                // equals or greater than
+                arguments(
+                        begroeidterreindeelUrlPostgis,
+                        "relatievehoogteligging>=0",
+                        begroeidterreindeelTotalCount),
+                arguments(waterdeelUrlOracle, "RELATIEVEHOOGTELIGGING>=0", waterdeelTotalCount - 1),
+                arguments(wegdeelUrlSqlserver, "relatievehoogteligging>=0", wegdeelTotalCount),
+                // equals or less than
+                arguments(begroeidterreindeelUrlPostgis, "relatievehoogteligging<=0", 3660),
+                arguments(waterdeelUrlOracle, "RELATIEVEHOOGTELIGGING<=0", waterdeelTotalCount),
+                arguments(wegdeelUrlSqlserver, "relatievehoogteligging<=0", 5782),
+                // in between
+                arguments(
+                        begroeidterreindeelUrlPostgis,
+                        "relatievehoogteligging between -2 and 0",
+                        3660),
+                arguments(
+                        waterdeelUrlOracle,
+                        "RELATIEVEHOOGTELIGGING between -2 and 0",
+                        waterdeelTotalCount),
+                arguments(wegdeelUrlSqlserver, "relatievehoogteligging between -2 and 0", 5782),
+                // not in between / outside
+                arguments(
+                        begroeidterreindeelUrlPostgis,
+                        "relatievehoogteligging not between -2 and 0",
+                        2),
+                arguments(waterdeelUrlOracle, "RELATIEVEHOOGTELIGGING not between -2 and 0", 0),
+                arguments(wegdeelUrlSqlserver, "relatievehoogteligging not between -2 and 0", 152),
+                // null value
+                arguments(
+                        begroeidterreindeelUrlPostgis,
+                        "terminationdate is null",
+                        begroeidterreindeelTotalCount),
+                arguments(waterdeelUrlOracle, "TERMINATIONDATE is null", waterdeelTotalCount),
+                arguments(wegdeelUrlSqlserver, "terminationdate is null", wegdeelTotalCount),
+                // not null value
+                arguments(
+                        begroeidterreindeelUrlPostgis,
+                        "identificatie is not null",
+                        begroeidterreindeelTotalCount),
+                arguments(waterdeelUrlOracle, "IDENTIFICATIE is not null", waterdeelTotalCount),
+                arguments(wegdeelUrlSqlserver, "identificatie is not null", wegdeelTotalCount),
+                // date equals w/ string argument (automatic conversion)
+                arguments(begroeidterreindeelUrlPostgis, "creationdate='2016-04-18'", 980),
+                arguments(waterdeelUrlOracle, "CREATIONDATE='2016-04-18'", 86),
+                arguments(wegdeelUrlSqlserver, "creationdate='2016-04-18'", 2179),
+                // date equals w/ TEQUALS function
+                arguments(
+                        begroeidterreindeelUrlPostgis,
+                        "creationdate tequals 2016-04-18T00:00:00",
+                        980),
+                arguments(waterdeelUrlOracle, "CREATIONDATE tequals 2016-04-18T00:00:00", 86),
+                arguments(wegdeelUrlSqlserver, "creationdate tequals 2016-04-18T00:00:00", 2179),
+                // before date
+                arguments(
+                        begroeidterreindeelUrlPostgis,
+                        "creationdate before 2016-04-18T00:00:00Z",
+                        747),
+                arguments(waterdeelUrlOracle, "CREATIONDATE before 2016-04-18T00:00:00Z", 71),
+                arguments(wegdeelUrlSqlserver, "creationdate before 2016-04-18T00:00:00Z", 1178),
+                // after date
+                arguments(
+                        begroeidterreindeelUrlPostgis,
+                        "creationdate after 2016-04-18T00:00:00",
+                        1935),
+                arguments(waterdeelUrlOracle, "CREATIONDATE after 2016-04-18T00:00:00", 125),
+                arguments(wegdeelUrlSqlserver, "creationdate after 2016-04-18T00:00:00", 2577),
+                // between dates
+                arguments(
+                        begroeidterreindeelUrlPostgis,
+                        "creationdate during 2016-04-18T00:00:00/2018-04-18T00:00:00",
+                        2217),
+                arguments(
+                        waterdeelUrlOracle,
+                        "CREATIONDATE during 2016-04-18T00:00:00/2018-04-18T00:00:00",
+                        157),
+                arguments(
+                        wegdeelUrlSqlserver,
+                        "creationdate during 2016-04-18T00:00:00/2018-04-18T00:00:00",
+                        3864),
+                // not between dates
+                arguments(
+                        begroeidterreindeelUrlPostgis,
+                        "creationdate before 2016-04-18T00:00:00 or creationdate after 2018-04-18T00:00:00",
+                        1445),
+                arguments(
+                        waterdeelUrlOracle,
+                        "CREATIONDATE before 2016-04-18T00:00:00 or CREATIONDATE after 2018-04-18T00:00:00",
+                        125),
+                arguments(
+                        wegdeelUrlSqlserver,
+                        "creationdate before 2016-04-18T00:00:00 or creationdate after 2018-04-18T00:00:00",
+                        2070),
+                // or w/ 3 expressions
+                arguments(
+                        begroeidterreindeelUrlPostgis,
+                        // creationdate > '2016-04-18T00:00:00Z' or lv_publicatiedatum <
+                        // '2019-11-20T17:09:52Z' or lv_publicatiedatum > '2022-01-27T13:50:39Z'
+                        "creationdate after 2016-04-18T00:00:00Z or lv_publicatiedatum before 2019-11-20T17:09:52Z or lv_publicatiedatum after 2022-01-27T13:50:39Z",
+                        3522),
+                arguments(
+                        waterdeelUrlOracle,
+                        "CREATIONDATE after 2016-04-18T00:00:00Z or LV_PUBLICATIEDATUM before 2019-11-20T17:09:52Z or LV_PUBLICATIEDATUM after 2022-01-27T13:50:39Z",
+                        257),
+                arguments(
+                        wegdeelUrlSqlserver,
+                        "creationdate after 2016-04-18T00:00:00Z or lv_publicatiedatum before 2019-11-20T17:09:52Z or lv_publicatiedatum after 2022-01-27T13:50:39Z",
+                        5591),
+                // and w/ 2 expressions
+                arguments(
+                        begroeidterreindeelUrlPostgis,
+                        // creationdate > '2016-04-18T00:00:00Z' and lv_publicatiedatum <
+                        // '2019-11-20T17:09:52Z'
+                        "creationdate after 2016-04-18T00:00:00Z and lv_publicatiedatum before 2019-11-20T17:09:52Z",
+                        1264),
+                arguments(
+                        waterdeelUrlOracle,
+                        "CREATIONDATE after 2016-04-18T00:00:00Z and LV_PUBLICATIEDATUM before 2019-11-20T17:09:52Z",
+                        77),
+                arguments(
+                        wegdeelUrlSqlserver,
+                        // creationdate > '2016-04-18T00:00:00Z' and lv_publicatiedatum <
+                        // '2019-11-20T17:09:52Z'
+                        "creationdate after 2016-04-18T00:00:00Z and lv_publicatiedatum before 2019-11-20T17:09:52Z",
+                        1933),
+                // (not) like / ilike
+                arguments(begroeidterreindeelUrlPostgis, "class like 'grasland%'", 85),
+                arguments(
+                        begroeidterreindeelUrlPostgis,
+                        "class not like 'grasland%'",
+                        begroeidterreindeelTotalCount - 85),
+                arguments(waterdeelUrlOracle, "CLASS like '%vlakte'", 16),
+                arguments(wegdeelUrlSqlserver, "surfacematerial like '%verhard'", 106),
+                arguments(provinciesWFS, "naam like '%-Holland'", 2),
+                arguments(provinciesWFS, "naam ilike '%-holland'", 2));
+    }
+
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void broken_filter_not_supported() throws Exception {
+        mockMvc.perform(get(provinciesWFS).param("filter", "naam or Utrecht").param("page", "1"))
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(400));
+    }
 
     /**
      * requires layer "Provinciegebied" with id 2 and with wfs attributes to be configured, will
@@ -174,7 +386,9 @@ class FeaturesControllerPostgresIntegrationTest {
                 mockMvc.perform(get(provinciesWFS).param("page", "1"))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
+                        .andExpect(
+                                jsonPath("$.total")
+                                        .value(exactWfsCounts ? provinciesWFSTotalCount : -1))
                         .andExpect(jsonPath("$.page").value(1))
                         .andExpect(jsonPath("$.pageSize").value(pageSize))
                         .andExpect(jsonPath("$.features").isArray())
@@ -210,7 +424,9 @@ class FeaturesControllerPostgresIntegrationTest {
                 mockMvc.perform(get(provinciesWFS).param("page", "2"))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
+                        .andExpect(
+                                jsonPath("$.total")
+                                        .value(exactWfsCounts ? provinciesWFSTotalCount : -1))
                         .andExpect(jsonPath("$.page").value(2))
                         .andExpect(jsonPath("$.pageSize").value(pageSize))
                         .andExpect(jsonPath("$.features").isArray())
@@ -234,7 +450,7 @@ class FeaturesControllerPostgresIntegrationTest {
         page2Features.addAll(page1Features);
         assertEquals(
                 retrievedFeatsCount,
-                page2Features.stream().distinct().collect(Collectors.toList()).size(),
+                (int) page2Features.stream().distinct().count(),
                 "there should be no duplicates in 2 sequential pages");
     }
 
@@ -252,7 +468,9 @@ class FeaturesControllerPostgresIntegrationTest {
                 mockMvc.perform(get(provinciesWFS).param("page", "3"))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
+                        .andExpect(
+                                jsonPath("$.total")
+                                        .value(exactWfsCounts ? provinciesWFSTotalCount : -1))
                         .andExpect(jsonPath("$.page").value(3))
                         .andExpect(jsonPath("$.pageSize").value(pageSize))
                         .andExpect(jsonPath("$.features").isArray())
@@ -273,7 +491,7 @@ class FeaturesControllerPostgresIntegrationTest {
         mockMvc.perform(get(provinciesWFS).param("page", "1").param("sortBy", "naam"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
+                .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
                 .andExpect(jsonPath("$.page").value(1))
                 .andExpect(jsonPath("$.pageSize").value(pageSize))
                 .andExpect(jsonPath("$.features").isArray())
@@ -301,7 +519,7 @@ class FeaturesControllerPostgresIntegrationTest {
                                 .param("sortOrder", "invalid"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
+                .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
                 .andExpect(jsonPath("$.page").value(1))
                 .andExpect(jsonPath("$.pageSize").value(pageSize))
                 .andExpect(jsonPath("$.features").isArray())
@@ -334,7 +552,7 @@ class FeaturesControllerPostgresIntegrationTest {
                                 .param("sortOrder", "asc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
+                .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
                 .andExpect(jsonPath("$.page").value(1))
                 .andExpect(jsonPath("$.pageSize").value(pageSize))
                 .andExpect(jsonPath("$.features").isArray())
@@ -362,7 +580,7 @@ class FeaturesControllerPostgresIntegrationTest {
                                 .param("sortOrder", "desc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.total").value(provinciesWFSTotalCount))
+                .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
                 .andExpect(jsonPath("$.page").value(1))
                 .andExpect(jsonPath("$.pageSize").value(pageSize))
                 .andExpect(jsonPath("$.features").isArray())
@@ -390,13 +608,13 @@ class FeaturesControllerPostgresIntegrationTest {
         // begroeidterreindeel from postgis
         // page 1, sort ascending by gmlid
         mockMvc.perform(
-                        get("/app/1/layer/6/features")
+                        get(begroeidterreindeelUrlPostgis)
                                 .param("page", "1")
                                 .param("sortBy", "gmlid")
                                 .param("sortOrder", "asc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.total").value(3662))
+                .andExpect(jsonPath("$.total").value(begroeidterreindeelTotalCount))
                 .andExpect(jsonPath("$.page").value(1))
                 .andExpect(jsonPath("$.pageSize").value(pageSize))
                 .andExpect(jsonPath("$.features").isArray())
@@ -410,13 +628,13 @@ class FeaturesControllerPostgresIntegrationTest {
 
         // page 1, sort descending by gmlid
         mockMvc.perform(
-                        get("/app/1/layer/6/features")
+                        get(begroeidterreindeelUrlPostgis)
                                 .param("page", "1")
                                 .param("sortBy", "gmlid")
                                 .param("sortOrder", "desc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.total").value(3662))
+                .andExpect(jsonPath("$.total").value(begroeidterreindeelTotalCount))
                 .andExpect(jsonPath("$.page").value(1))
                 .andExpect(jsonPath("$.pageSize").value(pageSize))
                 .andExpect(jsonPath("$.features").isArray())
@@ -433,7 +651,7 @@ class FeaturesControllerPostgresIntegrationTest {
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void get_by_fid_from_database() throws Exception {
         mockMvc.perform(
-                        get("/app/1/layer/6/features")
+                        get(begroeidterreindeelUrlPostgis)
                                 .param(
                                         "__fid",
                                         "begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457")
@@ -483,10 +701,10 @@ class FeaturesControllerPostgresIntegrationTest {
      */
     @ParameterizedTest(
             name =
-                    "should return non empty featurecollections for valid page from database #{index}: database: {0}, featuretype: {1}")
+                    "#{index}: should return non-empty featurecollections for valid page from database: {0}, featuretype: {1}")
     @MethodSource("argumentsProvider")
     void should_return_non_empty_featurecollections_for_valid_pages_from_database(
-            String database, String tableName, String applayerUrl, int totalCcount)
+            String ignoredDatabase, String ignoredTableName, String applayerUrl, int totalCcount)
             throws Exception {
         // page 1
         MvcResult result =
@@ -554,16 +772,8 @@ class FeaturesControllerPostgresIntegrationTest {
         page2Features.addAll(page1Features);
         assertEquals(
                 2 * pageSize,
-                page2Features.stream().distinct().collect(Collectors.toList()).size(),
+                (int) page2Features.stream().distinct().count(),
                 "there should be no duplicates in 2 sequential pages");
-    }
-
-    static Stream<Arguments> projectionArgumentsProvider() {
-        return Stream.of(
-                // x, y, projection, distance,expected1stCoordinate, expected2ndCoordinate
-                arguments(130794, 459169, "EPSG:28992", 5, 130873.9, 459308.9),
-                arguments(52.12021, 5.03377, "EPSG:4326", /*~ 5 meter*/ 0.00005, 52.1, 5.0),
-                arguments(560356, 6821890, "EPSG:3857", 5, 560485.3, 6822118.8));
     }
 
     @ParameterizedTest(
@@ -585,7 +795,7 @@ class FeaturesControllerPostgresIntegrationTest {
 
         MvcResult result =
                 mockMvc.perform(
-                                get("/app/1/layer/6/features")
+                                get(begroeidterreindeelUrlPostgis)
                                         .param("x", String.valueOf(x))
                                         .param("y", String.valueOf(y))
                                         .param("crs", crs)
@@ -616,14 +826,6 @@ class FeaturesControllerPostgresIntegrationTest {
                 g.getCoordinate().getY(),
                 .1,
                 "y coordinate should be " + expected2ndCoordinate);
-    }
-
-    static Stream<Arguments> wfsProjectionArgumentsProvider() {
-        return Stream.of(
-                // x, y, projection, distance,expected1stCoordinate, expected2ndCoordinate
-                arguments(141247, 458118, "EPSG:28992", 5, 130179.9, 430066.3),
-                arguments(52.11937, 5.04173, "EPSG:4326", /*~ 5 meter*/ 0.00005, 51.9, 5.2),
-                arguments(577351, 6820242, "EPSG:3857", 5, 561478.9, 6774711.6));
     }
 
     @ParameterizedTest(
@@ -688,10 +890,10 @@ class FeaturesControllerPostgresIntegrationTest {
      */
     @ParameterizedTest(
             name =
-                    "should return same featurecollection for same page from database #{index}: database: {0}, featuretype: {1}")
+                    "#{index}: should return same featurecollection for same page from database: {0}, featuretype: {1}")
     @MethodSource("argumentsProvider")
     void should_return_same_featurecollection_for_same_page_database(
-            String database, String tableName, String applayerUrl, int totalCcount)
+            String ignoredDatabase, String ignoredTableName, String applayerUrl, int totalCcount)
             throws Exception {
         // page 1
         MvcResult result =
@@ -752,10 +954,10 @@ class FeaturesControllerPostgresIntegrationTest {
      */
     @ParameterizedTest(
             name =
-                    "should return empty featurecollection for out of range page from database #{index}: database: {0}, featuretype: {1}")
+                    "#{index}: should return empty featurecollection for out of range page from database: {0}, featuretype: {1}")
     @MethodSource("argumentsProvider")
     void should_return_empty_featurecollection_for_out_of_range_page_database(
-            String database, String tableName, String applayerUrl, int totalCcount)
+            String ignoredDatabase, String ignoredTableName, String applayerUrl, int totalCcount)
             throws Exception {
 
         // request page ...
@@ -775,5 +977,36 @@ class FeaturesControllerPostgresIntegrationTest {
         assertNotNull(body, "response body should not be null");
         List<Service> features = JsonPath.read(body, "$.features");
         assertEquals(0, features.size(), "there should be 0 features in the list");
+    }
+
+    @ParameterizedTest(
+            name =
+                    "#{index} should return a featurecollection for various ECQL filters on appLayer: {0}, filter: {1}")
+    @MethodSource("filtersProvider")
+    void filterTest(String applayerUrl, String filterCQL, int totalCount) throws Exception {
+        int listSize = Math.min(pageSize, totalCount);
+        if (!exactWfsCounts && applayerUrl.equals(provinciesWFS)) {
+            // see #extractWfsCount and property 'tailormap-api.wfs.count.exact'
+            totalCount = -1;
+        }
+
+        MvcResult result =
+                mockMvc.perform(get(applayerUrl).param("filter", filterCQL).param("page", "1"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(jsonPath("$.page").value(1))
+                        .andExpect(jsonPath("$.pageSize").value(pageSize))
+                        .andExpect(jsonPath("$.total").value(totalCount))
+                        .andExpect(jsonPath("$.features").isArray())
+                        .andReturn();
+        final String body = result.getResponse().getContentAsString();
+        logger.trace(body);
+        assertNotNull(body, "response body should not be null");
+        final List<Service> features = JsonPath.read(body, "$.features");
+
+        assertEquals(
+                listSize,
+                features.size(),
+                () -> "there should be " + listSize + " features in the list");
     }
 }

@@ -34,6 +34,8 @@ import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultProjectedCRS;
@@ -84,7 +86,11 @@ public class FeaturesController implements Constants {
     @Value("${tailormap-api.pageSize}")
     private int pageSize;
 
-    private FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+    @Value("${tailormap-api.wfs.count.exact}")
+    private boolean exactWfsCounts;
+
+    private final FilterFactory2 ff =
+            CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
     private final Log logger = LogFactory.getLog(getClass());
     @Autowired private ApplicationRepository applicationRepository;
     @Autowired private ApplicationLayerRepository applicationLayerRepository;
@@ -178,20 +184,16 @@ public class FeaturesController implements Constants {
             ApplicationLayer appLayer = applicationLayerRepository.getReferenceById(appLayerId);
             FeaturesResponse featuresResponse = new FeaturesResponse();
 
-            if (null != filter) {
-                throw new BadRequestException("filter is not currently supported");
-            }
-
             if (null != __fid) {
                 featuresResponse = getFeatureByFID(appLayer, __fid, crs);
             } else if (null != x && null != y) {
                 featuresResponse = getFeaturesByXY(appLayer, x, y, crs, distance, simplify);
             } else if (null != page && page > 0) {
-                featuresResponse = getAllFeatures(appLayer, crs, page, sortBy, sortOrder);
+                featuresResponse = getAllFeatures(appLayer, crs, page, filter, sortBy, sortOrder);
             } else {
                 // TODO other implementations
                 throw new BadRequestException(
-                        "Only x/y/distance/simplify parameters are supported");
+                        "Unsupported combination of request parameters, please check the documentation");
             }
 
             return ResponseEntity.status(HttpStatus.OK).body(featuresResponse);
@@ -203,8 +205,10 @@ public class FeaturesController implements Constants {
             @NotNull ApplicationLayer appLayer,
             String crs,
             Integer page,
+            String filterCQL,
             String sortBy,
-            String sortOrder) {
+            String sortOrder)
+            throws BadRequestException {
         FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);
 
         // find attribute source of layer
@@ -221,9 +225,6 @@ public class FeaturesController implements Constants {
                         .collect(Collectors.toList());
         try {
             SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
-            // can be -1 if too costly
-            int featureCount = fs.getCount(Query.ALL);
-            featuresResponse.setTotal(featureCount);
 
             List<String> propNames =
                     configuredAttributes.stream()
@@ -242,7 +243,7 @@ public class FeaturesController implements Constants {
                 sortAttrName = sft.getPrimaryKeyAttribute();
                 logger.trace("Sorting by primary key");
             } else {
-                // there is no primary key we known of
+                // there is no primary key we know of
                 // pick the first one from sft that is not geometry and is in the list of configured
                 // attributes
                 // note that propNames does not have the default geometry attribute (see above)
@@ -275,15 +276,36 @@ public class FeaturesController implements Constants {
                 _sortOrder = SortOrder.valueOf(sortOrder.toUpperCase());
             }
 
-            // setup page query
+            // setup query, attributes and filter
             Query q = new Query(fs.getName().toString());
             q.setPropertyNames(propNames);
+
+            // count can be -1 if too costly eg. some WFS
+            int featureCount = -1;
+            if (null != filterCQL) {
+                Filter filter = ECQL.toFilter(filterCQL);
+                q.setFilter(filter);
+                featureCount = fs.getCount(q);
+                // this will execute the query twice, once to get the count and once to get the data
+                if (featureCount == -1 && exactWfsCounts) {
+                    featureCount = fs.getFeatures(q).size();
+                }
+            } else {
+                featureCount = fs.getCount(Query.ALL);
+                // this will execute the query twice, once to get the count and once to get the data
+                if (featureCount == -1 && exactWfsCounts) {
+                    featureCount = fs.getFeatures(Query.ALL).size();
+                }
+            }
+            featuresResponse.setTotal(featureCount);
+
+            // setup page query
             q.setSortBy(ff.sort(sortAttrName, _sortOrder));
             q.setMaxFeatures(pageSize);
             q.setStartIndex((page - 1) * pageSize);
             logger.debug("Attribute query: " + q);
 
-            executeQueryOnFeatureSource(
+            executeQueryOnFeatureSourceAndClose(
                     false,
                     featuresResponse,
                     sft,
@@ -293,6 +315,9 @@ public class FeaturesController implements Constants {
                     determineProjectToCRS(crs, fs));
         } catch (IOException e) {
             logger.error("Could not retrieve attribute data.", e);
+        } catch (CQLException e) {
+            logger.error("Could not parse requested filter.", e);
+            throw new BadRequestException("Could not parse requested filter.");
         }
 
         return featuresResponse;
@@ -334,7 +359,7 @@ public class FeaturesController implements Constants {
             q.setMaxFeatures(1);
             logger.debug("FID query: " + q);
 
-            executeQueryOnFeatureSource(
+            executeQueryOnFeatureSourceAndClose(
                     false,
                     featuresResponse,
                     sft,
@@ -452,7 +477,7 @@ public class FeaturesController implements Constants {
             q.setFilter(spatialFilter);
             q.setMaxFeatures(DEFAULT_MAX_FEATURES);
 
-            executeQueryOnFeatureSource(
+            executeQueryOnFeatureSourceAndClose(
                     simplifyGeometry, featuresResponse, sft, configuredAttributes, fs, q, fromCRS);
         } catch (IOException e) {
             logger.error("Could not retrieve attribute data.", e);
@@ -460,7 +485,7 @@ public class FeaturesController implements Constants {
         return featuresResponse;
     }
 
-    private void executeQueryOnFeatureSource(
+    private void executeQueryOnFeatureSourceAndClose(
             boolean simplifyGeometry,
             @NotNull FeaturesResponse featuresResponse,
             @NotNull SimpleFeatureType sft,
@@ -515,6 +540,8 @@ public class FeaturesController implements Constants {
                         });
                 featuresResponse.addFeaturesItem(newFeat);
             }
+        } finally {
+            fs.getDataStore().dispose();
         }
         if (addFields) {
             // get attributes from feature type
