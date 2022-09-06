@@ -468,69 +468,68 @@ import javax.validation.constraints.NotNull;
 <span class="fc" id="L468">                            .layerName(serviceLayer.getName())</span>
 <span class="fc" id="L469">                            .title(getNameForAppLayer(applicationLayer, layers))</span>
 <span class="fc" id="L470">                            .serviceId(applicationLayer.getService().getId())</span>
-<span class="fc" id="L471">                            .visible(l.isChecked())</span>
-<span class="fc" id="L472">                            .maxScale(serviceLayer.getMaxScale())</span>
-<span class="fc" id="L473">                            .minScale(serviceLayer.getMinScale())</span>
-<span class="fc" id="L474">                            .legendImageUrl(serviceLayer.getLegendImageUrl())</span>
-<span class="fc" id="L475">                            .hiDpiMode(hiDpiMode)</span>
-<span class="fc" id="L476">                            .hiDpiSubstituteLayer(hiDpiSubstituteLayer)</span>
-<span class="fc bfc" id="L477" title="All 2 branches covered.">                            .hasAttributes(!l.getApplicationLayer().getAttributes().isEmpty());</span>
+<span class="fc" id="L471">                            .hiDpiMode(hiDpiMode)</span>
+<span class="fc" id="L472">                            .hiDpiSubstituteLayer(hiDpiSubstituteLayer)</span>
+<span class="fc" id="L473">                            .visible(l.isChecked())</span>
+<span class="fc" id="L474">                            .maxScale(serviceLayer.getMaxScale())</span>
+<span class="fc" id="L475">                            .minScale(serviceLayer.getMinScale())</span>
+<span class="fc bfc" id="L476" title="All 2 branches covered.">                            .hasAttributes(!l.getApplicationLayer().getAttributes().isEmpty());</span>
 
-<span class="fc" id="L479">            mapResponse.addAppLayersItem(appLayer);</span>
+<span class="fc" id="L478">            mapResponse.addAppLayersItem(appLayer);</span>
 
-<span class="fc" id="L481">            GeoService geoService = applicationLayer.getService();</span>
+<span class="fc" id="L480">            GeoService geoService = applicationLayer.getService();</span>
 
             // Use this default if saved before the form default was added in admin
-<span class="fc" id="L484">            Service.ServerTypeEnum serviceServerType = Service.ServerTypeEnum.AUTO;</span>
-<span class="fc" id="L485">            ClobElement ce = geoService.getDetails().get(&quot;serverType&quot;);</span>
-<span class="pc bpc" id="L486" title="1 of 2 branches missed.">            if (ce != null) {</span>
+<span class="fc" id="L483">            Service.ServerTypeEnum serviceServerType = Service.ServerTypeEnum.AUTO;</span>
+<span class="fc" id="L484">            ClobElement ce = geoService.getDetails().get(&quot;serverType&quot;);</span>
+<span class="pc bpc" id="L485" title="1 of 2 branches missed.">            if (ce != null) {</span>
                 try {
-<span class="nc" id="L488">                    serviceServerType = Service.ServerTypeEnum.fromValue(ce.getValue());</span>
-<span class="nc" id="L489">                } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L490">                    logger.warn(</span>
-<span class="nc" id="L491">                            String.format(</span>
+<span class="nc" id="L487">                    serviceServerType = Service.ServerTypeEnum.fromValue(ce.getValue());</span>
+<span class="nc" id="L488">                } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L489">                    logger.warn(</span>
+<span class="nc" id="L490">                            String.format(</span>
                                     &quot;App #%s (%s): invalid serverType enum value for service #%s (%s)&quot;,
-<span class="nc" id="L493">                                    a.getId(),</span>
-<span class="nc" id="L494">                                    a.getNameWithVersion(),</span>
-<span class="nc" id="L495">                                    geoService.getId(),</span>
-<span class="nc" id="L496">                                    geoService.getName()));</span>
-<span class="nc" id="L497">                }</span>
+<span class="nc" id="L492">                                    a.getId(),</span>
+<span class="nc" id="L493">                                    a.getNameWithVersion(),</span>
+<span class="nc" id="L494">                                    geoService.getId(),</span>
+<span class="nc" id="L495">                                    geoService.getName()));</span>
+<span class="nc" id="L496">                }</span>
             }
-<span class="fc" id="L499">            Integer tilingGutter = null;</span>
-<span class="fc" id="L500">            ce = geoService.getDetails().get(&quot;tiling.gutter&quot;);</span>
-<span class="pc bpc" id="L501" title="1 of 2 branches missed.">            if (ce != null) {</span>
+<span class="fc" id="L498">            Integer tilingGutter = null;</span>
+<span class="fc" id="L499">            ce = geoService.getDetails().get(&quot;tiling.gutter&quot;);</span>
+<span class="pc bpc" id="L500" title="1 of 2 branches missed.">            if (ce != null) {</span>
                 try {
-<span class="nc" id="L503">                    tilingGutter = Integer.parseInt(ce.getValue());</span>
-<span class="nc" id="L504">                } catch (NumberFormatException ignored) {</span>
+<span class="nc" id="L502">                    tilingGutter = Integer.parseInt(ce.getValue());</span>
+<span class="nc" id="L503">                } catch (NumberFormatException ignored) {</span>
                     // ignored
-<span class="nc" id="L506">                }</span>
+<span class="nc" id="L505">                }</span>
             }
 
-<span class="fc" id="L509">            Service s =</span>
+<span class="fc" id="L508">            Service s =</span>
                     new Service()
-<span class="fc" id="L511">                            .url(geoService.getUrl())</span>
-<span class="fc" id="L512">                            .id(geoService.getId())</span>
-<span class="fc" id="L513">                            .name(geoService.getName())</span>
-<span class="fc" id="L514">                            .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))</span>
-<span class="fc" id="L515">                            .serverType(serviceServerType)</span>
-<span class="fc" id="L516">                            .tilingDisabled(</span>
-<span class="fc" id="L517">                                    &quot;true&quot;</span>
-<span class="fc" id="L518">                                            .equals(</span>
+<span class="fc" id="L510">                            .url(geoService.getUrl())</span>
+<span class="fc" id="L511">                            .id(geoService.getId())</span>
+<span class="fc" id="L512">                            .name(geoService.getName())</span>
+<span class="fc" id="L513">                            .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))</span>
+<span class="fc" id="L514">                            .serverType(serviceServerType)</span>
+<span class="fc" id="L515">                            .tilingDisabled(</span>
+<span class="fc" id="L516">                                    &quot;true&quot;</span>
+<span class="fc" id="L517">                                            .equals(</span>
                                                     geoService
-<span class="fc" id="L520">                                                            .getDetails()</span>
-<span class="fc" id="L521">                                                            .getOrDefault(</span>
+<span class="fc" id="L519">                                                            .getDetails()</span>
+<span class="fc" id="L520">                                                            .getOrDefault(</span>
                                                                     &quot;tiling.disable&quot;,
                                                                     new ClobElement(&quot;false)&quot;))
-<span class="fc" id="L524">                                                            .getValue()))</span>
-<span class="fc" id="L525">                            .tilingGutter(tilingGutter)</span>
-<span class="fc" id="L526">                            .capabilities(geoService.getCapabilitiesDoc());</span>
-<span class="fc bfc" id="L527" title="All 2 branches covered.">            if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {</span>
-<span class="fc" id="L528">                s.tilingProtocol(</span>
-<span class="fc" id="L529">                        Service.TilingProtocolEnum.fromValue(</span>
-<span class="fc" id="L530">                                ((TileService) geoService).getTilingProtocol()));</span>
+<span class="fc" id="L523">                                                            .getValue()))</span>
+<span class="fc" id="L524">                            .tilingGutter(tilingGutter)</span>
+<span class="fc" id="L525">                            .capabilities(geoService.getCapabilitiesDoc());</span>
+<span class="fc bfc" id="L526" title="All 2 branches covered.">            if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {</span>
+<span class="fc" id="L527">                s.tilingProtocol(</span>
+<span class="fc" id="L528">                        Service.TilingProtocolEnum.fromValue(</span>
+<span class="fc" id="L529">                                ((TileService) geoService).getTilingProtocol()));</span>
             }
-<span class="fc" id="L532">            mapResponse.addServicesItem(s);</span>
-<span class="fc" id="L533">        }</span>
-<span class="fc" id="L534">    }</span>
+<span class="fc" id="L531">            mapResponse.addServicesItem(s);</span>
+<span class="fc" id="L532">        }</span>
+<span class="fc" id="L533">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
