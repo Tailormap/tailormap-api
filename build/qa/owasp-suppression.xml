@@ -7,10 +7,16 @@ SPDX-License-Identifier: MIT
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
     <suppress>
         <notes><![CDATA[
-   any GeoTools 26.4 artifact is not CDE,
-   should be fixed in OWASP scanner 7.0.0
+   file name: spring-web-5.3.22.jar
    ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.geotools[.a-z]*/[a-z]+[.]?[-a-z0-9]*[.]?[-a-z]*\@26\.4$</packageUrl>
-        <cpe>cpe:/a:cde:cde</cpe>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-web@.*$</packageUrl>
+        <cve>CVE-2016-1000027</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: spring-security-crypto-5.7.3.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring\-security\-crypto@.*$</packageUrl>
+        <vulnerabilityName>CVE-2020-5408</vulnerabilityName>
     </suppress>
 </suppressions>

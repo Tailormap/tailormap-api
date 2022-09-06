@@ -109,18 +109,19 @@ SPDX-License-Identifier: MIT
     eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies
 
     and use
-        mvn -U org.codehaus.mojo:versions-maven-plugin:2.11.0:display-dependency-updates
+        mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates
     and
-        mvn -U org.codehaus.mojo:versions-maven-plugin:2.11.0:display-plugin-updates
+        mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates
     to check
     -->
-    <!-- jackson-bom.version>2.13.3</jackson-bom.version -->
+    <jackson-bom.version>2.13.4</jackson-bom.version>
     <micrometer.version>1.9.3</micrometer.version>
     <!-- make sure to keep this hibernate version and that of tailormap persistence version in sync -->
     <hibernate.version>5.6.11.Final</hibernate.version>
     <hsqldb.version>2.7.0</hsqldb.version>
     <postgresql.version>42.5.0</postgresql.version>
-    <oracle-database.version>21.6.0.0.1</oracle-database.version>
+    <snakeyaml.version>1.31</snakeyaml.version>
+    <oracle-database.version>21.7.0.0</oracle-database.version>
     <mssql-jdbc.version>11.2.0.jre11</mssql-jdbc.version>
     <webjars-locator-core.version>0.52</webjars-locator-core.version>
     <!-- junit-jupiter.version>5.8.2</junit-jupiter.version -->
@@ -128,11 +129,16 @@ SPDX-License-Identifier: MIT
     <maven-surefire-plugin.version>${maven.surefire.version}</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>${maven.surefire.version}</maven-failsafe-plugin.version>
     <maven-deploy-plugin.version>3.0.0-M2</maven-deploy-plugin.version>
-    <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
+    <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
     <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
+    <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+    <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
+    <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
+    <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
+    <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
     <!-- end version overrides -->
     <maven-pmd-plugin.version>3.19.0</maven-pmd-plugin.version>
-    <versions-maven-plugin.version>2.11.0</versions-maven-plugin.version>
+    <versions-maven-plugin.version>2.12.0</versions-maven-plugin.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
     <dependency-check-maven.version>7.1.2</dependency-check-maven.version>
     <modernizer-maven-plugin.version>2.4.0</modernizer-maven-plugin.version>
