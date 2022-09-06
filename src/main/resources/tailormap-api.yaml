@@ -531,7 +531,12 @@ paths:
           schema:
             type: boolean
             default: false
-        - description: 'a filter to be applied, possibly in combination with any other request parameters'
+        - description: '
+            A filter to be applied, possibly in combination with any other request parameters. 
+            The filter is an ECQL string, see [ECQL reference](https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html).
+            Filtering is supported when requesting a page of features, not when requesting a single 
+            feature (using `__fid`) nor when using x/y coordinates.
+            '
           in: query
           name: filter
           required: false

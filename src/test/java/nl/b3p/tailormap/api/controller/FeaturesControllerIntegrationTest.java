@@ -42,7 +42,7 @@ class FeaturesControllerIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    void filter_not_supported() throws Exception {
+    void only_filter_not_supported() throws Exception {
         mockMvc.perform(get("/app/1/layer/2/features").param("filter", "naam=Utrecht"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
