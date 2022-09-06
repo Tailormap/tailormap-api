@@ -468,11 +468,12 @@ public class MapController {
                             .layerName(serviceLayer.getName())
                             .title(getNameForAppLayer(applicationLayer, layers))
                             .serviceId(applicationLayer.getService().getId())
-                            .hiDpiMode(hiDpiMode)
-                            .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
                             .visible(l.isChecked())
                             .maxScale(serviceLayer.getMaxScale())
                             .minScale(serviceLayer.getMinScale())
+                            .legendImageUrl(serviceLayer.getLegendImageUrl())
+                            .hiDpiMode(hiDpiMode)
+                            .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
                             .hasAttributes(!l.getApplicationLayer().getAttributes().isEmpty());
 
             mapResponse.addAppLayersItem(appLayer);
