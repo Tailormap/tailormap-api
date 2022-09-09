@@ -20,14 +20,14 @@ import javax.annotation.Generated;
 
 @Schema(name = &quot;RedirectResponse&quot;, description = &quot; login required response, but can also be used for other response that require redirection. Does not include a HTTP header to force redirection, but a url that the client can use. &quot;)
 @Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="fc" id="L23">public class RedirectResponse implements Serializable {</span>
+<span class="nc" id="L23">public class RedirectResponse implements Serializable {</span>
 
   private static final long serialVersionUID = 1L;
 
-<span class="fc" id="L27">  @JsonProperty(&quot;code&quot;)</span>
-<span class="fc" id="L28">  private Integer code = 401;</span>
+<span class="nc" id="L27">  @JsonProperty(&quot;code&quot;)</span>
+<span class="nc" id="L28">  private Integer code = 401;</span>
 
-<span class="fc" id="L30">  @JsonProperty(&quot;url&quot;)</span>
+<span class="nc" id="L30">  @JsonProperty(&quot;url&quot;)</span>
   private String url = &quot;/login&quot;;
 
   public RedirectResponse code(Integer code) {
@@ -42,7 +42,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;code&quot;, required = false)
   public Integer getCode() {
-<span class="fc" id="L45">    return code;</span>
+<span class="nc" id="L45">    return code;</span>
   }
 
   public void setCode(Integer code) {
@@ -61,7 +61,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;url&quot;, description = &quot;redirect url&quot;, required = false)
   public String getUrl() {
-<span class="fc" id="L64">    return url;</span>
+<span class="nc" id="L64">    return url;</span>
   }
 
   public void setUrl(String url) {

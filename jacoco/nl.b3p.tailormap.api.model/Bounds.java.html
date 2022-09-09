@@ -20,7 +20,7 @@ import javax.annotation.Generated;
 
 @Schema(name = &quot;Bounds&quot;, description = &quot;Describes an extent within a Coordinate Reference System&quot;)
 @Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="fc" id="L23">public class Bounds implements Serializable {</span>
+<span class="nc" id="L23">public class Bounds implements Serializable {</span>
 
   private static final long serialVersionUID = 1L;
 
@@ -36,12 +36,12 @@ import javax.annotation.Generated;
   @JsonProperty(&quot;maxx&quot;)
   private Double maxx;
 
-<span class="fc" id="L39">  @JsonProperty(&quot;crs&quot;)</span>
+<span class="nc" id="L39">  @JsonProperty(&quot;crs&quot;)</span>
   private String crs = null;
 
   public Bounds miny(Double miny) {
-<span class="fc" id="L43">    this.miny = miny;</span>
-<span class="fc" id="L44">    return this;</span>
+<span class="nc" id="L43">    this.miny = miny;</span>
+<span class="nc" id="L44">    return this;</span>
   }
 
   /**
@@ -51,7 +51,7 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;miny&quot;, description = &quot;lower bottom&quot;, required = true)
   public Double getMiny() {
-<span class="fc" id="L54">    return miny;</span>
+<span class="nc" id="L54">    return miny;</span>
   }
 
   public void setMiny(Double miny) {
@@ -59,8 +59,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L59">  }</span>
 
   public Bounds minx(Double minx) {
-<span class="fc" id="L62">    this.minx = minx;</span>
-<span class="fc" id="L63">    return this;</span>
+<span class="nc" id="L62">    this.minx = minx;</span>
+<span class="nc" id="L63">    return this;</span>
   }
 
   /**
@@ -70,7 +70,7 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;minx&quot;, description = &quot;lower left&quot;, required = true)
   public Double getMinx() {
-<span class="fc" id="L73">    return minx;</span>
+<span class="nc" id="L73">    return minx;</span>
   }
 
   public void setMinx(Double minx) {
@@ -78,8 +78,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L78">  }</span>
 
   public Bounds maxy(Double maxy) {
-<span class="fc" id="L81">    this.maxy = maxy;</span>
-<span class="fc" id="L82">    return this;</span>
+<span class="nc" id="L81">    this.maxy = maxy;</span>
+<span class="nc" id="L82">    return this;</span>
   }
 
   /**
@@ -89,7 +89,7 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;maxy&quot;, description = &quot;upper top&quot;, required = true)
   public Double getMaxy() {
-<span class="fc" id="L92">    return maxy;</span>
+<span class="nc" id="L92">    return maxy;</span>
   }
 
   public void setMaxy(Double maxy) {
@@ -97,8 +97,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L97">  }</span>
 
   public Bounds maxx(Double maxx) {
-<span class="fc" id="L100">    this.maxx = maxx;</span>
-<span class="fc" id="L101">    return this;</span>
+<span class="nc" id="L100">    this.maxx = maxx;</span>
+<span class="nc" id="L101">    return this;</span>
   }
 
   /**
@@ -108,7 +108,7 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;maxx&quot;, description = &quot;upper right&quot;, required = true)
   public Double getMaxx() {
-<span class="fc" id="L111">    return maxx;</span>
+<span class="nc" id="L111">    return maxx;</span>
   }
 
   public void setMaxx(Double maxx) {
@@ -116,8 +116,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L116">  }</span>
 
   public Bounds crs(String crs) {
-<span class="fc" id="L119">    this.crs = crs;</span>
-<span class="fc" id="L120">    return this;</span>
+<span class="nc" id="L119">    this.crs = crs;</span>
+<span class="nc" id="L120">    return this;</span>
   }
 
   /**
@@ -127,7 +127,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;crs&quot;, description = &quot;(EPSG) code of the projection&quot;, required = false)
   public String getCrs() {
-<span class="fc" id="L130">    return crs;</span>
+<span class="nc" id="L130">    return crs;</span>
   }
 
   public void setCrs(String crs) {

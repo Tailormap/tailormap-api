@@ -20,19 +20,19 @@ import javax.annotation.Generated;
 
 @Schema(name = &quot;ErrorResponse&quot;, description = &quot; General server error response. Can be returned when something goes terribly wrong in the backend. Note that the diagnostic message may be of a general character to prevent disclosure of information about the backend. &quot;)
 @Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="fc" id="L23">public class ErrorResponse implements Serializable {</span>
+<span class="nc" id="L23">public class ErrorResponse implements Serializable {</span>
 
   private static final long serialVersionUID = 1L;
 
-<span class="fc" id="L27">  @JsonProperty(&quot;code&quot;)</span>
-<span class="fc" id="L28">  private Integer code = 500;</span>
+<span class="nc" id="L27">  @JsonProperty(&quot;code&quot;)</span>
+<span class="nc" id="L28">  private Integer code = 500;</span>
 
-<span class="fc" id="L30">  @JsonProperty(&quot;message&quot;)</span>
+<span class="nc" id="L30">  @JsonProperty(&quot;message&quot;)</span>
   private String message = &quot;Internal server error&quot;;
 
   public ErrorResponse code(Integer code) {
-<span class="fc" id="L34">    this.code = code;</span>
-<span class="fc" id="L35">    return this;</span>
+<span class="nc" id="L34">    this.code = code;</span>
+<span class="nc" id="L35">    return this;</span>
   }
 
   /**
@@ -42,7 +42,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;code&quot;, required = false)
   public Integer getCode() {
-<span class="fc" id="L45">    return code;</span>
+<span class="nc" id="L45">    return code;</span>
   }
 
   public void setCode(Integer code) {
@@ -50,8 +50,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L50">  }</span>
 
   public ErrorResponse message(String message) {
-<span class="fc" id="L53">    this.message = message;</span>
-<span class="fc" id="L54">    return this;</span>
+<span class="nc" id="L53">    this.message = message;</span>
+<span class="nc" id="L54">    return this;</span>
   }
 
   /**
@@ -61,7 +61,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;message&quot;, description = &quot;diagnostic message&quot;, required = false)
   public String getMessage() {
-<span class="fc" id="L64">    return message;</span>
+<span class="nc" id="L64">    return message;</span>
   }
 
   public void setMessage(String message) {

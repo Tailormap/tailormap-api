@@ -30,7 +30,7 @@ import javax.annotation.Generated;
 
 @Schema(name = &quot;MapResponse&quot;, description = &quot;Any information needed to draw a basic map on a page. May include base layers.&quot;)
 @Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="fc" id="L33">public class MapResponse implements Serializable {</span>
+<span class="nc" id="L33">public class MapResponse implements Serializable {</span>
 
   private static final long serialVersionUID = 1L;
 
@@ -40,19 +40,19 @@ import javax.annotation.Generated;
   @JsonProperty(&quot;maxExtent&quot;)
   private Bounds maxExtent;
 
-<span class="fc" id="L43">  @JsonProperty(&quot;services&quot;)</span>
+<span class="nc" id="L43">  @JsonProperty(&quot;services&quot;)</span>
   @Valid
   private Set&lt;Service&gt; services = new LinkedHashSet&lt;&gt;();
 
-<span class="fc" id="L47">  @JsonProperty(&quot;baseLayerTreeNodes&quot;)</span>
+<span class="nc" id="L47">  @JsonProperty(&quot;baseLayerTreeNodes&quot;)</span>
   @Valid
   private List&lt;LayerTreeNode&gt; baseLayerTreeNodes = new ArrayList&lt;&gt;();
 
-<span class="fc" id="L51">  @JsonProperty(&quot;layerTreeNodes&quot;)</span>
+<span class="nc" id="L51">  @JsonProperty(&quot;layerTreeNodes&quot;)</span>
   @Valid
   private List&lt;LayerTreeNode&gt; layerTreeNodes = new ArrayList&lt;&gt;();
 
-<span class="fc" id="L55">  @JsonProperty(&quot;appLayers&quot;)</span>
+<span class="nc" id="L55">  @JsonProperty(&quot;appLayers&quot;)</span>
   @Valid
   private List&lt;AppLayer&gt; appLayers = new ArrayList&lt;&gt;();
 
@@ -60,8 +60,8 @@ import javax.annotation.Generated;
   private CoordinateReferenceSystem crs;
 
   public MapResponse initialExtent(Bounds initialExtent) {
-<span class="fc" id="L63">    this.initialExtent = initialExtent;</span>
-<span class="fc" id="L64">    return this;</span>
+<span class="nc" id="L63">    this.initialExtent = initialExtent;</span>
+<span class="nc" id="L64">    return this;</span>
   }
 
   /**
@@ -71,7 +71,7 @@ import javax.annotation.Generated;
   @NotNull @Valid 
   @Schema(name = &quot;initialExtent&quot;, required = true)
   public Bounds getInitialExtent() {
-<span class="fc" id="L74">    return initialExtent;</span>
+<span class="nc" id="L74">    return initialExtent;</span>
   }
 
   public void setInitialExtent(Bounds initialExtent) {
@@ -79,8 +79,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L79">  }</span>
 
   public MapResponse maxExtent(Bounds maxExtent) {
-<span class="fc" id="L82">    this.maxExtent = maxExtent;</span>
-<span class="fc" id="L83">    return this;</span>
+<span class="nc" id="L82">    this.maxExtent = maxExtent;</span>
+<span class="nc" id="L83">    return this;</span>
   }
 
   /**
@@ -90,7 +90,7 @@ import javax.annotation.Generated;
   @Valid 
   @Schema(name = &quot;maxExtent&quot;, required = false)
   public Bounds getMaxExtent() {
-<span class="fc" id="L93">    return maxExtent;</span>
+<span class="nc" id="L93">    return maxExtent;</span>
   }
 
   public void setMaxExtent(Bounds maxExtent) {
@@ -103,11 +103,11 @@ import javax.annotation.Generated;
   }
 
   public MapResponse addServicesItem(Service servicesItem) {
-<span class="pc bpc" id="L106" title="1 of 2 branches missed.">    if (this.services == null) {</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">    if (this.services == null) {</span>
 <span class="nc" id="L107">      this.services = new LinkedHashSet&lt;&gt;();</span>
     }
-<span class="fc" id="L109">    this.services.add(servicesItem);</span>
-<span class="fc" id="L110">    return this;</span>
+<span class="nc" id="L109">    this.services.add(servicesItem);</span>
+<span class="nc" id="L110">    return this;</span>
   }
 
   /**
@@ -117,7 +117,7 @@ import javax.annotation.Generated;
   @NotNull @Valid 
   @Schema(name = &quot;services&quot;, required = true)
   public Set&lt;Service&gt; getServices() {
-<span class="fc" id="L120">    return services;</span>
+<span class="nc" id="L120">    return services;</span>
   }
 
   @JsonDeserialize(as = LinkedHashSet.class)
@@ -131,11 +131,11 @@ import javax.annotation.Generated;
   }
 
   public MapResponse addBaseLayerTreeNodesItem(LayerTreeNode baseLayerTreeNodesItem) {
-<span class="pc bpc" id="L134" title="1 of 2 branches missed.">    if (this.baseLayerTreeNodes == null) {</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">    if (this.baseLayerTreeNodes == null) {</span>
 <span class="nc" id="L135">      this.baseLayerTreeNodes = new ArrayList&lt;&gt;();</span>
     }
-<span class="fc" id="L137">    this.baseLayerTreeNodes.add(baseLayerTreeNodesItem);</span>
-<span class="fc" id="L138">    return this;</span>
+<span class="nc" id="L137">    this.baseLayerTreeNodes.add(baseLayerTreeNodesItem);</span>
+<span class="nc" id="L138">    return this;</span>
   }
 
   /**
@@ -145,7 +145,7 @@ import javax.annotation.Generated;
   @NotNull @Valid 
   @Schema(name = &quot;baseLayerTreeNodes&quot;, description = &quot;Unordered list of all tree nodes of base layers. Start with the node with root set to true and use the ordered children array property to order the tree. For base layers, only one child node (with all its' child layers) of the root should be displayed at one time.&quot;, required = true)
   public List&lt;LayerTreeNode&gt; getBaseLayerTreeNodes() {
-<span class="fc" id="L148">    return baseLayerTreeNodes;</span>
+<span class="nc" id="L148">    return baseLayerTreeNodes;</span>
   }
 
   public void setBaseLayerTreeNodes(List&lt;LayerTreeNode&gt; baseLayerTreeNodes) {
@@ -158,11 +158,11 @@ import javax.annotation.Generated;
   }
 
   public MapResponse addLayerTreeNodesItem(LayerTreeNode layerTreeNodesItem) {
-<span class="pc bpc" id="L161" title="1 of 2 branches missed.">    if (this.layerTreeNodes == null) {</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">    if (this.layerTreeNodes == null) {</span>
 <span class="nc" id="L162">      this.layerTreeNodes = new ArrayList&lt;&gt;();</span>
     }
-<span class="fc" id="L164">    this.layerTreeNodes.add(layerTreeNodesItem);</span>
-<span class="fc" id="L165">    return this;</span>
+<span class="nc" id="L164">    this.layerTreeNodes.add(layerTreeNodesItem);</span>
+<span class="nc" id="L165">    return this;</span>
   }
 
   /**
@@ -172,7 +172,7 @@ import javax.annotation.Generated;
   @NotNull @Valid 
   @Schema(name = &quot;layerTreeNodes&quot;, description = &quot;Unordered list of all tree nodes of overlay/thematic/transparent layers. Start with the node with root set to true and use the ordered children array property to order the tree.&quot;, required = true)
   public List&lt;LayerTreeNode&gt; getLayerTreeNodes() {
-<span class="fc" id="L175">    return layerTreeNodes;</span>
+<span class="nc" id="L175">    return layerTreeNodes;</span>
   }
 
   public void setLayerTreeNodes(List&lt;LayerTreeNode&gt; layerTreeNodes) {
@@ -185,11 +185,11 @@ import javax.annotation.Generated;
   }
 
   public MapResponse addAppLayersItem(AppLayer appLayersItem) {
-<span class="pc bpc" id="L188" title="1 of 2 branches missed.">    if (this.appLayers == null) {</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">    if (this.appLayers == null) {</span>
 <span class="nc" id="L189">      this.appLayers = new ArrayList&lt;&gt;();</span>
     }
-<span class="fc" id="L191">    this.appLayers.add(appLayersItem);</span>
-<span class="fc" id="L192">    return this;</span>
+<span class="nc" id="L191">    this.appLayers.add(appLayersItem);</span>
+<span class="nc" id="L192">    return this;</span>
   }
 
   /**
@@ -199,7 +199,7 @@ import javax.annotation.Generated;
   @NotNull @Valid 
   @Schema(name = &quot;appLayers&quot;, description = &quot;Unordered list of all AppLayers referenced from baseLayerTreeNodes and layerTreeNodes. Note that you need to lookup these by id, but OpenAPI only supports a map by using strings as keys, so an array is used instead.&quot;, required = true)
   public List&lt;AppLayer&gt; getAppLayers() {
-<span class="fc" id="L202">    return appLayers;</span>
+<span class="nc" id="L202">    return appLayers;</span>
   }
 
   public void setAppLayers(List&lt;AppLayer&gt; appLayers) {
@@ -207,8 +207,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L207">  }</span>
 
   public MapResponse crs(CoordinateReferenceSystem crs) {
-<span class="fc" id="L210">    this.crs = crs;</span>
-<span class="fc" id="L211">    return this;</span>
+<span class="nc" id="L210">    this.crs = crs;</span>
+<span class="nc" id="L211">    return this;</span>
   }
 
   /**
@@ -218,7 +218,7 @@ import javax.annotation.Generated;
   @NotNull @Valid 
   @Schema(name = &quot;crs&quot;, required = true)
   public CoordinateReferenceSystem getCrs() {
-<span class="fc" id="L221">    return crs;</span>
+<span class="nc" id="L221">    return crs;</span>
   }
 
   public void setCrs(CoordinateReferenceSystem crs) {

@@ -24,42 +24,42 @@ import javax.annotation.Generated;
 
 @Schema(name = &quot;AppResponse&quot;, description = &quot;Answers API version and (default|requested) application id.&quot;)
 @Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="fc" id="L27">public class AppResponse implements Serializable {</span>
+<span class="nc" id="L27">public class AppResponse implements Serializable {</span>
 
   private static final long serialVersionUID = 1L;
 
   @JsonProperty(&quot;id&quot;)
   private Long id;
 
-<span class="fc" id="L34">  @JsonProperty(&quot;apiVersion&quot;)</span>
+<span class="nc" id="L34">  @JsonProperty(&quot;apiVersion&quot;)</span>
   private String apiVersion = &quot;v1&quot;;
 
   @JsonProperty(&quot;name&quot;)
   private String name;
 
-<span class="fc" id="L40">  @JsonProperty(&quot;version&quot;)</span>
+<span class="nc" id="L40">  @JsonProperty(&quot;version&quot;)</span>
   private String version = null;
 
-<span class="fc" id="L43">  @JsonProperty(&quot;title&quot;)</span>
+<span class="nc" id="L43">  @JsonProperty(&quot;title&quot;)</span>
   private String title = null;
 
   /**
    * language code
    */
-<span class="fc" id="L49">  public enum LangEnum {</span>
-<span class="fc" id="L50">    NL_NL(&quot;nl_NL&quot;),</span>
+<span class="nc" id="L49">  public enum LangEnum {</span>
+<span class="nc" id="L50">    NL_NL(&quot;nl_NL&quot;),</span>
     
-<span class="fc" id="L52">    EN_US(&quot;en_US&quot;);</span>
+<span class="nc" id="L52">    EN_US(&quot;en_US&quot;);</span>
 
     private String value;
 
-<span class="fc" id="L56">    LangEnum(String value) {</span>
-<span class="fc" id="L57">      this.value = value;</span>
-<span class="fc" id="L58">    }</span>
+<span class="nc" id="L56">    LangEnum(String value) {</span>
+<span class="nc" id="L57">      this.value = value;</span>
+<span class="nc" id="L58">    }</span>
 
     @JsonValue
     public String getValue() {
-<span class="fc" id="L62">      return value;</span>
+<span class="nc" id="L62">      return value;</span>
     }
 
     @Override
@@ -69,25 +69,25 @@ import javax.annotation.Generated;
 
     @JsonCreator
     public static LangEnum fromValue(String value) {
-<span class="pc bpc" id="L72" title="1 of 2 branches missed.">      for (LangEnum b : LangEnum.values()) {</span>
-<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (b.value.equals(value)) {</span>
-<span class="fc" id="L74">          return b;</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">      for (LangEnum b : LangEnum.values()) {</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (b.value.equals(value)) {</span>
+<span class="nc" id="L74">          return b;</span>
         }
       }
 <span class="nc" id="L77">      throw new IllegalArgumentException(&quot;Unexpected value '&quot; + value + &quot;'&quot;);</span>
     }
   }
 
-<span class="fc" id="L81">  @JsonProperty(&quot;lang&quot;)</span>
+<span class="nc" id="L81">  @JsonProperty(&quot;lang&quot;)</span>
   private LangEnum lang = LangEnum.NL_NL;
 
-<span class="fc" id="L84">  @JsonProperty(&quot;styling&quot;)</span>
+<span class="nc" id="L84">  @JsonProperty(&quot;styling&quot;)</span>
   @Valid
   private Map&lt;String, String&gt; styling = null;
 
   public AppResponse id(Long id) {
-<span class="fc" id="L89">    this.id = id;</span>
-<span class="fc" id="L90">    return this;</span>
+<span class="nc" id="L89">    this.id = id;</span>
+<span class="nc" id="L90">    return this;</span>
   }
 
   /**
@@ -97,7 +97,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;id&quot;, example = &quot;7&quot;, description = &quot;application id&quot;, required = false)
   public Long getId() {
-<span class="fc" id="L100">    return id;</span>
+<span class="nc" id="L100">    return id;</span>
   }
 
   public void setId(Long id) {
@@ -105,8 +105,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L105">  }</span>
 
   public AppResponse apiVersion(String apiVersion) {
-<span class="fc" id="L108">    this.apiVersion = apiVersion;</span>
-<span class="fc" id="L109">    return this;</span>
+<span class="nc" id="L108">    this.apiVersion = apiVersion;</span>
+<span class="nc" id="L109">    return this;</span>
   }
 
   /**
@@ -116,7 +116,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;apiVersion&quot;, required = false)
   public String getApiVersion() {
-<span class="fc" id="L119">    return apiVersion;</span>
+<span class="nc" id="L119">    return apiVersion;</span>
   }
 
   public void setApiVersion(String apiVersion) {
@@ -124,8 +124,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L124">  }</span>
 
   public AppResponse name(String name) {
-<span class="fc" id="L127">    this.name = name;</span>
-<span class="fc" id="L128">    return this;</span>
+<span class="nc" id="L127">    this.name = name;</span>
+<span class="nc" id="L128">    return this;</span>
   }
 
   /**
@@ -135,7 +135,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;name&quot;, required = false)
   public String getName() {
-<span class="fc" id="L138">    return name;</span>
+<span class="nc" id="L138">    return name;</span>
   }
 
   public void setName(String name) {
@@ -143,8 +143,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L143">  }</span>
 
   public AppResponse version(String version) {
-<span class="fc" id="L146">    this.version = version;</span>
-<span class="fc" id="L147">    return this;</span>
+<span class="nc" id="L146">    this.version = version;</span>
+<span class="nc" id="L147">    return this;</span>
   }
 
   /**
@@ -154,7 +154,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;version&quot;, required = false)
   public String getVersion() {
-<span class="fc" id="L157">    return version;</span>
+<span class="nc" id="L157">    return version;</span>
   }
 
   public void setVersion(String version) {
@@ -162,8 +162,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L162">  }</span>
 
   public AppResponse title(String title) {
-<span class="fc" id="L165">    this.title = title;</span>
-<span class="fc" id="L166">    return this;</span>
+<span class="nc" id="L165">    this.title = title;</span>
+<span class="nc" id="L166">    return this;</span>
   }
 
   /**
@@ -173,7 +173,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;title&quot;, required = false)
   public String getTitle() {
-<span class="fc" id="L176">    return title;</span>
+<span class="nc" id="L176">    return title;</span>
   }
 
   public void setTitle(String title) {
@@ -181,8 +181,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L181">  }</span>
 
   public AppResponse lang(LangEnum lang) {
-<span class="fc" id="L184">    this.lang = lang;</span>
-<span class="fc" id="L185">    return this;</span>
+<span class="nc" id="L184">    this.lang = lang;</span>
+<span class="nc" id="L185">    return this;</span>
   }
 
   /**
@@ -192,7 +192,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;lang&quot;, description = &quot;language code&quot;, required = false)
   public LangEnum getLang() {
-<span class="fc" id="L195">    return lang;</span>
+<span class="nc" id="L195">    return lang;</span>
   }
 
   public void setLang(LangEnum lang) {
@@ -219,7 +219,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;styling&quot;, description = &quot;styling information such as support- and backing colours etc.&quot;, required = false)
   public Map&lt;String, String&gt; getStyling() {
-<span class="fc" id="L222">    return styling;</span>
+<span class="nc" id="L222">    return styling;</span>
   }
 
   public void setStyling(Map&lt;String, String&gt; styling) {

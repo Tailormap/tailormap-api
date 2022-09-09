@@ -21,7 +21,7 @@ import javax.annotation.Generated;
 
 @Schema(name = &quot;AppLayer&quot;, description = &quot; A map layer, but only enough information to draw the layer. For advanced functionality that required access to attributes the LayerDetails should be requested. &quot;)
 @Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="fc" id="L24">public class AppLayer implements Serializable {</span>
+<span class="nc" id="L24">public class AppLayer implements Serializable {</span>
 
   private static final long serialVersionUID = 1L;
 
@@ -98,8 +98,8 @@ import javax.annotation.Generated;
   private Boolean hasAttributes;
 
   public AppLayer id(Long id) {
-<span class="fc" id="L101">    this.id = id;</span>
-<span class="fc" id="L102">    return this;</span>
+<span class="nc" id="L101">    this.id = id;</span>
+<span class="nc" id="L102">    return this;</span>
   }
 
   /**
@@ -109,7 +109,7 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;id&quot;, required = true)
   public Long getId() {
-<span class="fc" id="L112">    return id;</span>
+<span class="nc" id="L112">    return id;</span>
   }
 
   public void setId(Long id) {
@@ -117,8 +117,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L117">  }</span>
 
   public AppLayer layerName(String layerName) {
-<span class="fc" id="L120">    this.layerName = layerName;</span>
-<span class="fc" id="L121">    return this;</span>
+<span class="nc" id="L120">    this.layerName = layerName;</span>
+<span class="nc" id="L121">    return this;</span>
   }
 
   /**
@@ -128,7 +128,7 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;layerName&quot;, description = &quot;Layer name as known by the service.&quot;, required = true)
   public String getLayerName() {
-<span class="fc" id="L131">    return layerName;</span>
+<span class="nc" id="L131">    return layerName;</span>
   }
 
   public void setLayerName(String layerName) {
@@ -136,8 +136,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L136">  }</span>
 
   public AppLayer title(String title) {
-<span class="fc" id="L139">    this.title = title;</span>
-<span class="fc" id="L140">    return this;</span>
+<span class="nc" id="L139">    this.title = title;</span>
+<span class="nc" id="L140">    return this;</span>
   }
 
   /**
@@ -147,7 +147,7 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;title&quot;, description = &quot;Layer title or display name.&quot;, required = true)
   public String getTitle() {
-<span class="fc" id="L150">    return title;</span>
+<span class="nc" id="L150">    return title;</span>
   }
 
   public void setTitle(String title) {
@@ -155,8 +155,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L155">  }</span>
 
   public AppLayer serviceId(Long serviceId) {
-<span class="fc" id="L158">    this.serviceId = serviceId;</span>
-<span class="fc" id="L159">    return this;</span>
+<span class="nc" id="L158">    this.serviceId = serviceId;</span>
+<span class="nc" id="L159">    return this;</span>
   }
 
   /**
@@ -166,7 +166,7 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;serviceId&quot;, description = &quot;A reference to a Service id.&quot;, required = true)
   public Long getServiceId() {
-<span class="fc" id="L169">    return serviceId;</span>
+<span class="nc" id="L169">    return serviceId;</span>
   }
 
   public void setServiceId(Long serviceId) {
@@ -174,8 +174,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L174">  }</span>
 
   public AppLayer visible(Boolean visible) {
-<span class="fc" id="L177">    this.visible = visible;</span>
-<span class="fc" id="L178">    return this;</span>
+<span class="nc" id="L177">    this.visible = visible;</span>
+<span class="nc" id="L178">    return this;</span>
   }
 
   /**
@@ -185,7 +185,7 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;visible&quot;, required = true)
   public Boolean getVisible() {
-<span class="fc" id="L188">    return visible;</span>
+<span class="nc" id="L188">    return visible;</span>
   }
 
   public void setVisible(Boolean visible) {
@@ -193,8 +193,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L193">  }</span>
 
   public AppLayer minScale(Double minScale) {
-<span class="fc" id="L196">    this.minScale = minScale;</span>
-<span class="fc" id="L197">    return this;</span>
+<span class="nc" id="L196">    this.minScale = minScale;</span>
+<span class="nc" id="L197">    return this;</span>
   }
 
   /**
@@ -204,7 +204,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;minScale&quot;, description = &quot;Minimum scale at which this layer should be shown or is not blank. When absent there is no minimum. As reported by the service (ScaleHint or MinScaleDenominator).&quot;, required = false)
   public Double getMinScale() {
-<span class="fc" id="L207">    return minScale;</span>
+<span class="nc" id="L207">    return minScale;</span>
   }
 
   public void setMinScale(Double minScale) {
@@ -212,8 +212,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L212">  }</span>
 
   public AppLayer maxScale(Double maxScale) {
-<span class="fc" id="L215">    this.maxScale = maxScale;</span>
-<span class="fc" id="L216">    return this;</span>
+<span class="nc" id="L215">    this.maxScale = maxScale;</span>
+<span class="nc" id="L216">    return this;</span>
   }
 
   /**
@@ -223,7 +223,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;maxScale&quot;, description = &quot;Maximum scale denominator at which this layer should be shown or is not blank. When absent there is no maximum. As reported by the service (ScaleHint or MaxScaleDenominator).&quot;, required = false)
   public Double getMaxScale() {
-<span class="fc" id="L226">    return maxScale;</span>
+<span class="nc" id="L226">    return maxScale;</span>
   }
 
   public void setMaxScale(Double maxScale) {
@@ -231,8 +231,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L231">  }</span>
 
   public AppLayer legendImageUrl(String legendImageUrl) {
-<span class="fc" id="L234">    this.legendImageUrl = legendImageUrl;</span>
-<span class="fc" id="L235">    return this;</span>
+<span class="nc" id="L234">    this.legendImageUrl = legendImageUrl;</span>
+<span class="nc" id="L235">    return this;</span>
   }
 
   /**
@@ -242,7 +242,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;legendImageUrl&quot;, description = &quot;URL to an image with the layer legend.&quot;, required = false)
   public String getLegendImageUrl() {
-<span class="fc" id="L245">    return legendImageUrl;</span>
+<span class="nc" id="L245">    return legendImageUrl;</span>
   }
 
   public void setLegendImageUrl(String legendImageUrl) {
@@ -250,8 +250,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L250">  }</span>
 
   public AppLayer hiDpiMode(HiDpiModeEnum hiDpiMode) {
-<span class="fc" id="L253">    this.hiDpiMode = hiDpiMode;</span>
-<span class="fc" id="L254">    return this;</span>
+<span class="nc" id="L253">    this.hiDpiMode = hiDpiMode;</span>
+<span class="nc" id="L254">    return this;</span>
   }
 
   /**
@@ -261,7 +261,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;hiDpiMode&quot;, description = &quot;For tiled services only&quot;, required = false)
   public HiDpiModeEnum getHiDpiMode() {
-<span class="fc" id="L264">    return hiDpiMode;</span>
+<span class="nc" id="L264">    return hiDpiMode;</span>
   }
 
   public void setHiDpiMode(HiDpiModeEnum hiDpiMode) {
@@ -269,8 +269,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L269">  }</span>
 
   public AppLayer hiDpiSubstituteLayer(String hiDpiSubstituteLayer) {
-<span class="fc" id="L272">    this.hiDpiSubstituteLayer = hiDpiSubstituteLayer;</span>
-<span class="fc" id="L273">    return this;</span>
+<span class="nc" id="L272">    this.hiDpiSubstituteLayer = hiDpiSubstituteLayer;</span>
+<span class="nc" id="L273">    return this;</span>
   }
 
   /**
@@ -280,7 +280,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;hiDpiSubstituteLayer&quot;, description = &quot;The layer name of this service to substitute when the device pixel ratio is higher&quot;, required = false)
   public String getHiDpiSubstituteLayer() {
-<span class="fc" id="L283">    return hiDpiSubstituteLayer;</span>
+<span class="nc" id="L283">    return hiDpiSubstituteLayer;</span>
   }
 
   public void setHiDpiSubstituteLayer(String hiDpiSubstituteLayer) {
@@ -288,8 +288,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L288">  }</span>
 
   public AppLayer hasAttributes(Boolean hasAttributes) {
-<span class="fc" id="L291">    this.hasAttributes = hasAttributes;</span>
-<span class="fc" id="L292">    return this;</span>
+<span class="nc" id="L291">    this.hasAttributes = hasAttributes;</span>
+<span class="nc" id="L292">    return this;</span>
   }
 
   /**
@@ -299,7 +299,7 @@ import javax.annotation.Generated;
   
   @Schema(name = &quot;hasAttributes&quot;, description = &quot;Whether this layer has attributes that can be accessed eg. for feature info or attribute list&quot;, required = false)
   public Boolean getHasAttributes() {
-<span class="fc" id="L302">    return hasAttributes;</span>
+<span class="nc" id="L302">    return hasAttributes;</span>
   }
 
   public void setHasAttributes(Boolean hasAttributes) {

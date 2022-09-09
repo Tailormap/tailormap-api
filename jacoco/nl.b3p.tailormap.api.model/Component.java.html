@@ -21,7 +21,7 @@ import javax.annotation.Generated;
 
 @Schema(name = &quot;Component&quot;, description = &quot;a component to be used in the application&quot;)
 @Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;)
-<span class="fc" id="L24">public class Component implements Serializable {</span>
+<span class="nc" id="L24">public class Component implements Serializable {</span>
 
   private static final long serialVersionUID = 1L;
 
@@ -32,8 +32,8 @@ import javax.annotation.Generated;
   private ComponentConfig config;
 
   public Component type(String type) {
-<span class="fc" id="L35">    this.type = type;</span>
-<span class="fc" id="L36">    return this;</span>
+<span class="nc" id="L35">    this.type = type;</span>
+<span class="nc" id="L36">    return this;</span>
   }
 
   /**
@@ -43,7 +43,7 @@ import javax.annotation.Generated;
   @NotNull 
   @Schema(name = &quot;type&quot;, description = &quot;component type eg. featurereport or print&quot;, required = true)
   public String getType() {
-<span class="fc" id="L46">    return type;</span>
+<span class="nc" id="L46">    return type;</span>
   }
 
   public void setType(String type) {
@@ -51,8 +51,8 @@ import javax.annotation.Generated;
 <span class="nc" id="L51">  }</span>
 
   public Component config(ComponentConfig config) {
-<span class="fc" id="L54">    this.config = config;</span>
-<span class="fc" id="L55">    return this;</span>
+<span class="nc" id="L54">    this.config = config;</span>
+<span class="nc" id="L55">    return this;</span>
   }
 
   /**
@@ -62,7 +62,7 @@ import javax.annotation.Generated;
   @NotNull @Valid 
   @Schema(name = &quot;config&quot;, required = true)
   public ComponentConfig getConfig() {
-<span class="fc" id="L65">    return config;</span>
+<span class="nc" id="L65">    return config;</span>
   }
 
   public void setConfig(ComponentConfig config) {
