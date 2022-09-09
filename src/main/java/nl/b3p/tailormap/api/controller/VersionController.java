@@ -49,9 +49,7 @@ public class VersionController {
     public Map<String, String> getVersion() {
         final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);
         final String dbVersion =
-                ((null != m)
-                        ? (null == m.getConfigValue() ? "unknown" : m.getConfigValue())
-                        : "unknown");
+                null != m ? null == m.getConfigValue() ? "unknown" : m.getConfigValue() : "unknown";
 
         logger.debug(
                 String.format(

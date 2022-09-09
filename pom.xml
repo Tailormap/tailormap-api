@@ -1189,6 +1189,10 @@ SPDX-License-Identifier: MIT
             <ruleset>${project.basedir}/build/qa/pmd-junit-ruleset.xml</ruleset>
           </rulesets>
           <linkXRef>true</linkXRef>
+          <includeTests>false</includeTests>
+          <excludeRoots>
+            <excludeRoot>target/generated-sources</excludeRoot>
+          </excludeRoots>
         </configuration>
       </plugin>
       <plugin>

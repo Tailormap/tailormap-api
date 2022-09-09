@@ -88,7 +88,7 @@ public final class GeometryProcessor {
      */
     @NotNull
     private static String simplify(@NotNull Geometry geom) {
-        final int megabytes = (2097152 /* 2MB is the default tomcat max post size */ - 100 * 1024);
+        final int megabytes = 2097152 /* 2MB is the default tomcat max post size */ - 100 * 1024;
 
         LOG.debug("PrecisionModel scale: " + geom.getPrecisionModel().getScale());
         PrecisionModel pm = new PrecisionModel(geom.getPrecisionModel());
