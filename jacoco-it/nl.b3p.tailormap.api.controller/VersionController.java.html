@@ -49,16 +49,14 @@ import java.util.Map;
     public Map&lt;String, String&gt; getVersion() {
 <span class="fc" id="L50">        final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);</span>
         final String dbVersion =
-<span class="fc bfc" id="L52" title="All 2 branches covered.">                ((null != m)</span>
-<span class="pc bpc" id="L53" title="1 of 2 branches missed.">                        ? (null == m.getConfigValue() ? &quot;unknown&quot; : m.getConfigValue())</span>
-<span class="fc" id="L54">                        : &quot;unknown&quot;);</span>
+<span class="pc bpc" id="L52" title="1 of 4 branches missed.">                null != m ? null == m.getConfigValue() ? &quot;unknown&quot; : m.getConfigValue() : &quot;unknown&quot;;</span>
 
-<span class="fc" id="L56">        logger.debug(</span>
-<span class="fc" id="L57">                String.format(</span>
+<span class="fc" id="L54">        logger.debug(</span>
+<span class="fc" id="L55">                String.format(</span>
                         &quot;Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s\n\tgit commit: %s&quot;,
                         this.version, dbVersion, this.apiVersion, this.commitSha));
 
-<span class="fc" id="L61">        return Map.of(</span>
+<span class="fc" id="L59">        return Map.of(</span>
                 &quot;version&quot;,
                 this.version,
                 &quot;databaseversion&quot;,
