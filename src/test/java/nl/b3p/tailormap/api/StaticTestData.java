@@ -16,7 +16,7 @@ import java.util.Properties;
  * @author mprins
  */
 public abstract class StaticTestData {
-    protected static Properties testData = new Properties();
+    protected static final Properties testData = new Properties();
 
     @BeforeAll
     static void readTestData() throws IOException {

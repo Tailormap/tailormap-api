@@ -10,7 +10,6 @@ import nl.tailormap.viewer.config.metadata.Metadata;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,7 +27,7 @@ import java.util.Map;
 @CrossOrigin
 public class VersionController {
     private final Log logger = LogFactory.getLog(getClass());
-    @Autowired private MetadataRepository metadataRepository;
+    private final MetadataRepository metadataRepository;
 
     // Maven 'process-resources' takes care of updating these tokens in the application.properties
     @Value("${tailormap-api.version}")
@@ -39,6 +38,10 @@ public class VersionController {
 
     @Value("${tailormap-api.commitSha}")
     private String commitSha;
+
+    public VersionController(MetadataRepository metadataRepository) {
+        this.metadataRepository = metadataRepository;
+    }
 
     /**
      * get API version.

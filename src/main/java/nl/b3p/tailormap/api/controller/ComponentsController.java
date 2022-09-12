@@ -22,7 +22,6 @@ import nl.tailormap.viewer.config.app.Application;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +46,11 @@ import javax.persistence.EntityNotFoundException;
 public class ComponentsController {
 
     private final Log logger = LogFactory.getLog(getClass());
-    @Autowired private ApplicationRepository applicationRepository;
+    private final ApplicationRepository applicationRepository;
+
+    public ComponentsController(ApplicationRepository applicationRepository) {
+        this.applicationRepository = applicationRepository;
+    }
 
     /**
      * Handle any {@code EntityNotFoundException} that this controller might throw while getting the

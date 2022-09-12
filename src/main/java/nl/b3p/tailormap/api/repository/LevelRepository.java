@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,5 +27,5 @@ public interface LevelRepository extends JpaRepository<Level, Long> {
     List<Level> findByLevelTree(Long rootId);
 
     @EntityGraph(attributePaths = {"readers", "layers.service", "layers.readers"})
-    List<Level> findWithAuthorizationDataByIdIn(Iterable<Long> ids);
+    List<Level> findWithAuthorizationDataByIdIn(Collection<Long> id);
 }

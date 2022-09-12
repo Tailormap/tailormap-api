@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT
   </parent>
   <groupId>nl.b3p.tailormap</groupId>
   <artifactId>tailormap-api</artifactId>
-  <version>10.0-SNAPSHOT</version>
+  <version>10.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Tailormap API</name>
   <description>Tailormap API provides the OpenAPI for Tailormap</description>
@@ -100,8 +100,6 @@ SPDX-License-Identifier: MIT
     <!--    <project.build.outputTimestamp>2021-11-11T16:01:17Z</project.build.outputTimestamp>-->
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <!-- TODO read this from persistence -->
-    <org.tailormap.database.version>49</org.tailormap.database.version>
     <geotools.version>27.1</geotools.version>
     <spring.boot.version>${project.parent.version}</spring.boot.version>
     <!--
@@ -621,6 +619,7 @@ SPDX-License-Identifier: MIT
           <environmentVariables>
             <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
+            <!--suppress UnresolvedMavenProperty -->
             <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
             <!--suppress UnresolvedMavenProperty -->
             <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
@@ -649,6 +648,7 @@ SPDX-License-Identifier: MIT
           <environmentVariables>
             <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
+            <!--suppress UnresolvedMavenProperty -->
             <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
             <!--suppress UnresolvedMavenProperty -->
             <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
@@ -678,6 +678,7 @@ SPDX-License-Identifier: MIT
           <environmentVariables>
             <!--suppress UnresolvedMavenProperty -->
             <API_VERSION>${info.version}</API_VERSION>
+            <!--suppress UnresolvedMavenProperty -->
             <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
             <!--suppress UnresolvedMavenProperty -->
             <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
@@ -715,6 +716,7 @@ SPDX-License-Identifier: MIT
               <environmentVariables>
                 <!--suppress UnresolvedMavenProperty -->
                 <API_VERSION>${info.version}</API_VERSION>
+                <!--suppress UnresolvedMavenProperty -->
                 <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
                 <!--suppress UnresolvedMavenProperty -->
                 <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
@@ -807,6 +809,33 @@ SPDX-License-Identifier: MIT
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
+          <execution>
+            <id>read-persistence-db-version</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>process-test-resources</phase>
+            <configuration>
+              <exportAntProperties>true</exportAntProperties>
+              <target>
+                <loadfile encoding="UTF-8" property="org.tailormap.database.version" srcfile="${project.build.directory}/test-classes/import.sql">
+                  <!-- parse the version number from `INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '49'); `-->
+                  <filterchain>
+                    <linecontains>
+                      <contains value="'database_version'"></contains>
+                    </linecontains>
+                    <deletecharacters chars=",()';"></deletecharacters>
+                    <striplinebreaks></striplinebreaks>
+                    <tokenfilter>
+                      <stringtokenizer></stringtokenizer>
+                      <containsregex pattern="([0-9]{2})" replace="\0"></containsregex>
+                    </tokenfilter>
+                  </filterchain>
+                </loadfile>
+                <echo level="info">Extracted database version: ${org.tailormap.database.version} from persistence library.</echo>
+              </target>
+            </configuration>
+          </execution>
           <execution>
             <id>fix-generated-sources</id>
             <goals>
@@ -1067,7 +1096,7 @@ SPDX-License-Identifier: MIT
                     <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
                     <!--
                     TODO this should be fixed; either by importing or excluding the transitive dependencies
-                   org.tailormap:viewer-config-persistence:jar:5.9.12-SNAPSHOT:compile has transitive dependencies:
+                    nl.b3p.tailormap:viewer-config-persistence:jar:5.9.12-SNAPSHOT:compile has transitive dependencies:
                       org.apache.commons:commons-lang3:jar:3.12.0:compile
                       commons-beanutils:commons-beanutils:jar:1.9.4:compile
                          commons-logging:commons-logging:jar:1.2:compile
@@ -1462,7 +1491,7 @@ SPDX-License-Identifier: MIT
               <environmentVariables>
                 <!--suppress UnresolvedMavenProperty -->
                 <API_VERSION>${info.version}</API_VERSION>
-                <!-- TODO read this from persistence -->
+                <!--suppress UnresolvedMavenProperty -->
                 <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
                 <!--suppress UnresolvedMavenProperty -->
                 <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
@@ -1500,7 +1529,7 @@ SPDX-License-Identifier: MIT
                   <environmentVariables>
                     <!--suppress UnresolvedMavenProperty -->
                     <API_VERSION>${info.version}</API_VERSION>
-                    <!-- TODO read this from persistence -->
+                    <!--suppress UnresolvedMavenProperty -->
                     <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
                     <!--suppress UnresolvedMavenProperty -->
                     <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>

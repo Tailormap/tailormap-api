@@ -39,7 +39,6 @@ import nl.tailormap.viewer.config.services.TileService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -74,14 +73,23 @@ import javax.validation.constraints.NotNull;
 @RequestMapping(path = "/app/{appId}/map", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MapController {
     private final Log logger = LogFactory.getLog(getClass());
-    @Autowired private ApplicationRepository applicationRepository;
-    @Autowired private ApplicationLayerRepository applicationLayerRepository;
-    @Autowired private LevelRepository levelRepository;
-    @Autowired private LayerRepository layerRepository;
+    private final ApplicationRepository applicationRepository;
+    private final ApplicationLayerRepository applicationLayerRepository;
+    private final LevelRepository levelRepository;
+    private final LayerRepository layerRepository;
+
+    public MapController(
+            ApplicationRepository applicationRepository,
+            ApplicationLayerRepository applicationLayerRepository,
+            LevelRepository levelRepository,
+            LayerRepository layerRepository) {
+        this.applicationRepository = applicationRepository;
+        this.applicationLayerRepository = applicationLayerRepository;
+        this.levelRepository = levelRepository;
+        this.layerRepository = layerRepository;
+    }
 
     @Operation(
-            summary = "",
-            tags = {},
             responses = {
                 @ApiResponse(
                         responseCode = "200",
@@ -329,6 +337,7 @@ public class MapController {
                 }
             }
 
+            assert serviceVisibilityLayer != null;
             boolean isLayerVisible =
                     isAuthorized(serviceVisibilityLayer.getService().getReaders(), authentication);
             while (isLayerVisible && serviceVisibilityLayer != null) {
@@ -462,6 +471,7 @@ public class MapController {
                 }
             }
 
+            assert serviceLayer != null;
             AppLayer appLayer =
                     new AppLayer()
                             .id(applicationLayer.getId())

@@ -65,6 +65,7 @@ public class HSQLDBTestProfileJPAConfiguration {
         if (null != env.getProperty("spring.datasource.url")) {
             dbUrl = env.getProperty("spring.datasource.url");
         }
+        assert dbUrl != null;
         dbUrl = dbUrl.replace("TESTNAMETOKEN", RandomStringUtils.randomAlphabetic(8));
         dataSource.setUrl(dbUrl);
         LOG.info("Using test datasource url: " + dataSource.getUrl());
