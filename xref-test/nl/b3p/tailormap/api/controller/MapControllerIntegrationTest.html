@@ -116,41 +116,41 @@
 <a class="jxr_linenumber" name="L108" href="#L108">108</a> 
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>         assertNotNull(rootNode, <span class="jxr_string">"no root node found"</span>);
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         assertEquals(
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>                 rootNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>                 2,
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>                 2,
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>                 rootNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>                 <span class="jxr_string">"root node had wrong amount of children"</span>);
 <a class="jxr_linenumber" name="L114" href="#L114">114</a> 
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>         JSONObject groenNode = treeNodeMap.get(rootNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).getString(0));
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         assertNotNull(groenNode, <span class="jxr_string">"first child of root is not valid"</span>);
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         assertEquals(
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>                 groenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>                 3,
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>                 3,
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>                 groenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>                 <span class="jxr_string">"first node of root had wrong amount of children"</span>);
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>         assertEquals(
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>                 treeNodeMap.get(groenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).get(0)).getInt(<span class="jxr_string">"appLayerId"</span>),
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>                 2,
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>                 2,
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>                 treeNodeMap.get(groenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).get(0)).getInt(<span class="jxr_string">"appLayerId"</span>),
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>                 <span class="jxr_string">"incorrect appLayerId for first child"</span>);
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>         assertEquals(
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>                 treeNodeMap.get(groenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).get(1)).getInt(<span class="jxr_string">"appLayerId"</span>),
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>                 3,
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>                 3,
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>                 treeNodeMap.get(groenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).get(1)).getInt(<span class="jxr_string">"appLayerId"</span>),
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>                 <span class="jxr_string">"incorrect appLayerId for second child"</span>);
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>         assertEquals(
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>                 treeNodeMap.get(groenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).get(2)).getInt(<span class="jxr_string">"appLayerId"</span>),
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>                 4,
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>                 4,
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>                 treeNodeMap.get(groenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).get(2)).getInt(<span class="jxr_string">"appLayerId"</span>),
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>                 <span class="jxr_string">"incorrect appLayerId for third child"</span>);
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> 
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>         JSONObject woonplaatsenNode =
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>                 treeNodeMap.get(rootNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).getString(1));
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         assertNotNull(woonplaatsenNode, <span class="jxr_string">"second child of root is not valid"</span>);
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         assertEquals(
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>                 woonplaatsenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>                 1,
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>                 1,
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>                 woonplaatsenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>                 <span class="jxr_string">"second node of root had wrong amount of children"</span>);
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         assertEquals(
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>                 treeNodeMap
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>                         .get(woonplaatsenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).get(0))
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>                         .getInt(<span class="jxr_string">"appLayerId"</span>),
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>                 5,
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>                 5,
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>                 treeNodeMap
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>                         .get(woonplaatsenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).get(0))
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>                         .getInt(<span class="jxr_string">"appLayerId"</span>),
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>                 <span class="jxr_string">"incorrect appLayerId for first child (of second child)"</span>);
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>     }
 <a class="jxr_linenumber" name="L148" href="#L148">148</a> 
@@ -184,23 +184,23 @@
 <a class="jxr_linenumber" name="L176" href="#L176">176</a> 
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>         assertNotNull(rootNode, <span class="jxr_string">"no root node found"</span>);
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>         assertEquals(
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>                 rootNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>                 2,
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>                 2,
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>                 rootNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>                 <span class="jxr_string">"root node had wrong amount of children"</span>);
 <a class="jxr_linenumber" name="L182" href="#L182">182</a> 
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>         JSONObject groenNode = treeNodeMap.get(rootNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).getString(0));
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>         assertNotNull(groenNode, <span class="jxr_string">"first child of root is not valid"</span>);
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>         assertEquals(
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>                 groenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>                 0,
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>                 0,
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>                 groenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>                 <span class="jxr_string">"first node of root had wrong amount of children"</span>);
 <a class="jxr_linenumber" name="L189" href="#L189">189</a> 
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>         JSONObject woonplaatsenNode =
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>                 treeNodeMap.get(rootNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).getString(1));
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>         assertNotNull(woonplaatsenNode, <span class="jxr_string">"second child of root is not valid"</span>);
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>         assertEquals(
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>                 woonplaatsenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>                 1,
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>                 1,
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>                 woonplaatsenNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>                 <span class="jxr_string">"second node of root had wrong amount of children"</span>);
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>     }
 <a class="jxr_linenumber" name="L198" href="#L198">198</a> 
@@ -232,19 +232,19 @@
 <a class="jxr_linenumber" name="L224" href="#L224">224</a> 
 <a class="jxr_linenumber" name="L225" href="#L225">225</a>         assertNotNull(rootNode, <span class="jxr_string">"no root node found"</span>);
 <a class="jxr_linenumber" name="L226" href="#L226">226</a>         assertEquals(
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>                 rootNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>                 1,
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>                 1,
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>                 rootNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
 <a class="jxr_linenumber" name="L229" href="#L229">229</a>                 <span class="jxr_string">"root node had wrong amount of children"</span>);
 <a class="jxr_linenumber" name="L230" href="#L230">230</a> 
 <a class="jxr_linenumber" name="L231" href="#L231">231</a>         JSONObject osmNode = treeNodeMap.get(rootNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).get(0));
 <a class="jxr_linenumber" name="L232" href="#L232">232</a>         assertNotNull(osmNode, <span class="jxr_string">"first child of root is not valid"</span>);
 <a class="jxr_linenumber" name="L233" href="#L233">233</a>         assertEquals(
-<a class="jxr_linenumber" name="L234" href="#L234">234</a>                 osmNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>                 1,
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>                 1,
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>                 osmNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).length(),
 <a class="jxr_linenumber" name="L236" href="#L236">236</a>                 <span class="jxr_string">"first node of root had wrong amount of children"</span>);
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>         assertEquals(
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>                 treeNodeMap.get(osmNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).get(0)).getInt(<span class="jxr_string">"appLayerId"</span>),
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>                 1,
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>                 1,
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>                 treeNodeMap.get(osmNode.getJSONArray(<span class="jxr_string">"childrenIds"</span>).get(0)).getInt(<span class="jxr_string">"appLayerId"</span>),
 <a class="jxr_linenumber" name="L240" href="#L240">240</a>                 <span class="jxr_string">"incorrect appLayerId for first child"</span>);
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>     }
 <a class="jxr_linenumber" name="L242" href="#L242">242</a> 

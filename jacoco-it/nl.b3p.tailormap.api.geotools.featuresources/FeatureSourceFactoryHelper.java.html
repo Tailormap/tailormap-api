@@ -25,16 +25,18 @@ import java.io.IOException;
     public static SimpleFeatureSource openGeoToolsFeatureSource(
             FeatureSource fs, SimpleFeatureType sft, int timeout) throws IOException {
 <span class="nc" id="L27">        FeatureSourceHelper sh = getHelper(fs);</span>
-<span class="nc" id="L28">        return sh.openGeoToolsFeatureSource(fs, sft, timeout);</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">        assert sh != null;</span>
+<span class="nc" id="L29">        return sh.openGeoToolsFeatureSource(fs, sft, timeout);</span>
     }
 
     private static FeatureSourceHelper getHelper(FeatureSource fs) {
-<span class="nc bnc" id="L32" title="All 2 branches missed.">        if (fs instanceof JDBCFeatureSource) {</span>
-<span class="nc" id="L33">            return new JDBCFeatureSourceHelper();</span>
-<span class="nc bnc" id="L34" title="All 2 branches missed.">        } else if (fs instanceof WFSFeatureSource) {</span>
-<span class="nc" id="L35">            return new WFSFeatureSourceHelper();</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        if (fs instanceof JDBCFeatureSource) {</span>
+<span class="nc" id="L34">            return new JDBCFeatureSourceHelper();</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        } else if (fs instanceof WFSFeatureSource) {</span>
+<span class="nc" id="L36">            return new WFSFeatureSourceHelper();</span>
         }
-<span class="nc" id="L37">        return null;</span>
+        // should never happen
+<span class="nc" id="L39">        return null;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

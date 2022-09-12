@@ -9,7 +9,6 @@ import nl.b3p.tailormap.api.controller.VersionController;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
@@ -25,31 +24,35 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ConditionalOnEnabledHealthIndicator(&quot;tailormap&quot;)
-<span class="fc" id="L28">public class TailormapHealthIndicator implements HealthIndicator {</span>
-<span class="fc" id="L29">    private final Log logger = LogFactory.getLog(getClass());</span>
-    @Autowired private VersionController versionController;
+public class TailormapHealthIndicator implements HealthIndicator {
+<span class="fc" id="L28">    private final Log logger = LogFactory.getLog(getClass());</span>
+    private final VersionController versionController;
 
-<span class="fc" id="L32">    @Value(&quot;${management.health.tailormap.enabled}&quot;)</span>
+<span class="fc" id="L31">    @Value(&quot;${management.health.tailormap.enabled}&quot;)</span>
     private boolean healthEnabled = false;
+
+<span class="fc" id="L34">    public TailormapHealthIndicator(VersionController versionController) {</span>
+<span class="fc" id="L35">        this.versionController = versionController;</span>
+<span class="fc" id="L36">    }</span>
 
     @Override
     public Health health() {
-<span class="fc" id="L37">        Health.Builder health = Health.unknown();</span>
+<span class="fc" id="L40">        Health.Builder health = Health.unknown();</span>
 
-<span class="pc bpc" id="L39" title="1 of 2 branches missed.">        logger.info(&quot;tailormap health indicator &quot; + (healthEnabled ? &quot;enabled&quot; : &quot;disabled&quot;));</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        logger.info(&quot;tailormap health indicator &quot; + (healthEnabled ? &quot;enabled&quot; : &quot;disabled&quot;));</span>
 
-<span class="pc bpc" id="L41" title="1 of 2 branches missed.">        if (healthEnabled) {</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">        if (healthEnabled) {</span>
             try {
                 // TODO check some other statistics
-<span class="fc" id="L44">                health.up().withDetails(versionController.getVersion());</span>
-<span class="nc" id="L45">            } catch (Exception e) {</span>
-<span class="nc" id="L46">                logger.fatal(&quot;Error checking Tailormap health. &quot; + e.getMessage());</span>
-<span class="nc" id="L47">                logger.debug(&quot;Error checking Tailormap health&quot;, e);</span>
-<span class="nc" id="L48">                health.outOfService().withDetail(&quot;message&quot;, &quot;Error checking database&quot;);</span>
-<span class="fc" id="L49">            }</span>
+<span class="fc" id="L47">                health.up().withDetails(versionController.getVersion());</span>
+<span class="nc" id="L48">            } catch (Exception e) {</span>
+<span class="nc" id="L49">                logger.fatal(&quot;Error checking Tailormap health. &quot; + e.getMessage());</span>
+<span class="nc" id="L50">                logger.debug(&quot;Error checking Tailormap health&quot;, e);</span>
+<span class="nc" id="L51">                health.outOfService().withDetail(&quot;message&quot;, &quot;Error checking database&quot;);</span>
+<span class="fc" id="L52">            }</span>
         }
 
-<span class="fc" id="L52">        return health.build();</span>
+<span class="fc" id="L55">        return health.build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

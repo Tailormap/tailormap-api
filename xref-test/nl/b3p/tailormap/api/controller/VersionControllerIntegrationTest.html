@@ -74,7 +74,7 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      @Test
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      <em class="jxr_comment">/* this test changes database content */</em>
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      @Order(Integer.MAX_VALUE)
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">void</strong> unknown_database_version() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">void</strong> unknown_database_version() {
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          metadataRepository.deleteMetadataByConfigKey(Metadata.DATABASE_VERSION_KEY);
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          String projectVersion = System.getProperty(<span class="jxr_string">"project.version"</span>);

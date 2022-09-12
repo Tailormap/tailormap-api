@@ -10,26 +10,29 @@ import nl.tailormap.viewer.config.security.User;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-<span class="nc" id="L20">public class TailormapUserDetailsService implements UserDetailsService {</span>
-<span class="nc" id="L21">    private final Log logger = LogFactory.getLog(getClass());</span>
+public class TailormapUserDetailsService implements UserDetailsService {
+<span class="nc" id="L20">    private final Log logger = LogFactory.getLog(getClass());</span>
 
-    @Autowired private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+<span class="nc" id="L24">    public TailormapUserDetailsService(UserRepository userRepository) {</span>
+<span class="nc" id="L25">        this.userRepository = userRepository;</span>
+<span class="nc" id="L26">    }</span>
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-<span class="nc" id="L27">        User user = userRepository.findByUsername(username);</span>
-<span class="nc bnc" id="L28" title="All 2 branches missed.">        if (user == null) {</span>
-<span class="nc" id="L29">            throw new UsernameNotFoundException(&quot;User &quot; + username + &quot; not found&quot;);</span>
+<span class="nc" id="L30">        User user = userRepository.findByUsername(username);</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L32">            throw new UsernameNotFoundException(&quot;User &quot; + username + &quot; not found&quot;);</span>
         }
-<span class="nc" id="L31">        logger.trace(&quot;Found user: &quot; + user.getUsername() + &quot;, password &quot; + user.getPassword());</span>
-<span class="nc" id="L32">        return new TailormapUserDetails(user);</span>
+<span class="nc" id="L34">        logger.trace(&quot;Found user: &quot; + user.getUsername() + &quot;, password &quot; + user.getPassword());</span>
+<span class="nc" id="L35">        return new TailormapUserDetails(user);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -18,63 +18,66 @@
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.logging.Log;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.logging.LogFactory;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.MediaType;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.CrossOrigin;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.GetMapping;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.RestController;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> * Provides version information of backend, API and config database.</em>
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment"> * @since 0.1</em>
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  @RestController
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  @CrossOrigin
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="VersionController" href="../../../../../nl/b3p/tailormap/api/controller/VersionController.html#VersionController">VersionController</a> {
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Log logger = LogFactory.getLog(getClass());
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      @Autowired <strong class="jxr_keyword">private</strong> <a name="MetadataRepository" href="../../../../../nl/b3p/tailormap/api/repository/MetadataRepository.html#MetadataRepository">MetadataRepository</a> metadataRepository;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>      <em class="jxr_comment">// Maven 'process-resources' takes care of updating these tokens in the application.properties</em>
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>      @Value(<span class="jxr_string">"${tailormap-api.version}"</span>)
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">private</strong> String version;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>      @Value(<span class="jxr_string">"${tailormap-api.apiVersion}"</span>)
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">private</strong> String apiVersion;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      @Value(<span class="jxr_string">"${tailormap-api.commitSha}"</span>)
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">private</strong> String commitSha;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">     * get API version.</em>
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment">     * @return api version</em>
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>      @GetMapping(path = <span class="jxr_string">"/version"</span>, produces = MediaType.APPLICATION_JSON_VALUE)
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>      <strong class="jxr_keyword">public</strong> Map&lt;String, String&gt; getVersion() {
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>          <strong class="jxr_keyword">final</strong> Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>          <strong class="jxr_keyword">final</strong> String dbVersion =
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>                  <strong class="jxr_keyword">null</strong> != m ? <strong class="jxr_keyword">null</strong> == m.getConfigValue() ? <span class="jxr_string">"unknown"</span> : m.getConfigValue() : <span class="jxr_string">"unknown"</span>;
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          logger.debug(
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>                  String.format(
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>                          <span class="jxr_string">"Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s\n\tgit commit: %s"</span>,
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>                          <strong class="jxr_keyword">this</strong>.version, dbVersion, <strong class="jxr_keyword">this</strong>.apiVersion, <strong class="jxr_keyword">this</strong>.commitSha));
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>          <strong class="jxr_keyword">return</strong> Map.of(
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>                  <span class="jxr_string">"version"</span>,
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>                  <strong class="jxr_keyword">this</strong>.version,
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>                  <span class="jxr_string">"databaseversion"</span>,
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>                  dbVersion,
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>                  <span class="jxr_string">"apiVersion"</span>,
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>                  <strong class="jxr_keyword">this</strong>.apiVersion,
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>                  <span class="jxr_string">"commitSha"</span>,
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>                  <strong class="jxr_keyword">this</strong>.commitSha);
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>      }
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>  }
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.MediaType;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.CrossOrigin;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.GetMapping;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.RestController;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> * Provides version information of backend, API and config database.</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> * @since 0.1</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  @RestController
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  @CrossOrigin
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="VersionController" href="../../../../../nl/b3p/tailormap/api/controller/VersionController.html#VersionController">VersionController</a> {
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Log logger = LogFactory.getLog(getClass());
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="MetadataRepository" href="../../../../../nl/b3p/tailormap/api/repository/MetadataRepository.html#MetadataRepository">MetadataRepository</a> metadataRepository;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      <em class="jxr_comment">// Maven 'process-resources' takes care of updating these tokens in the application.properties</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      @Value(<span class="jxr_string">"${tailormap-api.version}"</span>)
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      <strong class="jxr_keyword">private</strong> String version;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>      @Value(<span class="jxr_string">"${tailormap-api.apiVersion}"</span>)
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      <strong class="jxr_keyword">private</strong> String apiVersion;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      @Value(<span class="jxr_string">"${tailormap-api.commitSha}"</span>)
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">private</strong> String commitSha;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      <strong class="jxr_keyword">public</strong> <a name="VersionController" href="../../../../../nl/b3p/tailormap/api/controller/VersionController.html#VersionController">VersionController</a>(<a name="MetadataRepository" href="../../../../../nl/b3p/tailormap/api/repository/MetadataRepository.html#MetadataRepository">MetadataRepository</a> metadataRepository) {
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>          <strong class="jxr_keyword">this</strong>.metadataRepository = metadataRepository;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      }
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">     * get API version.</em>
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment">     * @return api version</em>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      @GetMapping(path = <span class="jxr_string">"/version"</span>, produces = MediaType.APPLICATION_JSON_VALUE)
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">public</strong> Map&lt;String, String&gt; getVersion() {
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          <strong class="jxr_keyword">final</strong> Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>          <strong class="jxr_keyword">final</strong> String dbVersion =
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>                  <strong class="jxr_keyword">null</strong> != m ? <strong class="jxr_keyword">null</strong> == m.getConfigValue() ? <span class="jxr_string">"unknown"</span> : m.getConfigValue() : <span class="jxr_string">"unknown"</span>;
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>          logger.debug(
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>                  String.format(
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>                          <span class="jxr_string">"Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s\n\tgit commit: %s"</span>,
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>                          <strong class="jxr_keyword">this</strong>.version, dbVersion, <strong class="jxr_keyword">this</strong>.apiVersion, <strong class="jxr_keyword">this</strong>.commitSha));
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          <strong class="jxr_keyword">return</strong> Map.of(
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>                  <span class="jxr_string">"version"</span>,
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>                  <strong class="jxr_keyword">this</strong>.version,
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>                  <span class="jxr_string">"databaseversion"</span>,
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>                  dbVersion,
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>                  <span class="jxr_string">"apiVersion"</span>,
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>                  <strong class="jxr_keyword">this</strong>.apiVersion,
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>                  <span class="jxr_string">"commitSha"</span>,
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>                  <strong class="jxr_keyword">this</strong>.commitSha);
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      }
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2022 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

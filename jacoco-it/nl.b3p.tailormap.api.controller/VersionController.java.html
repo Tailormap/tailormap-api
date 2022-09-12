@@ -10,7 +10,6 @@ import nl.tailormap.viewer.config.metadata.Metadata;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,9 +25,9 @@ import java.util.Map;
  */
 @RestController
 @CrossOrigin
-<span class="fc" id="L29">public class VersionController {</span>
-<span class="fc" id="L30">    private final Log logger = LogFactory.getLog(getClass());</span>
-    @Autowired private MetadataRepository metadataRepository;
+public class VersionController {
+<span class="fc" id="L29">    private final Log logger = LogFactory.getLog(getClass());</span>
+    private final MetadataRepository metadataRepository;
 
     // Maven 'process-resources' takes care of updating these tokens in the application.properties
     @Value(&quot;${tailormap-api.version}&quot;)
@@ -40,6 +39,10 @@ import java.util.Map;
     @Value(&quot;${tailormap-api.commitSha}&quot;)
     private String commitSha;
 
+<span class="fc" id="L42">    public VersionController(MetadataRepository metadataRepository) {</span>
+<span class="fc" id="L43">        this.metadataRepository = metadataRepository;</span>
+<span class="fc" id="L44">    }</span>
+
     /**
      * get API version.
      *
@@ -47,16 +50,16 @@ import java.util.Map;
      */
     @GetMapping(path = &quot;/version&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map&lt;String, String&gt; getVersion() {
-<span class="fc" id="L50">        final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);</span>
+<span class="fc" id="L53">        final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);</span>
         final String dbVersion =
-<span class="pc bpc" id="L52" title="1 of 4 branches missed.">                null != m ? null == m.getConfigValue() ? &quot;unknown&quot; : m.getConfigValue() : &quot;unknown&quot;;</span>
+<span class="pc bpc" id="L55" title="1 of 4 branches missed.">                null != m ? null == m.getConfigValue() ? &quot;unknown&quot; : m.getConfigValue() : &quot;unknown&quot;;</span>
 
-<span class="fc" id="L54">        logger.debug(</span>
-<span class="fc" id="L55">                String.format(</span>
+<span class="fc" id="L57">        logger.debug(</span>
+<span class="fc" id="L58">                String.format(</span>
                         &quot;Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s\n\tgit commit: %s&quot;,
                         this.version, dbVersion, this.apiVersion, this.commitSha));
 
-<span class="fc" id="L59">        return Map.of(</span>
+<span class="fc" id="L62">        return Map.of(</span>
                 &quot;version&quot;,
                 this.version,
                 &quot;databaseversion&quot;,
