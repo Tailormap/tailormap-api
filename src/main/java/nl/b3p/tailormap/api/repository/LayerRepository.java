@@ -11,6 +11,7 @@ import nl.tailormap.viewer.config.services.Layer;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,8 +20,8 @@ import java.util.List;
  * @since 0.1
  */
 public interface LayerRepository extends JpaRepository<Layer, Long> {
-    public Layer getByServiceAndName(GeoService service, String name);
+    Layer getByServiceAndName(GeoService service, String name);
 
     @EntityGraph(attributePaths = {"readers", "details"})
-    List<Layer> findByServiceIdIn(Iterable<Long> list);
+    List<Layer> findByServiceIdIn(Collection<Long> service_id);
 }

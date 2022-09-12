@@ -19,7 +19,6 @@ import nl.tailormap.viewer.config.metadata.Metadata;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,13 +44,17 @@ import javax.persistence.EntityNotFoundException;
 public class AppController {
     private final Log logger = LogFactory.getLog(getClass());
 
-    @Autowired private ApplicationRepository applicationRepository;
-    @Autowired private MetadataRepository metadataRepository;
+    private final ApplicationRepository applicationRepository;
+    private final MetadataRepository metadataRepository;
 
     @Value("${tailormap-api.apiVersion}")
     private String apiVersion;
 
-    private Application application;
+    public AppController(
+            ApplicationRepository applicationRepository, MetadataRepository metadataRepository) {
+        this.applicationRepository = applicationRepository;
+        this.metadataRepository = metadataRepository;
+    }
 
     /**
      * Handle any {@code TailormapConfigurationException} that this controller might throw while
@@ -100,48 +103,49 @@ public class AppController {
                         + ", version: "
                         + version);
 
+        Application application;
         if (null != appId) {
-            this.application = applicationRepository.findById(appId).orElse(null);
+            application = applicationRepository.findById(appId).orElse(null);
         } else {
-            this.application = findApplication(name, version);
+            application = findApplication(name, version);
         }
 
-        if (null == this.application) {
-            this.application = getDefaultViewer();
+        if (null == application) {
+            application = getDefaultViewer();
         }
 
-        if (null == this.application) {
+        if (null == application) {
             // no default application or something else is very wrong
             throw new TailormapConfigurationException(
                     "Error getting the requested or default application.");
-        } else if (this.application.isAuthenticatedRequired() && !AuthUtil.isAuthenticatedUser()) {
+        } else if (application.isAuthenticatedRequired() && !AuthUtil.isAuthenticatedUser()) {
             // login required, send RedirectResponse
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
         } else {
             logger.trace(
                     "found application - id:"
-                            + this.application.getId()
+                            + application.getId()
                             + ", name: "
-                            + this.application.getName()
+                            + application.getName()
                             + ", version: "
-                            + this.application.getVersion()
+                            + application.getVersion()
                             + ", lang: "
-                            + this.application.getLang()
+                            + application.getLang()
                             + ", title: "
-                            + this.application.getTitle());
+                            + application.getTitle());
 
             AppResponse appResponse =
                     new AppResponse()
                             .apiVersion(this.apiVersion)
-                            .id(this.application.getId())
-                            .name(this.application.getName())
+                            .id(application.getId())
+                            .name(application.getName())
                             // any of these 2 below + language could be null
-                            .version(this.application.getVersion())
-                            .title(this.application.getTitle());
+                            .version(application.getVersion())
+                            .title(application.getTitle());
 
             // null check language because it's an enumerated value
-            if (null != this.application.getLang())
-                appResponse.lang(AppResponse.LangEnum.fromValue(this.application.getLang()));
+            if (null != application.getLang())
+                appResponse.lang(AppResponse.LangEnum.fromValue(application.getLang()));
 
             return ResponseEntity.ok(appResponse);
         }

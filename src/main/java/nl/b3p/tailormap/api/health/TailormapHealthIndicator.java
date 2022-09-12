@@ -9,7 +9,6 @@ import nl.b3p.tailormap.api.controller.VersionController;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
@@ -27,10 +26,14 @@ import org.springframework.stereotype.Component;
 @ConditionalOnEnabledHealthIndicator("tailormap")
 public class TailormapHealthIndicator implements HealthIndicator {
     private final Log logger = LogFactory.getLog(getClass());
-    @Autowired private VersionController versionController;
+    private final VersionController versionController;
 
     @Value("${management.health.tailormap.enabled}")
     private boolean healthEnabled = false;
+
+    public TailormapHealthIndicator(VersionController versionController) {
+        this.versionController = versionController;
+    }
 
     @Override
     public Health health() {

@@ -108,41 +108,41 @@ class MapControllerIntegrationTest {
 
         assertNotNull(rootNode, "no root node found");
         assertEquals(
-                rootNode.getJSONArray("childrenIds").length(),
                 2,
+                rootNode.getJSONArray("childrenIds").length(),
                 "root node had wrong amount of children");
 
         JSONObject groenNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(0));
         assertNotNull(groenNode, "first child of root is not valid");
         assertEquals(
-                groenNode.getJSONArray("childrenIds").length(),
                 3,
+                groenNode.getJSONArray("childrenIds").length(),
                 "first node of root had wrong amount of children");
         assertEquals(
-                treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(0)).getInt("appLayerId"),
                 2,
+                treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(0)).getInt("appLayerId"),
                 "incorrect appLayerId for first child");
         assertEquals(
-                treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(1)).getInt("appLayerId"),
                 3,
+                treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(1)).getInt("appLayerId"),
                 "incorrect appLayerId for second child");
         assertEquals(
-                treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(2)).getInt("appLayerId"),
                 4,
+                treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(2)).getInt("appLayerId"),
                 "incorrect appLayerId for third child");
 
         JSONObject woonplaatsenNode =
                 treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(1));
         assertNotNull(woonplaatsenNode, "second child of root is not valid");
         assertEquals(
-                woonplaatsenNode.getJSONArray("childrenIds").length(),
                 1,
+                woonplaatsenNode.getJSONArray("childrenIds").length(),
                 "second node of root had wrong amount of children");
         assertEquals(
+                5,
                 treeNodeMap
                         .get(woonplaatsenNode.getJSONArray("childrenIds").get(0))
                         .getInt("appLayerId"),
-                5,
                 "incorrect appLayerId for first child (of second child)");
     }
 
@@ -176,23 +176,23 @@ class MapControllerIntegrationTest {
 
         assertNotNull(rootNode, "no root node found");
         assertEquals(
-                rootNode.getJSONArray("childrenIds").length(),
                 2,
+                rootNode.getJSONArray("childrenIds").length(),
                 "root node had wrong amount of children");
 
         JSONObject groenNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(0));
         assertNotNull(groenNode, "first child of root is not valid");
         assertEquals(
-                groenNode.getJSONArray("childrenIds").length(),
                 0,
+                groenNode.getJSONArray("childrenIds").length(),
                 "first node of root had wrong amount of children");
 
         JSONObject woonplaatsenNode =
                 treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(1));
         assertNotNull(woonplaatsenNode, "second child of root is not valid");
         assertEquals(
-                woonplaatsenNode.getJSONArray("childrenIds").length(),
                 1,
+                woonplaatsenNode.getJSONArray("childrenIds").length(),
                 "second node of root had wrong amount of children");
     }
 
@@ -224,19 +224,19 @@ class MapControllerIntegrationTest {
 
         assertNotNull(rootNode, "no root node found");
         assertEquals(
-                rootNode.getJSONArray("childrenIds").length(),
                 1,
+                rootNode.getJSONArray("childrenIds").length(),
                 "root node had wrong amount of children");
 
         JSONObject osmNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").get(0));
         assertNotNull(osmNode, "first child of root is not valid");
         assertEquals(
-                osmNode.getJSONArray("childrenIds").length(),
                 1,
+                osmNode.getJSONArray("childrenIds").length(),
                 "first node of root had wrong amount of children");
         assertEquals(
-                treeNodeMap.get(osmNode.getJSONArray("childrenIds").get(0)).getInt("appLayerId"),
                 1,
+                treeNodeMap.get(osmNode.getJSONArray("childrenIds").get(0)).getInt("appLayerId"),
                 "incorrect appLayerId for first child");
     }
 

@@ -92,9 +92,18 @@ public class FeaturesController implements Constants {
     private final FilterFactory2 ff =
             CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
     private final Log logger = LogFactory.getLog(getClass());
-    @Autowired private ApplicationRepository applicationRepository;
-    @Autowired private ApplicationLayerRepository applicationLayerRepository;
+    private final ApplicationRepository applicationRepository;
+    private final ApplicationLayerRepository applicationLayerRepository;
     @PersistenceContext private EntityManager entityManager;
+
+    @Autowired
+    public FeaturesController(
+            ApplicationRepository applicationRepository,
+            ApplicationLayerRepository applicationLayerRepository) {
+        this.applicationRepository = applicationRepository;
+        this.applicationLayerRepository = applicationLayerRepository;
+    }
+
     /**
      * Handle any {@code EntityNotFoundException} that this controller might throw while getting the
      * application.
@@ -182,7 +191,7 @@ public class FeaturesController implements Constants {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
         } else {
             ApplicationLayer appLayer = applicationLayerRepository.getReferenceById(appLayerId);
-            FeaturesResponse featuresResponse = new FeaturesResponse();
+            FeaturesResponse featuresResponse;
 
             if (null != __fid) {
                 featuresResponse = getFeatureByFID(appLayer, __fid, crs);
@@ -212,17 +221,12 @@ public class FeaturesController implements Constants {
         FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);
 
         // find attribute source of layer
-        final GeoService geoService = appLayer.getService();
-        final Layer layer = geoService.getLayer(appLayer.getLayerName(), entityManager);
+        final Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), entityManager);
         final SimpleFeatureType sft = layer.getFeatureType();
         if (null == sft) {
             return featuresResponse;
         }
-        List<ConfiguredAttribute> configuredAttributes = appLayer.getAttributes(sft);
-        configuredAttributes =
-                configuredAttributes.stream()
-                        .filter(ConfiguredAttribute::isVisible)
-                        .collect(Collectors.toList());
+        List<ConfiguredAttribute> configuredAttributes = getVisibleAttributes(appLayer, sft);
         try {
             SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
 
@@ -281,7 +285,7 @@ public class FeaturesController implements Constants {
             q.setPropertyNames(propNames);
 
             // count can be -1 if too costly eg. some WFS
-            int featureCount = -1;
+            int featureCount;
             if (null != filterCQL) {
                 Filter filter = ECQL.toFilter(filterCQL);
                 q.setFilter(filter);
@@ -329,17 +333,12 @@ public class FeaturesController implements Constants {
         FeaturesResponse featuresResponse = new FeaturesResponse();
 
         // find attribute source of layer
-        final GeoService geoService = appLayer.getService();
-        final Layer layer = geoService.getLayer(appLayer.getLayerName(), entityManager);
+        final Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), entityManager);
         final SimpleFeatureType sft = layer.getFeatureType();
         if (null == sft) {
             return featuresResponse;
         }
-        List<ConfiguredAttribute> configuredAttributes = appLayer.getAttributes(sft);
-        configuredAttributes =
-                configuredAttributes.stream()
-                        .filter(ConfiguredAttribute::isVisible)
-                        .collect(Collectors.toList());
+        List<ConfiguredAttribute> configuredAttributes = getVisibleAttributes(appLayer, sft);
         try {
             SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
 
@@ -560,5 +559,13 @@ public class FeaturesController implements Constants {
                                         .alias(attributeDescriptor.getAlias()));
                     });
         }
+    }
+
+    private List<ConfiguredAttribute> getVisibleAttributes(
+            @NotNull ApplicationLayer appLayer, @NotNull SimpleFeatureType sft) {
+        List<ConfiguredAttribute> configuredAttributes = appLayer.getAttributes(sft);
+        return configuredAttributes.stream()
+                .filter(ConfiguredAttribute::isVisible)
+                .collect(Collectors.toList());
     }
 }

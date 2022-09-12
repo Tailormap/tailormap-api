@@ -25,6 +25,7 @@ public class FeatureSourceFactoryHelper {
     public static SimpleFeatureSource openGeoToolsFeatureSource(
             FeatureSource fs, SimpleFeatureType sft, int timeout) throws IOException {
         FeatureSourceHelper sh = getHelper(fs);
+        assert sh != null;
         return sh.openGeoToolsFeatureSource(fs, sft, timeout);
     }
 
@@ -34,6 +35,7 @@ public class FeatureSourceFactoryHelper {
         } else if (fs instanceof WFSFeatureSource) {
             return new WFSFeatureSourceHelper();
         }
+        // should never happen
         return null;
     }
 }

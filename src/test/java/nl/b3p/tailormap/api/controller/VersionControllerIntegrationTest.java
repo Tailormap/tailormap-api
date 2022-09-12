@@ -66,7 +66,7 @@ class VersionControllerIntegrationTest {
     @Test
     /* this test changes database content */
     @Order(Integer.MAX_VALUE)
-    void unknown_database_version() throws Exception {
+    void unknown_database_version() {
         metadataRepository.deleteMetadataByConfigKey(Metadata.DATABASE_VERSION_KEY);
 
         String projectVersion = System.getProperty("project.version");

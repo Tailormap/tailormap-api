@@ -7,7 +7,6 @@ package nl.b3p.tailormap.api;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,9 +42,13 @@ import javax.sql.DataSource;
         })
 @EnableTransactionManagement
 public class JPAConfiguration {
-    @Autowired private Environment env;
+    private final Environment env;
 
     private final Log logger = LogFactory.getLog(getClass());
+
+    public JPAConfiguration(Environment env) {
+        this.env = env;
+    }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -95,10 +98,8 @@ public class JPAConfiguration {
         return new PersistenceExceptionTranslationPostProcessor();
     }
 
-    private final Properties additionalProperties() {
+    private Properties additionalProperties() {
         final Properties hibernateProperties = new Properties();
-        //    hibernateProperties.setProperty(
-        //        "hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.hibernate.ddl-auto", ""));
         hibernateProperties.setProperty(
                 "hibernate.show_sql", env.getProperty("spring.jpa.show-sql", "false"));
         hibernateProperties.setProperty(

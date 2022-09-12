@@ -11,7 +11,6 @@ import nl.tailormap.viewer.config.security.User;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -27,10 +26,14 @@ import java.util.UUID;
 public class StartupAdminAccountCreator {
     private final Log logger = LogFactory.getLog(getClass());
 
-    @Autowired UserRepository userRepository;
+    final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder =
             PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
+    public StartupAdminAccountCreator(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) {
