@@ -110,7 +110,6 @@ components:
       items:
         $ref: './model.yaml#/components/schemas/AppLayer'
 
-
     ComponentsResponse:
       description: '
       Provides the collection of configured components (controls) for the application.
@@ -159,10 +158,8 @@ components:
     FeaturesResponse:
       description: 'A -possibly empty- list of features with requested attributes and presentation metadata'
       type: object
-      required: [
-        features,
-        columnMetadata
-      ]
+      required: [ features,
+                  columnMetadata ]
       properties:
         total:
           description: '
@@ -199,9 +196,30 @@ components:
         total: 400
         page: 5
         pageSize: 100
-        features: []
-        columnMetadata: []
+        features: [ ]
+        columnMetadata: [ ]
 
+    UniqueValuesResponse:
+      description: 'A -possibly empty- list of unique values of the requested attributes.'
+      type: object
+      required: [ values ]
+      properties:
+        filterapplied:
+          description: 'true if the filter was applied, false otherwise'
+          type: boolean
+          default: false
+        values:
+          description: 'list of unique values'
+          type: array
+          minLength: 0
+          uniqueItems: true
+          # any one type of string|number|boolean is allowed, but that generates unusable java code
+          # so allow any non-null value, we don't need to worry about mixed types as the data comes from a
+          # typed datasource (database table of WFS
+          items: { }
+      example:
+        filterapplied: false
+        values: [ "value 1", "value 2" ]
 
 paths:
   /version:
@@ -227,7 +245,7 @@ paths:
     post:
       operationId: 'login'
       summary: 'Logs in and returns the authentication cookie'
-      security: []
+      security: [ ]
       requestBody:
         required: true
         description: A JSON object containing the login and password.
@@ -501,8 +519,7 @@ paths:
           required: false
           schema:
             type: number
-        - description:
-            '
+        - description: '
             EPSG code for the given x- and y-coodinates, the backend will transform to attribute source if required. 
             Also the CRS to be used to reproject the hightlight gemometry if not in the same CRS as the attribute source.
             '
@@ -685,3 +702,68 @@ paths:
             application/json:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+
+
+  /app/{appId}/layer/{layerId}/unique/{attributeName}:
+    summary: 'Use this endpoint to get a list of unique value of a layer''s feature type attribute.'
+    get:
+      operationId: 'getUniqueValues'
+      description: 'retrieve features that fulfill the requested conditions (parameters).'
+      security:
+        - formAuth: [ ]
+      parameters:
+        - description: 'application id'
+          in: path
+          name: appId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - description: 'application layer id'
+          in: path
+          name: layerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - description: 'attribute name'
+          in: path
+          name: attributeName
+          required: true
+          schema:
+            type: string
+        - name: filter
+          description: '
+          A filter that was already applied to the layer (on a different attribute or this attribute). 
+          The filter is an ECQL string, see [ECQL reference](https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html).
+          '
+          in: query
+          schema:
+            type: string
+          required: false
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniqueValuesResponse'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+
