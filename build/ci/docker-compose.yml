@@ -31,7 +31,7 @@ services:
       interval: 1m
       timeout: 5s
       retries: 5
-      start_period: 20s
+      start_period: 1m
       test: su postgres -c pg_isready
     restart: unless-stopped
 
@@ -52,7 +52,7 @@ services:
       interval: 1m
       timeout: 5s
       retries: 5
-      start_period: 20s
+      start_period: 1m
       test: /opt/mssql-tools/bin/sqlcmd -U sa -P $$SA_PASSWORD -Q "select 1" -b -o /dev/null
     restart: unless-stopped
 
