@@ -16,7 +16,7 @@ class UniqueValuesResponseTest {
 
     @Test
     void testUniqueValuesResponse() {
-        UniqueValuesResponse uniqueValuesResponse = new UniqueValuesResponse().filterapplied(false);
+        UniqueValuesResponse uniqueValuesResponse = new UniqueValuesResponse().filterApplied(false);
         uniqueValuesResponse.addValuesItem("value 1");
         uniqueValuesResponse.addValuesItem("value 2");
         uniqueValuesResponse.addValuesItem("value 2");
@@ -24,6 +24,6 @@ class UniqueValuesResponseTest {
                 Set.of("value 1", "value 2"),
                 uniqueValuesResponse.getValues(),
                 "values don't match");
-        assertFalse(uniqueValuesResponse.getFilterapplied(), "filterapplied should be true");
+        assertFalse(uniqueValuesResponse.getFilterApplied(), "filterApplied should be true");
     }
 }
