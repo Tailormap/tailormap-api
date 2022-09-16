@@ -47,9 +47,10 @@ components:
 
     ErrorResponse:
       description: '
-      General server error response.
-      Can be returned when something goes terribly wrong in the backend.
-      Note that the diagnostic message may be of a general character to prevent disclosure of information about the backend.
+      General server error response. Can be returned when something goes terribly wrong in the backend.
+      **Note** that the diagnostic message may be of a general character to prevent disclosure of information about the backend.
+      Error codes are defined in the [HTTP status code](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) standard, 
+      and can range from 400 to 599.
       '
       type: object
       properties:
