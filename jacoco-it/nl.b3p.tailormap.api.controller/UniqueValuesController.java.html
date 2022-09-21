@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UniqueValuesController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.controller</a> &gt; <span class="el_source">UniqueValuesController.java</span></div><h1>UniqueValuesController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2021 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.controller;
+
+import io.micrometer.core.annotation.Timed;
+import io.swagger.v3.oas.annotations.Parameter;
+
+import nl.b3p.tailormap.api.exception.BadRequestException;
+import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import nl.b3p.tailormap.api.model.ErrorResponse;
+import nl.b3p.tailormap.api.model.RedirectResponse;
+import nl.b3p.tailormap.api.model.UniqueValuesResponse;
+import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.security.AuthUtil;
+import nl.tailormap.viewer.config.app.Application;
+import nl.tailormap.viewer.config.app.ApplicationLayer;
+import nl.tailormap.viewer.config.services.Layer;
+import nl.tailormap.viewer.config.services.SimpleFeatureType;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.geotools.data.Query;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.filter.text.ecql.ECQL;
+import org.geotools.util.factory.GeoTools;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.expression.Function;
+import org.opengis.filter.sort.SortOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceContext;
+
+@RestController
+@Validated
+@RequestMapping(
+        path = &quot;/app/{appId}/layer/{appLayerId}/unique/{attributeName}&quot;,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+public class UniqueValuesController {
+    @Value(&quot;${tailormap-api.data.useGeotoolsUniqueFunction:true}&quot;)
+    private boolean useGeotoolsUniqueFunction;
+
+<span class="nc" id="L69">    private final FilterFactory2 ff =</span>
+<span class="nc" id="L70">            CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());</span>
+<span class="nc" id="L71">    private final Log logger = LogFactory.getLog(getClass());</span>
+    private final ApplicationRepository applicationRepository;
+    private final ApplicationLayerRepository applicationLayerRepository;
+    @PersistenceContext private EntityManager entityManager;
+
+    @Autowired
+    public UniqueValuesController(
+            ApplicationRepository applicationRepository,
+<span class="nc" id="L79">            ApplicationLayerRepository applicationLayerRepository) {</span>
+<span class="nc" id="L80">        this.applicationRepository = applicationRepository;</span>
+<span class="nc" id="L81">        this.applicationLayerRepository = applicationLayerRepository;</span>
+<span class="nc" id="L82">    }</span>
+
+    /**
+     * Handle any {@code EntityNotFoundException} that this controller might throw while getting the
+     * application.
+     *
+     * @param exception the exception
+     * @return an error response
+     */
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(
+            value =
+                    HttpStatus
+                            .NOT_FOUND /*,reason = &quot;Not Found&quot; -- adding 'reason' will drop the body */)
+    @ResponseBody
+    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
+<span class="nc" id="L98">        logger.warn(</span>
+                &quot;Requested an application or appLayer that does not exist. Message: &quot;
+<span class="nc" id="L100">                        + exception.getMessage());</span>
+<span class="nc" id="L101">        return new ErrorResponse()</span>
+<span class="nc" id="L102">                .message(&quot;Requested an application or appLayer that does not exist&quot;)</span>
+<span class="nc" id="L103">                .code(HttpStatus.NOT_FOUND.value());</span>
+    }
+
+    /**
+     * Handle any {@code BadRequestException} that this controller might throw while getting the
+     * application.
+     *
+     * @param exception the exception
+     * @return an error response
+     */
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(
+            value =
+                    HttpStatus
+                            .BAD_REQUEST /*,reason = &quot;Bad Request&quot; -- adding 'reason' will drop the body */)
+    @ResponseBody
+    public ErrorResponse handleBadRequestException(BadRequestException exception) {
+<span class="nc" id="L120">        return new ErrorResponse().message(&quot;Bad Request. &quot; + exception.getMessage()).code(400);</span>
+    }
+
+    /**
+     * Get a list of unique attribute values for a given attribute name.
+     *
+     * @param appId the application
+     * @param appLayerId the application layer id
+     * @param attributeName the attribute name
+     * @param filter A filter that was already applied to the layer (on a different attribute or
+     *     this attribute)
+     * @return a list of unique values, can be empty
+     * @throws BadRequestException if the request was invalid, eg. the provided filter could not be
+     *     parsed
+     */
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed(
+            value = &quot;get_unique_attributes&quot;,
+            description = &quot;time spent to process get unique attributes call&quot;)
+    public ResponseEntity&lt;Serializable&gt; getUniqueAttributes(
+            @Parameter(name = &quot;appId&quot;, description = &quot;application id&quot;, required = true)
+                    @PathVariable(&quot;appId&quot;)
+                    Long appId,
+            @Parameter(name = &quot;appLayerId&quot;, description = &quot;application layer id&quot;, required = true)
+                    @PathVariable(&quot;appLayerId&quot;)
+                    Long appLayerId,
+            @Parameter(name = &quot;attributeName&quot;, description = &quot;attribute name&quot;, required = true)
+                    @PathVariable(&quot;attributeName&quot;)
+                    String attributeName,
+            @RequestParam(required = false) String filter)
+            throws BadRequestException {
+
+        // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
+        // and in a normal flow this should not happen
+        // as appId is (should be) validated by calling the /app/ endpoint
+<span class="nc" id="L155">        final Application application = applicationRepository.getReferenceById(appId);</span>
+<span class="nc bnc" id="L156" title="All 4 branches missed.">        if (application.isAuthenticatedRequired() &amp;&amp; !AuthUtil.isAuthenticatedUser()) {</span>
+            // login required, send RedirectResponse
+<span class="nc" id="L158">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());</span>
+        } else {
+<span class="nc bnc" id="L160" title="All 2 branches missed.">            if (StringUtils.isBlank(attributeName)) {</span>
+<span class="nc" id="L161">                throw new BadRequestException(&quot;Attribute name is required&quot;);</span>
+            }
+<span class="nc" id="L163">            final ApplicationLayer appLayer =</span>
+<span class="nc" id="L164">                    applicationLayerRepository.getReferenceById(appLayerId);</span>
+
+<span class="nc" id="L166">            UniqueValuesResponse uniqueValuesResponse =</span>
+<span class="nc" id="L167">                    getUniqueValues(appLayer, attributeName, filter);</span>
+<span class="nc" id="L168">            return ResponseEntity.status(HttpStatus.OK).body(uniqueValuesResponse);</span>
+        }
+    }
+
+    private UniqueValuesResponse getUniqueValues(
+            ApplicationLayer appLayer, String attributeName, String filter)
+            throws BadRequestException {
+<span class="nc" id="L175">        final UniqueValuesResponse uniqueValuesResponse =</span>
+<span class="nc" id="L176">                new UniqueValuesResponse().filterApplied(false);</span>
+<span class="nc" id="L177">        final Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), entityManager);</span>
+<span class="nc" id="L178">        final SimpleFeatureType sft = layer.getFeatureType();</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (null == sft) {</span>
+<span class="nc" id="L180">            return uniqueValuesResponse;</span>
+        }
+
+        try {
+<span class="nc" id="L184">            Filter existingFilter = null;</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">            if (null != filter) {</span>
+<span class="nc" id="L186">                existingFilter = ECQL.toFilter(filter);</span>
+            }
+<span class="nc" id="L188">            logger.trace(&quot;existingFilter: &quot; + existingFilter);</span>
+
+<span class="nc" id="L190">            Filter notNull = ff.not(ff.isNull(ff.property(attributeName)));</span>
+<span class="nc" id="L191">            Filter f = notNull;</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">            if (null != existingFilter) {</span>
+<span class="nc" id="L193">                f = ff.and(notNull, existingFilter);</span>
+<span class="nc" id="L194">                uniqueValuesResponse.filterApplied(true);</span>
+            }
+
+<span class="nc" id="L197">            Query q = new Query(sft.getTypeName(), f);</span>
+<span class="nc" id="L198">            q.setPropertyNames(attributeName);</span>
+<span class="nc" id="L199">            q.setSortBy(ff.sort(attributeName, SortOrder.ASCENDING));</span>
+<span class="nc" id="L200">            logger.trace(&quot;Unique values query: &quot; + q);</span>
+
+<span class="nc" id="L202">            SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);</span>
+            // and then there are 2 scenarios:
+            // there might be a performance benefit for one or the other
+<span class="nc bnc" id="L205" title="All 2 branches missed.">            if (!useGeotoolsUniqueFunction) {</span>
+                // #1 use a feature visitor to get the unique values
+                // not recommended, as it may not be performant
+<span class="nc" id="L208">                logger.trace(&quot;Using feature visitor to get unique values&quot;);</span>
+<span class="nc" id="L209">                fs.getFeatures(q)</span>
+<span class="nc" id="L210">                        .accepts(</span>
+                                feature -&gt;
+<span class="nc" id="L212">                                        uniqueValuesResponse.addValuesItem(</span>
+<span class="nc" id="L213">                                                feature.getProperty(attributeName).getValue()),</span>
+                                null);
+            } else {
+                // #2 or use a Function to get the unique values
+                // this is the recommended way, uses SLQ &quot;distinct&quot;
+<span class="nc" id="L218">                logger.trace(&quot;Using geotools unique collection function to get unique values&quot;);</span>
+<span class="nc" id="L219">                Function unique = ff.function(&quot;Collection_Unique&quot;, ff.property(attributeName));</span>
+<span class="nc" id="L220">                Object o = unique.evaluate(fs.getFeatures(q));</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">                if (o instanceof Set) {</span>
+                    @SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L223">                    Set&lt;Object&gt; uniqueValues = (Set&lt;Object&gt;) o;</span>
+<span class="nc" id="L224">                    uniqueValuesResponse.setValues(uniqueValues);</span>
+                }
+            }
+
+<span class="nc" id="L228">            fs.getDataStore().dispose();</span>
+<span class="nc" id="L229">        } catch (CQLException e) {</span>
+<span class="nc" id="L230">            logger.error(&quot;Could not parse requested filter.&quot;, e);</span>
+<span class="nc" id="L231">            throw new BadRequestException(&quot;Could not parse requested filter.&quot;);</span>
+<span class="nc" id="L232">        } catch (IOException e) {</span>
+<span class="nc" id="L233">            logger.error(&quot;Could not retrieve attribute data.&quot;, e);</span>
+<span class="nc" id="L234">        }</span>
+
+<span class="nc" id="L236">        return uniqueValuesResponse;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
