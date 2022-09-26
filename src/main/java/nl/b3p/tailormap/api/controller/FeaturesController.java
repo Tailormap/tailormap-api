@@ -83,10 +83,10 @@ import javax.validation.constraints.NotNull;
         path = "/app/{appId}/layer/{appLayerId}/features",
         produces = MediaType.APPLICATION_JSON_VALUE)
 public class FeaturesController implements Constants {
-    @Value("${tailormap-api.pageSize}")
+    @Value("${tailormap-api.pageSize:100}")
     private int pageSize;
 
-    @Value("${tailormap-api.wfs.count.exact}")
+    @Value("${tailormap-api.features.wfs_count_exact:false}")
     private boolean exactWfsCounts;
 
     @Value("${tailormap-api.features.skip_geometry_output:true}")
