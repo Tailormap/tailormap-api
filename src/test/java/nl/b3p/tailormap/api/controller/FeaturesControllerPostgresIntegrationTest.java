@@ -68,7 +68,7 @@ class FeaturesControllerPostgresIntegrationTest {
     private static final int wegdeelTotalCount = 5934;
     private final Log logger = LogFactory.getLog(getClass());
 
-    @Value("${tailormap-api.wfs.count.exact}")
+    @Value("${tailormap-api.features.wfs_count_exact:false}")
     private boolean exactWfsCounts;
 
     @Autowired private MockMvc mockMvc;
@@ -986,7 +986,7 @@ class FeaturesControllerPostgresIntegrationTest {
     void filterTest(String applayerUrl, String filterCQL, int totalCount) throws Exception {
         int listSize = Math.min(pageSize, totalCount);
         if (!exactWfsCounts && applayerUrl.equals(provinciesWFS)) {
-            // see #extractWfsCount and property 'tailormap-api.wfs.count.exact'
+            // see #extractWfsCount and property 'tailormap-api.features.wfs_count_exact'
             totalCount = -1;
         }
 
