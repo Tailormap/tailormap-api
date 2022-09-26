@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api.geotools.processing;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geotools.data.geojson.GeoJSONWriter;
 import org.geotools.geometry.jts.JTS;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
@@ -115,5 +116,9 @@ public final class GeometryProcessor {
         } else {
             return linearizeGeomToWKT(geom);
         }
+    }
+
+    public static String geometryToJson(Geometry geom) {
+        return GeoJSONWriter.toGeoJSON(geom);
     }
 }

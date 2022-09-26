@@ -118,4 +118,23 @@ class GeometryProcessorTest extends StaticTestData {
                 GeometryProcessor.processGeometry(ring, false, null),
                 "geometry does not match");
     }
+
+    @Test
+    void testJsonOutput() throws ParseException {
+        Geometry p = new WKTReader2().read(testData.getProperty("RDpointWkt"));
+        assertEquals(
+                "{\"type\":\"Point\",\"coordinates\":[141247,458118]}",
+                GeometryProcessor.geometryToJson(p),
+                "json output should match");
+
+        // this is ignored by the json output
+        p.setSRID(28992);
+        assertEquals(
+                "{\"type\":\"Point\",\"coordinates\":[141247,458118]}",
+                GeometryProcessor.geometryToJson(p),
+                "json output should match");
+
+        p = null;
+        assertEquals("null", GeometryProcessor.geometryToJson(p), "json output should match");
+    }
 }

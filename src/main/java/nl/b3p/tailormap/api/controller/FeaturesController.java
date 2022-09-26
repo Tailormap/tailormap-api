@@ -89,6 +89,9 @@ public class FeaturesController implements Constants {
     @Value("${tailormap-api.wfs.count.exact}")
     private boolean exactWfsCounts;
 
+    @Value("${tailormap-api.features.skip_geometry_output:true}")
+    private boolean skipGeometryOutput;
+
     private final FilterFactory2 ff =
             CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
     private final Log logger = LogFactory.getLog(getClass());
@@ -531,10 +534,20 @@ public class FeaturesController implements Constants {
                                 newFeat.putAttributesItem(
                                         configuredAttribute.getAttributeName(), processedGeometry);
                             } else {
-                                newFeat.putAttributesItem(
-                                        configuredAttribute.getAttributeName(),
+                                Object attrValue =
                                         feature.getAttribute(
-                                                configuredAttribute.getAttributeName()));
+                                                configuredAttribute.getAttributeName());
+                                if (attrValue instanceof Geometry) {
+                                    if (skipGeometryOutput) {
+                                        attrValue = null;
+                                    } else {
+                                        attrValue =
+                                                GeometryProcessor.geometryToJson(
+                                                        (Geometry) attrValue);
+                                    }
+                                }
+                                newFeat.putAttributesItem(
+                                        configuredAttribute.getAttributeName(), attrValue);
                             }
                         });
                 featuresResponse.addFeaturesItem(newFeat);

@@ -101,6 +101,7 @@ SPDX-License-Identifier: MIT
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <geotools.version>27.1</geotools.version>
+    <jts.version>1.19.0</jts.version>
     <spring.boot.version>${project.parent.version}</spring.boot.version>
     <!--
     Spring-Boot version overrides. see org.springframework.boot:spring-boot-dependencies
@@ -291,8 +292,18 @@ SPDX-License-Identifier: MIT
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.locationtech.jts</groupId>
+      <artifactId>jts-core</artifactId>
+      <version>${jts.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-main</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-geojson-core</artifactId>
       <version>${geotools.version}</version>
     </dependency>
     <dependency>
