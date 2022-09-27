@@ -7,8 +7,8 @@
     <servers>
         <server>
             <id>repo.b3p.nl</id>
-            <username>${env.REPO_B3P_ACTOR}</username>
-            <password>${env.REPO_B3P_TOKEN}</password>
+            <username>${env.B3P_DEPLOY_ACTOR}</username>
+            <password>${env.B3P_DEPLOY_TOKEN}</password>
         </server>
         <server>
             <id>ghcr.io</id>
