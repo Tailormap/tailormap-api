@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9};
+var data = {"i0":9,"i1":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -161,6 +161,11 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#geometryToJson(org.locationtech.jts.geom.Geometry)">geometryToJson</a></span>&#8203;(org.locationtech.jts.geom.Geometry&nbsp;geom)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static @NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processGeometry(java.lang.Object,java.lang.Boolean,org.opengis.referencing.operation.MathTransform)">processGeometry</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>&nbsp;geometry,
                @NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;simplifyGeometry,
@@ -196,7 +201,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <a id="processGeometry(java.lang.Object,java.lang.Boolean,org.opengis.referencing.operation.MathTransform)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>processGeometry</h4>
 <pre class="methodSignature">@NotNull
@@ -215,6 +220,15 @@ public static&nbsp;@NotNull <a href="https://docs.oracle.com/en/java/javase/11/d
 <dd>the string representation of the argument - normally WKT, optionally simplified or
      <code>null</code> when the given geometry was <code>null</code></dd>
 </dl>
+</li>
+</ul>
+<a id="geometryToJson(org.locationtech.jts.geom.Geometry)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>geometryToJson</h4>
+<pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;geometryToJson&#8203;(org.locationtech.jts.geom.Geometry&nbsp;geom)</pre>
 </li>
 </ul>
 </li>

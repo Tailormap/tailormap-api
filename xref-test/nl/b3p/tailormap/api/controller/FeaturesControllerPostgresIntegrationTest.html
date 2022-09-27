@@ -76,7 +76,7 @@
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> wegdeelTotalCount = 5934;
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Log logger = LogFactory.getLog(getClass());
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>      @Value(<span class="jxr_string">"${tailormap-api.wfs.count.exact}"</span>)
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      @Value(<span class="jxr_string">"${tailormap-api.features.wfs_count_exact:false}"</span>)
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> exactWfsCounts;
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      @Autowired <strong class="jxr_keyword">private</strong> MockMvc mockMvc;
@@ -994,7 +994,7 @@
 <a class="jxr_linenumber" name="L986" href="#L986">986</a>     <strong class="jxr_keyword">void</strong> filterTest(String applayerUrl, String filterCQL, <strong class="jxr_keyword">int</strong> totalCount) <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L987" href="#L987">987</a>         <strong class="jxr_keyword">int</strong> listSize = Math.min(pageSize, totalCount);
 <a class="jxr_linenumber" name="L988" href="#L988">988</a>         <strong class="jxr_keyword">if</strong> (!exactWfsCounts &amp;&amp; applayerUrl.equals(provinciesWFS)) {
-<a class="jxr_linenumber" name="L989" href="#L989">989</a>             <em class="jxr_comment">// see #extractWfsCount and property 'tailormap-api.wfs.count.exact'</em>
+<a class="jxr_linenumber" name="L989" href="#L989">989</a>             <em class="jxr_comment">// see #extractWfsCount and property 'tailormap-api.features.wfs_count_exact'</em>
 <a class="jxr_linenumber" name="L990" href="#L990">990</a>             totalCount = -1;
 <a class="jxr_linenumber" name="L991" href="#L991">991</a>         }
 <a class="jxr_linenumber" name="L992" href="#L992">992</a> 

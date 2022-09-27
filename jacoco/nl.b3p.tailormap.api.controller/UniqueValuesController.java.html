@@ -63,7 +63,7 @@ import javax.persistence.PersistenceContext;
         path = &quot;/app/{appId}/layer/{appLayerId}/unique/{attributeName}&quot;,
         produces = MediaType.APPLICATION_JSON_VALUE)
 public class UniqueValuesController {
-    @Value(&quot;${tailormap-api.data.useGeotoolsUniqueFunction:true}&quot;)
+    @Value(&quot;${tailormap-api.unique.use_geotools_unique_function:true}&quot;)
     private boolean useGeotoolsUniqueFunction;
 
 <span class="fc" id="L69">    private final FilterFactory2 ff =</span>
