@@ -39,6 +39,9 @@ public class VersionController {
     @Value("${tailormap-api.commitSha}")
     private String commitSha;
 
+    @Value("${tailormap-api.builddate}")
+    private String buildDate;
+
     public VersionController(MetadataRepository metadataRepository) {
         this.metadataRepository = metadataRepository;
     }
@@ -56,8 +59,8 @@ public class VersionController {
 
         logger.debug(
                 String.format(
-                        "Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s\n\tgit commit: %s",
-                        this.version, dbVersion, this.apiVersion, this.commitSha));
+                        "Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s\n\tgit commit: %s\n\tbuild date: %s",
+                        this.version, dbVersion, this.apiVersion, this.commitSha, this.buildDate));
 
         return Map.of(
                 "version",
@@ -67,6 +70,8 @@ public class VersionController {
                 "apiVersion",
                 this.apiVersion,
                 "commitSha",
-                this.commitSha);
+                this.commitSha,
+                "buildDate",
+                this.buildDate);
     }
 }
