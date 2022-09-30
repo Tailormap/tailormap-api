@@ -62,6 +62,7 @@ class TailormapHealthIndicatorEnabledIntegrationTest {
                                                 "application/vnd.spring-boot.actuator.v3+json")))
                 .andExpect(jsonPath("$.details.version").value(projectVersion))
                 .andExpect(jsonPath("$.details.apiVersion").value(apiVersion))
-                .andExpect(jsonPath("$.details.databaseversion").value(databaseVersion));
+                .andExpect(jsonPath("$.details.databaseversion").value(databaseVersion))
+                .andExpect(jsonPath("$.details.buildDate").isNotEmpty());
     }
 }

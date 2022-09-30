@@ -158,7 +158,7 @@ SPDX-License-Identifier: MIT
     <pom.fmt.action>sort</pom.fmt.action>
     <docker.skip>false</docker.skip>
     <maven-fluido-skin.version>1.11.1</maven-fluido-skin.version>
-    <swagger-ui.version>4.14.0</swagger-ui.version>
+    <swagger-ui.version>4.14.2</swagger-ui.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -637,6 +637,7 @@ SPDX-License-Identifier: MIT
             <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
             <!--suppress UnresolvedMavenProperty -->
             <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
+            <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
           </environmentVariables>
           <excludes>
             <exclude>**/*IntegrationTest.java</exclude>
@@ -666,6 +667,7 @@ SPDX-License-Identifier: MIT
             <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
             <!--suppress UnresolvedMavenProperty -->
             <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
+            <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
           </environmentVariables>
           <useFile>false</useFile>
           <classpathDependencyExcludes>
@@ -696,6 +698,7 @@ SPDX-License-Identifier: MIT
             <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
             <!--suppress UnresolvedMavenProperty -->
             <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
+            <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
           </environmentVariables>
           <cleanCache>true</cleanCache>
           <!--suppress UnresolvedMavenProperty -->
@@ -734,6 +737,7 @@ SPDX-License-Identifier: MIT
                 <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
                 <!--suppress UnresolvedMavenProperty -->
                 <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
+                <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
               </environmentVariables>
               <systemPropertyVariables>
                 <project.version>${project.version}</project.version>
@@ -1509,6 +1513,7 @@ SPDX-License-Identifier: MIT
                 <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
                 <!--suppress UnresolvedMavenProperty -->
                 <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
+                <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
               </environmentVariables>
               <useFile>false</useFile>
             </configuration>
@@ -1547,6 +1552,7 @@ SPDX-License-Identifier: MIT
                     <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
                     <!--suppress UnresolvedMavenProperty -->
                     <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
+                    <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
                   </environmentVariables>
                   <systemPropertyVariables>
                     <project.version>${project.version}</project.version>
