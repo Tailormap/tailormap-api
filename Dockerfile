@@ -27,7 +27,9 @@ LABEL org.opencontainers.image.authors="support@b3partners.nl" \
 
 # set-up timezone and local user
 RUN set -eux;ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
-    && addgroup -S spring && adduser -S spring -G spring
+    && addgroup -S spring && adduser -S spring -G spring \
+    # for CVE-2022-40674, this can probably be removed when we upgrade the base image > eclipse-temurin:11.0.16.1_1-jre-alpine
+    && apk add --no-cache expat=2.4.9-r0
 
 USER spring:spring
 
