@@ -70,9 +70,10 @@
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>                                                  <span class="jxr_string">"application/vnd.spring-boot.actuator.v3+json"</span>)))
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.details.version"</span>).value(projectVersion))
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.details.apiVersion"</span>).value(apiVersion))
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.details.databaseversion"</span>).value(databaseVersion));
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>      }
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  }
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.details.databaseversion"</span>).value(databaseVersion))
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.details.buildDate"</span>).isNotEmpty());
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      }
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2022 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

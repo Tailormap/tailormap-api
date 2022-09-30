@@ -39,9 +39,12 @@ public class VersionController {
     @Value(&quot;${tailormap-api.commitSha}&quot;)
     private String commitSha;
 
-<span class="fc" id="L42">    public VersionController(MetadataRepository metadataRepository) {</span>
-<span class="fc" id="L43">        this.metadataRepository = metadataRepository;</span>
-<span class="fc" id="L44">    }</span>
+    @Value(&quot;${tailormap-api.builddate}&quot;)
+    private String buildDate;
+
+<span class="fc" id="L45">    public VersionController(MetadataRepository metadataRepository) {</span>
+<span class="fc" id="L46">        this.metadataRepository = metadataRepository;</span>
+<span class="fc" id="L47">    }</span>
 
     /**
      * get API version.
@@ -50,16 +53,16 @@ public class VersionController {
      */
     @GetMapping(path = &quot;/version&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map&lt;String, String&gt; getVersion() {
-<span class="fc" id="L53">        final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);</span>
+<span class="fc" id="L56">        final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);</span>
         final String dbVersion =
-<span class="pc bpc" id="L55" title="1 of 4 branches missed.">                null != m ? null == m.getConfigValue() ? &quot;unknown&quot; : m.getConfigValue() : &quot;unknown&quot;;</span>
+<span class="pc bpc" id="L58" title="1 of 4 branches missed.">                null != m ? null == m.getConfigValue() ? &quot;unknown&quot; : m.getConfigValue() : &quot;unknown&quot;;</span>
 
-<span class="fc" id="L57">        logger.debug(</span>
-<span class="fc" id="L58">                String.format(</span>
-                        &quot;Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s\n\tgit commit: %s&quot;,
-                        this.version, dbVersion, this.apiVersion, this.commitSha));
+<span class="fc" id="L60">        logger.debug(</span>
+<span class="fc" id="L61">                String.format(</span>
+                        &quot;Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s\n\tgit commit: %s\n\tbuild date: %s&quot;,
+                        this.version, dbVersion, this.apiVersion, this.commitSha, this.buildDate));
 
-<span class="fc" id="L62">        return Map.of(</span>
+<span class="fc" id="L65">        return Map.of(</span>
                 &quot;version&quot;,
                 this.version,
                 &quot;databaseversion&quot;,
@@ -67,7 +70,9 @@ public class VersionController {
                 &quot;apiVersion&quot;,
                 this.apiVersion,
                 &quot;commitSha&quot;,
-                this.commitSha);
+                this.commitSha,
+                &quot;buildDate&quot;,
+                this.buildDate);
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
