@@ -91,7 +91,7 @@ class VersionControllerIntegrationTest {
 
         // buildDate can be a few seconds off when running integration tests
         assertEquals(
-                buildDate,
+                (double) buildDate,
                 LocalDateTime.parse(
                                 versionController.getVersion().get("buildDate"),
                                 DateTimeFormatter.ISO_OFFSET_DATE_TIME)
@@ -136,7 +136,7 @@ class VersionControllerIntegrationTest {
                 "Unexpected version response, some keys are missing.");
 
         assertEquals(
-                buildDate,
+                (double) buildDate,
                 LocalDateTime.parse(
                                 versionController.getVersion().get("buildDate"),
                                 DateTimeFormatter.ISO_OFFSET_DATE_TIME)
