@@ -99,7 +99,7 @@
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>          <em class="jxr_comment">// buildDate can be a few seconds off when running integration tests</em>
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>          assertEquals(
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>                  buildDate,
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>                  (<strong class="jxr_keyword">double</strong>) buildDate,
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>                  LocalDateTime.parse(
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>                                  versionController.getVersion().get(<span class="jxr_string">"buildDate"</span>),
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>                                  DateTimeFormatter.ISO_OFFSET_DATE_TIME)
@@ -144,7 +144,7 @@
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>                 <span class="jxr_string">"Unexpected version response, some keys are missing."</span>);
 <a class="jxr_linenumber" name="L137" href="#L137">137</a> 
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>         assertEquals(
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>                 buildDate,
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>                 (<strong class="jxr_keyword">double</strong>) buildDate,
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>                 LocalDateTime.parse(
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>                                 versionController.getVersion().get(<span class="jxr_string">"buildDate"</span>),
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>                                 DateTimeFormatter.ISO_OFFSET_DATE_TIME)
