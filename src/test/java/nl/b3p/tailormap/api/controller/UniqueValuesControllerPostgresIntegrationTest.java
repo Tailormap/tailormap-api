@@ -279,4 +279,34 @@ class UniqueValuesControllerPostgresIntegrationTest {
         .andExpect(jsonPath("$.values[0]").value(Matchers.containsString("-Holland")))
         .andExpect(jsonPath("$.values[1]").value(Matchers.containsString("-Holland")));
   }
+
+  /**
+   * Testcase for <a href="https://b3partners.atlassian.net/browse/HTM-492">HTM-492</a> where Jakson
+   * fails to process oracle.sql.TIMESTAMP.
+   *
+   * <p>The exception is: {@code org.springframework.web.util.NestedServletException: Request
+   * processing failed; nested exception is
+   * org.springframework.http.converter.HttpMessageConversionException: Type definition error:
+   * [simple type, class java.io.ByteArrayInputStream]; nested exception is
+   * com.fasterxml.jackson.databind.exc.InvalidDefinitionException: No serializer found for class
+   * java.io.ByteArrayInputStream and no properties discovered to create BeanSerializer (to avoid
+   * exception, disable SerializationFeature.FAIL_ON_EMPTY_BEANS) (through reference chain:
+   * nl.b3p.tailormap.api.model.UniqueValuesResponse["values"]->java.util.HashSet[0]->oracle.sql.TIMESTAMP["stream"])
+   * }
+   *
+   * @throws Exception if any
+   */
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void unique_values_oracle_timestamp_HTM_492() throws Exception {
+    final String testUrl = "/app/1/layer/7/unique/TIJDSTIPREGISTRATIE";
+    mockMvc
+        .perform(
+            get(testUrl).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.filterApplied").value(true))
+        .andExpect(jsonPath("$.values").isArray())
+        .andExpect(jsonPath("$.values").isNotEmpty());
+  }
 }
