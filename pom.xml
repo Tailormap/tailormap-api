@@ -262,7 +262,7 @@ SPDX-License-Identifier: MIT
     <dependency>
       <groupId>nl.b3p.tailormap</groupId>
       <artifactId>tailormap-persistence</artifactId>
-      <version>10.0-SNAPSHOT</version>
+      <version>10.0</version>
       <exclusions>
         <exclusion>
           <!-- SLF4J is provided by SpringBoot through logback -->
