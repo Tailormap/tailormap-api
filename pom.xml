@@ -427,6 +427,11 @@ SPDX-License-Identifier: MIT
       <artifactId>sentry-spring-boot-starter</artifactId>
       <version>${sentry.version}</version>
     </dependency>
+    <dependency>
+      <groupId>io.sentry</groupId>
+      <artifactId>sentry-jdbc</artifactId>
+      <version>${sentry.version}</version>
+    </dependency>
   </dependencies>
   <repositories>
     <repository>
@@ -447,6 +452,7 @@ SPDX-License-Identifier: MIT
           <include>**/index.html</include>
           <include>**/application*.properties</include>
           <include>**/git.properties</include>
+          <include>**/spy.properties</include>
         </includes>
       </resource>
       <resource>
@@ -455,6 +461,7 @@ SPDX-License-Identifier: MIT
           <exclude>**/index.html</exclude>
           <exclude>**/application*.properties</exclude>
           <exclude>**/git.properties</exclude>
+          <exclude>**/spy.properties</exclude>
         </excludes>
       </resource>
       <resource>
@@ -1122,6 +1129,7 @@ SPDX-License-Identifier: MIT
                     <exclude>org.hibernate:hibernate-micrometer</exclude>
                     <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
                     <exclude>io.sentry:sentry-spring-boot-starter</exclude>
+                    <exclude>p6spy:p6spy:jar</exclude>
                     <!--
                     TODO this should be fixed; either by importing or excluding the transitive dependencies
                     nl.b3p.tailormap:viewer-config-persistence:jar:5.9.12-SNAPSHOT:compile has transitive dependencies:
