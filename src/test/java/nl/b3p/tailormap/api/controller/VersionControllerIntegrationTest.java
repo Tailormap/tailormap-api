@@ -96,8 +96,8 @@ class VersionControllerIntegrationTest {
                                 versionController.getVersion().get("buildDate"),
                                 DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                         .toEpochSecond(ZoneOffset.UTC),
-                10,
-                "buildDate should almost be the same");
+                20,
+                "buildDate should almost be the same - there might be a temporal abberation");
 
         expected.entrySet().stream()
                 .filter(e -> !e.getKey().equals("buildDate"))
@@ -141,7 +141,7 @@ class VersionControllerIntegrationTest {
                                 versionController.getVersion().get("buildDate"),
                                 DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                         .toEpochSecond(ZoneOffset.UTC),
-                10,
+                20,
                 "buildDate should almost be the same - there might be a temporal abberation");
 
         expected.entrySet().stream()
