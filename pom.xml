@@ -160,6 +160,7 @@ SPDX-License-Identifier: MIT
     <docker.skip>false</docker.skip>
     <maven-fluido-skin.version>1.11.1</maven-fluido-skin.version>
     <swagger-ui.version>4.14.3</swagger-ui.version>
+    <sentry.version>6.5.0</sentry.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -421,6 +422,16 @@ SPDX-License-Identifier: MIT
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.sentry</groupId>
+      <artifactId>sentry-spring-boot-starter</artifactId>
+      <version>${sentry.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.sentry</groupId>
+      <artifactId>sentry-jdbc</artifactId>
+      <version>${sentry.version}</version>
+    </dependency>
   </dependencies>
   <repositories>
     <repository>
@@ -440,13 +451,17 @@ SPDX-License-Identifier: MIT
         <includes>
           <include>**/index.html</include>
           <include>**/application*.properties</include>
+          <include>**/git.properties</include>
+          <include>**/spy.properties</include>
         </includes>
       </resource>
       <resource>
         <directory>${basedir}/src/main/resources</directory>
         <excludes>
-          <exclude>**/application*.properties</exclude>
           <exclude>**/index.html</exclude>
+          <exclude>**/application*.properties</exclude>
+          <exclude>**/git.properties</exclude>
+          <exclude>**/spy.properties</exclude>
         </excludes>
       </resource>
       <resource>
@@ -547,7 +562,7 @@ SPDX-License-Identifier: MIT
         <artifactId>git-commit-id-maven-plugin</artifactId>
         <version>5.0.0</version>
         <configuration>
-          <generateGitPropertiesFile>false</generateGitPropertiesFile>
+          <generateGitPropertiesFile>true</generateGitPropertiesFile>
         </configuration>
         <executions>
           <execution>
@@ -1113,6 +1128,8 @@ SPDX-License-Identifier: MIT
                     <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
                     <exclude>org.hibernate:hibernate-micrometer</exclude>
                     <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
+                    <exclude>io.sentry:sentry-spring-boot-starter</exclude>
+                    <exclude>p6spy:p6spy:jar</exclude>
                     <!--
                     TODO this should be fixed; either by importing or excluding the transitive dependencies
                     nl.b3p.tailormap:viewer-config-persistence:jar:5.9.12-SNAPSHOT:compile has transitive dependencies:
