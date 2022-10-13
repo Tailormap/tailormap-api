@@ -104,8 +104,8 @@
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>                                  versionController.getVersion().get(<span class="jxr_string">"buildDate"</span>),
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>                                  DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>                          .toEpochSecond(ZoneOffset.UTC),
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>                  10,
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>                 <span class="jxr_string">"buildDate should almost be the same"</span>);
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>                  20,
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>                 <span class="jxr_string">"buildDate should almost be the same - there might be a temporal abberation"</span>);
 <a class="jxr_linenumber" name="L101" href="#L101">101</a> 
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>         expected.entrySet().stream()
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>                 .filter(e -&gt; !e.getKey().equals(<span class="jxr_string">"buildDate"</span>))
@@ -149,7 +149,7 @@
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>                                 versionController.getVersion().get(<span class="jxr_string">"buildDate"</span>),
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>                                 DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>                         .toEpochSecond(ZoneOffset.UTC),
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>                 10,
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>                 20,
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>                 <span class="jxr_string">"buildDate should almost be the same - there might be a temporal abberation"</span>);
 <a class="jxr_linenumber" name="L146" href="#L146">146</a> 
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>         expected.entrySet().stream()
