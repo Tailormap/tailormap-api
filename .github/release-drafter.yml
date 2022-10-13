@@ -1,7 +1,7 @@
-tag-template: "tailormap-api-$NEXT_MINOR_VERSION"
-name-template: v$NEXT_MINOR_VERSION 🎁
+tag-template: "tailormap-api-$NEXT_PATCH_VERSION"
+name-template: v$NEXT_PATCH_VERSION 🎁
 
-version-template: "$MAJOR.$MINOR"
+version-template: "$MAJOR.$MINOR.$PATCH"
 
 template: |
   ## What’s Changed
@@ -27,9 +27,10 @@ categories:
     label: documentation
   - title: 🔨 Dependency updates
     label: dependencies
-  - title: 🚦 Tests
+  - title: 🚦 Tests and Infrastructure
     labels:
       - tests
+      - infrastructure
 
 replacers:
   - search: '/CVE-(\d{4})-(\d+)/g'
