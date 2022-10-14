@@ -26,4 +26,12 @@ SPDX-License-Identifier: MIT
         <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
         <vulnerabilityName>CVE-2022-38752</vulnerabilityName>
     </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+   file name: hsqldb-2.7.0.jar
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.hsqldb/hsqldb@2\.7\.0.*$</packageUrl>
+        <vulnerabilityName>CVE-2022-41853</vulnerabilityName>
+    </suppress>
 </suppressions>
