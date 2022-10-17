@@ -406,7 +406,7 @@ SPDX-License-Identifier: MIT
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-annotations</artifactId>
-      <version>2.2.3</version>
+      <version>2.2.4</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
@@ -855,13 +855,13 @@ SPDX-License-Identifier: MIT
                   <!-- parse the version number from `INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '49'); `-->
                   <filterchain>
                     <linecontains>
-                      <contains value="'database_version'" />
+                      <contains value="'database_version'"></contains>
                     </linecontains>
-                    <deletecharacters chars=",()';" />
-                    <striplinebreaks />
+                    <deletecharacters chars=",()';"></deletecharacters>
+                    <striplinebreaks></striplinebreaks>
                     <tokenfilter>
-                      <stringtokenizer />
-                      <containsregex pattern="([0-9]{2})" replace="\0" />
+                      <stringtokenizer></stringtokenizer>
+                      <containsregex pattern="([0-9]{2})" replace="\0"></containsregex>
                     </tokenfilter>
                   </filterchain>
                 </loadfile>
@@ -947,7 +947,7 @@ SPDX-License-Identifier: MIT
                   <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
                   <includes>**/testdata.sql</includes>
                   <fileMappers>
-                    <org.codehaus.plexus.components.io.filemappers.FlattenFileMapper />
+                    <org.codehaus.plexus.components.io.filemappers.FlattenFileMapper></org.codehaus.plexus.components.io.filemappers.FlattenFileMapper>
                     <org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
                       <pattern>testdata.sql</pattern>
                       <replacement>import.sql</replacement>
