@@ -1460,6 +1460,18 @@ SPDX-License-Identifier: MIT
       </properties>
     </profile>
     <profile>
+      <id>openbsd</id>
+      <activation>
+        <os>
+          <family>unix</family>
+          <name>openbsd</name>
+        </os>
+      </activation>
+      <properties>
+        <docker.skip>true</docker.skip>
+      </properties>
+    </profile>
+    <profile>
       <id>windows</id>
       <activation>
         <os>
