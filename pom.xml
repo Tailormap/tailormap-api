@@ -1463,8 +1463,8 @@ SPDX-License-Identifier: MIT
       <id>openbsd</id>
       <activation>
         <os>
-          <family>unix</family>
           <name>openbsd</name>
+          <family>unix</family>
         </os>
       </activation>
       <properties>

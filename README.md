@@ -10,7 +10,8 @@ To fully build the project, you need to have the following installed:
 
 - Java 11 JDK
 - Maven 3.8.4 or higher
-- Docker 1.9 or higher (this requirement can be skipped if you don't need to build the docker image or build release artifacts)
+- Docker 20.10.x with buildx 0.9 or higher (this requirement may be skipped if you don't need to build 
+  the docker images or build release artifacts)
 
 ### Basic procedure:
 

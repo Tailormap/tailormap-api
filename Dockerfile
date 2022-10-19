@@ -26,9 +26,9 @@ LABEL org.opencontainers.image.authors="support@b3partners.nl" \
       org.opencontainers.image.version=$TAILORMAP_API_VERSION
 
 # set-up timezone and local user
-RUN set -eux;ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN apt upgrade -y && apt autoremove -y && apt autoclean && apt clean && rm -rf /tmp/* && rm -rf /var/tmp/* && rm -rf /var/lib/apt/lists/*
-RUN useradd -ms /bin/bash spring
+RUN set -eux;ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+    && apt upgrade -y && apt autoremove -y && apt autoclean && apt clean && rm -rf /tmp/* && rm -rf /var/tmp/* && rm -rf /var/lib/apt/lists/* \
+    && useradd -ms /bin/bash spring
 
 USER spring:spring
 
