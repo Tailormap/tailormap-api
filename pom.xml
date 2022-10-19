@@ -1171,6 +1171,12 @@ SPDX-License-Identifier: MIT
                 <args>
                   <TAILORMAP_API_VERSION>${project.version}</TAILORMAP_API_VERSION>
                 </args>
+                <buildx>
+                  <platforms>
+                    <platform>linux/amd64</platform>
+                    <platform>linux/arm64</platform>
+                  </platforms>
+                </buildx>
               </build>
             </image>
           </images>
