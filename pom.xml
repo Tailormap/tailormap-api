@@ -151,7 +151,7 @@ SPDX-License-Identifier: MIT
     <!-- skip QA checks -->
     <skipQA>false</skipQA>
     <pmd.version>6.50.0</pmd.version>
-    <errorProne.version>2.10.0</errorProne.version>
+    <errorProne.version>2.16</errorProne.version>
     <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
     <compiler.lint>deprecation,unchecked</compiler.lint>
     <failOnValidation>true</failOnValidation>
