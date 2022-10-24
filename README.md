@@ -4,7 +4,16 @@ Tailormap API provides the OpenAPI for Tailormap.
 
 ## Development
 
-Basic procedure:
+### Prerequisites
+
+To fully build the project, you need to have the following installed:
+
+- Java 11 JDK
+- Maven 3.8.4 or higher
+- Docker 20.10.x with buildx 0.9 or higher (this requirement may be skipped if you don't need to build 
+  the docker images or build release artifacts)
+
+### Basic procedure:
 
 1. do your thing, if possible use `aosp` styling (run `mvn com.coveo:fmt-maven-plugin:format` to fix all formatting)
 2. run `mvn clean install` to make sure all required formatting is applied and all tests pass
@@ -24,23 +33,28 @@ see also [QA](#QA)
 
 ### Profiles
 
-Some Maven profiles are defined:
+Some Maven (platform specific) profiles are defined:
 
 * **macos**
     - Sets specific properties for MacOS such as skipping the docker part of the build
     - Activated automagically
+* **openbsd**
+  - Sets specific properties for OpenBSD such as skipping the docker part of the build
+  - Activated automagically
 * **windows**
     - Sets specific properties for Windows such as skipping the docker part of the build
     - Activated automagically
 * **release**
     - Release specific configuration
-    - Activated automagically
+    - Activated automagically during Maven release procedure
 * **developing**
     - Sets specific properties for use in the IDE such as disabling docker build and QA
     - Activated using the flag `-Pdeveloping` or checking the option in your IDE
 * **qa-skip**
     - Will skip any "QA" Maven plugins defined with a defined `skip` element
     - Activated using flag `-DskipQA=true`
+
+**Note:** The platform specific profiles (`macos`,`openbsd` and `windows`) cannot be used to create releases.
 
 ## QA
 

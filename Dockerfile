@@ -3,10 +3,10 @@
 #
 # SPDX-License-Identifier: MIT
 #
-FROM eclipse-temurin:11.0.16.1_1-jre-alpine
+FROM eclipse-temurin:11.0.16.1_1-jre
 
 
-ARG TAILORMAP_API_VERSION="10.0-SNAPSHOT"
+ARG TAILORMAP_API_VERSION="10.0.0-rc2-SNAPSHOT"
 ARG TZ="Europe/Amsterdam"
 ARG DEBIAN_FRONTEND="noninteractive"
 
@@ -27,9 +27,8 @@ LABEL org.opencontainers.image.authors="support@b3partners.nl" \
 
 # set-up timezone and local user
 RUN set -eux;ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
-    && addgroup -S spring && adduser -S spring -G spring \
-    # for CVE-2022-40674, this can probably be removed when we upgrade the base image > eclipse-temurin:11.0.16.1_1-jre-alpine
-    && apk add --no-cache expat=2.4.9-r0
+    && apt upgrade -y && apt autoremove -y && apt autoclean && apt clean && rm -rf /tmp/* && rm -rf /var/tmp/* && rm -rf /var/lib/apt/lists/* \
+    && useradd -ms /bin/bash spring
 
 USER spring:spring
 
