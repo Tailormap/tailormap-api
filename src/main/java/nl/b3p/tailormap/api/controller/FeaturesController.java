@@ -18,7 +18,7 @@ import nl.b3p.tailormap.api.model.FeaturesResponse;
 import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.security.AuthUtil;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.util.Constants;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
@@ -97,14 +97,17 @@ public class FeaturesController implements Constants {
     private final Log logger = LogFactory.getLog(getClass());
     private final ApplicationRepository applicationRepository;
     private final ApplicationLayerRepository applicationLayerRepository;
+    private final AuthorizationService authorizationService;
     @PersistenceContext private EntityManager entityManager;
 
     @Autowired
     public FeaturesController(
             ApplicationRepository applicationRepository,
-            ApplicationLayerRepository applicationLayerRepository) {
+            ApplicationLayerRepository applicationLayerRepository,
+            AuthorizationService authorizationService) {
         this.applicationRepository = applicationRepository;
         this.applicationLayerRepository = applicationLayerRepository;
+        this.authorizationService = authorizationService;
     }
 
     /**
@@ -189,27 +192,27 @@ public class FeaturesController implements Constants {
         // and in a normal flow this should not happen
         // as appId is (should be) validated by calling the /app/ endpoint
         Application application = applicationRepository.getReferenceById(appId);
-        if (application.isAuthenticatedRequired() && !AuthUtil.isAuthenticatedUser()) {
-            // login required, send RedirectResponse
+        ApplicationLayer appLayer = applicationLayerRepository.getReferenceById(appLayerId);
+
+        if (!authorizationService.mayUserRead(appLayer, application)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
-        } else {
-            ApplicationLayer appLayer = applicationLayerRepository.getReferenceById(appLayerId);
-            FeaturesResponse featuresResponse;
-
-            if (null != __fid) {
-                featuresResponse = getFeatureByFID(appLayer, __fid, crs);
-            } else if (null != x && null != y) {
-                featuresResponse = getFeaturesByXY(appLayer, x, y, crs, distance, simplify);
-            } else if (null != page && page > 0) {
-                featuresResponse = getAllFeatures(appLayer, crs, page, filter, sortBy, sortOrder);
-            } else {
-                // TODO other implementations
-                throw new BadRequestException(
-                        "Unsupported combination of request parameters, please check the documentation");
-            }
-
-            return ResponseEntity.status(HttpStatus.OK).body(featuresResponse);
         }
+
+        FeaturesResponse featuresResponse;
+
+        if (null != __fid) {
+            featuresResponse = getFeatureByFID(appLayer, __fid, crs);
+        } else if (null != x && null != y) {
+            featuresResponse = getFeaturesByXY(appLayer, x, y, crs, distance, simplify);
+        } else if (null != page && page > 0) {
+            featuresResponse = getAllFeatures(appLayer, crs, page, filter, sortBy, sortOrder);
+        } else {
+            // TODO other implementations
+            throw new BadRequestException(
+                    "Unsupported combination of request parameters, please check the documentation");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(featuresResponse);
     }
 
     @NotNull

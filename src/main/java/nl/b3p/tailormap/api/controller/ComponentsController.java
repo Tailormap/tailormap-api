@@ -17,7 +17,7 @@ import nl.b3p.tailormap.api.model.ComponentConfig;
 import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.security.AuthUtil;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.tailormap.viewer.config.app.Application;
 
 import org.apache.commons.logging.Log;
@@ -47,9 +47,13 @@ public class ComponentsController {
 
     private final Log logger = LogFactory.getLog(getClass());
     private final ApplicationRepository applicationRepository;
+    private final AuthorizationService authorizationService;
 
-    public ComponentsController(ApplicationRepository applicationRepository) {
+    public ComponentsController(
+            ApplicationRepository applicationRepository,
+            AuthorizationService authorizationService) {
         this.applicationRepository = applicationRepository;
+        this.authorizationService = authorizationService;
     }
 
     /**
@@ -115,7 +119,7 @@ public class ComponentsController {
         // and in a normal flow this should not happen
         // as appId is (should be) validated by calling the /app/ endpoint
         Application application = applicationRepository.getReferenceById(appId);
-        if (application.isAuthenticatedRequired() && !AuthUtil.isAuthenticatedUser()) {
+        if (!authorizationService.mayUserRead(application)) {
             // login required, send RedirectResponse
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
         } else {

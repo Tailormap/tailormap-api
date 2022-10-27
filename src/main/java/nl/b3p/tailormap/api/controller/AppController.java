@@ -13,7 +13,7 @@ import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.MetadataRepository;
-import nl.b3p.tailormap.api.security.AuthUtil;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.metadata.Metadata;
 
@@ -46,14 +46,18 @@ public class AppController {
 
     private final ApplicationRepository applicationRepository;
     private final MetadataRepository metadataRepository;
+    private final AuthorizationService authorizationService;
 
     @Value("${tailormap-api.apiVersion}")
     private String apiVersion;
 
     public AppController(
-            ApplicationRepository applicationRepository, MetadataRepository metadataRepository) {
+            ApplicationRepository applicationRepository,
+            MetadataRepository metadataRepository,
+            AuthorizationService authorizationService) {
         this.applicationRepository = applicationRepository;
         this.metadataRepository = metadataRepository;
+        this.authorizationService = authorizationService;
     }
 
     /**
@@ -118,7 +122,7 @@ public class AppController {
             // no default application or something else is very wrong
             throw new TailormapConfigurationException(
                     "Error getting the requested or default application.");
-        } else if (application.isAuthenticatedRequired() && !AuthUtil.isAuthenticatedUser()) {
+        } else if (!authorizationService.mayUserRead(application)) {
             // login required, send RedirectResponse
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
         } else {
