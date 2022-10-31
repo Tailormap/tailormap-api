@@ -140,8 +140,8 @@
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>             name =
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>                     <span class="jxr_string">"#{index}: should return no unique bronhouder from database with exclusion filter: {0}"</span>)
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>     @MethodSource(<span class="jxr_string">"databaseArgumentsProvider"</span>)
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>     <strong class="jxr_keyword">void</strong> bronhouder_with_filter_on_inonderzoek_unique_values_test(String url, String... expected)
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>             <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>     @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>     <strong class="jxr_keyword">void</strong> bronhouder_with_filter_on_inonderzoek_unique_values_test(String url) <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         String cqlFilter = <span class="jxr_string">"inonderzoek=TRUE"</span>;
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>         <strong class="jxr_keyword">if</strong> (url.contains(<span class="jxr_string">"BRONHOUDER"</span>)) {
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>             <em class="jxr_comment">// uppercase oracle cql filter</em>
