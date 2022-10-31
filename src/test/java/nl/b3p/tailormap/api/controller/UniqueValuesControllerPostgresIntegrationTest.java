@@ -132,8 +132,8 @@ class UniqueValuesControllerPostgresIntegrationTest {
             name =
                     "#{index}: should return no unique bronhouder from database with exclusion filter: {0}")
     @MethodSource("databaseArgumentsProvider")
-    void bronhouder_with_filter_on_inonderzoek_unique_values_test(String url, String... expected)
-            throws Exception {
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void bronhouder_with_filter_on_inonderzoek_unique_values_test(String url) throws Exception {
         String cqlFilter = "inonderzoek=TRUE";
         if (url.contains("BRONHOUDER")) {
             // uppercase oracle cql filter
