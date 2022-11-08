@@ -5,15 +5,21 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.micrometer.core.annotation.Timed;
 
 import nl.b3p.tailormap.api.exception.TailormapConfigurationException;
 import nl.b3p.tailormap.api.model.AppResponse;
+import nl.b3p.tailormap.api.model.Component;
 import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.MetadataRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
+import nl.tailormap.viewer.config.ClobElement;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.metadata.Metadata;
 
@@ -35,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.Serializable;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -43,6 +50,8 @@ import javax.persistence.EntityNotFoundException;
 @RequestMapping(path = "/app")
 public class AppController {
     private final Log logger = LogFactory.getLog(getClass());
+
+    private final String COMPONENTS_CONFIG_KEY = "components";
 
     private final ApplicationRepository applicationRepository;
     private final MetadataRepository metadataRepository;
@@ -138,6 +147,22 @@ public class AppController {
                             + ", title: "
                             + application.getTitle());
 
+            Component[] components;
+            try {
+                String componentsJson =
+                        application
+                                .getDetails()
+                                .getOrDefault(
+                                        COMPONENTS_CONFIG_KEY,
+                                        new ClobElement("{\"components\":[]}"))
+                                .getValue();
+                JsonNode node = new ObjectMapper().readValue(componentsJson, JsonNode.class);
+                components =
+                        new ObjectMapper().treeToValue(node.get("components"), Component[].class);
+            } catch (JacksonException je) {
+                throw new TailormapConfigurationException("Invalid components JSON", je);
+            }
+
             AppResponse appResponse =
                     new AppResponse()
                             .apiVersion(this.apiVersion)
@@ -145,7 +170,8 @@ public class AppController {
                             .name(application.getName())
                             // any of these 2 below + language could be null
                             .version(application.getVersion())
-                            .title(application.getTitle());
+                            .title(application.getTitle())
+                            .components(List.of(components));
 
             // null check language because it's an enumerated value
             if (null != application.getLang())
