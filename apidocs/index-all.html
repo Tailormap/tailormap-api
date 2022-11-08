@@ -127,7 +127,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/controller/AppController.html" title="class in nl.b3p.tailormap.api.controller"><span class="typeNameLink">AppController</span></a> - Class in <a href="nl/b3p/tailormap/api/controller/package-summary.html">nl.b3p.tailormap.api.controller</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/AppController.html#%3Cinit%3E(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.MetadataRepository)">AppController(ApplicationRepository, MetadataRepository)</a></span> - Constructor for class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/AppController.html" title="class in nl.b3p.tailormap.api.controller">AppController</a></dt>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/AppController.html#%3Cinit%3E(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.MetadataRepository,nl.b3p.tailormap.api.security.AuthorizationService)">AppController(ApplicationRepository, MetadataRepository, AuthorizationService)</a></span> - Constructor for class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/AppController.html" title="class in nl.b3p.tailormap.api.controller">AppController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/model/AppLayer.html" title="class in nl.b3p.tailormap.api.model"><span class="typeNameLink">AppLayer</span></a> - Class in <a href="nl/b3p/tailormap/api/model/package-summary.html">nl.b3p.tailormap.api.model</a></dt>
 <dd>
@@ -177,7 +177,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Feature.html#attributes(java.util.Map)">attributes(Map&lt;String, Object&gt;)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Feature.html" title="class in nl.b3p.tailormap.api.model">Feature</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/security/AuthUtil.html" title="class in nl.b3p.tailormap.api.security"><span class="typeNameLink">AuthUtil</span></a> - Class in <a href="nl/b3p/tailormap/api/security/package-summary.html">nl.b3p.tailormap.api.security</a></dt>
+<dt><a href="nl/b3p/tailormap/api/security/AuthorizationService.html" title="class in nl.b3p.tailormap.api.security"><span class="typeNameLink">AuthorizationService</span></a> - Class in <a href="nl/b3p/tailormap/api/security/package-summary.html">nl.b3p.tailormap.api.security</a></dt>
+<dd>
+<div class="block">Validates access control rules.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/security/AuthorizationService.html#%3Cinit%3E(nl.b3p.tailormap.api.repository.LevelRepository,nl.b3p.tailormap.api.repository.LayerRepository)">AuthorizationService(LevelRepository, LayerRepository)</a></span> - Constructor for class nl.b3p.tailormap.api.security.<a href="nl/b3p/tailormap/api/security/AuthorizationService.html" title="class in nl.b3p.tailormap.api.security">AuthorizationService</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Service.ServerTypeEnum.html#AUTO">AUTO</a></span> - nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Service.ServerTypeEnum.html" title="enum in nl.b3p.tailormap.api.model">Service.ServerTypeEnum</a></dt>
 <dd>&nbsp;</dd>
@@ -257,7 +261,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/controller/ComponentsController.html" title="class in nl.b3p.tailormap.api.controller"><span class="typeNameLink">ComponentsController</span></a> - Class in <a href="nl/b3p/tailormap/api/controller/package-summary.html">nl.b3p.tailormap.api.controller</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/ComponentsController.html#%3Cinit%3E(nl.b3p.tailormap.api.repository.ApplicationRepository)">ComponentsController(ApplicationRepository)</a></span> - Constructor for class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/ComponentsController.html" title="class in nl.b3p.tailormap.api.controller">ComponentsController</a></dt>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/ComponentsController.html#%3Cinit%3E(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.security.AuthorizationService)">ComponentsController(ApplicationRepository, AuthorizationService)</a></span> - Constructor for class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/ComponentsController.html" title="class in nl.b3p.tailormap.api.controller">ComponentsController</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Component.html#config(nl.b3p.tailormap.api.model.ComponentConfig)">config(ComponentConfig)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Component.html" title="class in nl.b3p.tailormap.api.model">Component</a></dt>
 <dd>&nbsp;</dd>
@@ -397,7 +401,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/controller/FeaturesController.html" title="class in nl.b3p.tailormap.api.controller"><span class="typeNameLink">FeaturesController</span></a> - Class in <a href="nl/b3p/tailormap/api/controller/package-summary.html">nl.b3p.tailormap.api.controller</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/FeaturesController.html#%3Cinit%3E(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.ApplicationLayerRepository)">FeaturesController(ApplicationRepository, ApplicationLayerRepository)</a></span> - Constructor for class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/FeaturesController.html" title="class in nl.b3p.tailormap.api.controller">FeaturesController</a></dt>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/FeaturesController.html#%3Cinit%3E(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.ApplicationLayerRepository,nl.b3p.tailormap.api.security.AuthorizationService)">FeaturesController(ApplicationRepository, ApplicationLayerRepository, AuthorizationService)</a></span> - Constructor for class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/FeaturesController.html" title="class in nl.b3p.tailormap.api.controller">FeaturesController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in nl.b3p.tailormap.api.geotools.featuresources"><span class="typeNameLink">FeatureSourceFactoryHelper</span></a> - Class in <a href="nl/b3p/tailormap/api/geotools/featuresources/package-summary.html">nl.b3p.tailormap.api.geotools.featuresources</a></dt>
 <dd>&nbsp;</dd>
@@ -548,10 +552,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/LayerDetails.html#getAttributes()">getAttributes()</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/LayerDetails.html" title="class in nl.b3p.tailormap.api.model">LayerDetails</a></dt>
 <dd>
 <div class="block">Array with attributes.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/security/AuthUtil.html#getAuthenticatedUserName()">getAuthenticatedUserName()</a></span> - Static method in class nl.b3p.tailormap.api.security.<a href="nl/b3p/tailormap/api/security/AuthUtil.html" title="class in nl.b3p.tailormap.api.security">AuthUtil</a></dt>
-<dd>
-<div class="block">get the username of the current user.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/security/TailormapUserDetails.html#getAuthorities()">getAuthorities()</a></span> - Method in class nl.b3p.tailormap.api.security.<a href="nl/b3p/tailormap/api/security/TailormapUserDetails.html" title="class in nl.b3p.tailormap.api.security">TailormapUserDetails</a></dt>
 <dd>&nbsp;</dd>
@@ -1083,10 +1083,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/security/TailormapUserDetails.html#isAccountNonLocked()">isAccountNonLocked()</a></span> - Method in class nl.b3p.tailormap.api.security.<a href="nl/b3p/tailormap/api/security/TailormapUserDetails.html" title="class in nl.b3p.tailormap.api.security">TailormapUserDetails</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/security/AuthUtil.html#isAuthenticatedUser()">isAuthenticatedUser()</a></span> - Static method in class nl.b3p.tailormap.api.security.<a href="nl/b3p/tailormap/api/security/AuthUtil.html" title="class in nl.b3p.tailormap.api.security">AuthUtil</a></dt>
-<dd>
-<div class="block">check if current user is logged in.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/security/TailormapUserDetails.html#isCredentialsNonExpired()">isCredentialsNonExpired()</a></span> - Method in class nl.b3p.tailormap.api.security.<a href="nl/b3p/tailormap/api/security/TailormapUserDetails.html" title="class in nl.b3p.tailormap.api.security">TailormapUserDetails</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/security/TailormapUserDetails.html#isEnabled()">isEnabled()</a></span> - Method in class nl.b3p.tailormap.api.security.<a href="nl/b3p/tailormap/api/security/TailormapUserDetails.html" title="class in nl.b3p.tailormap.api.security">TailormapUserDetails</a></dt>
@@ -1187,7 +1183,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><a href="nl/b3p/tailormap/api/controller/MapController.html" title="class in nl.b3p.tailormap.api.controller"><span class="typeNameLink">MapController</span></a> - Class in <a href="nl/b3p/tailormap/api/controller/package-summary.html">nl.b3p.tailormap.api.controller</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/MapController.html#%3Cinit%3E(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.ApplicationLayerRepository,nl.b3p.tailormap.api.repository.LevelRepository,nl.b3p.tailormap.api.repository.LayerRepository)">MapController(ApplicationRepository, ApplicationLayerRepository, LevelRepository, LayerRepository)</a></span> - Constructor for class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/MapController.html" title="class in nl.b3p.tailormap.api.controller">MapController</a></dt>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/MapController.html#%3Cinit%3E(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.ApplicationLayerRepository,nl.b3p.tailormap.api.repository.LevelRepository,nl.b3p.tailormap.api.repository.LayerRepository,nl.b3p.tailormap.api.security.AuthorizationService)">MapController(ApplicationRepository, ApplicationLayerRepository, LevelRepository, LayerRepository, AuthorizationService)</a></span> - Constructor for class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/MapController.html" title="class in nl.b3p.tailormap.api.controller">MapController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/model/MapResponse.html" title="class in nl.b3p.tailormap.api.model"><span class="typeNameLink">MapResponse</span></a> - Class in <a href="nl/b3p/tailormap/api/model/package-summary.html">nl.b3p.tailormap.api.model</a></dt>
 <dd>
@@ -1205,6 +1201,26 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Bounds.html#maxy(java.lang.Double)">maxy(Double)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/security/AuthorizationService.html#mayUserRead(nl.tailormap.viewer.config.app.Application)">mayUserRead(Application)</a></span> - Method in class nl.b3p.tailormap.api.security.<a href="nl/b3p/tailormap/api/security/AuthorizationService.html" title="class in nl.b3p.tailormap.api.security">AuthorizationService</a></dt>
+<dd>
+<div class="block">Verifies that this user may read this Application.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/security/AuthorizationService.html#mayUserRead(nl.tailormap.viewer.config.app.ApplicationLayer,nl.tailormap.viewer.config.app.Application)">mayUserRead(ApplicationLayer, Application)</a></span> - Method in class nl.b3p.tailormap.api.security.<a href="nl/b3p/tailormap/api/security/AuthorizationService.html" title="class in nl.b3p.tailormap.api.security">AuthorizationService</a></dt>
+<dd>
+<div class="block">Verifies that this user may view an ApplicationLayer in the context of a certain Application.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/security/AuthorizationService.html#mayUserRead(nl.tailormap.viewer.config.app.Level)">mayUserRead(Level)</a></span> - Method in class nl.b3p.tailormap.api.security.<a href="nl/b3p/tailormap/api/security/AuthorizationService.html" title="class in nl.b3p.tailormap.api.security">AuthorizationService</a></dt>
+<dd>
+<div class="block">Verifies that this user may view a Level.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/security/AuthorizationService.html#mayUserRead(nl.tailormap.viewer.config.services.GeoService)">mayUserRead(GeoService)</a></span> - Method in class nl.b3p.tailormap.api.security.<a href="nl/b3p/tailormap/api/security/AuthorizationService.html" title="class in nl.b3p.tailormap.api.security">AuthorizationService</a></dt>
+<dd>
+<div class="block">Verifies that this user may view a GeoService.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/security/AuthorizationService.html#mayUserRead(nl.tailormap.viewer.config.services.Layer)">mayUserRead(Layer)</a></span> - Method in class nl.b3p.tailormap.api.security.<a href="nl/b3p/tailormap/api/security/AuthorizationService.html" title="class in nl.b3p.tailormap.api.security">AuthorizationService</a></dt>
+<dd>
+<div class="block">Verifies that this user may view a Layer.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ErrorResponse.html#message(java.lang.String)">message(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ErrorResponse.html" title="class in nl.b3p.tailormap.api.model">ErrorResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/LayerDetails.html#metadata(java.lang.String)">metadata(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/LayerDetails.html" title="class in nl.b3p.tailormap.api.model">LayerDetails</a></dt>
@@ -1781,7 +1797,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><a href="nl/b3p/tailormap/api/controller/UniqueValuesController.html" title="class in nl.b3p.tailormap.api.controller"><span class="typeNameLink">UniqueValuesController</span></a> - Class in <a href="nl/b3p/tailormap/api/controller/package-summary.html">nl.b3p.tailormap.api.controller</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/UniqueValuesController.html#%3Cinit%3E(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.ApplicationLayerRepository)">UniqueValuesController(ApplicationRepository, ApplicationLayerRepository)</a></span> - Constructor for class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/UniqueValuesController.html" title="class in nl.b3p.tailormap.api.controller">UniqueValuesController</a></dt>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/UniqueValuesController.html#%3Cinit%3E(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.ApplicationLayerRepository,nl.b3p.tailormap.api.repository.LayerRepository,nl.b3p.tailormap.api.security.AuthorizationService)">UniqueValuesController(ApplicationRepository, ApplicationLayerRepository, LayerRepository, AuthorizationService)</a></span> - Constructor for class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/UniqueValuesController.html" title="class in nl.b3p.tailormap.api.controller">UniqueValuesController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/model/UniqueValuesResponse.html" title="class in nl.b3p.tailormap.api.model"><span class="typeNameLink">UniqueValuesResponse</span></a> - Class in <a href="nl/b3p/tailormap/api/model/package-summary.html">nl.b3p.tailormap.api.model</a></dt>
 <dd>

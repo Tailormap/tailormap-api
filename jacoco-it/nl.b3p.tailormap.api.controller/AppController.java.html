@@ -13,7 +13,7 @@ import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.MetadataRepository;
-import nl.b3p.tailormap.api.security.AuthUtil;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.metadata.Metadata;
 
@@ -46,15 +46,19 @@ public class AppController {
 
     private final ApplicationRepository applicationRepository;
     private final MetadataRepository metadataRepository;
+    private final AuthorizationService authorizationService;
 
     @Value(&quot;${tailormap-api.apiVersion}&quot;)
     private String apiVersion;
 
     public AppController(
-<span class="fc" id="L54">            ApplicationRepository applicationRepository, MetadataRepository metadataRepository) {</span>
-<span class="fc" id="L55">        this.applicationRepository = applicationRepository;</span>
-<span class="fc" id="L56">        this.metadataRepository = metadataRepository;</span>
-<span class="fc" id="L57">    }</span>
+            ApplicationRepository applicationRepository,
+            MetadataRepository metadataRepository,
+<span class="fc" id="L57">            AuthorizationService authorizationService) {</span>
+<span class="fc" id="L58">        this.applicationRepository = applicationRepository;</span>
+<span class="fc" id="L59">        this.metadataRepository = metadataRepository;</span>
+<span class="fc" id="L60">        this.authorizationService = authorizationService;</span>
+<span class="fc" id="L61">    }</span>
 
     /**
      * Handle any {@code TailormapConfigurationException} that this controller might throw while
@@ -68,10 +72,10 @@ public class AppController {
     @ResponseBody
     public ErrorResponse handleTailormapConfigurationException(
             TailormapConfigurationException exception) {
-<span class="fc" id="L71">        logger.fatal(exception.getMessage());</span>
-<span class="fc" id="L72">        return new ErrorResponse()</span>
-<span class="fc" id="L73">                .message(&quot;Internal server error. &quot; + exception.getMessage())</span>
-<span class="fc" id="L74">                .code(500);</span>
+<span class="fc" id="L75">        logger.fatal(exception.getMessage());</span>
+<span class="fc" id="L76">        return new ErrorResponse()</span>
+<span class="fc" id="L77">                .message(&quot;Internal server error. &quot; + exception.getMessage())</span>
+<span class="fc" id="L78">                .code(500);</span>
     }
 
     /**
@@ -95,7 +99,7 @@ public class AppController {
             @RequestParam(required = false) String version)
             throws TailormapConfigurationException {
 
-<span class="fc" id="L98">        logger.trace(</span>
+<span class="fc" id="L102">        logger.trace(</span>
                 &quot;requested application using: appId: &quot;
                         + appId
                         + &quot;, name: &quot;
@@ -104,50 +108,50 @@ public class AppController {
                         + version);
 
         Application application;
-<span class="fc bfc" id="L107" title="All 2 branches covered.">        if (null != appId) {</span>
-<span class="fc" id="L108">            application = applicationRepository.findById(appId).orElse(null);</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        if (null != appId) {</span>
+<span class="fc" id="L112">            application = applicationRepository.findById(appId).orElse(null);</span>
         } else {
-<span class="fc" id="L110">            application = findApplication(name, version);</span>
-        }
-
-<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (null == application) {</span>
-<span class="fc" id="L114">            application = getDefaultViewer();</span>
+<span class="fc" id="L114">            application = findApplication(name, version);</span>
         }
 
 <span class="fc bfc" id="L117" title="All 2 branches covered.">        if (null == application) {</span>
-            // no default application or something else is very wrong
-<span class="fc" id="L119">            throw new TailormapConfigurationException(</span>
-                    &quot;Error getting the requested or default application.&quot;);
-<span class="pc bpc" id="L121" title="1 of 4 branches missed.">        } else if (application.isAuthenticatedRequired() &amp;&amp; !AuthUtil.isAuthenticatedUser()) {</span>
-            // login required, send RedirectResponse
-<span class="fc" id="L123">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());</span>
-        } else {
-<span class="fc" id="L125">            logger.trace(</span>
-                    &quot;found application - id:&quot;
-<span class="fc" id="L127">                            + application.getId()</span>
-                            + &quot;, name: &quot;
-<span class="fc" id="L129">                            + application.getName()</span>
-                            + &quot;, version: &quot;
-<span class="fc" id="L131">                            + application.getVersion()</span>
-                            + &quot;, lang: &quot;
-<span class="fc" id="L133">                            + application.getLang()</span>
-                            + &quot;, title: &quot;
-<span class="fc" id="L135">                            + application.getTitle());</span>
+<span class="fc" id="L118">            application = getDefaultViewer();</span>
+        }
 
-<span class="fc" id="L137">            AppResponse appResponse =</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        if (null == application) {</span>
+            // no default application or something else is very wrong
+<span class="fc" id="L123">            throw new TailormapConfigurationException(</span>
+                    &quot;Error getting the requested or default application.&quot;);
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        } else if (!authorizationService.mayUserRead(application)) {</span>
+            // login required, send RedirectResponse
+<span class="fc" id="L127">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());</span>
+        } else {
+<span class="fc" id="L129">            logger.trace(</span>
+                    &quot;found application - id:&quot;
+<span class="fc" id="L131">                            + application.getId()</span>
+                            + &quot;, name: &quot;
+<span class="fc" id="L133">                            + application.getName()</span>
+                            + &quot;, version: &quot;
+<span class="fc" id="L135">                            + application.getVersion()</span>
+                            + &quot;, lang: &quot;
+<span class="fc" id="L137">                            + application.getLang()</span>
+                            + &quot;, title: &quot;
+<span class="fc" id="L139">                            + application.getTitle());</span>
+
+<span class="fc" id="L141">            AppResponse appResponse =</span>
                     new AppResponse()
-<span class="fc" id="L139">                            .apiVersion(this.apiVersion)</span>
-<span class="fc" id="L140">                            .id(application.getId())</span>
-<span class="fc" id="L141">                            .name(application.getName())</span>
+<span class="fc" id="L143">                            .apiVersion(this.apiVersion)</span>
+<span class="fc" id="L144">                            .id(application.getId())</span>
+<span class="fc" id="L145">                            .name(application.getName())</span>
                             // any of these 2 below + language could be null
-<span class="fc" id="L143">                            .version(application.getVersion())</span>
-<span class="fc" id="L144">                            .title(application.getTitle());</span>
+<span class="fc" id="L147">                            .version(application.getVersion())</span>
+<span class="fc" id="L148">                            .title(application.getTitle());</span>
 
             // null check language because it's an enumerated value
-<span class="fc bfc" id="L147" title="All 2 branches covered.">            if (null != application.getLang())</span>
-<span class="fc" id="L148">                appResponse.lang(AppResponse.LangEnum.fromValue(application.getLang()));</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">            if (null != application.getLang())</span>
+<span class="fc" id="L152">                appResponse.lang(AppResponse.LangEnum.fromValue(application.getLang()));</span>
 
-<span class="fc" id="L150">            return ResponseEntity.ok(appResponse);</span>
+<span class="fc" id="L154">            return ResponseEntity.ok(appResponse);</span>
         }
     }
 
@@ -159,27 +163,27 @@ public class AppController {
      * @return found Application (or {@code null} if nothing found)
      */
     private Application findApplication(String name, String version) {
-<span class="fc" id="L162">        Application application = null;</span>
-<span class="fc bfc" id="L163" title="All 2 branches covered.">        if (name != null) {</span>
-<span class="fc bfc" id="L164" title="All 2 branches covered.">            if (null != version) {</span>
-<span class="fc" id="L165">                application = applicationRepository.findByNameAndVersion(name, version);</span>
+<span class="fc" id="L166">        Application application = null;</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (name != null) {</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">            if (null != version) {</span>
+<span class="fc" id="L169">                application = applicationRepository.findByNameAndVersion(name, version);</span>
             } else {
-<span class="fc" id="L167">                application =</span>
-<span class="fc" id="L168">                        applicationRepository.findByName(name).stream()</span>
-<span class="fc" id="L169">                                .sorted()</span>
-<span class="fc" id="L170">                                .findFirst()</span>
-<span class="fc" id="L171">                                .orElse(null);</span>
+<span class="fc" id="L171">                application =</span>
+<span class="fc" id="L172">                        applicationRepository.findByName(name).stream()</span>
+<span class="fc" id="L173">                                .sorted()</span>
+<span class="fc" id="L174">                                .findFirst()</span>
+<span class="fc" id="L175">                                .orElse(null);</span>
             }
 
-<span class="fc bfc" id="L174" title="All 2 branches covered.">            if (null == application) {</span>
-<span class="fc" id="L175">                logger.warn(&quot;No application found with name &quot; + name + &quot; and version &quot; + version);</span>
-<span class="fc" id="L176">                String decodedName = URLDecoder.decode(name, StandardCharsets.UTF_8);</span>
-<span class="pc bpc" id="L177" title="1 of 2 branches missed.">                if (!decodedName.equals(name)) {</span>
-<span class="nc" id="L178">                    return findApplication(decodedName, version);</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">            if (null == application) {</span>
+<span class="fc" id="L179">                logger.warn(&quot;No application found with name &quot; + name + &quot; and version &quot; + version);</span>
+<span class="fc" id="L180">                String decodedName = URLDecoder.decode(name, StandardCharsets.UTF_8);</span>
+<span class="pc bpc" id="L181" title="1 of 2 branches missed.">                if (!decodedName.equals(name)) {</span>
+<span class="nc" id="L182">                    return findApplication(decodedName, version);</span>
                 }
             }
         }
-<span class="fc" id="L182">        return application;</span>
+<span class="fc" id="L186">        return application;</span>
     }
 
     /**
@@ -189,13 +193,13 @@ public class AppController {
      */
     private Application getDefaultViewer() {
         try {
-<span class="fc" id="L192">            Metadata md = metadataRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);</span>
-<span class="fc" id="L193">            String appId = md.getConfigValue();</span>
-<span class="fc" id="L194">            Long id = Long.parseLong(appId);</span>
-<span class="fc" id="L195">            return applicationRepository.getReferenceById(id);</span>
-<span class="fc" id="L196">        } catch (NullPointerException | EntityNotFoundException e) {</span>
-<span class="fc" id="L197">            logger.warn(&quot;No default application configured. &quot; + e.getMessage());</span>
-<span class="fc" id="L198">            return null;</span>
+<span class="fc" id="L196">            Metadata md = metadataRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);</span>
+<span class="fc" id="L197">            String appId = md.getConfigValue();</span>
+<span class="fc" id="L198">            Long id = Long.parseLong(appId);</span>
+<span class="fc" id="L199">            return applicationRepository.getReferenceById(id);</span>
+<span class="fc" id="L200">        } catch (NullPointerException | EntityNotFoundException e) {</span>
+<span class="fc" id="L201">            logger.warn(&quot;No default application configured. &quot; + e.getMessage());</span>
+<span class="fc" id="L202">            return null;</span>
         }
     }
 }

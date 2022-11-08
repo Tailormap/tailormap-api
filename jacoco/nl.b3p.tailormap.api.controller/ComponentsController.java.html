@@ -17,7 +17,7 @@ import nl.b3p.tailormap.api.model.ComponentConfig;
 import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.security.AuthUtil;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.tailormap.viewer.config.app.Application;
 
 import org.apache.commons.logging.Log;
@@ -47,10 +47,14 @@ public class ComponentsController {
 
 <span class="fc" id="L48">    private final Log logger = LogFactory.getLog(getClass());</span>
     private final ApplicationRepository applicationRepository;
+    private final AuthorizationService authorizationService;
 
-<span class="fc" id="L51">    public ComponentsController(ApplicationRepository applicationRepository) {</span>
-<span class="fc" id="L52">        this.applicationRepository = applicationRepository;</span>
-<span class="fc" id="L53">    }</span>
+    public ComponentsController(
+            ApplicationRepository applicationRepository,
+<span class="fc" id="L54">            AuthorizationService authorizationService) {</span>
+<span class="fc" id="L55">        this.applicationRepository = applicationRepository;</span>
+<span class="fc" id="L56">        this.authorizationService = authorizationService;</span>
+<span class="fc" id="L57">    }</span>
 
     /**
      * Handle any {@code EntityNotFoundException} that this controller might throw while getting the
@@ -66,11 +70,11 @@ public class ComponentsController {
                             .NOT_FOUND /*,reason = &quot;Not Found&quot; -- adding 'reason' will drop the body */)
     @ResponseBody
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
-<span class="fc" id="L69">        logger.warn(</span>
-<span class="fc" id="L70">                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());</span>
-<span class="fc" id="L71">        return new ErrorResponse()</span>
-<span class="fc" id="L72">                .message(&quot;Requested an application that does not exist&quot;)</span>
-<span class="fc" id="L73">                .code(HttpStatus.NOT_FOUND.value());</span>
+<span class="fc" id="L73">        logger.warn(</span>
+<span class="fc" id="L74">                &quot;Requested an application that does not exist. Message: &quot; + exception.getMessage());</span>
+<span class="fc" id="L75">        return new ErrorResponse()</span>
+<span class="fc" id="L76">                .message(&quot;Requested an application that does not exist&quot;)</span>
+<span class="fc" id="L77">                .code(HttpStatus.NOT_FOUND.value());</span>
     }
 
     /**
@@ -109,19 +113,19 @@ public class ComponentsController {
             @Parameter(name = &quot;appId&quot;, description = &quot;application id&quot;, required = true)
                     @PathVariable(&quot;appId&quot;)
                     Long appId) {
-<span class="fc" id="L112">        logger.trace(&quot;Requesting 'components' for application id: &quot; + appId);</span>
+<span class="fc" id="L116">        logger.trace(&quot;Requesting 'components' for application id: &quot; + appId);</span>
 
         // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
         // and in a normal flow this should not happen
         // as appId is (should be) validated by calling the /app/ endpoint
-<span class="fc" id="L117">        Application application = applicationRepository.getReferenceById(appId);</span>
-<span class="pc bpc" id="L118" title="1 of 4 branches missed.">        if (application.isAuthenticatedRequired() &amp;&amp; !AuthUtil.isAuthenticatedUser()) {</span>
+<span class="fc" id="L121">        Application application = applicationRepository.getReferenceById(appId);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (!authorizationService.mayUserRead(application)) {</span>
             // login required, send RedirectResponse
-<span class="fc" id="L120">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());</span>
+<span class="fc" id="L124">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());</span>
         } else {
-<span class="fc" id="L122">            List&lt;Component&gt; components = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L123">            findComponents(application, components);</span>
-<span class="fc" id="L124">            return ResponseEntity.status(HttpStatus.OK).body(components);</span>
+<span class="fc" id="L126">            List&lt;Component&gt; components = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L127">            findComponents(application, components);</span>
+<span class="fc" id="L128">            return ResponseEntity.status(HttpStatus.OK).body(components);</span>
         }
     }
 
@@ -132,19 +136,19 @@ public class ComponentsController {
      * @param componentList the list that holds the configured components
      */
     private void findComponents(Application application, List&lt;Component&gt; componentList) {
-<span class="fc" id="L135">        logger.trace(&quot;listing components: &quot; + application.getComponents());</span>
-<span class="fc" id="L136">        componentList.addAll(</span>
-<span class="fc" id="L137">                application.getComponents().stream()</span>
-<span class="fc" id="L138">                        .map(</span>
+<span class="fc" id="L139">        logger.trace(&quot;listing components: &quot; + application.getComponents());</span>
+<span class="fc" id="L140">        componentList.addAll(</span>
+<span class="fc" id="L141">                application.getComponents().stream()</span>
+<span class="fc" id="L142">                        .map(</span>
                                 p -&gt; {
-<span class="fc" id="L140">                                    ComponentConfig componentConfig =</span>
-<span class="fc" id="L141">                                            new ComponentConfig().title(p.getName());</span>
-<span class="fc" id="L142">                                    componentConfig.putAll(p.getDetails());</span>
-<span class="fc" id="L143">                                    return new Component()</span>
-<span class="fc" id="L144">                                            .type(p.getClassName())</span>
-<span class="fc" id="L145">                                            .config(componentConfig);</span>
+<span class="fc" id="L144">                                    ComponentConfig componentConfig =</span>
+<span class="fc" id="L145">                                            new ComponentConfig().title(p.getName());</span>
+<span class="fc" id="L146">                                    componentConfig.putAll(p.getDetails());</span>
+<span class="fc" id="L147">                                    return new Component()</span>
+<span class="fc" id="L148">                                            .type(p.getClassName())</span>
+<span class="fc" id="L149">                                            .config(componentConfig);</span>
                                 })
-<span class="fc" id="L147">                        .collect(Collectors.toList()));</span>
-<span class="fc" id="L148">    }</span>
+<span class="fc" id="L151">                        .collect(Collectors.toList()));</span>
+<span class="fc" id="L152">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
