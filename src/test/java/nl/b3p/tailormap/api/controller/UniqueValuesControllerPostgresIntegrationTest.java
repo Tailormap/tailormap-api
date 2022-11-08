@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.jayway.jsonpath.JsonPath;
 
 import nl.b3p.tailormap.api.JPAConfiguration;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
 
 import org.hamcrest.Matchers;
@@ -44,7 +45,12 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 @SpringBootTest(
-        classes = {JPAConfiguration.class, UniqueValuesController.class, SecurityConfig.class})
+        classes = {
+            JPAConfiguration.class,
+            UniqueValuesController.class,
+            SecurityConfig.class,
+            AuthorizationService.class
+        })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
 @ActiveProfiles("postgresql")

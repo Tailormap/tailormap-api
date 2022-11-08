@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
 
 import org.json.JSONObject;
@@ -39,7 +40,8 @@ import java.util.Map;
         classes = {
             HSQLDBTestProfileJPAConfiguration.class,
             MapController.class,
-            SecurityConfig.class
+            SecurityConfig.class,
+            AuthorizationService.class
         })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration

@@ -15,7 +15,8 @@ import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.model.UniqueValuesResponse;
 import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.security.AuthUtil;
+import nl.b3p.tailormap.api.repository.LayerRepository;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.services.Layer;
@@ -53,9 +54,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
 
 @RestController
 @Validated
@@ -71,14 +70,19 @@ public class UniqueValuesController {
     private final Log logger = LogFactory.getLog(getClass());
     private final ApplicationRepository applicationRepository;
     private final ApplicationLayerRepository applicationLayerRepository;
-    @PersistenceContext private EntityManager entityManager;
+    private final LayerRepository layerRepository;
+    private final AuthorizationService authorizationService;
 
     @Autowired
     public UniqueValuesController(
             ApplicationRepository applicationRepository,
-            ApplicationLayerRepository applicationLayerRepository) {
+            ApplicationLayerRepository applicationLayerRepository,
+            LayerRepository layerRepository,
+            AuthorizationService authorizationService) {
         this.applicationRepository = applicationRepository;
         this.applicationLayerRepository = applicationLayerRepository;
+        this.layerRepository = layerRepository;
+        this.authorizationService = authorizationService;
     }
 
     /**
@@ -153,20 +157,20 @@ public class UniqueValuesController {
         // and in a normal flow this should not happen
         // as appId is (should be) validated by calling the /app/ endpoint
         final Application application = applicationRepository.getReferenceById(appId);
-        if (application.isAuthenticatedRequired() && !AuthUtil.isAuthenticatedUser()) {
+
+        final ApplicationLayer appLayer = applicationLayerRepository.getReferenceById(appLayerId);
+        if (!authorizationService.mayUserRead(appLayer, application)) {
             // login required, send RedirectResponse
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
-        } else {
-            if (StringUtils.isBlank(attributeName)) {
-                throw new BadRequestException("Attribute name is required");
-            }
-            final ApplicationLayer appLayer =
-                    applicationLayerRepository.getReferenceById(appLayerId);
-
-            UniqueValuesResponse uniqueValuesResponse =
-                    getUniqueValues(appLayer, attributeName, filter);
-            return ResponseEntity.status(HttpStatus.OK).body(uniqueValuesResponse);
         }
+
+        if (StringUtils.isBlank(attributeName)) {
+            throw new BadRequestException("Attribute name is required");
+        }
+
+        UniqueValuesResponse uniqueValuesResponse =
+                getUniqueValues(appLayer, attributeName, filter);
+        return ResponseEntity.status(HttpStatus.OK).body(uniqueValuesResponse);
     }
 
     private UniqueValuesResponse getUniqueValues(
@@ -174,7 +178,8 @@ public class UniqueValuesController {
             throws BadRequestException {
         final UniqueValuesResponse uniqueValuesResponse =
                 new UniqueValuesResponse().filterApplied(false);
-        final Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), entityManager);
+        final Layer layer =
+                layerRepository.getByServiceAndName(appLayer.getService(), appLayer.getLayerName());
         final SimpleFeatureType sft = layer.getFeatureType();
         if (null == sft) {
             return uniqueValuesResponse;

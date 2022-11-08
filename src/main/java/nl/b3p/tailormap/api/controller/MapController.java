@@ -25,7 +25,7 @@ import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.LayerRepository;
 import nl.b3p.tailormap.api.repository.LevelRepository;
-import nl.b3p.tailormap.api.security.AuthUtil;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.util.ParseUtil;
 import nl.tailormap.viewer.config.ClobElement;
 import nl.tailormap.viewer.config.app.Application;
@@ -77,16 +77,19 @@ public class MapController {
     private final ApplicationLayerRepository applicationLayerRepository;
     private final LevelRepository levelRepository;
     private final LayerRepository layerRepository;
+    private final AuthorizationService authorizationService;
 
     public MapController(
             ApplicationRepository applicationRepository,
             ApplicationLayerRepository applicationLayerRepository,
             LevelRepository levelRepository,
-            LayerRepository layerRepository) {
+            LayerRepository layerRepository,
+            AuthorizationService authorizationService) {
         this.applicationRepository = applicationRepository;
         this.applicationLayerRepository = applicationLayerRepository;
         this.levelRepository = levelRepository;
         this.layerRepository = layerRepository;
+        this.authorizationService = authorizationService;
     }
 
     @Operation(
@@ -125,7 +128,7 @@ public class MapController {
         Application application = applicationRepository.findWithGeoservicesById(appId);
         if (application == null) {
             throw new EntityNotFoundException();
-        } else if (application.isAuthenticatedRequired() && !AuthUtil.isAuthenticatedUser()) {
+        } else if (!authorizationService.mayUserRead(application)) {
             // login required, send RedirectResponse
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
         } else {

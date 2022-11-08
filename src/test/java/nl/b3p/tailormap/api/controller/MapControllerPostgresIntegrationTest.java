@@ -16,6 +16,7 @@ import com.jayway.jsonpath.JsonPath;
 
 import nl.b3p.tailormap.api.JPAConfiguration;
 import nl.b3p.tailormap.api.model.Service;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
 
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@SpringBootTest(classes = {JPAConfiguration.class, MapController.class, SecurityConfig.class})
+@SpringBootTest(
+        classes = {
+            JPAConfiguration.class,
+            MapController.class,
+            SecurityConfig.class,
+            AuthorizationService.class
+        })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
 @ActiveProfiles("postgresql")

@@ -1,0 +1,185 @@
+/*
+ * Copyright (C) 2022 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.security;
+
+import nl.b3p.tailormap.api.repository.LayerRepository;
+import nl.b3p.tailormap.api.repository.LevelRepository;
+import nl.tailormap.viewer.config.app.Application;
+import nl.tailormap.viewer.config.app.ApplicationLayer;
+import nl.tailormap.viewer.config.app.Level;
+import nl.tailormap.viewer.config.services.GeoService;
+import nl.tailormap.viewer.config.services.Layer;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Validates access control rules. Any call to mayUserRead will verify that the currently logged in
+ * user is not only allowed to read the current object, but any objcet above and below it in the
+ * hierarchy.
+ */
+@Service
+public class AuthorizationService {
+    private final Log logger = LogFactory.getLog(getClass());
+
+    private final LevelRepository levelRepository;
+    private final LayerRepository layerRepository;
+
+    public AuthorizationService(LevelRepository levelRepository, LayerRepository layerRepository) {
+        this.levelRepository = levelRepository;
+        this.layerRepository = layerRepository;
+    }
+
+    /**
+     * Verifies that the user may read the object, based on the passed in readers set.
+     *
+     * @param readers the list of readers to validate against.
+     * @return the result of validating the authorizations.
+     */
+    private boolean isAuthorizedBySet(Set<String> readers) {
+        if (readers == null || readers.isEmpty()) {
+            return true;
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
+
+        for (String reader : readers) {
+            if (auth.getAuthorities().stream().anyMatch(x -> x.getAuthority().equals(reader))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Verifies that this user may read this Application.
+     *
+     * @param application the Application to check
+     * @return the results from the access control checks.
+     */
+    public boolean mayUserRead(Application application) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication == null || authentication instanceof AnonymousAuthenticationToken)
+                && application.isAuthenticatedRequired()) {
+            return false;
+        }
+
+        return isAuthorizedBySet(application.getReaders());
+    }
+
+    /**
+     * Verifies that this user may view an ApplicationLayer in the context of a certain Application.
+     * As an ApplicationLayer cannot be traced back to a single Application (e.g. mashups), this
+     * requires passing in the Application to use as context. The ApplicationLayer, its parent
+     * Levels, and the Application are validated, as are the Layer, all its parents, and the
+     * GeoService.
+     *
+     * @param applicationLayer the ApplicationLayer to check
+     * @param context the Application to verify this ApplicationLayer against
+     * @return the results from the access control checks.
+     */
+    public boolean mayUserRead(ApplicationLayer applicationLayer, Application context) {
+        if (!isAuthorizedBySet(applicationLayer.getReaders())) {
+            return false;
+        }
+
+        if (!mayUserRead(context)) {
+            return false;
+        }
+
+        Set<Long> levelIds = new HashSet<>();
+        for (Level level : levelRepository.findByLevelTree(context.getRoot().getId())) {
+            levelIds.add(level.getId());
+        }
+
+        Level closestLevel = null;
+        for (Level level : levelRepository.findWithAuthorizationDataByIdIn(levelIds)) {
+            if (level.getLayers().contains(applicationLayer)) {
+                closestLevel = level;
+                break;
+            }
+        }
+
+        if (closestLevel == null) {
+            // layer ID does not exist in this application.
+            return false;
+        }
+
+        if (!mayUserRead(closestLevel)) {
+            return false;
+        }
+
+        GeoService geoService = applicationLayer.getService();
+        if (geoService == null) {
+            return true;
+        }
+
+        return mayUserRead(
+                layerRepository.getByServiceAndName(geoService, applicationLayer.getLayerName()));
+    }
+
+    /**
+     * Verifies that this user may view a Layer. The Layer, its parents, and the GeoService are all
+     * validated.
+     *
+     * @param layer the Layer to check
+     * @return the results from the access control checks.
+     */
+    public boolean mayUserRead(Layer layer) {
+        if (!isAuthorizedBySet(layer.getReaders())) {
+            return false;
+        }
+
+        if (!mayUserRead(layer.getService())) {
+            return false;
+        }
+
+        if (layer.getParent() != null) {
+            return mayUserRead(layer.getParent());
+        }
+
+        return true;
+    }
+
+    /**
+     * Verifies that this user may view a Level. The Level and its parents are all validated.
+     *
+     * @param level the Level to check
+     * @return the results from the access control checks.
+     */
+    public boolean mayUserRead(Level level) {
+        if (!isAuthorizedBySet(level.getReaders())) {
+            return false;
+        }
+
+        if (level.getParent() != null) {
+            return mayUserRead(level.getParent());
+        }
+
+        return true;
+    }
+
+    /**
+     * Verifies that this user may view a GeoService. The GeoService is validated.
+     *
+     * @param geoService the GeoService to check
+     * @return the results from the access control checks.
+     */
+    public boolean mayUserRead(GeoService geoService) {
+        return isAuthorizedBySet(geoService.getReaders());
+    }
+}

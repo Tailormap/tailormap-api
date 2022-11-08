@@ -17,6 +17,7 @@ import com.jayway.jsonpath.JsonPath;
 
 import nl.b3p.tailormap.api.JPAConfiguration;
 import nl.b3p.tailormap.api.model.Service;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
 
 import org.apache.commons.logging.Log;
@@ -37,6 +38,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -44,7 +46,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.List;
 import java.util.stream.Stream;
 
-@SpringBootTest(classes = {JPAConfiguration.class, FeaturesController.class, SecurityConfig.class})
+@SpringBootTest(
+        classes = {
+            JPAConfiguration.class,
+            FeaturesController.class,
+            SecurityConfig.class,
+            AuthorizationService.class
+        })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
 @ActiveProfiles("postgresql")
@@ -274,6 +282,9 @@ class FeaturesControllerPostgresIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void broken_filter_not_supported() throws Exception {
         mockMvc.perform(get(provinciesWFS).param("filter", "naam or Utrecht").param("page", "1"))
                 .andExpect(status().is4xxClientError())
@@ -289,6 +300,9 @@ class FeaturesControllerPostgresIntegrationTest {
      */
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_produce_for_valid_input_pdok_betuurlijkegebieden() throws Exception {
         mockMvc.perform(
                         get(provinciesWFS)
@@ -309,6 +323,9 @@ class FeaturesControllerPostgresIntegrationTest {
     /* test EPSG:28992 (RD New/Amersfoort) */
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_produce_for_valid_input_with_native_crs_pdok_betuurlijkegebieden()
             throws Exception {
         mockMvc.perform(
@@ -331,6 +348,9 @@ class FeaturesControllerPostgresIntegrationTest {
     /* test EPSG:3857 (web mercator) */
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_produce_for_valid_input_with_alien_crs_pdok_betuurlijkegebieden() throws Exception {
         mockMvc.perform(
                         get(provinciesWFS)
@@ -352,6 +372,9 @@ class FeaturesControllerPostgresIntegrationTest {
     /* test EPSG:4326 (WGS84) */
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_produce_for_valid_input_with_alien_crs_2_pdok_betuurlijkegebieden()
             throws Exception {
         mockMvc.perform(
@@ -379,6 +402,9 @@ class FeaturesControllerPostgresIntegrationTest {
      * @throws Exception if any
      */
     @Test
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_return_non_empty_featurecollections_for_valid_page_from_wfs() throws Exception {
         // bestuurlijke gebieden WFS; provincies
         // page 1
@@ -461,6 +487,9 @@ class FeaturesControllerPostgresIntegrationTest {
      * @throws Exception if any
      */
     @Test
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_return_empty_featurecollection_for_out_of_range_page_from_wfs() throws Exception {
         // bestuurlijke gebieden WFS; provincies
         // page 3
@@ -485,6 +514,9 @@ class FeaturesControllerPostgresIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_return_default_sorted_featurecollections_for_no_or_invalid_sorting_from_wfs()
             throws Exception {
         // page 1, sort by naam, no direction
@@ -542,6 +574,9 @@ class FeaturesControllerPostgresIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_return_sorted_featurecollections_for_valid_sorting_from_wfs() throws Exception {
         // bestuurlijke gebieden WFS; provincies
         // page 1, sort ascending by naam
@@ -603,6 +638,9 @@ class FeaturesControllerPostgresIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_return_sorted_featurecollections_for_valid_sorting_from_database()
             throws Exception {
         // begroeidterreindeel from postgis
@@ -649,6 +687,9 @@ class FeaturesControllerPostgresIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void get_by_fid_from_database() throws Exception {
         mockMvc.perform(
                         get(begroeidterreindeelUrlPostgis)
@@ -671,6 +712,9 @@ class FeaturesControllerPostgresIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void get_by_fid_from_wfs() throws Exception {
         // note that this test may break when pdok decides to opdate the data or the service.
         // you can get the fid by clicking on the Utrecht feature in the map.
@@ -703,6 +747,9 @@ class FeaturesControllerPostgresIntegrationTest {
             name =
                     "#{index}: should return non-empty featurecollections for valid page from database: {0}, featuretype: {1}")
     @MethodSource("argumentsProvider")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_return_non_empty_featurecollections_for_valid_pages_from_database(
             String ignoredDatabase, String ignoredTableName, String applayerUrl, int totalCcount)
             throws Exception {
@@ -780,6 +827,9 @@ class FeaturesControllerPostgresIntegrationTest {
             name =
                     "should return expected polygon feature for valid coordinates and crs from database #{index}: x: {0}, y: {1}, crs: {2}")
     @MethodSource("projectionArgumentsProvider")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_produce_reprojected_features_from_database_using_different_crs(
             double x,
             double y,
@@ -832,6 +882,9 @@ class FeaturesControllerPostgresIntegrationTest {
             name =
                     "should return expected polygon feature for valid coordinates and crs from WFS #{index}: x: {0}, y: {1}, crs: {2}")
     @MethodSource("wfsProjectionArgumentsProvider")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_produce_reprojected_features_from_wfs_using_different_crs(
             double x,
             double y,
@@ -892,6 +945,9 @@ class FeaturesControllerPostgresIntegrationTest {
             name =
                     "#{index}: should return same featurecollection for same page from database: {0}, featuretype: {1}")
     @MethodSource("argumentsProvider")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_return_same_featurecollection_for_same_page_database(
             String ignoredDatabase, String ignoredTableName, String applayerUrl, int totalCcount)
             throws Exception {
@@ -956,6 +1012,9 @@ class FeaturesControllerPostgresIntegrationTest {
             name =
                     "#{index}: should return empty featurecollection for out of range page from database: {0}, featuretype: {1}")
     @MethodSource("argumentsProvider")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_return_empty_featurecollection_for_out_of_range_page_database(
             String ignoredDatabase, String ignoredTableName, String applayerUrl, int totalCcount)
             throws Exception {
@@ -983,6 +1042,9 @@ class FeaturesControllerPostgresIntegrationTest {
             name =
                     "#{index} should return a featurecollection for various ECQL filters on appLayer: {0}, filter: {1}")
     @MethodSource("filtersProvider")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void filterTest(String applayerUrl, String filterCQL, int totalCount) throws Exception {
         int listSize = Math.min(pageSize, totalCount);
         if (!exactWfsCounts && applayerUrl.equals(provinciesWFS)) {

@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
 
 import org.junit.jupiter.api.MethodOrderer;
@@ -23,6 +24,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -30,7 +32,8 @@ import org.springframework.test.web.servlet.MockMvc;
         classes = {
             HSQLDBTestProfileJPAConfiguration.class,
             FeaturesController.class,
-            SecurityConfig.class
+            SecurityConfig.class,
+            AuthorizationService.class
         })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
@@ -42,6 +45,9 @@ class FeaturesControllerIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void only_filter_not_supported() throws Exception {
         mockMvc.perform(get("/app/1/layer/2/features").param("filter", "naam=Utrecht"))
                 .andExpect(status().is4xxClientError())
@@ -51,6 +57,9 @@ class FeaturesControllerIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void givenOnly_XorY_shouldError() throws Exception {
         mockMvc.perform(get("/app/1/layer/2/features").param("x", "3"))
                 .andExpect(status().is4xxClientError())
@@ -65,6 +74,9 @@ class FeaturesControllerIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void given_distance_NotGreaterThanZero() throws Exception {
         mockMvc.perform(get("/app/1/layer/2/features?y=3&y=3").param("distance", "0"))
                 .andExpect(status().is4xxClientError())
@@ -79,6 +91,9 @@ class FeaturesControllerIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_error_when_calling_with_nonexistent_appId() throws Exception {
         mockMvc.perform(get("/app/400/layer/1/features"))
                 .andExpect(status().isNotFound())
@@ -88,6 +103,9 @@ class FeaturesControllerIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"Admin"})
     void should_not_find_when_called_without_appId() throws Exception {
         mockMvc.perform(get("/app/layer/features")).andExpect(status().isNotFound());
     }
@@ -96,9 +114,7 @@ class FeaturesControllerIntegrationTest {
     /* this test changes database content */
     @Order(Integer.MAX_VALUE)
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    void should_send_401_when_application_login_required() throws Exception {
-        applicationRepository.setAuthenticatedRequired(1L, true);
-
+    void should_send_401_when_login_required() throws Exception {
         mockMvc.perform(get("/app/1/layer/2/features").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
