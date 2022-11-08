@@ -13,8 +13,6 @@ import nl.tailormap.viewer.config.app.Level;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.Layer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,15 +28,13 @@ import java.util.Set;
  */
 @Service
 public class AuthorizationService {
-<span class="fc" id="L33">    private final Log logger = LogFactory.getLog(getClass());</span>
-
     private final LevelRepository levelRepository;
     private final LayerRepository layerRepository;
 
-<span class="fc" id="L38">    public AuthorizationService(LevelRepository levelRepository, LayerRepository layerRepository) {</span>
-<span class="fc" id="L39">        this.levelRepository = levelRepository;</span>
-<span class="fc" id="L40">        this.layerRepository = layerRepository;</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L34">    public AuthorizationService(LevelRepository levelRepository, LayerRepository layerRepository) {</span>
+<span class="fc" id="L35">        this.levelRepository = levelRepository;</span>
+<span class="fc" id="L36">        this.layerRepository = layerRepository;</span>
+<span class="fc" id="L37">    }</span>
 
     /**
      * Verifies that the user may read the object, based on the passed in readers set.
@@ -47,22 +43,22 @@ public class AuthorizationService {
      * @return the result of validating the authorizations.
      */
     private boolean isAuthorizedBySet(Set&lt;String&gt; readers) {
-<span class="pc bpc" id="L50" title="1 of 4 branches missed.">        if (readers == null || readers.isEmpty()) {</span>
-<span class="fc" id="L51">            return true;</span>
+<span class="pc bpc" id="L46" title="1 of 4 branches missed.">        if (readers == null || readers.isEmpty()) {</span>
+<span class="fc" id="L47">            return true;</span>
         }
 
-<span class="fc" id="L54">        Authentication auth = SecurityContextHolder.getContext().getAuthentication();</span>
-<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if (auth == null) {</span>
-<span class="nc" id="L56">            return false;</span>
+<span class="fc" id="L50">        Authentication auth = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        if (auth == null) {</span>
+<span class="nc" id="L52">            return false;</span>
         }
 
-<span class="fc bfc" id="L59" title="All 2 branches covered.">        for (String reader : readers) {</span>
-<span class="fc bfc" id="L60" title="All 2 branches covered.">            if (auth.getAuthorities().stream().anyMatch(x -&gt; x.getAuthority().equals(reader))) {</span>
-<span class="fc" id="L61">                return true;</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        for (String reader : readers) {</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">            if (auth.getAuthorities().stream().anyMatch(x -&gt; x.getAuthority().equals(reader))) {</span>
+<span class="fc" id="L57">                return true;</span>
             }
-<span class="fc" id="L63">        }</span>
+<span class="fc" id="L59">        }</span>
 
-<span class="fc" id="L65">        return false;</span>
+<span class="fc" id="L61">        return false;</span>
     }
 
     /**
@@ -72,13 +68,13 @@ public class AuthorizationService {
      * @return the results from the access control checks.
      */
     public boolean mayUserRead(Application application) {
-<span class="fc" id="L75">        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
-<span class="pc bpc" id="L76" title="1 of 4 branches missed.">        if ((authentication == null || authentication instanceof AnonymousAuthenticationToken)</span>
-<span class="fc bfc" id="L77" title="All 2 branches covered.">                &amp;&amp; application.isAuthenticatedRequired()) {</span>
-<span class="fc" id="L78">            return false;</span>
+<span class="fc" id="L71">        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="pc bpc" id="L72" title="1 of 4 branches missed.">        if ((authentication == null || authentication instanceof AnonymousAuthenticationToken)</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">                &amp;&amp; application.isAuthenticatedRequired()) {</span>
+<span class="fc" id="L74">            return false;</span>
         }
 
-<span class="fc" id="L81">        return isAuthorizedBySet(application.getReaders());</span>
+<span class="fc" id="L77">        return isAuthorizedBySet(application.getReaders());</span>
     }
 
     /**
@@ -93,43 +89,43 @@ public class AuthorizationService {
      * @return the results from the access control checks.
      */
     public boolean mayUserRead(ApplicationLayer applicationLayer, Application context) {
-<span class="pc bpc" id="L96" title="1 of 2 branches missed.">        if (!isAuthorizedBySet(applicationLayer.getReaders())) {</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if (!isAuthorizedBySet(applicationLayer.getReaders())) {</span>
+<span class="nc" id="L93">            return false;</span>
+        }
+
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">        if (!mayUserRead(context)) {</span>
 <span class="nc" id="L97">            return false;</span>
         }
 
-<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        if (!mayUserRead(context)) {</span>
-<span class="nc" id="L101">            return false;</span>
+<span class="fc" id="L100">        Set&lt;Long&gt; levelIds = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        for (Level level : levelRepository.findByLevelTree(context.getRoot().getId())) {</span>
+<span class="fc" id="L102">            levelIds.add(level.getId());</span>
+<span class="fc" id="L103">        }</span>
+
+<span class="fc" id="L105">        Level closestLevel = null;</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        for (Level level : levelRepository.findWithAuthorizationDataByIdIn(levelIds)) {</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">            if (level.getLayers().contains(applicationLayer)) {</span>
+<span class="fc" id="L108">                closestLevel = level;</span>
+<span class="fc" id="L109">                break;</span>
+            }
+<span class="fc" id="L111">        }</span>
+
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        if (closestLevel == null) {</span>
+            // layer ID does not exist in this application.
+<span class="nc" id="L115">            return false;</span>
         }
 
-<span class="fc" id="L104">        Set&lt;Long&gt; levelIds = new HashSet&lt;&gt;();</span>
-<span class="fc bfc" id="L105" title="All 2 branches covered.">        for (Level level : levelRepository.findByLevelTree(context.getRoot().getId())) {</span>
-<span class="fc" id="L106">            levelIds.add(level.getId());</span>
-<span class="fc" id="L107">        }</span>
-
-<span class="fc" id="L109">        Level closestLevel = null;</span>
-<span class="pc bpc" id="L110" title="1 of 2 branches missed.">        for (Level level : levelRepository.findWithAuthorizationDataByIdIn(levelIds)) {</span>
-<span class="fc bfc" id="L111" title="All 2 branches covered.">            if (level.getLayers().contains(applicationLayer)) {</span>
-<span class="fc" id="L112">                closestLevel = level;</span>
-<span class="fc" id="L113">                break;</span>
-            }
-<span class="fc" id="L115">        }</span>
-
-<span class="pc bpc" id="L117" title="1 of 2 branches missed.">        if (closestLevel == null) {</span>
-            // layer ID does not exist in this application.
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">        if (!mayUserRead(closestLevel)) {</span>
 <span class="nc" id="L119">            return false;</span>
         }
 
-<span class="pc bpc" id="L122" title="1 of 2 branches missed.">        if (!mayUserRead(closestLevel)) {</span>
-<span class="nc" id="L123">            return false;</span>
+<span class="fc" id="L122">        GeoService geoService = applicationLayer.getService();</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">        if (geoService == null) {</span>
+<span class="nc" id="L124">            return true;</span>
         }
 
-<span class="fc" id="L126">        GeoService geoService = applicationLayer.getService();</span>
-<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (geoService == null) {</span>
-<span class="nc" id="L128">            return true;</span>
-        }
-
-<span class="fc" id="L131">        return mayUserRead(</span>
-<span class="fc" id="L132">                layerRepository.getByServiceAndName(geoService, applicationLayer.getLayerName()));</span>
+<span class="fc" id="L127">        return mayUserRead(</span>
+<span class="fc" id="L128">                layerRepository.getByServiceAndName(geoService, applicationLayer.getLayerName()));</span>
     }
 
     /**
@@ -140,19 +136,19 @@ public class AuthorizationService {
      * @return the results from the access control checks.
      */
     public boolean mayUserRead(Layer layer) {
-<span class="pc bpc" id="L143" title="1 of 2 branches missed.">        if (!isAuthorizedBySet(layer.getReaders())) {</span>
-<span class="nc" id="L144">            return false;</span>
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">        if (!isAuthorizedBySet(layer.getReaders())) {</span>
+<span class="nc" id="L140">            return false;</span>
         }
 
-<span class="fc bfc" id="L147" title="All 2 branches covered.">        if (!mayUserRead(layer.getService())) {</span>
-<span class="fc" id="L148">            return false;</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">        if (!mayUserRead(layer.getService())) {</span>
+<span class="fc" id="L144">            return false;</span>
         }
 
-<span class="fc bfc" id="L151" title="All 2 branches covered.">        if (layer.getParent() != null) {</span>
-<span class="fc" id="L152">            return mayUserRead(layer.getParent());</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        if (layer.getParent() != null) {</span>
+<span class="fc" id="L148">            return mayUserRead(layer.getParent());</span>
         }
 
-<span class="fc" id="L155">        return true;</span>
+<span class="fc" id="L151">        return true;</span>
     }
 
     /**
@@ -162,15 +158,15 @@ public class AuthorizationService {
      * @return the results from the access control checks.
      */
     public boolean mayUserRead(Level level) {
-<span class="pc bpc" id="L165" title="1 of 2 branches missed.">        if (!isAuthorizedBySet(level.getReaders())) {</span>
-<span class="nc" id="L166">            return false;</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">        if (!isAuthorizedBySet(level.getReaders())) {</span>
+<span class="nc" id="L162">            return false;</span>
         }
 
-<span class="fc bfc" id="L169" title="All 2 branches covered.">        if (level.getParent() != null) {</span>
-<span class="fc" id="L170">            return mayUserRead(level.getParent());</span>
+<span class="fc bfc" id="L165" title="All 2 branches covered.">        if (level.getParent() != null) {</span>
+<span class="fc" id="L166">            return mayUserRead(level.getParent());</span>
         }
 
-<span class="fc" id="L173">        return true;</span>
+<span class="fc" id="L169">        return true;</span>
     }
 
     /**
@@ -180,7 +176,7 @@ public class AuthorizationService {
      * @return the results from the access control checks.
      */
     public boolean mayUserRead(GeoService geoService) {
-<span class="fc" id="L183">        return isAuthorizedBySet(geoService.getReaders());</span>
+<span class="fc" id="L179">        return isAuthorizedBySet(geoService.getReaders());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

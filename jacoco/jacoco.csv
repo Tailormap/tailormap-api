@@ -9,7 +9,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.controller,UniqueValuesController,2
 Aggregate Test Coverage,nl.b3p.tailormap.api.health,TailormapHealthIndicator,19,39,2,2,4,11,2,2,0,2
 Aggregate Test Coverage,nl.b3p.tailormap.api.health,MonitoringConfiguration,0,8,0,0,0,2,0,2,0,2
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,TailormapUserDetails,0,38,0,0,0,12,0,9,0,9
-Aggregate Test Coverage,nl.b3p.tailormap.api.security,AuthorizationService,16,191,11,31,8,48,11,18,0,8
+Aggregate Test Coverage,nl.b3p.tailormap.api.security,AuthorizationService,16,186,11,31,8,47,11,18,0,8
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,TailormapUserDetailsService,0,37,0,2,0,9,0,3,0,2
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,SecurityConfig,0,36,0,0,0,14,0,2,0,2
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,StartupAdminAccountCreator,78,0,2,0,19,0,3,0,2,0
