@@ -433,16 +433,13 @@ components:
           description: 'component specific configuration'
           title: 'componentConfig'
           type: object
+          required: [ "enabled" ]
           properties:
-            label:
-              type: string
-            title:
-              type: string
-            tooltip:
-              type: string
+            enabled:
+              type: boolean
           additionalProperties:
-            description: 'anything else component specific'
-            type: string
+            description: 'anything else, component specific'
+            type: object
       required:
         - type
         - config
