@@ -13,8 +13,6 @@ import nl.tailormap.viewer.config.app.Level;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.Layer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,8 +28,6 @@ import java.util.Set;
  */
 @Service
 public class AuthorizationService {
-    private final Log logger = LogFactory.getLog(getClass());
-
     private final LevelRepository levelRepository;
     private final LayerRepository layerRepository;
 
