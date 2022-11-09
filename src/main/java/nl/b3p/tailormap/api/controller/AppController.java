@@ -6,7 +6,6 @@
 package nl.b3p.tailormap.api.controller;
 
 import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.micrometer.core.annotation.Timed;
@@ -152,13 +151,9 @@ public class AppController {
                 String componentsJson =
                         application
                                 .getDetails()
-                                .getOrDefault(
-                                        COMPONENTS_CONFIG_KEY,
-                                        new ClobElement("{\"components\":[]}"))
+                                .getOrDefault(COMPONENTS_CONFIG_KEY, new ClobElement("[]"))
                                 .getValue();
-                JsonNode node = new ObjectMapper().readValue(componentsJson, JsonNode.class);
-                components =
-                        new ObjectMapper().treeToValue(node.get("components"), Component[].class);
+                components = new ObjectMapper().readValue(componentsJson, Component[].class);
             } catch (JacksonException je) {
                 throw new TailormapConfigurationException("Invalid components JSON", je);
             }
