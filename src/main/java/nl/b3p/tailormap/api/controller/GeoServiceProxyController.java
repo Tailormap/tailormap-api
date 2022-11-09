@@ -46,6 +46,7 @@ import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -226,7 +227,9 @@ public class GeoServiceProxyController {
             String toEncode = service.getUsername() + ":" + service.getPassword();
             requestBuilder.header(
                     "Authorization",
-                    "Basic " + Base64.getEncoder().encodeToString(toEncode.getBytes()));
+                    "Basic "
+                            + Base64.getEncoder()
+                                    .encodeToString(toEncode.getBytes(StandardCharsets.UTF_8)));
         }
 
         try {

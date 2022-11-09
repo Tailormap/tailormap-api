@@ -557,8 +557,8 @@ public class MapController {
                     new Service()
                             .url(
                                     proxied
-                                            ? geoService.getUrl()
-                                            : getProxyUrl(geoService, a, applicationLayer))
+                                            ? getProxyUrl(geoService, a, applicationLayer)
+                                            : geoService.getUrl())
                             .id(geoService.getId())
                             .name(geoService.getName())
                             .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))
