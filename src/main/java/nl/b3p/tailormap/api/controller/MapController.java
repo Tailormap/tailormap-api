@@ -43,6 +43,7 @@ import nl.tailormap.viewer.config.services.WMSService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +57,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.Serializable;
 import java.util.ArrayDeque;
@@ -479,6 +482,35 @@ public class MapController {
             }
 
             assert serviceLayer != null;
+
+            GeoService geoService = applicationLayer.getService();
+            boolean proxied =
+                    Boolean.parseBoolean(
+                            String.valueOf(
+                                    geoService.getDetails().get(GeoService.DETAIL_USE_PROXY)));
+
+            String legendImageUrl = serviceLayer.getLegendImageUrl();
+
+            // When legendImageUrl is null the frontend will use the service URL to create a
+            // GetLegendGraphic request
+            // using the geo service url which will refer to the GeoServiceProxyController
+            if (legendImageUrl != null && proxied) {
+                // When the URL refers to the same host + path as the geoService the legend request
+                // should be proxied
+                UriComponents geoServiceUrl =
+                        UriComponentsBuilder.fromHttpUrl(geoService.getUrl()).build(true);
+                UriComponents legendUrl =
+                        UriComponentsBuilder.fromHttpUrl(legendImageUrl).build(true);
+                if (Objects.equals(geoServiceUrl.getHost(), legendUrl.getHost())
+                        && Objects.equals(geoServiceUrl.getPath(), legendUrl.getPath())) {
+                    UriComponentsBuilder legendUrlBuilder =
+                            UriComponentsBuilder.fromHttpUrl(
+                                    getProxyUrl(geoService, a, applicationLayer));
+                    legendImageUrl =
+                            legendUrlBuilder.queryParams(legendUrl.getQueryParams()).toUriString();
+                }
+            }
+
             AppLayer appLayer =
                     new AppLayer()
                             .id(applicationLayer.getId())
@@ -488,14 +520,12 @@ public class MapController {
                             .visible(l.isChecked())
                             .maxScale(serviceLayer.getMaxScale())
                             .minScale(serviceLayer.getMinScale())
-                            .legendImageUrl(serviceLayer.getLegendImageUrl())
+                            .legendImageUrl(legendImageUrl)
                             .hiDpiMode(hiDpiMode)
                             .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
                             .hasAttributes(!l.getApplicationLayer().getAttributes().isEmpty());
 
             mapResponse.addAppLayersItem(appLayer);
-
-            GeoService geoService = applicationLayer.getService();
 
             // Use this default if saved before the form default was added in admin
             Service.ServerTypeEnum serviceServerType = Service.ServerTypeEnum.AUTO;
@@ -523,32 +553,12 @@ public class MapController {
                 }
             }
 
-            String serviceUrl = geoService.getUrl();
-            if (Boolean.parseBoolean(
-                    String.valueOf(geoService.getDetails().get(GeoService.DETAIL_USE_PROXY)))) {
-                if (WMSService.PROTOCOL.equals(geoService.getProtocol())) {
-                    serviceUrl =
-                            linkTo(
-                                            methodOn(GeoServiceProxyController.class)
-                                                    .proxyWms(a.getId(), appLayer.getId(), null))
-                                    .toString();
-                } else if (TileService.PROTOCOL.equals(geoService.getProtocol())
-                        && TileService.TILING_PROTOCOL_WMTS.equals(
-                                ((TileService) geoService).getTilingProtocol())) {
-                    serviceUrl =
-                            linkTo(
-                                            methodOn(GeoServiceProxyController.class)
-                                                    .proxyWmts(a.getId(), appLayer.getId(), null))
-                                    .toString();
-                } else {
-                    throw new IllegalArgumentException(
-                            "Can't generate proxy URL for service " + geoService.getId());
-                }
-            }
-
             Service s =
                     new Service()
-                            .url(serviceUrl)
+                            .url(
+                                    proxied
+                                            ? geoService.getUrl()
+                                            : getProxyUrl(geoService, a, applicationLayer))
                             .id(geoService.getId())
                             .name(geoService.getName())
                             .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))
@@ -571,5 +581,27 @@ public class MapController {
             }
             mapResponse.addServicesItem(s);
         }
+    }
+
+    private static String getProxyUrl(
+            GeoService geoService, Application application, ApplicationLayer appLayer) {
+        WebMvcLinkBuilder linkBuilder;
+        if (WMSService.PROTOCOL.equals(geoService.getProtocol())) {
+            linkBuilder =
+                    linkTo(
+                            methodOn(GeoServiceProxyController.class)
+                                    .proxyWms(application.getId(), appLayer.getId(), null));
+        } else if (TileService.PROTOCOL.equals(geoService.getProtocol())
+                && TileService.TILING_PROTOCOL_WMTS.equals(
+                        ((TileService) geoService).getTilingProtocol())) {
+            linkBuilder =
+                    linkTo(
+                            methodOn(GeoServiceProxyController.class)
+                                    .proxyWmts(application.getId(), appLayer.getId(), null));
+        } else {
+            throw new IllegalArgumentException(
+                    "Can't generate proxy URL for service " + geoService.getId());
+        }
+        return linkBuilder.toString();
     }
 }
