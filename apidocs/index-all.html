@@ -107,6 +107,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/FeaturesResponse.html#addColumnMetadataItem(nl.b3p.tailormap.api.model.ColumnMetadata)">addColumnMetadataItem(ColumnMetadata)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/FeaturesResponse.html" title="class in nl.b3p.tailormap.api.model">FeaturesResponse</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/AppResponse.html#addComponentsItem(nl.b3p.tailormap.api.model.Component)">addComponentsItem(Component)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/AppResponse.html" title="class in nl.b3p.tailormap.api.model">AppResponse</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Attribute.html#addEditValuesItem(java.lang.String)">addEditValuesItem(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Attribute.html" title="class in nl.b3p.tailormap.api.model">Attribute</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/FeaturesResponse.html#addFeaturesItem(nl.b3p.tailormap.api.model.Feature)">addFeaturesItem(Feature)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/FeaturesResponse.html" title="class in nl.b3p.tailormap.api.model">FeaturesResponse</a></dt>
@@ -259,9 +261,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ComponentConfig.html#%3Cinit%3E()">ComponentConfig()</a></span> - Constructor for class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">ComponentConfig</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/controller/ComponentsController.html" title="class in nl.b3p.tailormap.api.controller"><span class="typeNameLink">ComponentsController</span></a> - Class in <a href="nl/b3p/tailormap/api/controller/package-summary.html">nl.b3p.tailormap.api.controller</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/ComponentsController.html#%3Cinit%3E(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.security.AuthorizationService)">ComponentsController(ApplicationRepository, AuthorizationService)</a></span> - Constructor for class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/ComponentsController.html" title="class in nl.b3p.tailormap.api.controller">ComponentsController</a></dt>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/AppResponse.html#components(java.util.List)">components(List&lt;Component&gt;)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/AppResponse.html" title="class in nl.b3p.tailormap.api.model">AppResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Component.html#config(nl.b3p.tailormap.api.model.ComponentConfig)">config(ComponentConfig)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Component.html" title="class in nl.b3p.tailormap.api.model">Component</a></dt>
 <dd>&nbsp;</dd>
@@ -336,6 +336,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Attribute.html#editValues(java.util.List)">editValues(List&lt;String&gt;)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Attribute.html" title="class in nl.b3p.tailormap.api.model">Attribute</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/AppResponse.LangEnum.html#EN_US">EN_US</a></span> - nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/AppResponse.LangEnum.html" title="enum in nl.b3p.tailormap.api.model">AppResponse.LangEnum</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ComponentConfig.html#enabled(java.lang.Boolean)">enabled(Boolean)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">ComponentConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/JPAConfiguration.html#entityManagerFactory()">entityManagerFactory()</a></span> - Method in class nl.b3p.tailormap.api.<a href="nl/b3p/tailormap/api/JPAConfiguration.html" title="class in nl.b3p.tailormap.api">JPAConfiguration</a></dt>
 <dd>&nbsp;</dd>
@@ -515,10 +517,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Service.ServerTypeEnum.html#GEOSERVER">GEOSERVER</a></span> - nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Service.ServerTypeEnum.html" title="enum in nl.b3p.tailormap.api.model">Service.ServerTypeEnum</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/ComponentsController.html#get(java.lang.Long)">get(Long)</a></span> - Method in class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/ComponentsController.html" title="class in nl.b3p.tailormap.api.controller">ComponentsController</a></dt>
-<dd>
-<div class="block">GET /components/{appId}</div>
-</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/MapController.html#get(java.lang.Long)">get(Long)</a></span> - Method in class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/MapController.html" title="class in nl.b3p.tailormap.api.controller">MapController</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/AppController.html#get(java.lang.Long,java.lang.String,java.lang.String)">get(Long, String, String)</a></span> - Method in class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/AppController.html" title="class in nl.b3p.tailormap.api.controller">AppController</a></dt>
@@ -593,6 +591,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">presentation metadata</div>
 </dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/AppResponse.html#getComponents()">getComponents()</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/AppResponse.html" title="class in nl.b3p.tailormap.api.model">AppResponse</a></dt>
+<dd>
+<div class="block">Provides the collection of configured components (controls) for the application.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Component.html#getConfig()">getConfig()</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Component.html" title="class in nl.b3p.tailormap.api.model">Component</a></dt>
 <dd>
 <div class="block">Get config</div>
@@ -636,6 +638,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Attribute.html#getEditValues()">getEditValues()</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Attribute.html" title="class in nl.b3p.tailormap.api.model">Attribute</a></dt>
 <dd>
 <div class="block">Get editValues</div>
+</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ComponentConfig.html#getEnabled()">getEnabled()</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">ComponentConfig</a></dt>
+<dd>
+<div class="block">Get enabled</div>
 </dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/FeaturesResponse.html#getFeatures()">getFeatures()</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/FeaturesResponse.html" title="class in nl.b3p.tailormap.api.model">FeaturesResponse</a></dt>
 <dd>
@@ -736,10 +742,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ColumnMetadata.html#getKey()">getKey()</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ColumnMetadata.html" title="class in nl.b3p.tailormap.api.model">ColumnMetadata</a></dt>
 <dd>
 <div class="block">Get key</div>
-</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ComponentConfig.html#getLabel()">getLabel()</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">ComponentConfig</a></dt>
-<dd>
-<div class="block">Get label</div>
 </dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/AppResponse.html#getLang()">getLang()</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/AppResponse.html" title="class in nl.b3p.tailormap.api.model">AppResponse</a></dt>
 <dd>
@@ -885,14 +887,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Get title</div>
 </dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ComponentConfig.html#getTitle()">getTitle()</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">ComponentConfig</a></dt>
-<dd>
-<div class="block">Get title</div>
-</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ComponentConfig.html#getTooltip()">getTooltip()</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">ComponentConfig</a></dt>
-<dd>
-<div class="block">Get tooltip</div>
-</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/FeaturesResponse.html#getTotal()">getTotal()</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/FeaturesResponse.html" title="class in nl.b3p.tailormap.api.model">FeaturesResponse</a></dt>
 <dd>
 <div class="block">the total number of available features, can be an estimated value.</div>
@@ -987,11 +981,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/UniqueValuesController.html#handleBadRequestException(nl.b3p.tailormap.api.exception.BadRequestException)">handleBadRequestException(BadRequestException)</a></span> - Method in class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/UniqueValuesController.html" title="class in nl.b3p.tailormap.api.controller">UniqueValuesController</a></dt>
 <dd>
 <div class="block">Handle any <code>BadRequestException</code> that this controller might throw while getting the
- application.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/ComponentsController.html#handleEntityNotFoundException(javax.persistence.EntityNotFoundException)">handleEntityNotFoundException(EntityNotFoundException)</a></span> - Method in class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/ComponentsController.html" title="class in nl.b3p.tailormap.api.controller">ComponentsController</a></dt>
-<dd>
-<div class="block">Handle any <code>EntityNotFoundException</code> that this controller might throw while getting the
  application.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/FeaturesController.html#handleEntityNotFoundException(javax.persistence.EntityNotFoundException)">handleEntityNotFoundException(EntityNotFoundException)</a></span> - Method in class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/FeaturesController.html" title="class in nl.b3p.tailormap.api.controller">FeaturesController</a></dt>
@@ -1119,8 +1108,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h2 class="title">L</h2>
 <dl>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ComponentConfig.html#label(java.lang.String)">label(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">ComponentConfig</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/AppResponse.html#lang(nl.b3p.tailormap.api.model.AppResponse.LangEnum)">lang(AppResponse.LangEnum)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/AppResponse.html" title="class in nl.b3p.tailormap.api.model">AppResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/model/LayerDetails.html" title="class in nl.b3p.tailormap.api.model"><span class="typeNameLink">LayerDetails</span></a> - Class in <a href="nl/b3p/tailormap/api/model/package-summary.html">nl.b3p.tailormap.api.model</a></dt>
@@ -1453,6 +1440,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/FeaturesResponse.html#setColumnMetadata(java.util.List)">setColumnMetadata(List&lt;ColumnMetadata&gt;)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/FeaturesResponse.html" title="class in nl.b3p.tailormap.api.model">FeaturesResponse</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/AppResponse.html#setComponents(java.util.List)">setComponents(List&lt;Component&gt;)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/AppResponse.html" title="class in nl.b3p.tailormap.api.model">AppResponse</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Component.html#setConfig(nl.b3p.tailormap.api.model.ComponentConfig)">setConfig(ComponentConfig)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Component.html" title="class in nl.b3p.tailormap.api.model">Component</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Bounds.html#setCrs(java.lang.String)">setCrs(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a></dt>
@@ -1474,6 +1463,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Attribute.html#setEditAlias(java.lang.String)">setEditAlias(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Attribute.html" title="class in nl.b3p.tailormap.api.model">Attribute</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Attribute.html#setEditValues(java.util.List)">setEditValues(List&lt;String&gt;)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Attribute.html" title="class in nl.b3p.tailormap.api.model">Attribute</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ComponentConfig.html#setEnabled(java.lang.Boolean)">setEnabled(Boolean)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">ComponentConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/FeaturesResponse.html#setFeatures(java.util.List)">setFeatures(List&lt;Feature&gt;)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/FeaturesResponse.html" title="class in nl.b3p.tailormap.api.model">FeaturesResponse</a></dt>
 <dd>&nbsp;</dd>
@@ -1522,8 +1513,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/MapResponse.html#setInitialExtent(nl.b3p.tailormap.api.model.Bounds)">setInitialExtent(Bounds)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/MapResponse.html" title="class in nl.b3p.tailormap.api.model">MapResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ColumnMetadata.html#setKey(java.lang.String)">setKey(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ColumnMetadata.html" title="class in nl.b3p.tailormap.api.model">ColumnMetadata</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ComponentConfig.html#setLabel(java.lang.String)">setLabel(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">ComponentConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/AppResponse.html#setLang(nl.b3p.tailormap.api.model.AppResponse.LangEnum)">setLang(AppResponse.LangEnum)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/AppResponse.html" title="class in nl.b3p.tailormap.api.model">AppResponse</a></dt>
 <dd>&nbsp;</dd>
@@ -1594,10 +1583,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/AppLayer.html#setTitle(java.lang.String)">setTitle(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/AppResponse.html#setTitle(java.lang.String)">setTitle(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/AppResponse.html" title="class in nl.b3p.tailormap.api.model">AppResponse</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ComponentConfig.html#setTitle(java.lang.String)">setTitle(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">ComponentConfig</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ComponentConfig.html#setTooltip(java.lang.String)">setTooltip(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">ComponentConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/FeaturesResponse.html#setTotal(java.lang.Integer)">setTotal(Integer)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/FeaturesResponse.html" title="class in nl.b3p.tailormap.api.model">FeaturesResponse</a></dt>
 <dd>&nbsp;</dd>
@@ -1719,11 +1704,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/AppResponse.html#title(java.lang.String)">title(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/AppResponse.html" title="class in nl.b3p.tailormap.api.model">AppResponse</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ComponentConfig.html#title(java.lang.String)">title(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">ComponentConfig</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/Service.TilingProtocolEnum.html#TMS">TMS</a></span> - nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/Service.TilingProtocolEnum.html" title="enum in nl.b3p.tailormap.api.model">Service.TilingProtocolEnum</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/ComponentConfig.html#tooltip(java.lang.String)">tooltip(String)</a></span> - Method in class nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">ComponentConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/model/AppLayer.HiDpiModeEnum.html#toString()">toString()</a></span> - Method in enum nl.b3p.tailormap.api.model.<a href="nl/b3p/tailormap/api/model/AppLayer.HiDpiModeEnum.html" title="enum in nl.b3p.tailormap.api.model">AppLayer.HiDpiModeEnum</a></dt>
 <dd>&nbsp;</dd>
