@@ -46,6 +46,7 @@ import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -221,7 +222,12 @@ public class GeoServiceProxyController {
 
         // TODO: add request headers such as conditional HTTP requests
 
-        // TODO: add Basic authentication
+        if (service.getUsername() != null && service.getPassword() != null) {
+            String toEncode = service.getUsername() + ":" + service.getPassword();
+            requestBuilder.header(
+                    "Authorization",
+                    "Basic " + Base64.getEncoder().encodeToString(toEncode.getBytes()));
+        }
 
         try {
             HttpResponse<InputStream> response =
