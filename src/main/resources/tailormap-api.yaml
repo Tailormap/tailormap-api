@@ -730,3 +730,65 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
+  /app/{appId}/layer/{layerId}/proxy/wms:
+    parameters:
+      - description: 'application id'
+        in: path
+        name: appId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - description: 'application layer id'
+        in: path
+        name: layerId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - description: 'Must equal WMS'
+        in: query
+        name: SERVICE
+        required: true
+        schema:
+          type: string
+      - name: REQUEST
+        description: 'Either ''GetMap'' or ''GetLegendGraphic''.'
+        in: query
+        schema:
+          type: string
+        required: true
+      - name: VERSION
+        description: 'WMS version.'
+        in: query
+        schema:
+          type: string
+        required: false
+    get:
+      operationId: 'proxy'
+      description: 'Proxy a WMS request to a map service. Useful for accessing a map service requiring authentication
+         without exposing the password to the frontend. Authentication is checked by Tailormap. Additional parameters 
+         from the WMS spec may be specified which will be passed on to the original server.'
+      security:
+        - formAuth: [ ]
+      responses:
+        '200':
+          description: 'OK'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
