@@ -64,7 +64,9 @@ class AppControllerIntegrationTest {
                 .andExpect(jsonPath("$.name").value("test"))
                 .andExpect(jsonPath("$.version").value(1))
                 .andExpect(jsonPath("$.lang").value("nl_NL"))
-                .andExpect(jsonPath("$.title").value("test title"));
+                .andExpect(jsonPath("$.title").value("test title"))
+                .andExpect(jsonPath("$.components").isArray())
+                .andExpect(jsonPath("$.components[0].type").value("measure"));
     }
 
     @Test
@@ -78,7 +80,9 @@ class AppControllerIntegrationTest {
                 .andExpect(jsonPath("$.name").value("test"))
                 .andExpect(jsonPath("$.version").value(1))
                 .andExpect(jsonPath("$.lang").value("nl_NL"))
-                .andExpect(jsonPath("$.title").value("test title"));
+                .andExpect(jsonPath("$.title").value("test title"))
+                .andExpect(jsonPath("$.components").isArray())
+                .andExpect(jsonPath("$.components[0].type").value("measure"));
     }
 
     @Test
@@ -96,7 +100,9 @@ class AppControllerIntegrationTest {
                 .andExpect(jsonPath("$.name").value("test"))
                 .andExpect(jsonPath("$.version").value(1))
                 .andExpect(jsonPath("$.lang").value("nl_NL"))
-                .andExpect(jsonPath("$.title").value("test title"));
+                .andExpect(jsonPath("$.title").value("test title"))
+                .andExpect(jsonPath("$.components").isArray())
+                .andExpect(jsonPath("$.components[0].type").value("measure"));
     }
 
     @Test
@@ -110,7 +116,9 @@ class AppControllerIntegrationTest {
                 .andExpect(jsonPath("$.name").value("test"))
                 .andExpect(jsonPath("$.version").value(1))
                 .andExpect(jsonPath("$.lang").value("nl_NL"))
-                .andExpect(jsonPath("$.title").value("test title"));
+                .andExpect(jsonPath("$.title").value("test title"))
+                .andExpect(jsonPath("$.components").isArray())
+                .andExpect(jsonPath("$.components[0].type").value("measure"));
     }
 
     @Test
@@ -124,7 +132,9 @@ class AppControllerIntegrationTest {
                 .andExpect(jsonPath("$.name").value("test"))
                 .andExpect(jsonPath("$.version").value(1))
                 .andExpect(jsonPath("$.lang").value("nl_NL"))
-                .andExpect(jsonPath("$.title").value("test title"));
+                .andExpect(jsonPath("$.title").value("test title"))
+                .andExpect(jsonPath("$.components").isArray())
+                .andExpect(jsonPath("$.components[0].type").value("measure"));
     }
 
     @Test
@@ -142,7 +152,9 @@ class AppControllerIntegrationTest {
                 .andExpect(jsonPath("$.name").value("test"))
                 .andExpect(jsonPath("$.version").value(1))
                 .andExpect(jsonPath("$.lang").value("nl_NL"))
-                .andExpect(jsonPath("$.title").value("test title"));
+                .andExpect(jsonPath("$.title").value("test title"))
+                .andExpect(jsonPath("$.components").isArray())
+                .andExpect(jsonPath("$.components[0].type").value("measure"));
     }
 
     @Test
@@ -162,7 +174,9 @@ class AppControllerIntegrationTest {
                 .andExpect(jsonPath("$.version").value(1))
                 .andExpect(jsonPath("$.title").value("test title"))
                 // expect default value
-                .andExpect(jsonPath("$.lang").value("nl_NL"));
+                .andExpect(jsonPath("$.lang").value("nl_NL"))
+                .andExpect(jsonPath("$.components").isArray())
+                .andExpect(jsonPath("$.components[0].type").value("measure"));
     }
 
     @Test
