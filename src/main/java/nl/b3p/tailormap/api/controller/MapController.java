@@ -5,6 +5,9 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,6 +39,7 @@ import nl.tailormap.viewer.config.app.StartLevel;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.TileService;
+import nl.tailormap.viewer.config.services.WMSService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -519,9 +523,32 @@ public class MapController {
                 }
             }
 
+            String serviceUrl = geoService.getUrl();
+            if (Boolean.parseBoolean(
+                    String.valueOf(geoService.getDetails().get(GeoService.DETAIL_USE_PROXY)))) {
+                if (WMSService.PROTOCOL.equals(geoService.getProtocol())) {
+                    serviceUrl =
+                            linkTo(
+                                            methodOn(GeoServiceProxyController.class)
+                                                    .proxyWms(a.getId(), appLayer.getId(), null))
+                                    .toString();
+                } else if (TileService.PROTOCOL.equals(geoService.getProtocol())
+                        && TileService.TILING_PROTOCOL_WMTS.equals(
+                                ((TileService) geoService).getTilingProtocol())) {
+                    serviceUrl =
+                            linkTo(
+                                            methodOn(GeoServiceProxyController.class)
+                                                    .proxyWmts(a.getId(), appLayer.getId(), null))
+                                    .toString();
+                } else {
+                    throw new IllegalArgumentException(
+                            "Can't generate proxy URL for service " + geoService.getId());
+                }
+            }
+
             Service s =
                     new Service()
-                            .url(geoService.getUrl())
+                            .url(serviceUrl)
                             .id(geoService.getId())
                             .name(geoService.getName())
                             .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))
