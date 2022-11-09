@@ -55,10 +55,21 @@ import java.util.function.Predicate;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * Proxy controller for OGC WMS and WMTS services. Does not attempt to hide the original service
+ * URL. Mostly useful for access to HTTP Basic secured services without sending the credentials to
+ * the client. The access control is handled by Spring Security and the authorizations configured on
+ * the service.
+ *
+ * <p>Only supports GET requests. Does not support CORS, only meant for tailormap-viewer from the
+ * same origin.
+ *
+ * <p>Implementation note: uses the Java 11 HttpClient. Spring cloud gateway can proxy with many
+ * more features but can not be used in a non-reactive application.
+ */
 @RestController
 @Validated
 @RequestMapping(path = "/app/{appId}/layer/{appLayerId}/proxy")
-@SuppressWarnings("unused")
 public class GeoServiceProxyController {
 
     private final Log logger = LogFactory.getLog(getClass());
@@ -221,7 +232,23 @@ public class GeoServiceProxyController {
             // Don't care
         }
 
-        // TODO: add request headers such as conditional HTTP requests
+        String[] requestHeaders = {
+            "Accept",
+            "If-Modified-Since",
+            "If-Unmodified-Since",
+            "If-Match",
+            "If-None-Match",
+            "If-Range",
+            "Range",
+            "Referer",
+            "User-Agent",
+        };
+        for (String header : requestHeaders) {
+            String value = request.getHeader(header);
+            if (value != null) {
+                requestBuilder.header(header, value);
+            }
+        }
 
         if (service.getUsername() != null && service.getPassword() != null) {
             String toEncode = service.getUsername() + ":" + service.getPassword();
@@ -239,10 +266,19 @@ public class GeoServiceProxyController {
             InputStreamResource body = new InputStreamResource(response.body());
             org.springframework.http.HttpHeaders headers = new HttpHeaders();
             // TODO for WMTS, does caching work?
-            String[] forwardHeaders = {
-                "Content-Type", "Content-Length", "Cache-Control", "Expires", "Pragma"
+            String[] allowedResponseHeaders = {
+                "Content-Type",
+                "Content-Length",
+                "Content-Encoding",
+                "Content-Range",
+                "Content-Disposition",
+                "Cache-Control",
+                "Expires",
+                "Last-Modified",
+                "ETag",
+                "Pragma",
             };
-            for (String header : forwardHeaders) {
+            for (String header : allowedResponseHeaders) {
                 headers.addAll(header, response.headers().allValues(header));
             }
             return ResponseEntity.status(response.statusCode()).headers(headers).body(body);
