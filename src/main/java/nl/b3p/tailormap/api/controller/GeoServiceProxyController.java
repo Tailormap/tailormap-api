@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(path = "/app/{appId}/layer/{appLayerId}/proxy")
 public class GeoServiceProxyController {
 
-    private final Log logger = LogFactory.getLog(getClass());
+    private static final Log logger = LogFactory.getLog(GeoServiceProxyController.class);
     private final ApplicationRepository applicationRepository;
     private final ApplicationLayerRepository applicationLayerRepository;
     private final AuthorizationService authorizationService;
@@ -192,12 +192,21 @@ public class GeoServiceProxyController {
                             originalServiceUrl.build(true).getQueryParams(), requestParams);
             originalServiceUrl.replaceQueryParams(params);
 
-            return doProxy(originalServiceUrl.build(true).toUri(), service, request);
+            return doProxy(
+                    originalServiceUrl.build(true).toUri(),
+                    application,
+                    appLayer,
+                    service,
+                    request);
         }
     }
 
     private static ResponseEntity<?> doProxy(
-            URI uri, GeoService service, HttpServletRequest request) {
+            URI uri,
+            Application application,
+            ApplicationLayer appLayer,
+            GeoService service,
+            HttpServletRequest request) {
         final HttpClient.Builder builder =
                 HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);
 
@@ -250,19 +259,55 @@ public class GeoServiceProxyController {
             }
         }
 
-        if (service.getUsername() != null && service.getPassword() != null) {
+        boolean addCredentials = service.getUsername() != null && service.getPassword() != null;
+        if (addCredentials) {
+            // An app admin should not be able to accidentally open a proxy to a secured geo service
+            // in a public app, so only allow proxying to a secured geo service in apps which
+            // require
+            // authentication.
+
+            // A geo service which is in a private network which does not require credentials /can/
+            // be 'exposed' in a public app through this proxy.
+
+            // An app may have authenticated required but "no groups checked" to allow anyone to
+            // access the service (after being logged in for the app). This might still be an
+            // inadvertent misconfiguration but less concerning.
+
+            // Previous tailormap proxy behaviour was to proxy the request but not add the
+            // authentication. This proxy sends a Forbidden response.
+
+            if (!application.isAuthenticatedRequired()) {
+                logger.warn(
+                        String.format(
+                                "App %s has app layer %s from proxied secured service URL %s (username %s), but app authentication is not required. Denying proxy, even if user is authenticated.",
+                                application.getId(),
+                                appLayer.getId(),
+                                service.getUrl(),
+                                service.getUsername()));
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Forbidden");
+            }
             String toEncode = service.getUsername() + ":" + service.getPassword();
             requestBuilder.header(
                     "Authorization",
                     "Basic "
                             + Base64.getEncoder()
                                     .encodeToString(toEncode.getBytes(StandardCharsets.UTF_8)));
+
+            // TODO: in some cases we might want to forward the authenticated tailormap user or
+            // groups/roles to the service (perhaps in a secret header name) so the service can
+            // apply different authorizations instead of just one account.
         }
 
         try {
             HttpResponse<InputStream> response =
                     httpClient.send(
                             requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
+            // If the server does not accept our credentials it might 'hide' the layer or even send
+            // a 401 Unauthorized status. We do not send the WWW-Authenticate header back, so the
+            // client will get the error but not an authorization popup.
+            // It would be nice if proxy (auth) errors were logged and available in the admin
+            // interface. Currently, a layer will just stop working if the geo service credentials
+            // are changed without updating them in the geo service registry.
             InputStreamResource body = new InputStreamResource(response.body());
             org.springframework.http.HttpHeaders headers = new HttpHeaders();
             // TODO for WMTS, does caching work?
