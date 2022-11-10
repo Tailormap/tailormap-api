@@ -93,10 +93,11 @@ class VersionControllerIntegrationTest {
         // buildDate can be a few seconds off when running integration tests
         assertEquals(
                 (double) buildDate,
-                LocalDateTime.parse(
-                                versionController.getVersion().get("buildDate"),
-                                DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-                        .toEpochSecond(ZoneOffset.UTC),
+                (double)
+                        LocalDateTime.parse(
+                                        versionController.getVersion().get("buildDate"),
+                                        DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                                .toEpochSecond(ZoneOffset.UTC),
                 buildDateDelta,
                 "buildDate should almost be the same - there might be a temporal abberation");
 
@@ -138,10 +139,11 @@ class VersionControllerIntegrationTest {
 
         assertEquals(
                 (double) buildDate,
-                LocalDateTime.parse(
-                                versionController.getVersion().get("buildDate"),
-                                DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-                        .toEpochSecond(ZoneOffset.UTC),
+                (double)
+                        LocalDateTime.parse(
+                                        versionController.getVersion().get("buildDate"),
+                                        DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                                .toEpochSecond(ZoneOffset.UTC),
                 buildDateDelta,
                 "buildDate should almost be the same - there might be a temporal abberation");
 
