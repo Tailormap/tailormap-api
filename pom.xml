@@ -230,24 +230,6 @@ SPDX-License-Identifier: MIT
     <dependency>
       <groupId>org.springframework.hateoas</groupId>
       <artifactId>spring-hateoas</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-beans</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-context</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.springframework.plugin</groupId>
-          <artifactId>spring-plugin-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -1147,6 +1129,7 @@ SPDX-License-Identifier: MIT
                     <exclude>org.springframework.security:spring-security-test</exclude>
                     <exclude>org.webjars:webjars-locator-core</exclude>
                     <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
+                    <exclude>org.springframework.hateoas:spring-hateoas</exclude>
                     <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
                     <exclude>org.hibernate:hibernate-micrometer</exclude>
                     <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
