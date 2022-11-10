@@ -314,7 +314,6 @@ public class GeoServiceProxyController {
             String[] allowedResponseHeaders = {
                 "Content-Type",
                 "Content-Length",
-                "Content-Encoding",
                 "Content-Range",
                 "Content-Disposition",
                 "Cache-Control",
