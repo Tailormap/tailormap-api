@@ -5,11 +5,24 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.jayway.jsonpath.JsonPath;
+
 import nl.b3p.tailormap.api.JPAConfiguration;
 import nl.b3p.tailormap.api.model.Service;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
+
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +37,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(
         classes = {
@@ -74,26 +76,30 @@ class MapControllerPostgresIntegrationTest {
                 () -> ("services array contains non-unique items: " + allSvc));
     }
 
-
     @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void should_contain_proxy_url() throws Exception {
-                mockMvc.perform(get("/app/5/map"))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(
-                                jsonPath("$.services[?(@.name == 'Bestuurlijke Gebieden View Service (proxied)')].url")
-                                        // Need to use contains() because jsonPath() returns an array even when the expression resolves to a single scalar property
-                                        .value(contains(endsWith("/app/5/layer/15/proxy/wms"))))
-                        .andExpect(
-                                jsonPath("$.services[?(@.name == 'PDOK HWH luchtfoto (proxied)')].url")
-                                        .value(contains(endsWith("/app/5/layer/16/proxy/wmts"))))
-                        .andExpect(
-                                jsonPath("$.appLayers[?(@.layerName === \"Gemeentegebied\")].legendImageUrl")
-                                        .value(contains(allOf(
-                                                containsString("/app/5/layer/15/proxy/wms"),
-                                                containsString("request=GetLegendGraphic"))
-                                        )))
-                        .andReturn();
+        mockMvc.perform(get("/app/5/map"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(
+                        jsonPath(
+                                        "$.services[?(@.name == 'Bestuurlijke Gebieden View Service (proxied)')].url")
+                                // Need to use contains() because jsonPath() returns an array even
+                                // when the expression resolves to a single scalar property
+                                .value(contains(endsWith("/app/5/layer/15/proxy/wms"))))
+                .andExpect(
+                        jsonPath("$.services[?(@.name == 'PDOK HWH luchtfoto (proxied)')].url")
+                                .value(contains(endsWith("/app/5/layer/16/proxy/wmts"))))
+                .andExpect(
+                        jsonPath(
+                                        "$.appLayers[?(@.layerName === \"Gemeentegebied\")].legendImageUrl")
+                                .value(
+                                        contains(
+                                                allOf(
+                                                        containsString("/app/5/layer/15/proxy/wms"),
+                                                        containsString(
+                                                                "request=GetLegendGraphic")))))
+                .andReturn();
     }
-
 }
