@@ -27,6 +27,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -130,6 +131,45 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
                 .andExpect(header().string("Content-Length", new StringIsNotZeroMatcher()));
+    }
+
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void test_wms_secured_proxy_not_in_public_app() throws Exception {
+        mockMvc.perform(
+                        get(
+                                "/app/5/layer/17/proxy/wms?Service=WMTS&Request=GetCapabilities&Version=1.0.0"))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string("Forbidden"));
+    }
+
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(username = "noproxyuser")
+    void test_wms_secured_app_denied() throws Exception {
+        mockMvc.perform(
+                        get(
+                                "/app/6/layer/19/proxy/wms?Service=WMTS&Request=GetCapabilities&Version=1.0.0"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("{\"code\":401,\"url\":\"/login\"}"));
+    }
+
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @WithMockUser(
+            username = "proxyuser",
+            authorities = {"ProxyGroup"})
+    void test_wms_secured_app_granted() throws Exception {
+        mockMvc.perform(
+                        get(
+                                "/app/6/layer/19/proxy/wms?Service=WMS&Request=GetCapabilities&Version=1.0.0"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_XML))
+                .andExpect(
+                        content()
+                                .string(
+                                        startsWith(
+                                                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<WMS_Capabilities")));
     }
 
     @Test
