@@ -6,8 +6,6 @@
 package nl.b3p.tailormap.api.controller;
 
 import io.swagger.v3.oas.annotations.Parameter;
-
-import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
@@ -17,7 +15,6 @@ import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.TileService;
 import nl.tailormap.viewer.config.services.WMSService;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +26,13 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -51,9 +46,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-
-import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Proxy controller for OGC WMS and WMTS services. Does not attempt to hide the original service
@@ -85,21 +77,6 @@ public class GeoServiceProxyController {
         this.applicationRepository = applicationRepository;
         this.applicationLayerRepository = applicationLayerRepository;
         this.authorizationService = authorizationService;
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    @ResponseStatus(
-            value =
-                    HttpStatus
-                            .NOT_FOUND /*,reason = "Not Found" -- adding 'reason' will drop the body */)
-    @ResponseBody
-    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
-        logger.warn(
-                "Requested an application or appLayer that does not exist. Message: "
-                        + exception.getMessage());
-        return new ErrorResponse()
-                .message("Requested an application or appLayer that does not exist")
-                .code(HttpStatus.NOT_FOUND.value());
     }
 
     @GetMapping(path = "/wmts")
@@ -161,9 +138,14 @@ public class GeoServiceProxyController {
             Long appLayerId,
             HttpServletRequest request) {
 
-        final Application application = applicationRepository.findById(appId).orElseThrow();
+        final Application application = applicationRepository.findById(appId).orElse(null);
         final ApplicationLayer appLayer =
-                applicationLayerRepository.findById(appLayerId).orElseThrow();
+                 applicationLayerRepository.findById(appLayerId).orElse(null);
+        if (application == null || appLayer == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Requested an application or appLayer that does not exist");
+        }
+
         if (!authorizationService.mayUserRead(appLayer, application)) {
             // login required, send RedirectResponse
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
