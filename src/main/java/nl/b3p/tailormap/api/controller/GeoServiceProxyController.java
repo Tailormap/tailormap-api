@@ -262,6 +262,7 @@ public class GeoServiceProxyController {
             // authentication. This proxy sends a Forbidden response.
 
             if (!application.isAuthenticatedRequired()) {
+                // XXX for tiled services each request logs a warning, may clutter the log...
                 logger.warn(
                         String.format(
                                 "App %s has app layer %s from proxied secured service URL %s (username %s), but app authentication is not required. Denying proxy, even if user is authenticated.",
