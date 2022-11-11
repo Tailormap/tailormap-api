@@ -6,6 +6,7 @@
 package nl.b3p.tailormap.api.controller;
 
 import io.swagger.v3.oas.annotations.Parameter;
+
 import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
@@ -15,6 +16,7 @@ import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.TileService;
 import nl.tailormap.viewer.config.services.WMSService;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -46,6 +47,8 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Proxy controller for OGC WMS and WMTS services. Does not attempt to hide the original service
@@ -140,7 +143,7 @@ public class GeoServiceProxyController {
 
         final Application application = applicationRepository.findById(appId).orElse(null);
         final ApplicationLayer appLayer =
-                 applicationLayerRepository.findById(appLayerId).orElse(null);
+                applicationLayerRepository.findById(appLayerId).orElse(null);
         if (application == null || appLayer == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Requested an application or appLayer that does not exist");
