@@ -64,7 +64,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @Validated
-@RequestMapping(path = "/app/{appId}/layer/{appLayerId}/proxy")
+@RequestMapping(path = "/app/{appId}/layer/{appLayerId}/proxy/{protocol}")
 public class GeoServiceProxyController {
 
     private static final Log logger = LogFactory.getLog(GeoServiceProxyController.class);
@@ -82,64 +82,30 @@ public class GeoServiceProxyController {
         this.authorizationService = authorizationService;
     }
 
-    @GetMapping(path = "/wmts")
-    public ResponseEntity<?> proxyWmts(
+    @GetMapping
+    public ResponseEntity<?> proxy(
             @Parameter(name = "appId", description = "application id", required = true)
                     @PathVariable("appId")
                     Long appId,
             @Parameter(name = "appLayerId", description = "application layer id", required = true)
                     @PathVariable("appLayerId")
                     Long appLayerId,
+            @PathVariable("protocol") String protocol,
             HttpServletRequest request) {
-        return proxy(
-                (GeoService gs) ->
-                        TileService.PROTOCOL.equals(gs.getProtocol())
-                                && TileService.TILING_PROTOCOL_WMTS.equals(
-                                        ((TileService) gs).getTilingProtocol()),
-                appId,
-                appLayerId,
-                request);
-    }
 
-    @GetMapping(path = "/wms")
-    public ResponseEntity<?> proxyWms(
-            @Parameter(name = "appId", description = "application id", required = true)
-                    @PathVariable("appId")
-                    Long appId,
-            @Parameter(name = "appLayerId", description = "application layer id", required = true)
-                    @PathVariable("appLayerId")
-                    Long appLayerId,
-            HttpServletRequest request) {
-        return proxy(
-                (GeoService gs) -> WMSService.PROTOCOL.equals(gs.getProtocol()),
-                appId,
-                appLayerId,
-                request);
-    }
-
-    public static MultiValueMap<String, String> buildOgcProxyRequestParams(
-            MultiValueMap<String, String> originalServiceParams,
-            MultiValueMap<String, String> requestParams) {
-        // Start with all the parameters from the request
-        final MultiValueMap<String, String> params = new LinkedMultiValueMap<>(requestParams);
-
-        // Add original service URL parameters if they are not required OGC params
-        // (case-insensitive) and not already set by request
-        final List<String> ogcParams = List.of(new String[] {"SERVICE", "REQUEST", "VERSION"});
-        for (Map.Entry<String, List<String>> serviceParam : originalServiceParams.entrySet()) {
-            if (!params.containsKey(serviceParam.getKey())
-                    && !ogcParams.contains(serviceParam.getKey().toUpperCase())) {
-                params.put(serviceParam.getKey(), serviceParam.getValue());
-            }
+        Predicate<GeoService> serviceValidator;
+        if ("wmts".equals(protocol)) {
+            serviceValidator =
+                    (GeoService gs) ->
+                            TileService.PROTOCOL.equals(gs.getProtocol())
+                                    && TileService.TILING_PROTOCOL_WMTS.equals(
+                                            ((TileService) gs).getTilingProtocol());
+        } else if ("wms".equals(protocol)) {
+            serviceValidator = (GeoService gs) -> WMSService.PROTOCOL.equals(gs.getProtocol());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Unknown proxy protocol: " + protocol);
         }
-        return params;
-    }
-
-    private ResponseEntity<?> proxy(
-            Predicate<GeoService> serviceValidator,
-            Long appId,
-            Long appLayerId,
-            HttpServletRequest request) {
 
         final Application application = applicationRepository.findById(appId).orElse(null);
         final ApplicationLayer appLayer =
@@ -184,6 +150,24 @@ public class GeoServiceProxyController {
                     service,
                     request);
         }
+    }
+
+    public static MultiValueMap<String, String> buildOgcProxyRequestParams(
+            MultiValueMap<String, String> originalServiceParams,
+            MultiValueMap<String, String> requestParams) {
+        // Start with all the parameters from the request
+        final MultiValueMap<String, String> params = new LinkedMultiValueMap<>(requestParams);
+
+        // Add original service URL parameters if they are not required OGC params
+        // (case-insensitive) and not already set by request
+        final List<String> ogcParams = List.of(new String[] {"SERVICE", "REQUEST", "VERSION"});
+        for (Map.Entry<String, List<String>> serviceParam : originalServiceParams.entrySet()) {
+            if (!params.containsKey(serviceParam.getKey())
+                    && !ogcParams.contains(serviceParam.getKey().toUpperCase())) {
+                params.put(serviceParam.getKey(), serviceParam.getValue());
+            }
+        }
+        return params;
     }
 
     private static ResponseEntity<?> doProxy(

@@ -590,14 +590,14 @@ public class MapController {
             linkBuilder =
                     linkTo(
                             methodOn(GeoServiceProxyController.class)
-                                    .proxyWms(application.getId(), appLayer.getId(), null));
+                                    .proxy(application.getId(), appLayer.getId(), "wms", null));
         } else if (TileService.PROTOCOL.equals(geoService.getProtocol())
                 && TileService.TILING_PROTOCOL_WMTS.equals(
                         ((TileService) geoService).getTilingProtocol())) {
             linkBuilder =
                     linkTo(
                             methodOn(GeoServiceProxyController.class)
-                                    .proxyWmts(application.getId(), appLayer.getId(), null));
+                                    .proxy(application.getId(), appLayer.getId(), "wmts", null));
         } else {
             throw new IllegalArgumentException(
                     "Can't generate proxy URL for service " + geoService.getId());
