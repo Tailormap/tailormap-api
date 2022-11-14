@@ -228,6 +228,10 @@ SPDX-License-Identifier: MIT
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.springframework.hateoas</groupId>
+      <artifactId>spring-hateoas</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
@@ -1125,6 +1129,7 @@ SPDX-License-Identifier: MIT
                     <exclude>org.springframework.security:spring-security-test</exclude>
                     <exclude>org.webjars:webjars-locator-core</exclude>
                     <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
+                    <exclude>org.springframework.hateoas:spring-hateoas</exclude>
                     <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
                     <exclude>org.hibernate:hibernate-micrometer</exclude>
                     <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>

@@ -5,6 +5,10 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -70,5 +74,32 @@ class MapControllerPostgresIntegrationTest {
                 allSvc.size(),
                 uniqueSvc.size(),
                 () -> ("services array contains non-unique items: " + allSvc));
+    }
+
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void should_contain_proxy_url() throws Exception {
+        mockMvc.perform(get("/app/5/map"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(
+                        jsonPath(
+                                        "$.services[?(@.name == 'Bestuurlijke Gebieden View Service (proxied)')].url")
+                                // Need to use contains() because jsonPath() returns an array even
+                                // when the expression resolves to a single scalar property
+                                .value(contains(endsWith("/app/5/layer/15/proxy/wms"))))
+                .andExpect(
+                        jsonPath("$.services[?(@.name == 'PDOK HWH luchtfoto (proxied)')].url")
+                                .value(contains(endsWith("/app/5/layer/16/proxy/wmts"))))
+                .andExpect(
+                        jsonPath(
+                                        "$.appLayers[?(@.layerName === \"Gemeentegebied\")].legendImageUrl")
+                                .value(
+                                        contains(
+                                                allOf(
+                                                        containsString("/app/5/layer/15/proxy/wms"),
+                                                        containsString(
+                                                                "request=GetLegendGraphic")))))
+                .andReturn();
     }
 }

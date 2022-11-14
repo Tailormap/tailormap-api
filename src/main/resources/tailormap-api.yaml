@@ -730,3 +730,89 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
+  /app/{appId}/layer/{layerId}/proxy/{protocol}:
+    parameters:
+      - description: 'application id'
+        in: path
+        name: appId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - description: 'application layer id'
+        in: path
+        name: layerId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - description: 'proxy protocol, must equal ''wmts'' or ''wms'''
+        in: path
+        name: protocol
+        required: true
+        schema:
+          type: string
+      - description: 'Must equal WMS or WMTS'
+        in: query
+        name: SERVICE
+        required: true
+        schema:
+          type: string
+      - name: REQUEST
+        description: 'A valid WMS/WMTS request value.'
+        in: query
+        schema:
+          type: string
+        required: true
+      - name: VERSION
+        description: 'WMS/WMTS version.'
+        in: query
+        schema:
+          type: string
+        required: false
+    get:
+      operationId: 'proxy'
+      description: 'Proxy a WMS/WMTS request to a map service. Useful for accessing a map service requiring authentication
+         without exposing the password to the frontend. Authentication is checked by Tailormap. Additional parameters 
+         from the WMS spec may be specified which will be passed on to the original server.'
+      security:
+        - formAuth: [ ]
+      responses:
+        '200':
+          description: 'OK'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+        '403':
+          description: 'Forbidden. Proxy not enabled for service or the proxy has credentials but the app is public.'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: 'Not Found. Application or application layer does not exist or protocol is unknown.'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: 'Internal server error'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '504':
+          description: 'Bad Gateway. Proxied service not reachable or responding.'
+          content:
+            text/plain:
+              schema:
+                type: string
