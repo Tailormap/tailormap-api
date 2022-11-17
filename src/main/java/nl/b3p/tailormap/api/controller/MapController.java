@@ -347,9 +347,12 @@ public class MapController {
                 }
             }
 
-            assert serviceVisibilityLayer != null;
+            // The service may have been updated and the layer gone, and thus be null.
             boolean isLayerVisible =
-                    isAuthorized(serviceVisibilityLayer.getService().getReaders(), authentication);
+                    serviceVisibilityLayer != null
+                            && isAuthorized(
+                                    serviceVisibilityLayer.getService().getReaders(),
+                                    authentication);
             while (isLayerVisible && serviceVisibilityLayer != null) {
                 if (!isAuthorized(serviceVisibilityLayer.getReaders(), authentication)) {
                     isLayerVisible = false;
