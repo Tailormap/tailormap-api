@@ -184,7 +184,7 @@ components:
           type: integer
           format: int64
           readOnly: true
-        featuretypeName:
+        featureTypeName:
           type: string
         serviceId:
           type: integer
@@ -248,6 +248,7 @@ components:
 
     Attribute:
       type: object
+      required: [id, name]
       properties:
         id:
           type: integer
@@ -258,6 +259,8 @@ components:
           format: int64
           readOnly: true
         name:
+          type: string
+        alias:
           type: string
         longname:
           description: 'has featuretype name and name combined with a dot.'
