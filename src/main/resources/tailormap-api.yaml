@@ -771,6 +771,7 @@ paths:
           type: string
         required: false
     get:
+      &proxy
       operationId: 'proxy'
       description: 'Proxy a WMS/WMTS request to a map service. Useful for accessing a map service requiring authentication
          without exposing the password to the frontend. Authentication is checked by Tailormap. Additional parameters 
@@ -816,3 +817,8 @@ paths:
             text/plain:
               schema:
                 type: string
+    post:
+      <<: *proxy
+      description: 'The same as GET, but allows for a large request (for example with a large filter parameter) with
+       (some) parameters in the body instead of the URL. The request is passed on to the original service as a GET 
+       request. An XSRF token is required.'
