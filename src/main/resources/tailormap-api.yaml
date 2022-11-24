@@ -770,8 +770,18 @@ paths:
         schema:
           type: string
         required: false
+      - name: free-form
+        description: Additional OGC and vendor-specific parameters.
+        in: query
+        schema:
+          type: object
+          additionalProperties: true
+        style: form
+        explode: true
+        example:
+          LAYER: mylayer
+          BBOX: 1,2,3,4
     get:
-      &proxy
       operationId: 'proxy'
       description: 'Proxy a WMS/WMTS request to a map service. Useful for accessing a map service requiring authentication
          without exposing the password to the frontend. Authentication is checked by Tailormap. Additional parameters 
@@ -818,8 +828,60 @@ paths:
               schema:
                 type: string
     post:
-      <<: *proxy
       operationId: 'proxyPOST'
+      security:
+        - formAuth: [ ]
       description: 'The same as GET, but allows for a large request (for example with a large filter parameter) with
        (some) parameters in the body instead of the URL. The request is passed on to the original service as a GET 
        request. An XSRF token is required.'
+      requestBody:
+        description: Supply large parameters here to avoid extreme URL lengths.
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              description: OGC and vendor-specific parameters too large for the URL.
+              type: object
+              additionalProperties: true
+              example:
+                CQL_FILTER: INTERSECTS(geom, BUFFER(POINT(1 2), 10))
+                SLD_BODY: ...
+      responses:
+        '200':
+          description: 'OK'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+        '403':
+          description: 'Forbidden. Proxy not enabled for service or the proxy has credentials but the app is public.'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: 'Not Found. Application or application layer does not exist or protocol is unknown.'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: 'Internal server error'
+          content:
+            text/plain:
+              schema:
+                type: string
+        '504':
+          description: 'Bad Gateway. Proxied service not reachable or responding.'
+          content:
+            text/plain:
+              schema:
+                type: string
