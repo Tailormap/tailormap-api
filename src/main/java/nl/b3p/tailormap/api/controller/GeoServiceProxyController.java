@@ -5,6 +5,9 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import io.swagger.v3.oas.annotations.Parameter;
 
 import nl.b3p.tailormap.api.model.RedirectResponse;
@@ -24,15 +27,14 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.UriUtils;
 
 import java.io.InputStream;
 import java.net.Inet6Address;
@@ -43,10 +45,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -82,7 +87,7 @@ public class GeoServiceProxyController {
         this.authorizationService = authorizationService;
     }
 
-    @GetMapping
+    @RequestMapping(method = {GET, POST})
     public ResponseEntity<?> proxy(
             @Parameter(name = "appId", description = "application id", required = true)
                     @PathVariable("appId")
@@ -134,10 +139,28 @@ public class GeoServiceProxyController {
 
             final UriComponentsBuilder originalServiceUrl =
                     UriComponentsBuilder.fromHttpUrl(service.getUrl());
+            // request.getParameterMap() includes parameters from an
+            // application/x-www-form-urlencoded POST body
             final MultiValueMap<String, String> requestParams =
-                    UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(request))
-                            .build(true)
-                            .getQueryParams();
+                    request.getParameterMap().entrySet().stream()
+                            .map(
+                                    entry ->
+                                            new AbstractMap.SimpleEntry<>(
+                                                    entry.getKey(),
+                                                    Arrays.stream(entry.getValue())
+                                                            .map(
+                                                                    value ->
+                                                                            UriUtils.encode(
+                                                                                    value,
+                                                                                    StandardCharsets
+                                                                                            .UTF_8))
+                                                            .collect(Collectors.toList())))
+                            .collect(
+                                    Collectors.toMap(
+                                            Map.Entry::getKey,
+                                            Map.Entry::getValue,
+                                            (x, y) -> y,
+                                            LinkedMultiValueMap::new));
             final MultiValueMap<String, String> params =
                     buildOgcProxyRequestParams(
                             originalServiceUrl.build(true).getQueryParams(), requestParams);

@@ -819,6 +819,7 @@ paths:
                 type: string
     post:
       <<: *proxy
+      operationId: 'proxyPOST'
       description: 'The same as GET, but allows for a large request (for example with a large filter parameter) with
        (some) parameters in the body instead of the URL. The request is passed on to the original service as a GET 
        request. An XSRF token is required.'
