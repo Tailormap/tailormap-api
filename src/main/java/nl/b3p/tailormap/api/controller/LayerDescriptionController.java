@@ -15,6 +15,8 @@ import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
+import nl.tailormap.viewer.config.app.ConfiguredAttribute;
+import nl.tailormap.viewer.config.services.AttributeDescriptor;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
 
@@ -29,10 +31,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.constraints.NotNull;
 
 @RestController
 @Validated
@@ -97,17 +101,30 @@ public class LayerDescriptionController {
         r.setFeatureTypeName(sft.getTypeName());
         r.setGeometryAttribute(sft.getGeometryAttribute());
         r.attributes(
-                sft.getAttributes().stream()
+                getVisibleAttributes(appLayer, sft).stream()
                         .map(
-                                ad -> {
+                                ca -> {
+                                    AttributeDescriptor ad =
+                                            sft.getAttribute(ca.getAttributeName());
                                     Attribute a = new Attribute();
-                                    a.setId(ad.getId());
+                                    // ca or ad? Not used by frontend for anything
+                                    a.setId(ca.getId());
                                     a.setName(ad.getName());
                                     a.setAlias(ad.getAlias());
+                                    a.setEditAlias(ca.getEditAlias());
+                                    // TODO: set more attributes from ca
                                     a.setType(Attribute.TypeEnum.fromValue(ad.getType()));
                                     return a;
                                 })
                         .collect(Collectors.toList()));
         return ResponseEntity.ok(r);
+    }
+
+    private List<ConfiguredAttribute> getVisibleAttributes(
+            @NotNull ApplicationLayer appLayer, @NotNull SimpleFeatureType sft) {
+        List<ConfiguredAttribute> configuredAttributes = appLayer.getAttributes(sft);
+        return configuredAttributes.stream()
+                .filter(ConfiguredAttribute::isVisible)
+                .collect(Collectors.toList());
     }
 }

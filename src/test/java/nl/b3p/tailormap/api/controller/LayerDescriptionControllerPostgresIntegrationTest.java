@@ -62,8 +62,10 @@ class LayerDescriptionControllerPostgresIntegrationTest {
                 .andExpect(jsonPath("$.id").value("6"))
                 .andExpect(jsonPath("$.serviceId").value(6))
                 .andExpect(jsonPath("$.attributes").isArray())
-                .andExpect(jsonPath("$.attributes[?(@.id == 48)].name").value("geom"))
-                .andExpect(jsonPath("$.attributes[?(@.id == 48)].type").value("geometry"));
+                .andExpect(
+                        jsonPath("$.attributes[?(@.id == 22)].name")
+                                .value("relatievehoogteligging"))
+                .andExpect(jsonPath("$.attributes[?(@.id == 22)].type").value("integer"));
     }
 
     @Test
