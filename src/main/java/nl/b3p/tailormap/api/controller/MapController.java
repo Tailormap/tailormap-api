@@ -510,7 +510,10 @@ public class MapController {
                             UriComponentsBuilder.fromHttpUrl(
                                     getProxyUrl(geoService, a, applicationLayer));
                     legendImageUrl =
-                            legendUrlBuilder.queryParams(legendUrl.getQueryParams()).toUriString();
+                            legendUrlBuilder
+                                    .queryParams(legendUrl.getQueryParams())
+                                    .build(true)
+                                    .toUriString();
                 }
             }
 
