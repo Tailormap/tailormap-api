@@ -256,7 +256,7 @@ public&nbsp;GeoServiceProxyController&#8203;(<a href="../repository/ApplicationR
 <ul class="blockList">
 <li class="blockList">
 <h4>proxy</h4>
-<pre class="methodSignature">@GetMapping
+<pre class="methodSignature">@RequestMapping(method={GET,POST})
 public&nbsp;org.springframework.http.ResponseEntity&lt;?&gt;&nbsp;proxy&#8203;(@PathVariable("appId")
                                                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;appId,
                                                         @PathVariable("appLayerId")
