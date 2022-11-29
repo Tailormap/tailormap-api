@@ -27,12 +27,12 @@ import org.springframework.security.web.SecurityFilterChain;
 public class TestSecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/**");
+        return (web) -> web.ignoring().requestMatchers("/**");
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests().anyRequest().permitAll();
+        http.authorizeHttpRequests().anyRequest().permitAll();
         return http.build();
     }
 }
