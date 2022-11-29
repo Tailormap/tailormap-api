@@ -15,6 +15,13 @@ updates:
     labels:
       - infrastucture
       - dependency
+    ignore:
+      - dependency-name: org.springframework.boot:spring-boot-starter-parent
+        versions:
+          - '>= 3'
+      - dependency-name: org.springframework.security:spring-security-crypto
+        versions:
+          - '>= 6'
 
   - package-ecosystem: "github-actions"
     directory: "/"
