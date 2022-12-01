@@ -28,8 +28,8 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 <span class="fc" id="L28">        http.csrf()</span>
 <span class="fc" id="L29">                .csrfTokenRepository(csrfTokenRepository)</span>
 <span class="fc" id="L30">                .and()</span>
-<span class="fc" id="L31">                .authorizeRequests()</span>
-<span class="fc" id="L32">                .antMatchers(&quot;/admin/**&quot;)</span>
+<span class="fc" id="L31">                .authorizeHttpRequests()</span>
+<span class="fc" id="L32">                .requestMatchers(&quot;/admin/**&quot;)</span>
 <span class="fc" id="L33">                .hasRole(&quot;ADMIN&quot;)</span>
 <span class="fc" id="L34">                .anyRequest()</span>
 <span class="fc" id="L35">                .permitAll()</span>
