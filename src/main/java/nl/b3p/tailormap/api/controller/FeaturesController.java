@@ -70,6 +70,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -83,8 +84,8 @@ import javax.validation.constraints.NotNull;
         path = "/app/{appId}/layer/{appLayerId}/features",
         produces = MediaType.APPLICATION_JSON_VALUE)
 public class FeaturesController implements Constants {
-    @Value("${tailormap-api.pageSize:100}")
-    private int pageSize;
+    @Value("${tailormap-api.defaultPageSize:100}")
+    private int defaultPageSize;
 
     @Value("${tailormap-api.features.wfs_count_exact:false}")
     private boolean exactWfsCounts;
@@ -183,7 +184,9 @@ public class FeaturesController implements Constants {
             @RequestParam(required = false) String __fid,
             @RequestParam(defaultValue = "false") Boolean simplify,
             @RequestParam(required = false) String filter,
-            @RequestParam(required = false) Integer page,
+            @RequestParam(defaultValue = "true") boolean paging,
+            @RequestParam Optional<Integer> pageSize,
+            @RequestParam Optional<Integer> page,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false, defaultValue = "asc") String sortOrder)
             throws BadRequestException {
@@ -204,8 +207,16 @@ public class FeaturesController implements Constants {
             featuresResponse = getFeatureByFID(appLayer, __fid, crs);
         } else if (null != x && null != y) {
             featuresResponse = getFeaturesByXY(appLayer, x, y, crs, distance, simplify);
-        } else if (null != page && page > 0) {
-            featuresResponse = getAllFeatures(appLayer, crs, page, filter, sortBy, sortOrder);
+        } else if (!paging || (page.isPresent() && page.get() > 0)) {
+            featuresResponse =
+                    getAllFeatures(
+                            appLayer,
+                            crs,
+                            Optional.ofNullable(paging ? pageSize.orElse(defaultPageSize) : null),
+                            page.orElse(1),
+                            filter,
+                            sortBy,
+                            sortOrder);
         } else {
             // TODO other implementations
             throw new BadRequestException(
@@ -219,12 +230,14 @@ public class FeaturesController implements Constants {
     private FeaturesResponse getAllFeatures(
             @NotNull ApplicationLayer appLayer,
             String crs,
-            Integer page,
+            Optional<Integer> pageSize,
+            int page,
             String filterCQL,
             String sortBy,
             String sortOrder)
             throws BadRequestException {
-        FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);
+        FeaturesResponse featuresResponse =
+                new FeaturesResponse().page(page).pageSize(pageSize.orElse(null));
 
         // find attribute source of layer
         final Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), entityManager);
@@ -311,8 +324,10 @@ public class FeaturesController implements Constants {
 
             // setup page query
             q.setSortBy(ff.sort(sortAttrName, _sortOrder));
-            q.setMaxFeatures(pageSize);
-            q.setStartIndex((page - 1) * pageSize);
+            if (pageSize.isPresent()) {
+                q.setMaxFeatures(pageSize.get());
+                q.setStartIndex((page - 1) * pageSize.get());
+            }
             logger.debug("Attribute query: " + q);
 
             executeQueryOnFeatureSourceAndClose(

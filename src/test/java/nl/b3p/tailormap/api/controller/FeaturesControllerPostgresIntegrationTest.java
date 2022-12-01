@@ -81,7 +81,7 @@ class FeaturesControllerPostgresIntegrationTest {
 
     @Autowired private MockMvc mockMvc;
 
-    @Value("${tailormap-api.pageSize}")
+    @Value("${tailormap-api.defaultPageSize}")
     private int pageSize;
 
     static Stream<Arguments> argumentsProvider() {
@@ -1037,6 +1037,8 @@ class FeaturesControllerPostgresIntegrationTest {
         List<Service> features = JsonPath.read(body, "$.features");
         assertEquals(0, features.size(), "there should be 0 features in the list");
     }
+
+    //void should_return_all_features_with_paging_disabled()
 
     @ParameterizedTest(
             name =

@@ -522,6 +522,20 @@ paths:
           required: false
           schema:
             type: string
+        - description: 'Paging is enabled by default but by setting it to false all features can be
+            requested. This may result in a very large response.'
+          in: query
+          name: paging
+          schema:
+            type: boolean
+        - description: 'Page size can be omitted to let the backend decide what page size to use,
+            but it can be specified in this parameter. Use this for a specific page size or to 
+            request a specified limited number of features.'
+          in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 1
         - description: '
             Page number to retrieve. For the initial request this should be 1 which will 
             then give the pageSize and total of features so additional pages can be retrieved.'
