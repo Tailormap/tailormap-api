@@ -449,7 +449,8 @@ paths:
 
 
   /app/{appId}/layer/{layerId}/features:
-    summary: 'Use this endpoint to access features.'
+    summary: 'Use this endpoint to access features. When geometry is returned, it is always 
+      linearized (no curved geometries) and returned in WKT in the original CRS.'
     get:
       operationId: 'getFeatures'
       description: 'retrieve features that fulfill the requested conditions (parameters).'
@@ -476,22 +477,24 @@ paths:
           required: false
           schema:
             type: number
+            format: double
         - description: 'y-coordinate, assumed in the coordinate reference system of the attribute source if crs is omitted'
           in: query
           name: y
           required: false
           schema:
             type: number
+            format: double
         - description: '
             EPSG code for the given x- and y-coodinates, the backend will transform to attribute source if required. 
-            Also the CRS to be used to reproject the hightlight gemometry if not in the same CRS as the attribute source.
+            Also the CRS to be used to transform any returned geometry to if not in the same CRS as the attribute source.
             '
           in: query
           name: crs
           required: false
           schema:
             type: number
-        - description: 'buffer radius in the coordinate reference system of the attribute source'
+        - description: 'buffer radius for x and y in the units of measure in the coordinate reference system of the attribute source'
           in: query
           name: distance
           required: false
@@ -507,6 +510,15 @@ paths:
         - description: 'request true to have simplified geometries returned'
           in: query
           name: simplify
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - description: 'Return only the default geometry attribute and fid. By default all non-geometry attributes are
+            returned. Set this to true if only interested in geometries. Only supported when not using x and y or __fid
+            parameters.'
+          in: query
+          name: onlyGeometries
           required: false
           schema:
             type: boolean

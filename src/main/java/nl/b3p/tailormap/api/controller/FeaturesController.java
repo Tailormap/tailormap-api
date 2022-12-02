@@ -7,7 +7,6 @@ package nl.b3p.tailormap.api.controller;
 
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Parameter;
-
 import nl.b3p.tailormap.api.exception.BadRequestException;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
@@ -27,7 +26,6 @@ import nl.tailormap.viewer.config.services.AttributeDescriptor;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.Query;
@@ -67,16 +65,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceContext;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
-import javax.validation.constraints.NotNull;
 
 @RestController
 @Validated
@@ -162,7 +159,10 @@ public class FeaturesController implements Constants {
      * @param distance buffer distance for radius around selection point(x,y)
      * @param __fid id of feature to get
      * @param simplify set to {@code true} to simplify geometry, defaults to {@code false}
+     * @param onlyGeometries Return only geometries
      * @param filter CQL? filter to apply
+     * @param paging Use paging
+     * @param pageSize Page size
      * @param page Page number to retrieve, starts at 1
      * @param sortBy attribute to sort by
      * @param sortOrder sort order of features, defaults to {@code ASC}
@@ -183,6 +183,7 @@ public class FeaturesController implements Constants {
             @RequestParam(defaultValue = "4") Double distance,
             @RequestParam(required = false) String __fid,
             @RequestParam(defaultValue = "false") Boolean simplify,
+            @RequestParam(defaultValue = "false") boolean onlyGeometries,
             @RequestParam(required = false) String filter,
             @RequestParam(defaultValue = "true") boolean paging,
             @RequestParam Optional<Integer> pageSize,
@@ -215,6 +216,7 @@ public class FeaturesController implements Constants {
                             Optional.ofNullable(paging ? pageSize.orElse(defaultPageSize) : null),
                             page.orElse(1),
                             filter,
+                            onlyGeometries,
                             sortBy,
                             sortOrder);
         } else {
@@ -233,6 +235,7 @@ public class FeaturesController implements Constants {
             Optional<Integer> pageSize,
             int page,
             String filterCQL,
+            boolean onlyGeometries,
             String sortBy,
             String sortOrder)
             throws BadRequestException {
@@ -249,14 +252,17 @@ public class FeaturesController implements Constants {
         try {
             SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
 
-            List<String> propNames =
-                    configuredAttributes.stream()
-                            .map(ConfiguredAttribute::getAttributeName)
-                            .collect(Collectors.toList());
+            List<String> propNames;
 
-            // TODO evaluate; do we want geometry in this response or not?
-            //  if we do the geometry attribute must not be removed from propNames
-            propNames.remove(sft.getGeometryAttribute());
+            if(onlyGeometries) {
+                propNames = List.of(sft.getPrimaryKeyAttribute(), sft.getGeometryAttribute());
+            } else {
+                propNames = configuredAttributes.stream()
+                        .map(ConfiguredAttribute::getAttributeName)
+                        .collect(Collectors.toList());
+                // If needed in the future we can add a includeGeometry parameter
+                propNames.remove(sft.getGeometryAttribute());
+            }
 
             String sortAttrName;
             // determine sorting attribute, default to first attribute or primary key
@@ -335,6 +341,7 @@ public class FeaturesController implements Constants {
                     featuresResponse,
                     sft,
                     configuredAttributes,
+                    onlyGeometries ? List.of(sft.getPrimaryKeyAttribute()) : null,
                     fs,
                     q,
                     determineProjectToCRS(crs, fs));
@@ -384,6 +391,7 @@ public class FeaturesController implements Constants {
                     featuresResponse,
                     sft,
                     configuredAttributes,
+                    null,
                     fs,
                     q,
                     determineProjectToCRS(crs, fs));
@@ -498,7 +506,7 @@ public class FeaturesController implements Constants {
             q.setMaxFeatures(DEFAULT_MAX_FEATURES);
 
             executeQueryOnFeatureSourceAndClose(
-                    simplifyGeometry, featuresResponse, sft, configuredAttributes, fs, q, fromCRS);
+                    simplifyGeometry, featuresResponse, sft, configuredAttributes, propNames, fs, q, fromCRS);
         } catch (IOException e) {
             logger.error("Could not retrieve attribute data.", e);
         }
@@ -510,11 +518,16 @@ public class FeaturesController implements Constants {
             @NotNull FeaturesResponse featuresResponse,
             @NotNull SimpleFeatureType sft,
             List<ConfiguredAttribute> configuredAttributes,
+            List<String> attributesToReturn,
             @NotNull SimpleFeatureSource fs,
             @NotNull Query q,
             CoordinateReferenceSystem projectToCRS)
             throws IOException {
         boolean addFields = false;
+
+        if (attributesToReturn == null) {
+            attributesToReturn = configuredAttributes.stream().map(ConfiguredAttribute::getAttributeName).collect(Collectors.toList());
+        }
 
         MathTransform transform = null;
         if (null != projectToCRS) {
@@ -544,31 +557,25 @@ public class FeaturesController implements Constants {
                                 .fid(feature.getIdentifier().getID())
                                 .geometry(processedGeometry);
 
-                configuredAttributes.forEach(
-                        configuredAttribute -> {
-                            if (configuredAttribute
-                                    .getAttributeName()
-                                    .equals(sft.getGeometryAttribute())) {
-                                newFeat.putAttributesItem(
-                                        configuredAttribute.getAttributeName(), processedGeometry);
+                for(String attributeName: attributesToReturn) {
+                    if (attributeName.equals(sft.getGeometryAttribute())) {
+                        newFeat.putAttributesItem(attributeName, processedGeometry);
+                    } else {
+                        Object attrValue = feature.getAttribute(attributeName);
+                        if (attrValue instanceof Geometry) {
+                            if (skipGeometryOutput) {
+                                attrValue = null;
                             } else {
-                                Object attrValue =
-                                        feature.getAttribute(
-                                                configuredAttribute.getAttributeName());
-                                if (attrValue instanceof Geometry) {
-                                    if (skipGeometryOutput) {
-                                        attrValue = null;
-                                    } else {
-                                        attrValue =
-                                                GeometryProcessor.geometryToJson(
-                                                        (Geometry) attrValue);
-                                    }
-                                }
-                                newFeat.putAttributesItem(
-                                        configuredAttribute.getAttributeName(), attrValue);
+                                attrValue =
+                                        GeometryProcessor.geometryToJson(
+                                                (Geometry) attrValue);
                             }
-                        });
+                        }
+                        newFeat.putAttributesItem(attributeName, attrValue);
+                    }
+                }
                 featuresResponse.addFeaturesItem(newFeat);
+
             }
         } finally {
             fs.getDataStore().dispose();
