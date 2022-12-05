@@ -6,29 +6,21 @@
 package nl.b3p.tailormap.api.controller;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import io.micrometer.core.annotation.Timed;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.referencing.ReferencingHelper;
 import nl.b3p.tailormap.api.model.AppLayer;
 import nl.b3p.tailormap.api.model.Bounds;
 import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
-import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.model.LayerTreeNode;
 import nl.b3p.tailormap.api.model.MapResponse;
-import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.model.Service;
 import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.LayerRepository;
 import nl.b3p.tailormap.api.repository.LevelRepository;
-import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.util.ParseUtil;
 import nl.tailormap.viewer.config.ClobElement;
 import nl.tailormap.viewer.config.app.Application;
@@ -50,13 +42,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -72,10 +61,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotNull;
 
-@RestController
+@AppRestController
 @Validated
 @RequestMapping(path = "/app/{appId}/map", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MapController {
@@ -84,81 +72,29 @@ public class MapController {
     private final ApplicationLayerRepository applicationLayerRepository;
     private final LevelRepository levelRepository;
     private final LayerRepository layerRepository;
-    private final AuthorizationService authorizationService;
 
     public MapController(
             ApplicationRepository applicationRepository,
             ApplicationLayerRepository applicationLayerRepository,
             LevelRepository levelRepository,
-            LayerRepository layerRepository,
-            AuthorizationService authorizationService) {
+            LayerRepository layerRepository) {
         this.applicationRepository = applicationRepository;
         this.applicationLayerRepository = applicationLayerRepository;
         this.levelRepository = levelRepository;
         this.layerRepository = layerRepository;
-        this.authorizationService = authorizationService;
     }
 
-    @Operation(
-            responses = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "OK",
-                        content =
-                                @Content(
-                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                        schema = @Schema(implementation = MapResponse.class))),
-                @ApiResponse(
-                        responseCode = "400",
-                        description = "Bad Request",
-                        content =
-                                @Content(
-                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                        schema = @Schema(implementation = ErrorResponse.class))),
-                @ApiResponse(
-                        responseCode = "401",
-                        description = "Unauthorized",
-                        content =
-                                @Content(
-                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                        schema = @Schema(implementation = RedirectResponse.class)))
-            })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @Timed(value = "get_map", description = "time spent to process get the map of an application")
-    public ResponseEntity<Serializable> get(
-            @Parameter(name = "appId", description = "application id", required = true)
-                    @PathVariable("appId")
-                    Long appId) {
-        logger.trace("Requesting 'map' for application id: " + appId);
+    public ResponseEntity<Serializable> get(@ModelAttribute Application application) {
+        logger.trace("Loading map related entities for application id: " + application.getId());
+        applicationRepository.findWithGeoservicesById(application.getId());
+        MapResponse mapResponse = new MapResponse();
+        getApplicationParams(application, mapResponse);
+        getLayers(application, mapResponse);
 
-        Application application = applicationRepository.findWithGeoservicesById(appId);
-        if (application == null) {
-            throw new EntityNotFoundException();
-        } else if (!authorizationService.mayUserRead(application)) {
-            // login required, send RedirectResponse
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
-        } else {
-            MapResponse mapResponse = new MapResponse();
-            getApplicationParams(application, mapResponse);
-            getLayers(application, mapResponse);
-
-            return ResponseEntity.status(HttpStatus.OK).body(mapResponse);
-        }
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    @ResponseStatus(
-            value =
-                    HttpStatus
-                            .NOT_FOUND /*,reason = "Not Found" -- adding 'reason' will drop the body */)
-    @ResponseBody
-    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
-        logger.warn(
-                "Requested an application that does not exist. Message: " + exception.getMessage());
-        return new ErrorResponse()
-                .message("Requested an application that does not exist")
-                .code(HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(HttpStatus.OK).body(mapResponse);
     }
 
     private void getApplicationParams(@NotNull Application a, @NotNull MapResponse mapResponse) {
@@ -595,15 +531,21 @@ public class MapController {
         if (WMSService.PROTOCOL.equals(geoService.getProtocol())) {
             linkBuilder =
                     linkTo(
-                            methodOn(GeoServiceProxyController.class)
-                                    .proxy(application.getId(), appLayer.getId(), "wms", null));
+                            GeoServiceProxyController.class,
+                            Map.of(
+                                    "appId", application.getId(),
+                                    "appLayerId", appLayer.getId(),
+                                    "protocol", "wms"));
         } else if (TileService.PROTOCOL.equals(geoService.getProtocol())
                 && TileService.TILING_PROTOCOL_WMTS.equals(
                         ((TileService) geoService).getTilingProtocol())) {
             linkBuilder =
                     linkTo(
-                            methodOn(GeoServiceProxyController.class)
-                                    .proxy(application.getId(), appLayer.getId(), "wmts", null));
+                            GeoServiceProxyController.class,
+                            Map.of(
+                                    "appId", application.getId(),
+                                    "appLayerId", appLayer.getId(),
+                                    "protocol", "wmts"));
         } else {
             throw new IllegalArgumentException(
                     "Can't generate proxy URL for service " + geoService.getId());

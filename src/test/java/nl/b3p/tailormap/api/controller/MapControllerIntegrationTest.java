@@ -41,7 +41,8 @@ import java.util.Map;
             HSQLDBTestProfileJPAConfiguration.class,
             MapController.class,
             SecurityConfig.class,
-            AuthorizationService.class
+            AuthorizationService.class,
+            AppRestControllerAdvice.class,
         })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
@@ -249,9 +250,7 @@ class MapControllerIntegrationTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(404))
-                .andExpect(
-                        jsonPath("$.message")
-                                .value("Requested an application that does not exist"));
+                .andExpect(jsonPath("$.message").value("Application with id 400 not found"));
     }
 
     @Test

@@ -8,12 +8,7 @@ package nl.b3p.tailormap.api.controller;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-import io.swagger.v3.oas.annotations.Parameter;
-
-import nl.b3p.tailormap.api.model.RedirectResponse;
-import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
-import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.security.AuthorizationService;
+import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.services.GeoService;
@@ -22,7 +17,6 @@ import nl.tailormap.viewer.config.services.WMSService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,9 +24,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 
@@ -67,34 +61,17 @@ import javax.servlet.http.HttpServletRequest;
  * <p>Implementation note: uses the Java 11 HttpClient. Spring cloud gateway can proxy with many
  * more features but can not be used in a non-reactive application.
  */
-@RestController
+@AppRestController
 @Validated
 @RequestMapping(path = "/app/{appId}/layer/{appLayerId}/proxy/{protocol}")
 public class GeoServiceProxyController {
 
     private static final Log logger = LogFactory.getLog(GeoServiceProxyController.class);
-    private final ApplicationRepository applicationRepository;
-    private final ApplicationLayerRepository applicationLayerRepository;
-    private final AuthorizationService authorizationService;
-
-    @Autowired
-    public GeoServiceProxyController(
-            ApplicationRepository applicationRepository,
-            ApplicationLayerRepository applicationLayerRepository,
-            AuthorizationService authorizationService) {
-        this.applicationRepository = applicationRepository;
-        this.applicationLayerRepository = applicationLayerRepository;
-        this.authorizationService = authorizationService;
-    }
 
     @RequestMapping(method = {GET, POST})
     public ResponseEntity<?> proxy(
-            @Parameter(name = "appId", description = "application id", required = true)
-                    @PathVariable("appId")
-                    Long appId,
-            @Parameter(name = "appLayerId", description = "application layer id", required = true)
-                    @PathVariable("appLayerId")
-                    Long appLayerId,
+            @ModelAttribute Application application,
+            @ModelAttribute ApplicationLayer applicationLayer,
             @PathVariable("protocol") String protocol,
             HttpServletRequest request) {
 
@@ -112,67 +89,54 @@ public class GeoServiceProxyController {
                     .body("Unknown proxy protocol: " + protocol);
         }
 
-        final Application application = applicationRepository.findById(appId).orElse(null);
-        final ApplicationLayer appLayer =
-                applicationLayerRepository.findById(appLayerId).orElse(null);
-        if (application == null || appLayer == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Requested an application or appLayer that does not exist");
+        final GeoService service = applicationLayer.getService();
+
+        if (!serviceValidator.test(service)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid proxy protocol for service");
         }
 
-        if (!authorizationService.mayUserRead(appLayer, application)) {
-            // login required, send RedirectResponse
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
-        } else {
-            final GeoService service = appLayer.getService();
-
-            if (!serviceValidator.test(service)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("Invalid proxy protocol for service");
-            }
-
-            if (!Boolean.parseBoolean(
-                    String.valueOf(service.getDetails().get(GeoService.DETAIL_USE_PROXY)))) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body("Proxy not enabled for requested service");
-            }
-
-            final UriComponentsBuilder originalServiceUrl =
-                    UriComponentsBuilder.fromHttpUrl(service.getUrl());
-            // request.getParameterMap() includes parameters from an
-            // application/x-www-form-urlencoded POST body
-            final MultiValueMap<String, String> requestParams =
-                    request.getParameterMap().entrySet().stream()
-                            .map(
-                                    entry ->
-                                            new AbstractMap.SimpleEntry<>(
-                                                    entry.getKey(),
-                                                    Arrays.stream(entry.getValue())
-                                                            .map(
-                                                                    value ->
-                                                                            UriUtils.encode(
-                                                                                    value,
-                                                                                    StandardCharsets
-                                                                                            .UTF_8))
-                                                            .collect(Collectors.toList())))
-                            .collect(
-                                    Collectors.toMap(
-                                            Map.Entry::getKey,
-                                            Map.Entry::getValue,
-                                            (x, y) -> y,
-                                            LinkedMultiValueMap::new));
-            final MultiValueMap<String, String> params =
-                    buildOgcProxyRequestParams(
-                            originalServiceUrl.build(true).getQueryParams(), requestParams);
-            originalServiceUrl.replaceQueryParams(params);
-
-            return doProxy(
-                    originalServiceUrl.build(true).toUri(),
-                    application,
-                    appLayer,
-                    service,
-                    request);
+        if (!Boolean.parseBoolean(
+                String.valueOf(service.getDetails().get(GeoService.DETAIL_USE_PROXY)))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Proxy not enabled for requested service");
         }
+
+        final UriComponentsBuilder originalServiceUrl =
+                UriComponentsBuilder.fromHttpUrl(service.getUrl());
+        // request.getParameterMap() includes parameters from an
+        // application/x-www-form-urlencoded POST body
+        final MultiValueMap<String, String> requestParams =
+                request.getParameterMap().entrySet().stream()
+                        .map(
+                                entry ->
+                                        new AbstractMap.SimpleEntry<>(
+                                                entry.getKey(),
+                                                Arrays.stream(entry.getValue())
+                                                        .map(
+                                                                value ->
+                                                                        UriUtils.encode(
+                                                                                value,
+                                                                                StandardCharsets
+                                                                                        .UTF_8))
+                                                        .collect(Collectors.toList())))
+                        .collect(
+                                Collectors.toMap(
+                                        Map.Entry::getKey,
+                                        Map.Entry::getValue,
+                                        (x, y) -> y,
+                                        LinkedMultiValueMap::new));
+        final MultiValueMap<String, String> params =
+                buildOgcProxyRequestParams(
+                        originalServiceUrl.build(true).getQueryParams(), requestParams);
+        originalServiceUrl.replaceQueryParams(params);
+
+        return doProxy(
+                originalServiceUrl.build(true).toUri(),
+                application,
+                applicationLayer,
+                service,
+                request);
     }
 
     public static MultiValueMap<String, String> buildOgcProxyRequestParams(

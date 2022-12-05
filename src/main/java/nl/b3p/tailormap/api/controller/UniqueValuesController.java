@@ -6,17 +6,11 @@
 package nl.b3p.tailormap.api.controller;
 
 import io.micrometer.core.annotation.Timed;
-import io.swagger.v3.oas.annotations.Parameter;
 
-import nl.b3p.tailormap.api.exception.BadRequestException;
+import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
-import nl.b3p.tailormap.api.model.ErrorResponse;
-import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.model.UniqueValuesResponse;
-import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
-import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.LayerRepository;
-import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.services.Layer;
@@ -41,22 +35,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.EntityNotFoundException;
-
-@RestController
+@AppRestController
 @Validated
 @RequestMapping(
         path = "/app/{appId}/layer/{appLayerId}/unique/{attributeName}",
@@ -68,114 +58,43 @@ public class UniqueValuesController {
     private final FilterFactory2 ff =
             CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
     private final Log logger = LogFactory.getLog(getClass());
-    private final ApplicationRepository applicationRepository;
-    private final ApplicationLayerRepository applicationLayerRepository;
     private final LayerRepository layerRepository;
-    private final AuthorizationService authorizationService;
 
     @Autowired
-    public UniqueValuesController(
-            ApplicationRepository applicationRepository,
-            ApplicationLayerRepository applicationLayerRepository,
-            LayerRepository layerRepository,
-            AuthorizationService authorizationService) {
-        this.applicationRepository = applicationRepository;
-        this.applicationLayerRepository = applicationLayerRepository;
+    public UniqueValuesController(LayerRepository layerRepository) {
         this.layerRepository = layerRepository;
-        this.authorizationService = authorizationService;
-    }
-
-    /**
-     * Handle any {@code EntityNotFoundException} that this controller might throw while getting the
-     * application.
-     *
-     * @param exception the exception
-     * @return an error response
-     */
-    @ExceptionHandler(EntityNotFoundException.class)
-    @ResponseStatus(
-            value =
-                    HttpStatus
-                            .NOT_FOUND /*,reason = "Not Found" -- adding 'reason' will drop the body */)
-    @ResponseBody
-    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
-        logger.warn(
-                "Requested an application or appLayer that does not exist. Message: "
-                        + exception.getMessage());
-        return new ErrorResponse()
-                .message("Requested an application or appLayer that does not exist")
-                .code(HttpStatus.NOT_FOUND.value());
-    }
-
-    /**
-     * Handle any {@code BadRequestException} that this controller might throw while getting the
-     * application.
-     *
-     * @param exception the exception
-     * @return an error response
-     */
-    @ExceptionHandler(BadRequestException.class)
-    @ResponseStatus(
-            value =
-                    HttpStatus
-                            .BAD_REQUEST /*,reason = "Bad Request" -- adding 'reason' will drop the body */)
-    @ResponseBody
-    public ErrorResponse handleBadRequestException(BadRequestException exception) {
-        return new ErrorResponse().message("Bad Request. " + exception.getMessage()).code(400);
     }
 
     /**
      * Get a list of unique attribute values for a given attribute name.
      *
-     * @param appId the application
-     * @param appLayerId the application layer id
+     * @param application the application
+     * @param applicationLayer the application layer id
      * @param attributeName the attribute name
      * @param filter A filter that was already applied to the layer (on a different attribute or
      *     this attribute)
-     * @return a list of unique values, can be empty
-     * @throws BadRequestException if the request was invalid, eg. the provided filter could not be
-     *     parsed
+     * @return a list of unique values, can be empty parsed
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(
             value = "get_unique_attributes",
             description = "time spent to process get unique attributes call")
     public ResponseEntity<Serializable> getUniqueAttributes(
-            @Parameter(name = "appId", description = "application id", required = true)
-                    @PathVariable("appId")
-                    Long appId,
-            @Parameter(name = "appLayerId", description = "application layer id", required = true)
-                    @PathVariable("appLayerId")
-                    Long appLayerId,
-            @Parameter(name = "attributeName", description = "attribute name", required = true)
-                    @PathVariable("attributeName")
-                    String attributeName,
-            @RequestParam(required = false) String filter)
-            throws BadRequestException {
-
-        // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
-        // and in a normal flow this should not happen
-        // as appId is (should be) validated by calling the /app/ endpoint
-        final Application application = applicationRepository.getReferenceById(appId);
-
-        final ApplicationLayer appLayer = applicationLayerRepository.getReferenceById(appLayerId);
-        if (!authorizationService.mayUserRead(appLayer, application)) {
-            // login required, send RedirectResponse
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
-        }
-
+            @ModelAttribute Application application,
+            @ModelAttribute ApplicationLayer applicationLayer,
+            @PathVariable("attributeName") String attributeName,
+            @RequestParam(required = false) String filter) {
         if (StringUtils.isBlank(attributeName)) {
-            throw new BadRequestException("Attribute name is required");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attribute name is required");
         }
 
         UniqueValuesResponse uniqueValuesResponse =
-                getUniqueValues(appLayer, attributeName, filter);
+                getUniqueValues(applicationLayer, attributeName, filter);
         return ResponseEntity.status(HttpStatus.OK).body(uniqueValuesResponse);
     }
 
     private UniqueValuesResponse getUniqueValues(
-            ApplicationLayer appLayer, String attributeName, String filter)
-            throws BadRequestException {
+            ApplicationLayer appLayer, String attributeName, String filter) {
         final UniqueValuesResponse uniqueValuesResponse =
                 new UniqueValuesResponse().filterApplied(false);
         final Layer layer =
@@ -233,7 +152,8 @@ public class UniqueValuesController {
             fs.getDataStore().dispose();
         } catch (CQLException e) {
             logger.error("Could not parse requested filter.", e);
-            throw new BadRequestException("Could not parse requested filter.");
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Could not parse requested filter.");
         } catch (IOException e) {
             logger.error("Could not retrieve attribute data.", e);
         }

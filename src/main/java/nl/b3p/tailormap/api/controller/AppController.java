@@ -10,11 +10,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.micrometer.core.annotation.Timed;
 
-import nl.b3p.tailormap.api.exception.TailormapConfigurationException;
+import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.model.AppResponse;
 import nl.b3p.tailormap.api.model.Component;
-import nl.b3p.tailormap.api.model.ErrorResponse;
-import nl.b3p.tailormap.api.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.MetadataRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
@@ -29,13 +27,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.Serializable;
 import java.net.URLDecoder;
@@ -44,7 +39,7 @@ import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
-@RestController
+@AppRestController
 @CrossOrigin
 @RequestMapping(path = "/app")
 public class AppController {
@@ -69,24 +64,6 @@ public class AppController {
     }
 
     /**
-     * Handle any {@code TailormapConfigurationException} that this controller might throw while
-     * getting the application.
-     *
-     * @param exception the exception
-     * @return an error response
-     */
-    @ExceptionHandler(TailormapConfigurationException.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public ErrorResponse handleTailormapConfigurationException(
-            TailormapConfigurationException exception) {
-        logger.fatal(exception.getMessage());
-        return new ErrorResponse()
-                .message("Internal server error. " + exception.getMessage())
-                .code(500);
-    }
-
-    /**
      * Lookup an {@linkplain Application} with given parameters. Use this endpoint to get the id of
      * the requested or default application. Either call this with `name` and optional `version` or
      * `appId` alone. Will return general setup information such as name, appId, language, but not
@@ -97,15 +74,13 @@ public class AppController {
      * @param version the version of an app
      * @return the basic information needed to create an app in the frontend
      * @since 0.1
-     * @throws TailormapConfigurationException when the tailormap configuration is broken
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(value = "get_app", description = "time spent to find an app")
     public ResponseEntity<Serializable> get(
             @RequestParam(required = false) Long appId,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String version)
-            throws TailormapConfigurationException {
+            @RequestParam(required = false) String version) {
 
         logger.trace(
                 "requested application using: appId: "
@@ -127,12 +102,11 @@ public class AppController {
         }
 
         if (null == application) {
-            // no default application or something else is very wrong
-            throw new TailormapConfigurationException(
-                    "Error getting the requested or default application.");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Requested application not found and no default application set");
         } else if (!authorizationService.mayUserRead(application)) {
-            // login required, send RedirectResponse
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         } else {
             logger.trace(
                     "found application - id:"
@@ -155,7 +129,8 @@ public class AppController {
                                 .getValue();
                 components = new ObjectMapper().readValue(componentsJson, Component[].class);
             } catch (JacksonException je) {
-                throw new TailormapConfigurationException("Invalid components JSON", je);
+                throw new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR, "Invalid components JSON", je);
             }
 
             AppResponse appResponse =

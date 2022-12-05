@@ -49,7 +49,8 @@ import java.util.stream.Stream;
             JPAConfiguration.class,
             UniqueValuesController.class,
             SecurityConfig.class,
-            AuthorizationService.class
+            AuthorizationService.class,
+            AppRestControllerAdvice.class
         })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
@@ -166,9 +167,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(400))
-                .andExpect(
-                        jsonPath("$.message")
-                                .value("Bad Request. Could not parse requested filter."));
+                .andExpect(jsonPath("$.message").value("Could not parse requested filter."));
     }
 
     @RetryingTest(2)

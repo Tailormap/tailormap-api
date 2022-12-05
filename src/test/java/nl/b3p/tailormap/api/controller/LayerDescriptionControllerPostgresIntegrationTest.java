@@ -31,7 +31,8 @@ import org.springframework.test.web.servlet.MockMvc;
             JPAConfiguration.class,
             LayerDescriptionController.class,
             SecurityConfig.class,
-            AuthorizationService.class
+            AuthorizationService.class,
+            AppRestControllerAdvice.class
         })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
@@ -45,10 +46,8 @@ class LayerDescriptionControllerPostgresIntegrationTest {
     void app_not_found_404() throws Exception {
         mockMvc.perform(get("/app/1234/layer/76/describe"))
                 .andExpect(status().isNotFound())
-                .andExpect(
-                        content()
-                                .string(
-                                        "Requested an application or appLayer that does not exist"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("Application with id 1234 not found"));
     }
 
     @Test
