@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StartupAdminAccountCreator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.security</a> &gt; <span class="el_source">StartupAdminAccountCreator.java</span></div><h1>StartupAdminAccountCreator.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2021 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.security;
+
+import nl.b3p.tailormap.api.repository.UserRepository;
+import nl.tailormap.viewer.config.security.Group;
+import nl.tailormap.viewer.config.security.User;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.UUID;
+
+@Component
+@Profile(&quot;!test&quot;)
+public class StartupAdminAccountCreator {
+<span class="nc" id="L27">    private final Log logger = LogFactory.getLog(getClass());</span>
+
+    final UserRepository userRepository;
+
+<span class="nc" id="L31">    private final PasswordEncoder passwordEncoder =</span>
+<span class="nc" id="L32">            PasswordEncoderFactories.createDelegatingPasswordEncoder();</span>
+
+<span class="nc" id="L34">    public StartupAdminAccountCreator(UserRepository userRepository) {</span>
+<span class="nc" id="L35">        this.userRepository = userRepository;</span>
+<span class="nc" id="L36">    }</span>
+
+    @EventListener
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+<span class="nc" id="L40">        logger.trace(&quot;Checking whether an Admin or UserAdmin account exists...&quot;);</span>
+
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        if (!userRepository.existsByGroupsNameIn(Arrays.asList(Group.USER_ADMIN, Group.ADMIN))) {</span>
+            // Create a new UserAdmin account with a random generated password that is logged
+
+<span class="nc" id="L45">            String password = UUID.randomUUID().toString();</span>
+
+<span class="nc" id="L47">            User u = new User();</span>
+<span class="nc" id="L48">            u.setUsername(&quot;admin&quot;);</span>
+<span class="nc" id="L49">            u.setPassword(passwordEncoder.encode(password));</span>
+<span class="nc" id="L50">            Group g = new Group();</span>
+<span class="nc" id="L51">            g.setName(Group.USER_ADMIN);</span>
+<span class="nc" id="L52">            u.getGroups().add(g);</span>
+<span class="nc" id="L53">            userRepository.saveAndFlush(u);</span>
+
+<span class="nc" id="L55">            logger.info(</span>
+<span class="nc" id="L56">                    String.format(</span>
+                            &quot;\n***\n*** Use this account for administrating users:\n***&quot;
+                                    + &quot;\n*** Username: \033[0;1madmin\033[0m&quot;
+                                    + &quot;\n*** Password: \033[0;1m%s\033[0m&quot;
+                                    + &quot;\n***&quot;,
+                            password));
+        }
+<span class="nc" id="L63">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

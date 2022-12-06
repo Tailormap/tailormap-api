@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeometryProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.geotools.processing</a> &gt; <span class="el_source">GeometryProcessor.java</span></div><h1>GeometryProcessor.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2022 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.geotools.processing;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.geotools.data.geojson.GeoJSONWriter;
+import org.geotools.geometry.jts.JTS;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.io.WKTConstants;
+import org.locationtech.jts.io.WKTWriter;
+import org.locationtech.jts.precision.GeometryPrecisionReducer;
+import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
+
+import java.nio.charset.StandardCharsets;
+
+import javax.validation.constraints.NotNull;
+
+/**
+ * Utility functions on feature geometries.
+ *
+ * @author mprins
+ * @since 0.1
+ */
+public final class GeometryProcessor {
+<span class="fc" id="L32">    private static final Log LOG = LogFactory.getLog(GeometryProcessor.class);</span>
+
+<span class="fc" id="L34">    private static final Log logger = LogFactory.getLog(GeometryProcessor.class);</span>
+
+    private GeometryProcessor() {}
+
+    /**
+     * process the geometry into a (optionally simplified) string representation.
+     *
+     * @param geometry An object representing a geometry
+     * @param simplifyGeometry set to {@code true} to simplify
+     * @param transform the transformation that should be applied to the geometry, can be {@code
+     *     null}
+     * @return the string representation of the argument - normally WKT, optionally simplified or
+     *     {@code null} when the given geometry was {@code null}
+     */
+    @NotNull
+    public static String processGeometry(
+            Object geometry, @NotNull final Boolean simplifyGeometry, MathTransform transform) {
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        if (null == geometry) {</span>
+<span class="nc" id="L52">            return null;</span>
+        }
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        if (Geometry.class.isAssignableFrom(geometry.getClass())) {</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">            if (null != transform) {</span>
+                try {
+<span class="fc" id="L57">                    geometry = JTS.transform((Geometry) geometry, transform);</span>
+<span class="nc" id="L58">                } catch (TransformException e) {</span>
+<span class="nc" id="L59">                    logger.error(&quot;Failed to transform geometry&quot;, e);</span>
+<span class="fc" id="L60">                }</span>
+            }
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            if (simplifyGeometry) {</span>
+<span class="fc" id="L63">                return simplify((Geometry) geometry);</span>
+            }
+<span class="fc" id="L65">            return linearizeGeomToWKT((Geometry) geometry);</span>
+        }
+        // cannot cast to JTS geom
+<span class="nc" id="L68">        return geometry.toString();</span>
+    }
+
+    private static String linearizeGeomToWKT(Geometry geometry) {
+        // return linearized WKT
+<span class="fc" id="L73">        final WKTWriter writer = new WKTWriter(2);</span>
+<span class="fc" id="L74">        String wkt = writer.write(geometry);</span>
+        // LINEARRING is non-standard WKT, but the JTS WKTWriter will write it anyway!
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (wkt.startsWith(WKTConstants.LINEARRING)) {</span>
+<span class="fc" id="L77">            wkt = WKTConstants.LINESTRING + wkt.substring(WKTConstants.LINEARRING.length());</span>
+        }
+<span class="fc" id="L79">        return wkt;</span>
+    }
+
+    /**
+     * Simplifies given geometry to reduce (transfer) size, start off with 1 and each iteration
+     * multiply with 10, max 4 steps, so [1, 10, 100, 1000], if the geometry is still too large bail
+     * out and use bbox. TODO this works for CRS in meters, may not work for degrees
+     *
+     * @param geom geometry to simplify
+     * @return simplified geometry as WKT string
+     */
+    @NotNull
+    private static String simplify(@NotNull Geometry geom) {
+<span class="fc" id="L92">        final int megabytes = 2097152 /* 2MB is the default tomcat max post size */ - 100 * 1024;</span>
+
+<span class="fc" id="L94">        LOG.debug(&quot;PrecisionModel scale: &quot; + geom.getPrecisionModel().getScale());</span>
+<span class="fc" id="L95">        PrecisionModel pm = new PrecisionModel(geom.getPrecisionModel());</span>
+<span class="fc" id="L96">        GeometryPrecisionReducer gpr = new GeometryPrecisionReducer(pm);</span>
+<span class="fc" id="L97">        geom = gpr.reduce(geom);</span>
+<span class="fc" id="L98">        Geometry bbox = geom.getEnvelope();</span>
+
+<span class="fc" id="L100">        double distanceTolerance = 1.0;</span>
+<span class="fc" id="L101">        String geomTxt = geom.toText();</span>
+
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">        while ((geomTxt.getBytes(StandardCharsets.UTF_8).length &gt; megabytes</span>
+<span class="pc bpc" id="L104" title="1 of 4 branches missed.">                        || geom.getCoordinates().length &gt; 600)</span>
+                &amp;&amp; distanceTolerance &lt; 9999) {
+<span class="fc" id="L106">            LOG.debug(&quot;Simplify selected feature geometry with distance of: &quot; + distanceTolerance);</span>
+<span class="fc" id="L107">            geom = TopologyPreservingSimplifier.simplify(geom, distanceTolerance);</span>
+<span class="fc" id="L108">            geom = gpr.reduce(geom);</span>
+<span class="fc" id="L109">            geomTxt = geom.toText();</span>
+<span class="fc" id="L110">            distanceTolerance = 10 * distanceTolerance;</span>
+        }
+
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        if (distanceTolerance &gt; 9999) {</span>
+<span class="nc" id="L114">            LOG.debug(&quot;Maximum number of simplify cycles reached, returning bounding box instead.&quot;);</span>
+<span class="nc" id="L115">            return bbox.toText();</span>
+        } else {
+<span class="fc" id="L117">            return linearizeGeomToWKT(geom);</span>
+        }
+    }
+
+    public static String geometryToJson(Geometry geom) {
+<span class="fc" id="L122">        return GeoJSONWriter.toGeoJSON(geom);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VersionController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.controller</a> &gt; <span class="el_source">VersionController.java</span></div><h1>VersionController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2021 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.controller;
+
+import nl.b3p.tailormap.api.repository.MetadataRepository;
+import nl.tailormap.viewer.config.metadata.Metadata;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+/**
+ * Provides version information of backend, API and config database.
+ *
+ * @since 0.1
+ */
+@RestController
+@CrossOrigin
+public class VersionController {
+<span class="fc" id="L29">    private final Log logger = LogFactory.getLog(getClass());</span>
+    private final MetadataRepository metadataRepository;
+
+    // Maven 'process-resources' takes care of updating these tokens in the application.properties
+    @Value(&quot;${tailormap-api.version}&quot;)
+    private String version;
+
+    @Value(&quot;${tailormap-api.apiVersion}&quot;)
+    private String apiVersion;
+
+    @Value(&quot;${tailormap-api.commitSha}&quot;)
+    private String commitSha;
+
+    @Value(&quot;${tailormap-api.builddate}&quot;)
+    private String buildDate;
+
+<span class="fc" id="L45">    public VersionController(MetadataRepository metadataRepository) {</span>
+<span class="fc" id="L46">        this.metadataRepository = metadataRepository;</span>
+<span class="fc" id="L47">    }</span>
+
+    /**
+     * get API version.
+     *
+     * @return api version
+     */
+    @GetMapping(path = &quot;/version&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map&lt;String, String&gt; getVersion() {
+<span class="fc" id="L56">        final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);</span>
+        final String dbVersion =
+<span class="pc bpc" id="L58" title="1 of 4 branches missed.">                null != m ? null == m.getConfigValue() ? &quot;unknown&quot; : m.getConfigValue() : &quot;unknown&quot;;</span>
+
+<span class="fc" id="L60">        logger.debug(</span>
+<span class="fc" id="L61">                String.format(</span>
+                        &quot;Version information:\n\tproduct version: %s\n\tdatabase version: %s\n\tAPI version: %s\n\tgit commit: %s\n\tbuild date: %s&quot;,
+                        this.version, dbVersion, this.apiVersion, this.commitSha, this.buildDate));
+
+<span class="fc" id="L65">        return Map.of(</span>
+                &quot;version&quot;,
+                this.version,
+                &quot;databaseversion&quot;,
+                dbVersion,
+                &quot;apiVersion&quot;,
+                this.apiVersion,
+                &quot;commitSha&quot;,
+                this.commitSha,
+                &quot;buildDate&quot;,
+                this.buildDate);
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
