@@ -103,4 +103,18 @@ class MapControllerPostgresIntegrationTest {
                                                                 "request=GetLegendGraphic")))))
                 .andReturn();
     }
+
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void should_not_contain_proxied_secured_service_layer() throws Exception {
+        mockMvc.perform(get("/app/5/map"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(
+                        jsonPath("$.services[?(@.name == 'Beveiligde proxy WMS')]").doesNotExist())
+                .andExpect(
+                        jsonPath("$.appLayers[?(@.layerName === \"Provinciegebied\")]")
+                                .doesNotExist())
+                .andReturn();
+    }
 }
