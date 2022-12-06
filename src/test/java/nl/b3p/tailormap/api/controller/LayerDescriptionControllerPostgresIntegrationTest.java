@@ -82,7 +82,7 @@ class LayerDescriptionControllerPostgresIntegrationTest {
             username = "proxyuser",
             authorities = {"ProxyGroup"})
     void test_wms_secured_app_granted_but_no_feature_type() throws Exception {
-        mockMvc.perform(get("/app/6/layer/19/describe"))
+        mockMvc.perform(get("/app/6/layer/21/describe"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Layer does not have feature type"));
     }
