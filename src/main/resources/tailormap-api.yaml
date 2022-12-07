@@ -550,6 +550,13 @@ paths:
             enum:
               - asc
               - desc
+        - description: Return only geometries, no attributes
+          in: query
+          name: onlyGeometries
+          required: false
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: 'OK'
