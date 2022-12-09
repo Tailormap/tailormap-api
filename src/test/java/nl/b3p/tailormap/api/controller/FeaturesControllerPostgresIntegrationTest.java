@@ -28,6 +28,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junitpioneer.jupiter.DefaultTimeZone;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
@@ -1048,6 +1049,7 @@ class FeaturesControllerPostgresIntegrationTest {
     @WithMockUser(
             username = "admin",
             authorities = {"Admin"})
+    @DefaultTimeZone("Europe/Amsterdam")
     void filterTest(String applayerUrl, String filterCQL, int totalCount) throws Exception {
         int listSize = Math.min(pageSize, totalCount);
         if (!exactWfsCounts && applayerUrl.equals(provinciesWFS)) {
