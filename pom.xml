@@ -145,7 +145,7 @@ SPDX-License-Identifier: MIT
     <maven-pmd-plugin.version>3.19.0</maven-pmd-plugin.version>
     <versions-maven-plugin.version>2.13.0</versions-maven-plugin.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
-    <dependency-check-maven.version>7.3.2</dependency-check-maven.version>
+    <dependency-check-maven.version>7.4.0</dependency-check-maven.version>
     <modernizer-maven-plugin.version>2.5.0</modernizer-maven-plugin.version>
     <!-- docker.b3p.nl or alternatively ghcr.io  -->
     <docker.deploy.repo>ghcr.io</docker.deploy.repo>
@@ -161,7 +161,7 @@ SPDX-License-Identifier: MIT
     <docker.skip>false</docker.skip>
     <maven-fluido-skin.version>1.11.1</maven-fluido-skin.version>
     <swagger-ui.version>4.15.5</swagger-ui.version>
-    <sentry.version>6.9.1</sentry.version>
+    <sentry.version>6.9.2</sentry.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -529,7 +529,7 @@ SPDX-License-Identifier: MIT
         </plugin>
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
-          <version>4.0.0-M3</version>
+          <version>4.0.0-M4</version>
         </plugin>
         <plugin>
           <groupId>org.jacoco</groupId>
