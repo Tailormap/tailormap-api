@@ -97,6 +97,15 @@ class FeaturesControllerPostgresIntegrationTest {
                 arguments("sqlserver", "wegdeel", wegdeelUrlSqlserver, wegdeelTotalCount));
     }
 
+    static Stream<Arguments> differentFeatureSourcesProvider() {
+        return Stream.of(
+                arguments("wfs", provinciesWFS),
+                arguments("postgis", begroeidterreindeelUrlPostgis),
+                arguments("oracle", waterdeelUrlOracle),
+                arguments("sqlserver", wegdeelUrlSqlserver)
+        );
+    }
+
     static Stream<Arguments> projectionArgumentsProvider() {
         return Stream.of(
                 // x, y, projection, distance,expected1stCoordinate, expected2ndCoordinate
@@ -1072,4 +1081,21 @@ class FeaturesControllerPostgresIntegrationTest {
                 features.size(),
                 () -> "there should be " + listSize + " features in the list");
     }
+
+    @ParameterizedTest(
+            name =
+                    "#{index} should return onlyGeometries for {0}, appLayer: {1}")
+    @MethodSource("differentFeatureSourcesProvider")
+    void onlyGeometriesWfs(@SuppressWarnings("unused") String source, String appLayerUrl) throws Exception {
+        @SuppressWarnings("unused") MvcResult result =
+                mockMvc.perform(get(appLayerUrl).param("onlyGeometries", "true").param("page", "1"))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(jsonPath("$.page").value(1))
+                        .andExpect(jsonPath("$.features").isArray())
+                        .andReturn();
+        // TODO: check it has geometry...
+    }
+
+
 }
