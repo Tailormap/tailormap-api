@@ -114,10 +114,6 @@ jobs:
           GEODATA_PASSWORD: 980f1c8A-25933b2
         run: ./build/ci/testdata-setup.sh
 
-      - name: Set timezone for expected query results using timestamps
-        run: |
-          sudo timedatectl set-timezone Europe/Amsterdam
-
       - name: Test PostgreSQL with Maven
         run: |
           mvn -B -fae -e -DskipQA=true -Pqa-skip -Ddocker.skip=true -Ppostgresql verify 
