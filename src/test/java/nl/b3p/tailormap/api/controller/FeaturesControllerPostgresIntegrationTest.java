@@ -28,6 +28,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junitpioneer.jupiter.DefaultTimeZone;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
@@ -242,7 +243,8 @@ class FeaturesControllerPostgresIntegrationTest {
                         // creationdate > '2016-04-18T00:00:00Z' or lv_publicatiedatum <
                         // '2019-11-20T17:09:52Z' or lv_publicatiedatum > '2022-01-27T13:50:39Z'
                         "creationdate after 2016-04-18T00:00:00Z or lv_publicatiedatum before 2019-11-20T17:09:52Z or lv_publicatiedatum after 2022-01-27T13:50:39Z",
-                        3522),
+                        // Depends on timezone, this is for Europe/Amsterdam. For UTC 3522.
+                        3518),
                 arguments(
                         waterdeelUrlOracle,
                         "CREATIONDATE after 2016-04-18T00:00:00Z or LV_PUBLICATIEDATUM before 2019-11-20T17:09:52Z or LV_PUBLICATIEDATUM after 2022-01-27T13:50:39Z",
@@ -257,7 +259,8 @@ class FeaturesControllerPostgresIntegrationTest {
                         // creationdate > '2016-04-18T00:00:00Z' and lv_publicatiedatum <
                         // '2019-11-20T17:09:52Z'
                         "creationdate after 2016-04-18T00:00:00Z and lv_publicatiedatum before 2019-11-20T17:09:52Z",
-                        1264),
+                        // Depends on timezone, this is for Europe/Amsterdam. For UTC 1264.
+                        1271),
                 arguments(
                         waterdeelUrlOracle,
                         "CREATIONDATE after 2016-04-18T00:00:00Z and LV_PUBLICATIEDATUM before 2019-11-20T17:09:52Z",
@@ -267,7 +270,8 @@ class FeaturesControllerPostgresIntegrationTest {
                         // creationdate > '2016-04-18T00:00:00Z' and lv_publicatiedatum <
                         // '2019-11-20T17:09:52Z'
                         "creationdate after 2016-04-18T00:00:00Z and lv_publicatiedatum before 2019-11-20T17:09:52Z",
-                        1933),
+                        // Depends on timezone, this is for Europe/Amsterdam. For UTC 1933.
+                        1963),
                 // (not) like / ilike
                 arguments(begroeidterreindeelUrlPostgis, "class like 'grasland%'", 85),
                 arguments(
@@ -1045,6 +1049,7 @@ class FeaturesControllerPostgresIntegrationTest {
     @WithMockUser(
             username = "admin",
             authorities = {"Admin"})
+    @DefaultTimeZone("Europe/Amsterdam")
     void filterTest(String applayerUrl, String filterCQL, int totalCount) throws Exception {
         int listSize = Math.min(pageSize, totalCount);
         if (!exactWfsCounts && applayerUrl.equals(provinciesWFS)) {
