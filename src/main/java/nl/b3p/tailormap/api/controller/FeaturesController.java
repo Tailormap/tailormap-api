@@ -171,26 +171,30 @@ public class FeaturesController implements Constants {
             //  if we do the geometry attribute must not be removed from propNames
             propNames.remove(sft.getGeometryAttribute());
 
+            String sortAttrName;
+
             if (onlyGeometries) {
                 propNames = List.of(sft.getGeometryAttribute());
-            }
-
-            String sortAttrName;
-            // determine sorting attribute, default to first attribute or primary key
-            sortAttrName = propNames.get(0);
-            if (propNames.contains(sft.getPrimaryKeyAttribute())) {
-                // there is a primary key and it is known, use that for sorting
-                sortAttrName = sft.getPrimaryKeyAttribute();
-                logger.trace("Sorting by primary key");
+                sortAttrName = null; // do not try to sort by geometry
             } else {
-                // there is no primary key we know of
-                // pick the first one from sft that is not geometry and is in the list of configured
-                // attributes
-                // note that propNames does not have the default geometry attribute (see above)
-                for (AttributeDescriptor attrDesc : sft.getAttributes()) {
-                    if (propNames.contains(attrDesc.getName())) {
-                        sortAttrName = attrDesc.getName();
-                        break;
+                // determine sorting attribute, default to first attribute or primary key
+                sortAttrName = propNames.get(0);
+                if (sft.getPrimaryKeyAttribute() != null
+                        && propNames.contains(sft.getPrimaryKeyAttribute())) {
+                    // there is a primary key and it is known, use that for sorting
+                    sortAttrName = sft.getPrimaryKeyAttribute();
+                    logger.trace("Sorting by primary key");
+                } else {
+                    // there is no primary key we know of
+                    // pick the first one from sft that is not geometry and is in the list of
+                    // configured
+                    // attributes
+                    // note that propNames does not have the default geometry attribute (see above)
+                    for (AttributeDescriptor attrDesc : sft.getAttributes()) {
+                        if (propNames.contains(attrDesc.getName())) {
+                            sortAttrName = attrDesc.getName();
+                            break;
+                        }
                     }
                 }
             }
@@ -240,7 +244,9 @@ public class FeaturesController implements Constants {
             featuresResponse.setTotal(featureCount);
 
             // setup page query
-            q.setSortBy(ff.sort(sortAttrName, _sortOrder));
+            if (sortAttrName != null) {
+                q.setSortBy(ff.sort(sortAttrName, _sortOrder));
+            }
             q.setMaxFeatures(pageSize);
             q.setStartIndex((page - 1) * pageSize);
             logger.debug("Attribute query: " + q);

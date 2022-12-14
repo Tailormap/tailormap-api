@@ -103,8 +103,7 @@ class FeaturesControllerPostgresIntegrationTest {
                 arguments("wfs", provinciesWFS),
                 arguments("postgis", begroeidterreindeelUrlPostgis),
                 arguments("oracle", waterdeelUrlOracle),
-                arguments("sqlserver", wegdeelUrlSqlserver)
-        );
+                arguments("sqlserver", wegdeelUrlSqlserver));
     }
 
     static Stream<Arguments> projectionArgumentsProvider() {
@@ -1087,20 +1086,19 @@ class FeaturesControllerPostgresIntegrationTest {
                 () -> "there should be " + listSize + " features in the list");
     }
 
-    @ParameterizedTest(
-            name =
-                    "#{index} should return onlyGeometries for {0}, appLayer: {1}")
+    @ParameterizedTest(name = "#{index} should return onlyGeometries for {0}, appLayer: {1}")
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     @MethodSource("differentFeatureSourcesProvider")
-    void onlyGeometriesWfs(@SuppressWarnings("unused") String source, String appLayerUrl) throws Exception {
-        @SuppressWarnings("unused") MvcResult result =
+    void onlyGeometries(@SuppressWarnings("unused") String source, String appLayerUrl)
+            throws Exception {
+        @SuppressWarnings("unused")
+        MvcResult result =
                 mockMvc.perform(get(appLayerUrl).param("onlyGeometries", "true").param("page", "1"))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.page").value(1))
                         .andExpect(jsonPath("$.features").isArray())
+                        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
                         .andReturn();
-        // TODO: check it has geometry...
     }
-
-
 }
