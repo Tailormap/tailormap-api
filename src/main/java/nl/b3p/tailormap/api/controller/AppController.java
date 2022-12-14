@@ -162,6 +162,11 @@ public class AppController {
         Application application = null;
         if (name != null) {
             if (null != version) {
+                if (version.startsWith("v")) {
+                    // In links to applications with version, a 'v' is added before the actual
+                    // version entered by an app admin
+                    version = version.substring(1);
+                }
                 application = applicationRepository.findByNameAndVersion(name, version);
             } else {
                 application =
