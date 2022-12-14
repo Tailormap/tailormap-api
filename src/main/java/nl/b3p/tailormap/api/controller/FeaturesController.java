@@ -6,19 +6,13 @@
 package nl.b3p.tailormap.api.controller;
 
 import io.micrometer.core.annotation.Timed;
-import io.swagger.v3.oas.annotations.Parameter;
 
-import nl.b3p.tailormap.api.exception.BadRequestException;
+import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
 import nl.b3p.tailormap.api.model.ColumnMetadata;
-import nl.b3p.tailormap.api.model.ErrorResponse;
 import nl.b3p.tailormap.api.model.Feature;
 import nl.b3p.tailormap.api.model.FeaturesResponse;
-import nl.b3p.tailormap.api.model.RedirectResponse;
-import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
-import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.util.Constants;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
@@ -52,20 +46,16 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -73,11 +63,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
 
-@RestController
+@AppRestController
 @Validated
 @RequestMapping(
         path = "/app/{appId}/layer/{appLayerId}/features",
@@ -95,66 +84,14 @@ public class FeaturesController implements Constants {
     private final FilterFactory2 ff =
             CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
     private final Log logger = LogFactory.getLog(getClass());
-    private final ApplicationRepository applicationRepository;
-    private final ApplicationLayerRepository applicationLayerRepository;
-    private final AuthorizationService authorizationService;
     @PersistenceContext private EntityManager entityManager;
-
-    @Autowired
-    public FeaturesController(
-            ApplicationRepository applicationRepository,
-            ApplicationLayerRepository applicationLayerRepository,
-            AuthorizationService authorizationService) {
-        this.applicationRepository = applicationRepository;
-        this.applicationLayerRepository = applicationLayerRepository;
-        this.authorizationService = authorizationService;
-    }
-
-    /**
-     * Handle any {@code EntityNotFoundException} that this controller might throw while getting the
-     * application.
-     *
-     * @param exception the exception
-     * @return an error response
-     */
-    @ExceptionHandler(EntityNotFoundException.class)
-    @ResponseStatus(
-            value =
-                    HttpStatus
-                            .NOT_FOUND /*,reason = "Not Found" -- adding 'reason' will drop the body */)
-    @ResponseBody
-    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
-        logger.warn(
-                "Requested an application or appLayer that does not exist. Message: "
-                        + exception.getMessage());
-        return new ErrorResponse()
-                .message("Requested an application or appLayer that does not exist")
-                .code(HttpStatus.NOT_FOUND.value());
-    }
-
-    /**
-     * Handle any {@code BadRequestException} that this controller might throw while getting the
-     * application.
-     *
-     * @param exception the exception
-     * @return an error response
-     */
-    @ExceptionHandler(BadRequestException.class)
-    @ResponseStatus(
-            value =
-                    HttpStatus
-                            .BAD_REQUEST /*,reason = "Bad Request" -- adding 'reason' will drop the body */)
-    @ResponseBody
-    public ErrorResponse handleBadRequestException(BadRequestException exception) {
-        return new ErrorResponse().message("Bad Request. " + exception.getMessage()).code(400);
-    }
 
     /**
      * Retrieve features that fulfill the requested conditions (parameters).
      *
      * @return a (possibly empty) list of features
-     * @param appId the application
-     * @param appLayerId the application layer id
+     * @param application the application
+     * @param applicationLayer the application layer id
      * @param x x-coordinate
      * @param y y-coordinate
      * @param crs CRS for x- and y-coordinate
@@ -165,17 +102,12 @@ public class FeaturesController implements Constants {
      * @param page Page number to retrieve, starts at 1
      * @param sortBy attribute to sort by
      * @param sortOrder sort order of features, defaults to {@code ASC}
-     * @throws BadRequestException when invalid parameters are passed
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(value = "get_features", description = "time spent to process get features call")
     public ResponseEntity<Serializable> getFeatures(
-            @Parameter(name = "appId", description = "application id", required = true)
-                    @PathVariable("appId")
-                    Long appId,
-            @Parameter(name = "appLayerId", description = "application layer id", required = true)
-                    @PathVariable("appLayerId")
-                    Long appLayerId,
+            @ModelAttribute Application application,
+            @ModelAttribute ApplicationLayer applicationLayer,
             @RequestParam(required = false) Double x,
             @RequestParam(required = false) Double y,
             @RequestParam(required = false) String crs,
@@ -185,30 +117,21 @@ public class FeaturesController implements Constants {
             @RequestParam(required = false) String filter,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false, defaultValue = "asc") String sortOrder)
-            throws BadRequestException {
-
-        // this could throw EntityNotFound, which is handled by #handleEntityNotFoundException
-        // and in a normal flow this should not happen
-        // as appId is (should be) validated by calling the /app/ endpoint
-        Application application = applicationRepository.getReferenceById(appId);
-        ApplicationLayer appLayer = applicationLayerRepository.getReferenceById(appLayerId);
-
-        if (!authorizationService.mayUserRead(appLayer, application)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
-        }
+            @RequestParam(required = false, defaultValue = "asc") String sortOrder) {
 
         FeaturesResponse featuresResponse;
 
         if (null != __fid) {
-            featuresResponse = getFeatureByFID(appLayer, __fid, crs);
+            featuresResponse = getFeatureByFID(applicationLayer, __fid, crs);
         } else if (null != x && null != y) {
-            featuresResponse = getFeaturesByXY(appLayer, x, y, crs, distance, simplify);
+            featuresResponse = getFeaturesByXY(applicationLayer, x, y, crs, distance, simplify);
         } else if (null != page && page > 0) {
-            featuresResponse = getAllFeatures(appLayer, crs, page, filter, sortBy, sortOrder);
+            featuresResponse =
+                    getAllFeatures(applicationLayer, crs, page, filter, sortBy, sortOrder);
         } else {
             // TODO other implementations
-            throw new BadRequestException(
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
                     "Unsupported combination of request parameters, please check the documentation");
         }
 
@@ -222,8 +145,7 @@ public class FeaturesController implements Constants {
             Integer page,
             String filterCQL,
             String sortBy,
-            String sortOrder)
-            throws BadRequestException {
+            String sortOrder) {
         FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);
 
         // find attribute source of layer
@@ -327,7 +249,8 @@ public class FeaturesController implements Constants {
             logger.error("Could not retrieve attribute data.", e);
         } catch (CQLException e) {
             logger.error("Could not parse requested filter.", e);
-            throw new BadRequestException("Could not parse requested filter.");
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Could not parse requested filter.");
         }
 
         return featuresResponse;
@@ -414,11 +337,11 @@ public class FeaturesController implements Constants {
             @NotNull Double y,
             String crs,
             @NotNull Double distance,
-            @NotNull Boolean simplifyGeometry)
-            throws BadRequestException {
+            @NotNull Boolean simplifyGeometry) {
         // validate buffer
         if (null != distance && 0 > distance) {
-            throw new BadRequestException("Buffer distance must be greater than 0");
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Buffer distance must be greater than 0");
         }
 
         FeaturesResponse featuresResponse = new FeaturesResponse();

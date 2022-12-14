@@ -36,7 +36,8 @@ import org.springframework.transaction.annotation.Transactional;
             HSQLDBTestProfileJPAConfiguration.class,
             AppController.class,
             SecurityConfig.class,
-            AuthorizationService.class
+            AuthorizationService.class,
+            AppRestControllerAdvice.class,
         })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
@@ -202,7 +203,11 @@ class AppControllerIntegrationTest {
         metadataRepository.deleteMetadataByConfigKey(Metadata.DEFAULT_APPLICATION);
 
         mockMvc.perform(get("/app").param("appId", "666").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is5xxServerError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(
+                        jsonPath("$.message")
+                                .value(
+                                        "Requested application not found and no default application set"));
     }
 }

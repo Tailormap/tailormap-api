@@ -43,7 +43,8 @@ import java.util.Set;
             JPAConfiguration.class,
             MapController.class,
             SecurityConfig.class,
-            AuthorizationService.class
+            AuthorizationService.class,
+            AppRestControllerAdvice.class,
         })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration

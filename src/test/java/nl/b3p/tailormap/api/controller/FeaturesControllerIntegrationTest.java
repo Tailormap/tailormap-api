@@ -33,7 +33,8 @@ import org.springframework.test.web.servlet.MockMvc;
             HSQLDBTestProfileJPAConfiguration.class,
             FeaturesController.class,
             SecurityConfig.class,
-            AuthorizationService.class
+            AuthorizationService.class,
+            AppRestControllerAdvice.class,
         })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
@@ -111,14 +112,13 @@ class FeaturesControllerIntegrationTest {
     }
 
     @Test
-    /* this test changes database content */
     @Order(Integer.MAX_VALUE)
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    void should_send_401_when_login_required() throws Exception {
+    void should_send_403_when_access_denied() throws Exception {
         mockMvc.perform(get("/app/1/layer/2/features").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isForbidden())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(401))
-                .andExpect(jsonPath("$.url").value("/login"));
+                .andExpect(jsonPath("$.code").value(403))
+                .andExpect(jsonPath("$.message").value("Access denied"));
     }
 }

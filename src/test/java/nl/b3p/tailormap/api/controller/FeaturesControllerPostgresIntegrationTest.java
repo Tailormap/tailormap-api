@@ -52,7 +52,8 @@ import java.util.stream.Stream;
             JPAConfiguration.class,
             FeaturesController.class,
             SecurityConfig.class,
-            AuthorizationService.class
+            AuthorizationService.class,
+            AppRestControllerAdvice.class,
         })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration

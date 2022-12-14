@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import nl.b3p.tailormap.api.JPAConfiguration;
@@ -41,7 +42,8 @@ import java.util.Locale;
             JPAConfiguration.class,
             GeoServiceProxyController.class,
             SecurityConfig.class,
-            AuthorizationService.class
+            AuthorizationService.class,
+            AppRestControllerAdvice.class,
         })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
@@ -55,10 +57,8 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
     void app_not_found_404() throws Exception {
         mockMvc.perform(get("/app/1234/layer/76/proxy/wms"))
                 .andExpect(status().isNotFound())
-                .andExpect(
-                        content()
-                                .string(
-                                        "Requested an application or appLayer that does not exist"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("Application with id 1234 not found"));
     }
 
     @Test

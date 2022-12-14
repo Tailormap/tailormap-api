@@ -5,14 +5,9 @@
  */
 package nl.b3p.tailormap.api.controller;
 
-import io.swagger.v3.oas.annotations.Parameter;
-
+import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.model.Attribute;
 import nl.b3p.tailormap.api.model.LayerDetails;
-import nl.b3p.tailormap.api.model.RedirectResponse;
-import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
-import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.ConfiguredAttribute;
@@ -20,15 +15,13 @@ import nl.tailormap.viewer.config.services.AttributeDescriptor;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
 import java.util.List;
@@ -38,55 +31,30 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
 
-@RestController
+@AppRestController
 @Validated
 @RequestMapping(
         path = "/app/{appId}/layer/{appLayerId}/describe",
         produces = MediaType.APPLICATION_JSON_VALUE)
 public class LayerDescriptionController {
-    private final ApplicationRepository applicationRepository;
-    private final ApplicationLayerRepository applicationLayerRepository;
-    private final AuthorizationService authorizationService;
 
     @PersistenceContext private EntityManager entityManager;
 
-    @Autowired
-    public LayerDescriptionController(
-            ApplicationRepository applicationRepository,
-            ApplicationLayerRepository applicationLayerRepository,
-            AuthorizationService authorizationService) {
-        this.applicationRepository = applicationRepository;
-        this.applicationLayerRepository = applicationLayerRepository;
-        this.authorizationService = authorizationService;
-    }
-
     @GetMapping
     public ResponseEntity<Serializable> getAppLayerDescription(
-            @Parameter(name = "appId", description = "application id", required = true)
-                    @PathVariable("appId")
-                    Long appId,
-            @Parameter(name = "appLayerId", description = "application layer id", required = true)
-                    @PathVariable("appLayerId")
-                    Long appLayerId) {
-        final Application application = applicationRepository.findById(appId).orElse(null);
-        final ApplicationLayer appLayer =
-                applicationLayerRepository.findById(appLayerId).orElse(null);
-        if (application == null || appLayer == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Requested an application or appLayer that does not exist");
-        }
-
-        if (!authorizationService.mayUserRead(appLayer, application)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RedirectResponse());
-        }
-
-        final Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), entityManager);
+            @ModelAttribute Application application,
+            @ModelAttribute ApplicationLayer applicationLayer) {
+        final Layer layer =
+                applicationLayer
+                        .getService()
+                        .getLayer(applicationLayer.getLayerName(), entityManager);
         if (layer == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(
                             String.format(
                                     "Can't find layer in service #%d with name \"%s\"",
-                                    appLayer.getService().getId(), appLayer.getLayerName()));
+                                    applicationLayer.getService().getId(),
+                                    applicationLayer.getLayerName()));
         }
 
         final SimpleFeatureType sft = layer.getFeatureType();
@@ -96,12 +64,12 @@ public class LayerDescriptionController {
         }
 
         LayerDetails r = new LayerDetails();
-        r.setId(appLayerId);
-        r.setServiceId(appLayer.getService().getId());
+        r.setId(applicationLayer.getId());
+        r.setServiceId(applicationLayer.getService().getId());
         r.setFeatureTypeName(sft.getTypeName());
         r.setGeometryAttribute(sft.getGeometryAttribute());
         r.attributes(
-                getVisibleAttributes(appLayer, sft).stream()
+                getVisibleAttributes(applicationLayer, sft).stream()
                         .map(
                                 ca -> {
                                     AttributeDescriptor ad =
