@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10};
+var data = {"i0":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -136,8 +136,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd><code><a href="../util/Constants.html" title="interface in nl.b3p.tailormap.api.util">Constants</a></code></dd>
 </dl>
 <hr>
-<pre>@RestController
-@Validated
+<pre>@Validated
 @RequestMapping(path="/app/{appId}/layer/{appLayerId}/features",
                 produces="application/json")
 public class <span class="typeNameLabel">FeaturesController</span>
@@ -180,9 +179,7 @@ implements <a href="../util/Constants.html" title="interface in nl.b3p.tailormap
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.ApplicationLayerRepository,nl.b3p.tailormap.api.security.AuthorizationService)">FeaturesController</a></span>&#8203;(<a href="../repository/ApplicationRepository.html" title="interface in nl.b3p.tailormap.api.repository">ApplicationRepository</a>&nbsp;applicationRepository,
-                  <a href="../repository/ApplicationLayerRepository.html" title="interface in nl.b3p.tailormap.api.repository">ApplicationLayerRepository</a>&nbsp;applicationLayerRepository,
-                  <a href="../security/AuthorizationService.html" title="class in nl.b3p.tailormap.api.security">AuthorizationService</a>&nbsp;authorizationService)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">FeaturesController</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -205,8 +202,8 @@ implements <a href="../util/Constants.html" title="interface in nl.b3p.tailormap
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/Serializable.html?is-external=true" title="class or interface in java.io" class="externalLink">Serializable</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFeatures(java.lang.Long,java.lang.Long,java.lang.Double,java.lang.Double,java.lang.String,java.lang.Double,java.lang.String,java.lang.Boolean,java.lang.String,java.lang.Integer,java.lang.String,java.lang.String)">getFeatures</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;appId,
-           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;appLayerId,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFeatures(nl.tailormap.viewer.config.app.Application,nl.tailormap.viewer.config.app.ApplicationLayer,java.lang.Double,java.lang.Double,java.lang.String,java.lang.Double,java.lang.String,java.lang.Boolean,java.lang.String,java.lang.Integer,java.lang.String,java.lang.String)">getFeatures</a></span>&#8203;(nl.tailormap.viewer.config.app.Application&nbsp;application,
+           nl.tailormap.viewer.config.app.ApplicationLayer&nbsp;applicationLayer,
            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Double.html?is-external=true" title="class or interface in java.lang" class="externalLink">Double</a>&nbsp;x,
            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Double.html?is-external=true" title="class or interface in java.lang" class="externalLink">Double</a>&nbsp;y,
            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;crs,
@@ -219,22 +216,6 @@ implements <a href="../util/Constants.html" title="interface in nl.b3p.tailormap
            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sortOrder)</code></th>
 <td class="colLast">
 <div class="block">Retrieve features that fulfill the requested conditions (parameters).</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="../model/ErrorResponse.html" title="class in nl.b3p.tailormap.api.model">ErrorResponse</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#handleBadRequestException(nl.b3p.tailormap.api.exception.BadRequestException)">handleBadRequestException</a></span>&#8203;(<a href="../exception/BadRequestException.html" title="class in nl.b3p.tailormap.api.exception">BadRequestException</a>&nbsp;exception)</code></th>
-<td class="colLast">
-<div class="block">Handle any <code>BadRequestException</code> that this controller might throw while getting the
- application.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="../model/ErrorResponse.html" title="class in nl.b3p.tailormap.api.model">ErrorResponse</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#handleEntityNotFoundException(javax.persistence.EntityNotFoundException)">handleEntityNotFoundException</a></span>&#8203;(javax.persistence.EntityNotFoundException&nbsp;exception)</code></th>
-<td class="colLast">
-<div class="block">Handle any <code>EntityNotFoundException</code> that this controller might throw while getting the
- application.</div>
 </td>
 </tr>
 </table>
@@ -261,16 +242,13 @@ implements <a href="../util/Constants.html" title="interface in nl.b3p.tailormap
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.ApplicationLayerRepository,nl.b3p.tailormap.api.security.AuthorizationService)">
+<a id="&lt;init&gt;()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>FeaturesController</h4>
-<pre>@Autowired
-public&nbsp;FeaturesController&#8203;(<a href="../repository/ApplicationRepository.html" title="interface in nl.b3p.tailormap.api.repository">ApplicationRepository</a>&nbsp;applicationRepository,
-                          <a href="../repository/ApplicationLayerRepository.html" title="interface in nl.b3p.tailormap.api.repository">ApplicationLayerRepository</a>&nbsp;applicationLayerRepository,
-                          <a href="../security/AuthorizationService.html" title="class in nl.b3p.tailormap.api.security">AuthorizationService</a>&nbsp;authorizationService)</pre>
+<pre>public&nbsp;FeaturesController()</pre>
 </li>
 </ul>
 </li>
@@ -283,57 +261,17 @@ public&nbsp;FeaturesController&#8203;(<a href="../repository/ApplicationReposito
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="handleEntityNotFoundException(javax.persistence.EntityNotFoundException)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>handleEntityNotFoundException</h4>
-<pre class="methodSignature">@ExceptionHandler(javax.persistence.EntityNotFoundException.class)
-@ResponseStatus(NOT_FOUND)
-@ResponseBody
-public&nbsp;<a href="../model/ErrorResponse.html" title="class in nl.b3p.tailormap.api.model">ErrorResponse</a>&nbsp;handleEntityNotFoundException&#8203;(javax.persistence.EntityNotFoundException&nbsp;exception)</pre>
-<div class="block">Handle any <code>EntityNotFoundException</code> that this controller might throw while getting the
- application.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>exception</code> - the exception</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>an error response</dd>
-</dl>
-</li>
-</ul>
-<a id="handleBadRequestException(nl.b3p.tailormap.api.exception.BadRequestException)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>handleBadRequestException</h4>
-<pre class="methodSignature">@ExceptionHandler(<a href="../exception/BadRequestException.html" title="class in nl.b3p.tailormap.api.exception">BadRequestException.class</a>)
-@ResponseStatus(BAD_REQUEST)
-@ResponseBody
-public&nbsp;<a href="../model/ErrorResponse.html" title="class in nl.b3p.tailormap.api.model">ErrorResponse</a>&nbsp;handleBadRequestException&#8203;(<a href="../exception/BadRequestException.html" title="class in nl.b3p.tailormap.api.exception">BadRequestException</a>&nbsp;exception)</pre>
-<div class="block">Handle any <code>BadRequestException</code> that this controller might throw while getting the
- application.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>exception</code> - the exception</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>an error response</dd>
-</dl>
-</li>
-</ul>
-<a id="getFeatures(java.lang.Long,java.lang.Long,java.lang.Double,java.lang.Double,java.lang.String,java.lang.Double,java.lang.String,java.lang.Boolean,java.lang.String,java.lang.Integer,java.lang.String,java.lang.String)">
+<a id="getFeatures(nl.tailormap.viewer.config.app.Application,nl.tailormap.viewer.config.app.ApplicationLayer,java.lang.Double,java.lang.Double,java.lang.String,java.lang.Double,java.lang.String,java.lang.Boolean,java.lang.String,java.lang.Integer,java.lang.String,java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getFeatures</h4>
 <pre class="methodSignature">@GetMapping(produces="application/json")
-public&nbsp;org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/Serializable.html?is-external=true" title="class or interface in java.io" class="externalLink">Serializable</a>&gt;&nbsp;getFeatures&#8203;(@PathVariable("appId")
-                                                                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;appId,
-                                                                         @PathVariable("appLayerId")
-                                                                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;appLayerId,
+public&nbsp;org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/Serializable.html?is-external=true" title="class or interface in java.io" class="externalLink">Serializable</a>&gt;&nbsp;getFeatures&#8203;(@ModelAttribute
+                                                                         nl.tailormap.viewer.config.app.Application&nbsp;application,
+                                                                         @ModelAttribute
+                                                                         nl.tailormap.viewer.config.app.ApplicationLayer&nbsp;applicationLayer,
                                                                          @RequestParam(required=false)
                                                                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Double.html?is-external=true" title="class or interface in java.lang" class="externalLink">Double</a>&nbsp;x,
                                                                          @RequestParam(required=false)
@@ -353,13 +291,12 @@ public&nbsp;org.springframework.http.ResponseEntity&lt;<a href="https://docs.ora
                                                                          @RequestParam(required=false)
                                                                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sortBy,
                                                                          @RequestParam(required=false,defaultValue="asc")
-                                                                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sortOrder)
-                                                                  throws <a href="../exception/BadRequestException.html" title="class in nl.b3p.tailormap.api.exception">BadRequestException</a></pre>
+                                                                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sortOrder)</pre>
 <div class="block">Retrieve features that fulfill the requested conditions (parameters).</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>appId</code> - the application</dd>
-<dd><code>appLayerId</code> - the application layer id</dd>
+<dd><code>application</code> - the application</dd>
+<dd><code>applicationLayer</code> - the application layer id</dd>
 <dd><code>x</code> - x-coordinate</dd>
 <dd><code>y</code> - y-coordinate</dd>
 <dd><code>crs</code> - CRS for x- and y-coordinate</dd>
@@ -372,8 +309,6 @@ public&nbsp;org.springframework.http.ResponseEntity&lt;<a href="https://docs.ora
 <dd><code>sortOrder</code> - sort order of features, defaults to <code>ASC</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a (possibly empty) list of features</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="../exception/BadRequestException.html" title="class in nl.b3p.tailormap.api.exception">BadRequestException</a></code> - when invalid parameters are passed</dd>
 </dl>
 </li>
 </ul>

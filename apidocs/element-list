@@ -1,6 +1,6 @@
 nl.b3p.tailormap.api
+nl.b3p.tailormap.api.annotation
 nl.b3p.tailormap.api.controller
-nl.b3p.tailormap.api.exception
 nl.b3p.tailormap.api.geotools.featuresources
 nl.b3p.tailormap.api.geotools.processing
 nl.b3p.tailormap.api.geotools.referencing

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10};
+var data = {"i0":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -132,8 +132,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <hr>
-<pre>@RestController
-@CrossOrigin
+<pre>@CrossOrigin
 @RequestMapping(path="/app")
 public class <span class="typeNameLabel">AppController</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
@@ -189,14 +188,6 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Lookup an Application with given parameters.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="../model/ErrorResponse.html" title="class in nl.b3p.tailormap.api.model">ErrorResponse</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#handleTailormapConfigurationException(nl.b3p.tailormap.api.exception.TailormapConfigurationException)">handleTailormapConfigurationException</a></span>&#8203;(<a href="../exception/TailormapConfigurationException.html" title="class in nl.b3p.tailormap.api.exception">TailormapConfigurationException</a>&nbsp;exception)</code></th>
-<td class="colLast">
-<div class="block">Handle any <code>TailormapConfigurationException</code> that this controller might throw while
- getting the application.</div>
-</td>
-</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -242,26 +233,6 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="handleTailormapConfigurationException(nl.b3p.tailormap.api.exception.TailormapConfigurationException)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>handleTailormapConfigurationException</h4>
-<pre class="methodSignature">@ExceptionHandler(<a href="../exception/TailormapConfigurationException.html" title="class in nl.b3p.tailormap.api.exception">TailormapConfigurationException.class</a>)
-@ResponseStatus(INTERNAL_SERVER_ERROR)
-@ResponseBody
-public&nbsp;<a href="../model/ErrorResponse.html" title="class in nl.b3p.tailormap.api.model">ErrorResponse</a>&nbsp;handleTailormapConfigurationException&#8203;(<a href="../exception/TailormapConfigurationException.html" title="class in nl.b3p.tailormap.api.exception">TailormapConfigurationException</a>&nbsp;exception)</pre>
-<div class="block">Handle any <code>TailormapConfigurationException</code> that this controller might throw while
- getting the application.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>exception</code> - the exception</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>an error response</dd>
-</dl>
-</li>
-</ul>
 <a id="get(java.lang.Long,java.lang.String,java.lang.String)">
 <!--   -->
 </a>
@@ -274,8 +245,7 @@ public&nbsp;org.springframework.http.ResponseEntity&lt;<a href="https://docs.ora
                                                                  @RequestParam(required=false)
                                                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name,
                                                                  @RequestParam(required=false)
-                                                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;version)
-                                                          throws <a href="../exception/TailormapConfigurationException.html" title="class in nl.b3p.tailormap.api.exception">TailormapConfigurationException</a></pre>
+                                                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;version)</pre>
 <div class="block">Lookup an Application with given parameters. Use this endpoint to get the id of
  the requested or default application. Either call this with `name` and optional `version` or
  `appId` alone. Will return general setup information such as name, appId, language, but not
@@ -287,8 +257,6 @@ public&nbsp;org.springframework.http.ResponseEntity&lt;<a href="https://docs.ora
 <dd><code>version</code> - the version of an app</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the basic information needed to create an app in the frontend</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="../exception/TailormapConfigurationException.html" title="class in nl.b3p.tailormap.api.exception">TailormapConfigurationException</a></code> - when the tailormap configuration is broken</dd>
 <dt><span class="simpleTagLabel">Since:</span></dt>
 <dd>0.1</dd>
 </dl>
