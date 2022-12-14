@@ -102,6 +102,7 @@ import javax.validation.constraints.NotNull;
      * @param page Page number to retrieve, starts at 1
      * @param sortBy attribute to sort by
      * @param sortOrder sort order of features, defaults to {@code ASC}
+     * @param onlyGeometries return only the default geometry attribute for each feature
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(value = &quot;get_features&quot;, description = &quot;time spent to process get features call&quot;)
@@ -117,25 +118,27 @@ import javax.validation.constraints.NotNull;
             @RequestParam(required = false) String filter,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false, defaultValue = &quot;asc&quot;) String sortOrder) {
+            @RequestParam(required = false, defaultValue = &quot;asc&quot;) String sortOrder,
+            @RequestParam(defaultValue = &quot;false&quot;) boolean onlyGeometries) {
 
         FeaturesResponse featuresResponse;
 
-<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if (null != __fid) {</span>
-<span class="nc" id="L125">            featuresResponse = getFeatureByFID(applicationLayer, __fid, crs);</span>
-<span class="pc bpc" id="L126" title="1 of 4 branches missed.">        } else if (null != x &amp;&amp; null != y) {</span>
-<span class="nc" id="L127">            featuresResponse = getFeaturesByXY(applicationLayer, x, y, crs, distance, simplify);</span>
-<span class="pc bpc" id="L128" title="3 of 4 branches missed.">        } else if (null != page &amp;&amp; page &gt; 0) {</span>
-<span class="nc" id="L129">            featuresResponse =</span>
-<span class="nc" id="L130">                    getAllFeatures(applicationLayer, crs, page, filter, sortBy, sortOrder);</span>
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">        if (null != __fid) {</span>
+<span class="nc" id="L127">            featuresResponse = getFeatureByFID(applicationLayer, __fid, crs);</span>
+<span class="pc bpc" id="L128" title="1 of 4 branches missed.">        } else if (null != x &amp;&amp; null != y) {</span>
+<span class="nc" id="L129">            featuresResponse = getFeaturesByXY(applicationLayer, x, y, crs, distance, simplify);</span>
+<span class="pc bpc" id="L130" title="3 of 4 branches missed.">        } else if (null != page &amp;&amp; page &gt; 0) {</span>
+<span class="nc" id="L131">            featuresResponse =</span>
+<span class="nc" id="L132">                    getAllFeatures(</span>
+                            applicationLayer, crs, page, filter, sortBy, sortOrder, onlyGeometries);
         } else {
             // TODO other implementations
-<span class="fc" id="L133">            throw new ResponseStatusException(</span>
+<span class="fc" id="L136">            throw new ResponseStatusException(</span>
                     HttpStatus.BAD_REQUEST,
                     &quot;Unsupported combination of request parameters, please check the documentation&quot;);
         }
 
-<span class="nc" id="L138">        return ResponseEntity.status(HttpStatus.OK).body(featuresResponse);</span>
+<span class="nc" id="L141">        return ResponseEntity.status(HttpStatus.OK).body(featuresResponse);</span>
     }
 
     @NotNull
@@ -145,161 +148,174 @@ import javax.validation.constraints.NotNull;
             Integer page,
             String filterCQL,
             String sortBy,
-            String sortOrder) {
-<span class="nc" id="L149">        FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);</span>
+            String sortOrder,
+            boolean onlyGeometries) {
+<span class="nc" id="L153">        FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);</span>
 
         // find attribute source of layer
-<span class="nc" id="L152">        final Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), entityManager);</span>
-<span class="nc" id="L153">        final SimpleFeatureType sft = layer.getFeatureType();</span>
-<span class="nc bnc" id="L154" title="All 2 branches missed.">        if (null == sft) {</span>
-<span class="nc" id="L155">            return featuresResponse;</span>
+<span class="nc" id="L156">        final Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), entityManager);</span>
+<span class="nc" id="L157">        final SimpleFeatureType sft = layer.getFeatureType();</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">        if (null == sft) {</span>
+<span class="nc" id="L159">            return featuresResponse;</span>
         }
-<span class="nc" id="L157">        List&lt;ConfiguredAttribute&gt; configuredAttributes = getVisibleAttributes(appLayer, sft);</span>
+<span class="nc" id="L161">        List&lt;ConfiguredAttribute&gt; configuredAttributes = getVisibleAttributes(appLayer, sft);</span>
         try {
-<span class="nc" id="L159">            SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);</span>
+<span class="nc" id="L163">            SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);</span>
 
-<span class="nc" id="L161">            List&lt;String&gt; propNames =</span>
-<span class="nc" id="L162">                    configuredAttributes.stream()</span>
-<span class="nc" id="L163">                            .map(ConfiguredAttribute::getAttributeName)</span>
-<span class="nc" id="L164">                            .collect(Collectors.toList());</span>
+<span class="nc" id="L165">            List&lt;String&gt; propNames =</span>
+<span class="nc" id="L166">                    configuredAttributes.stream()</span>
+<span class="nc" id="L167">                            .map(ConfiguredAttribute::getAttributeName)</span>
+<span class="nc" id="L168">                            .collect(Collectors.toList());</span>
 
             // TODO evaluate; do we want geometry in this response or not?
             //  if we do the geometry attribute must not be removed from propNames
-<span class="nc" id="L168">            propNames.remove(sft.getGeometryAttribute());</span>
+<span class="nc" id="L172">            propNames.remove(sft.getGeometryAttribute());</span>
 
             String sortAttrName;
-            // determine sorting attribute, default to first attribute or primary key
-<span class="nc" id="L172">            sortAttrName = propNames.get(0);</span>
-<span class="nc bnc" id="L173" title="All 2 branches missed.">            if (propNames.contains(sft.getPrimaryKeyAttribute())) {</span>
-                // there is a primary key and it is known, use that for sorting
-<span class="nc" id="L175">                sortAttrName = sft.getPrimaryKeyAttribute();</span>
-<span class="nc" id="L176">                logger.trace(&quot;Sorting by primary key&quot;);</span>
+
+<span class="nc bnc" id="L176" title="All 2 branches missed.">            if (onlyGeometries) {</span>
+<span class="nc" id="L177">                propNames = List.of(sft.getGeometryAttribute());</span>
+<span class="nc" id="L178">                sortAttrName = null; // do not try to sort by geometry</span>
             } else {
-                // there is no primary key we know of
-                // pick the first one from sft that is not geometry and is in the list of configured
-                // attributes
-                // note that propNames does not have the default geometry attribute (see above)
-<span class="nc bnc" id="L182" title="All 2 branches missed.">                for (AttributeDescriptor attrDesc : sft.getAttributes()) {</span>
-<span class="nc bnc" id="L183" title="All 2 branches missed.">                    if (propNames.contains(attrDesc.getName())) {</span>
-<span class="nc" id="L184">                        sortAttrName = attrDesc.getName();</span>
-<span class="nc" id="L185">                        break;</span>
-                    }
-<span class="nc" id="L187">                }</span>
+                // determine sorting attribute, default to first attribute or primary key
+<span class="nc" id="L181">                sortAttrName = propNames.get(0);</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">                if (sft.getPrimaryKeyAttribute() != null</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">                        &amp;&amp; propNames.contains(sft.getPrimaryKeyAttribute())) {</span>
+                    // there is a primary key and it is known, use that for sorting
+<span class="nc" id="L185">                    sortAttrName = sft.getPrimaryKeyAttribute();</span>
+<span class="nc" id="L186">                    logger.trace(&quot;Sorting by primary key&quot;);</span>
+                } else {
+                    // there is no primary key we know of
+                    // pick the first one from sft that is not geometry and is in the list of
+                    // configured
+                    // attributes
+                    // note that propNames does not have the default geometry attribute (see above)
+<span class="nc bnc" id="L193" title="All 2 branches missed.">                    for (AttributeDescriptor attrDesc : sft.getAttributes()) {</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">                        if (propNames.contains(attrDesc.getName())) {</span>
+<span class="nc" id="L195">                            sortAttrName = attrDesc.getName();</span>
+<span class="nc" id="L196">                            break;</span>
+                        }
+<span class="nc" id="L198">                    }</span>
+                }
             }
 
-<span class="nc bnc" id="L190" title="All 2 branches missed.">            if (null != sortBy) {</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">            if (null != sortBy) {</span>
                 // validate sortBy attribute is in the list of configured attributes
                 // and not a geometry type
 
-<span class="nc bnc" id="L194" title="All 2 branches missed.">                if (propNames.contains(sortBy)</span>
-<span class="nc bnc" id="L195" title="All 2 branches missed.">                        &amp;&amp; !(sft.getAttribute(sortBy) instanceof GeometryDescriptor)) {</span>
-<span class="nc" id="L196">                    sortAttrName = sortBy;</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">                if (propNames.contains(sortBy)</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">                        &amp;&amp; !(sft.getAttribute(sortBy) instanceof GeometryDescriptor)) {</span>
+<span class="nc" id="L208">                    sortAttrName = sortBy;</span>
                 } else {
-<span class="nc" id="L198">                    logger.warn(</span>
+<span class="nc" id="L210">                    logger.warn(</span>
                             &quot;Requested sortBy attribute &quot;
                                     + sortBy
                                     + &quot; was not found in configured attributes or is a geometry attribute.&quot;);
                 }
             }
 
-<span class="nc" id="L205">            SortOrder _sortOrder = SortOrder.ASCENDING;</span>
-<span class="nc bnc" id="L206" title="All 2 branches missed.">            if (null != sortOrder</span>
-<span class="nc bnc" id="L207" title="All 4 branches missed.">                    &amp;&amp; (sortOrder.equalsIgnoreCase(&quot;desc&quot;) || sortOrder.equalsIgnoreCase(&quot;asc&quot;))) {</span>
-<span class="nc" id="L208">                _sortOrder = SortOrder.valueOf(sortOrder.toUpperCase());</span>
+<span class="nc" id="L217">            SortOrder _sortOrder = SortOrder.ASCENDING;</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">            if (null != sortOrder</span>
+<span class="nc bnc" id="L219" title="All 4 branches missed.">                    &amp;&amp; (sortOrder.equalsIgnoreCase(&quot;desc&quot;) || sortOrder.equalsIgnoreCase(&quot;asc&quot;))) {</span>
+<span class="nc" id="L220">                _sortOrder = SortOrder.valueOf(sortOrder.toUpperCase());</span>
             }
 
             // setup query, attributes and filter
-<span class="nc" id="L212">            Query q = new Query(fs.getName().toString());</span>
-<span class="nc" id="L213">            q.setPropertyNames(propNames);</span>
+<span class="nc" id="L224">            Query q = new Query(fs.getName().toString());</span>
+<span class="nc" id="L225">            q.setPropertyNames(propNames);</span>
 
             // count can be -1 if too costly eg. some WFS
             int featureCount;
-<span class="nc bnc" id="L217" title="All 2 branches missed.">            if (null != filterCQL) {</span>
-<span class="nc" id="L218">                Filter filter = ECQL.toFilter(filterCQL);</span>
-<span class="nc" id="L219">                q.setFilter(filter);</span>
-<span class="nc" id="L220">                featureCount = fs.getCount(q);</span>
+<span class="nc bnc" id="L229" title="All 2 branches missed.">            if (null != filterCQL) {</span>
+<span class="nc" id="L230">                Filter filter = ECQL.toFilter(filterCQL);</span>
+<span class="nc" id="L231">                q.setFilter(filter);</span>
+<span class="nc" id="L232">                featureCount = fs.getCount(q);</span>
                 // this will execute the query twice, once to get the count and once to get the data
-<span class="nc bnc" id="L222" title="All 4 branches missed.">                if (featureCount == -1 &amp;&amp; exactWfsCounts) {</span>
-<span class="nc" id="L223">                    featureCount = fs.getFeatures(q).size();</span>
+<span class="nc bnc" id="L234" title="All 4 branches missed.">                if (featureCount == -1 &amp;&amp; exactWfsCounts) {</span>
+<span class="nc" id="L235">                    featureCount = fs.getFeatures(q).size();</span>
                 }
-<span class="nc" id="L225">            } else {</span>
-<span class="nc" id="L226">                featureCount = fs.getCount(Query.ALL);</span>
+<span class="nc" id="L237">            } else {</span>
+<span class="nc" id="L238">                featureCount = fs.getCount(Query.ALL);</span>
                 // this will execute the query twice, once to get the count and once to get the data
-<span class="nc bnc" id="L228" title="All 4 branches missed.">                if (featureCount == -1 &amp;&amp; exactWfsCounts) {</span>
-<span class="nc" id="L229">                    featureCount = fs.getFeatures(Query.ALL).size();</span>
+<span class="nc bnc" id="L240" title="All 4 branches missed.">                if (featureCount == -1 &amp;&amp; exactWfsCounts) {</span>
+<span class="nc" id="L241">                    featureCount = fs.getFeatures(Query.ALL).size();</span>
                 }
             }
-<span class="nc" id="L232">            featuresResponse.setTotal(featureCount);</span>
+<span class="nc" id="L244">            featuresResponse.setTotal(featureCount);</span>
 
             // setup page query
-<span class="nc" id="L235">            q.setSortBy(ff.sort(sortAttrName, _sortOrder));</span>
-<span class="nc" id="L236">            q.setMaxFeatures(pageSize);</span>
-<span class="nc" id="L237">            q.setStartIndex((page - 1) * pageSize);</span>
-<span class="nc" id="L238">            logger.debug(&quot;Attribute query: &quot; + q);</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">            if (sortAttrName != null) {</span>
+<span class="nc" id="L248">                q.setSortBy(ff.sort(sortAttrName, _sortOrder));</span>
+            }
+<span class="nc" id="L250">            q.setMaxFeatures(pageSize);</span>
+<span class="nc" id="L251">            q.setStartIndex((page - 1) * pageSize);</span>
+<span class="nc" id="L252">            logger.debug(&quot;Attribute query: &quot; + q);</span>
 
-<span class="nc" id="L240">            executeQueryOnFeatureSourceAndClose(</span>
+<span class="nc" id="L254">            executeQueryOnFeatureSourceAndClose(</span>
                     false,
                     featuresResponse,
                     sft,
                     configuredAttributes,
+                    onlyGeometries,
                     fs,
                     q,
-<span class="nc" id="L247">                    determineProjectToCRS(crs, fs));</span>
-<span class="nc" id="L248">        } catch (IOException e) {</span>
-<span class="nc" id="L249">            logger.error(&quot;Could not retrieve attribute data.&quot;, e);</span>
-<span class="nc" id="L250">        } catch (CQLException e) {</span>
-<span class="nc" id="L251">            logger.error(&quot;Could not parse requested filter.&quot;, e);</span>
-<span class="nc" id="L252">            throw new ResponseStatusException(</span>
+<span class="nc" id="L262">                    determineProjectToCRS(crs, fs));</span>
+<span class="nc" id="L263">        } catch (IOException e) {</span>
+<span class="nc" id="L264">            logger.error(&quot;Could not retrieve attribute data.&quot;, e);</span>
+<span class="nc" id="L265">        } catch (CQLException e) {</span>
+<span class="nc" id="L266">            logger.error(&quot;Could not parse requested filter.&quot;, e);</span>
+<span class="nc" id="L267">            throw new ResponseStatusException(</span>
                     HttpStatus.BAD_REQUEST, &quot;Could not parse requested filter.&quot;);
-<span class="nc" id="L254">        }</span>
+<span class="nc" id="L269">        }</span>
 
-<span class="nc" id="L256">        return featuresResponse;</span>
+<span class="nc" id="L271">        return featuresResponse;</span>
     }
 
     @NotNull
     private FeaturesResponse getFeatureByFID(
             @NotNull ApplicationLayer appLayer, @NotNull String fid, String crs) {
-<span class="nc" id="L262">        FeaturesResponse featuresResponse = new FeaturesResponse();</span>
+<span class="nc" id="L277">        FeaturesResponse featuresResponse = new FeaturesResponse();</span>
 
         // find attribute source of layer
-<span class="nc" id="L265">        final Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), entityManager);</span>
-<span class="nc" id="L266">        final SimpleFeatureType sft = layer.getFeatureType();</span>
-<span class="nc bnc" id="L267" title="All 2 branches missed.">        if (null == sft) {</span>
-<span class="nc" id="L268">            return featuresResponse;</span>
+<span class="nc" id="L280">        final Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), entityManager);</span>
+<span class="nc" id="L281">        final SimpleFeatureType sft = layer.getFeatureType();</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">        if (null == sft) {</span>
+<span class="nc" id="L283">            return featuresResponse;</span>
         }
-<span class="nc" id="L270">        List&lt;ConfiguredAttribute&gt; configuredAttributes = getVisibleAttributes(appLayer, sft);</span>
+<span class="nc" id="L285">        List&lt;ConfiguredAttribute&gt; configuredAttributes = getVisibleAttributes(appLayer, sft);</span>
         try {
-<span class="nc" id="L272">            SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);</span>
+<span class="nc" id="L287">            SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);</span>
 
-<span class="nc" id="L274">            List&lt;String&gt; propNames =</span>
-<span class="nc" id="L275">                    configuredAttributes.stream()</span>
-<span class="nc" id="L276">                            .map(ConfiguredAttribute::getAttributeName)</span>
-<span class="nc" id="L277">                            .collect(Collectors.toList());</span>
-<span class="nc bnc" id="L278" title="All 2 branches missed.">            if (!propNames.contains(sft.getGeometryAttribute())) {</span>
+<span class="nc" id="L289">            List&lt;String&gt; propNames =</span>
+<span class="nc" id="L290">                    configuredAttributes.stream()</span>
+<span class="nc" id="L291">                            .map(ConfiguredAttribute::getAttributeName)</span>
+<span class="nc" id="L292">                            .collect(Collectors.toList());</span>
+<span class="nc bnc" id="L293" title="All 2 branches missed.">            if (!propNames.contains(sft.getGeometryAttribute())) {</span>
                 // add geom attribute for highlighting
-<span class="nc" id="L280">                propNames.add(sft.getGeometryAttribute());</span>
+<span class="nc" id="L295">                propNames.add(sft.getGeometryAttribute());</span>
             }
 
             // setup page query
-<span class="nc" id="L284">            Query q = new Query(fs.getName().toString());</span>
-<span class="nc" id="L285">            q.setFilter(ff.id(ff.featureId(fid)));</span>
-<span class="nc" id="L286">            q.setPropertyNames(propNames);</span>
-<span class="nc" id="L287">            q.setMaxFeatures(1);</span>
-<span class="nc" id="L288">            logger.debug(&quot;FID query: &quot; + q);</span>
+<span class="nc" id="L299">            Query q = new Query(fs.getName().toString());</span>
+<span class="nc" id="L300">            q.setFilter(ff.id(ff.featureId(fid)));</span>
+<span class="nc" id="L301">            q.setPropertyNames(propNames);</span>
+<span class="nc" id="L302">            q.setMaxFeatures(1);</span>
+<span class="nc" id="L303">            logger.debug(&quot;FID query: &quot; + q);</span>
 
-<span class="nc" id="L290">            executeQueryOnFeatureSourceAndClose(</span>
+<span class="nc" id="L305">            executeQueryOnFeatureSourceAndClose(</span>
                     false,
                     featuresResponse,
                     sft,
                     configuredAttributes,
+                    false,
                     fs,
                     q,
-<span class="nc" id="L297">                    determineProjectToCRS(crs, fs));</span>
-<span class="nc" id="L298">        } catch (IOException e) {</span>
-<span class="nc" id="L299">            logger.error(&quot;Could not retrieve attribute data.&quot;, e);</span>
-<span class="nc" id="L300">        }</span>
+<span class="nc" id="L313">                    determineProjectToCRS(crs, fs));</span>
+<span class="nc" id="L314">        } catch (IOException e) {</span>
+<span class="nc" id="L315">            logger.error(&quot;Could not retrieve attribute data.&quot;, e);</span>
+<span class="nc" id="L316">        }</span>
 
-<span class="nc" id="L302">        return featuresResponse;</span>
+<span class="nc" id="L318">        return featuresResponse;</span>
     }
 
     /**
@@ -310,24 +326,24 @@ import javax.validation.constraints.NotNull;
      */
     private CoordinateReferenceSystem determineProjectToCRS(
             String requestCrs, SimpleFeatureSource fs) {
-<span class="nc" id="L313">        CoordinateReferenceSystem projectToCRS = null;</span>
-<span class="nc bnc" id="L314" title="All 2 branches missed.">        if (null != requestCrs) {</span>
+<span class="nc" id="L329">        CoordinateReferenceSystem projectToCRS = null;</span>
+<span class="nc bnc" id="L330" title="All 2 branches missed.">        if (null != requestCrs) {</span>
             // reproject to feature source CRS if different from source CRS
             try {
                 // this is the CRS of the &quot;default geometry&quot; attribute
-<span class="nc" id="L318">                final CoordinateReferenceSystem dataSourceCRS =</span>
-<span class="nc" id="L319">                        fs.getSchema().getCoordinateReferenceSystem();</span>
-<span class="nc" id="L320">                if (!((DefaultProjectedCRS) dataSourceCRS)</span>
-<span class="nc" id="L321">                        .getIdentifier(null)</span>
-<span class="nc" id="L322">                        .toString()</span>
-<span class="nc bnc" id="L323" title="All 2 branches missed.">                        .equalsIgnoreCase(requestCrs)) {</span>
-<span class="nc" id="L324">                    projectToCRS = CRS.decode(requestCrs);</span>
+<span class="nc" id="L334">                final CoordinateReferenceSystem dataSourceCRS =</span>
+<span class="nc" id="L335">                        fs.getSchema().getCoordinateReferenceSystem();</span>
+<span class="nc" id="L336">                if (!((DefaultProjectedCRS) dataSourceCRS)</span>
+<span class="nc" id="L337">                        .getIdentifier(null)</span>
+<span class="nc" id="L338">                        .toString()</span>
+<span class="nc bnc" id="L339" title="All 2 branches missed.">                        .equalsIgnoreCase(requestCrs)) {</span>
+<span class="nc" id="L340">                    projectToCRS = CRS.decode(requestCrs);</span>
                 }
-<span class="nc" id="L326">            } catch (FactoryException e) {</span>
-<span class="nc" id="L327">                logger.warn(&quot;Unable to transform query geometry to desired CRS&quot;, e);</span>
-<span class="nc" id="L328">            }</span>
+<span class="nc" id="L342">            } catch (FactoryException e) {</span>
+<span class="nc" id="L343">                logger.warn(&quot;Unable to transform query geometry to desired CRS&quot;, e);</span>
+<span class="nc" id="L344">            }</span>
         }
-<span class="nc" id="L330">        return projectToCRS;</span>
+<span class="nc" id="L346">        return projectToCRS;</span>
     }
 
     @NotNull
@@ -339,78 +355,85 @@ import javax.validation.constraints.NotNull;
             @NotNull Double distance,
             @NotNull Boolean simplifyGeometry) {
         // validate buffer
-<span class="nc bnc" id="L342" title="All 4 branches missed.">        if (null != distance &amp;&amp; 0 &gt; distance) {</span>
-<span class="nc" id="L343">            throw new ResponseStatusException(</span>
+<span class="nc bnc" id="L358" title="All 4 branches missed.">        if (null != distance &amp;&amp; 0 &gt; distance) {</span>
+<span class="nc" id="L359">            throw new ResponseStatusException(</span>
                     HttpStatus.BAD_REQUEST, &quot;Buffer distance must be greater than 0&quot;);
         }
 
-<span class="nc" id="L347">        FeaturesResponse featuresResponse = new FeaturesResponse();</span>
+<span class="nc" id="L363">        FeaturesResponse featuresResponse = new FeaturesResponse();</span>
         // find attribute source of layer
-<span class="nc" id="L349">        GeoService geoService = appLayer.getService();</span>
-<span class="nc" id="L350">        Layer layer = geoService.getLayer(appLayer.getLayerName(), entityManager);</span>
-<span class="nc" id="L351">        SimpleFeatureType sft = layer.getFeatureType();</span>
-<span class="nc bnc" id="L352" title="All 2 branches missed.">        if (null == sft) {</span>
-<span class="nc" id="L353">            return featuresResponse;</span>
+<span class="nc" id="L365">        GeoService geoService = appLayer.getService();</span>
+<span class="nc" id="L366">        Layer layer = geoService.getLayer(appLayer.getLayerName(), entityManager);</span>
+<span class="nc" id="L367">        SimpleFeatureType sft = layer.getFeatureType();</span>
+<span class="nc bnc" id="L368" title="All 2 branches missed.">        if (null == sft) {</span>
+<span class="nc" id="L369">            return featuresResponse;</span>
         }
-<span class="nc" id="L355">        List&lt;ConfiguredAttribute&gt; configuredAttributes = appLayer.getAttributes(sft);</span>
-<span class="nc" id="L356">        configuredAttributes =</span>
-<span class="nc" id="L357">                configuredAttributes.stream()</span>
-<span class="nc" id="L358">                        .filter(ConfiguredAttribute::isVisible)</span>
-<span class="nc" id="L359">                        .collect(Collectors.toList());</span>
+<span class="nc" id="L371">        List&lt;ConfiguredAttribute&gt; configuredAttributes = appLayer.getAttributes(sft);</span>
+<span class="nc" id="L372">        configuredAttributes =</span>
+<span class="nc" id="L373">                configuredAttributes.stream()</span>
+<span class="nc" id="L374">                        .filter(ConfiguredAttribute::isVisible)</span>
+<span class="nc" id="L375">                        .collect(Collectors.toList());</span>
 
         try {
-<span class="nc" id="L362">            SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);</span>
-<span class="nc" id="L363">            Query q = new Query(fs.getName().toString());</span>
+<span class="nc" id="L378">            SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);</span>
+<span class="nc" id="L379">            Query q = new Query(fs.getName().toString());</span>
 
-<span class="nc" id="L365">            GeometricShapeFactory shapeFact = new GeometricShapeFactory();</span>
-<span class="nc" id="L366">            shapeFact.setNumPoints(32);</span>
-<span class="nc" id="L367">            shapeFact.setCentre(new Coordinate(x, y));</span>
+<span class="nc" id="L381">            GeometricShapeFactory shapeFact = new GeometricShapeFactory();</span>
+<span class="nc" id="L382">            shapeFact.setNumPoints(32);</span>
+<span class="nc" id="L383">            shapeFact.setCentre(new Coordinate(x, y));</span>
             //noinspection ConstantConditions
-<span class="nc" id="L369">            shapeFact.setSize(distance * 2d);</span>
-<span class="nc" id="L370">            Geometry p = shapeFact.createCircle();</span>
-<span class="nc" id="L371">            logger.debug(&quot;created geometry: &quot; + p);</span>
+<span class="nc" id="L385">            shapeFact.setSize(distance * 2d);</span>
+<span class="nc" id="L386">            Geometry p = shapeFact.createCircle();</span>
+<span class="nc" id="L387">            logger.debug(&quot;created geometry: &quot; + p);</span>
 
-<span class="nc" id="L373">            CoordinateReferenceSystem fromCRS = determineProjectToCRS(crs, fs);</span>
-<span class="nc bnc" id="L374" title="All 2 branches missed.">            if (null != fromCRS) {</span>
+<span class="nc" id="L389">            CoordinateReferenceSystem fromCRS = determineProjectToCRS(crs, fs);</span>
+<span class="nc bnc" id="L390" title="All 2 branches missed.">            if (null != fromCRS) {</span>
                 // reproject requested x/y-geom to feature source CRS if different from source CRS
                 try {
                     // this is the CRS of the &quot;default geometry&quot; attribute
-<span class="nc" id="L378">                    final CoordinateReferenceSystem toCRS =</span>
-<span class="nc" id="L379">                            fs.getSchema().getCoordinateReferenceSystem();</span>
-<span class="nc" id="L380">                    MathTransform transform = CRS.findMathTransform(fromCRS, toCRS, true);</span>
-<span class="nc" id="L381">                    p = JTS.transform(p, transform);</span>
-<span class="nc" id="L382">                    logger.debug(&quot;reprojected geometry to: &quot; + p);</span>
-<span class="nc" id="L383">                } catch (FactoryException | TransformException e) {</span>
-<span class="nc" id="L384">                    logger.warn(</span>
+<span class="nc" id="L394">                    final CoordinateReferenceSystem toCRS =</span>
+<span class="nc" id="L395">                            fs.getSchema().getCoordinateReferenceSystem();</span>
+<span class="nc" id="L396">                    MathTransform transform = CRS.findMathTransform(fromCRS, toCRS, true);</span>
+<span class="nc" id="L397">                    p = JTS.transform(p, transform);</span>
+<span class="nc" id="L398">                    logger.debug(&quot;reprojected geometry to: &quot; + p);</span>
+<span class="nc" id="L399">                } catch (FactoryException | TransformException e) {</span>
+<span class="nc" id="L400">                    logger.warn(</span>
                             &quot;Unable to transform query geometry to desired CRS, trying with original CRS&quot;);
-<span class="nc" id="L386">                }</span>
+<span class="nc" id="L402">                }</span>
             }
-<span class="nc" id="L388">            logger.debug(&quot;using geometry: &quot; + p);</span>
-<span class="nc" id="L389">            Filter spatialFilter =</span>
-<span class="nc" id="L390">                    ff.intersects(ff.property(sft.getGeometryAttribute()), ff.literal(p));</span>
+<span class="nc" id="L404">            logger.debug(&quot;using geometry: &quot; + p);</span>
+<span class="nc" id="L405">            Filter spatialFilter =</span>
+<span class="nc" id="L406">                    ff.intersects(ff.property(sft.getGeometryAttribute()), ff.literal(p));</span>
 
             // TODO flamingo does some fancy stuff to combine with existing filters using
             //      TailormapCQL and some filter visitors
 
-<span class="nc" id="L395">            List&lt;String&gt; propNames =</span>
-<span class="nc" id="L396">                    configuredAttributes.stream()</span>
-<span class="nc" id="L397">                            .map(ConfiguredAttribute::getAttributeName)</span>
-<span class="nc" id="L398">                            .collect(Collectors.toList());</span>
-<span class="nc bnc" id="L399" title="All 2 branches missed.">            if (!propNames.contains(sft.getGeometryAttribute())) {</span>
+<span class="nc" id="L411">            List&lt;String&gt; propNames =</span>
+<span class="nc" id="L412">                    configuredAttributes.stream()</span>
+<span class="nc" id="L413">                            .map(ConfiguredAttribute::getAttributeName)</span>
+<span class="nc" id="L414">                            .collect(Collectors.toList());</span>
+<span class="nc bnc" id="L415" title="All 2 branches missed.">            if (!propNames.contains(sft.getGeometryAttribute())) {</span>
                 // add geom attribute for highlighting
-<span class="nc" id="L401">                propNames.add(sft.getGeometryAttribute());</span>
+<span class="nc" id="L417">                propNames.add(sft.getGeometryAttribute());</span>
             }
 
-<span class="nc" id="L404">            q.setPropertyNames(propNames);</span>
-<span class="nc" id="L405">            q.setFilter(spatialFilter);</span>
-<span class="nc" id="L406">            q.setMaxFeatures(DEFAULT_MAX_FEATURES);</span>
+<span class="nc" id="L420">            q.setPropertyNames(propNames);</span>
+<span class="nc" id="L421">            q.setFilter(spatialFilter);</span>
+<span class="nc" id="L422">            q.setMaxFeatures(DEFAULT_MAX_FEATURES);</span>
 
-<span class="nc" id="L408">            executeQueryOnFeatureSourceAndClose(</span>
-<span class="nc" id="L409">                    simplifyGeometry, featuresResponse, sft, configuredAttributes, fs, q, fromCRS);</span>
-<span class="nc" id="L410">        } catch (IOException e) {</span>
-<span class="nc" id="L411">            logger.error(&quot;Could not retrieve attribute data.&quot;, e);</span>
-<span class="nc" id="L412">        }</span>
-<span class="nc" id="L413">        return featuresResponse;</span>
+<span class="nc" id="L424">            executeQueryOnFeatureSourceAndClose(</span>
+<span class="nc" id="L425">                    simplifyGeometry,</span>
+                    featuresResponse,
+                    sft,
+                    configuredAttributes,
+                    false,
+                    fs,
+                    q,
+                    fromCRS);
+<span class="nc" id="L433">        } catch (IOException e) {</span>
+<span class="nc" id="L434">            logger.error(&quot;Could not retrieve attribute data.&quot;, e);</span>
+<span class="nc" id="L435">        }</span>
+<span class="nc" id="L436">        return featuresResponse;</span>
     }
 
     private void executeQueryOnFeatureSourceAndClose(
@@ -418,94 +441,98 @@ import javax.validation.constraints.NotNull;
             @NotNull FeaturesResponse featuresResponse,
             @NotNull SimpleFeatureType sft,
             List&lt;ConfiguredAttribute&gt; configuredAttributes,
+            boolean onlyGeometries,
             @NotNull SimpleFeatureSource fs,
             @NotNull Query q,
             CoordinateReferenceSystem projectToCRS)
             throws IOException {
-<span class="nc" id="L425">        boolean addFields = false;</span>
+<span class="nc" id="L449">        boolean addFields = false;</span>
 
-<span class="nc" id="L427">        MathTransform transform = null;</span>
-<span class="nc bnc" id="L428" title="All 2 branches missed.">        if (null != projectToCRS) {</span>
+<span class="nc" id="L451">        MathTransform transform = null;</span>
+<span class="nc bnc" id="L452" title="All 2 branches missed.">        if (null != projectToCRS) {</span>
             try {
-<span class="nc" id="L430">                transform =</span>
-<span class="nc" id="L431">                        CRS.findMathTransform(</span>
-<span class="nc" id="L432">                                fs.getSchema().getCoordinateReferenceSystem(), projectToCRS, true);</span>
-<span class="nc" id="L433">            } catch (FactoryException e) {</span>
-<span class="nc" id="L434">                logger.error(&quot;Can not transform geometry to desired CRS.&quot;, e);</span>
-<span class="nc" id="L435">            }</span>
+<span class="nc" id="L454">                transform =</span>
+<span class="nc" id="L455">                        CRS.findMathTransform(</span>
+<span class="nc" id="L456">                                fs.getSchema().getCoordinateReferenceSystem(), projectToCRS, true);</span>
+<span class="nc" id="L457">            } catch (FactoryException e) {</span>
+<span class="nc" id="L458">                logger.error(&quot;Can not transform geometry to desired CRS.&quot;, e);</span>
+<span class="nc" id="L459">            }</span>
         }
 
         // send request to attribute source
-<span class="nc" id="L439">        try (SimpleFeatureIterator feats = fs.getFeatures(q).features()) {</span>
-<span class="nc bnc" id="L440" title="All 2 branches missed.">            while (feats.hasNext()) {</span>
-<span class="nc" id="L441">                addFields = true;</span>
+<span class="nc" id="L463">        try (SimpleFeatureIterator feats = fs.getFeatures(q).features()) {</span>
+<span class="nc bnc" id="L464" title="All 2 branches missed.">            while (feats.hasNext()) {</span>
+<span class="nc" id="L465">                addFields = true;</span>
                 // reformat found features to list of Feature, filtering on configuredAttributes
-<span class="nc" id="L443">                SimpleFeature feature = feats.next();</span>
+<span class="nc" id="L467">                SimpleFeature feature = feats.next();</span>
                 // processedGeometry can be null
-<span class="nc" id="L445">                String processedGeometry =</span>
-<span class="nc" id="L446">                        GeometryProcessor.processGeometry(</span>
-<span class="nc" id="L447">                                feature.getAttribute(sft.getGeometryAttribute()),</span>
-<span class="nc" id="L448">                                simplifyGeometry,</span>
+<span class="nc" id="L469">                String processedGeometry =</span>
+<span class="nc" id="L470">                        GeometryProcessor.processGeometry(</span>
+<span class="nc" id="L471">                                feature.getAttribute(sft.getGeometryAttribute()),</span>
+<span class="nc" id="L472">                                simplifyGeometry,</span>
                                 transform);
-<span class="nc" id="L450">                Feature newFeat =</span>
+<span class="nc" id="L474">                Feature newFeat =</span>
                         new Feature()
-<span class="nc" id="L452">                                .fid(feature.getIdentifier().getID())</span>
-<span class="nc" id="L453">                                .geometry(processedGeometry);</span>
+<span class="nc" id="L476">                                .fid(feature.getIdentifier().getID())</span>
+<span class="nc" id="L477">                                .geometry(processedGeometry);</span>
 
-<span class="nc" id="L455">                configuredAttributes.forEach(</span>
-                        configuredAttribute -&gt; {
-<span class="nc" id="L457">                            if (configuredAttribute</span>
-<span class="nc" id="L458">                                    .getAttributeName()</span>
-<span class="nc bnc" id="L459" title="All 2 branches missed.">                                    .equals(sft.getGeometryAttribute())) {</span>
-<span class="nc" id="L460">                                newFeat.putAttributesItem(</span>
-<span class="nc" id="L461">                                        configuredAttribute.getAttributeName(), processedGeometry);</span>
-                            } else {
-<span class="nc" id="L463">                                Object attrValue =</span>
-<span class="nc" id="L464">                                        feature.getAttribute(</span>
-<span class="nc" id="L465">                                                configuredAttribute.getAttributeName());</span>
-<span class="nc bnc" id="L466" title="All 2 branches missed.">                                if (attrValue instanceof Geometry) {</span>
-<span class="nc bnc" id="L467" title="All 2 branches missed.">                                    if (skipGeometryOutput) {</span>
-<span class="nc" id="L468">                                        attrValue = null;</span>
-                                    } else {
-<span class="nc" id="L470">                                        attrValue =</span>
-<span class="nc" id="L471">                                                GeometryProcessor.geometryToJson(</span>
-                                                        (Geometry) attrValue);
+<span class="nc bnc" id="L479" title="All 2 branches missed.">                if (!onlyGeometries) {</span>
+<span class="nc" id="L480">                    configuredAttributes.forEach(</span>
+                            configuredAttribute -&gt; {
+<span class="nc" id="L482">                                if (configuredAttribute</span>
+<span class="nc" id="L483">                                        .getAttributeName()</span>
+<span class="nc bnc" id="L484" title="All 2 branches missed.">                                        .equals(sft.getGeometryAttribute())) {</span>
+<span class="nc" id="L485">                                    newFeat.putAttributesItem(</span>
+<span class="nc" id="L486">                                            configuredAttribute.getAttributeName(),</span>
+                                            processedGeometry);
+                                } else {
+<span class="nc" id="L489">                                    Object attrValue =</span>
+<span class="nc" id="L490">                                            feature.getAttribute(</span>
+<span class="nc" id="L491">                                                    configuredAttribute.getAttributeName());</span>
+<span class="nc bnc" id="L492" title="All 2 branches missed.">                                    if (attrValue instanceof Geometry) {</span>
+<span class="nc bnc" id="L493" title="All 2 branches missed.">                                        if (skipGeometryOutput) {</span>
+<span class="nc" id="L494">                                            attrValue = null;</span>
+                                        } else {
+<span class="nc" id="L496">                                            attrValue =</span>
+<span class="nc" id="L497">                                                    GeometryProcessor.geometryToJson(</span>
+                                                            (Geometry) attrValue);
+                                        }
                                     }
+<span class="nc" id="L501">                                    newFeat.putAttributesItem(</span>
+<span class="nc" id="L502">                                            configuredAttribute.getAttributeName(), attrValue);</span>
                                 }
-<span class="nc" id="L475">                                newFeat.putAttributesItem(</span>
-<span class="nc" id="L476">                                        configuredAttribute.getAttributeName(), attrValue);</span>
-                            }
-<span class="nc" id="L478">                        });</span>
-<span class="nc" id="L479">                featuresResponse.addFeaturesItem(newFeat);</span>
-<span class="nc" id="L480">            }</span>
+<span class="nc" id="L504">                            });</span>
+                }
+<span class="nc" id="L506">                featuresResponse.addFeaturesItem(newFeat);</span>
+<span class="nc" id="L507">            }</span>
         } finally {
-<span class="nc" id="L482">            fs.getDataStore().dispose();</span>
+<span class="nc" id="L509">            fs.getDataStore().dispose();</span>
         }
-<span class="nc bnc" id="L484" title="All 2 branches missed.">        if (addFields) {</span>
+<span class="nc bnc" id="L511" title="All 2 branches missed.">        if (addFields) {</span>
             // get attributes from feature type
-<span class="nc" id="L486">            configuredAttributes.forEach(</span>
+<span class="nc" id="L513">            configuredAttributes.forEach(</span>
                     configuredAttribute -&gt; {
-<span class="nc" id="L488">                        AttributeDescriptor attributeDescriptor =</span>
+<span class="nc" id="L515">                        AttributeDescriptor attributeDescriptor =</span>
                                 configuredAttribute
-<span class="nc" id="L490">                                        .getFeatureType()</span>
-<span class="nc" id="L491">                                        .getAttribute(configuredAttribute.getAttributeName());</span>
-<span class="nc" id="L492">                        featuresResponse.addColumnMetadataItem(</span>
+<span class="nc" id="L517">                                        .getFeatureType()</span>
+<span class="nc" id="L518">                                        .getAttribute(configuredAttribute.getAttributeName());</span>
+<span class="nc" id="L519">                        featuresResponse.addColumnMetadataItem(</span>
                                 new ColumnMetadata()
-<span class="nc" id="L494">                                        .key(attributeDescriptor.getName())</span>
-<span class="nc" id="L495">                                        .type(</span>
-<span class="nc" id="L496">                                                ColumnMetadata.TypeEnum.fromValue(</span>
-<span class="nc" id="L497">                                                        attributeDescriptor.getType()))</span>
-<span class="nc" id="L498">                                        .alias(attributeDescriptor.getAlias()));</span>
-<span class="nc" id="L499">                    });</span>
+<span class="nc" id="L521">                                        .key(attributeDescriptor.getName())</span>
+<span class="nc" id="L522">                                        .type(</span>
+<span class="nc" id="L523">                                                ColumnMetadata.TypeEnum.fromValue(</span>
+<span class="nc" id="L524">                                                        attributeDescriptor.getType()))</span>
+<span class="nc" id="L525">                                        .alias(attributeDescriptor.getAlias()));</span>
+<span class="nc" id="L526">                    });</span>
         }
-<span class="nc" id="L501">    }</span>
+<span class="nc" id="L528">    }</span>
 
     private List&lt;ConfiguredAttribute&gt; getVisibleAttributes(
             @NotNull ApplicationLayer appLayer, @NotNull SimpleFeatureType sft) {
-<span class="nc" id="L505">        List&lt;ConfiguredAttribute&gt; configuredAttributes = appLayer.getAttributes(sft);</span>
-<span class="nc" id="L506">        return configuredAttributes.stream()</span>
-<span class="nc" id="L507">                .filter(ConfiguredAttribute::isVisible)</span>
-<span class="nc" id="L508">                .collect(Collectors.toList());</span>
+<span class="nc" id="L532">        List&lt;ConfiguredAttribute&gt; configuredAttributes = appLayer.getAttributes(sft);</span>
+<span class="nc" id="L533">        return configuredAttributes.stream()</span>
+<span class="nc" id="L534">                .filter(ConfiguredAttribute::isVisible)</span>
+<span class="nc" id="L535">                .collect(Collectors.toList());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
