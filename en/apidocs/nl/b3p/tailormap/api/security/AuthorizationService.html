@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -182,12 +182,22 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isProxiedSecuredServiceLayerInPublicApplication(nl.tailormap.viewer.config.app.Application,nl.tailormap.viewer.config.app.ApplicationLayer)">isProxiedSecuredServiceLayerInPublicApplication</a></span>&#8203;(nl.tailormap.viewer.config.app.Application&nbsp;application,
+                                               nl.tailormap.viewer.config.app.ApplicationLayer&nbsp;applicationLayer)</code></th>
+<td class="colLast">
+<div class="block">When a service is proxied with a username and password, authentication must be required for
+ the application otherwise access to the layer should be denied to prevent an app admin
+ accidentally publishing private data from a secured service in a public application.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mayUserRead(nl.tailormap.viewer.config.app.Application)">mayUserRead</a></span>&#8203;(nl.tailormap.viewer.config.app.Application&nbsp;application)</code></th>
 <td class="colLast">
 <div class="block">Verifies that this user may read this Application.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mayUserRead(nl.tailormap.viewer.config.app.ApplicationLayer,nl.tailormap.viewer.config.app.Application)">mayUserRead</a></span>&#8203;(nl.tailormap.viewer.config.app.ApplicationLayer&nbsp;applicationLayer,
            nl.tailormap.viewer.config.app.Application&nbsp;context)</code></th>
@@ -195,21 +205,21 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Verifies that this user may view an ApplicationLayer in the context of a certain Application.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mayUserRead(nl.tailormap.viewer.config.app.Level)">mayUserRead</a></span>&#8203;(nl.tailormap.viewer.config.app.Level&nbsp;level)</code></th>
 <td class="colLast">
 <div class="block">Verifies that this user may view a Level.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mayUserRead(nl.tailormap.viewer.config.services.GeoService)">mayUserRead</a></span>&#8203;(nl.tailormap.viewer.config.services.GeoService&nbsp;geoService)</code></th>
 <td class="colLast">
 <div class="block">Verifies that this user may view a GeoService.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mayUserRead(nl.tailormap.viewer.config.services.Layer)">mayUserRead</a></span>&#8203;(nl.tailormap.viewer.config.services.Layer&nbsp;layer)</code></th>
 <td class="colLast">
@@ -295,6 +305,28 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <dd><code>context</code> - the Application to verify this ApplicationLayer against</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the results from the access control checks.</dd>
+</dl>
+</li>
+</ul>
+<a id="isProxiedSecuredServiceLayerInPublicApplication(nl.tailormap.viewer.config.app.Application,nl.tailormap.viewer.config.app.ApplicationLayer)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isProxiedSecuredServiceLayerInPublicApplication</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isProxiedSecuredServiceLayerInPublicApplication&#8203;(nl.tailormap.viewer.config.app.Application&nbsp;application,
+                                                               nl.tailormap.viewer.config.app.ApplicationLayer&nbsp;applicationLayer)</pre>
+<div class="block">When a service is proxied with a username and password, authentication must be required for
+ the application otherwise access to the layer should be denied to prevent an app admin
+ accidentally publishing private data from a secured service in a public application. This
+ method checks whether this is the case for a certain ApplicationLayer in the context of an
+ Application.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>application</code> - the application (can be a mashup)</dd>
+<dd><code>applicationLayer</code> - the application layer (may belong to a parent application)</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>see above</dd>
 </dl>
 </li>
 </ul>
