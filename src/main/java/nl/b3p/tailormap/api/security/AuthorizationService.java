@@ -124,8 +124,39 @@ public class AuthorizationService {
             return true;
         }
 
+        if (this.isProxiedSecuredServiceLayerInPublicApplication(context, applicationLayer)) {
+            return false;
+        }
+
         return mayUserRead(
                 layerRepository.getByServiceAndName(geoService, applicationLayer.getLayerName()));
+    }
+
+    /**
+     * When a service is proxied with a username and password, authentication must be required for
+     * the application otherwise access to the layer should be denied to prevent an app admin
+     * accidentally publishing private data from a secured service in a public application. This
+     * method checks whether this is the case for a certain ApplicationLayer in the context of an
+     * Application.
+     *
+     * @param application the application (can be a mashup)
+     * @param applicationLayer the application layer (may belong to a parent application)
+     * @return see above
+     */
+    public boolean isProxiedSecuredServiceLayerInPublicApplication(
+            Application application, ApplicationLayer applicationLayer) {
+        GeoService geoService = applicationLayer.getService();
+        if (geoService == null) {
+            return false;
+        }
+        if (Boolean.parseBoolean(
+                String.valueOf(geoService.getDetails().get(GeoService.DETAIL_USE_PROXY)))) {
+            boolean isSecuredService =
+                    geoService.getUsername() != null && geoService.getPassword() != null;
+            return isSecuredService && !application.isAuthenticatedRequired();
+        } else {
+            return false;
+        }
     }
 
     /**

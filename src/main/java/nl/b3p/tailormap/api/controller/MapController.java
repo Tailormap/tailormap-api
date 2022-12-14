@@ -21,6 +21,7 @@ import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.LayerRepository;
 import nl.b3p.tailormap.api.repository.LevelRepository;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.util.ParseUtil;
 import nl.tailormap.viewer.config.ClobElement;
 import nl.tailormap.viewer.config.app.Application;
@@ -72,16 +73,19 @@ public class MapController {
     private final ApplicationLayerRepository applicationLayerRepository;
     private final LevelRepository levelRepository;
     private final LayerRepository layerRepository;
+    private final AuthorizationService authorizationService;
 
     public MapController(
             ApplicationRepository applicationRepository,
             ApplicationLayerRepository applicationLayerRepository,
             LevelRepository levelRepository,
-            LayerRepository layerRepository) {
+            LayerRepository layerRepository,
+            AuthorizationService authorizationService) {
         this.applicationRepository = applicationRepository;
         this.applicationLayerRepository = applicationLayerRepository;
         this.levelRepository = levelRepository;
         this.layerRepository = layerRepository;
+        this.authorizationService = authorizationService;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -218,6 +222,10 @@ public class MapController {
 
             ApplicationLayer appLayer = startLayer.getApplicationLayer();
             if (!isAuthorized(appLayer.getReaders(), authentication)) {
+                continue;
+            }
+            if (this.authorizationService.isProxiedSecuredServiceLayerInPublicApplication(
+                    a, appLayer)) {
                 continue;
             }
             layerMap.put(appLayer.getId(), startLayer);

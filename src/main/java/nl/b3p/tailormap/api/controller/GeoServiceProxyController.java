@@ -15,8 +15,6 @@ import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.TileService;
 import nl.tailormap.viewer.config.services.WMSService;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -65,8 +63,6 @@ import javax.servlet.http.HttpServletRequest;
 @Validated
 @RequestMapping(path = "/app/{appId}/layer/{appLayerId}/proxy/{protocol}")
 public class GeoServiceProxyController {
-
-    private static final Log logger = LogFactory.getLog(GeoServiceProxyController.class);
 
     @RequestMapping(method = {GET, POST})
     public ResponseEntity<?> proxy(
@@ -131,12 +127,7 @@ public class GeoServiceProxyController {
                         originalServiceUrl.build(true).getQueryParams(), requestParams);
         originalServiceUrl.replaceQueryParams(params);
 
-        return doProxy(
-                originalServiceUrl.build(true).toUri(),
-                application,
-                applicationLayer,
-                service,
-                request);
+        return doProxy(originalServiceUrl.build(true).toUri(), service, request);
     }
 
     public static MultiValueMap<String, String> buildOgcProxyRequestParams(
@@ -158,11 +149,7 @@ public class GeoServiceProxyController {
     }
 
     private static ResponseEntity<?> doProxy(
-            URI uri,
-            Application application,
-            ApplicationLayer appLayer,
-            GeoService service,
-            HttpServletRequest request) {
+            URI uri, GeoService service, HttpServletRequest request) {
         final HttpClient.Builder builder =
                 HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);
 
@@ -215,34 +202,7 @@ public class GeoServiceProxyController {
             }
         }
 
-        boolean addCredentials = service.getUsername() != null && service.getPassword() != null;
-        if (addCredentials) {
-            // An app admin should not be able to accidentally open a proxy to a secured geo service
-            // in a public app, so only allow proxying to a secured geo service in apps which
-            // require
-            // authentication.
-
-            // A geo service which is in a private network which does not require credentials /can/
-            // be 'exposed' in a public app through this proxy.
-
-            // An app may have authenticated required but "no groups checked" to allow anyone to
-            // access the service (after being logged in for the app). This might still be an
-            // inadvertent misconfiguration but less concerning.
-
-            // Previous tailormap proxy behaviour was to proxy the request but not add the
-            // authentication. This proxy sends a Forbidden response.
-
-            if (!application.isAuthenticatedRequired()) {
-                // XXX for tiled services each request logs a warning, may clutter the log...
-                logger.warn(
-                        String.format(
-                                "App %s has app layer %s from proxied secured service URL %s (username %s), but app authentication is not required. Denying proxy, even if user is authenticated.",
-                                application.getId(),
-                                appLayer.getId(),
-                                service.getUrl(),
-                                service.getUsername()));
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Forbidden");
-            }
+        if (service.getUsername() != null && service.getPassword() != null) {
             String toEncode = service.getUsername() + ":" + service.getPassword();
             requestBuilder.header(
                     "Authorization",

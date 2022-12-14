@@ -140,7 +140,8 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
                         get(
                                 "/app/5/layer/17/proxy/wms?Service=WMTS&Request=GetCapabilities&Version=1.0.0"))
                 .andExpect(status().isForbidden())
-                .andExpect(content().string("Forbidden"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("Access denied"));
     }
 
     @Test
@@ -151,7 +152,9 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
                         get(
                                 "/app/6/layer/19/proxy/wms?Service=WMTS&Request=GetCapabilities&Version=1.0.0"))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("{\"code\":401,\"url\":\"/login\"}"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value(401))
+                .andExpect(jsonPath("$.url").value("/login"));
     }
 
     @Test
