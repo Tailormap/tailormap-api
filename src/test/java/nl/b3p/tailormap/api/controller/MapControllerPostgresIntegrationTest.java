@@ -117,4 +117,22 @@ class MapControllerPostgresIntegrationTest {
                                 .doesNotExist())
                 .andReturn();
     }
+
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void should_contain_description() throws Exception {
+        mockMvc.perform(get("/app/1/map"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(
+                        // Level description
+                        jsonPath("$.layerTreeNodes[?(@.name === 'gebieden')].description")
+                                .value("Enkele externe lagen van PDOK met WFS koppeling."))
+                .andExpect(
+                        // Application layer description
+                        jsonPath(
+                                        "$.layerTreeNodes[?(@.name === 'begroeidterreindeel')].description")
+                                .value("Deze laag toont gegevens uit PostGIS."))
+                .andReturn();
+    }
 }
