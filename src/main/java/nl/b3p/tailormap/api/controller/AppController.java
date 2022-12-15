@@ -16,7 +16,6 @@ import nl.b3p.tailormap.api.model.Component;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.MetadataRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
-import nl.tailormap.viewer.config.ClobElement;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.metadata.Metadata;
 
@@ -36,6 +35,7 @@ import java.io.Serializable;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -123,10 +123,9 @@ public class AppController {
             Component[] components;
             try {
                 String componentsJson =
-                        application
-                                .getDetails()
-                                .getOrDefault(COMPONENTS_CONFIG_KEY, new ClobElement("[]"))
-                                .getValue();
+                        Optional.ofNullable(application.getDetails().get(COMPONENTS_CONFIG_KEY))
+                                .map(Object::toString)
+                                .orElse("[]");
                 components = new ObjectMapper().readValue(componentsJson, Component[].class);
             } catch (JacksonException je) {
                 throw new ResponseStatusException(
