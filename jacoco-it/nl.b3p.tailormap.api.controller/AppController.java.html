@@ -162,24 +162,29 @@ public class AppController {
 <span class="fc" id="L162">        Application application = null;</span>
 <span class="fc bfc" id="L163" title="All 2 branches covered.">        if (name != null) {</span>
 <span class="fc bfc" id="L164" title="All 2 branches covered.">            if (null != version) {</span>
-<span class="fc" id="L165">                application = applicationRepository.findByNameAndVersion(name, version);</span>
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">                if (version.startsWith(&quot;v&quot;)) {</span>
+                    // In links to applications with version, a 'v' is added before the actual
+                    // version entered by an app admin
+<span class="nc" id="L168">                    version = version.substring(1);</span>
+                }
+<span class="fc" id="L170">                application = applicationRepository.findByNameAndVersion(name, version);</span>
             } else {
-<span class="fc" id="L167">                application =</span>
-<span class="fc" id="L168">                        applicationRepository.findByName(name).stream()</span>
-<span class="fc" id="L169">                                .sorted()</span>
-<span class="fc" id="L170">                                .findFirst()</span>
-<span class="fc" id="L171">                                .orElse(null);</span>
+<span class="fc" id="L172">                application =</span>
+<span class="fc" id="L173">                        applicationRepository.findByName(name).stream()</span>
+<span class="fc" id="L174">                                .sorted()</span>
+<span class="fc" id="L175">                                .findFirst()</span>
+<span class="fc" id="L176">                                .orElse(null);</span>
             }
 
-<span class="fc bfc" id="L174" title="All 2 branches covered.">            if (null == application) {</span>
-<span class="fc" id="L175">                logger.warn(&quot;No application found with name &quot; + name + &quot; and version &quot; + version);</span>
-<span class="fc" id="L176">                String decodedName = URLDecoder.decode(name, StandardCharsets.UTF_8);</span>
-<span class="pc bpc" id="L177" title="1 of 2 branches missed.">                if (!decodedName.equals(name)) {</span>
-<span class="nc" id="L178">                    return findApplication(decodedName, version);</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">            if (null == application) {</span>
+<span class="fc" id="L180">                logger.warn(&quot;No application found with name &quot; + name + &quot; and version &quot; + version);</span>
+<span class="fc" id="L181">                String decodedName = URLDecoder.decode(name, StandardCharsets.UTF_8);</span>
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">                if (!decodedName.equals(name)) {</span>
+<span class="nc" id="L183">                    return findApplication(decodedName, version);</span>
                 }
             }
         }
-<span class="fc" id="L182">        return application;</span>
+<span class="fc" id="L187">        return application;</span>
     }
 
     /**
@@ -189,13 +194,13 @@ public class AppController {
      */
     private Application getDefaultViewer() {
         try {
-<span class="fc" id="L192">            Metadata md = metadataRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);</span>
-<span class="fc" id="L193">            String appId = md.getConfigValue();</span>
-<span class="fc" id="L194">            Long id = Long.parseLong(appId);</span>
-<span class="fc" id="L195">            return applicationRepository.getReferenceById(id);</span>
-<span class="fc" id="L196">        } catch (NullPointerException | EntityNotFoundException e) {</span>
-<span class="fc" id="L197">            logger.warn(&quot;No default application configured. &quot; + e.getMessage());</span>
-<span class="fc" id="L198">            return null;</span>
+<span class="fc" id="L197">            Metadata md = metadataRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);</span>
+<span class="fc" id="L198">            String appId = md.getConfigValue();</span>
+<span class="fc" id="L199">            Long id = Long.parseLong(appId);</span>
+<span class="fc" id="L200">            return applicationRepository.getReferenceById(id);</span>
+<span class="fc" id="L201">        } catch (NullPointerException | EntityNotFoundException e) {</span>
+<span class="fc" id="L202">            logger.warn(&quot;No default application configured. &quot; + e.getMessage());</span>
+<span class="fc" id="L203">            return null;</span>
         }
     }
 }
