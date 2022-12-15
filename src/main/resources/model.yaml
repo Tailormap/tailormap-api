@@ -167,6 +167,9 @@ components:
         name:
           description: Display name of this tree node. If appLayerId is present, this is the title of that AppLayer.
           type: string
+        description:
+          description: Description for this node entered by application admin.
+          type: string
         childrenIds:
           description: Ordered list of ids of LayerTreeNodes that are children of this node.
           type: array

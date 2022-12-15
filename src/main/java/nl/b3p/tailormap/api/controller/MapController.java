@@ -60,6 +60,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -354,6 +355,7 @@ public class MapController {
                         new LayerTreeNode()
                                 .id(String.format("lvl_%d", level.getId()))
                                 .name(level.getName())
+                                .description(level.getInfo())
                                 .root(false)
                                 .childrenIds(new ArrayList<>());
 
@@ -381,6 +383,10 @@ public class MapController {
                             new LayerTreeNode()
                                     .id(String.format("lyr_%d", layer.getId()))
                                     .name(getNameForAppLayer(layer, layers))
+                                    .description(
+                                            Optional.ofNullable(layer.getDetails().get("context"))
+                                                    .map(ClobElement::getValue)
+                                                    .orElse(null))
                                     .appLayerId((int) (long) layer.getId())
                                     .root(false)
                                     .childrenIds(new ArrayList<>());
@@ -520,7 +526,7 @@ public class MapController {
                                                             .getDetails()
                                                             .getOrDefault(
                                                                     "tiling.disable",
-                                                                    new ClobElement("false)"))
+                                                                    new ClobElement("false"))
                                                             .getValue()))
                             .tilingGutter(tilingGutter)
                             .capabilities(geoService.getCapabilitiesDoc());
