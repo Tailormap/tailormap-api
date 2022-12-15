@@ -1,7 +1,7 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.referencing,ReferencingHelper,17,43,1,1,5,10,2,2,1,2
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,FeaturesController,762,30,73,5,210,8,46,3,8,2
-Aggregate Test Coverage,nl.b3p.tailormap.api.controller,MapController,255,939,40,98,79,231,36,44,1,10
+Aggregate Test Coverage,nl.b3p.tailormap.api.controller,MapController,255,954,40,98,79,236,36,44,1,10
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,AppController,17,213,2,18,4,61,2,12,0,4
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,GeoServiceProxyController,370,56,28,6,75,8,22,4,8,1
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerDescriptionController,124,0,4,0,37,0,6,0,4,0
