@@ -23,7 +23,6 @@ import nl.b3p.tailormap.api.repository.LayerRepository;
 import nl.b3p.tailormap.api.repository.LevelRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.util.ParseUtil;
-import nl.tailormap.viewer.config.ClobElement;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.Level;
@@ -34,6 +33,7 @@ import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.TileService;
 import nl.tailormap.viewer.config.services.WMSService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -137,7 +137,10 @@ public class MapController {
 
     private String getNameForAppLayer(
             @NotNull ApplicationLayer layer, @NotNull List<Layer> layers) {
-        if (ClobElement.isNotBlank(layer.getDetails().get("titleAlias"))) {
+        if (StringUtils.isNotBlank(
+                Optional.ofNullable(layer.getDetails().get("titleAlias"))
+                        .map(Object::toString)
+                        .orElse(""))) {
             return layer.getDetails().get("titleAlias").getValue();
         } else {
             Layer serviceLayer = null;
@@ -385,7 +388,7 @@ public class MapController {
                                     .name(getNameForAppLayer(layer, layers))
                                     .description(
                                             Optional.ofNullable(layer.getDetails().get("context"))
-                                                    .map(ClobElement::getValue)
+                                                    .map(Object::toString)
                                                     .orElse(null))
                                     .appLayerId((int) (long) layer.getId())
                                     .root(false)
@@ -413,25 +416,15 @@ public class MapController {
             String hiDpiSubstituteLayer = null;
 
             if (serviceLayer != null) {
-                ClobElement ce = serviceLayer.getDetails().get("hidpi.mode");
-                if (ce != null) {
-                    try {
-                        hiDpiMode = AppLayer.HiDpiModeEnum.fromValue(ce.getValue());
-                    } catch (IllegalArgumentException e) {
-                        logger.warn(
-                                String.format(
-                                        "App #%s (%s): invalid hidpi.mode enum value for app layer #%s, service layer #%s (%s)",
-                                        a.getId(),
-                                        a.getNameWithVersion(),
-                                        l.getId(),
-                                        serviceLayer.getId(),
-                                        serviceLayer.getName()));
-                    }
-                }
-                ce = serviceLayer.getDetails().get("hidpi.substitute_layer");
-                if (ce != null) {
-                    hiDpiSubstituteLayer = ce.getValue();
-                }
+                hiDpiMode =
+                        Optional.ofNullable(serviceLayer.getDetails().get("hidpi.mode"))
+                                .map(Object::toString)
+                                .map(AppLayer.HiDpiModeEnum::fromValue)
+                                .orElse(null);
+                hiDpiSubstituteLayer =
+                        Optional.ofNullable(serviceLayer.getDetails().get("hidpi.substitute_layer"))
+                                .map(Object::toString)
+                                .orElse(null);
             }
 
             assert serviceLayer != null;
@@ -483,51 +476,37 @@ public class MapController {
 
             mapResponse.addAppLayersItem(appLayer);
 
-            // Use this default if saved before the form default was added in admin
-            Service.ServerTypeEnum serviceServerType = Service.ServerTypeEnum.AUTO;
-            ClobElement ce = geoService.getDetails().get("serverType");
-            if (ce != null) {
-                try {
-                    serviceServerType = Service.ServerTypeEnum.fromValue(ce.getValue());
-                } catch (IllegalArgumentException e) {
-                    logger.warn(
-                            String.format(
-                                    "App #%s (%s): invalid serverType enum value for service #%s (%s)",
-                                    a.getId(),
-                                    a.getNameWithVersion(),
-                                    geoService.getId(),
-                                    geoService.getName()));
-                }
-            }
-            Integer tilingGutter = null;
-            ce = geoService.getDetails().get("tiling.gutter");
-            if (ce != null) {
-                try {
-                    tilingGutter = Integer.parseInt(ce.getValue());
-                } catch (NumberFormatException ignored) {
-                    // ignored
-                }
-            }
+            Service.ServerTypeEnum serviceServerType =
+                    Optional.ofNullable(geoService.getDetails().get("serverType"))
+                            .map(Object::toString)
+                            .map(Service.ServerTypeEnum::fromValue)
+                            .orElse(
+                                    // Use this default if saved before the form
+                                    // default was added in admin
+                                    Service.ServerTypeEnum.AUTO);
+            Integer tilingGutter =
+                    Optional.ofNullable(geoService.getDetails().get("tiling.gutter"))
+                            .map(Object::toString)
+                            .map(Integer::parseInt)
+                            .orElse(null);
+
+            boolean tilingDisabled =
+                    Optional.ofNullable(geoService.getDetails().get("tiling.disable"))
+                            .map(Object::toString)
+                            .map(Boolean::parseBoolean)
+                            .orElse(false);
+
+            String url =
+                    proxied ? getProxyUrl(geoService, a, applicationLayer) : geoService.getUrl();
 
             Service s =
                     new Service()
-                            .url(
-                                    proxied
-                                            ? getProxyUrl(geoService, a, applicationLayer)
-                                            : geoService.getUrl())
+                            .url(url)
                             .id(geoService.getId())
                             .name(geoService.getName())
                             .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))
                             .serverType(serviceServerType)
-                            .tilingDisabled(
-                                    "true"
-                                            .equals(
-                                                    geoService
-                                                            .getDetails()
-                                                            .getOrDefault(
-                                                                    "tiling.disable",
-                                                                    new ClobElement("false"))
-                                                            .getValue()))
+                            .tilingDisabled(tilingDisabled)
                             .tilingGutter(tilingGutter)
                             .capabilities(geoService.getCapabilitiesDoc());
             if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {
