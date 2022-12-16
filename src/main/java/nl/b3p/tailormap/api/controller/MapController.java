@@ -466,6 +466,7 @@ public class MapController {
                             .layerName(serviceLayer.getName())
                             .title(getNameForAppLayer(applicationLayer, layers))
                             .serviceId(applicationLayer.getService().getId())
+                            .url(proxied ? getProxyUrl(geoService, a, applicationLayer) : null)
                             .visible(l.isChecked())
                             .maxScale(serviceLayer.getMaxScale())
                             .minScale(serviceLayer.getMinScale())
@@ -496,12 +497,9 @@ public class MapController {
                             .map(Boolean::parseBoolean)
                             .orElse(false);
 
-            String url =
-                    proxied ? getProxyUrl(geoService, a, applicationLayer) : geoService.getUrl();
-
             Service s =
                     new Service()
-                            .url(url)
+                            .url(proxied ? null : geoService.getUrl())
                             .id(geoService.getId())
                             .name(geoService.getName())
                             .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))

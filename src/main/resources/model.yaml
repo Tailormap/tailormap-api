@@ -117,6 +117,9 @@ components:
           description: A reference to a Service id.
           type: integer
           format: int64
+        url:
+          description: URL for this specific layer. If empty use URL from the service.
+          type: string
         visible:
           type: boolean
         minScale:
@@ -391,10 +394,7 @@ components:
           nullable: false
         url:
           type: string
-          nullable: false
-        useProxy:
-          type: boolean
-          default: false
+          nullable: true
         styleLibraries:
           type: object
         serverType:
