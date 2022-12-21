@@ -5,6 +5,9 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import io.micrometer.core.annotation.Timed;
 
 import nl.b3p.tailormap.api.annotation.AppRestController;
@@ -35,7 +38,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,15 +57,15 @@ public class UniqueValuesController {
     @Value(&quot;${tailormap-api.unique.use_geotools_unique_function:true}&quot;)
     private boolean useGeotoolsUniqueFunction;
 
-<span class="nc" id="L58">    private final FilterFactory2 ff =</span>
-<span class="nc" id="L59">            CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());</span>
-<span class="nc" id="L60">    private final Log logger = LogFactory.getLog(getClass());</span>
+<span class="nc" id="L60">    private final FilterFactory2 ff =</span>
+<span class="nc" id="L61">            CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());</span>
+<span class="nc" id="L62">    private final Log logger = LogFactory.getLog(getClass());</span>
     private final LayerRepository layerRepository;
 
     @Autowired
-<span class="nc" id="L64">    public UniqueValuesController(LayerRepository layerRepository) {</span>
-<span class="nc" id="L65">        this.layerRepository = layerRepository;</span>
-<span class="nc" id="L66">    }</span>
+<span class="nc" id="L66">    public UniqueValuesController(LayerRepository layerRepository) {</span>
+<span class="nc" id="L67">        this.layerRepository = layerRepository;</span>
+<span class="nc" id="L68">    }</span>
 
     /**
      * Get a list of unique attribute values for a given attribute name.
@@ -75,7 +77,7 @@ public class UniqueValuesController {
      *     this attribute)
      * @return a list of unique values, can be empty parsed
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = {GET, POST})
     @Timed(
             value = &quot;get_unique_attributes&quot;,
             description = &quot;time spent to process get unique attributes call&quot;)
@@ -84,81 +86,81 @@ public class UniqueValuesController {
             @ModelAttribute ApplicationLayer applicationLayer,
             @PathVariable(&quot;attributeName&quot;) String attributeName,
             @RequestParam(required = false) String filter) {
-<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (StringUtils.isBlank(attributeName)) {</span>
-<span class="nc" id="L88">            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Attribute name is required&quot;);</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        if (StringUtils.isBlank(attributeName)) {</span>
+<span class="nc" id="L90">            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Attribute name is required&quot;);</span>
         }
 
-<span class="nc" id="L91">        UniqueValuesResponse uniqueValuesResponse =</span>
-<span class="nc" id="L92">                getUniqueValues(applicationLayer, attributeName, filter);</span>
-<span class="nc" id="L93">        return ResponseEntity.status(HttpStatus.OK).body(uniqueValuesResponse);</span>
+<span class="nc" id="L93">        UniqueValuesResponse uniqueValuesResponse =</span>
+<span class="nc" id="L94">                getUniqueValues(applicationLayer, attributeName, filter);</span>
+<span class="nc" id="L95">        return ResponseEntity.status(HttpStatus.OK).body(uniqueValuesResponse);</span>
     }
 
     private UniqueValuesResponse getUniqueValues(
             ApplicationLayer appLayer, String attributeName, String filter) {
-<span class="nc" id="L98">        final UniqueValuesResponse uniqueValuesResponse =</span>
-<span class="nc" id="L99">                new UniqueValuesResponse().filterApplied(false);</span>
-<span class="nc" id="L100">        final Layer layer =</span>
-<span class="nc" id="L101">                layerRepository.getByServiceAndName(appLayer.getService(), appLayer.getLayerName());</span>
-<span class="nc" id="L102">        final SimpleFeatureType sft = layer.getFeatureType();</span>
-<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (null == sft) {</span>
-<span class="nc" id="L104">            return uniqueValuesResponse;</span>
+<span class="nc" id="L100">        final UniqueValuesResponse uniqueValuesResponse =</span>
+<span class="nc" id="L101">                new UniqueValuesResponse().filterApplied(false);</span>
+<span class="nc" id="L102">        final Layer layer =</span>
+<span class="nc" id="L103">                layerRepository.getByServiceAndName(appLayer.getService(), appLayer.getLayerName());</span>
+<span class="nc" id="L104">        final SimpleFeatureType sft = layer.getFeatureType();</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (null == sft) {</span>
+<span class="nc" id="L106">            return uniqueValuesResponse;</span>
         }
 
         try {
-<span class="nc" id="L108">            Filter existingFilter = null;</span>
-<span class="nc bnc" id="L109" title="All 2 branches missed.">            if (null != filter) {</span>
-<span class="nc" id="L110">                existingFilter = ECQL.toFilter(filter);</span>
+<span class="nc" id="L110">            Filter existingFilter = null;</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">            if (null != filter) {</span>
+<span class="nc" id="L112">                existingFilter = ECQL.toFilter(filter);</span>
             }
-<span class="nc" id="L112">            logger.trace(&quot;existingFilter: &quot; + existingFilter);</span>
+<span class="nc" id="L114">            logger.trace(&quot;existingFilter: &quot; + existingFilter);</span>
 
-<span class="nc" id="L114">            Filter notNull = ff.not(ff.isNull(ff.property(attributeName)));</span>
-<span class="nc" id="L115">            Filter f = notNull;</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">            if (null != existingFilter) {</span>
-<span class="nc" id="L117">                f = ff.and(notNull, existingFilter);</span>
-<span class="nc" id="L118">                uniqueValuesResponse.filterApplied(true);</span>
+<span class="nc" id="L116">            Filter notNull = ff.not(ff.isNull(ff.property(attributeName)));</span>
+<span class="nc" id="L117">            Filter f = notNull;</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (null != existingFilter) {</span>
+<span class="nc" id="L119">                f = ff.and(notNull, existingFilter);</span>
+<span class="nc" id="L120">                uniqueValuesResponse.filterApplied(true);</span>
             }
 
-<span class="nc" id="L121">            Query q = new Query(sft.getTypeName(), f);</span>
-<span class="nc" id="L122">            q.setPropertyNames(attributeName);</span>
-<span class="nc" id="L123">            q.setSortBy(ff.sort(attributeName, SortOrder.ASCENDING));</span>
-<span class="nc" id="L124">            logger.trace(&quot;Unique values query: &quot; + q);</span>
+<span class="nc" id="L123">            Query q = new Query(sft.getTypeName(), f);</span>
+<span class="nc" id="L124">            q.setPropertyNames(attributeName);</span>
+<span class="nc" id="L125">            q.setSortBy(ff.sort(attributeName, SortOrder.ASCENDING));</span>
+<span class="nc" id="L126">            logger.trace(&quot;Unique values query: &quot; + q);</span>
 
-<span class="nc" id="L126">            SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);</span>
+<span class="nc" id="L128">            SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);</span>
             // and then there are 2 scenarios:
             // there might be a performance benefit for one or the other
-<span class="nc bnc" id="L129" title="All 2 branches missed.">            if (!useGeotoolsUniqueFunction) {</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">            if (!useGeotoolsUniqueFunction) {</span>
                 // #1 use a feature visitor to get the unique values
                 // not recommended, as it may not be performant
-<span class="nc" id="L132">                logger.trace(&quot;Using feature visitor to get unique values&quot;);</span>
-<span class="nc" id="L133">                fs.getFeatures(q)</span>
-<span class="nc" id="L134">                        .accepts(</span>
+<span class="nc" id="L134">                logger.trace(&quot;Using feature visitor to get unique values&quot;);</span>
+<span class="nc" id="L135">                fs.getFeatures(q)</span>
+<span class="nc" id="L136">                        .accepts(</span>
                                 feature -&gt;
-<span class="nc" id="L136">                                        uniqueValuesResponse.addValuesItem(</span>
-<span class="nc" id="L137">                                                feature.getProperty(attributeName).getValue()),</span>
+<span class="nc" id="L138">                                        uniqueValuesResponse.addValuesItem(</span>
+<span class="nc" id="L139">                                                feature.getProperty(attributeName).getValue()),</span>
                                 null);
             } else {
                 // #2 or use a Function to get the unique values
                 // this is the recommended way, uses SLQ &quot;distinct&quot;
-<span class="nc" id="L142">                logger.trace(&quot;Using geotools unique collection function to get unique values&quot;);</span>
-<span class="nc" id="L143">                Function unique = ff.function(&quot;Collection_Unique&quot;, ff.property(attributeName));</span>
-<span class="nc" id="L144">                Object o = unique.evaluate(fs.getFeatures(q));</span>
-<span class="nc bnc" id="L145" title="All 2 branches missed.">                if (o instanceof Set) {</span>
+<span class="nc" id="L144">                logger.trace(&quot;Using geotools unique collection function to get unique values&quot;);</span>
+<span class="nc" id="L145">                Function unique = ff.function(&quot;Collection_Unique&quot;, ff.property(attributeName));</span>
+<span class="nc" id="L146">                Object o = unique.evaluate(fs.getFeatures(q));</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">                if (o instanceof Set) {</span>
                     @SuppressWarnings(&quot;unchecked&quot;)
-<span class="nc" id="L147">                    Set&lt;Object&gt; uniqueValues = (Set&lt;Object&gt;) o;</span>
-<span class="nc" id="L148">                    uniqueValuesResponse.setValues(uniqueValues);</span>
+<span class="nc" id="L149">                    Set&lt;Object&gt; uniqueValues = (Set&lt;Object&gt;) o;</span>
+<span class="nc" id="L150">                    uniqueValuesResponse.setValues(uniqueValues);</span>
                 }
             }
 
-<span class="nc" id="L152">            fs.getDataStore().dispose();</span>
-<span class="nc" id="L153">        } catch (CQLException e) {</span>
-<span class="nc" id="L154">            logger.error(&quot;Could not parse requested filter.&quot;, e);</span>
-<span class="nc" id="L155">            throw new ResponseStatusException(</span>
+<span class="nc" id="L154">            fs.getDataStore().dispose();</span>
+<span class="nc" id="L155">        } catch (CQLException e) {</span>
+<span class="nc" id="L156">            logger.error(&quot;Could not parse requested filter.&quot;, e);</span>
+<span class="nc" id="L157">            throw new ResponseStatusException(</span>
                     HttpStatus.BAD_REQUEST, &quot;Could not parse requested filter.&quot;);
-<span class="nc" id="L157">        } catch (IOException e) {</span>
-<span class="nc" id="L158">            logger.error(&quot;Could not retrieve attribute data.&quot;, e);</span>
-<span class="nc" id="L159">        }</span>
+<span class="nc" id="L159">        } catch (IOException e) {</span>
+<span class="nc" id="L160">            logger.error(&quot;Could not retrieve attribute data.&quot;, e);</span>
+<span class="nc" id="L161">        }</span>
 
-<span class="nc" id="L161">        return uniqueValuesResponse;</span>
+<span class="nc" id="L163">        return uniqueValuesResponse;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
