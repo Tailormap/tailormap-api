@@ -90,8 +90,7 @@ class MapControllerPostgresIntegrationTest {
                                         "$.services[?(@.name == 'Bestuurlijke Gebieden View Service (proxied)')].url")
                                 .value(contains(nullValue())))
                 .andExpect(
-                        jsonPath(
-                                "$.appLayers[?(@.layerName === \"Gemeentegebied\")].url")
+                        jsonPath("$.appLayers[?(@.layerName === \"Gemeentegebied\")].url")
                                 // Need to use contains() because jsonPath() returns an array even
                                 // when the expression resolves to a single scalar property
                                 .value(contains(endsWith("/app/5/layer/15/proxy/wms"))))
@@ -99,8 +98,7 @@ class MapControllerPostgresIntegrationTest {
                         jsonPath("$.services[?(@.name == 'PDOK HWH luchtfoto (proxied)')].url")
                                 .value(contains(nullValue())))
                 .andExpect(
-                        jsonPath(
-                                "$.appLayers[?(@.layerName === \"Actueel_ortho25\")].url")
+                        jsonPath("$.appLayers[?(@.layerName === \"Actueel_ortho25\")].url")
                                 .value(contains(endsWith("/app/5/layer/16/proxy/wmts"))))
                 .andExpect(
                         jsonPath(
@@ -142,7 +140,10 @@ class MapControllerPostgresIntegrationTest {
                         // Application layer description
                         jsonPath(
                                         "$.layerTreeNodes[?(@.name === 'begroeidterreindeel')].description")
-                                .value(contains(startsWith("Deze laag toont gegevens uit http://www.postgis.net/"))))
+                                .value(
+                                        contains(
+                                                startsWith(
+                                                        "Deze laag toont gegevens uit http://www.postgis.net/"))))
                 .andReturn();
     }
 }
