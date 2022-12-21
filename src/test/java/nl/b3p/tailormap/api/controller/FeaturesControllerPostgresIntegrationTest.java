@@ -23,6 +23,7 @@ import nl.b3p.tailormap.api.security.SecurityConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,6 +46,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 @SpringBootTest(
@@ -1100,5 +1102,34 @@ class FeaturesControllerPostgresIntegrationTest {
                         .andExpect(jsonPath("$.features").isArray())
                         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
                         .andReturn();
+    }
+
+    @Test
+    @SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.SystemPrintln"})
+    @Timeout(value = 10, unit = TimeUnit.SECONDS)
+    void shouldHandleManyOrs() throws Exception {
+        // A CQL expression with around 26 OR's triggers a O(n^2)-like execution time in
+        // JDBCFeatureSource.splitFilter() which uses a PostPreProcessFilterSplittingVisitor
+        StringBuilder filter = new StringBuilder();
+        int orCount = 26;
+        for (int i = 0; i < orCount; i++) {
+            if (i > 0) {
+                filter.append(" or ");
+            }
+            filter.append("relatievehoogteligging = ").append(i + 1);
+        }
+        System.out.println("Testing CQL: " + filter);
+
+        mockMvc.perform(
+                        get(begroeidterreindeelUrlPostgis)
+                                .param("filter", filter.toString())
+                                .param("page", "1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.page").value(1))
+                .andExpect(jsonPath("$.pageSize").value(pageSize))
+                .andExpect(jsonPath("$.total").value(2))
+                .andExpect(jsonPath("$.features").isArray())
+                .andReturn();
     }
 }
