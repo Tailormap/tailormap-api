@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT
   </parent>
   <groupId>nl.b3p.tailormap</groupId>
   <artifactId>tailormap-api</artifactId>
-  <version>10.0.0-rc2</version>
+  <version>10.0.0-rc3-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Tailormap API</name>
   <description>Tailormap API provides the OpenAPI for Tailormap</description>
@@ -63,7 +63,7 @@ SPDX-License-Identifier: MIT
   <scm>
     <connection>scm:git:git@github.com:B3Partners/tailormap-api.git</connection>
     <developerConnection>scm:git:git@github.com:B3Partners/tailormap-api.git</developerConnection>
-    <tag>tailormap-api-10.0.0-rc2</tag>
+    <tag>HEAD</tag>
     <url>https://github.com/B3Partners/tailormap-api/</url>
   </scm>
   <issueManagement>
@@ -860,13 +860,13 @@ SPDX-License-Identifier: MIT
                   <!-- parse the version number from `INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '49'); `-->
                   <filterchain>
                     <linecontains>
-                      <contains value="'database_version'"></contains>
+                      <contains value="'database_version'" />
                     </linecontains>
-                    <deletecharacters chars=",()';"></deletecharacters>
-                    <striplinebreaks></striplinebreaks>
+                    <deletecharacters chars=",()';" />
+                    <striplinebreaks />
                     <tokenfilter>
-                      <stringtokenizer></stringtokenizer>
-                      <containsregex pattern="([0-9]{2})" replace="\0"></containsregex>
+                      <stringtokenizer />
+                      <containsregex pattern="([0-9]{2})" replace="\0" />
                     </tokenfilter>
                   </filterchain>
                 </loadfile>
@@ -952,7 +952,7 @@ SPDX-License-Identifier: MIT
                   <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
                   <includes>**/testdata.sql</includes>
                   <fileMappers>
-                    <org.codehaus.plexus.components.io.filemappers.FlattenFileMapper></org.codehaus.plexus.components.io.filemappers.FlattenFileMapper>
+                    <org.codehaus.plexus.components.io.filemappers.FlattenFileMapper />
                     <org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
                       <pattern>testdata.sql</pattern>
                       <replacement>import.sql</replacement>
