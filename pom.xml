@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT
   </parent>
   <groupId>nl.b3p.tailormap</groupId>
   <artifactId>tailormap-api</artifactId>
-  <version>10.0.0-rc2-SNAPSHOT</version>
+  <version>10.0.0-rc2</version>
   <packaging>jar</packaging>
   <name>Tailormap API</name>
   <description>Tailormap API provides the OpenAPI for Tailormap</description>
@@ -63,7 +63,7 @@ SPDX-License-Identifier: MIT
   <scm>
     <connection>scm:git:git@github.com:B3Partners/tailormap-api.git</connection>
     <developerConnection>scm:git:git@github.com:B3Partners/tailormap-api.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>tailormap-api-10.0.0-rc2</tag>
     <url>https://github.com/B3Partners/tailormap-api/</url>
   </scm>
   <issueManagement>
