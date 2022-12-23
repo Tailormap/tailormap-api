@@ -1416,26 +1416,43 @@ SPDX-License-Identifier: MIT
             <artifactId>docker-maven-plugin</artifactId>
             <configuration>
               <verbose>true</verbose>
+              <imagePullPolicy>Always</imagePullPolicy>
               <images>
                 <image>
                   <name>${docker.deploy.repo}/b3partners/%a:%l</name>
+                  <build>
+                    <dockerFile>${project.basedir}/Dockerfile</dockerFile>
+                    <args>
+                      <TAILORMAP_API_VERSION>${project.version}</TAILORMAP_API_VERSION>
+                    </args>
+                    <buildx>
+                      <platforms>
+                        <platform>linux/amd64</platform>
+                        <platform>linux/arm64</platform>
+                      </platforms>
+                    </buildx>
+                  </build>
+                </image>
+                <image>
+                  <name>${docker.deploy.repo}/b3partners/%a:latest</name>
+                  <build>
+                    <dockerFile>${project.basedir}/Dockerfile</dockerFile>
+                    <args>
+                      <TAILORMAP_API_VERSION>${project.version}</TAILORMAP_API_VERSION>
+                    </args>
+                    <buildx>
+                      <platforms>
+                        <platform>linux/amd64</platform>
+                        <platform>linux/arm64</platform>
+                      </platforms>
+                    </buildx>
+                  </build>
                 </image>
               </images>
             </configuration>
             <executions>
               <execution>
-                <id>docker-tag</id>
-                <goals>
-                  <goal>tag</goal>
-                </goals>
-                <phase>verify</phase>
-                <configuration>
-                  <tagName>latest</tagName>
-                  <repo>${docker.deploy.repo}/b3partners</repo>
-                </configuration>
-              </execution>
-              <execution>
-                <id>docker-push-latest</id>
+                <id>docker-push</id>
                 <goals>
                   <goal>push</goal>
                 </goals>
@@ -1443,6 +1460,9 @@ SPDX-License-Identifier: MIT
                 <configuration>
                   <verbose>true</verbose>
                   <images>
+                    <image>
+                      <name>${docker.deploy.repo}/b3partners/%a:%l</name>
+                    </image>
                     <image>
                       <name>${docker.deploy.repo}/b3partners/%a:latest</name>
                     </image>
