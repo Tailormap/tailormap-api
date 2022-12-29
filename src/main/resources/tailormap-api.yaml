@@ -138,10 +138,7 @@ components:
             - 'en_US'
           default: 'nl_NL'
         styling:
-          description: 'styling information such as support- and backing colours etc.'
-          type: object
-          additionalProperties:
-            type: string
+          $ref: './model.yaml#/components/schemas/AppStyling'
         components:
           description: '
           Provides the collection of configured components (controls) for the application.

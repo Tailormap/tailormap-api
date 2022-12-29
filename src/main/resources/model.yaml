@@ -459,3 +459,19 @@ components:
                   title: 'FeatureReport',
                   subTitle: 'detail about parcel $1',
                   layers: [ ] }
+
+    AppStyling:
+      description: 'model for describing the style of an application'
+      type: object
+      properties:
+        primaryColor:
+          description: 'the primary color for an application'
+          type: string
+          nullable: true
+        logo:
+          description: 'application logo'
+          type: string
+          nullable: true
+      example:
+        primaryColor: '#6236ff'
+        logo: '<<base64 string>> | <<url>>'
