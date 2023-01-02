@@ -151,7 +151,7 @@ SPDX-License-Identifier: MIT
     <docker.deploy.repo>ghcr.io</docker.deploy.repo>
     <!-- skip QA checks -->
     <skipQA>false</skipQA>
-    <pmd.version>6.52.0</pmd.version>
+    <pmd.version>6.53.0</pmd.version>
     <errorProne.version>2.16</errorProne.version>
     <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
     <compiler.lint>deprecation,unchecked</compiler.lint>
