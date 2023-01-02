@@ -125,11 +125,11 @@ public class AppController {
 
             Component[] components;
             try {
-<span class="fc" id="L128">                String componentsJson =</span>
+<span class="fc" id="L128">                String json =</span>
 <span class="fc" id="L129">                        Optional.ofNullable(application.getDetails().get(COMPONENTS_CONFIG_KEY))</span>
 <span class="fc" id="L130">                                .map(Object::toString)</span>
 <span class="fc" id="L131">                                .orElse(&quot;[]&quot;);</span>
-<span class="fc" id="L132">                components = new ObjectMapper().readValue(componentsJson, Component[].class);</span>
+<span class="fc" id="L132">                components = new ObjectMapper().readValue(json, Component[].class);</span>
 <span class="nc" id="L133">            } catch (JacksonException je) {</span>
 <span class="nc" id="L134">                throw new ResponseStatusException(</span>
                         HttpStatus.INTERNAL_SERVER_ERROR, &quot;Invalid components JSON&quot;, je);
@@ -137,11 +137,11 @@ public class AppController {
 
             AppStyling style;
             try {
-<span class="fc" id="L140">                String componentsJson =</span>
+<span class="fc" id="L140">                String json =</span>
 <span class="fc" id="L141">                        Optional.ofNullable(application.getDetails().get(STYLING_CONFIG_KEY))</span>
 <span class="fc" id="L142">                                .map(Object::toString)</span>
 <span class="fc" id="L143">                                .orElse(&quot;{}&quot;);</span>
-<span class="fc" id="L144">                style = new ObjectMapper().readValue(componentsJson, AppStyling.class);</span>
+<span class="fc" id="L144">                style = new ObjectMapper().readValue(json, AppStyling.class);</span>
 <span class="nc" id="L145">            } catch (JacksonException je) {</span>
 <span class="nc" id="L146">                throw new ResponseStatusException(</span>
                         HttpStatus.INTERNAL_SERVER_ERROR, &quot;Invalid app style JSON&quot;, je);
