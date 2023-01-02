@@ -125,11 +125,11 @@ public class AppController {
 
             Component[] components;
             try {
-                String componentsJson =
+                String json =
                         Optional.ofNullable(application.getDetails().get(COMPONENTS_CONFIG_KEY))
                                 .map(Object::toString)
                                 .orElse("[]");
-                components = new ObjectMapper().readValue(componentsJson, Component[].class);
+                components = new ObjectMapper().readValue(json, Component[].class);
             } catch (JacksonException je) {
                 throw new ResponseStatusException(
                         HttpStatus.INTERNAL_SERVER_ERROR, "Invalid components JSON", je);
@@ -137,11 +137,11 @@ public class AppController {
 
             AppStyling style;
             try {
-                String componentsJson =
+                String json =
                         Optional.ofNullable(application.getDetails().get(STYLING_CONFIG_KEY))
                                 .map(Object::toString)
                                 .orElse("{}");
-                style = new ObjectMapper().readValue(componentsJson, AppStyling.class);
+                style = new ObjectMapper().readValue(json, AppStyling.class);
             } catch (JacksonException je) {
                 throw new ResponseStatusException(
                         HttpStatus.INTERNAL_SERVER_ERROR, "Invalid app style JSON", je);
