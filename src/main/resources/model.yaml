@@ -122,6 +122,9 @@ components:
           type: string
         visible:
           type: boolean
+        opacity:
+          description: The opacity of the layer (in percentage, from 0-100, where 0 is "transparent" and 100 is "opaque").
+          type: integer
         minScale:
           description: Minimum scale at which this layer should be shown or is not blank. When absent there is no minimum. As reported by the service (ScaleHint or MinScaleDenominator).
           type: number

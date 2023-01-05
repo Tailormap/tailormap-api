@@ -460,6 +460,13 @@ public class MapController {
                 }
             }
 
+            int opacity =
+                    Optional.ofNullable(applicationLayer.getDetails().get("transparency"))
+                            .map(Object::toString)
+                            .map(Integer::parseInt)
+                            .map(transparency -> 100 - transparency)
+                            .orElse(100);
+
             AppLayer appLayer =
                     new AppLayer()
                             .id(applicationLayer.getId())
@@ -468,6 +475,7 @@ public class MapController {
                             .serviceId(applicationLayer.getService().getId())
                             .url(proxied ? getProxyUrl(geoService, a, applicationLayer) : null)
                             .visible(l.isChecked())
+                            .opacity(opacity)
                             .maxScale(serviceLayer.getMaxScale())
                             .minScale(serviceLayer.getMinScale())
                             .legendImageUrl(legendImageUrl)
