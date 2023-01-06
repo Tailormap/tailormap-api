@@ -47,6 +47,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @AppRestController
 @Validated
@@ -140,14 +141,15 @@ public class UniqueValuesController {
                                 null);
             } else {
                 // #2 or use a Function to get the unique values
-                // this is the recommended way, uses SLQ "distinct"
+                // this is the recommended way, uses SQL "distinct"
                 logger.trace("Using geotools unique collection function to get unique values");
                 Function unique = ff.function("Collection_Unique", ff.property(attributeName));
                 Object o = unique.evaluate(fs.getFeatures(q));
                 if (o instanceof Set) {
                     @SuppressWarnings("unchecked")
                     Set<Object> uniqueValues = (Set<Object>) o;
-                    uniqueValuesResponse.setValues(uniqueValues);
+                    uniqueValuesResponse.setValues(
+                            uniqueValues.stream().sorted().collect(Collectors.toList()));
                 }
             }
 
