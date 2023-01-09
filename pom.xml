@@ -145,7 +145,7 @@ SPDX-License-Identifier: MIT
     <maven-pmd-plugin.version>3.19.0</maven-pmd-plugin.version>
     <versions-maven-plugin.version>2.14.2</versions-maven-plugin.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
-    <dependency-check-maven.version>7.4.3</dependency-check-maven.version>
+    <dependency-check-maven.version>7.4.4</dependency-check-maven.version>
     <modernizer-maven-plugin.version>2.5.0</modernizer-maven-plugin.version>
     <!-- docker.b3p.nl or alternatively ghcr.io  -->
     <docker.deploy.repo>ghcr.io</docker.deploy.repo>
