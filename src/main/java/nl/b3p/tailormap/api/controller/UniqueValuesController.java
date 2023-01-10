@@ -47,7 +47,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.TreeSet;
 
 @AppRestController
 @Validated
@@ -148,8 +148,7 @@ public class UniqueValuesController {
                 if (o instanceof Set) {
                     @SuppressWarnings("unchecked")
                     Set<Object> uniqueValues = (Set<Object>) o;
-                    uniqueValuesResponse.setValues(
-                            uniqueValues.stream().sorted().collect(Collectors.toList()));
+                    uniqueValuesResponse.setValues(new TreeSet<>(uniqueValues));
                 }
             }
 

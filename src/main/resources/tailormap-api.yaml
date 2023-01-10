@@ -209,7 +209,7 @@ components:
           description: 'list of unique values'
           type: array
           minLength: 0
-          #uniqueItems: true # Items are unique, but Swagger generates an unsorted set with this set to true, and we'd like sorted values
+          uniqueItems: true
           # any one type of string|number|boolean is allowed, but that generates unusable java code
           # so allow any non-null value, we don't need to worry about mixed types as the data comes from a
           # typed datasource (database table or WFS)
