@@ -460,88 +460,96 @@ public class MapController {
                 }
             }
 
-<span class="fc" id="L463">            AppLayer appLayer =</span>
+<span class="fc" id="L463">            int opacity =</span>
+<span class="fc" id="L464">                    Optional.ofNullable(applicationLayer.getDetails().get(&quot;transparency&quot;))</span>
+<span class="fc" id="L465">                            .map(Object::toString)</span>
+<span class="fc" id="L466">                            .map(Integer::parseInt)</span>
+<span class="pc" id="L467">                            .map(transparency -&gt; 100 - transparency)</span>
+<span class="fc" id="L468">                            .orElse(100);</span>
+
+<span class="fc" id="L470">            AppLayer appLayer =</span>
                     new AppLayer()
-<span class="fc" id="L465">                            .id(applicationLayer.getId())</span>
-<span class="fc" id="L466">                            .layerName(serviceLayer.getName())</span>
-<span class="fc" id="L467">                            .title(getNameForAppLayer(applicationLayer, layers))</span>
-<span class="fc" id="L468">                            .serviceId(applicationLayer.getService().getId())</span>
-<span class="pc bpc" id="L469" title="1 of 2 branches missed.">                            .url(proxied ? getProxyUrl(geoService, a, applicationLayer) : null)</span>
-<span class="fc" id="L470">                            .visible(l.isChecked())</span>
-<span class="fc" id="L471">                            .maxScale(serviceLayer.getMaxScale())</span>
-<span class="fc" id="L472">                            .minScale(serviceLayer.getMinScale())</span>
-<span class="fc" id="L473">                            .legendImageUrl(legendImageUrl)</span>
-<span class="fc" id="L474">                            .hiDpiMode(hiDpiMode)</span>
-<span class="fc" id="L475">                            .hiDpiSubstituteLayer(hiDpiSubstituteLayer)</span>
-<span class="fc bfc" id="L476" title="All 2 branches covered.">                            .hasAttributes(!l.getApplicationLayer().getAttributes().isEmpty());</span>
+<span class="fc" id="L472">                            .id(applicationLayer.getId())</span>
+<span class="fc" id="L473">                            .layerName(serviceLayer.getName())</span>
+<span class="fc" id="L474">                            .title(getNameForAppLayer(applicationLayer, layers))</span>
+<span class="fc" id="L475">                            .serviceId(applicationLayer.getService().getId())</span>
+<span class="pc bpc" id="L476" title="1 of 2 branches missed.">                            .url(proxied ? getProxyUrl(geoService, a, applicationLayer) : null)</span>
+<span class="fc" id="L477">                            .visible(l.isChecked())</span>
+<span class="fc" id="L478">                            .opacity(opacity)</span>
+<span class="fc" id="L479">                            .maxScale(serviceLayer.getMaxScale())</span>
+<span class="fc" id="L480">                            .minScale(serviceLayer.getMinScale())</span>
+<span class="fc" id="L481">                            .legendImageUrl(legendImageUrl)</span>
+<span class="fc" id="L482">                            .hiDpiMode(hiDpiMode)</span>
+<span class="fc" id="L483">                            .hiDpiSubstituteLayer(hiDpiSubstituteLayer)</span>
+<span class="fc bfc" id="L484" title="All 2 branches covered.">                            .hasAttributes(!l.getApplicationLayer().getAttributes().isEmpty());</span>
 
-<span class="fc" id="L478">            mapResponse.addAppLayersItem(appLayer);</span>
+<span class="fc" id="L486">            mapResponse.addAppLayersItem(appLayer);</span>
 
-<span class="fc" id="L480">            Service.ServerTypeEnum serviceServerType =</span>
-<span class="fc" id="L481">                    Optional.ofNullable(geoService.getDetails().get(&quot;serverType&quot;))</span>
-<span class="fc" id="L482">                            .map(Object::toString)</span>
-<span class="fc" id="L483">                            .map(Service.ServerTypeEnum::fromValue)</span>
-<span class="fc" id="L484">                            .orElse(</span>
+<span class="fc" id="L488">            Service.ServerTypeEnum serviceServerType =</span>
+<span class="fc" id="L489">                    Optional.ofNullable(geoService.getDetails().get(&quot;serverType&quot;))</span>
+<span class="fc" id="L490">                            .map(Object::toString)</span>
+<span class="fc" id="L491">                            .map(Service.ServerTypeEnum::fromValue)</span>
+<span class="fc" id="L492">                            .orElse(</span>
                                     // Use this default if saved before the form
                                     // default was added in admin
                                     Service.ServerTypeEnum.AUTO);
-<span class="fc" id="L488">            Integer tilingGutter =</span>
-<span class="fc" id="L489">                    Optional.ofNullable(geoService.getDetails().get(&quot;tiling.gutter&quot;))</span>
-<span class="fc" id="L490">                            .map(Object::toString)</span>
-<span class="fc" id="L491">                            .map(Integer::parseInt)</span>
-<span class="fc" id="L492">                            .orElse(null);</span>
+<span class="fc" id="L496">            Integer tilingGutter =</span>
+<span class="fc" id="L497">                    Optional.ofNullable(geoService.getDetails().get(&quot;tiling.gutter&quot;))</span>
+<span class="fc" id="L498">                            .map(Object::toString)</span>
+<span class="fc" id="L499">                            .map(Integer::parseInt)</span>
+<span class="fc" id="L500">                            .orElse(null);</span>
 
-<span class="fc" id="L494">            boolean tilingDisabled =</span>
-<span class="fc" id="L495">                    Optional.ofNullable(geoService.getDetails().get(&quot;tiling.disable&quot;))</span>
-<span class="fc" id="L496">                            .map(Object::toString)</span>
-<span class="fc" id="L497">                            .map(Boolean::parseBoolean)</span>
-<span class="fc" id="L498">                            .orElse(false);</span>
+<span class="fc" id="L502">            boolean tilingDisabled =</span>
+<span class="fc" id="L503">                    Optional.ofNullable(geoService.getDetails().get(&quot;tiling.disable&quot;))</span>
+<span class="fc" id="L504">                            .map(Object::toString)</span>
+<span class="fc" id="L505">                            .map(Boolean::parseBoolean)</span>
+<span class="fc" id="L506">                            .orElse(false);</span>
 
-<span class="fc" id="L500">            Service s =</span>
+<span class="fc" id="L508">            Service s =</span>
                     new Service()
-<span class="pc bpc" id="L502" title="1 of 2 branches missed.">                            .url(proxied ? null : geoService.getUrl())</span>
-<span class="fc" id="L503">                            .id(geoService.getId())</span>
-<span class="fc" id="L504">                            .name(geoService.getName())</span>
-<span class="fc" id="L505">                            .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))</span>
-<span class="fc" id="L506">                            .serverType(serviceServerType)</span>
-<span class="fc" id="L507">                            .tilingDisabled(tilingDisabled)</span>
-<span class="fc" id="L508">                            .tilingGutter(tilingGutter)</span>
-<span class="fc" id="L509">                            .capabilities(geoService.getCapabilitiesDoc());</span>
-<span class="fc bfc" id="L510" title="All 2 branches covered.">            if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {</span>
-<span class="fc" id="L511">                s.tilingProtocol(</span>
-<span class="fc" id="L512">                        Service.TilingProtocolEnum.fromValue(</span>
-<span class="fc" id="L513">                                ((TileService) geoService).getTilingProtocol()));</span>
+<span class="pc bpc" id="L510" title="1 of 2 branches missed.">                            .url(proxied ? null : geoService.getUrl())</span>
+<span class="fc" id="L511">                            .id(geoService.getId())</span>
+<span class="fc" id="L512">                            .name(geoService.getName())</span>
+<span class="fc" id="L513">                            .protocol(Service.ProtocolEnum.fromValue(geoService.getProtocol()))</span>
+<span class="fc" id="L514">                            .serverType(serviceServerType)</span>
+<span class="fc" id="L515">                            .tilingDisabled(tilingDisabled)</span>
+<span class="fc" id="L516">                            .tilingGutter(tilingGutter)</span>
+<span class="fc" id="L517">                            .capabilities(geoService.getCapabilitiesDoc());</span>
+<span class="fc bfc" id="L518" title="All 2 branches covered.">            if (geoService.getProtocol().equalsIgnoreCase(TileService.PROTOCOL)) {</span>
+<span class="fc" id="L519">                s.tilingProtocol(</span>
+<span class="fc" id="L520">                        Service.TilingProtocolEnum.fromValue(</span>
+<span class="fc" id="L521">                                ((TileService) geoService).getTilingProtocol()));</span>
             }
-<span class="fc" id="L515">            mapResponse.addServicesItem(s);</span>
-<span class="fc" id="L516">        }</span>
-<span class="fc" id="L517">    }</span>
+<span class="fc" id="L523">            mapResponse.addServicesItem(s);</span>
+<span class="fc" id="L524">        }</span>
+<span class="fc" id="L525">    }</span>
 
     private static String getProxyUrl(
             GeoService geoService, Application application, ApplicationLayer appLayer) {
         WebMvcLinkBuilder linkBuilder;
-<span class="nc bnc" id="L522" title="All 2 branches missed.">        if (WMSService.PROTOCOL.equals(geoService.getProtocol())) {</span>
-<span class="nc" id="L523">            linkBuilder =</span>
-<span class="nc" id="L524">                    linkTo(</span>
+<span class="nc bnc" id="L530" title="All 2 branches missed.">        if (WMSService.PROTOCOL.equals(geoService.getProtocol())) {</span>
+<span class="nc" id="L531">            linkBuilder =</span>
+<span class="nc" id="L532">                    linkTo(</span>
                             GeoServiceProxyController.class,
-<span class="nc" id="L526">                            Map.of(</span>
-<span class="nc" id="L527">                                    &quot;appId&quot;, application.getId(),</span>
-<span class="nc" id="L528">                                    &quot;appLayerId&quot;, appLayer.getId(),</span>
+<span class="nc" id="L534">                            Map.of(</span>
+<span class="nc" id="L535">                                    &quot;appId&quot;, application.getId(),</span>
+<span class="nc" id="L536">                                    &quot;appLayerId&quot;, appLayer.getId(),</span>
                                     &quot;protocol&quot;, &quot;wms&quot;));
-<span class="nc bnc" id="L530" title="All 2 branches missed.">        } else if (TileService.PROTOCOL.equals(geoService.getProtocol())</span>
-<span class="nc bnc" id="L531" title="All 2 branches missed.">                &amp;&amp; TileService.TILING_PROTOCOL_WMTS.equals(</span>
-<span class="nc" id="L532">                        ((TileService) geoService).getTilingProtocol())) {</span>
-<span class="nc" id="L533">            linkBuilder =</span>
-<span class="nc" id="L534">                    linkTo(</span>
+<span class="nc bnc" id="L538" title="All 2 branches missed.">        } else if (TileService.PROTOCOL.equals(geoService.getProtocol())</span>
+<span class="nc bnc" id="L539" title="All 2 branches missed.">                &amp;&amp; TileService.TILING_PROTOCOL_WMTS.equals(</span>
+<span class="nc" id="L540">                        ((TileService) geoService).getTilingProtocol())) {</span>
+<span class="nc" id="L541">            linkBuilder =</span>
+<span class="nc" id="L542">                    linkTo(</span>
                             GeoServiceProxyController.class,
-<span class="nc" id="L536">                            Map.of(</span>
-<span class="nc" id="L537">                                    &quot;appId&quot;, application.getId(),</span>
-<span class="nc" id="L538">                                    &quot;appLayerId&quot;, appLayer.getId(),</span>
+<span class="nc" id="L544">                            Map.of(</span>
+<span class="nc" id="L545">                                    &quot;appId&quot;, application.getId(),</span>
+<span class="nc" id="L546">                                    &quot;appLayerId&quot;, appLayer.getId(),</span>
                                     &quot;protocol&quot;, &quot;wmts&quot;));
         } else {
-<span class="nc" id="L541">            throw new IllegalArgumentException(</span>
-<span class="nc" id="L542">                    &quot;Can't generate proxy URL for service &quot; + geoService.getId());</span>
+<span class="nc" id="L549">            throw new IllegalArgumentException(</span>
+<span class="nc" id="L550">                    &quot;Can't generate proxy URL for service &quot; + geoService.getId());</span>
         }
-<span class="nc" id="L544">        return linkBuilder.toString();</span>
+<span class="nc" id="L552">        return linkBuilder.toString();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
