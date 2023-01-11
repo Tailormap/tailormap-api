@@ -12,6 +12,7 @@ import io.micrometer.core.annotation.Timed;
 
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.model.AppResponse;
+import nl.b3p.tailormap.api.model.AppStyling;
 import nl.b3p.tailormap.api.model.Component;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.MetadataRepository;
@@ -46,6 +47,8 @@ public class AppController {
     private final Log logger = LogFactory.getLog(getClass());
 
     private final String COMPONENTS_CONFIG_KEY = "components";
+
+    private final String STYLING_CONFIG_KEY = "application_style";
 
     private final ApplicationRepository applicationRepository;
     private final MetadataRepository metadataRepository;
@@ -122,14 +125,26 @@ public class AppController {
 
             Component[] components;
             try {
-                String componentsJson =
+                String json =
                         Optional.ofNullable(application.getDetails().get(COMPONENTS_CONFIG_KEY))
                                 .map(Object::toString)
                                 .orElse("[]");
-                components = new ObjectMapper().readValue(componentsJson, Component[].class);
+                components = new ObjectMapper().readValue(json, Component[].class);
             } catch (JacksonException je) {
                 throw new ResponseStatusException(
                         HttpStatus.INTERNAL_SERVER_ERROR, "Invalid components JSON", je);
+            }
+
+            AppStyling style;
+            try {
+                String json =
+                        Optional.ofNullable(application.getDetails().get(STYLING_CONFIG_KEY))
+                                .map(Object::toString)
+                                .orElse("{}");
+                style = new ObjectMapper().readValue(json, AppStyling.class);
+            } catch (JacksonException je) {
+                throw new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR, "Invalid app style JSON", je);
             }
 
             AppResponse appResponse =
@@ -140,6 +155,7 @@ public class AppController {
                             // any of these 2 below + language could be null
                             .version(application.getVersion())
                             .title(application.getTitle())
+                            .styling(style)
                             .components(List.of(components));
 
             // null check language because it's an enumerated value

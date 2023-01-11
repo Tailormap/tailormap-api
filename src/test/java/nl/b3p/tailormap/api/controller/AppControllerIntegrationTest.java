@@ -67,7 +67,9 @@ class AppControllerIntegrationTest {
                 .andExpect(jsonPath("$.lang").value("nl_NL"))
                 .andExpect(jsonPath("$.title").value("test title"))
                 .andExpect(jsonPath("$.components").isArray())
-                .andExpect(jsonPath("$.components[0].type").value("measure"));
+                .andExpect(jsonPath("$.components[0].type").value("measure"))
+                .andExpect(jsonPath("$.styling.primaryColor").isEmpty())
+                .andExpect(jsonPath("$.styling.logo").isEmpty());
     }
 
     @Test
@@ -83,7 +85,9 @@ class AppControllerIntegrationTest {
                 .andExpect(jsonPath("$.lang").value("nl_NL"))
                 .andExpect(jsonPath("$.title").value("test title"))
                 .andExpect(jsonPath("$.components").isArray())
-                .andExpect(jsonPath("$.components[0].type").value("measure"));
+                .andExpect(jsonPath("$.components[0].type").value("measure"))
+                .andExpect(jsonPath("$.styling.primaryColor").isEmpty())
+                .andExpect(jsonPath("$.styling.logo").isEmpty());
     }
 
     @Test
@@ -103,7 +107,9 @@ class AppControllerIntegrationTest {
                 .andExpect(jsonPath("$.lang").value("nl_NL"))
                 .andExpect(jsonPath("$.title").value("test title"))
                 .andExpect(jsonPath("$.components").isArray())
-                .andExpect(jsonPath("$.components[0].type").value("measure"));
+                .andExpect(jsonPath("$.components[0].type").value("measure"))
+                .andExpect(jsonPath("$.styling.primaryColor").isEmpty())
+                .andExpect(jsonPath("$.styling.logo").isEmpty());
     }
 
     @Test
@@ -119,7 +125,9 @@ class AppControllerIntegrationTest {
                 .andExpect(jsonPath("$.lang").value("nl_NL"))
                 .andExpect(jsonPath("$.title").value("test title"))
                 .andExpect(jsonPath("$.components").isArray())
-                .andExpect(jsonPath("$.components[0].type").value("measure"));
+                .andExpect(jsonPath("$.components[0].type").value("measure"))
+                .andExpect(jsonPath("$.styling.primaryColor").isEmpty())
+                .andExpect(jsonPath("$.styling.logo").isEmpty());
     }
 
     @Test
@@ -135,7 +143,9 @@ class AppControllerIntegrationTest {
                 .andExpect(jsonPath("$.lang").value("nl_NL"))
                 .andExpect(jsonPath("$.title").value("test title"))
                 .andExpect(jsonPath("$.components").isArray())
-                .andExpect(jsonPath("$.components[0].type").value("measure"));
+                .andExpect(jsonPath("$.components[0].type").value("measure"))
+                .andExpect(jsonPath("$.styling.primaryColor").isEmpty())
+                .andExpect(jsonPath("$.styling.logo").isEmpty());
     }
 
     @Test
@@ -155,7 +165,9 @@ class AppControllerIntegrationTest {
                 .andExpect(jsonPath("$.lang").value("nl_NL"))
                 .andExpect(jsonPath("$.title").value("test title"))
                 .andExpect(jsonPath("$.components").isArray())
-                .andExpect(jsonPath("$.components[0].type").value("measure"));
+                .andExpect(jsonPath("$.components[0].type").value("measure"))
+                .andExpect(jsonPath("$.styling.primaryColor").isEmpty())
+                .andExpect(jsonPath("$.styling.logo").isEmpty());
     }
 
     @Test
@@ -177,7 +189,9 @@ class AppControllerIntegrationTest {
                 // expect default value
                 .andExpect(jsonPath("$.lang").value("nl_NL"))
                 .andExpect(jsonPath("$.components").isArray())
-                .andExpect(jsonPath("$.components[0].type").value("measure"));
+                .andExpect(jsonPath("$.components[0].type").value("measure"))
+                .andExpect(jsonPath("$.styling.primaryColor").isEmpty())
+                .andExpect(jsonPath("$.styling.logo").isEmpty());
     }
 
     @Test

@@ -5,6 +5,9 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import io.micrometer.core.annotation.Timed;
 
 import nl.b3p.tailormap.api.annotation.AppRestController;
@@ -51,7 +54,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -104,7 +106,7 @@ public class FeaturesController implements Constants {
      * @param sortOrder sort order of features, defaults to {@code ASC}
      * @param onlyGeometries return only the default geometry attribute for each feature
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = {GET, POST})
     @Timed(value = "get_features", description = "time spent to process get features call")
     public ResponseEntity<Serializable> getFeatures(
             @ModelAttribute Application application,

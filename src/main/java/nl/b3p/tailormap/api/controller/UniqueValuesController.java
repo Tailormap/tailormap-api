@@ -5,6 +5,9 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import io.micrometer.core.annotation.Timed;
 
 import nl.b3p.tailormap.api.annotation.AppRestController;
@@ -35,7 +38,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +47,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Set;
+import java.util.TreeSet;
 
 @AppRestController
 @Validated
@@ -75,7 +78,7 @@ public class UniqueValuesController {
      *     this attribute)
      * @return a list of unique values, can be empty parsed
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = {GET, POST})
     @Timed(
             value = "get_unique_attributes",
             description = "time spent to process get unique attributes call")
@@ -138,14 +141,14 @@ public class UniqueValuesController {
                                 null);
             } else {
                 // #2 or use a Function to get the unique values
-                // this is the recommended way, uses SLQ "distinct"
+                // this is the recommended way, uses SQL "distinct"
                 logger.trace("Using geotools unique collection function to get unique values");
                 Function unique = ff.function("Collection_Unique", ff.property(attributeName));
                 Object o = unique.evaluate(fs.getFeatures(q));
                 if (o instanceof Set) {
                     @SuppressWarnings("unchecked")
                     Set<Object> uniqueValues = (Set<Object>) o;
-                    uniqueValuesResponse.setValues(uniqueValues);
+                    uniqueValuesResponse.setValues(new TreeSet<>(uniqueValues));
                 }
             }
 

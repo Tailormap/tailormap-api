@@ -122,6 +122,9 @@ components:
           type: string
         visible:
           type: boolean
+        opacity:
+          description: The opacity of the layer (in percentage, from 0-100, where 0 is "transparent" and 100 is "opaque").
+          type: integer
         minScale:
           description: Minimum scale at which this layer should be shown or is not blank. When absent there is no minimum. As reported by the service (ScaleHint or MinScaleDenominator).
           type: number
@@ -459,3 +462,19 @@ components:
                   title: 'FeatureReport',
                   subTitle: 'detail about parcel $1',
                   layers: [ ] }
+
+    AppStyling:
+      description: 'model for describing the style of an application'
+      type: object
+      properties:
+        primaryColor:
+          description: 'the primary color for an application'
+          type: string
+          nullable: true
+        logo:
+          description: 'application logo'
+          type: string
+          nullable: true
+      example:
+        primaryColor: '#6236ff'
+        logo: '<<base64 string>> | <<url>>'

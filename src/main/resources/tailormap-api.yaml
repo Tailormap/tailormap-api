@@ -138,10 +138,7 @@ components:
             - 'en_US'
           default: 'nl_NL'
         styling:
-          description: 'styling information such as support- and backing colours etc.'
-          type: object
-          additionalProperties:
-            type: string
+          $ref: './model.yaml#/components/schemas/AppStyling'
         components:
           description: '
           Provides the collection of configured components (controls) for the application.
@@ -215,7 +212,7 @@ components:
           uniqueItems: true
           # any one type of string|number|boolean is allowed, but that generates unusable java code
           # so allow any non-null value, we don't need to worry about mixed types as the data comes from a
-          # typed datasource (database table of WFS
+          # typed datasource (database table or WFS)
           items: { }
       example:
         filterApplied: false
@@ -450,113 +447,113 @@ paths:
 
   /app/{appId}/layer/{layerId}/features:
     summary: 'Use this endpoint to access features.'
+    parameters:
+      - description: 'application id'
+        in: path
+        name: appId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - description: 'application layer id'
+        in: path
+        name: layerId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - description: 'x-coordinate, assumed in the coordinate reference system of the attribute source if crs is omitted'
+        in: query
+        name: x
+        required: false
+        schema:
+          type: number
+      - description: 'y-coordinate, assumed in the coordinate reference system of the attribute source if crs is omitted'
+        in: query
+        name: y
+        required: false
+        schema:
+          type: number
+      - description: '
+          EPSG code for the given x- and y-coodinates, the backend will transform to attribute source if required. 
+          Also the CRS to be used to reproject the hightlight gemometry if not in the same CRS as the attribute source.
+          '
+        in: query
+        name: crs
+        required: false
+        schema:
+          type: number
+      - description: 'buffer radius in the coordinate reference system of the attribute source'
+        in: query
+        name: distance
+        required: false
+        schema:
+          type: number
+          default: 4
+      - description: 'feature id, the unique and immutable identifier of a feature within an attribute source'
+        in: query
+        name: __fid
+        required: false
+        schema:
+          type: string
+      - description: 'request true to have simplified geometries returned'
+        in: query
+        name: simplify
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - description: '
+          A filter to be applied, possibly in combination with any other request parameters. 
+          The filter is an ECQL string, see [ECQL reference](https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html).
+          Filtering is supported when requesting a page of features, not when requesting a single 
+          feature (using `__fid`) nor when using x/y coordinates.
+          '
+        in: query
+        name: filter
+        required: false
+        schema:
+          type: string
+      - description: '
+          Page number to retrieve. For the initial request this should be 1 which will 
+          then give the pageSize and total of features so additional pages can be retrieved.'
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+      - description: '
+          The attribute name (not alias) to sort by. 
+          The name must be of a configured attribute and not a geometry type.
+          The default is to sort by the primary key of the feature.'
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          type: string
+      - description: 'Sort order for sortBy'
+        in: query
+        name: sortOrder
+        required: false
+        schema:
+          type: string
+          default: asc
+          enum:
+            - asc
+            - desc
+      - description: Return only geometries, no attributes
+        in: query
+        name: onlyGeometries
+        required: false
+        schema:
+          type: boolean
+          default: false
     get:
       operationId: 'getFeatures'
       description: 'retrieve features that fulfill the requested conditions (parameters).'
       security:
         - formAuth: [ ]
-      parameters:
-        - description: 'application id'
-          in: path
-          name: appId
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - description: 'application layer id'
-          in: path
-          name: layerId
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - description: 'x-coordinate, assumed in the coordinate reference system of the attribute source if crs is omitted'
-          in: query
-          name: x
-          required: false
-          schema:
-            type: number
-        - description: 'y-coordinate, assumed in the coordinate reference system of the attribute source if crs is omitted'
-          in: query
-          name: y
-          required: false
-          schema:
-            type: number
-        - description: '
-            EPSG code for the given x- and y-coodinates, the backend will transform to attribute source if required. 
-            Also the CRS to be used to reproject the hightlight gemometry if not in the same CRS as the attribute source.
-            '
-          in: query
-          name: crs
-          required: false
-          schema:
-            type: number
-        - description: 'buffer radius in the coordinate reference system of the attribute source'
-          in: query
-          name: distance
-          required: false
-          schema:
-            type: number
-            default: 4
-        - description: 'feature id, the unique and immutable identifier of a feature within an attribute source'
-          in: query
-          name: __fid
-          required: false
-          schema:
-            type: string
-        - description: 'request true to have simplified geometries returned'
-          in: query
-          name: simplify
-          required: false
-          schema:
-            type: boolean
-            default: false
-        - description: '
-            A filter to be applied, possibly in combination with any other request parameters. 
-            The filter is an ECQL string, see [ECQL reference](https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html).
-            Filtering is supported when requesting a page of features, not when requesting a single 
-            feature (using `__fid`) nor when using x/y coordinates.
-            '
-          in: query
-          name: filter
-          required: false
-          schema:
-            type: string
-        - description: '
-            Page number to retrieve. For the initial request this should be 1 which will 
-            then give the pageSize and total of features so additional pages can be retrieved.'
-          in: query
-          name: page
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-        - description: '
-            The attribute name (not alias) to sort by. 
-            The name must be of a configured attribute and not a geometry type.
-            The default is to sort by the primary key of the feature.'
-          in: query
-          name: sortBy
-          required: false
-          schema:
-            type: string
-        - description: 'Sort order for sortBy'
-          in: query
-          name: sortOrder
-          required: false
-          schema:
-            type: string
-            default: asc
-            enum:
-              - asc
-              - desc
-        - description: Return only geometries, no attributes
-          in: query
-          name: onlyGeometries
-          required: false
-          schema:
-            type: boolean
-            default: false
       responses:
         '200':
           description: 'OK'
@@ -565,7 +562,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/FeaturesResponse'
         '400':
-          description: 'Bad Request. May be returned for some combination of parameters that can not be processed are incomplete.'
+          description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'
           content:
             application/json:
               schema:
@@ -582,135 +579,104 @@ paths:
             application/json:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
-    # TODO elaborate design
     post:
-      operationId: 'editFeature'
-      description: 'update a feature'
+      operationId: 'getFeaturesPOST'
+      description: The same as GET, but allows for a large (spatial) filter.
       security:
         - formAuth: [ ]
-      parameters:
-        - description: 'application id'
-          in: path
-          name: appId
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - description: 'application layer id'
-          in: path
-          name: layerId
-          required: true
-          schema:
-            type: integer
-            format: int64
       responses:
-        '501':
-          description: 'Not Implemented'
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeaturesResponse'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
-    # TODO elaborate design
-    put:
-      operationId: 'createFeature'
-      description: 'create a new feature'
-      security:
-        - formAuth: [ ]
-      parameters:
-        - description: 'application id'
-          in: path
-          name: appId
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - description: 'application layer id'
-          in: path
-          name: layerId
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '501':
-          description: 'Not Implemented'
-        '401':
-          description: Unauthorized
+        '500':
+          description: 'Internal server error'
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
-    # TODO elaborate design
-    delete:
-      operationId: 'deleteFeature'
-      security:
-        - formAuth: [ ]
-      description: 'delete a feature'
-      parameters:
-        - description: 'application id'
-          in: path
-          name: appId
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - description: 'application layer id'
-          in: path
-          name: layerId
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '501':
-          description: 'Not Implemented'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
-
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
   /app/{appId}/layer/{layerId}/unique/{attributeName}:
     summary: 'Use this endpoint to get a list of unique value of a layer''s feature type attribute.'
+    parameters:
+      - description: 'application id'
+        in: path
+        name: appId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - description: 'application layer id'
+        in: path
+        name: layerId
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - description: 'attribute name'
+        in: path
+        name: attributeName
+        required: true
+        schema:
+          type: string
+      - name: filter
+        description: '
+        A filter that was already applied to the layer (on a different attribute or this attribute). 
+        The filter is an ECQL string, see [ECQL reference](https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html).
+        '
+        in: query
+        schema:
+          type: string
+        required: false
     get:
       operationId: 'getUniqueValues'
       description: 'retrieve features that fulfill the requested conditions (parameters).'
       security:
         - formAuth: [ ]
-      parameters:
-        - description: 'application id'
-          in: path
-          name: appId
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - description: 'application layer id'
-          in: path
-          name: layerId
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - description: 'attribute name'
-          in: path
-          name: attributeName
-          required: true
-          schema:
-            type: string
-        - name: filter
-          description: '
-          A filter that was already applied to the layer (on a different attribute or this attribute). 
-          The filter is an ECQL string, see [ECQL reference](https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html).
-          '
-          in: query
-          schema:
-            type: string
-          required: false
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniqueValuesResponse'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+    post:
+      operationId: 'getUniqueValuesPOST'
+      description: POST variant for filters too large for a query parameter.
+      security:
+        - formAuth: [ ]
       responses:
         '200':
           description: 'OK'
