@@ -23,9 +23,9 @@ jobs:
           organization: B3Partners
           container: tailormap-api
           dry-run: false
-          older-than: 7
+          keep-younger-than: 7
           keep-last: 1
-          untagged: true
+          prune-untagged: true
       - name: "Older than 4 weeks"
         uses: vlaurin/action-ghcr-prune@v0.5.0
         with:
@@ -33,9 +33,9 @@ jobs:
           organization: B3Partners
           container: tailormap-api
           dry-run: false
-          older-than: 28
+          keep-younger-than: 28
           keep-last: 0
-          untagged: true
+          prune-untagged: true
 
   stale:
     runs-on: ubuntu-latest
