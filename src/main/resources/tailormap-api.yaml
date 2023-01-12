@@ -444,6 +444,40 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
+  /app/{appId}/layer/{layerId}/export/capabilities:
+    description: Returns layer export capabilities. Retrieving this information may take some time.
+    get:
+      operationId: 'getLayerExportCapabilities'
+      security:
+        - formAuth: [ ]
+      parameters:
+        - description: 'application id'
+          in: path
+          name: appId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - description: 'layer id'
+          in: path
+          name: layerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml#/components/schemas/LayerExportCapabilities'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
   /app/{appId}/layer/{layerId}/features:
     summary: 'Use this endpoint to access features.'
