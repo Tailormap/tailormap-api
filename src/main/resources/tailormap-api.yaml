@@ -53,6 +53,17 @@ components:
 
   schemas:
 
+    UserResponse:
+      description: 'Information about authentication status and user information'
+      type: object
+      properties:
+        isAuthenticated:
+          type: boolean
+          description: 'true if the user is authenticated'
+        username:
+            type: string
+            description: 'username of the authenticated user'
+
     MapResponse:
       description: 'Any information needed to draw a basic map on a page. May include base layers.'
       type: object
@@ -273,6 +284,26 @@ paths:
                 example: JSESSIONID=abcde12345; Path=/; HttpOnly
         '403':
           description: 'Authentication failed'
+
+  /user:
+    summary: 'get login information'
+    get:
+      operationId: 'user'
+      summary: 'Gets login information'
+      security: [ ]
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
 
 
   /app/:
