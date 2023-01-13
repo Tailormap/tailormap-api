@@ -7,7 +7,9 @@ package nl.b3p.tailormap.api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import nl.b3p.tailormap.api.JPAConfiguration;
 import nl.b3p.tailormap.api.security.AuthorizationService;
@@ -41,6 +43,7 @@ class UserControllerIntegrationTest {
     @Autowired UserController userController;
 
     @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void testUnauthenticatedGetUser() throws Exception {
         assertNotNull(userController, "userController can not be `null` if Spring Boot works");
 
@@ -52,6 +55,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     @WithMockUser(
             username = "admin",
             authorities = {"Admin"})
