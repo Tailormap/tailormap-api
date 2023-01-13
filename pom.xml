@@ -860,13 +860,13 @@ SPDX-License-Identifier: MIT
                   <!-- parse the version number from `INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '49'); `-->
                   <filterchain>
                     <linecontains>
-                      <contains value="'database_version'"></contains>
+                      <contains value="'database_version'"/>
                     </linecontains>
-                    <deletecharacters chars=",()';"></deletecharacters>
-                    <striplinebreaks></striplinebreaks>
+                    <deletecharacters chars=",()';"/>
+                    <striplinebreaks/>
                     <tokenfilter>
-                      <stringtokenizer></stringtokenizer>
-                      <containsregex pattern="([0-9]{2})" replace="\0"></containsregex>
+                      <stringtokenizer/>
+                      <containsregex pattern="([0-9]{2})" replace="\0"/>
                     </tokenfilter>
                   </filterchain>
                 </loadfile>
@@ -952,7 +952,7 @@ SPDX-License-Identifier: MIT
                   <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
                   <includes>**/testdata.sql</includes>
                   <fileMappers>
-                    <org.codehaus.plexus.components.io.filemappers.FlattenFileMapper></org.codehaus.plexus.components.io.filemappers.FlattenFileMapper>
+                    <org.codehaus.plexus.components.io.filemappers.FlattenFileMapper/>
                     <org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
                       <pattern>testdata.sql</pattern>
                       <replacement>import.sql</replacement>
@@ -1083,6 +1083,8 @@ SPDX-License-Identifier: MIT
           <createBackupFile>false</createBackupFile>
           <verifyFail>stop</verifyFail>
           <verifyFailOn>strict</verifyFailOn>
+          <expandEmptyElements>false</expandEmptyElements>
+          <indentSchemaLocation>true</indentSchemaLocation>
         </configuration>
         <executions>
           <execution>
