@@ -5,6 +5,11 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.util.HttpProxyUtil.addForwardedForRequestHeaders;
+import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughRequestHeaders;
+import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
+import static nl.b3p.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHeader;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -29,19 +34,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 
 import java.io.InputStream;
-import java.net.Inet6Address;
-import java.net.InetAddress;
 import java.net.URI;
-import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -152,73 +154,35 @@ public class GeoServiceProxyController {
             URI uri, GeoService service, HttpServletRequest request) {
         final HttpClient.Builder builder =
                 HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);
-
-        // Some HTTP services may not like HTTP/2 (not configurable in admin at the moment)
-        if (Boolean.parseBoolean(String.valueOf(service.getDetails().get("proxy_http1_1")))) {
-            builder.version(HttpClient.Version.HTTP_1_1);
-        }
-
         final HttpClient httpClient = builder.build();
 
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(uri);
 
-        try {
-            String ip = request.getRemoteAddr();
-            InetAddress inetAddress = InetAddress.getByName(ip);
+        addForwardedForRequestHeaders(requestBuilder, request);
 
-            if (inetAddress instanceof Inet6Address) {
-                // https://stackoverflow.com/questions/33168783/
-                Inet6Address inet6Address = (Inet6Address) inetAddress;
-                int scopeId = inet6Address.getScopeId();
+        passthroughRequestHeaders(
+                requestBuilder,
+                request,
+                Set.of(
+                        "Accept",
+                        "If-Modified-Since",
+                        "If-Unmodified-Since",
+                        "If-Match",
+                        "If-None-Match",
+                        "If-Range",
+                        "Range",
+                        "Referer",
+                        "User-Agent"));
 
-                if (scopeId > 0) {
-                    ip = inet6Address.getHostName().replaceAll("%" + scopeId + "$", "");
-                }
-
-                // IPv6 address must be bracketed and quoted
-                ip = "\"[" + ip + "]\"";
-            }
-            requestBuilder.header("X-Forwarded-For", ip);
-            requestBuilder.header("Forwarded", "for=" + ip);
-        } catch (UnknownHostException ignored) {
-            // Don't care
-        }
-
-        String[] requestHeaders = {
-            "Accept",
-            "If-Modified-Since",
-            "If-Unmodified-Since",
-            "If-Match",
-            "If-None-Match",
-            "If-Range",
-            "Range",
-            "Referer",
-            "User-Agent",
-        };
-        for (String header : requestHeaders) {
-            String value = request.getHeader(header);
-            if (value != null) {
-                requestBuilder.header(header, value);
-            }
-        }
-
-        if (service.getUsername() != null && service.getPassword() != null) {
-            String toEncode = service.getUsername() + ":" + service.getPassword();
-            requestBuilder.header(
-                    "Authorization",
-                    "Basic "
-                            + Base64.getEncoder()
-                                    .encodeToString(toEncode.getBytes(StandardCharsets.UTF_8)));
-
-            // TODO: in some cases we might want to forward the authenticated tailormap user or
-            // groups/roles to the service (perhaps in a secret header name) so the service can
-            // apply different authorizations instead of just one account.
-        }
+        setHttpBasicAuthenticationHeader(
+                requestBuilder, service.getUsername(), service.getPassword());
 
         try {
+            // TODO: close JPA connection before proxying
             HttpResponse<InputStream> response =
                     httpClient.send(
                             requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
+
             // If the server does not accept our credentials it might 'hide' the layer or even send
             // a 401 Unauthorized status. We do not send the WWW-Authenticate header back, so the
             // client will get the error but not an authorization popup.
@@ -226,22 +190,19 @@ public class GeoServiceProxyController {
             // interface. Currently, a layer will just stop working if the geo service credentials
             // are changed without updating them in the geo service registry.
             InputStreamResource body = new InputStreamResource(response.body());
-            org.springframework.http.HttpHeaders headers = new HttpHeaders();
-            // TODO for WMTS, does caching work?
-            String[] allowedResponseHeaders = {
-                "Content-Type",
-                "Content-Length",
-                "Content-Range",
-                "Content-Disposition",
-                "Cache-Control",
-                "Expires",
-                "Last-Modified",
-                "ETag",
-                "Pragma",
-            };
-            for (String header : allowedResponseHeaders) {
-                headers.addAll(header, response.headers().allValues(header));
-            }
+            HttpHeaders headers =
+                    passthroughResponseHeaders(
+                            response.headers(),
+                            Set.of(
+                                    "Content-Type",
+                                    "Content-Length",
+                                    "Content-Range",
+                                    "Content-Disposition",
+                                    "Cache-Control",
+                                    "Expires",
+                                    "Last-Modified",
+                                    "ETag",
+                                    "Pragma"));
             return ResponseEntity.status(response.statusCode()).headers(headers).body(body);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Bad Gateway");
