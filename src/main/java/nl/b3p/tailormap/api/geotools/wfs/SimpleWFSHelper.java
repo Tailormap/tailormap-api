@@ -71,12 +71,6 @@ public class SimpleWFSHelper {
      * Just get the list of supported output formats for the typename. If there are no specific
      * output formats for the type, the generally supported output formats are returned. Requests
      * WFS 1.1.0 but also handles WFS 2.0.0 responses.
-     *
-     * @param wfsUrl WFS URI
-     * @param typeName Typename
-     * @param username Optional username if required, may be null
-     * @param password Optional password if required, may be null
-     * @return List of output formats
      */
     public static List<String> getOutputFormats(
             String wfsUrl, String typeName, String username, String password) throws Exception {
