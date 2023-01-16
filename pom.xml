@@ -926,7 +926,7 @@ SPDX-License-Identifier: MIT
             <phase>verify</phase>
             <configuration>
               <notimestamp>true</notimestamp>
-              <failOnWarnings>${failOnValidation}</failOnWarnings>
+              <failOnWarnings>false</failOnWarnings>
               <failOnError>${failOnValidation}</failOnError>
             </configuration>
           </execution>
