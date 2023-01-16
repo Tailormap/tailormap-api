@@ -286,7 +286,7 @@ paths:
           description: 'Authentication failed'
 
   /user:
-    summary: 'get login information'
+    summary: 'get user information, such as login'
     get:
       operationId: 'user'
       summary: 'Gets login information'
