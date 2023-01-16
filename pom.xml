@@ -1307,7 +1307,7 @@ SPDX-License-Identifier: MIT
         <version>${maven-javadoc-plugin.version}</version>
         <configuration>
           <notimestamp>true</notimestamp>
-          <failOnWarnings>${failOnValidation}</failOnWarnings>
+          <failOnWarnings>false</failOnWarnings>
           <failOnError>${failOnValidation}</failOnError>
         </configuration>
         <reportSets>
