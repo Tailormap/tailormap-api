@@ -22,6 +22,8 @@ import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
 import nl.tailormap.viewer.config.services.WFSFeatureSource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,12 +44,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import static nl.b3p.tailormap.api.MicrometerHelper.tagsToString;
 import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
 
 @AppRestController
 @Validated
 @RequestMapping(path = "/app/{appId}/layer/{appLayerId}/export/")
 public class LayerExportController {
+    private static final Log logger = LogFactory.getLog(LayerExportController.class);
     private final MeterRegistry meterRegistry;
 
     private final LayerRepository layerRepository;
@@ -149,10 +153,12 @@ public class LayerExportController {
                     parameters.add("propertyName", String.join(",", attributes));
                 }
                 if (sortBy != null) {
-                    parameters.add("sortBy", sortBy + ("asc".equals(sortOrder) ? "+A" : "+D"));
+                    parameters.add("sortBy", sortBy + ("asc".equals(sortOrder) ? " A" : " D"));
                 }
                 URI wfsGetFeature =
                         SimpleWFSHelper.getWFSRequestURL(wfsUrl, "GetFeature", parameters);
+
+                logger.info(String.format("Layer download %s, proxying WFS GetFeature request %s", tagsToString(tags), wfsGetFeature));
 
                 try {
                     // TODO: close JPA connection before proxying
@@ -164,6 +170,10 @@ public class LayerExportController {
                     meterRegistry.counter("export_download_response",
                             tags.and("response_status", response.statusCode() + ""))
                             .increment();
+
+                    logger.info(String.format("Layer download response code: %s, content type: %s",
+                            response.statusCode(),
+                            response.headers().firstValue("Content-Type").map(Object::toString)));
 
                     InputStreamResource body = new InputStreamResource(response.body());
 

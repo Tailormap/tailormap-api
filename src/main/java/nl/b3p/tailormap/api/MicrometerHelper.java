@@ -17,6 +17,7 @@ import nl.tailormap.viewer.config.services.WFSFeatureSource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MicrometerHelper {
     public static Tags getTags(Object... objects) {
@@ -45,5 +46,9 @@ public class MicrometerHelper {
             }
         }
         return Tags.of(tags);
+    }
+
+    public static String tagsToString(Tags tags) {
+        return tags.stream().map(tag -> tag.getKey() + '=' + tag.getValue()).collect(Collectors.joining(","));
     }
 }
