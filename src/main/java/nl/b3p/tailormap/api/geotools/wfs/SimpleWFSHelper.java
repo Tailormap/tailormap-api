@@ -64,11 +64,20 @@ public class SimpleWFSHelper {
         params.add("REQUEST", request);
         params.add("VERSION", version);
         if (parameters != null) {
-            // We need to encode the parameters manually because UriComponentsBuilder annoyingly does not encode '+' as used in mime types for output formats, see https://stackoverflow.com/questions/18138011
-            parameters.replaceAll((key, values) -> values.stream().map(s -> URLEncoder.encode(s, StandardCharsets.UTF_8)).collect(Collectors.toList()));
+            // We need to encode the parameters manually because UriComponentsBuilder annoyingly
+            // does not encode '+' as used in mime types for output formats, see
+            // https://stackoverflow.com/questions/18138011
+            parameters.replaceAll(
+                    (key, values) ->
+                            values.stream()
+                                    .map(s -> URLEncoder.encode(s, StandardCharsets.UTF_8))
+                                    .collect(Collectors.toList()));
             params.addAll(parameters);
         }
-        return UriComponentsBuilder.fromHttpUrl(wfsUrl).replaceQueryParams(params).build(true).toUri();
+        return UriComponentsBuilder.fromHttpUrl(wfsUrl)
+                .replaceQueryParams(params)
+                .build(true)
+                .toUri();
     }
 
     /**

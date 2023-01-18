@@ -5,10 +5,14 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.MicrometerHelper.tagsToString;
+import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
+
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
+
 import nl.b3p.tailormap.api.MicrometerHelper;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
@@ -22,6 +26,7 @@ import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
 import nl.tailormap.viewer.config.services.WFSFeatureSource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.InputStreamResource;
@@ -35,7 +40,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URI;
@@ -44,8 +48,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static nl.b3p.tailormap.api.MicrometerHelper.tagsToString;
-import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
+import javax.servlet.http.HttpServletRequest;
 
 @AppRestController
 @Validated
@@ -77,7 +80,9 @@ public class LayerExportController {
 
         SimpleFeatureType featureType = serviceLayer.getFeatureType();
 
-        Tags tags = MicrometerHelper.getTags(application, applicationLayer, service, serviceLayer, featureType);
+        Tags tags =
+                MicrometerHelper.getTags(
+                        application, applicationLayer, service, serviceLayer, featureType);
 
         if (featureType != null) {
             FeatureSource featureSource = featureType.getFeatureSource();
@@ -88,10 +93,13 @@ public class LayerExportController {
                 String username = featureSource.getUsername();
                 String password = featureSource.getPassword();
 
-                List<String> outputFormats = meterRegistry.timer(
-                        "export_get_capabilities_direct_wfs_source",
-                        tags
-                ).recordCallable(() -> SimpleWFSHelper.getOutputFormats(wfsUrl, typeName, username, password));
+                List<String> outputFormats =
+                        meterRegistry
+                                .timer("export_get_capabilities_direct_wfs_source", tags)
+                                .recordCallable(
+                                        () ->
+                                                SimpleWFSHelper.getOutputFormats(
+                                                        wfsUrl, typeName, username, password));
 
                 capabilities.setOutputFormats(outputFormats);
                 capabilities.setExportable(true);
@@ -122,7 +130,9 @@ public class LayerExportController {
 
         SimpleFeatureType featureType = serviceLayer.getFeatureType();
 
-        Tags tags = MicrometerHelper.getTags(application, applicationLayer, service, serviceLayer, featureType);
+        Tags tags =
+                MicrometerHelper.getTags(
+                        application, applicationLayer, service, serviceLayer, featureType);
 
         if (featureType != null) {
             FeatureSource featureSource = featureType.getFeatureSource();
@@ -133,12 +143,11 @@ public class LayerExportController {
                 String username = featureSource.getUsername();
                 String password = featureSource.getPassword();
 
-                tags = tags.and(
-                        Tag.of("format", outputFormat)
-                );
+                tags = tags.and(Tag.of("format", outputFormat));
 
                 MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-                // A layer could have more than one featureType as source, currently we assume it's just one
+                // A layer could have more than one featureType as source, currently we assume it's
+                // just one
                 parameters.add("typeNames", typeName);
                 parameters.add("outputFormat", outputFormat);
                 if (filter != null) {
@@ -160,22 +169,38 @@ public class LayerExportController {
                 URI wfsGetFeature =
                         SimpleWFSHelper.getWFSRequestURL(wfsUrl, "GetFeature", parameters);
 
-                logger.info(String.format("Layer download %s, proxying WFS GetFeature request %s", tagsToString(tags), wfsGetFeature));
+                logger.info(
+                        String.format(
+                                "Layer download %s, proxying WFS GetFeature request %s",
+                                tagsToString(tags), wfsGetFeature));
 
                 try {
                     // TODO: close JPA connection before proxying
 
-                    HttpResponse<InputStream> response = meterRegistry
-                            .timer("export_download_first_response", tags)
-                            .recordCallable(() -> WFSProxy.proxyWfsRequest(wfsGetFeature, username, password, request));
+                    HttpResponse<InputStream> response =
+                            meterRegistry
+                                    .timer("export_download_first_response", tags)
+                                    .recordCallable(
+                                            () ->
+                                                    WFSProxy.proxyWfsRequest(
+                                                            wfsGetFeature,
+                                                            username,
+                                                            password,
+                                                            request));
 
-                    meterRegistry.counter("export_download_response",
-                            tags.and("response_status", response.statusCode() + ""))
+                    meterRegistry
+                            .counter(
+                                    "export_download_response",
+                                    tags.and("response_status", response.statusCode() + ""))
                             .increment();
 
-                    logger.info(String.format("Layer download response code: %s, content type: %s",
-                            response.statusCode(),
-                            response.headers().firstValue("Content-Type").map(Object::toString)));
+                    logger.info(
+                            String.format(
+                                    "Layer download response code: %s, content type: %s",
+                                    response.statusCode(),
+                                    response.headers()
+                                            .firstValue("Content-Type")
+                                            .map(Object::toString)));
 
                     InputStreamResource body = new InputStreamResource(response.body());
 

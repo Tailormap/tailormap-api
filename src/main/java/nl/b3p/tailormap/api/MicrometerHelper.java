@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api;
 
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
+
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.services.FeatureSource;
@@ -22,16 +23,16 @@ import java.util.stream.Collectors;
 public class MicrometerHelper {
     public static Tags getTags(Object... objects) {
         List<Tag> tags = new ArrayList<>();
-        for(Object o: objects) {
+        for (Object o : objects) {
             if (o != null) {
                 if (o instanceof Application) {
-                    tags.add(Tag.of("appId", ((Application)o).getId() + ""));
+                    tags.add(Tag.of("appId", ((Application) o).getId() + ""));
                 } else if (o instanceof ApplicationLayer) {
-                    tags.add(Tag.of("appLayerId", ((ApplicationLayer)o).getId() + ""));
+                    tags.add(Tag.of("appLayerId", ((ApplicationLayer) o).getId() + ""));
                 } else if (o instanceof GeoService) {
-                    tags.add(Tag.of("serviceId", ((GeoService)o).getId() + ""));
+                    tags.add(Tag.of("serviceId", ((GeoService) o).getId() + ""));
                 } else if (o instanceof Layer) {
-                    tags.add(Tag.of("serviceLayerId", ((Layer)o).getId() + ""));
+                    tags.add(Tag.of("serviceLayerId", ((Layer) o).getId() + ""));
                 } else if (o instanceof SimpleFeatureType) {
                     SimpleFeatureType featureType = (SimpleFeatureType) o;
                     tags.add(Tag.of("simpleFeatureTypeId", featureType.getId() + ""));
@@ -49,6 +50,8 @@ public class MicrometerHelper {
     }
 
     public static String tagsToString(Tags tags) {
-        return tags.stream().map(tag -> tag.getKey() + '=' + tag.getValue()).collect(Collectors.joining(","));
+        return tags.stream()
+                .map(tag -> tag.getKey() + '=' + tag.getValue())
+                .collect(Collectors.joining(","));
     }
 }
