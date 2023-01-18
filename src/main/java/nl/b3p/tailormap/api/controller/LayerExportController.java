@@ -5,8 +5,11 @@
  */
 package nl.b3p.tailormap.api.controller;
 
-import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
-
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Tags;
+import nl.b3p.tailormap.api.MicrometerHelper;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
 import nl.b3p.tailormap.api.geotools.wfs.WFSProxy;
@@ -19,7 +22,6 @@ import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
 import nl.tailormap.viewer.config.services.WFSFeatureSource;
-
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,27 +33,32 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.http.HttpResponse;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
+import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
 
 @AppRestController
 @Validated
 @RequestMapping(path = "/app/{appId}/layer/{appLayerId}/export/")
 public class LayerExportController {
+    private final MeterRegistry meterRegistry;
 
     private final LayerRepository layerRepository;
 
-    public LayerExportController(LayerRepository layerRepository) {
+    public LayerExportController(LayerRepository layerRepository, MeterRegistry meterRegistry) {
         this.layerRepository = layerRepository;
+        this.meterRegistry = meterRegistry;
     }
 
     @GetMapping(path = "capabilities")
+    @Timed("export_get_capabilities")
     public ResponseEntity<Serializable> capabilities(
             @ModelAttribute Application application,
             @ModelAttribute ApplicationLayer applicationLayer)
@@ -66,6 +73,8 @@ public class LayerExportController {
 
         SimpleFeatureType featureType = serviceLayer.getFeatureType();
 
+        Tags tags = MicrometerHelper.getTags(application, applicationLayer, service, serviceLayer, featureType);
+
         if (featureType != null) {
             FeatureSource featureSource = featureType.getFeatureSource();
 
@@ -75,8 +84,12 @@ public class LayerExportController {
                 String username = featureSource.getUsername();
                 String password = featureSource.getPassword();
 
-                capabilities.setOutputFormats(
-                        SimpleWFSHelper.getOutputFormats(wfsUrl, typeName, username, password));
+                List<String> outputFormats = meterRegistry.timer(
+                        "export_get_capabilities_direct_wfs_source",
+                        tags
+                ).recordCallable(() -> SimpleWFSHelper.getOutputFormats(wfsUrl, typeName, username, password));
+
+                capabilities.setOutputFormats(outputFormats);
                 capabilities.setExportable(true);
                 return ResponseEntity.status(HttpStatus.OK).body(capabilities);
             }
@@ -92,10 +105,11 @@ public class LayerExportController {
             @ModelAttribute Application application,
             @ModelAttribute ApplicationLayer applicationLayer,
             @RequestParam String outputFormat,
-            /*            @RequestParam List<String> attributes,
-            @RequestParam String filter,
-            @RequestParam String sortBy,
-            @RequestParam String sortOrder*/
+            @RequestParam(required = false) List<String> attributes,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder,
+            @RequestParam(required = false) String crs,
             HttpServletRequest request) {
 
         final GeoService service = applicationLayer.getService();
@@ -103,6 +117,8 @@ public class LayerExportController {
                 this.layerRepository.getByServiceAndName(service, applicationLayer.getLayerName());
 
         SimpleFeatureType featureType = serviceLayer.getFeatureType();
+
+        Tags tags = MicrometerHelper.getTags(application, applicationLayer, service, serviceLayer, featureType);
 
         if (featureType != null) {
             FeatureSource featureSource = featureType.getFeatureSource();
@@ -113,16 +129,41 @@ public class LayerExportController {
                 String username = featureSource.getUsername();
                 String password = featureSource.getPassword();
 
+                tags = tags.and(
+                        Tag.of("format", outputFormat)
+                );
+
                 MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-                parameters.add("TYPENAME", typeName);
-                parameters.add("OUTPUTFORMAT", outputFormat);
+                // A layer could have more than one featureType as source, currently we assume it's just one
+                parameters.add("typeNames", typeName);
+                parameters.add("outputFormat", outputFormat);
+                if (filter != null) {
+                    // GeoServer vendor-specific
+                    // https://docs.geoserver.org/latest/en/user/services/wfs/vendor.html#cql-filters
+                    parameters.add("cql_filter", filter);
+                }
+                if (crs != null) {
+                    parameters.add("srsName", crs);
+                }
+                if (attributes != null && !attributes.isEmpty()) {
+                    parameters.add("propertyName", String.join(",", attributes));
+                }
+                if (sortBy != null) {
+                    parameters.add("sortBy", sortBy + ("asc".equals(sortOrder) ? "+A" : "+D"));
+                }
                 URI wfsGetFeature =
                         SimpleWFSHelper.getWFSRequestURL(wfsUrl, "GetFeature", parameters);
 
                 try {
                     // TODO: close JPA connection before proxying
-                    HttpResponse<InputStream> response =
-                            WFSProxy.proxyWfsRequest(wfsGetFeature, username, password, request);
+
+                    HttpResponse<InputStream> response = meterRegistry
+                            .timer("export_download_first_response", tags)
+                            .recordCallable(() -> WFSProxy.proxyWfsRequest(wfsGetFeature, username, password, request));
+
+                    meterRegistry.counter("export_download_response",
+                            tags.and("response_status", response.statusCode() + ""))
+                            .increment();
 
                     InputStreamResource body = new InputStreamResource(response.body());
 
@@ -131,6 +172,7 @@ public class LayerExportController {
                                     response.headers(),
                                     Set.of("Content-Type", "Content-Disposition"));
 
+                    // TODO: micrometer record response size and time
                     return ResponseEntity.status(response.statusCode()).headers(headers).body(body);
                 } catch (Exception e) {
                     return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Bad Gateway");

@@ -135,7 +135,6 @@ public class SimpleWFSHelper {
                             DomUtils.getChildElementsByTagName(formatsNode, "Format").stream()
                                     .map(DomUtils::getTextValue)
                                     .collect(Collectors.toList());
-                    outputFormats.add("fromFeatureType");
                 }
                 break;
             }
@@ -157,10 +156,7 @@ public class SimpleWFSHelper {
             for (int i = 0; i < nodes.getLength(); i++) {
                 outputFormats.add(DomUtils.getTextValue((Element) nodes.item(i)));
             }
-            outputFormats.add("global");
         }
-
-        outputFormats.add("wfsversion:" + doc.getDocumentElement().getAttribute("version"));
 
         return outputFormats;
     }
