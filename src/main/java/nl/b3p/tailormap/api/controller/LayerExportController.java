@@ -150,6 +150,8 @@ public class LayerExportController {
                     parameters.add("srsName", crs);
                 }
                 if (attributes != null && !attributes.isEmpty()) {
+                    // If we don't do this, the output won't have geometries
+                    attributes.add(featureType.getGeometryAttribute());
                     parameters.add("propertyName", String.join(",", attributes));
                 }
                 if (sortBy != null) {
