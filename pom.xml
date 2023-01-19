@@ -350,6 +350,11 @@ SPDX-License-Identifier: MIT
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
+      <artifactId>gt-wms</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
       <artifactId>gt-opengis</artifactId>
       <version>${geotools.version}</version>
     </dependency>

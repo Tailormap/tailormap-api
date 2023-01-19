@@ -5,8 +5,16 @@
  */
 package nl.b3p.tailormap.api.geotools.wfs;
 
-import static nl.b3p.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHeader;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.geotools.http.HTTPClient;
+import org.geotools.http.SimpleHttpClient;
+import org.geotools.ows.ServiceException;
+import org.geotools.ows.wms.LayerDescription;
+import org.geotools.ows.wms.WMS1_1_1;
+import org.geotools.ows.wms.WebMapServer;
+import org.geotools.ows.wms.request.DescribeLayerRequest;
+import org.geotools.ows.wms.response.DescribeLayerResponse;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.xml.DomUtils;
@@ -16,8 +24,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -27,12 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
+import static nl.b3p.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHeader;
 
 /**
  * Lightweight WFS client helper with a fault-tolerant 'be liberal in what you accept' design - no
@@ -40,6 +51,8 @@ import javax.xml.xpath.XPathFactory;
  * GeoTools WFS DataStore.
  */
 public class SimpleWFSHelper {
+    private static final Log LOG = LogFactory.getLog(SimpleWFSHelper.class);
+    public static final int TIMEOUT = 5000;
 
     private static HttpClient getDefaultHttpClient() {
         return HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).build();
@@ -51,18 +64,28 @@ public class SimpleWFSHelper {
 
     public static URI getWFSRequestURL(
             String wfsUrl, String request, MultiValueMap<String, String> parameters) {
-        return getWFSRequestURL(wfsUrl, request, parameters, "1.1.0");
+        return getWFSRequestURL(wfsUrl, request, "1.1.0", parameters);
     }
 
     public static URI getWFSRequestURL(
             String wfsUrl,
             String request,
-            MultiValueMap<String, String> parameters,
-            String version) {
+            String version,
+            MultiValueMap<String, String> parameters) {
+        return getOGCRequestURL(wfsUrl, "WFS", version, request, parameters);
+    }
+
+    public static URI getOGCRequestURL(
+            String url,
+            String service,
+            String version,
+            String request,
+            MultiValueMap<String, String> parameters) {
+
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("SERVICE", "WFS");
-        params.add("REQUEST", request);
+        params.add("SERVICE", service);
         params.add("VERSION", version);
+        params.add("REQUEST", request);
         if (parameters != null) {
             // We need to encode the parameters manually because UriComponentsBuilder annoyingly
             // does not encode '+' as used in mime types for output formats, see
@@ -74,10 +97,7 @@ public class SimpleWFSHelper {
                                     .collect(Collectors.toList()));
             params.addAll(parameters);
         }
-        return UriComponentsBuilder.fromHttpUrl(wfsUrl)
-                .replaceQueryParams(params)
-                .build(true)
-                .toUri();
+        return UriComponentsBuilder.fromHttpUrl(url).replaceQueryParams(params).build(true).toUri();
     }
 
     /**
@@ -172,5 +192,58 @@ public class SimpleWFSHelper {
         }
 
         return outputFormats;
+    }
+
+    public static WebMapServer getWebMapServer(String url, String username, String password)
+            throws IOException, ServiceException {
+        HTTPClient client = new SimpleHttpClient();
+        client.setUser(username);
+        client.setPassword(password);
+        client.setConnectTimeout(TIMEOUT);
+        client.setReadTimeout(TIMEOUT);
+        return new WebMapServer(new URL(url), client);
+    }
+
+    public static SimpleWFSLayerDescription describeWMSLayer(
+            String url, String username, String password, List<String> layers) {
+        try {
+            WebMapServer wms = getWebMapServer(url, username, password);
+            // Directly create WMS 1.1.1 request. Creating it from WebMapServer errors with GeoServer about unsupported request in capabilities unless we override WebMapServer to setup specifications.
+            DescribeLayerRequest describeLayerRequest = new WMS1_1_1().createDescribeLayerRequest(new URL(url));
+            describeLayerRequest.setProperty("VERSION", "1.1.1"); // Otherwise GeoTools will send VERSION=1.1.0...
+            describeLayerRequest.setLayers(String.join(",", layers));
+            DescribeLayerResponse describeLayerResponse = wms.issueRequest(describeLayerRequest);
+
+            for (LayerDescription ld : describeLayerResponse.getLayerDescs()) {
+                String wfsUrl = ld.getWfs() != null ? ld.getWfs().toString() : null;
+                if (wfsUrl == null && "WFS".equalsIgnoreCase(ld.getOwsType())) {
+                    wfsUrl = ld.getOwsURL().toString();
+                }
+                // OGC 02-070 Annex B says the wfs/owsURL attributed are not required but
+                // implied. Some Deegree instance encountered has all attributes empty,
+                // and apparently the meaning is that the WFS URL is the same as the
+                // WMS URL (not explicitly defined in the spec).
+                if (wfsUrl == null) {
+                    wfsUrl = wms.getInfo().getSource().toString();
+                }
+
+                if (wfsUrl != null && ld.getQueries() != null && ld.getQueries().length != 0) {
+                    // Return the first one we find
+                    return new SimpleWFSLayerDescription(wfsUrl, ld.getQueries());
+                }
+            }
+        } catch (ServiceException | IOException e) {
+            String msg =
+                    String.format(
+                            "Error in DescribeLayer request to WMS \"%s\": %s: %s",
+                            url, e.getClass(), e.getMessage());
+            if (LOG.isTraceEnabled()) {
+                LOG.trace(msg, e);
+            } else {
+                LOG.debug(msg + ". Set log level to TRACE for stacktrace.");
+            }
+        }
+
+        return null;
     }
 }

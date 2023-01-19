@@ -7,14 +7,11 @@ package nl.b3p.tailormap.api;
 
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
-
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
-import nl.tailormap.viewer.config.services.FeatureSource;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
-import nl.tailormap.viewer.config.services.WFSFeatureSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,17 +29,11 @@ public class MicrometerHelper {
                 } else if (o instanceof GeoService) {
                     tags.add(Tag.of("serviceId", ((GeoService) o).getId() + ""));
                 } else if (o instanceof Layer) {
-                    tags.add(Tag.of("serviceLayerId", ((Layer) o).getId() + ""));
+                    tags.add(Tag.of("serviceLayerName", ((Layer) o).getName()));
                 } else if (o instanceof SimpleFeatureType) {
                     SimpleFeatureType featureType = (SimpleFeatureType) o;
-                    tags.add(Tag.of("simpleFeatureTypeId", featureType.getId() + ""));
-                    FeatureSource featureSource = featureType.getFeatureSource();
-                    if (featureSource instanceof WFSFeatureSource) {
-                        WFSFeatureSource wfsFeatureSource = (WFSFeatureSource) featureSource;
-                        tags.add(Tag.of("wfsUrl", wfsFeatureSource.getUrl()));
-                        tags.add(Tag.of("wfsTypeName", featureType.getTypeName()));
-                    }
-                    // TODO: add more tags for other feature source types
+                    tags.add(Tag.of("featureTypeName", featureType.getTypeName()));
+                    tags.add(Tag.of("featureSourceUrl", featureType.getFeatureSource().getUrl()));
                 }
             }
         }
