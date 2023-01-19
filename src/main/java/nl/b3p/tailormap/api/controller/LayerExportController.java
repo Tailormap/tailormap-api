@@ -73,31 +73,48 @@ public class LayerExportController {
             throws Exception {
 
         final LayerExportCapabilities capabilities = new LayerExportCapabilities();
-        findWFS(application, applicationLayer, params -> {
-            if (params.foundWFS()) {
-                try {
-                    List<String> outputFormats = meterRegistry
-                            .timer("export_get_capabilities_get_wfs_capabilities", params.getMicrometerTags())
-                            .recordCallable(
-                                    () ->
-                                            SimpleWFSHelper.getOutputFormats(
-                                                    params.getWfsUrl(), params.getTypeName(), params.getUsername(), params.getPassword()));
-                    capabilities.setOutputFormats(outputFormats);
-
-                } catch (Exception e) {
-                    String msg = String.format("Error getting capabilities for WFS \"%s\"", params.getWfsUrl());
-                    if (LOG.isTraceEnabled()) {
-                        LOG.trace(msg, e);
-                    } else {
-                        LOG.warn(String.format("%s: %s: %s", msg, e.getClass(), e.getMessage()));
+        findWFS(
+                application,
+                applicationLayer,
+                params -> {
+                    if (params.noWFSFound()) {
+                        capabilities.setOutputFormats(null);
+                        return null; // ignore
                     }
-                    capabilities.setOutputFormats(null);
-                }
-            }
-            return null; // ignore
-        });
+                    try {
+                        List<String> outputFormats =
+                                meterRegistry
+                                        .timer(
+                                                "export_get_capabilities_get_wfs_capabilities",
+                                                params.getMicrometerTags())
+                                        .recordCallable(
+                                                () ->
+                                                        SimpleWFSHelper.getOutputFormats(
+                                                                params.getWfsUrl(),
+                                                                params.getTypeName(),
+                                                                params.getUsername(),
+                                                                params.getPassword()));
+                        capabilities.setOutputFormats(outputFormats);
 
-        capabilities.setExportable(capabilities.getOutputFormats() != null && !capabilities.getOutputFormats().isEmpty());
+                    } catch (Exception e) {
+                        String msg =
+                                String.format(
+                                        "Error getting capabilities for WFS \"%s\"",
+                                        params.getWfsUrl());
+                        if (LOG.isTraceEnabled()) {
+                            LOG.trace(msg, e);
+                        } else {
+                            LOG.warn(
+                                    String.format("%s: %s: %s", msg, e.getClass(), e.getMessage()));
+                        }
+                        capabilities.setOutputFormats(null);
+                    }
+                    return null; // ignore
+                });
+
+        capabilities.setExportable(
+                capabilities.getOutputFormats() != null
+                        && !capabilities.getOutputFormats().isEmpty());
         return ResponseEntity.status(HttpStatus.OK).body(capabilities);
     }
 
@@ -116,92 +133,104 @@ public class LayerExportController {
             HttpServletRequest request) throws Exception {
 
         return (ResponseEntity<?>) findWFS(application, applicationLayer, params -> {
-            if(!params.foundWFS()) {
+            if(params.noWFSFound()) {
                 return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("No suitable WFS available for layer export");
+            } else {
+                return downloadFromWFS(params, outputFormat, attributes, filter, sortBy, sortOrder, crs, request);
             }
+        });
+    }
 
-            Tags tags = params.getMicrometerTags()
-                    .and(Tag.of("format", outputFormat));
+    private ResponseEntity<?> downloadFromWFS(
+            WFSSearchResultParams params, String outputFormat,
+            List<String> attributes,
+            String filter,
+            String sortBy,
+            String sortOrder,
+            String crs,
+            HttpServletRequest request) {
 
-            MultiValueMap<String, String> getFeatureParameters = new LinkedMultiValueMap<>();
-            // A layer could have more than one featureType as source, currently we assume it's just one
-            getFeatureParameters.add("typeNames", params.getTypeName());
-            getFeatureParameters.add("outputFormat", outputFormat);
-            if (filter != null) {
-                // GeoServer vendor-specific
-                // https://docs.geoserver.org/latest/en/user/services/wfs/vendor.html#cql-filters
-                getFeatureParameters.add("cql_filter", filter);
-            }
-            if (crs != null) {
-                getFeatureParameters.add("srsName", crs);
-            }
-            if (attributes != null && !attributes.isEmpty()) {
+        Tags tags = params.getMicrometerTags()
+                .and(Tag.of("format", outputFormat));
 
-                // If the WFS was discovered by a WMS DescribeLayer, we haven't loaded the entire feature type XML schema (because this can be very slow and error-prone) and we don't know the name of the geometry attribute so do not specify the propertyNames parameter to include all propertyNames.
-                // If the geometry attribute is known, add it to the propertyNames otherwise the result won't have geometries.
-                if (params.getGeometryAttribute() != null) {
-                    attributes.add(params.getGeometryAttribute());
-                    getFeatureParameters.add("propertyName", String.join(",", attributes));
-                }
+        MultiValueMap<String, String> getFeatureParameters = new LinkedMultiValueMap<>();
+        // A layer could have more than one featureType as source, currently we assume it's just one
+        getFeatureParameters.add("typeNames", params.getTypeName());
+        getFeatureParameters.add("outputFormat", outputFormat);
+        if (filter != null) {
+            // GeoServer vendor-specific
+            // https://docs.geoserver.org/latest/en/user/services/wfs/vendor.html#cql-filters
+            getFeatureParameters.add("cql_filter", filter);
+        }
+        if (crs != null) {
+            getFeatureParameters.add("srsName", crs);
+        }
+        if (attributes != null && !attributes.isEmpty()) {
+
+            // If the WFS was discovered by a WMS DescribeLayer, we haven't loaded the entire feature type XML schema (because this can be very slow and error-prone) and we don't know the name of the geometry attribute so do not specify the propertyNames parameter to include all propertyNames.
+            // If the geometry attribute is known, add it to the propertyNames otherwise the result won't have geometries.
+            if (params.getGeometryAttribute() != null) {
+                attributes.add(params.getGeometryAttribute());
+                getFeatureParameters.add("propertyName", String.join(",", attributes));
             }
-            if (sortBy != null) {
-                getFeatureParameters.add("sortBy", sortBy + ("asc".equals(sortOrder) ? " A" : " D"));
-            }
-            URI wfsGetFeature =
-                    SimpleWFSHelper.getWFSRequestURL(params.getWfsUrl(), "GetFeature", getFeatureParameters);
+        }
+        if (sortBy != null) {
+            getFeatureParameters.add("sortBy", sortBy + ("asc".equals(sortOrder) ? " A" : " D"));
+        }
+        URI wfsGetFeature =
+                SimpleWFSHelper.getWFSRequestURL(params.getWfsUrl(), "GetFeature", getFeatureParameters);
+
+        LOG.info(
+                String.format(
+                        "Layer download %s, proxying WFS GetFeature request %s",
+                        tagsToString(tags), wfsGetFeature));
+
+        try {
+            // TODO: close JPA connection before proxying
+
+            HttpResponse<InputStream> response =
+                    meterRegistry
+                            .timer("export_download_first_response", tags)
+                            .recordCallable(
+                                    () ->
+                                            WFSProxy.proxyWfsRequest(
+                                                    wfsGetFeature,
+                                                    params.getUsername(),
+                                                    params.getPassword(),
+                                                    request));
+
+            meterRegistry
+                    .counter(
+                            "export_download_response",
+                            tags.and("response_status", response.statusCode() + ""))
+                    .increment();
 
             LOG.info(
                     String.format(
-                            "Layer download %s, proxying WFS GetFeature request %s",
-                            tagsToString(tags), wfsGetFeature));
+                            "Layer download response code: %s, content type: %s, disposition: %s",
+                            response.statusCode(),
+                            response.headers()
+                                    .firstValue("Content-Type")
+                                    .map(Object::toString)
+                                    .orElse("<none>"),
+                            response.headers()
+                                    .firstValue("Content-Disposition")
+                                    .map(Object::toString)
+                                    .orElse("<none>")
+                    ));
 
-            try {
-                // TODO: close JPA connection before proxying
+            InputStreamResource body = new InputStreamResource(response.body());
 
-                HttpResponse<InputStream> response =
-                        meterRegistry
-                                .timer("export_download_first_response", tags)
-                                .recordCallable(
-                                        () ->
-                                                WFSProxy.proxyWfsRequest(
-                                                        wfsGetFeature,
-                                                        params.getUsername(),
-                                                        params.getPassword(),
-                                                        request));
+            org.springframework.http.HttpHeaders headers =
+                    passthroughResponseHeaders(
+                            response.headers(),
+                            Set.of("Content-Type", "Content-Disposition"));
 
-                meterRegistry
-                        .counter(
-                                "export_download_response",
-                                tags.and("response_status", response.statusCode() + ""))
-                        .increment();
-
-                LOG.info(
-                        String.format(
-                                "Layer download response code: %s, content type: %s, disposition: %s",
-                                response.statusCode(),
-                                response.headers()
-                                        .firstValue("Content-Type")
-                                        .map(Object::toString)
-                                        .orElse("<none>"),
-                                response.headers()
-                                        .firstValue("Content-Disposition")
-                                        .map(Object::toString)
-                                        .orElse("<none>")
-                                ));
-
-                InputStreamResource body = new InputStreamResource(response.body());
-
-                org.springframework.http.HttpHeaders headers =
-                        passthroughResponseHeaders(
-                                response.headers(),
-                                Set.of("Content-Type", "Content-Disposition"));
-
-                // TODO: micrometer record response size and time
-                return ResponseEntity.status(response.statusCode()).headers(headers).body(body);
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Bad Gateway");
-            }
-        });
+            // TODO: micrometer record response size and time
+            return ResponseEntity.status(response.statusCode()).headers(headers).body(body);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Bad Gateway");
+        }
     }
 
     private static class WFSSearchResultParams {
@@ -246,8 +275,8 @@ public class LayerExportController {
             return micrometerTags;
         }
 
-        public boolean foundWFS() {
-            return wfsUrl != null && typeName != null;
+        public boolean noWFSFound() {
+            return wfsUrl == null || typeName == null;
         }
         //</editor-fold>
     }
