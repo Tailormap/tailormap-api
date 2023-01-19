@@ -5,6 +5,8 @@
  */
 package nl.b3p.tailormap.api.geotools.wfs;
 
+import static nl.b3p.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHeader;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.http.HTTPClient;
@@ -24,12 +26,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -43,7 +39,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static nl.b3p.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHeader;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 /**
  * Lightweight WFS client helper with a fault-tolerant 'be liberal in what you accept' design - no
@@ -208,9 +209,13 @@ public class SimpleWFSHelper {
             String url, String username, String password, List<String> layers) {
         try {
             WebMapServer wms = getWebMapServer(url, username, password);
-            // Directly create WMS 1.1.1 request. Creating it from WebMapServer errors with GeoServer about unsupported request in capabilities unless we override WebMapServer to setup specifications.
-            DescribeLayerRequest describeLayerRequest = new WMS1_1_1().createDescribeLayerRequest(new URL(url));
-            describeLayerRequest.setProperty("VERSION", "1.1.1"); // Otherwise GeoTools will send VERSION=1.1.0...
+            // Directly create WMS 1.1.1 request. Creating it from WebMapServer errors with
+            // GeoServer about unsupported request in capabilities unless we override WebMapServer
+            // to setup specifications.
+            DescribeLayerRequest describeLayerRequest =
+                    new WMS1_1_1().createDescribeLayerRequest(new URL(url));
+            describeLayerRequest.setProperty(
+                    "VERSION", "1.1.1"); // Otherwise GeoTools will send VERSION=1.1.0...
             describeLayerRequest.setLayers(String.join(",", layers));
             DescribeLayerResponse describeLayerResponse = wms.issueRequest(describeLayerRequest);
 

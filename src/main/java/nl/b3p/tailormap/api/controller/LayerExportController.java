@@ -5,10 +5,14 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.MicrometerHelper.tagsToString;
+import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
+
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
+
 import nl.b3p.tailormap.api.MicrometerHelper;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
@@ -24,6 +28,7 @@ import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
 import nl.tailormap.viewer.config.services.WFSFeatureSource;
 import nl.tailormap.viewer.config.services.WMSService;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.InputStreamResource;
@@ -38,7 +43,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URI;
@@ -48,8 +52,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-import static nl.b3p.tailormap.api.MicrometerHelper.tagsToString;
-import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
+import javax.servlet.http.HttpServletRequest;
 
 @AppRestController
 @Validated
@@ -130,19 +133,34 @@ public class LayerExportController {
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String sortOrder,
             @RequestParam(required = false) String crs,
-            HttpServletRequest request) throws Exception {
+            HttpServletRequest request)
+            throws Exception {
 
-        return (ResponseEntity<?>) findWFS(application, applicationLayer, params -> {
-            if(params.noWFSFound()) {
-                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("No suitable WFS available for layer export");
-            } else {
-                return downloadFromWFS(params, outputFormat, attributes, filter, sortBy, sortOrder, crs, request);
-            }
-        });
+        return (ResponseEntity<?>)
+                findWFS(
+                        application,
+                        applicationLayer,
+                        params -> {
+                            if (params.noWFSFound()) {
+                                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                                        .body("No suitable WFS available for layer export");
+                            } else {
+                                return downloadFromWFS(
+                                        params,
+                                        outputFormat,
+                                        attributes,
+                                        filter,
+                                        sortBy,
+                                        sortOrder,
+                                        crs,
+                                        request);
+                            }
+                        });
     }
 
     private ResponseEntity<?> downloadFromWFS(
-            WFSSearchResultParams params, String outputFormat,
+            WFSSearchResultParams params,
+            String outputFormat,
             List<String> attributes,
             String filter,
             String sortBy,
@@ -150,8 +168,7 @@ public class LayerExportController {
             String crs,
             HttpServletRequest request) {
 
-        Tags tags = params.getMicrometerTags()
-                .and(Tag.of("format", outputFormat));
+        Tags tags = params.getMicrometerTags().and(Tag.of("format", outputFormat));
 
         MultiValueMap<String, String> getFeatureParameters = new LinkedMultiValueMap<>();
         // A layer could have more than one featureType as source, currently we assume it's just one
@@ -178,7 +195,8 @@ public class LayerExportController {
             getFeatureParameters.add("sortBy", sortBy + ("asc".equals(sortOrder) ? " A" : " D"));
         }
         URI wfsGetFeature =
-                SimpleWFSHelper.getWFSRequestURL(params.getWfsUrl(), "GetFeature", getFeatureParameters);
+                SimpleWFSHelper.getWFSRequestURL(
+                        params.getWfsUrl(), "GetFeature", getFeatureParameters);
 
         LOG.info(
                 String.format(
@@ -216,15 +234,13 @@ public class LayerExportController {
                             response.headers()
                                     .firstValue("Content-Disposition")
                                     .map(Object::toString)
-                                    .orElse("<none>")
-                    ));
+                                    .orElse("<none>")));
 
             InputStreamResource body = new InputStreamResource(response.body());
 
             org.springframework.http.HttpHeaders headers =
                     passthroughResponseHeaders(
-                            response.headers(),
-                            Set.of("Content-Type", "Content-Disposition"));
+                            response.headers(), Set.of("Content-Type", "Content-Disposition"));
 
             // TODO: micrometer record response size and time
             return ResponseEntity.status(response.statusCode()).headers(headers).body(body);
@@ -241,7 +257,13 @@ public class LayerExportController {
         private final String password;
         private final Tags micrometerTags;
 
-        public WFSSearchResultParams(String wfsUrl, String typeName, String geometryAttribute, String username, String password, Tags micrometerTags) {
+        public WFSSearchResultParams(
+                String wfsUrl,
+                String typeName,
+                String geometryAttribute,
+                String username,
+                String password,
+                Tags micrometerTags) {
             this.wfsUrl = wfsUrl;
             this.typeName = typeName;
             this.geometryAttribute = geometryAttribute;
@@ -250,7 +272,7 @@ public class LayerExportController {
             this.micrometerTags = micrometerTags;
         }
 
-        //<editor-fold desc="getters">
+        // <editor-fold desc="getters">
         public String getWfsUrl() {
             return wfsUrl;
         }
@@ -278,10 +300,14 @@ public class LayerExportController {
         public boolean noWFSFound() {
             return wfsUrl == null || typeName == null;
         }
-        //</editor-fold>
+        // </editor-fold>
     }
 
-    private Object findWFS(Application application, ApplicationLayer applicationLayer, Function<WFSSearchResultParams, ?> function) throws Exception {
+    private Object findWFS(
+            Application application,
+            ApplicationLayer applicationLayer,
+            Function<WFSSearchResultParams, ?> function)
+            throws Exception {
 
         final GeoService service = applicationLayer.getService();
         final Layer serviceLayer =
@@ -317,11 +343,12 @@ public class LayerExportController {
             username = wmsService.getUsername();
             password = wmsService.getPassword();
 
-            SimpleWFSLayerDescription wfsLayerDescription = getWFSLayerDescriptionForWMS(wmsService, serviceLayer, tags);
+            SimpleWFSLayerDescription wfsLayerDescription =
+                    getWFSLayerDescriptionForWMS(wmsService, serviceLayer, tags);
             if (wfsLayerDescription != null) {
-                tags = tags
-                        .and("featureSourceUrl", wfsLayerDescription.getWfsUrl())
-                        .and("featureTypeName", wfsLayerDescription.getFirstTypeName());
+                tags =
+                        tags.and("featureSourceUrl", wfsLayerDescription.getWfsUrl())
+                                .and("featureTypeName", wfsLayerDescription.getFirstTypeName());
 
                 wfsUrl = wfsLayerDescription.getWfsUrl();
                 typeName = wfsLayerDescription.getFirstTypeName();
@@ -329,15 +356,15 @@ public class LayerExportController {
         }
 
         if (wfsUrl != null && typeName != null) {
-            tags = tags
-                    .and("featureSourceUrl", wfsUrl)
-                    .and("featureTypeName", typeName);
-
+            tags = tags.and("featureSourceUrl", wfsUrl).and("featureTypeName", typeName);
         }
-        return function.apply(new WFSSearchResultParams(wfsUrl, typeName, geometryAttribute, username, password, tags));
+        return function.apply(
+                new WFSSearchResultParams(
+                        wfsUrl, typeName, geometryAttribute, username, password, tags));
     }
 
-    private SimpleWFSLayerDescription getWFSLayerDescriptionForWMS(WMSService wmsService, Layer serviceLayer, Tags tags) throws Exception {
+    private SimpleWFSLayerDescription getWFSLayerDescriptionForWMS(
+            WMSService wmsService, Layer serviceLayer, Tags tags) throws Exception {
         SimpleWFSLayerDescription wfsLayerDescription =
                 meterRegistry
                         .timer("export_get_capabilities_wms_describelayer", tags)
@@ -349,11 +376,13 @@ public class LayerExportController {
                                                 wmsService.getPassword(),
                                                 List.of(serviceLayer.getName())));
         if (wfsLayerDescription != null && wfsLayerDescription.getTypeNames().length > 0) {
-            LOG.info(String.format("WMS described layer \"%s\" with typeNames \"%s\" of WFS \"%s\" for WMS \"%s\"",
-                    serviceLayer.getName(),
-                    Arrays.toString(wfsLayerDescription.getTypeNames()),
-                    wfsLayerDescription.getWfsUrl(),
-                    wmsService.getUrl()));
+            LOG.info(
+                    String.format(
+                            "WMS described layer \"%s\" with typeNames \"%s\" of WFS \"%s\" for WMS \"%s\"",
+                            serviceLayer.getName(),
+                            Arrays.toString(wfsLayerDescription.getTypeNames()),
+                            wfsLayerDescription.getWfsUrl(),
+                            wmsService.getUrl()));
 
             return wfsLayerDescription;
         }
