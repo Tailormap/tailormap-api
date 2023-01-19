@@ -511,8 +511,9 @@ paths:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
   /app/{appId}/layer/{layerId}/export/download:
-    description: Directly stream layer data export response for download.
-    get:
+    description: Directly stream layer data export response for download. POST request to allow a large filter in the
+      request body.
+    post:
       operationId: 'downloadLayerExport'
       security:
         - formAuth: [ ]

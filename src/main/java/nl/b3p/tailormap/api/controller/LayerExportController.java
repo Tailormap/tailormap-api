@@ -38,6 +38,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.InputStream;
@@ -112,7 +113,9 @@ public class LayerExportController {
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Not implemented");
     }
 
-    @GetMapping(path = "download")
+    @RequestMapping(
+            path = "download",
+            method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<?> download(
             @ModelAttribute Application application,
             @ModelAttribute ApplicationLayer applicationLayer,
