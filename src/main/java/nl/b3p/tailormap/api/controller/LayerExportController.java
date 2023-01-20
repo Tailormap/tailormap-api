@@ -184,8 +184,12 @@ public class LayerExportController {
         }
         if (attributes != null && !attributes.isEmpty()) {
 
-            // If the WFS was discovered by a WMS DescribeLayer, we haven't loaded the entire feature type XML schema (because this can be very slow and error-prone) and we don't know the name of the geometry attribute so do not specify the propertyNames parameter to include all propertyNames.
-            // If the geometry attribute is known, add it to the propertyNames otherwise the result won't have geometries.
+            // If the WFS was discovered by a WMS DescribeLayer, we haven't loaded the entire
+            // feature type XML schema (because this can be very slow and error-prone) and we don't
+            // know the name of the geometry attribute so do not specify the propertyNames parameter
+            // to include all propertyNames.
+            // If the geometry attribute is known, add it to the propertyNames otherwise the result
+            // won't have geometries.
             if (params.getGeometryAttribute() != null) {
                 attributes.add(params.getGeometryAttribute());
                 getFeatureParameters.add("propertyName", String.join(",", attributes));
