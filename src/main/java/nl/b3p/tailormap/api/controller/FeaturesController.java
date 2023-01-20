@@ -516,12 +516,16 @@ public class FeaturesController implements Constants {
                     configuredAttribute -> {
                         AttributeDescriptor attributeDescriptor =
                                 sft.getAttribute(configuredAttribute.getAttributeName());
+                        String type = attributeDescriptor.getType();
+
+                        // Only return generic 'geometry' type for now
+                        if (AttributeDescriptor.GEOMETRY_TYPES.contains(type)) {
+                            type = AttributeDescriptor.TYPE_GEOMETRY;
+                        }
                         featuresResponse.addColumnMetadataItem(
                                 new ColumnMetadata()
                                         .key(attributeDescriptor.getName())
-                                        .type(
-                                                ColumnMetadata.TypeEnum.fromValue(
-                                                        attributeDescriptor.getType()))
+                                        .type(ColumnMetadata.TypeEnum.fromValue(type))
                                         .alias(attributeDescriptor.getAlias()));
                     });
         }
