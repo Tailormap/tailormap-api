@@ -515,30 +515,28 @@ import javax.validation.constraints.NotNull;
 <span class="nc" id="L515">            configuredAttributes.forEach(</span>
                     configuredAttribute -&gt; {
 <span class="nc" id="L517">                        AttributeDescriptor attributeDescriptor =</span>
-                                configuredAttribute
-<span class="nc" id="L519">                                        .getFeatureType()</span>
-<span class="nc" id="L520">                                        .getAttribute(configuredAttribute.getAttributeName());</span>
-<span class="nc" id="L521">                        String type = attributeDescriptor.getType();</span>
+<span class="nc" id="L518">                                sft.getAttribute(configuredAttribute.getAttributeName());</span>
+<span class="nc" id="L519">                        String type = attributeDescriptor.getType();</span>
 
                         // Only return generic 'geometry' type for now
-<span class="nc bnc" id="L524" title="All 2 branches missed.">                        if (AttributeDescriptor.GEOMETRY_TYPES.contains(type)) {</span>
-<span class="nc" id="L525">                            type = AttributeDescriptor.TYPE_GEOMETRY;</span>
+<span class="nc bnc" id="L522" title="All 2 branches missed.">                        if (AttributeDescriptor.GEOMETRY_TYPES.contains(type)) {</span>
+<span class="nc" id="L523">                            type = AttributeDescriptor.TYPE_GEOMETRY;</span>
                         }
-<span class="nc" id="L527">                        featuresResponse.addColumnMetadataItem(</span>
+<span class="nc" id="L525">                        featuresResponse.addColumnMetadataItem(</span>
                                 new ColumnMetadata()
-<span class="nc" id="L529">                                        .key(attributeDescriptor.getName())</span>
-<span class="nc" id="L530">                                        .type(ColumnMetadata.TypeEnum.fromValue(type))</span>
-<span class="nc" id="L531">                                        .alias(attributeDescriptor.getAlias()));</span>
-<span class="nc" id="L532">                    });</span>
+<span class="nc" id="L527">                                        .key(attributeDescriptor.getName())</span>
+<span class="nc" id="L528">                                        .type(ColumnMetadata.TypeEnum.fromValue(type))</span>
+<span class="nc" id="L529">                                        .alias(attributeDescriptor.getAlias()));</span>
+<span class="nc" id="L530">                    });</span>
         }
-<span class="nc" id="L534">    }</span>
+<span class="nc" id="L532">    }</span>
 
     private List&lt;ConfiguredAttribute&gt; getVisibleAttributes(
             @NotNull ApplicationLayer appLayer, @NotNull SimpleFeatureType sft) {
-<span class="nc" id="L538">        List&lt;ConfiguredAttribute&gt; configuredAttributes = appLayer.getAttributes(sft);</span>
-<span class="nc" id="L539">        return configuredAttributes.stream()</span>
-<span class="nc" id="L540">                .filter(ConfiguredAttribute::isVisible)</span>
-<span class="nc" id="L541">                .collect(Collectors.toList());</span>
+<span class="nc" id="L536">        List&lt;ConfiguredAttribute&gt; configuredAttributes = appLayer.getAttributes(sft);</span>
+<span class="nc" id="L537">        return configuredAttributes.stream()</span>
+<span class="nc" id="L538">                .filter(ConfiguredAttribute::isVisible)</span>
+<span class="nc" id="L539">                .collect(Collectors.toList());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
