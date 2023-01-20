@@ -515,9 +515,7 @@ public class FeaturesController implements Constants {
             configuredAttributes.forEach(
                     configuredAttribute -> {
                         AttributeDescriptor attributeDescriptor =
-                                configuredAttribute
-                                        .getFeatureType()
-                                        .getAttribute(configuredAttribute.getAttributeName());
+                                sft.getAttribute(configuredAttribute.getAttributeName());
                         String type = attributeDescriptor.getType();
 
                         // Only return generic 'geometry' type for now
