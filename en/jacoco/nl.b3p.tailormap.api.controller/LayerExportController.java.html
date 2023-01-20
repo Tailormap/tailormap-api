@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LayerExportController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.controller</a> &gt; <span class="el_source">LayerExportController.java</span></div><h1>LayerExportController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.controller;
+
+import static nl.b3p.tailormap.api.MicrometerHelper.tagsToString;
+import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
+
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Tags;
+
+import nl.b3p.tailormap.api.MicrometerHelper;
+import nl.b3p.tailormap.api.annotation.AppRestController;
+import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
+import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSLayerDescription;
+import nl.b3p.tailormap.api.geotools.wfs.WFSProxy;
+import nl.b3p.tailormap.api.model.LayerExportCapabilities;
+import nl.b3p.tailormap.api.repository.LayerRepository;
+import nl.tailormap.viewer.config.app.Application;
+import nl.tailormap.viewer.config.app.ApplicationLayer;
+import nl.tailormap.viewer.config.services.FeatureSource;
+import nl.tailormap.viewer.config.services.GeoService;
+import nl.tailormap.viewer.config.services.Layer;
+import nl.tailormap.viewer.config.services.SimpleFeatureType;
+import nl.tailormap.viewer.config.services.WFSFeatureSource;
+import nl.tailormap.viewer.config.services.WMSService;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.URI;
+import java.net.http.HttpResponse;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+
+import javax.servlet.http.HttpServletRequest;
+
+@AppRestController
+@Validated
+@RequestMapping(path = &quot;/app/{appId}/layer/{appLayerId}/export/&quot;)
+public class LayerExportController {
+<span class="nc" id="L61">    private static final Log LOG = LogFactory.getLog(LayerExportController.class);</span>
+    private final MeterRegistry meterRegistry;
+
+    private final LayerRepository layerRepository;
+
+<span class="nc" id="L66">    public LayerExportController(LayerRepository layerRepository, MeterRegistry meterRegistry) {</span>
+<span class="nc" id="L67">        this.layerRepository = layerRepository;</span>
+<span class="nc" id="L68">        this.meterRegistry = meterRegistry;</span>
+<span class="nc" id="L69">    }</span>
+
+    @GetMapping(path = &quot;capabilities&quot;)
+    @Timed(&quot;export_get_capabilities&quot;)
+    public ResponseEntity&lt;Serializable&gt; capabilities(
+            @ModelAttribute Application application,
+            @ModelAttribute ApplicationLayer applicationLayer)
+            throws Exception {
+
+<span class="nc" id="L78">        final LayerExportCapabilities capabilities = new LayerExportCapabilities();</span>
+<span class="nc" id="L79">        findWFS(</span>
+                application,
+                applicationLayer,
+                params -&gt; {
+<span class="nc bnc" id="L83" title="All 2 branches missed.">                    if (params.noWFSFound()) {</span>
+<span class="nc" id="L84">                        capabilities.setOutputFormats(null);</span>
+<span class="nc" id="L85">                        return null; // ignore</span>
+                    }
+                    try {
+<span class="nc" id="L88">                        List&lt;String&gt; outputFormats =</span>
+                                meterRegistry
+<span class="nc" id="L90">                                        .timer(</span>
+                                                &quot;export_get_capabilities_get_wfs_capabilities&quot;,
+<span class="nc" id="L92">                                                params.getMicrometerTags())</span>
+<span class="nc" id="L93">                                        .recordCallable(</span>
+                                                () -&gt;
+<span class="nc" id="L95">                                                        SimpleWFSHelper.getOutputFormats(</span>
+<span class="nc" id="L96">                                                                params.getWfsUrl(),</span>
+<span class="nc" id="L97">                                                                params.getTypeName(),</span>
+<span class="nc" id="L98">                                                                params.getUsername(),</span>
+<span class="nc" id="L99">                                                                params.getPassword()));</span>
+<span class="nc" id="L100">                        capabilities.setOutputFormats(outputFormats);</span>
+
+<span class="nc" id="L102">                    } catch (Exception e) {</span>
+<span class="nc" id="L103">                        String msg =</span>
+<span class="nc" id="L104">                                String.format(</span>
+                                        &quot;Error getting capabilities for WFS \&quot;%s\&quot;&quot;,
+<span class="nc" id="L106">                                        params.getWfsUrl());</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">                        if (LOG.isTraceEnabled()) {</span>
+<span class="nc" id="L108">                            LOG.trace(msg, e);</span>
+                        } else {
+<span class="nc" id="L110">                            LOG.warn(</span>
+<span class="nc" id="L111">                                    String.format(&quot;%s: %s: %s&quot;, msg, e.getClass(), e.getMessage()));</span>
+                        }
+<span class="nc" id="L113">                        capabilities.setOutputFormats(null);</span>
+<span class="nc" id="L114">                    }</span>
+<span class="nc" id="L115">                    return null; // ignore</span>
+                });
+
+<span class="nc" id="L118">        capabilities.setExportable(</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">                capabilities.getOutputFormats() != null</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">                        &amp;&amp; !capabilities.getOutputFormats().isEmpty());</span>
+<span class="nc" id="L121">        return ResponseEntity.status(HttpStatus.OK).body(capabilities);</span>
+    }
+
+    @RequestMapping(
+            path = &quot;download&quot;,
+            method = {RequestMethod.GET, RequestMethod.POST})
+    public ResponseEntity&lt;?&gt; download(
+            @ModelAttribute Application application,
+            @ModelAttribute ApplicationLayer applicationLayer,
+            @RequestParam String outputFormat,
+            @RequestParam(required = false) List&lt;String&gt; attributes,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder,
+            @RequestParam(required = false) String crs,
+            HttpServletRequest request)
+            throws Exception {
+
+<span class="nc" id="L139">        return (ResponseEntity&lt;?&gt;)</span>
+<span class="nc" id="L140">                findWFS(</span>
+                        application,
+                        applicationLayer,
+                        params -&gt; {
+<span class="nc bnc" id="L144" title="All 2 branches missed.">                            if (params.noWFSFound()) {</span>
+<span class="nc" id="L145">                                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)</span>
+<span class="nc" id="L146">                                        .body(&quot;No suitable WFS available for layer export&quot;);</span>
+                            } else {
+<span class="nc" id="L148">                                return downloadFromWFS(</span>
+                                        params,
+                                        outputFormat,
+                                        attributes,
+                                        filter,
+                                        sortBy,
+                                        sortOrder,
+                                        crs,
+                                        request);
+                            }
+                        });
+    }
+
+    private ResponseEntity&lt;?&gt; downloadFromWFS(
+            WFSSearchResultParams params,
+            String outputFormat,
+            List&lt;String&gt; attributes,
+            String filter,
+            String sortBy,
+            String sortOrder,
+            String crs,
+            HttpServletRequest request) {
+
+<span class="nc" id="L171">        Tags tags = params.getMicrometerTags().and(Tag.of(&quot;format&quot;, outputFormat));</span>
+
+<span class="nc" id="L173">        MultiValueMap&lt;String, String&gt; getFeatureParameters = new LinkedMultiValueMap&lt;&gt;();</span>
+        // A layer could have more than one featureType as source, currently we assume it's just one
+<span class="nc" id="L175">        getFeatureParameters.add(&quot;typeNames&quot;, params.getTypeName());</span>
+<span class="nc" id="L176">        getFeatureParameters.add(&quot;outputFormat&quot;, outputFormat);</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">        if (filter != null) {</span>
+            // GeoServer vendor-specific
+            // https://docs.geoserver.org/latest/en/user/services/wfs/vendor.html#cql-filters
+<span class="nc" id="L180">            getFeatureParameters.add(&quot;cql_filter&quot;, filter);</span>
+        }
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (crs != null) {</span>
+<span class="nc" id="L183">            getFeatureParameters.add(&quot;srsName&quot;, crs);</span>
+        }
+<span class="nc bnc" id="L185" title="All 4 branches missed.">        if (attributes != null &amp;&amp; !attributes.isEmpty()) {</span>
+
+            // If the WFS was discovered by a WMS DescribeLayer, we haven't loaded the entire
+            // feature type XML schema (because this can be very slow and error-prone) and we don't
+            // know the name of the geometry attribute so do not specify the propertyNames parameter
+            // to include all propertyNames.
+            // If the geometry attribute is known, add it to the propertyNames otherwise the result
+            // won't have geometries.
+<span class="nc bnc" id="L193" title="All 2 branches missed.">            if (params.getGeometryAttribute() != null) {</span>
+<span class="nc" id="L194">                attributes.add(params.getGeometryAttribute());</span>
+<span class="nc" id="L195">                getFeatureParameters.add(&quot;propertyName&quot;, String.join(&quot;,&quot;, attributes));</span>
+            }
+        }
+<span class="nc bnc" id="L198" title="All 2 branches missed.">        if (sortBy != null) {</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">            getFeatureParameters.add(&quot;sortBy&quot;, sortBy + (&quot;asc&quot;.equals(sortOrder) ? &quot; A&quot; : &quot; D&quot;));</span>
+        }
+<span class="nc" id="L201">        URI wfsGetFeature =</span>
+<span class="nc" id="L202">                SimpleWFSHelper.getWFSRequestURL(</span>
+<span class="nc" id="L203">                        params.getWfsUrl(), &quot;GetFeature&quot;, getFeatureParameters);</span>
+
+<span class="nc" id="L205">        LOG.info(</span>
+<span class="nc" id="L206">                String.format(</span>
+                        &quot;Layer download %s, proxying WFS GetFeature request %s&quot;,
+<span class="nc" id="L208">                        tagsToString(tags), wfsGetFeature));</span>
+
+        try {
+            // TODO: close JPA connection before proxying
+
+<span class="nc" id="L213">            HttpResponse&lt;InputStream&gt; response =</span>
+                    meterRegistry
+<span class="nc" id="L215">                            .timer(&quot;export_download_first_response&quot;, tags)</span>
+<span class="nc" id="L216">                            .recordCallable(</span>
+                                    () -&gt;
+<span class="nc" id="L218">                                            WFSProxy.proxyWfsRequest(</span>
+                                                    wfsGetFeature,
+<span class="nc" id="L220">                                                    params.getUsername(),</span>
+<span class="nc" id="L221">                                                    params.getPassword(),</span>
+                                                    request));
+
+<span class="nc" id="L224">            meterRegistry</span>
+<span class="nc" id="L225">                    .counter(</span>
+                            &quot;export_download_response&quot;,
+<span class="nc" id="L227">                            tags.and(&quot;response_status&quot;, response.statusCode() + &quot;&quot;))</span>
+<span class="nc" id="L228">                    .increment();</span>
+
+<span class="nc" id="L230">            LOG.info(</span>
+<span class="nc" id="L231">                    String.format(</span>
+                            &quot;Layer download response code: %s, content type: %s, disposition: %s&quot;,
+<span class="nc" id="L233">                            response.statusCode(),</span>
+<span class="nc" id="L234">                            response.headers()</span>
+<span class="nc" id="L235">                                    .firstValue(&quot;Content-Type&quot;)</span>
+<span class="nc" id="L236">                                    .map(Object::toString)</span>
+<span class="nc" id="L237">                                    .orElse(&quot;&lt;none&gt;&quot;),</span>
+<span class="nc" id="L238">                            response.headers()</span>
+<span class="nc" id="L239">                                    .firstValue(&quot;Content-Disposition&quot;)</span>
+<span class="nc" id="L240">                                    .map(Object::toString)</span>
+<span class="nc" id="L241">                                    .orElse(&quot;&lt;none&gt;&quot;)));</span>
+
+<span class="nc" id="L243">            InputStreamResource body = new InputStreamResource(response.body());</span>
+
+<span class="nc" id="L245">            org.springframework.http.HttpHeaders headers =</span>
+<span class="nc" id="L246">                    passthroughResponseHeaders(</span>
+<span class="nc" id="L247">                            response.headers(), Set.of(&quot;Content-Type&quot;, &quot;Content-Disposition&quot;));</span>
+
+            // TODO: micrometer record response size and time
+<span class="nc" id="L250">            return ResponseEntity.status(response.statusCode()).headers(headers).body(body);</span>
+<span class="nc" id="L251">        } catch (Exception e) {</span>
+<span class="nc" id="L252">            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(&quot;Bad Gateway&quot;);</span>
+        }
+    }
+
+    private static class WFSSearchResultParams {
+        private final String wfsUrl;
+        private final String typeName;
+        private final String geometryAttribute;
+        private final String username;
+        private final String password;
+        private final Tags micrometerTags;
+
+        public WFSSearchResultParams(
+                String wfsUrl,
+                String typeName,
+                String geometryAttribute,
+                String username,
+                String password,
+<span class="nc" id="L270">                Tags micrometerTags) {</span>
+<span class="nc" id="L271">            this.wfsUrl = wfsUrl;</span>
+<span class="nc" id="L272">            this.typeName = typeName;</span>
+<span class="nc" id="L273">            this.geometryAttribute = geometryAttribute;</span>
+<span class="nc" id="L274">            this.username = username;</span>
+<span class="nc" id="L275">            this.password = password;</span>
+<span class="nc" id="L276">            this.micrometerTags = micrometerTags;</span>
+<span class="nc" id="L277">        }</span>
+
+        // &lt;editor-fold desc=&quot;getters&quot;&gt;
+        public String getWfsUrl() {
+<span class="nc" id="L281">            return wfsUrl;</span>
+        }
+
+        public String getTypeName() {
+<span class="nc" id="L285">            return typeName;</span>
+        }
+
+        public String getGeometryAttribute() {
+<span class="nc" id="L289">            return geometryAttribute;</span>
+        }
+
+        public String getUsername() {
+<span class="nc" id="L293">            return username;</span>
+        }
+
+        public String getPassword() {
+<span class="nc" id="L297">            return password;</span>
+        }
+
+        public Tags getMicrometerTags() {
+<span class="nc" id="L301">            return micrometerTags;</span>
+        }
+
+        public boolean noWFSFound() {
+<span class="nc bnc" id="L305" title="All 4 branches missed.">            return wfsUrl == null || typeName == null;</span>
+        }
+        // &lt;/editor-fold&gt;
+    }
+
+    private Object findWFS(
+            Application application,
+            ApplicationLayer applicationLayer,
+            Function&lt;WFSSearchResultParams, ?&gt; function)
+            throws Exception {
+
+<span class="nc" id="L316">        final GeoService service = applicationLayer.getService();</span>
+<span class="nc" id="L317">        final Layer serviceLayer =</span>
+<span class="nc" id="L318">                this.layerRepository.getByServiceAndName(service, applicationLayer.getLayerName());</span>
+
+<span class="nc" id="L320">        SimpleFeatureType featureType = serviceLayer.getFeatureType();</span>
+
+<span class="nc" id="L322">        Tags tags =</span>
+<span class="nc" id="L323">                MicrometerHelper.getTags(</span>
+                        application, applicationLayer, service, serviceLayer, featureType);
+
+<span class="nc" id="L326">        String wfsUrl = null;</span>
+<span class="nc" id="L327">        String typeName = null;</span>
+<span class="nc" id="L328">        String username = null;</span>
+<span class="nc" id="L329">        String password = null;</span>
+<span class="nc" id="L330">        String geometryAttribute = null;</span>
+
+<span class="nc bnc" id="L332" title="All 2 branches missed.">        if (featureType != null) {</span>
+<span class="nc" id="L333">            FeatureSource featureSource = featureType.getFeatureSource();</span>
+
+<span class="nc bnc" id="L335" title="All 2 branches missed.">            if (featureSource instanceof WFSFeatureSource) {</span>
+<span class="nc" id="L336">                wfsUrl = featureSource.getUrl();</span>
+<span class="nc" id="L337">                typeName = featureType.getTypeName();</span>
+<span class="nc" id="L338">                username = featureSource.getUsername();</span>
+<span class="nc" id="L339">                password = featureSource.getPassword();</span>
+<span class="nc" id="L340">                geometryAttribute = featureType.getGeometryAttribute();</span>
+            }
+        }
+
+<span class="nc bnc" id="L344" title="All 6 branches missed.">        if ((wfsUrl == null || typeName == null) &amp;&amp; service instanceof WMSService) {</span>
+            // Try to find out the WFS by doing a DescribeLayer request (from OGC SLD spec)
+<span class="nc" id="L346">            WMSService wmsService = (WMSService) service;</span>
+<span class="nc" id="L347">            username = wmsService.getUsername();</span>
+<span class="nc" id="L348">            password = wmsService.getPassword();</span>
+
+<span class="nc" id="L350">            SimpleWFSLayerDescription wfsLayerDescription =</span>
+<span class="nc" id="L351">                    getWFSLayerDescriptionForWMS(wmsService, serviceLayer, tags);</span>
+<span class="nc bnc" id="L352" title="All 2 branches missed.">            if (wfsLayerDescription != null) {</span>
+<span class="nc" id="L353">                tags =</span>
+<span class="nc" id="L354">                        tags.and(&quot;featureSourceUrl&quot;, wfsLayerDescription.getWfsUrl())</span>
+<span class="nc" id="L355">                                .and(&quot;featureTypeName&quot;, wfsLayerDescription.getFirstTypeName());</span>
+
+<span class="nc" id="L357">                wfsUrl = wfsLayerDescription.getWfsUrl();</span>
+<span class="nc" id="L358">                typeName = wfsLayerDescription.getFirstTypeName();</span>
+            }
+        }
+
+<span class="nc bnc" id="L362" title="All 4 branches missed.">        if (wfsUrl != null &amp;&amp; typeName != null) {</span>
+<span class="nc" id="L363">            tags = tags.and(&quot;featureSourceUrl&quot;, wfsUrl).and(&quot;featureTypeName&quot;, typeName);</span>
+        }
+<span class="nc" id="L365">        return function.apply(</span>
+                new WFSSearchResultParams(
+                        wfsUrl, typeName, geometryAttribute, username, password, tags));
+    }
+
+    private SimpleWFSLayerDescription getWFSLayerDescriptionForWMS(
+            WMSService wmsService, Layer serviceLayer, Tags tags) throws Exception {
+<span class="nc" id="L372">        SimpleWFSLayerDescription wfsLayerDescription =</span>
+                meterRegistry
+<span class="nc" id="L374">                        .timer(&quot;export_get_capabilities_wms_describelayer&quot;, tags)</span>
+<span class="nc" id="L375">                        .recordCallable(</span>
+                                () -&gt;
+<span class="nc" id="L377">                                        SimpleWFSHelper.describeWMSLayer(</span>
+<span class="nc" id="L378">                                                wmsService.getUrl(),</span>
+<span class="nc" id="L379">                                                wmsService.getUsername(),</span>
+<span class="nc" id="L380">                                                wmsService.getPassword(),</span>
+<span class="nc" id="L381">                                                List.of(serviceLayer.getName())));</span>
+<span class="nc bnc" id="L382" title="All 4 branches missed.">        if (wfsLayerDescription != null &amp;&amp; wfsLayerDescription.getTypeNames().length &gt; 0) {</span>
+<span class="nc" id="L383">            LOG.info(</span>
+<span class="nc" id="L384">                    String.format(</span>
+                            &quot;WMS described layer \&quot;%s\&quot; with typeNames \&quot;%s\&quot; of WFS \&quot;%s\&quot; for WMS \&quot;%s\&quot;&quot;,
+<span class="nc" id="L386">                            serviceLayer.getName(),</span>
+<span class="nc" id="L387">                            Arrays.toString(wfsLayerDescription.getTypeNames()),</span>
+<span class="nc" id="L388">                            wfsLayerDescription.getWfsUrl(),</span>
+<span class="nc" id="L389">                            wmsService.getUrl()));</span>
+
+<span class="nc" id="L391">            return wfsLayerDescription;</span>
+        }
+<span class="nc" id="L393">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

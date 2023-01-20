@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MicrometerHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api</a> &gt; <span class="el_source">MicrometerHelper.java</span></div><h1>MicrometerHelper.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api;
+
+import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Tags;
+
+import nl.tailormap.viewer.config.app.Application;
+import nl.tailormap.viewer.config.app.ApplicationLayer;
+import nl.tailormap.viewer.config.services.GeoService;
+import nl.tailormap.viewer.config.services.Layer;
+import nl.tailormap.viewer.config.services.SimpleFeatureType;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+<span class="nc" id="L21">public class MicrometerHelper {</span>
+    public static Tags getTags(Object... objects) {
+<span class="nc" id="L23">        List&lt;Tag&gt; tags = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        for (Object o : objects) {</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">            if (o != null) {</span>
+<span class="nc bnc" id="L26" title="All 2 branches missed.">                if (o instanceof Application) {</span>
+<span class="nc" id="L27">                    tags.add(Tag.of(&quot;appId&quot;, ((Application) o).getId() + &quot;&quot;));</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">                } else if (o instanceof ApplicationLayer) {</span>
+<span class="nc" id="L29">                    tags.add(Tag.of(&quot;appLayerId&quot;, ((ApplicationLayer) o).getId() + &quot;&quot;));</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">                } else if (o instanceof GeoService) {</span>
+<span class="nc" id="L31">                    tags.add(Tag.of(&quot;serviceId&quot;, ((GeoService) o).getId() + &quot;&quot;));</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">                } else if (o instanceof Layer) {</span>
+<span class="nc" id="L33">                    tags.add(Tag.of(&quot;serviceLayerName&quot;, ((Layer) o).getName()));</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">                } else if (o instanceof SimpleFeatureType) {</span>
+<span class="nc" id="L35">                    SimpleFeatureType featureType = (SimpleFeatureType) o;</span>
+<span class="nc" id="L36">                    tags.add(Tag.of(&quot;featureTypeName&quot;, featureType.getTypeName()));</span>
+<span class="nc" id="L37">                    tags.add(Tag.of(&quot;featureSourceUrl&quot;, featureType.getFeatureSource().getUrl()));</span>
+                }
+            }
+        }
+<span class="nc" id="L41">        return Tags.of(tags);</span>
+    }
+
+    public static String tagsToString(Tags tags) {
+<span class="nc" id="L45">        return tags.stream()</span>
+<span class="nc" id="L46">                .map(tag -&gt; tag.getKey() + '=' + tag.getValue())</span>
+<span class="nc" id="L47">                .collect(Collectors.joining(&quot;,&quot;));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

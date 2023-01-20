@@ -5,6 +5,11 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.util.HttpProxyUtil.addForwardedForRequestHeaders;
+import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughRequestHeaders;
+import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
+import static nl.b3p.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHeader;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -29,19 +34,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 
 import java.io.InputStream;
-import java.net.Inet6Address;
-import java.net.InetAddress;
 import java.net.URI;
-import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -62,7 +64,7 @@ import javax.servlet.http.HttpServletRequest;
 @AppRestController
 @Validated
 @RequestMapping(path = &quot;/app/{appId}/layer/{appLayerId}/proxy/{protocol}&quot;)
-<span class="nc" id="L65">public class GeoServiceProxyController {</span>
+<span class="nc" id="L67">public class GeoServiceProxyController {</span>
 
     @RequestMapping(method = {GET, POST})
     public ResponseEntity&lt;?&gt; proxy(
@@ -72,179 +74,138 @@ import javax.servlet.http.HttpServletRequest;
             HttpServletRequest request) {
 
         Predicate&lt;GeoService&gt; serviceValidator;
-<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (&quot;wmts&quot;.equals(protocol)) {</span>
-<span class="nc" id="L76">            serviceValidator =</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (&quot;wmts&quot;.equals(protocol)) {</span>
+<span class="nc" id="L78">            serviceValidator =</span>
                     (GeoService gs) -&gt;
-<span class="nc bnc" id="L78" title="All 2 branches missed.">                            TileService.PROTOCOL.equals(gs.getProtocol())</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">                                    &amp;&amp; TileService.TILING_PROTOCOL_WMTS.equals(</span>
-<span class="nc" id="L80">                                            ((TileService) gs).getTilingProtocol());</span>
-<span class="nc bnc" id="L81" title="All 2 branches missed.">        } else if (&quot;wms&quot;.equals(protocol)) {</span>
-<span class="nc" id="L82">            serviceValidator = (GeoService gs) -&gt; WMSService.PROTOCOL.equals(gs.getProtocol());</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">                            TileService.PROTOCOL.equals(gs.getProtocol())</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">                                    &amp;&amp; TileService.TILING_PROTOCOL_WMTS.equals(</span>
+<span class="nc" id="L82">                                            ((TileService) gs).getTilingProtocol());</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        } else if (&quot;wms&quot;.equals(protocol)) {</span>
+<span class="nc" id="L84">            serviceValidator = (GeoService gs) -&gt; WMSService.PROTOCOL.equals(gs.getProtocol());</span>
         } else {
-<span class="nc" id="L84">            return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
-<span class="nc" id="L85">                    .body(&quot;Unknown proxy protocol: &quot; + protocol);</span>
+<span class="nc" id="L86">            return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
+<span class="nc" id="L87">                    .body(&quot;Unknown proxy protocol: &quot; + protocol);</span>
         }
 
-<span class="nc" id="L88">        final GeoService service = applicationLayer.getService();</span>
+<span class="nc" id="L90">        final GeoService service = applicationLayer.getService();</span>
 
-<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (!serviceValidator.test(service)) {</span>
-<span class="nc" id="L91">            return ResponseEntity.status(HttpStatus.BAD_REQUEST)</span>
-<span class="nc" id="L92">                    .body(&quot;Invalid proxy protocol for service&quot;);</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (!serviceValidator.test(service)) {</span>
+<span class="nc" id="L93">            return ResponseEntity.status(HttpStatus.BAD_REQUEST)</span>
+<span class="nc" id="L94">                    .body(&quot;Invalid proxy protocol for service&quot;);</span>
         }
 
-<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (!Boolean.parseBoolean(</span>
-<span class="nc" id="L96">                String.valueOf(service.getDetails().get(GeoService.DETAIL_USE_PROXY)))) {</span>
-<span class="nc" id="L97">            return ResponseEntity.status(HttpStatus.FORBIDDEN)</span>
-<span class="nc" id="L98">                    .body(&quot;Proxy not enabled for requested service&quot;);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (!Boolean.parseBoolean(</span>
+<span class="nc" id="L98">                String.valueOf(service.getDetails().get(GeoService.DETAIL_USE_PROXY)))) {</span>
+<span class="nc" id="L99">            return ResponseEntity.status(HttpStatus.FORBIDDEN)</span>
+<span class="nc" id="L100">                    .body(&quot;Proxy not enabled for requested service&quot;);</span>
         }
 
-<span class="nc" id="L101">        final UriComponentsBuilder originalServiceUrl =</span>
-<span class="nc" id="L102">                UriComponentsBuilder.fromHttpUrl(service.getUrl());</span>
+<span class="nc" id="L103">        final UriComponentsBuilder originalServiceUrl =</span>
+<span class="nc" id="L104">                UriComponentsBuilder.fromHttpUrl(service.getUrl());</span>
         // request.getParameterMap() includes parameters from an
         // application/x-www-form-urlencoded POST body
-<span class="nc" id="L105">        final MultiValueMap&lt;String, String&gt; requestParams =</span>
-<span class="nc" id="L106">                request.getParameterMap().entrySet().stream()</span>
-<span class="nc" id="L107">                        .map(</span>
+<span class="nc" id="L107">        final MultiValueMap&lt;String, String&gt; requestParams =</span>
+<span class="nc" id="L108">                request.getParameterMap().entrySet().stream()</span>
+<span class="nc" id="L109">                        .map(</span>
                                 entry -&gt;
-<span class="nc" id="L109">                                        new AbstractMap.SimpleEntry&lt;&gt;(</span>
-<span class="nc" id="L110">                                                entry.getKey(),</span>
-<span class="nc" id="L111">                                                Arrays.stream(entry.getValue())</span>
-<span class="nc" id="L112">                                                        .map(</span>
+<span class="nc" id="L111">                                        new AbstractMap.SimpleEntry&lt;&gt;(</span>
+<span class="nc" id="L112">                                                entry.getKey(),</span>
+<span class="nc" id="L113">                                                Arrays.stream(entry.getValue())</span>
+<span class="nc" id="L114">                                                        .map(</span>
                                                                 value -&gt;
-<span class="nc" id="L114">                                                                        UriUtils.encode(</span>
+<span class="nc" id="L116">                                                                        UriUtils.encode(</span>
                                                                                 value,
                                                                                 StandardCharsets
                                                                                         .UTF_8))
-<span class="nc" id="L118">                                                        .collect(Collectors.toList())))</span>
-<span class="nc" id="L119">                        .collect(</span>
-<span class="nc" id="L120">                                Collectors.toMap(</span>
+<span class="nc" id="L120">                                                        .collect(Collectors.toList())))</span>
+<span class="nc" id="L121">                        .collect(</span>
+<span class="nc" id="L122">                                Collectors.toMap(</span>
                                         Map.Entry::getKey,
                                         Map.Entry::getValue,
-<span class="nc" id="L123">                                        (x, y) -&gt; y,</span>
+<span class="nc" id="L125">                                        (x, y) -&gt; y,</span>
                                         LinkedMultiValueMap::new));
-<span class="nc" id="L125">        final MultiValueMap&lt;String, String&gt; params =</span>
-<span class="nc" id="L126">                buildOgcProxyRequestParams(</span>
-<span class="nc" id="L127">                        originalServiceUrl.build(true).getQueryParams(), requestParams);</span>
-<span class="nc" id="L128">        originalServiceUrl.replaceQueryParams(params);</span>
+<span class="nc" id="L127">        final MultiValueMap&lt;String, String&gt; params =</span>
+<span class="nc" id="L128">                buildOgcProxyRequestParams(</span>
+<span class="nc" id="L129">                        originalServiceUrl.build(true).getQueryParams(), requestParams);</span>
+<span class="nc" id="L130">        originalServiceUrl.replaceQueryParams(params);</span>
 
-<span class="nc" id="L130">        return doProxy(originalServiceUrl.build(true).toUri(), service, request);</span>
+<span class="nc" id="L132">        return doProxy(originalServiceUrl.build(true).toUri(), service, request);</span>
     }
 
     public static MultiValueMap&lt;String, String&gt; buildOgcProxyRequestParams(
             MultiValueMap&lt;String, String&gt; originalServiceParams,
             MultiValueMap&lt;String, String&gt; requestParams) {
         // Start with all the parameters from the request
-<span class="fc" id="L137">        final MultiValueMap&lt;String, String&gt; params = new LinkedMultiValueMap&lt;&gt;(requestParams);</span>
+<span class="fc" id="L139">        final MultiValueMap&lt;String, String&gt; params = new LinkedMultiValueMap&lt;&gt;(requestParams);</span>
 
         // Add original service URL parameters if they are not required OGC params
         // (case-insensitive) and not already set by request
-<span class="fc" id="L141">        final List&lt;String&gt; ogcParams = List.of(new String[] {&quot;SERVICE&quot;, &quot;REQUEST&quot;, &quot;VERSION&quot;});</span>
-<span class="fc bfc" id="L142" title="All 2 branches covered.">        for (Map.Entry&lt;String, List&lt;String&gt;&gt; serviceParam : originalServiceParams.entrySet()) {</span>
-<span class="fc bfc" id="L143" title="All 2 branches covered.">            if (!params.containsKey(serviceParam.getKey())</span>
-<span class="fc bfc" id="L144" title="All 2 branches covered.">                    &amp;&amp; !ogcParams.contains(serviceParam.getKey().toUpperCase())) {</span>
-<span class="fc" id="L145">                params.put(serviceParam.getKey(), serviceParam.getValue());</span>
+<span class="fc" id="L143">        final List&lt;String&gt; ogcParams = List.of(new String[] {&quot;SERVICE&quot;, &quot;REQUEST&quot;, &quot;VERSION&quot;});</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        for (Map.Entry&lt;String, List&lt;String&gt;&gt; serviceParam : originalServiceParams.entrySet()) {</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">            if (!params.containsKey(serviceParam.getKey())</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">                    &amp;&amp; !ogcParams.contains(serviceParam.getKey().toUpperCase())) {</span>
+<span class="fc" id="L147">                params.put(serviceParam.getKey(), serviceParam.getValue());</span>
             }
-<span class="fc" id="L147">        }</span>
-<span class="fc" id="L148">        return params;</span>
+<span class="fc" id="L149">        }</span>
+<span class="fc" id="L150">        return params;</span>
     }
 
     private static ResponseEntity&lt;?&gt; doProxy(
             URI uri, GeoService service, HttpServletRequest request) {
         final HttpClient.Builder builder =
-<span class="nc" id="L154">                HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);</span>
+<span class="nc" id="L156">                HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);</span>
+<span class="nc" id="L157">        final HttpClient httpClient = builder.build();</span>
 
-        // Some HTTP services may not like HTTP/2 (not configurable in admin at the moment)
-<span class="nc bnc" id="L157" title="All 2 branches missed.">        if (Boolean.parseBoolean(String.valueOf(service.getDetails().get(&quot;proxy_http1_1&quot;)))) {</span>
-<span class="nc" id="L158">            builder.version(HttpClient.Version.HTTP_1_1);</span>
-        }
+<span class="nc" id="L159">        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(uri);</span>
 
-<span class="nc" id="L161">        final HttpClient httpClient = builder.build();</span>
+<span class="nc" id="L161">        addForwardedForRequestHeaders(requestBuilder, request);</span>
 
-<span class="nc" id="L163">        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(uri);</span>
+<span class="nc" id="L163">        passthroughRequestHeaders(</span>
+                requestBuilder,
+                request,
+<span class="nc" id="L166">                Set.of(</span>
+                        &quot;Accept&quot;,
+                        &quot;If-Modified-Since&quot;,
+                        &quot;If-Unmodified-Since&quot;,
+                        &quot;If-Match&quot;,
+                        &quot;If-None-Match&quot;,
+                        &quot;If-Range&quot;,
+                        &quot;Range&quot;,
+                        &quot;Referer&quot;,
+                        &quot;User-Agent&quot;));
 
-        try {
-<span class="nc" id="L166">            String ip = request.getRemoteAddr();</span>
-<span class="nc" id="L167">            InetAddress inetAddress = InetAddress.getByName(ip);</span>
-
-<span class="nc bnc" id="L169" title="All 2 branches missed.">            if (inetAddress instanceof Inet6Address) {</span>
-                // https://stackoverflow.com/questions/33168783/
-<span class="nc" id="L171">                Inet6Address inet6Address = (Inet6Address) inetAddress;</span>
-<span class="nc" id="L172">                int scopeId = inet6Address.getScopeId();</span>
-
-<span class="nc bnc" id="L174" title="All 2 branches missed.">                if (scopeId &gt; 0) {</span>
-<span class="nc" id="L175">                    ip = inet6Address.getHostName().replaceAll(&quot;%&quot; + scopeId + &quot;$&quot;, &quot;&quot;);</span>
-                }
-
-                // IPv6 address must be bracketed and quoted
-<span class="nc" id="L179">                ip = &quot;\&quot;[&quot; + ip + &quot;]\&quot;&quot;;</span>
-            }
-<span class="nc" id="L181">            requestBuilder.header(&quot;X-Forwarded-For&quot;, ip);</span>
-<span class="nc" id="L182">            requestBuilder.header(&quot;Forwarded&quot;, &quot;for=&quot; + ip);</span>
-<span class="nc" id="L183">        } catch (UnknownHostException ignored) {</span>
-            // Don't care
-<span class="nc" id="L185">        }</span>
-
-<span class="nc" id="L187">        String[] requestHeaders = {</span>
-            &quot;Accept&quot;,
-            &quot;If-Modified-Since&quot;,
-            &quot;If-Unmodified-Since&quot;,
-            &quot;If-Match&quot;,
-            &quot;If-None-Match&quot;,
-            &quot;If-Range&quot;,
-            &quot;Range&quot;,
-            &quot;Referer&quot;,
-            &quot;User-Agent&quot;,
-        };
-<span class="nc bnc" id="L198" title="All 2 branches missed.">        for (String header : requestHeaders) {</span>
-<span class="nc" id="L199">            String value = request.getHeader(header);</span>
-<span class="nc bnc" id="L200" title="All 2 branches missed.">            if (value != null) {</span>
-<span class="nc" id="L201">                requestBuilder.header(header, value);</span>
-            }
-        }
-
-<span class="nc bnc" id="L205" title="All 4 branches missed.">        if (service.getUsername() != null &amp;&amp; service.getPassword() != null) {</span>
-<span class="nc" id="L206">            String toEncode = service.getUsername() + &quot;:&quot; + service.getPassword();</span>
-<span class="nc" id="L207">            requestBuilder.header(</span>
-                    &quot;Authorization&quot;,
-                    &quot;Basic &quot;
-<span class="nc" id="L210">                            + Base64.getEncoder()</span>
-<span class="nc" id="L211">                                    .encodeToString(toEncode.getBytes(StandardCharsets.UTF_8)));</span>
-
-            // TODO: in some cases we might want to forward the authenticated tailormap user or
-            // groups/roles to the service (perhaps in a secret header name) so the service can
-            // apply different authorizations instead of just one account.
-        }
+<span class="nc" id="L177">        setHttpBasicAuthenticationHeader(</span>
+<span class="nc" id="L178">                requestBuilder, service.getUsername(), service.getPassword());</span>
 
         try {
-<span class="nc" id="L219">            HttpResponse&lt;InputStream&gt; response =</span>
-<span class="nc" id="L220">                    httpClient.send(</span>
-<span class="nc" id="L221">                            requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());</span>
+            // TODO: close JPA connection before proxying
+<span class="nc" id="L182">            HttpResponse&lt;InputStream&gt; response =</span>
+<span class="nc" id="L183">                    httpClient.send(</span>
+<span class="nc" id="L184">                            requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());</span>
+
             // If the server does not accept our credentials it might 'hide' the layer or even send
             // a 401 Unauthorized status. We do not send the WWW-Authenticate header back, so the
             // client will get the error but not an authorization popup.
             // It would be nice if proxy (auth) errors were logged and available in the admin
             // interface. Currently, a layer will just stop working if the geo service credentials
             // are changed without updating them in the geo service registry.
-<span class="nc" id="L228">            InputStreamResource body = new InputStreamResource(response.body());</span>
-<span class="nc" id="L229">            org.springframework.http.HttpHeaders headers = new HttpHeaders();</span>
-            // TODO for WMTS, does caching work?
-<span class="nc" id="L231">            String[] allowedResponseHeaders = {</span>
-                &quot;Content-Type&quot;,
-                &quot;Content-Length&quot;,
-                &quot;Content-Range&quot;,
-                &quot;Content-Disposition&quot;,
-                &quot;Cache-Control&quot;,
-                &quot;Expires&quot;,
-                &quot;Last-Modified&quot;,
-                &quot;ETag&quot;,
-                &quot;Pragma&quot;,
-            };
-<span class="nc bnc" id="L242" title="All 2 branches missed.">            for (String header : allowedResponseHeaders) {</span>
-<span class="nc" id="L243">                headers.addAll(header, response.headers().allValues(header));</span>
-            }
-<span class="nc" id="L245">            return ResponseEntity.status(response.statusCode()).headers(headers).body(body);</span>
-<span class="nc" id="L246">        } catch (Exception e) {</span>
-<span class="nc" id="L247">            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(&quot;Bad Gateway&quot;);</span>
+<span class="nc" id="L192">            InputStreamResource body = new InputStreamResource(response.body());</span>
+<span class="nc" id="L193">            HttpHeaders headers =</span>
+<span class="nc" id="L194">                    passthroughResponseHeaders(</span>
+<span class="nc" id="L195">                            response.headers(),</span>
+<span class="nc" id="L196">                            Set.of(</span>
+                                    &quot;Content-Type&quot;,
+                                    &quot;Content-Length&quot;,
+                                    &quot;Content-Range&quot;,
+                                    &quot;Content-Disposition&quot;,
+                                    &quot;Cache-Control&quot;,
+                                    &quot;Expires&quot;,
+                                    &quot;Last-Modified&quot;,
+                                    &quot;ETag&quot;,
+                                    &quot;Pragma&quot;));
+<span class="nc" id="L206">            return ResponseEntity.status(response.statusCode()).headers(headers).body(body);</span>
+<span class="nc" id="L207">        } catch (Exception e) {</span>
+<span class="nc" id="L208">            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(&quot;Bad Gateway&quot;);</span>
         }
     }
 }
