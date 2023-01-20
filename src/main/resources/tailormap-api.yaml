@@ -475,6 +475,113 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
+  /app/{appId}/layer/{layerId}/export/capabilities:
+    description: Returns layer export capabilities. Retrieving this information may take some time.
+    get:
+      operationId: 'getLayerExportCapabilities'
+      security:
+        - formAuth: [ ]
+      parameters:
+        - description: 'application id'
+          in: path
+          name: appId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - description: 'layer id'
+          in: path
+          name: layerId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml#/components/schemas/LayerExportCapabilities'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+
+  /app/{appId}/layer/{layerId}/export/download:
+    description: Directly stream layer data export response for download. POST request to allow a large filter in the
+      request body.
+    post:
+      operationId: 'downloadLayerExport'
+      security:
+        - formAuth: [ ]
+      parameters:
+        - name: appId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: layerId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: outputFormat
+          description: Output format from capabilities.
+          in: query
+          schema:
+            type: string
+        - name: attributes
+          description: 'Attributes to include in export. If omitted all configured attributes are exported. For some
+            geo formats the geometry is included even if unchecked for display by the admin. For textual or spreadsheet 
+            formats geometries are not included. Attribute item order is significant.'
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: filter
+          description: 'ECQL filter. See description for /app/{appId}/layer/{layerId}/features.'
+          required: false
+          schema:
+            type: string
+        - description: 'Attribute to sort by. See description for  /app/{appId}/layer/{layerId}/features.'
+          in: query
+          name: sortBy
+          required: false
+          schema:
+            type: string
+        - description: 'Sort order for sortBy.'
+          in: query
+          name: sortOrder
+          required: false
+          schema:
+            type: string
+            default: asc
+            enum:
+              - asc
+              - desc
+        - description: 'Projection for geometry output.'
+          in: query
+          name: crs
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
 
   /app/{appId}/layer/{layerId}/features:
     summary: 'Use this endpoint to access features.'

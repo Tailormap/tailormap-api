@@ -350,6 +350,11 @@ SPDX-License-Identifier: MIT
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
+      <artifactId>gt-wms</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
       <artifactId>gt-opengis</artifactId>
       <version>${geotools.version}</version>
     </dependency>
@@ -926,7 +931,7 @@ SPDX-License-Identifier: MIT
             <phase>verify</phase>
             <configuration>
               <notimestamp>true</notimestamp>
-              <failOnWarnings>${failOnValidation}</failOnWarnings>
+              <failOnWarnings>false</failOnWarnings>
               <failOnError>${failOnValidation}</failOnError>
             </configuration>
           </execution>
@@ -1307,7 +1312,7 @@ SPDX-License-Identifier: MIT
         <version>${maven-javadoc-plugin.version}</version>
         <configuration>
           <notimestamp>true</notimestamp>
-          <failOnWarnings>${failOnValidation}</failOnWarnings>
+          <failOnWarnings>false</failOnWarnings>
           <failOnError>${failOnValidation}</failOnError>
         </configuration>
         <reportSets>

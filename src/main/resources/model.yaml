@@ -255,6 +255,18 @@ components:
         - id
         - serviceId
 
+    LayerExportCapabilities:
+      type: object
+      required: [exportable]
+      properties:
+        exportable:
+          nullable: false
+          type: boolean
+        outputFormats:
+          type: array
+          items:
+            type: string
+
     Attribute:
       type: object
       required: [id, name]
