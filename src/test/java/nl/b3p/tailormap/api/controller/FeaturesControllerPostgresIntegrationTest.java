@@ -1101,4 +1101,21 @@ class FeaturesControllerPostgresIntegrationTest {
                         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
                         .andReturn();
     }
+
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void handles_unknown_attribute_type_from_external_wfs() throws Exception {
+        // Depends on external service, may fail/change
+        mockMvc.perform(
+                        get("/app/7/layer/24/features")
+                                .param("x", "181696.56159938296")
+                                .param("y", "366543.8834898933")
+                                .param("crs", "EPSG:28992")
+                                .param("distance", "1292.3302021335905"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.features").isArray())
+                .andExpect(jsonPath("$.attributes[0].geometry").isNotEmpty())
+                .andReturn();
+    }
 }

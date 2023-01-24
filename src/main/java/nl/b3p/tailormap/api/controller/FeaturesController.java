@@ -53,6 +53,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -518,15 +519,18 @@ public class FeaturesController implements Constants {
                                 sft.getAttribute(configuredAttribute.getAttributeName());
                         String type = attributeDescriptor.getType();
 
-                        // Only return generic 'geometry' type for now
-                        if (AttributeDescriptor.GEOMETRY_TYPES.contains(type)) {
-                            type = AttributeDescriptor.TYPE_GEOMETRY;
+                        // If the type is unknown the admin still saves an AttributeDescriptor
+                        if (StringUtils.hasText(type)) {
+                            // Only return generic 'geometry' type for now
+                            if (AttributeDescriptor.GEOMETRY_TYPES.contains(type)) {
+                                type = AttributeDescriptor.TYPE_GEOMETRY;
+                            }
+                            featuresResponse.addColumnMetadataItem(
+                                    new ColumnMetadata()
+                                            .key(attributeDescriptor.getName())
+                                            .type(ColumnMetadata.TypeEnum.fromValue(type))
+                                            .alias(attributeDescriptor.getAlias()));
                         }
-                        featuresResponse.addColumnMetadataItem(
-                                new ColumnMetadata()
-                                        .key(attributeDescriptor.getName())
-                                        .type(ColumnMetadata.TypeEnum.fromValue(type))
-                                        .alias(attributeDescriptor.getAlias()));
                     });
         }
     }

@@ -86,4 +86,16 @@ class LayerDescriptionControllerPostgresIntegrationTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Layer does not have feature type"));
     }
+
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void handles_unknown_attribute_type() throws Exception {
+        // Depends on external service, may fail/change
+        mockMvc.perform(get("/app/7/layer/24/describe"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.attributes").isArray())
+                .andExpect(jsonPath("$.attributes.length()").value(9))
+                .andReturn();
+    }
 }
