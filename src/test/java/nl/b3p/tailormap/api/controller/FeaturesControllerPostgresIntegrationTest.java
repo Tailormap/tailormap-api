@@ -734,7 +734,7 @@ class FeaturesControllerPostgresIntegrationTest {
         // alternatively this test could be written to use the wfs service to first get Utrecht
         // feature
         // by naam and then do the fid test.
-        final String utrecht__fid = "Provinciegebied.a26f9059-b076-4658-aa87-c78a63f1c827";
+        final String utrecht__fid = "Provinciegebied.209e5db1-05cc-4201-9ff6-02f60c51b880";
         mockMvc.perform(
                         get(provinciesWFS)
                                 .param("__fid", utrecht__fid)
@@ -907,7 +907,7 @@ class FeaturesControllerPostgresIntegrationTest {
             double expected2ndCoordinate)
             throws Exception {
 
-        final String expectedFid = "Provinciegebied.a26f9059-b076-4658-aa87-c78a63f1c827";
+        final String expectedFid = "Provinciegebied.209e5db1-05cc-4201-9ff6-02f60c51b880";
 
         MvcResult result =
                 mockMvc.perform(
@@ -1115,7 +1115,7 @@ class FeaturesControllerPostgresIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.features").isArray())
-                .andExpect(jsonPath("$.attributes[0].geometry").isNotEmpty())
+                .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
                 .andReturn();
     }
 }
