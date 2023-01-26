@@ -1083,13 +1083,14 @@ SPDX-License-Identifier: MIT
         <artifactId>sortpom-maven-plugin</artifactId>
         <configuration>
           <skip>${skipQA}</skip>
-          <keepBlankLines>true</keepBlankLines>
-          <spaceBeforeCloseEmptyElement>false</spaceBeforeCloseEmptyElement>
+          <keepBlankLines>false</keepBlankLines>
+          <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
           <createBackupFile>false</createBackupFile>
           <verifyFail>stop</verifyFail>
           <verifyFailOn>strict</verifyFailOn>
           <expandEmptyElements>false</expandEmptyElements>
-          <indentSchemaLocation>true</indentSchemaLocation>
+          <nrOfIndentSpace>4</nrOfIndentSpace>
+          <indentSchemaLocation>false</indentSchemaLocation>
         </configuration>
         <executions>
           <execution>
