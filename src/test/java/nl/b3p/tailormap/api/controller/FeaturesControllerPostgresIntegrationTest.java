@@ -734,7 +734,7 @@ class FeaturesControllerPostgresIntegrationTest {
         // alternatively this test could be written to use the wfs service to first get Utrecht
         // feature
         // by naam and then do the fid test.
-        final String utrecht__fid = "Provinciegebied.a26f9059-b076-4658-aa87-c78a63f1c827";
+        final String utrecht__fid = "Provinciegebied.209e5db1-05cc-4201-9ff6-02f60c51b880";
         mockMvc.perform(
                         get(provinciesWFS)
                                 .param("__fid", utrecht__fid)
@@ -907,7 +907,7 @@ class FeaturesControllerPostgresIntegrationTest {
             double expected2ndCoordinate)
             throws Exception {
 
-        final String expectedFid = "Provinciegebied.a26f9059-b076-4658-aa87-c78a63f1c827";
+        final String expectedFid = "Provinciegebied.209e5db1-05cc-4201-9ff6-02f60c51b880";
 
         MvcResult result =
                 mockMvc.perform(
@@ -1100,5 +1100,22 @@ class FeaturesControllerPostgresIntegrationTest {
                         .andExpect(jsonPath("$.features").isArray())
                         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
                         .andReturn();
+    }
+
+    @Test
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    void handles_unknown_attribute_type_from_external_wfs() throws Exception {
+        // Depends on external service, may fail/change
+        mockMvc.perform(
+                        get("/app/7/layer/24/features")
+                                .param("x", "181696.56159938296")
+                                .param("y", "366543.8834898933")
+                                .param("crs", "EPSG:28992")
+                                .param("distance", "1292.3302021335905"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.features").isArray())
+                .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+                .andReturn();
     }
 }

@@ -18,6 +18,7 @@ import nl.tailormap.viewer.config.services.SimpleFeatureType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -80,10 +82,25 @@ public class LayerDescriptionController {
                                     a.setName(ad.getName());
                                     a.setAlias(ad.getAlias());
                                     a.setEditAlias(ca.getEditAlias());
+
+                                    String type = ad.getType();
+
+                                    if (!StringUtils.hasText(type)) {
+                                        return null;
+                                    }
+
+                                    // XXX duplicated in FeaturesController, but enum is different
+                                    // class
+                                    // Only return generic 'geometry' type for now
+                                    if (AttributeDescriptor.GEOMETRY_TYPES.contains(type)) {
+                                        type = AttributeDescriptor.TYPE_GEOMETRY;
+                                    }
+
+                                    a.setType(Attribute.TypeEnum.fromValue(type));
                                     // TODO: set more attributes from ca
-                                    a.setType(Attribute.TypeEnum.fromValue(ad.getType()));
                                     return a;
                                 })
+                        .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
         return ResponseEntity.ok(r);
     }
