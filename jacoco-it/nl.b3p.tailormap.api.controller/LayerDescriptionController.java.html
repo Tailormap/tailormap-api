@@ -18,6 +18,7 @@ import nl.tailormap.viewer.config.services.SimpleFeatureType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -36,7 +38,7 @@ import javax.validation.constraints.NotNull;
 @RequestMapping(
         path = &quot;/app/{appId}/layer/{appLayerId}/describe&quot;,
         produces = MediaType.APPLICATION_JSON_VALUE)
-<span class="nc" id="L39">public class LayerDescriptionController {</span>
+<span class="nc" id="L41">public class LayerDescriptionController {</span>
 
     @PersistenceContext private EntityManager entityManager;
 
@@ -44,56 +46,71 @@ import javax.validation.constraints.NotNull;
     public ResponseEntity&lt;Serializable&gt; getAppLayerDescription(
             @ModelAttribute Application application,
             @ModelAttribute ApplicationLayer applicationLayer) {
-<span class="nc" id="L47">        final Layer layer =</span>
+<span class="nc" id="L49">        final Layer layer =</span>
                 applicationLayer
-<span class="nc" id="L49">                        .getService()</span>
-<span class="nc" id="L50">                        .getLayer(applicationLayer.getLayerName(), entityManager);</span>
-<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (layer == null) {</span>
-<span class="nc" id="L52">            return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
-<span class="nc" id="L53">                    .body(</span>
-<span class="nc" id="L54">                            String.format(</span>
+<span class="nc" id="L51">                        .getService()</span>
+<span class="nc" id="L52">                        .getLayer(applicationLayer.getLayerName(), entityManager);</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (layer == null) {</span>
+<span class="nc" id="L54">            return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
+<span class="nc" id="L55">                    .body(</span>
+<span class="nc" id="L56">                            String.format(</span>
                                     &quot;Can't find layer in service #%d with name \&quot;%s\&quot;&quot;,
-<span class="nc" id="L56">                                    applicationLayer.getService().getId(),</span>
-<span class="nc" id="L57">                                    applicationLayer.getLayerName()));</span>
+<span class="nc" id="L58">                                    applicationLayer.getService().getId(),</span>
+<span class="nc" id="L59">                                    applicationLayer.getLayerName()));</span>
         }
 
-<span class="nc" id="L60">        final SimpleFeatureType sft = layer.getFeatureType();</span>
-<span class="nc bnc" id="L61" title="All 2 branches missed.">        if (sft == null) {</span>
-<span class="nc" id="L62">            return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
-<span class="nc" id="L63">                    .body(&quot;Layer does not have feature type&quot;);</span>
+<span class="nc" id="L62">        final SimpleFeatureType sft = layer.getFeatureType();</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (sft == null) {</span>
+<span class="nc" id="L64">            return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
+<span class="nc" id="L65">                    .body(&quot;Layer does not have feature type&quot;);</span>
         }
 
-<span class="nc" id="L66">        LayerDetails r = new LayerDetails();</span>
-<span class="nc" id="L67">        r.setId(applicationLayer.getId());</span>
-<span class="nc" id="L68">        r.setServiceId(applicationLayer.getService().getId());</span>
-<span class="nc" id="L69">        r.setFeatureTypeName(sft.getTypeName());</span>
-<span class="nc" id="L70">        r.setGeometryAttribute(sft.getGeometryAttribute());</span>
-<span class="nc" id="L71">        r.attributes(</span>
-<span class="nc" id="L72">                getVisibleAttributes(applicationLayer, sft).stream()</span>
-<span class="nc" id="L73">                        .map(</span>
+<span class="nc" id="L68">        LayerDetails r = new LayerDetails();</span>
+<span class="nc" id="L69">        r.setId(applicationLayer.getId());</span>
+<span class="nc" id="L70">        r.setServiceId(applicationLayer.getService().getId());</span>
+<span class="nc" id="L71">        r.setFeatureTypeName(sft.getTypeName());</span>
+<span class="nc" id="L72">        r.setGeometryAttribute(sft.getGeometryAttribute());</span>
+<span class="nc" id="L73">        r.attributes(</span>
+<span class="nc" id="L74">                getVisibleAttributes(applicationLayer, sft).stream()</span>
+<span class="nc" id="L75">                        .map(</span>
                                 ca -&gt; {
-<span class="nc" id="L75">                                    AttributeDescriptor ad =</span>
-<span class="nc" id="L76">                                            sft.getAttribute(ca.getAttributeName());</span>
-<span class="nc" id="L77">                                    Attribute a = new Attribute();</span>
+<span class="nc" id="L77">                                    AttributeDescriptor ad =</span>
+<span class="nc" id="L78">                                            sft.getAttribute(ca.getAttributeName());</span>
+<span class="nc" id="L79">                                    Attribute a = new Attribute();</span>
                                     // ca or ad? Not used by frontend for anything
-<span class="nc" id="L79">                                    a.setId(ca.getId());</span>
-<span class="nc" id="L80">                                    a.setName(ad.getName());</span>
-<span class="nc" id="L81">                                    a.setAlias(ad.getAlias());</span>
-<span class="nc" id="L82">                                    a.setEditAlias(ca.getEditAlias());</span>
+<span class="nc" id="L81">                                    a.setId(ca.getId());</span>
+<span class="nc" id="L82">                                    a.setName(ad.getName());</span>
+<span class="nc" id="L83">                                    a.setAlias(ad.getAlias());</span>
+<span class="nc" id="L84">                                    a.setEditAlias(ca.getEditAlias());</span>
+
+<span class="nc" id="L86">                                    String type = ad.getType();</span>
+
+<span class="nc bnc" id="L88" title="All 2 branches missed.">                                    if (!StringUtils.hasText(type)) {</span>
+<span class="nc" id="L89">                                        return null;</span>
+                                    }
+
+                                    // XXX duplicated in FeaturesController, but enum is different
+                                    // class
+                                    // Only return generic 'geometry' type for now
+<span class="nc bnc" id="L95" title="All 2 branches missed.">                                    if (AttributeDescriptor.GEOMETRY_TYPES.contains(type)) {</span>
+<span class="nc" id="L96">                                        type = AttributeDescriptor.TYPE_GEOMETRY;</span>
+                                    }
+
+<span class="nc" id="L99">                                    a.setType(Attribute.TypeEnum.fromValue(type));</span>
                                     // TODO: set more attributes from ca
-<span class="nc" id="L84">                                    a.setType(Attribute.TypeEnum.fromValue(ad.getType()));</span>
-<span class="nc" id="L85">                                    return a;</span>
+<span class="nc" id="L101">                                    return a;</span>
                                 })
-<span class="nc" id="L87">                        .collect(Collectors.toList()));</span>
-<span class="nc" id="L88">        return ResponseEntity.ok(r);</span>
+<span class="nc" id="L103">                        .filter(Objects::nonNull)</span>
+<span class="nc" id="L104">                        .collect(Collectors.toList()));</span>
+<span class="nc" id="L105">        return ResponseEntity.ok(r);</span>
     }
 
     private List&lt;ConfiguredAttribute&gt; getVisibleAttributes(
             @NotNull ApplicationLayer appLayer, @NotNull SimpleFeatureType sft) {
-<span class="nc" id="L93">        List&lt;ConfiguredAttribute&gt; configuredAttributes = appLayer.getAttributes(sft);</span>
-<span class="nc" id="L94">        return configuredAttributes.stream()</span>
-<span class="nc" id="L95">                .filter(ConfiguredAttribute::isVisible)</span>
-<span class="nc" id="L96">                .collect(Collectors.toList());</span>
+<span class="nc" id="L110">        List&lt;ConfiguredAttribute&gt; configuredAttributes = appLayer.getAttributes(sft);</span>
+<span class="nc" id="L111">        return configuredAttributes.stream()</span>
+<span class="nc" id="L112">                .filter(ConfiguredAttribute::isVisible)</span>
+<span class="nc" id="L113">                .collect(Collectors.toList());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

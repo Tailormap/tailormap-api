@@ -94,7 +94,19 @@
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>                  .andExpect(status().isNotFound())
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>                  .andExpect(content().string(<span class="jxr_string">"Layer does not have feature type"</span>));
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      }
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>  }
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      @Test
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">void</strong> handles_unknown_attribute_type() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>          <em class="jxr_comment">// Depends on external service, may fail/change</em>
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>          mockMvc.perform(get(<span class="jxr_string">"/app/7/layer/24/describe"</span>))
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>                  .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.attributes"</span>).isArray())
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.attributes.length()"</span>).value(9))
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>                  .andReturn();
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>     }
+<a class="jxr_linenumber" name="L101" href="#L101">101</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2023 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

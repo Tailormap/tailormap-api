@@ -742,7 +742,7 @@
 <a class="jxr_linenumber" name="L734" href="#L734">734</a>         <em class="jxr_comment">// alternatively this test could be written to use the wfs service to first get Utrecht</em>
 <a class="jxr_linenumber" name="L735" href="#L735">735</a>         <em class="jxr_comment">// feature</em>
 <a class="jxr_linenumber" name="L736" href="#L736">736</a>         <em class="jxr_comment">// by naam and then do the fid test.</em>
-<a class="jxr_linenumber" name="L737" href="#L737">737</a>         <strong class="jxr_keyword">final</strong> String utrecht__fid = <span class="jxr_string">"Provinciegebied.a26f9059-b076-4658-aa87-c78a63f1c827"</span>;
+<a class="jxr_linenumber" name="L737" href="#L737">737</a>         <strong class="jxr_keyword">final</strong> String utrecht__fid = <span class="jxr_string">"Provinciegebied.209e5db1-05cc-4201-9ff6-02f60c51b880"</span>;
 <a class="jxr_linenumber" name="L738" href="#L738">738</a>         mockMvc.perform(
 <a class="jxr_linenumber" name="L739" href="#L739">739</a>                         get(provinciesWFS)
 <a class="jxr_linenumber" name="L740" href="#L740">740</a>                                 .param(<span class="jxr_string">"__fid"</span>, utrecht__fid)
@@ -915,7 +915,7 @@
 <a class="jxr_linenumber" name="L907" href="#L907">907</a>             <strong class="jxr_keyword">double</strong> expected2ndCoordinate)
 <a class="jxr_linenumber" name="L908" href="#L908">908</a>             <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L909" href="#L909">909</a> 
-<a class="jxr_linenumber" name="L910" href="#L910">910</a>         <strong class="jxr_keyword">final</strong> String expectedFid = <span class="jxr_string">"Provinciegebied.a26f9059-b076-4658-aa87-c78a63f1c827"</span>;
+<a class="jxr_linenumber" name="L910" href="#L910">910</a>         <strong class="jxr_keyword">final</strong> String expectedFid = <span class="jxr_string">"Provinciegebied.209e5db1-05cc-4201-9ff6-02f60c51b880"</span>;
 <a class="jxr_linenumber" name="L911" href="#L911">911</a> 
 <a class="jxr_linenumber" name="L912" href="#L912">912</a>         MvcResult result =
 <a class="jxr_linenumber" name="L913" href="#L913">913</a>                 mockMvc.perform(
@@ -1109,7 +1109,24 @@
 <a class="jxr_linenumber" name="L1101" href="#L1101">1101</a>                         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isNotEmpty())
 <a class="jxr_linenumber" name="L1102" href="#L1102">1102</a>                         .andReturn();
 <a class="jxr_linenumber" name="L1103" href="#L1103">1103</a>     }
-<a class="jxr_linenumber" name="L1104" href="#L1104">1104</a> }
+<a class="jxr_linenumber" name="L1104" href="#L1104">1104</a> 
+<a class="jxr_linenumber" name="L1105" href="#L1105">1105</a>     @Test
+<a class="jxr_linenumber" name="L1106" href="#L1106">1106</a>     @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L1107" href="#L1107">1107</a>     <strong class="jxr_keyword">void</strong> handles_unknown_attribute_type_from_external_wfs() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L1108" href="#L1108">1108</a>         <em class="jxr_comment">// Depends on external service, may fail/change</em>
+<a class="jxr_linenumber" name="L1109" href="#L1109">1109</a>         mockMvc.perform(
+<a class="jxr_linenumber" name="L1110" href="#L1110">1110</a>                         get(<span class="jxr_string">"/app/7/layer/24/features"</span>)
+<a class="jxr_linenumber" name="L1111" href="#L1111">1111</a>                                 .param(<span class="jxr_string">"x"</span>, <span class="jxr_string">"181696.56159938296"</span>)
+<a class="jxr_linenumber" name="L1112" href="#L1112">1112</a>                                 .param(<span class="jxr_string">"y"</span>, <span class="jxr_string">"366543.8834898933"</span>)
+<a class="jxr_linenumber" name="L1113" href="#L1113">1113</a>                                 .param(<span class="jxr_string">"crs"</span>, <span class="jxr_string">"EPSG:28992"</span>)
+<a class="jxr_linenumber" name="L1114" href="#L1114">1114</a>                                 .param(<span class="jxr_string">"distance"</span>, <span class="jxr_string">"1292.3302021335905"</span>))
+<a class="jxr_linenumber" name="L1115" href="#L1115">1115</a>                 .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L1116" href="#L1116">1116</a>                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L1117" href="#L1117">1117</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features"</span>).isArray())
+<a class="jxr_linenumber" name="L1118" href="#L1118">1118</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.features[0].geometry"</span>).isNotEmpty())
+<a class="jxr_linenumber" name="L1119" href="#L1119">1119</a>                 .andReturn();
+<a class="jxr_linenumber" name="L1120" href="#L1120">1120</a>     }
+<a class="jxr_linenumber" name="L1121" href="#L1121">1121</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2023 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>
