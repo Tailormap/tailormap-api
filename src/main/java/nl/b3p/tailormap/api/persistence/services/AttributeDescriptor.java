@@ -16,7 +16,7 @@ public class AttributeDescriptor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Basic(optional=false)
+    @Basic(optional = false)
     private String name;
 
     private String comment;

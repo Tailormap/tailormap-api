@@ -5,6 +5,9 @@
  */
 package nl.b3p.tailormap.api.persistence.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,11 +21,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table(name="feature_type")
+@Table(name = "feature_type")
 public class FeatureType {
 
     @Id
@@ -31,7 +32,7 @@ public class FeatureType {
 
     private String type;
 
-    @ManyToOne(cascade= CascadeType.PERSIST, optional = false)
+    @ManyToOne(cascade = CascadeType.PERSIST, optional = false)
     @JoinColumn(name = "feature_source")
     private FeatureSource featureSource;
 
@@ -54,13 +55,12 @@ public class FeatureType {
     // XXX: multiple primary keys?
     private String primaryKeyAttribute;
 
-    @OneToMany(cascade=CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            inverseJoinColumns=@JoinColumn(name="attribute_descriptor"),
-            name="feature_type_attributes",
-            joinColumns=@JoinColumn(name = "feature_type", referencedColumnName = "id")
-    )
-    @OrderColumn(name="list_index")
+            inverseJoinColumns = @JoinColumn(name = "attribute_descriptor"),
+            name = "feature_type_attributes",
+            joinColumns = @JoinColumn(name = "feature_type", referencedColumnName = "id"))
+    @OrderColumn(name = "list_index")
     private List<AttributeDescriptor> attributes = new ArrayList<>();
 
     @Column(columnDefinition = "jsonb")
