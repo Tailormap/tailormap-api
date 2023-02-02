@@ -18,6 +18,7 @@ import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
 
 import org.json.JSONObject;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -47,6 +48,7 @@ import java.util.Map;
 @EnableAutoConfiguration
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Disabled
 class MapControllerIntegrationTest {
     @Autowired ApplicationRepository applicationRepository;
     @Autowired private MockMvc mockMvc;

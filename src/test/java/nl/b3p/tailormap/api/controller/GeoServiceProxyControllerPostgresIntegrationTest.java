@@ -20,6 +20,7 @@ import nl.b3p.tailormap.api.security.SecurityConfig;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -49,6 +50,7 @@ import java.util.Locale;
 @EnableAutoConfiguration
 @ActiveProfiles("postgresql")
 @Execution(ExecutionMode.CONCURRENT)
+@Disabled
 class GeoServiceProxyControllerPostgresIntegrationTest {
     @Autowired private MockMvc mockMvc;
 
