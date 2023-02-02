@@ -878,7 +878,11 @@ SPDX-License-Identifier: MIT
             </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <!--                <executions>
+                <configuration>
+                    <!-- temporarily disabled -->
+                    <excludePackageNames>nl.b3p.tailormap.*</excludePackageNames>
+                </configuration>
+                <executions>
                     <execution>
                         <id>attach-javadoc</id>
                         <goals>
@@ -891,7 +895,7 @@ SPDX-License-Identifier: MIT
                             <failOnError>${failOnValidation}</failOnError>
                         </configuration>
                     </execution>
-                </executions>-->
+                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
