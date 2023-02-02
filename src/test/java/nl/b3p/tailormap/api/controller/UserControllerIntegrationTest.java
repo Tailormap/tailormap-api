@@ -15,7 +15,6 @@ import nl.b3p.tailormap.api.JPAConfiguration;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -37,7 +36,6 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
 @ActiveProfiles("test")
-@Disabled
 class UserControllerIntegrationTest {
 
     @Autowired private MockMvc mockMvc;

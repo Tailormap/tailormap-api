@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import nl.tailormap.viewer.config.app.Application;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -37,7 +36,6 @@ import java.util.List;
             "nl.tailormap.viewer.config.security",
             "nl.tailormap.viewer.config.services"
         })
-@Disabled
 class ApplicationRepositoryTest {
     @Autowired private ApplicationRepository applicationRepository;
 

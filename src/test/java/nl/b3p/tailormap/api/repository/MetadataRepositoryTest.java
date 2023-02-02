@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import nl.tailormap.viewer.config.metadata.Metadata;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -34,7 +33,6 @@ import org.springframework.test.context.ActiveProfiles;
             "nl.tailormap.viewer.config.security",
             "nl.tailormap.viewer.config.services"
         })
-@Disabled
 class MetadataRepositoryTest {
 
     @Autowired private MetadataRepository metadataRepository;

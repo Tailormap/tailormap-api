@@ -25,7 +25,6 @@ import nl.b3p.tailormap.api.model.Service;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,6 @@ import java.util.Set;
 @EnableAutoConfiguration
 @ActiveProfiles("postgresql")
 @Stopwatch
-@Disabled
 class MapControllerPostgresIntegrationTest {
     @Autowired private MockMvc mockMvc;
 

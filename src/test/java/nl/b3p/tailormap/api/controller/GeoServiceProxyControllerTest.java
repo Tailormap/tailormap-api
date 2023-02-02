@@ -11,8 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * Copyright (C) 2022 B3Partners B.V.
  *
  * SPDX-License-Identifier: MIT
- */
-class GeoServiceProxyControllerTest {
+ */ class GeoServiceProxyControllerTest {
 
     @Test
     void buildOgcProxyRequestParams() {
