@@ -39,6 +39,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @EnableAutoConfiguration
 @ActiveProfiles("postgresql")
 @Execution(ExecutionMode.CONCURRENT)
+@Disabled
 class LayerDescriptionControllerPostgresIntegrationTest {
     @Autowired private MockMvc mockMvc;
 

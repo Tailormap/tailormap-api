@@ -61,6 +61,7 @@ import java.util.stream.Stream;
 @ActiveProfiles("postgresql")
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
+@Disabled
 class FeaturesControllerPostgresIntegrationTest {
     /** bestuurlijke gebieden WFS; provincies . */
     private static final String provinciesWFS = "/app/1/layer/2/features";

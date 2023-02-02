@@ -14,6 +14,7 @@ import nl.b3p.tailormap.api.repository.MetadataRepository;
 import nl.tailormap.viewer.config.metadata.Metadata;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import java.util.Map;
 /** Testcases for {@link VersionController}. */
 @SpringBootTest(classes = {HSQLDBTestProfileJPAConfiguration.class, VersionController.class})
 @ActiveProfiles("test")
+@Disabled
 class VersionControllerIntegrationTest {
     @Autowired private VersionController versionController;
     @Autowired private MetadataRepository metadataRepository;

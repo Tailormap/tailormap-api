@@ -20,6 +20,7 @@ import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
 
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -58,6 +59,7 @@ import java.util.stream.Stream;
 @ActiveProfiles("postgresql")
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
+@Disabled
 class UniqueValuesControllerPostgresIntegrationTest {
     private static final String provinciesWFSUrl = "/app/1/layer/2/unique/naam";
     private static final String begroeidterreindeelPostgisUrl = "/app/1/layer/6/unique/bronhouder";

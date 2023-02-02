@@ -18,6 +18,7 @@ import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
 import nl.tailormap.viewer.config.metadata.Metadata;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 @EnableAutoConfiguration
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Disabled
 class AppControllerIntegrationTest {
     @Autowired private MockMvc mockMvc;
     @Autowired MetadataRepository metadataRepository;

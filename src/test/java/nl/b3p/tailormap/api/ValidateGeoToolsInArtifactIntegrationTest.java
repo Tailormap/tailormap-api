@@ -29,8 +29,8 @@ class ValidateGeoToolsInArtifactIntegrationTest {
 
     /**
      * check if there is only one gt-main and only one gt-epsg jar in the runnable jar, so we can be
-     * sure there are no or EPSG factory version conflicts. This test will fail if there more than
-     * one gt-main (versions) or gt-epsg (factory providers) in the runnable jar.
+     * sure there are no or EPSG factory version conflicts. This test will fail if there are more
+     * than one gt-main (versions) or gt-epsg (factory providers) in the runnable jar.
      */
     @Test
     void checkArtifact() {

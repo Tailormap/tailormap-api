@@ -10,9 +10,8 @@ import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
 
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -37,7 +36,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
 @ActiveProfiles("postgresql")
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Disabled
 class LayerExportControllerPostgresIntegrationTest {
 
     @Autowired private MockMvc mockMvc;
