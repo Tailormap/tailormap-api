@@ -14,7 +14,6 @@ import nl.b3p.tailormap.api.JPAConfiguration;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -91,7 +90,6 @@ class LayerDescriptionControllerPostgresIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    @Disabled("TODO: test app was removed from integration dataset, restore later")
     void handles_unknown_attribute_type() throws Exception {
         // Depends on external service, may fail/change
         mockMvc.perform(get("/app/7/layer/24/describe"))
