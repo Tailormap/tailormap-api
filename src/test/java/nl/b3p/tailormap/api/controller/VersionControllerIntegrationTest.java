@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
-import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
 import nl.b3p.tailormap.api.repository.MetadataRepository;
 import nl.tailormap.viewer.config.metadata.Metadata;
 

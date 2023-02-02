@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
 import nl.b3p.tailormap.api.controller.VersionController;
 
 import org.junit.jupiter.api.Test;

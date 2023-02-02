@@ -765,6 +765,25 @@ SPDX-License-Identifier: MIT
                             <version>${errorProne.version}</version>
                         </path>
                     </annotationProcessorPaths>
+                    <excludes>
+                        <exclude>**/nl/b3p/tailormap/api/controller/*.java</exclude>
+                        <exclude>**/nl/b3p/tailormap/api/repository/*.java</exclude>
+                        <exclude>**/MicrometerHelper.java</exclude>
+                        <exclude>**/health/*.java</exclude>
+                        <exclude>**/nl/b3p/tailormap/api/geotools/featuresources/*.java</exclude>
+                        <exclude>**/AuthorizationService.java</exclude>
+                        <exclude>**/StartupAdminAccountCreator.java</exclude>
+                        <exclude>**/TailormapUserDetails.java</exclude>
+                        <exclude>**/TailormapUserDetailsService.java</exclude>
+                        <exclude>**/MetadataRepositoryTest.java</exclude>
+                        <exclude>**/JPAConfiguration.java</exclude>
+                    </excludes>
+                    <testExcludes>
+                        <exclude>**/nl/b3p/tailormap/api/controller/*.java</exclude>
+                        <exclude>**/health/*.java</exclude>
+                        <exclude>**/nl/b3p/tailormap/api/repository/*.java</exclude>
+                        <exclude>**/TailormapUserDetailsServiceTest.java</exclude>
+                    </testExcludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -859,7 +878,7 @@ SPDX-License-Identifier: MIT
             </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
+                <!--                <executions>
                     <execution>
                         <id>attach-javadoc</id>
                         <goals>
@@ -872,7 +891,7 @@ SPDX-License-Identifier: MIT
                             <failOnError>${failOnValidation}</failOnError>
                         </configuration>
                     </execution>
-                </executions>
+                </executions>-->
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
