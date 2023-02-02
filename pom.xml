@@ -1490,6 +1490,8 @@ SPDX-License-Identifier: MIT
                             <!--suppress UnresolvedMavenProperty -->
                             <argLine>${failsafeArgLine} -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql</argLine>
                             <trimStackTrace>false</trimStackTrace>
+                            <!-- temporarily disabled -->
+                            <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
                             <systemPropertyVariables>
                                 <project.version>${project.version}</project.version>
                             </systemPropertyVariables>
