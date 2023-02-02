@@ -21,9 +21,9 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: maven-${{ hashFiles('**/pom.xml') }}
+          key: setup-java-Linux-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            maven-
+            setup-java-Linux-maven-
 
       - name: Set up JDK
         uses: actions/setup-java@v3

@@ -10,17 +10,17 @@ To fully build the project, you need to have the following installed:
 
 - Java 11 JDK
 - Maven 3.8.4 or higher
-- Docker 20.10.x with buildx 0.9 or higher (this requirement may be skipped if you don't need to build 
+- Docker 20.10.x with buildx 0.9 or higher (this requirement may be skipped if you don't need to build
   the docker images or build release artifacts)
 
 ### Basic procedure:
 
-1. do your thing, if possible use `aosp` styling (run `mvn com.coveo:fmt-maven-plugin:format` to fix all formatting)
+1. do your thing, if possible use `aosp` styling (run `mvn fmt:format sortpom:sort` to fix all formatting)
 2. run `mvn clean install` to make sure all required formatting is applied and all tests pass
 3. commit and push your branch to create a pull request
 4. wait for code review to pass, possibly amend your PR and merge your PR
 
-Make sure you have useful commit messages, any PR with `WIP` commits will need 
+Make sure you have useful commit messages, any PR with `WIP` commits will need
 to be squashed before merge.
 
 see also [QA](#QA)
@@ -29,7 +29,8 @@ see also [QA](#QA)
 
 * You can skip CI execution[^1] by specifying `[skip ci]` as part of your commit.
 * You can use `mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates` to search for plugin updates
-* You can use `mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates` to search for dependency updates
+* You can use `mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates` to search for dependency
+  updates
 
 ### Profiles
 
@@ -39,8 +40,8 @@ Some Maven (platform specific) profiles are defined:
     - Sets specific properties for MacOS such as skipping the docker part of the build
     - Activated automagically
 * **openbsd**
-  - Sets specific properties for OpenBSD such as skipping the docker part of the build
-  - Activated automagically
+    - Sets specific properties for OpenBSD such as skipping the docker part of the build
+    - Activated automagically
 * **windows**
     - Sets specific properties for Windows such as skipping the docker part of the build
     - Activated automagically
@@ -69,12 +70,12 @@ Some quick points of attention:
 * code is reviewed before merge to the main branch
 * Javadoc must be valid
 
-
 ## Running
 
 You can run this application in various ways:
 
-- using **spring-boot-maven-plugin** see https://docs.spring.io/spring-boot/docs/2.6.1/maven-plugin/reference/htmlsingle/#goals
+- using **spring-boot-maven-plugin**
+  see https://docs.spring.io/spring-boot/docs/2.6.1/maven-plugin/reference/htmlsingle/#goals
 - using the starter in **IntelliJ IDEA**
 - using the runnable jar
 - running the docker image as a container
@@ -86,14 +87,16 @@ You can run this application in various ways:
   docker run --rm -it --name tailormap-api -h tailormap-api -e "SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5433/tailormaps" --network host ghcr.io/b3partners/tailormap-api:snapshot
   ￼
   ```
-  You can then point your browser at eg. `http://localhost:8080/api/version` or `http://localhost:8080/api/actuator/health`
+  You can then point your browser at eg. `http://localhost:8080/api/version`
+  or `http://localhost:8080/api/actuator/health`
 
-Note that you need to have a configured database that at least has the tailormap schema; running the Tailormap Admin once should take care of that. 
+Note that you need to have a configured database that at least has the tailormap schema; running the Tailormap Admin
+once should take care of that.
 
 ## Releasing
 
 Use the regular Maven release cycle of `mvn release: prepare` followed by `mvn release:perform`. Please make sure that
-you use `tailormap-api-<VERSION>` as a tag so that the release notes are automatically created. 
+you use `tailormap-api-<VERSION>` as a tag so that the release notes are automatically created.
 For example:
 
 ```shell
