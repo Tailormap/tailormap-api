@@ -49,7 +49,7 @@
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">   * @return type</em>
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>    @NotNull 
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>    @Schema(name = <span class="jxr_string">"type"</span>, description = <span class="jxr_string">"component type eg. featurereport or print"</span>, required = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>    @Schema(name = <span class="jxr_string">"type"</span>, description = <span class="jxr_string">"component type eg. featurereport or print"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>    <strong class="jxr_keyword">public</strong> String getType() {
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>      <strong class="jxr_keyword">return</strong> type;
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>    }
@@ -68,7 +68,7 @@
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">   * @return config</em>
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>    @NotNull @Valid 
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>    @Schema(name = <span class="jxr_string">"config"</span>, required = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>    @Schema(name = <span class="jxr_string">"config"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>    <strong class="jxr_keyword">public</strong> <a name="ComponentConfig" href="../../../../../nl/b3p/tailormap/api/model/ComponentConfig.html#ComponentConfig">ComponentConfig</a> getConfig() {
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">return</strong> config;
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>    }

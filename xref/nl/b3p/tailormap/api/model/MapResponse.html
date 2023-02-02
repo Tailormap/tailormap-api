@@ -77,7 +77,7 @@
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment">   * @return initialExtent</em>
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>    @NotNull @Valid 
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>    @Schema(name = <span class="jxr_string">"initialExtent"</span>, required = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>    @Schema(name = <span class="jxr_string">"initialExtent"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>    <strong class="jxr_keyword">public</strong> <a name="Bounds" href="../../../../../nl/b3p/tailormap/api/model/Bounds.html#Bounds">Bounds</a> getInitialExtent() {
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      <strong class="jxr_keyword">return</strong> initialExtent;
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>    }
@@ -96,7 +96,7 @@
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>  <em class="jxr_javadoccomment">   * @return maxExtent</em>
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>    @Valid 
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>    @Schema(name = <span class="jxr_string">"maxExtent"</span>, required = false)
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>    @Schema(name = <span class="jxr_string">"maxExtent"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>    <strong class="jxr_keyword">public</strong> <a name="Bounds" href="../../../../../nl/b3p/tailormap/api/model/Bounds.html#Bounds">Bounds</a> getMaxExtent() {
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">return</strong> maxExtent;
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>    }
@@ -123,7 +123,7 @@
 <a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">   * @return services</em>
 <a class="jxr_linenumber" name="L116" href="#L116">116</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>   @NotNull @Valid 
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>   @Schema(name = <span class="jxr_string">"services"</span>, required = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>   @Schema(name = <span class="jxr_string">"services"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>   <strong class="jxr_keyword">public</strong> Set&lt;Service&gt; getServices() {
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">return</strong> services;
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>   }
@@ -151,7 +151,7 @@
 <a class="jxr_linenumber" name="L143" href="#L143">143</a> <em class="jxr_javadoccomment">   * @return baseLayerTreeNodes</em>
 <a class="jxr_linenumber" name="L144" href="#L144">144</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>   @NotNull @Valid 
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>   @Schema(name = <span class="jxr_string">"baseLayerTreeNodes"</span>, description = <span class="jxr_string">"Unordered list of all tree nodes of base layers. Start with the node with root set to true and use the ordered children array property to order the tree. For base layers, only one child node (with all its' child layers) of the root should be displayed at one time."</span>, required = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>   @Schema(name = <span class="jxr_string">"baseLayerTreeNodes"</span>, description = <span class="jxr_string">"Unordered list of all tree nodes of base layers. Start with the node with root set to true and use the ordered children array property to order the tree. For base layers, only one child node (with all its' child layers) of the root should be displayed at one time."</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>   <strong class="jxr_keyword">public</strong> List&lt;LayerTreeNode&gt; getBaseLayerTreeNodes() {
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>     <strong class="jxr_keyword">return</strong> baseLayerTreeNodes;
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>   }
@@ -178,7 +178,7 @@
 <a class="jxr_linenumber" name="L170" href="#L170">170</a> <em class="jxr_javadoccomment">   * @return layerTreeNodes</em>
 <a class="jxr_linenumber" name="L171" href="#L171">171</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>   @NotNull @Valid 
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>   @Schema(name = <span class="jxr_string">"layerTreeNodes"</span>, description = <span class="jxr_string">"Unordered list of all tree nodes of overlay/thematic/transparent layers. Start with the node with root set to true and use the ordered children array property to order the tree."</span>, required = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>   @Schema(name = <span class="jxr_string">"layerTreeNodes"</span>, description = <span class="jxr_string">"Unordered list of all tree nodes of overlay/thematic/transparent layers. Start with the node with root set to true and use the ordered children array property to order the tree."</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>   <strong class="jxr_keyword">public</strong> List&lt;LayerTreeNode&gt; getLayerTreeNodes() {
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>     <strong class="jxr_keyword">return</strong> layerTreeNodes;
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>   }
@@ -205,7 +205,7 @@
 <a class="jxr_linenumber" name="L197" href="#L197">197</a> <em class="jxr_javadoccomment">   * @return appLayers</em>
 <a class="jxr_linenumber" name="L198" href="#L198">198</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>   @NotNull @Valid 
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>   @Schema(name = <span class="jxr_string">"appLayers"</span>, description = <span class="jxr_string">"Unordered list of all AppLayers referenced from baseLayerTreeNodes and layerTreeNodes. Note that you need to lookup these by id, but OpenAPI only supports a map by using strings as keys, so an array is used instead."</span>, required = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>   @Schema(name = <span class="jxr_string">"appLayers"</span>, description = <span class="jxr_string">"Unordered list of all AppLayers referenced from baseLayerTreeNodes and layerTreeNodes. Note that you need to lookup these by id, but OpenAPI only supports a map by using strings as keys, so an array is used instead."</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>   <strong class="jxr_keyword">public</strong> List&lt;AppLayer&gt; getAppLayers() {
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>     <strong class="jxr_keyword">return</strong> appLayers;
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>   }
@@ -224,7 +224,7 @@
 <a class="jxr_linenumber" name="L216" href="#L216">216</a> <em class="jxr_javadoccomment">   * @return crs</em>
 <a class="jxr_linenumber" name="L217" href="#L217">217</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>   @NotNull @Valid 
-<a class="jxr_linenumber" name="L219" href="#L219">219</a>   @Schema(name = <span class="jxr_string">"crs"</span>, required = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>   @Schema(name = <span class="jxr_string">"crs"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>   <strong class="jxr_keyword">public</strong> <a name="CoordinateReferenceSystem" href="../../../../../nl/b3p/tailormap/api/model/CoordinateReferenceSystem.html#CoordinateReferenceSystem">CoordinateReferenceSystem</a> getCrs() {
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>     <strong class="jxr_keyword">return</strong> crs;
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>   }

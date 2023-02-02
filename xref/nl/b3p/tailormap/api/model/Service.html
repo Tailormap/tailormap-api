@@ -184,7 +184,7 @@
 <a class="jxr_linenumber" name="L176" href="#L176">176</a> <em class="jxr_javadoccomment">   * @return id</em>
 <a class="jxr_linenumber" name="L177" href="#L177">177</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>   @NotNull 
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>   @Schema(name = <span class="jxr_string">"id"</span>, required = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>   @Schema(name = <span class="jxr_string">"id"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>   <strong class="jxr_keyword">public</strong> Long getId() {
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>     <strong class="jxr_keyword">return</strong> id;
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>   }
@@ -203,7 +203,7 @@
 <a class="jxr_linenumber" name="L195" href="#L195">195</a> <em class="jxr_javadoccomment">   * @return name</em>
 <a class="jxr_linenumber" name="L196" href="#L196">196</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>   
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>   @Schema(name = <span class="jxr_string">"name"</span>, required = false)
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>   @Schema(name = <span class="jxr_string">"name"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>   <strong class="jxr_keyword">public</strong> String getName() {
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>     <strong class="jxr_keyword">return</strong> name;
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>   }
@@ -222,7 +222,7 @@
 <a class="jxr_linenumber" name="L214" href="#L214">214</a> <em class="jxr_javadoccomment">   * @return url</em>
 <a class="jxr_linenumber" name="L215" href="#L215">215</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L216" href="#L216">216</a>   
-<a class="jxr_linenumber" name="L217" href="#L217">217</a>   @Schema(name = <span class="jxr_string">"url"</span>, required = false)
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>   @Schema(name = <span class="jxr_string">"url"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>   <strong class="jxr_keyword">public</strong> String getUrl() {
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>     <strong class="jxr_keyword">return</strong> url;
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>   }
@@ -241,7 +241,7 @@
 <a class="jxr_linenumber" name="L233" href="#L233">233</a> <em class="jxr_javadoccomment">   * @return styleLibraries</em>
 <a class="jxr_linenumber" name="L234" href="#L234">234</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>   
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>   @Schema(name = <span class="jxr_string">"styleLibraries"</span>, required = false)
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>   @Schema(name = <span class="jxr_string">"styleLibraries"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>   <strong class="jxr_keyword">public</strong> Object getStyleLibraries() {
 <a class="jxr_linenumber" name="L238" href="#L238">238</a>     <strong class="jxr_keyword">return</strong> styleLibraries;
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>   }
@@ -260,7 +260,7 @@
 <a class="jxr_linenumber" name="L252" href="#L252">252</a> <em class="jxr_javadoccomment">   * @return serverType</em>
 <a class="jxr_linenumber" name="L253" href="#L253">253</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>   
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>   @Schema(name = <span class="jxr_string">"serverType"</span>, required = false)
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>   @Schema(name = <span class="jxr_string">"serverType"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>   <strong class="jxr_keyword">public</strong> ServerTypeEnum getServerType() {
 <a class="jxr_linenumber" name="L257" href="#L257">257</a>     <strong class="jxr_keyword">return</strong> serverType;
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>   }
@@ -279,7 +279,7 @@
 <a class="jxr_linenumber" name="L271" href="#L271">271</a> <em class="jxr_javadoccomment">   * @return tilingDisabled</em>
 <a class="jxr_linenumber" name="L272" href="#L272">272</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L273" href="#L273">273</a>   
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>   @Schema(name = <span class="jxr_string">"tilingDisabled"</span>, required = false)
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>   @Schema(name = <span class="jxr_string">"tilingDisabled"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L275" href="#L275">275</a>   <strong class="jxr_keyword">public</strong> Boolean getTilingDisabled() {
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>     <strong class="jxr_keyword">return</strong> tilingDisabled;
 <a class="jxr_linenumber" name="L277" href="#L277">277</a>   }
@@ -298,7 +298,7 @@
 <a class="jxr_linenumber" name="L290" href="#L290">290</a> <em class="jxr_javadoccomment">   * @return tilingGutter</em>
 <a class="jxr_linenumber" name="L291" href="#L291">291</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L292" href="#L292">292</a>   
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>   @Schema(name = <span class="jxr_string">"tilingGutter"</span>, required = false)
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>   @Schema(name = <span class="jxr_string">"tilingGutter"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L294" href="#L294">294</a>   <strong class="jxr_keyword">public</strong> Integer getTilingGutter() {
 <a class="jxr_linenumber" name="L295" href="#L295">295</a>     <strong class="jxr_keyword">return</strong> tilingGutter;
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>   }
@@ -317,7 +317,7 @@
 <a class="jxr_linenumber" name="L309" href="#L309">309</a> <em class="jxr_javadoccomment">   * @return protocol</em>
 <a class="jxr_linenumber" name="L310" href="#L310">310</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>   
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>   @Schema(name = <span class="jxr_string">"protocol"</span>, required = false)
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>   @Schema(name = <span class="jxr_string">"protocol"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>   <strong class="jxr_keyword">public</strong> ProtocolEnum getProtocol() {
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>     <strong class="jxr_keyword">return</strong> protocol;
 <a class="jxr_linenumber" name="L315" href="#L315">315</a>   }
@@ -336,7 +336,7 @@
 <a class="jxr_linenumber" name="L328" href="#L328">328</a> <em class="jxr_javadoccomment">   * @return tilingProtocol</em>
 <a class="jxr_linenumber" name="L329" href="#L329">329</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L330" href="#L330">330</a>   
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>   @Schema(name = <span class="jxr_string">"tilingProtocol"</span>, required = false)
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>   @Schema(name = <span class="jxr_string">"tilingProtocol"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L332" href="#L332">332</a>   <strong class="jxr_keyword">public</strong> TilingProtocolEnum getTilingProtocol() {
 <a class="jxr_linenumber" name="L333" href="#L333">333</a>     <strong class="jxr_keyword">return</strong> tilingProtocol;
 <a class="jxr_linenumber" name="L334" href="#L334">334</a>   }
@@ -355,7 +355,7 @@
 <a class="jxr_linenumber" name="L347" href="#L347">347</a> <em class="jxr_javadoccomment">   * @return capabilities</em>
 <a class="jxr_linenumber" name="L348" href="#L348">348</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L349" href="#L349">349</a>   
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>   @Schema(name = <span class="jxr_string">"capabilities"</span>, description = <span class="jxr_string">"capabilities document of the service - currently only for WMTS"</span>, required = false)
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>   @Schema(name = <span class="jxr_string">"capabilities"</span>, description = <span class="jxr_string">"capabilities document of the service - currently only for WMTS"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L351" href="#L351">351</a>   <strong class="jxr_keyword">public</strong> String getCapabilities() {
 <a class="jxr_linenumber" name="L352" href="#L352">352</a>     <strong class="jxr_keyword">return</strong> capabilities;
 <a class="jxr_linenumber" name="L353" href="#L353">353</a>   }

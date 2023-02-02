@@ -88,7 +88,7 @@
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">   * @return featureType</em>
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>  <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>    
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>    @Schema(name = <span class="jxr_string">"featureType"</span>, required = false)
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>    @Schema(name = <span class="jxr_string">"featureType"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>    <strong class="jxr_keyword">public</strong> Long getFeatureType() {
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      <strong class="jxr_keyword">return</strong> featureType;
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>    }
@@ -107,7 +107,7 @@
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>  <em class="jxr_javadoccomment">   * @return foreignFeatureType</em>
 <a class="jxr_linenumber" name="L100" href="#L100">100</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>   
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>   @Schema(name = <span class="jxr_string">"foreignFeatureType"</span>, required = false)
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>   @Schema(name = <span class="jxr_string">"foreignFeatureType"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>   <strong class="jxr_keyword">public</strong> Long getForeignFeatureType() {
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>     <strong class="jxr_keyword">return</strong> foreignFeatureType;
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>   }
@@ -126,7 +126,7 @@
 <a class="jxr_linenumber" name="L118" href="#L118">118</a> <em class="jxr_javadoccomment">   * @return type</em>
 <a class="jxr_linenumber" name="L119" href="#L119">119</a> <em class="jxr_javadoccomment">  */</em>
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>   
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>   @Schema(name = <span class="jxr_string">"type"</span>, required = false)
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>   @Schema(name = <span class="jxr_string">"type"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>   <strong class="jxr_keyword">public</strong> TypeEnum getType() {
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     <strong class="jxr_keyword">return</strong> type;
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>   }
