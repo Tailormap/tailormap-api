@@ -22,18 +22,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            maven-
-
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           java-version: 11
           distribution: 'temurin'
+          cache: 'maven'
 
       - name: Priming build with Maven
         run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true install
@@ -63,25 +57,21 @@ jobs:
           retention-days: 2
           path: target/site/
 
+
   postgresql-test:
     name: PostgreSQL verify
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    if: ${{ github.author != 'dependabot[bot]' }}
     needs: build
     steps:
       - uses: actions/checkout@v3
-
-      - uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            maven-
 
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           java-version: 11
           distribution: 'temurin'
+          cache: 'maven'
 
       - name: Get Docker compose for database
         uses: actions/checkout@v3
@@ -156,18 +146,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            maven-
-
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           java-version: 11
           distribution: 'temurin'
+          cache: 'maven'
 
       - name: Build and Push
         # no need to run any QC or tests
@@ -180,6 +164,7 @@ jobs:
         run: |
           docker run --privileged --rm tonistiigi/binfmt --install arm64
           mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip clean deploy --settings .github/maven-settings.xml
+
 
   deploy:
     name: Deploy stack
@@ -215,7 +200,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:14-alpine
+        image: postgres:15-alpine
         env:
           POSTGRES_USER: ${{ env.DB_USER }}
           POSTGRES_PASSWORD: ${{ env.DB_PASS }}
@@ -227,18 +212,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            maven-
-
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           java-version: 11
           distribution: 'temurin'
+          cache: 'maven'
 
       - name: Build docker image
         run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip package
@@ -268,9 +247,9 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: maven-${{ hashFiles('**/pom.xml') }}
+          key: setup-java-Linux-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            maven-
+            setup-java-Linux-maven-
 
       - name: Cleanup snapshot cache
         run: |
