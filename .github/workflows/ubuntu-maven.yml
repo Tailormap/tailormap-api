@@ -46,10 +46,11 @@ jobs:
         run: mvn javadoc:javadoc
 
       - name: Build Maven site
+        if: false # disabled
         run: mvn site
 
       - name: Archive Maven Site
-        if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
+        if: false # disabled ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
         id: archive-site
         uses: actions/upload-artifact@v3
         with:
