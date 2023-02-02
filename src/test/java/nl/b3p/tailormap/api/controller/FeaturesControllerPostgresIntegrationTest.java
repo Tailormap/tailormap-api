@@ -22,6 +22,7 @@ import nl.b3p.tailormap.api.security.SecurityConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -1104,6 +1105,7 @@ class FeaturesControllerPostgresIntegrationTest {
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+    @Disabled("TODO: test app was removed from integration dataset, restore later")
     void handles_unknown_attribute_type_from_external_wfs() throws Exception {
         // Depends on external service, may fail/change
         mockMvc.perform(
