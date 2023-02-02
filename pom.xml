@@ -502,7 +502,7 @@ SPDX-License-Identifier: MIT
                 <plugin>
                     <groupId>org.openapitools</groupId>
                     <artifactId>openapi-generator-maven-plugin</artifactId>
-                    <version>6.2.1</version>
+                    <version>6.3.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-pmd-plugin</artifactId>
