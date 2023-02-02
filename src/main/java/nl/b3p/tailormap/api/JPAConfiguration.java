@@ -5,6 +5,10 @@
  */
 package nl.b3p.tailormap.api;
 
+import java.util.Objects;
+import java.util.Properties;
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -19,12 +23,6 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.util.Objects;
-import java.util.Properties;
-
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-
 /**
  * JPA configuration beans.
  *
@@ -33,79 +31,78 @@ import javax.sql.DataSource;
 @Configuration
 @EnableJpaRepositories(basePackages = {"nl.b3p.tailormap.api.repository"})
 @EntityScan(
-        basePackages = {
-            "nl.tailormap.viewer.config",
-            "nl.tailormap.viewer.config.app",
-            "nl.tailormap.viewer.config.metadata",
-            "nl.tailormap.viewer.config.security",
-            "nl.tailormap.viewer.config.services"
-        })
+    basePackages = {
+      "nl.tailormap.viewer.config",
+      "nl.tailormap.viewer.config.app",
+      "nl.tailormap.viewer.config.metadata",
+      "nl.tailormap.viewer.config.security",
+      "nl.tailormap.viewer.config.services"
+    })
 @EnableTransactionManagement
 public class JPAConfiguration {
-    private final Environment env;
+  private final Environment env;
 
-    private final Log logger = LogFactory.getLog(getClass());
+  private final Log logger = LogFactory.getLog(getClass());
 
-    public JPAConfiguration(Environment env) {
-        this.env = env;
-    }
+  public JPAConfiguration(Environment env) {
+    this.env = env;
+  }
 
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        final LocalContainerEntityManagerFactoryBean em =
-                new LocalContainerEntityManagerFactoryBean();
+  @Bean
+  public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+    final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 
-        em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        em.setJpaProperties(additionalProperties());
-        em.setPersistenceUnitName("viewer-config-postgresql");
-        em.setDataSource(dataSource());
+    em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+    em.setJpaProperties(additionalProperties());
+    em.setPersistenceUnitName("viewer-config-postgresql");
+    em.setDataSource(dataSource());
 
-        return em;
-    }
+    return em;
+  }
 
-    /**
-     * This is to override the config of the provided persistence module.
-     *
-     * @return configured datasource
-     */
-    @Bean
-    public DataSource dataSource() {
-        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(env.getProperty("spring.datasource.url"));
-        dataSource.setDriverClassName(
-                Objects.requireNonNull(env.getProperty("spring.datasource.driver-class-name")));
-        dataSource.setUsername(env.getProperty("spring.datasource.username"));
-        dataSource.setPassword(env.getProperty("spring.datasource.password"));
+  /**
+   * This is to override the config of the provided persistence module.
+   *
+   * @return configured datasource
+   */
+  @Bean
+  public DataSource dataSource() {
+    final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    dataSource.setUrl(env.getProperty("spring.datasource.url"));
+    dataSource.setDriverClassName(
+        Objects.requireNonNull(env.getProperty("spring.datasource.driver-class-name")));
+    dataSource.setUsername(env.getProperty("spring.datasource.username"));
+    dataSource.setPassword(env.getProperty("spring.datasource.password"));
 
-        logger.debug(
-                "using database: "
-                        + env.getProperty("spring.datasource.url")
-                        + " with driver: "
-                        + env.getProperty("spring.datasource.driver-class-name"));
-        return dataSource;
-    }
+    logger.debug(
+        "using database: "
+            + env.getProperty("spring.datasource.url")
+            + " with driver: "
+            + env.getProperty("spring.datasource.driver-class-name"));
+    return dataSource;
+  }
 
-    @Bean
-    JpaTransactionManager transactionManager(final EntityManagerFactory entityManagerFactory) {
-        final JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory);
+  @Bean
+  JpaTransactionManager transactionManager(final EntityManagerFactory entityManagerFactory) {
+    final JpaTransactionManager transactionManager = new JpaTransactionManager();
+    transactionManager.setEntityManagerFactory(entityManagerFactory);
 
-        return transactionManager;
-    }
+    return transactionManager;
+  }
 
-    @Bean
-    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
-        return new PersistenceExceptionTranslationPostProcessor();
-    }
+  @Bean
+  public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+    return new PersistenceExceptionTranslationPostProcessor();
+  }
 
-    private Properties additionalProperties() {
-        final Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty(
-                "hibernate.show_sql", env.getProperty("spring.jpa.show-sql", "false"));
-        hibernateProperties.setProperty(
-                "hibernate.generate_statistics",
-                env.getProperty("spring.jpa.properties.hibernate.enable_metrics", "true"));
+  private Properties additionalProperties() {
+    final Properties hibernateProperties = new Properties();
+    hibernateProperties.setProperty(
+        "hibernate.show_sql", env.getProperty("spring.jpa.show-sql", "false"));
+    hibernateProperties.setProperty(
+        "hibernate.generate_statistics",
+        env.getProperty("spring.jpa.properties.hibernate.enable_metrics", "true"));
 
-        return hibernateProperties;
-    }
+    return hibernateProperties;
+  }
 }

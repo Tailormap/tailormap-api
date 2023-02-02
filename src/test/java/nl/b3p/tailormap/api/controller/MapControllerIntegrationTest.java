@@ -13,10 +13,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.HashMap;
+import java.util.Map;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
-
 import org.json.JSONObject;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -32,243 +33,232 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @SpringBootTest(
-        classes = {
-            HSQLDBTestProfileJPAConfiguration.class,
-            MapController.class,
-            SecurityConfig.class,
-            AuthorizationService.class,
-            AppRestControllerAdvice.class,
-        })
+    classes = {
+      HSQLDBTestProfileJPAConfiguration.class,
+      MapController.class,
+      SecurityConfig.class,
+      AuthorizationService.class,
+      AppRestControllerAdvice.class,
+    })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MapControllerIntegrationTest {
-    @Autowired ApplicationRepository applicationRepository;
-    @Autowired private MockMvc mockMvc;
+  @Autowired ApplicationRepository applicationRepository;
+  @Autowired private MockMvc mockMvc;
 
-    @Test
-    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    @WithMockUser(
-            username = "admin",
-            authorities = {"Admin"})
-    void should_return_data_for_configured_app() throws Exception {
-        mockMvc.perform(get("/app/1/map"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.initialExtent").isMap())
-                .andExpect(jsonPath("$.maxExtent").isMap())
-                .andExpect(jsonPath("$.services").isArray())
-                .andExpect(jsonPath("$.appLayers").isArray())
-                .andExpect(jsonPath("$.appLayers[0]").isMap())
-                .andExpect(jsonPath("$.appLayers.length()").value(5))
-                .andExpect(jsonPath("$.appLayers[0].hasAttributes").value(false))
-                .andExpect(jsonPath("$.appLayers[1].hasAttributes").value(true))
-                .andExpect(jsonPath("$.appLayers[2].legendImageUrl").exists())
-                .andExpect(jsonPath("$.appLayers[2].legendImageUrl").isNotEmpty())
-                .andExpect(jsonPath("$.appLayers[2].visible").value(false))
-                .andExpect(jsonPath("$.appLayers[2].minScale").isEmpty())
-                .andExpect(jsonPath("$.appLayers[2].maxScale").isEmpty())
-                .andExpect(jsonPath("$.appLayers[2].id").value(3))
-                .andExpect(jsonPath("$.appLayers[2].hiDpiMode").isEmpty())
-                .andExpect(jsonPath("$.appLayers[2].hiDpiSubstituteLayer").isEmpty())
-                .andExpect(jsonPath("$.crs.code").value("EPSG:28992"))
-                .andReturn();
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "admin",
+      authorities = {"Admin"})
+  void should_return_data_for_configured_app() throws Exception {
+    mockMvc
+        .perform(get("/app/1/map"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.initialExtent").isMap())
+        .andExpect(jsonPath("$.maxExtent").isMap())
+        .andExpect(jsonPath("$.services").isArray())
+        .andExpect(jsonPath("$.appLayers").isArray())
+        .andExpect(jsonPath("$.appLayers[0]").isMap())
+        .andExpect(jsonPath("$.appLayers.length()").value(5))
+        .andExpect(jsonPath("$.appLayers[0].hasAttributes").value(false))
+        .andExpect(jsonPath("$.appLayers[1].hasAttributes").value(true))
+        .andExpect(jsonPath("$.appLayers[2].legendImageUrl").exists())
+        .andExpect(jsonPath("$.appLayers[2].legendImageUrl").isNotEmpty())
+        .andExpect(jsonPath("$.appLayers[2].visible").value(false))
+        .andExpect(jsonPath("$.appLayers[2].minScale").isEmpty())
+        .andExpect(jsonPath("$.appLayers[2].maxScale").isEmpty())
+        .andExpect(jsonPath("$.appLayers[2].id").value(3))
+        .andExpect(jsonPath("$.appLayers[2].hiDpiMode").isEmpty())
+        .andExpect(jsonPath("$.appLayers[2].hiDpiSubstituteLayer").isEmpty())
+        .andExpect(jsonPath("$.crs.code").value("EPSG:28992"))
+        .andReturn();
+  }
+
+  @Test
+  @WithMockUser(
+      username = "admin",
+      authorities = {"Admin"})
+  void should_show_filtered_layer_tree() throws Exception {
+    MvcResult result =
+        mockMvc
+            .perform(get("/app/1/map"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn();
+
+    Map<String, JSONObject> treeNodeMap = new HashMap<>();
+    String body = result.getResponse().getContentAsString();
+    JSONObject rootNode = null;
+    for (Object _node : new JSONObject(body).getJSONArray("layerTreeNodes")) {
+      JSONObject node = (JSONObject) _node;
+      String id = node.getString("id");
+      assertFalse(treeNodeMap.containsKey(id), String.format("node %s appears multiple times", id));
+      treeNodeMap.put(id, node);
+
+      if (node.getBoolean("root")) {
+        assertNull(rootNode, "Root node already exists");
+        rootNode = node;
+      }
     }
 
-    @Test
-    @WithMockUser(
-            username = "admin",
-            authorities = {"Admin"})
-    void should_show_filtered_layer_tree() throws Exception {
-        MvcResult result =
-                mockMvc.perform(get("/app/1/map"))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn();
+    assertNotNull(rootNode, "no root node found");
+    assertEquals(
+        2, rootNode.getJSONArray("childrenIds").length(), "root node had wrong amount of children");
 
-        Map<String, JSONObject> treeNodeMap = new HashMap<>();
-        String body = result.getResponse().getContentAsString();
-        JSONObject rootNode = null;
-        for (Object _node : new JSONObject(body).getJSONArray("layerTreeNodes")) {
-            JSONObject node = (JSONObject) _node;
-            String id = node.getString("id");
-            assertFalse(
-                    treeNodeMap.containsKey(id),
-                    String.format("node %s appears multiple times", id));
-            treeNodeMap.put(id, node);
+    JSONObject groenNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(0));
+    assertNotNull(groenNode, "first child of root is not valid");
+    assertEquals(
+        3,
+        groenNode.getJSONArray("childrenIds").length(),
+        "first node of root had wrong amount of children");
+    assertEquals(
+        2,
+        treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(0)).getInt("appLayerId"),
+        "incorrect appLayerId for first child");
+    assertEquals(
+        3,
+        treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(1)).getInt("appLayerId"),
+        "incorrect appLayerId for second child");
+    assertEquals(
+        4,
+        treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(2)).getInt("appLayerId"),
+        "incorrect appLayerId for third child");
 
-            if (node.getBoolean("root")) {
-                assertNull(rootNode, "Root node already exists");
-                rootNode = node;
-            }
-        }
+    JSONObject woonplaatsenNode =
+        treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(1));
+    assertNotNull(woonplaatsenNode, "second child of root is not valid");
+    assertEquals(
+        1,
+        woonplaatsenNode.getJSONArray("childrenIds").length(),
+        "second node of root had wrong amount of children");
+    assertEquals(
+        5,
+        treeNodeMap.get(woonplaatsenNode.getJSONArray("childrenIds").get(0)).getInt("appLayerId"),
+        "incorrect appLayerId for first child (of second child)");
+  }
 
-        assertNotNull(rootNode, "no root node found");
-        assertEquals(
-                2,
-                rootNode.getJSONArray("childrenIds").length(),
-                "root node had wrong amount of children");
+  @Test
+  @WithMockUser(
+      username = "admin",
+      authorities = {"NotAdmin"})
+  void should_show_filtered_layer_tree_unauthorized() throws Exception {
+    MvcResult result =
+        mockMvc
+            .perform(get("/app/1/map"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn();
 
-        JSONObject groenNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(0));
-        assertNotNull(groenNode, "first child of root is not valid");
-        assertEquals(
-                3,
-                groenNode.getJSONArray("childrenIds").length(),
-                "first node of root had wrong amount of children");
-        assertEquals(
-                2,
-                treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(0)).getInt("appLayerId"),
-                "incorrect appLayerId for first child");
-        assertEquals(
-                3,
-                treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(1)).getInt("appLayerId"),
-                "incorrect appLayerId for second child");
-        assertEquals(
-                4,
-                treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(2)).getInt("appLayerId"),
-                "incorrect appLayerId for third child");
+    Map<String, JSONObject> treeNodeMap = new HashMap<>();
+    String body = result.getResponse().getContentAsString();
+    JSONObject rootNode = null;
+    for (Object _node : new JSONObject(body).getJSONArray("layerTreeNodes")) {
+      JSONObject node = (JSONObject) _node;
+      String id = node.getString("id");
+      assertFalse(treeNodeMap.containsKey(id), String.format("node %s appears multiple times", id));
+      treeNodeMap.put(id, node);
 
-        JSONObject woonplaatsenNode =
-                treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(1));
-        assertNotNull(woonplaatsenNode, "second child of root is not valid");
-        assertEquals(
-                1,
-                woonplaatsenNode.getJSONArray("childrenIds").length(),
-                "second node of root had wrong amount of children");
-        assertEquals(
-                5,
-                treeNodeMap
-                        .get(woonplaatsenNode.getJSONArray("childrenIds").get(0))
-                        .getInt("appLayerId"),
-                "incorrect appLayerId for first child (of second child)");
+      if (node.getBoolean("root")) {
+        assertNull(rootNode, "Root node already exists");
+        rootNode = node;
+      }
     }
 
-    @Test
-    @WithMockUser(
-            username = "admin",
-            authorities = {"NotAdmin"})
-    void should_show_filtered_layer_tree_unauthorized() throws Exception {
-        MvcResult result =
-                mockMvc.perform(get("/app/1/map"))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn();
+    assertNotNull(rootNode, "no root node found");
+    assertEquals(
+        2, rootNode.getJSONArray("childrenIds").length(), "root node had wrong amount of children");
 
-        Map<String, JSONObject> treeNodeMap = new HashMap<>();
-        String body = result.getResponse().getContentAsString();
-        JSONObject rootNode = null;
-        for (Object _node : new JSONObject(body).getJSONArray("layerTreeNodes")) {
-            JSONObject node = (JSONObject) _node;
-            String id = node.getString("id");
-            assertFalse(
-                    treeNodeMap.containsKey(id),
-                    String.format("node %s appears multiple times", id));
-            treeNodeMap.put(id, node);
+    JSONObject groenNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(0));
+    assertNotNull(groenNode, "first child of root is not valid");
+    assertEquals(
+        0,
+        groenNode.getJSONArray("childrenIds").length(),
+        "first node of root had wrong amount of children");
 
-            if (node.getBoolean("root")) {
-                assertNull(rootNode, "Root node already exists");
-                rootNode = node;
-            }
-        }
+    JSONObject woonplaatsenNode =
+        treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(1));
+    assertNotNull(woonplaatsenNode, "second child of root is not valid");
+    assertEquals(
+        1,
+        woonplaatsenNode.getJSONArray("childrenIds").length(),
+        "second node of root had wrong amount of children");
+  }
 
-        assertNotNull(rootNode, "no root node found");
-        assertEquals(
-                2,
-                rootNode.getJSONArray("childrenIds").length(),
-                "root node had wrong amount of children");
+  @Test
+  void should_show_filtered_base_layer_tree() throws Exception {
+    MvcResult result =
+        mockMvc
+            .perform(get("/app/1/map"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andReturn();
 
-        JSONObject groenNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(0));
-        assertNotNull(groenNode, "first child of root is not valid");
-        assertEquals(
-                0,
-                groenNode.getJSONArray("childrenIds").length(),
-                "first node of root had wrong amount of children");
+    Map<String, JSONObject> treeNodeMap = new HashMap<>();
+    String body = result.getResponse().getContentAsString();
+    JSONObject rootNode = null;
 
-        JSONObject woonplaatsenNode =
-                treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(1));
-        assertNotNull(woonplaatsenNode, "second child of root is not valid");
-        assertEquals(
-                1,
-                woonplaatsenNode.getJSONArray("childrenIds").length(),
-                "second node of root had wrong amount of children");
+    for (Object _node : new JSONObject(body).getJSONArray("baseLayerTreeNodes")) {
+      JSONObject node = (JSONObject) _node;
+      String id = node.getString("id");
+      assertFalse(treeNodeMap.containsKey(id), String.format("node %s appears multiple times", id));
+      treeNodeMap.put(id, node);
+
+      if (node.getBoolean("root")) {
+        assertNull(rootNode, "Root node already exists");
+        rootNode = node;
+      }
     }
 
-    @Test
-    void should_show_filtered_base_layer_tree() throws Exception {
-        MvcResult result =
-                mockMvc.perform(get("/app/1/map"))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn();
+    assertNotNull(rootNode, "no root node found");
+    assertEquals(
+        1, rootNode.getJSONArray("childrenIds").length(), "root node had wrong amount of children");
 
-        Map<String, JSONObject> treeNodeMap = new HashMap<>();
-        String body = result.getResponse().getContentAsString();
-        JSONObject rootNode = null;
+    JSONObject osmNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").get(0));
+    assertNotNull(osmNode, "first child of root is not valid");
+    assertEquals(
+        1,
+        osmNode.getJSONArray("childrenIds").length(),
+        "first node of root had wrong amount of children");
+    assertEquals(
+        1,
+        treeNodeMap.get(osmNode.getJSONArray("childrenIds").get(0)).getInt("appLayerId"),
+        "incorrect appLayerId for first child");
+  }
 
-        for (Object _node : new JSONObject(body).getJSONArray("baseLayerTreeNodes")) {
-            JSONObject node = (JSONObject) _node;
-            String id = node.getString("id");
-            assertFalse(
-                    treeNodeMap.containsKey(id),
-                    String.format("node %s appears multiple times", id));
-            treeNodeMap.put(id, node);
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void should_error_when_calling_with_nonexistent_id() throws Exception {
+    mockMvc
+        .perform(get("/app/400/map"))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(404))
+        .andExpect(jsonPath("$.message").value("Application with id 400 not found"));
+  }
 
-            if (node.getBoolean("root")) {
-                assertNull(rootNode, "Root node already exists");
-                rootNode = node;
-            }
-        }
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void should_not_find_when_called_without_id() throws Exception {
+    mockMvc.perform(get("/app/map")).andExpect(status().isNotFound());
+  }
 
-        assertNotNull(rootNode, "no root node found");
-        assertEquals(
-                1,
-                rootNode.getJSONArray("childrenIds").length(),
-                "root node had wrong amount of children");
+  @Test
+  /* this test changes database content */
+  @Order(Integer.MAX_VALUE)
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void should_send_401_when_application_login_required() throws Exception {
+    applicationRepository.setAuthenticatedRequired(1L, true);
 
-        JSONObject osmNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").get(0));
-        assertNotNull(osmNode, "first child of root is not valid");
-        assertEquals(
-                1,
-                osmNode.getJSONArray("childrenIds").length(),
-                "first node of root had wrong amount of children");
-        assertEquals(
-                1,
-                treeNodeMap.get(osmNode.getJSONArray("childrenIds").get(0)).getInt("appLayerId"),
-                "incorrect appLayerId for first child");
-    }
-
-    @Test
-    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    void should_error_when_calling_with_nonexistent_id() throws Exception {
-        mockMvc.perform(get("/app/400/map"))
-                .andExpect(status().isNotFound())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(404))
-                .andExpect(jsonPath("$.message").value("Application with id 400 not found"));
-    }
-
-    @Test
-    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    void should_not_find_when_called_without_id() throws Exception {
-        mockMvc.perform(get("/app/map")).andExpect(status().isNotFound());
-    }
-
-    @Test
-    /* this test changes database content */
-    @Order(Integer.MAX_VALUE)
-    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    void should_send_401_when_application_login_required() throws Exception {
-        applicationRepository.setAuthenticatedRequired(1L, true);
-
-        mockMvc.perform(get("/app/1/map").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.code").value(401))
-                .andExpect(jsonPath("$.url").value("/login"));
-    }
+    mockMvc
+        .perform(get("/app/1/map").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(401))
+        .andExpect(jsonPath("$.url").value("/login"));
+  }
 }

@@ -5,14 +5,12 @@
  */
 package nl.b3p.tailormap.api.repository;
 
-import nl.tailormap.viewer.config.services.GeoService;
-import nl.tailormap.viewer.config.services.Layer;
-
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Collection;
 import java.util.List;
+import nl.tailormap.viewer.config.services.GeoService;
+import nl.tailormap.viewer.config.services.Layer;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Easy to use methods to access {@link Layer}.
@@ -20,8 +18,8 @@ import java.util.List;
  * @since 0.1
  */
 public interface LayerRepository extends JpaRepository<Layer, Long> {
-    Layer getByServiceAndName(GeoService service, String name);
+  Layer getByServiceAndName(GeoService service, String name);
 
-    @EntityGraph(attributePaths = {"readers", "details"})
-    List<Layer> findByServiceIdIn(Collection<Long> service_id);
+  @EntityGraph(attributePaths = {"readers", "details"})
+  List<Layer> findByServiceIdIn(Collection<Long> service_id);
 }

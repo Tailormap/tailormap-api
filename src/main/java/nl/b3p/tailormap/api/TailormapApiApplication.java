@@ -17,12 +17,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class TailormapApiApplication {
 
-    /**
-     * default starter method.
-     *
-     * @param args an array of arguments
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(TailormapApiApplication.class, args);
-    }
+  /**
+   * default starter method.
+   *
+   * @param args an array of arguments
+   */
+  public static void main(String[] args) {
+    SpringApplication.run(TailormapApiApplication.class, args);
+  }
 }

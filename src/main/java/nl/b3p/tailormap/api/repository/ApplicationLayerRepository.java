@@ -5,14 +5,12 @@
  */
 package nl.b3p.tailormap.api.repository;
 
+import java.util.Collection;
+import java.util.List;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
-
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Easy to use methods to access {@link ApplicationLayer}.
@@ -20,8 +18,8 @@ import java.util.List;
  * @since 0.1
  */
 public interface ApplicationLayerRepository extends JpaRepository<ApplicationLayer, Long> {
-    @EntityGraph(
-            attributePaths = {"readers", "details"},
-            type = EntityGraphType.LOAD)
-    List<ApplicationLayer> findWithReadersAndDetailsByIdIn(Collection<Long> id);
+  @EntityGraph(
+      attributePaths = {"readers", "details"},
+      type = EntityGraphType.LOAD)
+  List<ApplicationLayer> findWithReadersAndDetailsByIdIn(Collection<Long> id);
 }

@@ -20,9 +20,9 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class TailormapApiApplicationTests {
 
-    @Test
-    @SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "EmptyMethod"})
-    void contextLoads() {
-        /* empty by design */
-    }
+  @Test
+  @SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "EmptyMethod"})
+  void contextLoads() {
+    /* empty by design */
+  }
 }
