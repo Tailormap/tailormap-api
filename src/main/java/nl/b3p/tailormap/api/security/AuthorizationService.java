@@ -5,7 +5,6 @@
  */
 package nl.b3p.tailormap.api.security;
 
-import java.util.Set;
 import nl.b3p.tailormap.api.persistence.Application;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +22,10 @@ public class AuthorizationService {
    * @param readers the list of readers to validate against.
    * @return the result of validating the authorizations.
    */
-  private boolean isAuthorizedBySet(Set<String> readers) {
+  /*  private boolean isAuthorizedBySet(Set<String> readers) {
 
     return true;
-    /*
+
     if (readers == null || readers.isEmpty()) {
       return true;
     }
@@ -42,8 +41,8 @@ public class AuthorizationService {
       }
     }
 
-    return false;*/
-  }
+    return false;
+  }*/
 
   /**
    * Verifies that this user may read this Application.
