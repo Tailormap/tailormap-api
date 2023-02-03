@@ -14,8 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * This configuration will make any web call allowed.
- * TODO: when default security config is working we don't need this anymore
+ * This configuration will make any web call allowed. TODO: when default security config is working
+ * we don't need this anymore
  */
 @Configuration
 @EnableWebSecurity

@@ -6,6 +6,7 @@
 package nl.b3p.tailormap.api.persistence;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.List;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -20,8 +21,6 @@ import nl.b3p.tailormap.api.viewer.model.AppResponse;
 import nl.b3p.tailormap.api.viewer.model.AppStyling;
 import nl.b3p.tailormap.api.viewer.model.Component;
 import org.hibernate.annotations.Type;
-
-import java.util.List;
 
 @Entity
 public class Application {
@@ -177,6 +176,7 @@ public class Application {
   public void setComponents(List<Component> components) {
     this.components = components;
   }
+
   public AppStyling getStyling() {
     return styling;
   }

@@ -5,6 +5,12 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
@@ -14,12 +20,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @PostgresIntegrationTest
@@ -76,15 +76,14 @@ class AppControllerIntegrationTest {
     defaultApp.setValue("non existing app!");
     configurationRepository.save(defaultApp);
     mockMvc
-            .perform(get("/app").accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.code").value(404))
-            .andExpect(jsonPath("$.message").value("Default application not found"));
+        .perform(get("/app").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(404))
+        .andExpect(jsonPath("$.message").value("Default application not found"));
     defaultApp.setValue("default");
     configurationRepository.save(defaultApp);
   }
-
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")

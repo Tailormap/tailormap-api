@@ -5,11 +5,10 @@
  */
 package nl.b3p.tailormap.api.repository;
 
+import java.util.Optional;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 public interface ConfigurationRepository extends JpaRepository<Configuration, String> {
 

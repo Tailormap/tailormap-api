@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api;
 
+import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.BoundingBox;
 import nl.b3p.tailormap.api.persistence.Configuration;
@@ -17,8 +18,6 @@ import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Profile;
-
-import javax.annotation.PostConstruct;
 
 @org.springframework.context.annotation.Configuration
 @Profile("!test")

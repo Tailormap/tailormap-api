@@ -7,10 +7,10 @@ package nl.b3p.tailormap.api.controller;
 
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
-import nl.b3p.tailormap.api.viewer.model.ErrorResponse;
-import nl.b3p.tailormap.api.viewer.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
+import nl.b3p.tailormap.api.viewer.model.ErrorResponse;
+import nl.b3p.tailormap.api.viewer.model.RedirectResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +29,7 @@ public class AppRestControllerAdvice {
   private final AuthorizationService authorizationService;
 
   public AppRestControllerAdvice(
-      ApplicationRepository applicationRepository,
-      AuthorizationService authorizationService) {
+      ApplicationRepository applicationRepository, AuthorizationService authorizationService) {
     this.applicationRepository = applicationRepository;
     this.authorizationService = authorizationService;
   }
@@ -69,7 +68,7 @@ public class AppRestControllerAdvice {
     return application;
   }
 
-/*  @ModelAttribute
+  /*  @ModelAttribute
   public ApplicationLayer populateApplicationLayer(
       @ModelAttribute Application application, @PathVariable(required = false) Long appLayerId) {
     if (appLayerId == null) {

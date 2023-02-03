@@ -5,6 +5,11 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.util.ErrorResponseBuilder.badRequest;
+import static nl.b3p.tailormap.api.util.ErrorResponseBuilder.forbidden;
+import static nl.b3p.tailormap.api.util.ErrorResponseBuilder.notFound;
+
+import java.io.Serializable;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
@@ -16,12 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.Serializable;
-
-import static nl.b3p.tailormap.api.util.ErrorResponseBuilder.badRequest;
-import static nl.b3p.tailormap.api.util.ErrorResponseBuilder.forbidden;
-import static nl.b3p.tailormap.api.util.ErrorResponseBuilder.notFound;
 
 @RestController
 @RequestMapping(path = "/app")
@@ -61,7 +60,11 @@ public class AppController {
       app = applicationRepository.findByName(name);
     } else {
       notFoundMessage = "No default application configured";
-      String defaultName = configurationRepository.findByKey(Configuration.DEFAULT_APP).map(Configuration::getValue).orElse(null);
+      String defaultName =
+          configurationRepository
+              .findByKey(Configuration.DEFAULT_APP)
+              .map(Configuration::getValue)
+              .orElse(null);
       if (defaultName != null) {
         notFoundMessage = "Default application not found";
         app = applicationRepository.findByName(defaultName);
