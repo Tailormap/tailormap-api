@@ -191,7 +191,7 @@ jobs:
     name: Test docker image
     runs-on: ubuntu-latest
     needs: build
-    if: false # disabled ${{ github.event_name == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' }}
     env: # these defaults are also in the respective TM images
       PG_PORT: 5432
       DB_NAME: tailormap
