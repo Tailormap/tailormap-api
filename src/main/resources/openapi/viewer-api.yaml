@@ -305,58 +305,39 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
-
   /app/:
     description: 'Will return general setup information such as name, appId, language, but not map specific information.'
     get:
-      operationId: 'validateApp'
       description: '
         Use this endpoint to get the id of the requested or default application.
-        Either call this with `name` and optional `version` or `appId` alone.
+        Either call this with `name` or `appId` or without any parameters for the default application.
         '
       security:
         - formAuth: [ ]
       parameters:
-        - description: 'app name from applications list'
-          in: query
+        - in: query
           name: name
-          required: false
           schema:
             type: string
-        - description: 'version from applications list'
-          in: query
-          name: version
-          required: false
-          schema:
-            type: string
-        - description: 'app id from application table'
-          in: query
+        - in: query
           name: appId
-          required: false
           schema:
             type: integer
             format: int64
       responses:
         '200':
-          description: 'OK. Application exists.'
+          description: OK
           content:
             application/json:
-              example:
-                id: 7
-                apiVersion: 'v1'
-                name: 'cool app'
-                version: '2'
-                title: 'This is a cool mapping app'
-                lang: 'nl_NL'
               schema:
                 $ref: '#/components/schemas/AppResponse'
         '401':
           description: 'Authentication required.'
           content:
             application/json:
-              schema: # not an actual HTTP redirect, but  provides login url
-                # we need to rethink login mechanism eg. a login form popover in the
-                # application that is shown on this status
+              schema:
+                # not an actual HTTP redirect, but provides login url
+                # frontend can decide to show a login form
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
               example:
                 code: 401
@@ -366,24 +347,14 @@ paths:
           description: 'Access denied'
           content:
             application/json:
-              example:
-                code: 403
-                message: 'Access denied'
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
         '404':
-          description: '
-          The specified application was not found,
-          Use the `url` from the response to get the default application.
-          '
+          description: Not found
           content:
             application/json:
-              example:
-                code: 404
-                message: 'Application not found'
-                url: /app/?appId=1
               schema:
-                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
         '500':
           description: 'Internal server error'
           content:

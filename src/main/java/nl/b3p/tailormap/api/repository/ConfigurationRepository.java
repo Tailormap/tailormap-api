@@ -9,9 +9,11 @@ import nl.b3p.tailormap.api.persistence.Configuration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface ConfigurationRepository extends JpaRepository<Configuration, Long> {
+import java.util.Optional;
 
-  Configuration findByKey(String key);
+public interface ConfigurationRepository extends JpaRepository<Configuration, String> {
+
+  Optional<Configuration> findByKey(String key);
 
   @Transactional
   void deleteConfigurationByKey(String configKey);

@@ -16,7 +16,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
+import nl.b3p.tailormap.api.viewer.model.AppResponse;
+import nl.b3p.tailormap.api.viewer.model.AppStyling;
+import nl.b3p.tailormap.api.viewer.model.Component;
 import org.hibernate.annotations.Type;
+
+import java.util.List;
 
 @Entity
 public class Application {
@@ -70,11 +75,11 @@ public class Application {
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private JsonNode components;
+  private List<Component> components;
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private JsonNode styling;
+  private AppStyling styling;
 
   // <editor-fold desc="getters and setters">
   public Long getId() {
@@ -165,20 +170,23 @@ public class Application {
     this.layerSettings = layerSettings;
   }
 
-  public JsonNode getComponents() {
+  public List<Component> getComponents() {
     return components;
   }
 
-  public void setComponents(JsonNode components) {
+  public void setComponents(List<Component> components) {
     this.components = components;
   }
-
-  public JsonNode getStyling() {
+  public AppStyling getStyling() {
     return styling;
   }
 
-  public void setStyling(JsonNode styling) {
+  public void setStyling(AppStyling styling) {
     this.styling = styling;
   }
   // </editor-fold>
+
+  public AppResponse toAppResponse() {
+    return new AppResponse().id(id).name(name).title(title).styling(styling).components(components);
+  }
 }

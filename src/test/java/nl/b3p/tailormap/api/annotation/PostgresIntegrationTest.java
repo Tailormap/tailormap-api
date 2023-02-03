@@ -5,29 +5,31 @@
  */
 package nl.b3p.tailormap.api.annotation;
 
+import nl.b3p.tailormap.api.JPAConfiguration;
+import nl.b3p.tailormap.api.security.TestSecurityConfig;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import nl.b3p.tailormap.api.JPAConfiguration;
-import nl.b3p.tailormap.api.repository.GeoServiceRepository;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.context.ActiveProfiles;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = {
       JPAConfiguration.class,
       DataSourceAutoConfiguration.class,
       HibernateJpaAutoConfiguration.class,
-      GeoServiceRepository.class
+      TestSecurityConfig.class,
     })
-@EnableJpaRepositories(basePackages = {"nl.b3p.tailormap.api.repository"})
-@EntityScan(basePackages = {"nl.b3p.tailormap.api.persistence"})
+@ComponentScan(basePackages = {"nl.b3p.tailormap.api"})
+@EnableWebMvc
 @ActiveProfiles("postgresql")
 public @interface PostgresIntegrationTest {}

@@ -5,19 +5,10 @@
  */
 package nl.b3p.tailormap.api.security;
 
-import java.util.HashSet;
-import java.util.Set;
-import nl.b3p.tailormap.api.repository.LayerRepository;
-import nl.b3p.tailormap.api.repository.LevelRepository;
-import nl.tailormap.viewer.config.app.Application;
-import nl.tailormap.viewer.config.app.ApplicationLayer;
-import nl.tailormap.viewer.config.app.Level;
-import nl.tailormap.viewer.config.services.GeoService;
-import nl.tailormap.viewer.config.services.Layer;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import nl.b3p.tailormap.api.persistence.Application;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 /**
  * Validates access control rules. Any call to mayUserRead will verify that the currently logged in
@@ -26,13 +17,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AuthorizationService {
-  private final LevelRepository levelRepository;
-  private final LayerRepository layerRepository;
 
-  public AuthorizationService(LevelRepository levelRepository, LayerRepository layerRepository) {
-    this.levelRepository = levelRepository;
-    this.layerRepository = layerRepository;
-  }
 
   /**
    * Verifies that the user may read the object, based on the passed in readers set.
@@ -41,6 +26,9 @@ public class AuthorizationService {
    * @return the result of validating the authorizations.
    */
   private boolean isAuthorizedBySet(Set<String> readers) {
+
+    return true;
+   /*
     if (readers == null || readers.isEmpty()) {
       return true;
     }
@@ -56,7 +44,7 @@ public class AuthorizationService {
       }
     }
 
-    return false;
+    return false;*/
   }
 
   /**
@@ -66,13 +54,14 @@ public class AuthorizationService {
    * @return the results from the access control checks.
    */
   public boolean mayUserRead(Application application) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return true;
+/*    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if ((authentication == null || authentication instanceof AnonymousAuthenticationToken)
         && application.isAuthenticatedRequired()) {
       return false;
     }
 
-    return isAuthorizedBySet(application.getReaders());
+    return isAuthorizedBySet(application.getReaders());*/
   }
 
   /**
@@ -85,7 +74,7 @@ public class AuthorizationService {
    * @param context the Application to verify this ApplicationLayer against
    * @return the results from the access control checks.
    */
-  public boolean mayUserRead(ApplicationLayer applicationLayer, Application context) {
+/*  public boolean mayUserRead(ApplicationLayer applicationLayer, Application context) {
     if (!isAuthorizedBySet(applicationLayer.getReaders())) {
       return false;
     }
@@ -127,7 +116,7 @@ public class AuthorizationService {
 
     return mayUserRead(
         layerRepository.getByServiceAndName(geoService, applicationLayer.getLayerName()));
-  }
+  }*/
 
   /**
    * When a service is proxied with a username and password, authentication must be required for the
@@ -139,8 +128,8 @@ public class AuthorizationService {
    * @param applicationLayer the application layer (may belong to a parent application)
    * @return see above
    */
-  public boolean isProxiedSecuredServiceLayerInPublicApplication(
-      Application application, ApplicationLayer applicationLayer) {
+/*  public boolean isProxiedSecuredServiceLayerInPublicApplication(
+          Application application, ApplicationLayer applicationLayer) {
     GeoService geoService = applicationLayer.getService();
     if (geoService == null) {
       return false;
@@ -153,7 +142,7 @@ public class AuthorizationService {
     } else {
       return false;
     }
-  }
+  }*/
 
   /**
    * Verifies that this user may view a Layer. The Layer, its parents, and the GeoService are all
@@ -162,7 +151,7 @@ public class AuthorizationService {
    * @param layer the Layer to check
    * @return the results from the access control checks.
    */
-  public boolean mayUserRead(Layer layer) {
+/*  public boolean mayUserRead(Layer layer) {
     if (!isAuthorizedBySet(layer.getReaders())) {
       return false;
     }
@@ -176,7 +165,7 @@ public class AuthorizationService {
     }
 
     return true;
-  }
+  }*/
 
   /**
    * Verifies that this user may view a Level. The Level and its parents are all validated.
@@ -184,7 +173,7 @@ public class AuthorizationService {
    * @param level the Level to check
    * @return the results from the access control checks.
    */
-  public boolean mayUserRead(Level level) {
+/*  public boolean mayUserRead(Level level) {
     if (!isAuthorizedBySet(level.getReaders())) {
       return false;
     }
@@ -194,7 +183,7 @@ public class AuthorizationService {
     }
 
     return true;
-  }
+  }*/
 
   /**
    * Verifies that this user may view a GeoService. The GeoService is validated.
@@ -202,7 +191,7 @@ public class AuthorizationService {
    * @param geoService the GeoService to check
    * @return the results from the access control checks.
    */
-  public boolean mayUserRead(GeoService geoService) {
+/*  public boolean mayUserRead(GeoService geoService) {
     return isAuthorizedBySet(geoService.getReaders());
-  }
+  }*/
 }

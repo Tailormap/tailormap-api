@@ -27,7 +27,7 @@ class ConfigurationRepositoryIntegrationTest {
   @Test
   @Order(1)
   void it_should_findByConfigKeyDefaultApplication() {
-    final Configuration c = configurationRepository.findByKey(DEFAULT_APP);
+    final Configuration c = configurationRepository.findByKey(DEFAULT_APP).orElse(null);
     assertNotNull(c);
     assertEquals("default", c.getValue());
   }
@@ -36,7 +36,7 @@ class ConfigurationRepositoryIntegrationTest {
   @Order(2)
   void it_should_not_find_value_after_deleting_key() {
     configurationRepository.deleteConfigurationByKey(DEFAULT_APP);
-    final Configuration c = configurationRepository.findByKey(DEFAULT_APP);
+    final Configuration c = configurationRepository.findByKey(DEFAULT_APP).orElse(null);
     assertNull(c);
   }
 }

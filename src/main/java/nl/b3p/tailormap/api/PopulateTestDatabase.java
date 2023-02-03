@@ -5,7 +5,6 @@
  */
 package nl.b3p.tailormap.api;
 
-import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.BoundingBox;
 import nl.b3p.tailormap.api.persistence.Configuration;
@@ -18,6 +17,8 @@ import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Profile;
+
+import javax.annotation.PostConstruct;
 
 @org.springframework.context.annotation.Configuration
 @Profile("!test")
@@ -39,6 +40,12 @@ public class PopulateTestDatabase {
 
   @PostConstruct
   public void populate() {
+
+    if (configurationRepository.existsById(Configuration.DEFAULT_APP)) {
+      // Test database already initialized for integration tests
+      return;
+    }
+
     GeoService test = new GeoService();
     test.setProtocol("wms");
     test.setUrl("https://snapshot.tailormap.nl/geoserver/wms");
@@ -50,6 +57,7 @@ public class PopulateTestDatabase {
 
     Application app = new Application();
     app.setName("default");
+    app.setTitle("Tailormap demo");
     app.setCrs("EPSG:28992");
     app.setContentRoot(
         new AppContent()

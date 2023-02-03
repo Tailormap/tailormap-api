@@ -6,13 +6,11 @@
 package nl.b3p.tailormap.api.controller;
 
 import nl.b3p.tailormap.api.annotation.AppRestController;
-import nl.b3p.tailormap.api.model.ErrorResponse;
-import nl.b3p.tailormap.api.model.RedirectResponse;
-import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
+import nl.b3p.tailormap.api.persistence.Application;
+import nl.b3p.tailormap.api.viewer.model.ErrorResponse;
+import nl.b3p.tailormap.api.viewer.model.RedirectResponse;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
-import nl.tailormap.viewer.config.app.Application;
-import nl.tailormap.viewer.config.app.ApplicationLayer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,15 +26,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class AppRestControllerAdvice {
 
   private final ApplicationRepository applicationRepository;
-  private final ApplicationLayerRepository applicationLayerRepository;
   private final AuthorizationService authorizationService;
 
   public AppRestControllerAdvice(
       ApplicationRepository applicationRepository,
-      ApplicationLayerRepository applicationLayerRepository,
       AuthorizationService authorizationService) {
     this.applicationRepository = applicationRepository;
-    this.applicationLayerRepository = applicationLayerRepository;
     this.authorizationService = authorizationService;
   }
 
@@ -74,7 +69,7 @@ public class AppRestControllerAdvice {
     return application;
   }
 
-  @ModelAttribute
+/*  @ModelAttribute
   public ApplicationLayer populateApplicationLayer(
       @ModelAttribute Application application, @PathVariable(required = false) Long appLayerId) {
     if (appLayerId == null) {
@@ -94,5 +89,5 @@ public class AppRestControllerAdvice {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
     }
     return applicationLayer;
-  }
+  }*/
 }

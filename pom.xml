@@ -765,22 +765,33 @@ SPDX-License-Identifier: MIT
                         </path>
                     </annotationProcessorPaths>
                     <excludes>
-                        <exclude>**/nl/b3p/tailormap/api/controller/*.java</exclude>
-                        <exclude>**/nl/b3p/tailormap/api/repository/LayerRepository.java</exclude>
-                        <exclude>**/nl/b3p/tailormap/api/repository/UserRepository.java</exclude>
-                        <exclude>**/nl/b3p/tailormap/api/repository/ApplicationLayerRepository.java</exclude>
-                        <exclude>**/nl/b3p/tailormap/api/repository/LevelRepository.java</exclude>
+                        <exclude>**/FeaturesController*.java</exclude>
+                        <exclude>**/GeoServiceProxyController*.java</exclude>
+                        <exclude>**/LayerDescriptionController*.java</exclude>
+                        <exclude>**/LayerExportController*.java</exclude>
+                        <exclude>**/MapController*.java</exclude>
+                        <exclude>**/UniqueValuesController*.java</exclude>
+                        <exclude>**/UserController*.java</exclude>
+                        <exclude>**/VersionController*.java</exclude>
+                        <exclude>**/UserRepository*.java</exclude>
                         <exclude>**/MicrometerHelper.java</exclude>
                         <exclude>**/health/*.java</exclude>
                         <exclude>**/nl/b3p/tailormap/api/geotools/featuresources/*.java</exclude>
-                        <exclude>**/AuthorizationService.java</exclude>
                         <exclude>**/StartupAdminAccountCreator.java</exclude>
                         <exclude>**/TailormapUserDetails.java</exclude>
                         <exclude>**/TailormapUserDetailsService.java</exclude>
                         <exclude>**/MetadataRepositoryTest.java</exclude>
                     </excludes>
                     <testExcludes>
-                        <exclude>**/nl/b3p/tailormap/api/controller/*.java</exclude>
+                        <exclude>**/FeaturesController*.java</exclude>
+                        <exclude>**/GeoServiceProxyController*.java</exclude>
+                        <exclude>**/LayerDescriptionController*.java</exclude>
+                        <exclude>**/LayerExportController*.java</exclude>
+                        <exclude>**/MapController*.java</exclude>
+                        <exclude>**/UniqueValuesController*.java</exclude>
+                        <exclude>**/UserController*.java</exclude>
+                        <exclude>**/VersionController*.java</exclude>
+                        <exclude>**/UserRepository*.java</exclude>
                         <exclude>**/health/*.java</exclude>
                         <exclude>**/nl/b3p/tailormap/api/repository/ApplicationRepositoryTest.java</exclude>
                         <exclude>**/TailormapUserDetailsServiceTest.java</exclude>

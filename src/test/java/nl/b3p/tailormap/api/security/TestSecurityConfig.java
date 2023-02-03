@@ -7,7 +7,6 @@ package nl.b3p.tailormap.api.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,14 +14,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * this configuration will make any web call allowed.
- *
- * @author mprins
- * @since 0.1
+ * This configuration will make any web call allowed.
+ * TODO: when default security config is working we don't need this anymore
  */
 @Configuration
 @EnableWebSecurity
-@Profile("test")
 @Order(1)
 public class TestSecurityConfig {
   @Bean
