@@ -656,44 +656,6 @@ SPDX-License-Identifier: MIT
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*IntegrationTest.java</include>
-                    </includes>
-                    <excludes>
-                        <exclude>**/*PostgresIntegrationTest.java</exclude>
-                    </excludes>
-                    <!--suppress UnresolvedMavenProperty -->
-                    <argLine>${failsafeArgLine}</argLine>
-                    <trimStackTrace>false</trimStackTrace>
-                    <systemPropertyVariables>
-                        <project.version>${project.version}</project.version>
-                    </systemPropertyVariables>
-                    <environmentVariables>
-                        <!--suppress UnresolvedMavenProperty -->
-                        <API_VERSION>${info.version}</API_VERSION>
-                        <!--suppress UnresolvedMavenProperty -->
-                        <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
-                        <!--suppress UnresolvedMavenProperty -->
-                        <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
-                        <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
-                    </environmentVariables>
-                    <useFile>false</useFile>
-                    <classpathDependencyExcludes>
-                        <!-- not needed for regular hsqldb, but needed for postgresql integration tests <classpathDependencyExclude>org.postgresql:postgresql</classpathDependencyExclude> -->
-                    </classpathDependencyExcludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <!-- Required for lazy fetching of properties, see https://vladmihalcea.com/the-best-way-to-lazy-load-entity-attributes-using-jpa-and-hibernate/ -->
                 <groupId>org.hibernate.orm.tooling</groupId>
                 <artifactId>hibernate-enhance-maven-plugin</artifactId>
@@ -804,7 +766,10 @@ SPDX-License-Identifier: MIT
                     </annotationProcessorPaths>
                     <excludes>
                         <exclude>**/nl/b3p/tailormap/api/controller/*.java</exclude>
-                        <exclude>**/nl/b3p/tailormap/api/repository/*.java</exclude>
+                        <exclude>**/nl/b3p/tailormap/api/repository/LayerRepository.java</exclude>
+                        <exclude>**/nl/b3p/tailormap/api/repository/UserRepository.java</exclude>
+                        <exclude>**/nl/b3p/tailormap/api/repository/ApplicationLayerRepository.java</exclude>
+                        <exclude>**/nl/b3p/tailormap/api/repository/LevelRepository.java</exclude>
                         <exclude>**/MicrometerHelper.java</exclude>
                         <exclude>**/health/*.java</exclude>
                         <exclude>**/nl/b3p/tailormap/api/geotools/featuresources/*.java</exclude>
@@ -817,7 +782,7 @@ SPDX-License-Identifier: MIT
                     <testExcludes>
                         <exclude>**/nl/b3p/tailormap/api/controller/*.java</exclude>
                         <exclude>**/health/*.java</exclude>
-                        <exclude>**/nl/b3p/tailormap/api/repository/*.java</exclude>
+                        <exclude>**/nl/b3p/tailormap/api/repository/ApplicationRepositoryTest.java</exclude>
                         <exclude>**/TailormapUserDetailsServiceTest.java</exclude>
                     </testExcludes>
                 </configuration>
@@ -1550,8 +1515,8 @@ SPDX-License-Identifier: MIT
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <configuration>
                             <!-- explicitly run any and all postgresql tests; includes does not work -->
-                            <test>*PostgresIntegrationTest</test>
-                            <!-- <includes><include>**/*PostgresIntegrationTest.java</include></includes>-->
+                            <test>*IntegrationTest</test>
+                            <!-- <includes><include>**/*IntegrationTest.java</include></includes>-->
                             <!--suppress UnresolvedMavenProperty -->
                             <argLine>${failsafeArgLine} -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql</argLine>
                             <trimStackTrace>false</trimStackTrace>

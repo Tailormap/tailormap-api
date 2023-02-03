@@ -35,7 +35,6 @@ jobs:
       - name: Test with Maven
         run: |
           mvn -B -fae -e test
-          mvn -B -fae -e verify
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

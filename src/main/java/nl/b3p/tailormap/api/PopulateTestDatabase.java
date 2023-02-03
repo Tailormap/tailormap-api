@@ -17,16 +17,18 @@ import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Profile;
 
 @org.springframework.context.annotation.Configuration
-public class PopulateTestConfiguration {
-  private static final Log log = LogFactory.getLog(PopulateTestConfiguration.class);
+@Profile("!test")
+public class PopulateTestDatabase {
+  private static final Log log = LogFactory.getLog(PopulateTestDatabase.class);
 
-  private GeoServiceRepository geoServiceRepository;
-  private ApplicationRepository applicationRepository;
-  private ConfigurationRepository configurationRepository;
+  private final GeoServiceRepository geoServiceRepository;
+  private final ApplicationRepository applicationRepository;
+  private final ConfigurationRepository configurationRepository;
 
-  public PopulateTestConfiguration(
+  public PopulateTestDatabase(
       GeoServiceRepository geoServiceRepository,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository) {
@@ -76,6 +78,6 @@ public class PopulateTestConfiguration {
     config.setValue("default");
     configurationRepository.save(config);
 
-    log.info(String.format("Test entity created with id %s%n", test.getId()));
+    log.info(String.format("Test entity created with id %s", test.getId()));
   }
 }
