@@ -5,7 +5,7 @@
  */
 package nl.b3p.tailormap.api;
 
-// import nl.b3p.tailormap.api.repository.MetadataRepository;
+// import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
  *
  * @since 0.1
  */
-@SpringBootTest(/*,classes = {JPAConfiguration.class  MetadataRepository.class}}*/ )
+@SpringBootTest(/*,classes = {JPAConfiguration.class  ConfigurationRepository.class}}*/ )
 @ActiveProfiles("test")
 class TailormapApiApplicationTests {
 

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import nl.b3p.tailormap.api.geotools.referencing.ReferencingHelper;
-import nl.b3p.tailormap.api.model.Bounds;
+import nl.b3p.tailormap.api.viewer.model.Bounds;
 import org.junit.jupiter.api.Test;
 
 class ReferencingHelperTest {

@@ -6,7 +6,7 @@
 package nl.b3p.tailormap.api.controller;
 
 import java.util.Map;
-import nl.b3p.tailormap.api.repository.MetadataRepository;
+import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.tailormap.viewer.config.metadata.Metadata;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class VersionController {
   private final Log logger = LogFactory.getLog(getClass());
-  private final MetadataRepository metadataRepository;
+  private final ConfigurationRepository configurationRepository;
 
   // Maven 'process-resources' takes care of updating these tokens in the application.properties
   @Value("${tailormap-api.version}")
@@ -40,8 +40,8 @@ public class VersionController {
   @Value("${tailormap-api.builddate}")
   private String buildDate;
 
-  public VersionController(MetadataRepository metadataRepository) {
-    this.metadataRepository = metadataRepository;
+  public VersionController(ConfigurationRepository configurationRepository) {
+    this.configurationRepository = configurationRepository;
   }
 
   /**
@@ -51,7 +51,7 @@ public class VersionController {
    */
   @GetMapping(path = "/version", produces = MediaType.APPLICATION_JSON_VALUE)
   public Map<String, String> getVersion() {
-    final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);
+    final Metadata m = configurationRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);
     final String dbVersion =
         null != m ? null == m.getConfigValue() ? "unknown" : m.getConfigValue() : "unknown";
 

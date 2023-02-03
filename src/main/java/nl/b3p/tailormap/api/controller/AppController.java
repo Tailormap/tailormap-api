@@ -19,7 +19,7 @@ import nl.b3p.tailormap.api.model.AppResponse;
 import nl.b3p.tailormap.api.model.AppStyling;
 import nl.b3p.tailormap.api.model.Component;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.repository.MetadataRepository;
+import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.metadata.Metadata;
@@ -46,7 +46,7 @@ public class AppController {
   private final String STYLING_CONFIG_KEY = "application_style";
 
   private final ApplicationRepository applicationRepository;
-  private final MetadataRepository metadataRepository;
+  private final ConfigurationRepository configurationRepository;
   private final AuthorizationService authorizationService;
 
   @Value("${tailormap-api.apiVersion}")
@@ -54,10 +54,10 @@ public class AppController {
 
   public AppController(
       ApplicationRepository applicationRepository,
-      MetadataRepository metadataRepository,
+      ConfigurationRepository configurationRepository,
       AuthorizationService authorizationService) {
     this.applicationRepository = applicationRepository;
-    this.metadataRepository = metadataRepository;
+    this.configurationRepository = configurationRepository;
     this.authorizationService = authorizationService;
   }
 
@@ -200,7 +200,7 @@ public class AppController {
    */
   private Application getDefaultViewer() {
     try {
-      Metadata md = metadataRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);
+      Metadata md = configurationRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);
       String appId = md.getConfigValue();
       Long id = Long.parseLong(appId);
       return applicationRepository.getReferenceById(id);

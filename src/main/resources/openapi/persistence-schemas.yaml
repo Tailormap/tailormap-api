@@ -1,0 +1,126 @@
+#
+# Copyright (C) 2023 B3Partners B.V.
+#
+# SPDX-License-Identifier: MIT
+#
+openapi: 3.0.3
+
+info:
+  title: 'persistence-schemas'
+  description: 'Schemas used for JSON persistence.'
+  version: '1.0'
+
+servers: [ ]
+paths: { }
+
+components:
+  schemas:
+    ServiceCaps:
+      type: object
+      properties:
+        serviceInfo:
+          title: ServiceInfo
+          type: object
+          properties:
+            title:
+              type: string
+            keywords:
+              type: array
+              items:
+                type: string
+              uniqueItems: true
+            description:
+              type: string
+            publisher:
+              type: string
+              format: uri
+            schema:
+              type: string
+              format: uri
+            source:
+              type: string
+              format: uri
+        capabilities:
+          type: object
+          properties:
+            version:
+              type: string
+            updateSequence:
+              type: string
+            abstractText:
+              type: string
+            request:
+              title: ServiceCapabilitiesRequest
+              type: object
+              properties:
+                get-map:
+                  type: object
+                  properties:
+                    formats:
+                      type: array
+                      items:
+                        type: string
+                      uniqueItems: true
+                get-feature-info:
+                  title: ServiceCapabilitiesRequestGetFeatureInfo
+                  type: object
+                  properties:
+                    formats:
+                      type: array
+                      items:
+                        type: string
+                      uniqueItems: true
+                describe-layer:
+                  type: boolean
+
+    GeoServiceLayer:
+      description: Layer of a service which can be an OGC WMS/WMTS service or from XYZ/ArcGIS REST.
+      required: [name, root, virtual, children]
+      properties:
+        # TODO: heeft een WMS virtual grouplayer wel een naam?
+        name:
+          type: string
+        root:
+          type: boolean
+        title:
+          type: string
+        virtual:
+          type: boolean
+        maxScale:
+          type: number
+          format: double
+        minScale:
+          type: number
+          format: double
+        attribution:
+          type: string
+        abstractText:
+          type: string
+        children:
+          type: array
+          items:
+            # layer name
+            type: string
+
+    # TODO: slimmigheden zoals ook nieuwe lagen opnemen met defaults, default configs, etc.
+    AppContent:
+      description: Configuration for including content (layers) in an application.
+      properties:
+        layers:
+          type: array
+          items:
+            # TODO oneOf opties voor meerdere soorten content?
+            $ref: '#/components/schemas/AppLayerRef'
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppContent'
+
+    AppLayerRef:
+      required: [serviceId, layerName]
+      properties:
+        serviceId:
+          type: integer
+          format: int64
+        layerName:
+          type: string

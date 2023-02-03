@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import nl.b3p.tailormap.api.repository.MetadataRepository;
+import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.tailormap.viewer.config.metadata.Metadata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -27,7 +27,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class VersionControllerIntegrationTest {
   @Autowired private VersionController versionController;
-  @Autowired private MetadataRepository metadataRepository;
+  @Autowired private ConfigurationRepository metadataRepository;
 
   private String databaseVersion;
   private String apiVersion;

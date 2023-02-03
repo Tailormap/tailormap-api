@@ -1,6 +1,6 @@
 window.onload = function() {
   window.ui = SwaggerUIBundle({
-    url: "./tailormap-api.yaml",
+    url: "./viewer-api.yaml",
     dom_id: '#swagger-ui',
     deepLinking: true,
     presets: [

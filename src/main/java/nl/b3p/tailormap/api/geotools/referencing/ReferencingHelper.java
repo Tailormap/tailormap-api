@@ -5,7 +5,7 @@
  */
 package nl.b3p.tailormap.api.geotools.referencing;
 
-import nl.b3p.tailormap.api.model.Bounds;
+import nl.b3p.tailormap.api.viewer.model.Bounds;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.referencing.CRS;

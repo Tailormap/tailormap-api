@@ -19,7 +19,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 
-/** Testcases for {@link MetadataRepository}. */
+/** Testcases for {@link ConfigurationRepository}. */
 @ActiveProfiles("test")
 @DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase
@@ -32,20 +32,20 @@ import org.springframework.test.context.ActiveProfiles;
       "nl.tailormap.viewer.config.security",
       "nl.tailormap.viewer.config.services"
     })
-class MetadataRepositoryTest {
+class ConfigurationRepositoryTest {
 
-  @Autowired private MetadataRepository metadataRepository;
+  @Autowired private ConfigurationRepository configurationRepository;
 
   @Test
   void it_should_findByConfigKeyDefaultApplication() {
-    final Metadata m = metadataRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);
+    final Metadata m = configurationRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);
     assertNotNull(m, "we should have found something");
     assertEquals("1", m.getConfigValue(), "default application is not 1");
   }
 
   @Test
   void it_should_findByConfigKeyDatabaseVersion() {
-    final Metadata m = metadataRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);
+    final Metadata m = configurationRepository.findByConfigKey(Metadata.DATABASE_VERSION_KEY);
     assertNotNull(m, "we should have found something");
 
     String databaseVersion = System.getenv("DATABASE_VERSION");
@@ -56,8 +56,8 @@ class MetadataRepositoryTest {
 
   @Test
   void it_should_not_find_value_after_deleting_key() {
-    metadataRepository.deleteMetadataByConfigKey(Metadata.DEFAULT_APPLICATION);
-    final Metadata m = metadataRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);
+    configurationRepository.deleteMetadataByConfigKey(Metadata.DEFAULT_APPLICATION);
+    final Metadata m = configurationRepository.findByConfigKey(Metadata.DEFAULT_APPLICATION);
     assertNull(m, "we should not have found anything");
   }
 }

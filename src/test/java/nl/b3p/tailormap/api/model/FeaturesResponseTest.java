@@ -8,6 +8,7 @@ package nl.b3p.tailormap.api.model;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import nl.b3p.tailormap.api.viewer.model.FeaturesResponse;
 import org.junit.jupiter.api.Test;
 
 class FeaturesResponseTest {

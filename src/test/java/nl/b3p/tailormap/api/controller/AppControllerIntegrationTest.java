@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.repository.MetadataRepository;
+import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
 import nl.tailormap.viewer.config.metadata.Metadata;
@@ -43,7 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AppControllerIntegrationTest {
   @Autowired private MockMvc mockMvc;
-  @Autowired MetadataRepository metadataRepository;
+  @Autowired ConfigurationRepository configurationRepository;
   @Autowired ApplicationRepository applicationRepository;
 
   private String getApiVersionFromPom() {
@@ -220,7 +220,7 @@ class AppControllerIntegrationTest {
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_error_when_no_default_application_and_using_nonexistent_id() throws Exception {
     // setup test data for this test (delete default application from metadata table)
-    metadataRepository.deleteMetadataByConfigKey(Metadata.DEFAULT_APPLICATION);
+    configurationRepository.deleteMetadataByConfigKey(Metadata.DEFAULT_APPLICATION);
 
     mockMvc
         .perform(get("/app").param("appId", "666").accept(MediaType.APPLICATION_JSON))

@@ -198,6 +198,21 @@ SPDX-License-Identifier: MIT
             <artifactId>hibernate-micrometer</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.hibernate.orm.tooling</groupId>
+            <artifactId>hibernate-enhance-maven-plugin</artifactId>
+            <version>${hibernate.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hypersistence</groupId>
+            <artifactId>hypersistence-utils-hibernate-55</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
@@ -470,6 +485,11 @@ SPDX-License-Identifier: MIT
                     <version>6.3.0</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.hibernate.orm.tooling</groupId>
+                    <artifactId>hibernate-enhance-maven-plugin</artifactId>
+                    <version>${hibernate.version}</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-pmd-plugin</artifactId>
                     <version>${maven-pmd-plugin.version}</version>
                 </plugin>
@@ -525,7 +545,7 @@ SPDX-License-Identifier: MIT
                         <phase>initialize</phase>
                         <configuration>
                             <files>
-                                <file>${project.basedir}/src/main/resources/tailormap-api.yaml</file>
+                                <file>${project.basedir}/src/main/resources/openapi/viewer-api.yaml</file>
                             </files>
                         </configuration>
                     </execution>
@@ -674,6 +694,23 @@ SPDX-License-Identifier: MIT
                 </executions>
             </plugin>
             <plugin>
+                <!-- Required for lazy fetching of properties, see https://vladmihalcea.com/the-best-way-to-lazy-load-entity-attributes-using-jpa-and-hibernate/ -->
+                <groupId>org.hibernate.orm.tooling</groupId>
+                <artifactId>hibernate-enhance-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                        <configuration>
+                            <failOnError>true</failOnError>
+                            <enableLazyInitialization>true</enableLazyInitialization>
+                            <enableDirtyTracking>true</enableDirtyTracking>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
@@ -776,7 +813,6 @@ SPDX-License-Identifier: MIT
                         <exclude>**/TailormapUserDetails.java</exclude>
                         <exclude>**/TailormapUserDetailsService.java</exclude>
                         <exclude>**/MetadataRepositoryTest.java</exclude>
-                        <exclude>**/JPAConfiguration.java</exclude>
                     </excludes>
                     <testExcludes>
                         <exclude>**/nl/b3p/tailormap/api/controller/*.java</exclude>
@@ -791,16 +827,16 @@ SPDX-License-Identifier: MIT
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>generate-code</id>
+                        <id>generate-viewer-models</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
                             <!-- see https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin -->
-                            <inputSpec>${project.basedir}/src/main/resources/tailormap-api.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/viewer-api.yaml</inputSpec>
                             <generatorName>spring</generatorName>
-                            <modelPackage>nl.b3p.tailormap.api.model</modelPackage>
-                            <invokerPackage>nl.b3p.tailormap.api.invoker</invokerPackage>
+                            <modelPackage>nl.b3p.tailormap.api.viewer.model</modelPackage>
+                            <!--<invokerPackage>nl.b3p.tailormap.api.invoker</invokerPackage>-->
                             <library>spring-boot</library>
                             <!--              <generateAliasAsModel>false</generateAliasAsModel>-->
                             <configOptions>
@@ -826,9 +862,37 @@ SPDX-License-Identifier: MIT
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/tailormap-api.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/viewer-api.yaml</inputSpec>
                             <generatorName>openapi</generatorName>
                             <output>${project.build.directory}/classes/static/swagger-ui</output>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-code-persistence-models</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/persistence-schemas.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <modelPackage>nl.b3p.tailormap.api.persistence.json</modelPackage>
+                            <library>spring-boot</library>
+                            <!--              <generateAliasAsModel>false</generateAliasAsModel>-->
+                            <configOptions>
+                                <!-- see https://openapi-generator.tech/docs/generators/spring/ -->
+                                <dateLibrary>java8</dateLibrary>
+                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                <openApiNullable>false</openApiNullable>
+                                <serializableModel>true</serializableModel>
+                                <useOptional>true</useOptional>
+                            </configOptions>
+                            <!--              <instantiationTypes>array=ArrayList,map=HashMap,object=Map</instantiationTypes>-->
+                            <!--              <typeMappings>array=List,map=Map,object=Map</typeMappings>-->
+                            <generateApis>false</generateApis>
+                            <generateModels>true</generateModels>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <generateModelTests>false</generateModelTests>
+                            <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
                         </configuration>
                     </execution>
                 </executions>
@@ -1075,6 +1139,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.hibernate:hibernate-micrometer</exclude>
                                         <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
                                         <exclude>io.sentry:sentry-spring-boot-starter</exclude>
+                                        <exclude>org.hibernate.orm.tooling:hibernate-enhance-maven-plugin</exclude>
                                         <exclude>p6spy:p6spy:jar</exclude>
                                         <!-- basically each and every geotools module has a load of transitive dependencies -->
                                         <exclude>org.geotools:*</exclude>

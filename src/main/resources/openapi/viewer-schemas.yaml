@@ -16,9 +16,8 @@ info:
     url: 'https://www.b3partners.nl/'
     email: 'info@b3partners.nl'
 
-# none; specified in tailormap-api.yaml
+# no servers or paths, just the models in this document
 servers: [ ]
-# none; specified in tailormap-api.yaml
 paths: { }
 
 components:
