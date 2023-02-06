@@ -49,13 +49,23 @@ public class PopulateTestDatabase {
       return;
     }
 
-    GeoService test = new GeoService();
-    test.setProtocol("wms");
-    test.setUrl("https://snapshot.tailormap.nl/geoserver/wms");
-    test.setTitle("Test GeoServer");
-    geoServiceHelper.loadServiceCapabilities(test);
+    String[][] services = {
+      {"wms", "Test GeoServer", "https://snapshot.tailormap.nl/geoserver/wms"},
+      {"wmts", "Openbasiskaart", "https://www.openbasiskaart.nl/mapcache/wmts"},
+      {"wmts", "PDOK HWH luchtfoto", "https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0"},
+      {"wmts", "basemap.at", "https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml"},
+    };
 
-    geoServiceRepository.save(test);
+    for (String[] service : services) {
+      GeoService geoService = new GeoService();
+      geoService.setProtocol(service[0]);
+      geoService.setTitle(service[1]);
+      geoService.setUrl(service[2]);
+      geoServiceHelper.loadServiceCapabilities(geoService);
+      geoServiceRepository.save(geoService);
+    }
+
+    Long testId = 1L;
 
     Application app = new Application();
     app.setName("default");
@@ -64,9 +74,9 @@ public class PopulateTestDatabase {
     app.setContentRoot(
         new AppContent()
             .addLayersItem(
-                new AppLayerRef().serviceId(test.getId()).layerName("postgis:begroeidterreindeel"))
-            .addLayersItem(new AppLayerRef().serviceId(test.getId()).layerName("sqlserver:wegdeel"))
-            .addLayersItem(new AppLayerRef().serviceId(test.getId()).layerName("BGT")));
+                new AppLayerRef().serviceId(testId).layerName("postgis:begroeidterreindeel"))
+            .addLayersItem(new AppLayerRef().serviceId(testId).layerName("sqlserver:wegdeel"))
+            .addLayersItem(new AppLayerRef().serviceId(testId).layerName("BGT")));
     app.setInitialExtent(new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));
     app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));
     applicationRepository.save(app);
