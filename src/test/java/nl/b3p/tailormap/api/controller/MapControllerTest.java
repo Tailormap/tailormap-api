@@ -5,7 +5,6 @@
  */
 package nl.b3p.tailormap.api.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 import nl.b3p.tailormap.api.StaticTestData;
 import nl.b3p.tailormap.api.persistence.Application;
@@ -13,6 +12,9 @@ import nl.b3p.tailormap.api.viewer.model.Bounds;
 import nl.b3p.tailormap.api.viewer.model.CoordinateReferenceSystem;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class MapControllerTest {
   @Test
