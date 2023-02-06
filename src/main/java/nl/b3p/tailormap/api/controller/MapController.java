@@ -5,132 +5,79 @@
  */
 package nl.b3p.tailormap.api.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 import io.micrometer.core.annotation.Timed;
-import java.io.Serializable;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.referencing.ReferencingHelper;
-import nl.b3p.tailormap.api.model.AppLayer;
-import nl.b3p.tailormap.api.model.Bounds;
-import nl.b3p.tailormap.api.model.CoordinateReferenceSystem;
-import nl.b3p.tailormap.api.model.LayerTreeNode;
-import nl.b3p.tailormap.api.model.MapResponse;
-import nl.b3p.tailormap.api.model.Service;
-import nl.b3p.tailormap.api.repository.ApplicationLayerRepository;
-import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.repository.LayerRepository;
-import nl.b3p.tailormap.api.repository.LevelRepository;
-import nl.b3p.tailormap.api.security.AuthorizationService;
+import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.util.ParseUtil;
-import nl.tailormap.viewer.config.app.Application;
-import nl.tailormap.viewer.config.app.ApplicationLayer;
-import nl.tailormap.viewer.config.app.Level;
-import nl.tailormap.viewer.config.app.StartLayer;
-import nl.tailormap.viewer.config.app.StartLevel;
-import nl.tailormap.viewer.config.services.GeoService;
-import nl.tailormap.viewer.config.services.Layer;
-import nl.tailormap.viewer.config.services.TileService;
-import nl.tailormap.viewer.config.services.WMSService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import nl.b3p.tailormap.api.viewer.model.Bounds;
+import nl.b3p.tailormap.api.viewer.model.CoordinateReferenceSystem;
+import nl.b3p.tailormap.api.viewer.model.MapResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.Serializable;
 
 @AppRestController
-@Validated
 @RequestMapping(path = "/app/{appId}/map", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MapController {
-  private final Log logger = LogFactory.getLog(getClass());
-  private final ApplicationRepository applicationRepository;
-  private final ApplicationLayerRepository applicationLayerRepository;
-  private final LevelRepository levelRepository;
-  private final LayerRepository layerRepository;
-  private final AuthorizationService authorizationService;
+//  private final ApplicationRepository applicationRepository;
+//  private final GeoServiceRepository geoServiceRepository;
+//  private final AuthorizationService authorizationService;
 
   public MapController(
-      ApplicationRepository applicationRepository,
-      ApplicationLayerRepository applicationLayerRepository,
-      LevelRepository levelRepository,
-      LayerRepository layerRepository,
-      AuthorizationService authorizationService) {
-    this.applicationRepository = applicationRepository;
-    this.applicationLayerRepository = applicationLayerRepository;
-    this.levelRepository = levelRepository;
-    this.layerRepository = layerRepository;
-    this.authorizationService = authorizationService;
+      /*ApplicationRepository applicationRepository,
+      GeoServiceRepository geoServiceRepository,
+      AuthorizationService authorizationService*/) {
+//    this.applicationRepository = applicationRepository;
+//    this.geoServiceRepository = geoServiceRepository;
+//    this.authorizationService = authorizationService;
   }
 
-  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
-  @Timed(value = "get_map", description = "time spent to process get the map of an application")
+  @GetMapping
+  @Timed(value = "get_map", description = "get the map config of an application")
   public ResponseEntity<Serializable> get(@ModelAttribute Application application) {
-    logger.trace("Loading map related entities for application id: " + application.getId());
-    applicationRepository.findWithGeoservicesById(application.getId());
+    //applicationRepository.findWithGeoservicesById(application.getId());
     MapResponse mapResponse = new MapResponse();
     getApplicationParams(application, mapResponse);
-    getLayers(application, mapResponse);
+    //getLayers(application, mapResponse);
 
     return ResponseEntity.status(HttpStatus.OK).body(mapResponse);
   }
 
-  private void getApplicationParams(@NotNull Application a, @NotNull MapResponse mapResponse) {
-    final String pCode = a.getProjectionCode();
+  private void getApplicationParams(Application a, MapResponse mapResponse) {
 
-    CoordinateReferenceSystem c = new CoordinateReferenceSystem();
-    if (null != pCode) {
-      c.code(ParseUtil.parseEpsgCode(pCode)).definition(ParseUtil.parseProjDefintion(pCode));
+    CoordinateReferenceSystem crs = null;
+    if (a.getCrs() != null) {
+      crs = new CoordinateReferenceSystem()
+              // XXX lets not save the definition in the Application.crs field...
+              .code(ParseUtil.parseEpsgCode(a.getCrs()))
+              .definition(ParseUtil.parseProjDefintion(a.getCrs()));
     }
-    Bounds maxExtent = new Bounds();
-    if (null != a.getMaxExtent()) {
-      maxExtent
-          .minx(a.getMaxExtent().getMinx())
-          .miny(a.getMaxExtent().getMiny())
-          .maxx(a.getMaxExtent().getMaxx())
-          .maxy(a.getMaxExtent().getMaxy())
-          .crs(a.getMaxExtent().getCrs().getName());
-    } else {
-      maxExtent = ReferencingHelper.crsBoundsExtractor(c.getCode());
+    mapResponse.crs(crs);
+
+    Bounds maxExtent = null;
+
+    if (a.getMaxExtent() != null) {
+      maxExtent = a.getMaxExtent().toJsonPojo();
+    } else if (crs != null) {
+      maxExtent = ReferencingHelper.crsBoundsExtractor(crs.getCode());
     }
-    Bounds initialExtent = new Bounds();
-    if (null != a.getStartExtent()) {
-      initialExtent
-          .minx(a.getStartExtent().getMinx())
-          .miny(a.getStartExtent().getMiny())
-          .maxx(a.getStartExtent().getMaxx())
-          .maxy(a.getStartExtent().getMaxy())
-          .crs(a.getStartExtent().getCrs().getName());
+
+    Bounds initialExtent;
+    if (a.getStartExtent() != null) {
+      initialExtent = a.getStartExtent().toJsonPojo();
     } else {
       initialExtent = maxExtent;
     }
 
-    mapResponse.crs(c).maxExtent(maxExtent).initialExtent(initialExtent);
+    mapResponse.crs(crs).maxExtent(maxExtent).initialExtent(initialExtent);
   }
-
+/*
   private String getNameForAppLayer(@NotNull ApplicationLayer layer, @NotNull List<Layer> layers) {
     if (StringUtils.isNotBlank(
         Optional.ofNullable(layer.getDetails().get("titleAlias"))
@@ -532,4 +479,5 @@ public class MapController {
     }
     return linkBuilder.toString();
   }
+*/
 }
