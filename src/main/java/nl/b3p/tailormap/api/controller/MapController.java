@@ -7,16 +7,10 @@ package nl.b3p.tailormap.api.controller;
 
 import io.micrometer.core.annotation.Timed;
 import java.io.Serializable;
-import java.util.Objects;
-import java.util.Optional;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
-import nl.b3p.tailormap.api.persistence.helper.BoundsHelper;
-import nl.b3p.tailormap.api.viewer.model.Bounds;
-import nl.b3p.tailormap.api.viewer.model.CoordinateReferenceSystem;
+import nl.b3p.tailormap.api.persistence.helper.ApplicationHelper;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
-import org.geotools.referencing.util.CRSUtilities;
-import org.geotools.referencing.wkt.Formattable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,53 +22,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(path = "/app/{appId}/map", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MapController {
 
-  //  private final ApplicationRepository applicationRepository;
-  //  private final GeoServiceRepository geoServiceRepository;
-  //  private final AuthorizationService authorizationService;
+  private final ApplicationHelper applicationHelper;
 
-  public MapController(/*ApplicationRepository applicationRepository,
-      GeoServiceRepository geoServiceRepository,
-      AuthorizationService authorizationService*/ ) {
-    //    this.applicationRepository = applicationRepository;
-    //    this.geoServiceRepository = geoServiceRepository;
-    //    this.authorizationService = authorizationService;
+  public MapController(ApplicationHelper applicationHelper) {
+    this.applicationHelper = applicationHelper;
   }
 
   @GetMapping
   @Timed(value = "get_map", description = "get the map config of an application")
   public ResponseEntity<Serializable> get(@ModelAttribute Application application) {
-    // applicationRepository.findWithGeoservicesById(application.getId());
-    MapResponse mapResponse = new MapResponse();
-    getApplicationParams(application, mapResponse);
-    // getLayers(application, mapResponse);
-
+    MapResponse mapResponse = applicationHelper.toMapResponse(application);
     return ResponseEntity.status(HttpStatus.OK).body(mapResponse);
   }
 
-  static void getApplicationParams(Application a, MapResponse mapResponse) {
-
-    org.opengis.referencing.crs.CoordinateReferenceSystem gtCrs =
-        a.getGeoToolsCoordinateReferenceSystem();
-
-    if (gtCrs == null) {
-      throw new IllegalArgumentException("Invalid CRS: " + a.getCrs());
-    }
-
-    CoordinateReferenceSystem crs =
-        new CoordinateReferenceSystem()
-            .code(a.getCrs())
-            .definition(((Formattable) gtCrs).toWKT(0))
-            .bounds(BoundsHelper.fromCRSEnvelope(gtCrs))
-            .unit(
-                Optional.ofNullable(CRSUtilities.getUnit(gtCrs.getCoordinateSystem()))
-                    .map(Objects::toString)
-                    .orElse(null));
-
-    Bounds maxExtent = Objects.requireNonNullElse(a.getMaxExtent(), crs.getBounds());
-    Bounds initialExtent = Objects.requireNonNullElse(a.getInitialExtent(), maxExtent);
-
-    mapResponse.crs(crs).maxExtent(maxExtent).initialExtent(initialExtent);
-  }
   /*
     private String getNameForAppLayer(@NotNull ApplicationLayer layer, @NotNull List<Layer> layers) {
       if (StringUtils.isNotBlank(

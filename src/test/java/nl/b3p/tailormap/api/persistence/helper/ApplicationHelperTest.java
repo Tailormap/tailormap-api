@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
-package nl.b3p.tailormap.api.controller;
+package nl.b3p.tailormap.api.persistence.helper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -14,13 +14,17 @@ import nl.b3p.tailormap.api.viewer.model.Bounds;
 import nl.b3p.tailormap.api.viewer.model.CoordinateReferenceSystem;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-class MapControllerTest {
+@SpringBootTest(classes = ApplicationHelper.class)
+class ApplicationHelperTest {
+  @Autowired ApplicationHelper applicationHelper;
+
   @Test
   void testAppWithCrsRD() {
     Application a = new Application().setCrs("EPSG:28992");
-    MapResponse mr = new MapResponse();
-    MapController.getApplicationParams(a, mr);
+    MapResponse mr = applicationHelper.toMapResponse(a);
     CoordinateReferenceSystem crs = mr.getCrs();
     assertNotNull(crs);
     assertEquals("EPSG:28992", crs.getCode());
@@ -40,8 +44,7 @@ class MapControllerTest {
   @Test
   void testAppWithCrs3857() {
     Application a = new Application().setCrs("EPSG:3857");
-    MapResponse mr = new MapResponse();
-    MapController.getApplicationParams(a, mr);
+    MapResponse mr = applicationHelper.toMapResponse(a);
     CoordinateReferenceSystem crs = mr.getCrs();
     assertNotNull(crs);
     assertEquals("EPSG:3857", crs.getCode());
@@ -61,8 +64,7 @@ class MapControllerTest {
   @Test
   void testAppWithCrs4326() {
     Application a = new Application().setCrs("EPSG:4326");
-    MapResponse mr = new MapResponse();
-    MapController.getApplicationParams(a, mr);
+    MapResponse mr = applicationHelper.toMapResponse(a);
     CoordinateReferenceSystem crs = mr.getCrs();
     assertNotNull(crs);
     assertEquals("EPSG:4326", crs.getCode());
