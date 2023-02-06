@@ -43,8 +43,8 @@ public class ApplicationHelper {
                     .map(Objects::toString)
                     .orElse(null));
 
-    Bounds maxExtent = Objects.requireNonNullElse(a.getMaxExtent(), crs.getBounds());
-    Bounds initialExtent = Objects.requireNonNullElse(a.getInitialExtent(), maxExtent);
+    Bounds maxExtent = a.getMaxExtent() != null ? a.getMaxExtent() : crs.getBounds();
+    Bounds initialExtent = a.getInitialExtent() != null ? a.getInitialExtent() : maxExtent;
 
     mapResponse.crs(crs).maxExtent(maxExtent).initialExtent(initialExtent);
   }
