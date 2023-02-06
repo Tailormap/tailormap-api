@@ -42,19 +42,22 @@ public class AppRestControllerAdvice {
   @ExceptionHandler(ResponseStatusException.class)
   protected ResponseEntity<?> handleResponseStatusException(ResponseStatusException ex) {
     if (HttpStatus.UNAUTHORIZED.equals(ex.getStatus())) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+      return ResponseEntity.status(ex.getStatus())
           .contentType(MediaType.APPLICATION_JSON)
           .body(new RedirectResponse());
     }
-    return ResponseEntity.status(ex.getRawStatusCode())
+    return ResponseEntity.status(ex.getStatus())
         .contentType(MediaType.APPLICATION_JSON)
-        .body(new ErrorResponse().message(ex.getReason()).code(ex.getRawStatusCode()));
+        .body(
+            new ErrorResponse()
+                .message(ex.getReason() != null ? ex.getReason() : ex.getStatus().getReasonPhrase())
+                .code(ex.getRawStatusCode()));
   }
 
   @ModelAttribute
   public Application populateApplication(@PathVariable(required = false) Long appId) {
     if (appId == null) {
-      // No binding for AppController which will return the default application instead of 404
+      // No binding required for AppController
       return null;
     }
     final Application application = applicationRepository.findById(appId).orElse(null);

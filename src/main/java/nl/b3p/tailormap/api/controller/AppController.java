@@ -5,24 +5,22 @@
  */
 package nl.b3p.tailormap.api.controller;
 
-import static nl.b3p.tailormap.api.util.ErrorResponseBuilder.badRequest;
-import static nl.b3p.tailormap.api.util.ErrorResponseBuilder.forbidden;
-import static nl.b3p.tailormap.api.util.ErrorResponseBuilder.notFound;
-
 import java.io.Serializable;
+import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-@RestController
+@AppRestController
 @RequestMapping(path = "/app")
 public class AppController {
   private final ApplicationRepository applicationRepository;
@@ -46,7 +44,7 @@ public class AppController {
       @RequestParam(required = false) Long appId, @RequestParam(required = false) String name) {
 
     if (appId != null && name != null) {
-      return badRequest();
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
     Application app = null;
@@ -72,11 +70,11 @@ public class AppController {
     }
 
     if (app == null) {
-      return notFound(notFoundMessage);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, notFoundMessage);
     }
 
     if (!authorizationService.mayUserRead(app)) {
-      return forbidden();
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
     return ResponseEntity.ok(app.toAppResponse().apiVersion(apiVersion));
