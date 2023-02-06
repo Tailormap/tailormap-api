@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
@@ -25,20 +26,23 @@ public class PopulateTestDatabase {
   private static final Log log = LogFactory.getLog(PopulateTestDatabase.class);
 
   private final GeoServiceRepository geoServiceRepository;
+  private final GeoServiceHelper geoServiceHelper;
   private final ApplicationRepository applicationRepository;
   private final ConfigurationRepository configurationRepository;
 
   public PopulateTestDatabase(
       GeoServiceRepository geoServiceRepository,
+      GeoServiceHelper geoServiceHelper,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository) {
     this.geoServiceRepository = geoServiceRepository;
+    this.geoServiceHelper = geoServiceHelper;
     this.applicationRepository = applicationRepository;
     this.configurationRepository = configurationRepository;
   }
 
   @PostConstruct
-  public void populate() {
+  public void populate() throws Exception {
 
     if (configurationRepository.existsById(Configuration.DEFAULT_APP)) {
       // Test database already initialized for integration tests
@@ -49,10 +53,9 @@ public class PopulateTestDatabase {
     test.setProtocol("wms");
     test.setUrl("https://snapshot.tailormap.nl/geoserver/wms");
     test.setTitle("Test GeoServer");
+    geoServiceHelper.loadServiceCapabilities(test);
 
     geoServiceRepository.save(test);
-
-    // geoServiceHelper.loadServiceCapabilities(test);
 
     Application app = new Application();
     app.setName("default");
