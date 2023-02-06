@@ -57,8 +57,7 @@ public class PopulateTestDatabase {
     Application app = new Application();
     app.setName("default");
     app.setTitle("Tailormap demo");
-    // TODO: Can GeoTools make the definition for Proj4JS? Or does Proj4JS have the definitions already? If still needed, split up in separate crs entity
-    app.setCrs("EPSG:28992[+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs]");
+    app.setCrs("EPSG:28992");
     app.setContentRoot(
         new AppContent()
             .addLayersItem(
@@ -81,11 +80,17 @@ public class PopulateTestDatabase {
             .setMaxy(903401d));
     applicationRepository.save(app);
 
+    app = new Application();
+    app.setName("web-mercator");
+    app.setCrs("EPSG:3857");
+    app.setTitle("Web Mercator");
+    applicationRepository.save(app);
+
     Configuration config = new Configuration();
     config.setKey(Configuration.DEFAULT_APP);
     config.setValue("default");
     configurationRepository.save(config);
 
-    log.info(String.format("Test entity created with id %s", test.getId()));
+    log.info("Test entities created");
   }
 }

@@ -20,10 +20,15 @@ import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.viewer.model.AppResponse;
 import nl.b3p.tailormap.api.viewer.model.AppStyling;
 import nl.b3p.tailormap.api.viewer.model.Component;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.geotools.referencing.CRS;
 import org.hibernate.annotations.Type;
 
 @Entity
 public class Application {
+  private static final Log log = LogFactory.getLog(Application.class);
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -81,112 +86,154 @@ public class Application {
   private AppStyling styling;
 
   // <editor-fold desc="getters and setters">
+
   public Long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public Application setId(Long id) {
     this.id = id;
+    return this;
   }
 
   public String getName() {
     return name;
   }
 
-  public void setName(String name) {
+  public Application setName(String name) {
     this.name = name;
+    return this;
   }
 
   public String getTitle() {
     return title;
   }
 
-  public void setTitle(String title) {
+  public Application setTitle(String title) {
     this.title = title;
+    return this;
   }
 
   public String getAdminComments() {
     return adminComments;
   }
 
-  public void setAdminComments(String adminComments) {
+  public Application setAdminComments(String adminComments) {
     this.adminComments = adminComments;
+    return this;
   }
 
   public String getPreviewText() {
     return previewText;
   }
 
-  public void setPreviewText(String previewText) {
+  public Application setPreviewText(String previewText) {
     this.previewText = previewText;
+    return this;
   }
 
   public String getCrs() {
     return crs;
   }
 
-  public void setCrs(String crs) {
+  public Application setCrs(String crs) {
     this.crs = crs;
+    return this;
   }
 
   public BoundingBox getStartExtent() {
     return startExtent;
   }
 
-  public void setStartExtent(BoundingBox startExtent) {
+  public Application setStartExtent(BoundingBox startExtent) {
     this.startExtent = startExtent;
+    return this;
   }
 
   public BoundingBox getMaxExtent() {
     return maxExtent;
   }
 
-  public void setMaxExtent(BoundingBox maxExtent) {
+  public Application setMaxExtent(BoundingBox maxExtent) {
     this.maxExtent = maxExtent;
+    return this;
   }
 
   public boolean isAuthenticatedRequired() {
     return authenticatedRequired;
   }
 
-  public void setAuthenticatedRequired(boolean authenticatedRequired) {
+  public Application setAuthenticatedRequired(boolean authenticatedRequired) {
     this.authenticatedRequired = authenticatedRequired;
+    return this;
   }
 
   public AppContent getContentRoot() {
     return contentRoot;
   }
 
-  public void setContentRoot(AppContent contentRoot) {
+  public Application setContentRoot(AppContent contentRoot) {
     this.contentRoot = contentRoot;
+    return this;
   }
 
   public JsonNode getLayerSettings() {
     return layerSettings;
   }
 
-  public void setLayerSettings(JsonNode layerSettings) {
+  public Application setLayerSettings(JsonNode layerSettings) {
     this.layerSettings = layerSettings;
+    return this;
   }
 
   public List<Component> getComponents() {
     return components;
   }
 
-  public void setComponents(List<Component> components) {
+  public Application setComponents(List<Component> components) {
     this.components = components;
+    return this;
   }
 
   public AppStyling getStyling() {
     return styling;
   }
 
-  public void setStyling(AppStyling styling) {
+  public Application setStyling(AppStyling styling) {
     this.styling = styling;
+    return this;
   }
+
   // </editor-fold>
 
   public AppResponse toAppResponse() {
     return new AppResponse().id(id).name(name).title(title).styling(styling).components(components);
+  }
+
+  /**
+   * Return a GeoTools CoordinateReferenceSystem from this entities' CRS code or null if there is an
+   * error decoding it, which will be logged (only with stacktrace if loglevel is DEBUG).
+   *
+   * @return CoordinateReferenceSystem
+   */
+  public org.opengis.referencing.crs.CoordinateReferenceSystem
+      getGeoToolsCoordinateReferenceSystem() {
+    org.opengis.referencing.crs.CoordinateReferenceSystem gtCrs = null;
+    try {
+      if (getCrs() != null) {
+        gtCrs = CRS.decode(getCrs());
+      }
+    } catch (Exception e) {
+      String message =
+          String.format(
+              "Application %d: error decoding CRS from code \"%s\": %s: %s",
+              getId(), getCrs(), e.getClass(), e.getMessage());
+      if (log.isDebugEnabled()) {
+        log.error(message, e);
+      } else {
+        log.error(message);
+      }
+    }
+    return gtCrs;
   }
 }
