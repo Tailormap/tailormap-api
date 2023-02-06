@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
-import nl.b3p.tailormap.api.persistence.BoundingBox;
+import nl.b3p.tailormap.api.persistence.helper.BoundsHelper;
 import nl.b3p.tailormap.api.viewer.model.Bounds;
 import nl.b3p.tailormap.api.viewer.model.CoordinateReferenceSystem;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
@@ -53,40 +53,25 @@ public class MapController {
 
   static void getApplicationParams(Application a, MapResponse mapResponse) {
 
-    CoordinateReferenceSystem crs = null;
     org.opengis.referencing.crs.CoordinateReferenceSystem gtCrs =
         a.getGeoToolsCoordinateReferenceSystem();
 
-    if (gtCrs != null) {
-      crs =
-          new CoordinateReferenceSystem()
-              .code(a.getCrs())
-              .definition(((Formattable) gtCrs).toWKT(0));
-      crs.unit(
-          Optional.ofNullable(CRSUtilities.getUnit(gtCrs.getCoordinateSystem()))
-              .map(Objects::toString)
-              .orElse(null));
+    if (gtCrs == null) {
+      throw new IllegalArgumentException("Invalid CRS: " + a.getCrs());
     }
 
-    Bounds maxExtent = null;
+    CoordinateReferenceSystem crs =
+        new CoordinateReferenceSystem()
+            .code(a.getCrs())
+            .definition(((Formattable) gtCrs).toWKT(0))
+            .bounds(BoundsHelper.fromCRSEnvelope(gtCrs))
+            .unit(
+                Optional.ofNullable(CRSUtilities.getUnit(gtCrs.getCoordinateSystem()))
+                    .map(Objects::toString)
+                    .orElse(null));
 
-    if (a.getMaxExtent() != null) {
-      maxExtent = a.getMaxExtent().toJsonPojo();
-    } else if (gtCrs != null) {
-      maxExtent =
-          Optional.ofNullable(BoundingBox.fromCRSEnvelope(gtCrs))
-              // Set CRS code from entity instead of first GeoTools identifier
-              .map(bb -> bb.setCrs(a.getCrs()))
-              .map(BoundingBox::toJsonPojo)
-              .orElse(null);
-    }
-
-    Bounds initialExtent;
-    if (a.getStartExtent() != null) {
-      initialExtent = a.getStartExtent().toJsonPojo();
-    } else {
-      initialExtent = maxExtent;
-    }
+    Bounds maxExtent = Objects.requireNonNullElse(a.getMaxExtent(), crs.getBounds());
+    Bounds initialExtent = Objects.requireNonNullElse(a.getInitialExtent(), maxExtent);
 
     mapResponse.crs(crs).maxExtent(maxExtent).initialExtent(initialExtent);
   }

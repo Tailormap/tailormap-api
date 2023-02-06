@@ -41,7 +41,7 @@ components:
         unit:
           description: 'The unit if all axis use the same unit, null otherwise'
           nullable: true
-          type: string # TODO: specify enum values
+          type: string
           example: 'm'
       required:
         - code
@@ -55,9 +55,9 @@ components:
           maxy: 276050.82,
           maxx: 636456.31
         }
+        unit: 'm'
 
     Bounds:
-      description: 'Describes an extent within a Coordinate Reference System'
       type: object
       properties:
         miny:
@@ -76,10 +76,6 @@ components:
           description: 'upper right'
           type: number
           format: double
-        crs:
-          description: '(EPSG) code of the projection'
-          type: string
-          nullable: true
       required:
         - miny
         - minx
@@ -90,8 +86,25 @@ components:
         minx: 105000
         maxy: 530000
         maxx: 275000
-        crs: 'EPSG:28992'
 
+    # XXX: currently unused
+    BoundsWithCRS:
+      description: 'Bounds within the context of a coordinate reference system'
+      allOf:
+        - $ref: '#/components/schemas/Bounds'
+        - type: object
+          required: [crs]
+          properties:
+            crs:
+              description: '(EPSG) code of the projection'
+              type: string
+              nullable: false
+      example:
+        miny: 400000
+        minx: 105000
+        maxy: 530000
+        maxx: 275000
+        crs: 'EPSG:28992'
 
     AppLayer:
       description: '

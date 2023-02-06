@@ -19,6 +19,7 @@ import javax.persistence.Id;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.viewer.model.AppResponse;
 import nl.b3p.tailormap.api.viewer.model.AppStyling;
+import nl.b3p.tailormap.api.viewer.model.Bounds;
 import nl.b3p.tailormap.api.viewer.model.Component;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,23 +50,21 @@ public class Application {
 
   @Embedded
   @AttributeOverrides({
-    @AttributeOverride(name = "crs", column = @Column(name = "start_crs")),
-    @AttributeOverride(name = "minx", column = @Column(name = "start_minx")),
-    @AttributeOverride(name = "maxx", column = @Column(name = "start_maxx")),
-    @AttributeOverride(name = "miny", column = @Column(name = "start_miny")),
-    @AttributeOverride(name = "maxy", column = @Column(name = "start_maxy"))
+    @AttributeOverride(name = "minx", column = @Column(name = "initial_minx")),
+    @AttributeOverride(name = "maxx", column = @Column(name = "initial_maxx")),
+    @AttributeOverride(name = "miny", column = @Column(name = "initial_miny")),
+    @AttributeOverride(name = "maxy", column = @Column(name = "initial_maxy"))
   })
-  private BoundingBox startExtent;
+  private Bounds initialExtent;
 
   @Embedded
   @AttributeOverrides({
-    @AttributeOverride(name = "crs", column = @Column(name = "max_crs")),
     @AttributeOverride(name = "minx", column = @Column(name = "max_minx")),
     @AttributeOverride(name = "maxx", column = @Column(name = "max_maxx")),
     @AttributeOverride(name = "miny", column = @Column(name = "max_miny")),
     @AttributeOverride(name = "maxy", column = @Column(name = "max_maxy"))
   })
-  private BoundingBox maxExtent;
+  private Bounds maxExtent;
 
   private boolean authenticatedRequired;
 
@@ -141,20 +140,20 @@ public class Application {
     return this;
   }
 
-  public BoundingBox getStartExtent() {
-    return startExtent;
+  public Bounds getInitialExtent() {
+    return initialExtent;
   }
 
-  public Application setStartExtent(BoundingBox startExtent) {
-    this.startExtent = startExtent;
+  public Application setInitialExtent(Bounds initialExtent) {
+    this.initialExtent = initialExtent;
     return this;
   }
 
-  public BoundingBox getMaxExtent() {
+  public Bounds getMaxExtent() {
     return maxExtent;
   }
 
-  public Application setMaxExtent(BoundingBox maxExtent) {
+  public Application setMaxExtent(Bounds maxExtent) {
     this.maxExtent = maxExtent;
     return this;
   }

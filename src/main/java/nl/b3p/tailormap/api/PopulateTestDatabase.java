@@ -7,7 +7,6 @@ package nl.b3p.tailormap.api;
 
 import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.Application;
-import nl.b3p.tailormap.api.persistence.BoundingBox;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
@@ -15,6 +14,7 @@ import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
+import nl.b3p.tailormap.api.viewer.model.Bounds;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Profile;
@@ -64,20 +64,8 @@ public class PopulateTestDatabase {
                 new AppLayerRef().serviceId(test.getId()).layerName("postgis:begroeidterreindeel"))
             .addLayersItem(new AppLayerRef().serviceId(test.getId()).layerName("sqlserver:wegdeel"))
             .addLayersItem(new AppLayerRef().serviceId(test.getId()).layerName("BGT")));
-    app.setStartExtent(
-        new BoundingBox()
-            .setCrs("EPSG:28992")
-            .setMinx(130011d)
-            .setMiny(458031d)
-            .setMaxx(132703d)
-            .setMaxy(459995d));
-    app.setMaxExtent(
-        new BoundingBox()
-            .setCrs("EPSG:28992")
-            .setMinx(-285401d)
-            .setMiny(22598d)
-            .setMaxx(595401d)
-            .setMaxy(903401d));
+    app.setInitialExtent(new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));
+    app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));
     applicationRepository.save(app);
 
     app = new Application();
