@@ -55,11 +55,11 @@ public class PopulateTestDatabase {
       {"wmts", "Openbasiskaart", "https://www.openbasiskaart.nl/mapcache/wmts"},
       {"wmts", "PDOK HWH luchtfoto", "https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0"},
       {"wmts", "basemap.at", "https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml"},
-      {
-        "wms",
-        "Norway - Administrative enheter",
-        "https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk"
-      },
+      //      {
+      //        "wms",
+      //        "Norway - Administrative enheter",
+      //        "https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk"
+      //      },
     };
 
     for (String[] service : services) {
@@ -138,16 +138,17 @@ public class PopulateTestDatabase {
     applicationRepository.save(app);
 
     // WMS doesn't work, issue with WMS 1.1.1 vs 1.3.0?
-    app =
-        new Application()
-            .setName("norway")
-            .setCrs("EPSG:27397")
-            .setTitle("Norway")
-            .setContentRoot(
-                new AppContent()
-                    .addLayersItem(
-                        new AppLayerRef().serviceId(5L).layerName("adm_enheter_historisk_WMS")));
-    applicationRepository.save(app);
+    //    app =
+    //        new Application()
+    //            .setName("norway")
+    //            .setCrs("EPSG:27397")
+    //            .setTitle("Norway")
+    //            .setContentRoot(
+    //                new AppContent()
+    //                    .addLayersItem(
+    //                        new
+    // AppLayerRef().serviceId(5L).layerName("adm_enheter_historisk_WMS")));
+    //    applicationRepository.save(app);
 
     Configuration config = new Configuration();
     config.setKey(Configuration.DEFAULT_APP);
