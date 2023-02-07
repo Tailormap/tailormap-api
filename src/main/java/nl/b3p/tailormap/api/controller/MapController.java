@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api.controller;
 
 import io.micrometer.core.annotation.Timed;
 import java.io.Serializable;
+import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.helper.ApplicationHelper;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
@@ -17,9 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@AppRestController
 @RequestMapping(
     path = "${tailormap-api.viewer.basePath}/app/{appId}/map",
     produces = MediaType.APPLICATION_JSON_VALUE)
