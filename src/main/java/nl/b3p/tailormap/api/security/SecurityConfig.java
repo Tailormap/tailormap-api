@@ -15,26 +15,25 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // Note: CSRF protection only required when using cookies for authentication
-        // This requires an X-XSRF-TOKEN header read from the XSRF-TOKEN cookie by JavaScript so set
-        // HttpOnly to false.
-        // Angular has automatic XSRF protection support:
-        // https://angular.io/guide/http#security-xsrf-protection
-        CookieCsrfTokenRepository csrfTokenRepository =
-                CookieCsrfTokenRepository.withHttpOnlyFalse();
-        csrfTokenRepository.setCookiePath("/");
-        http.csrf()
-                .csrfTokenRepository(csrfTokenRepository)
-                .and()
-                .authorizeHttpRequests()
-                .requestMatchers("/admin/**")
-                .hasRole("ADMIN")
-                .anyRequest()
-                .permitAll()
-                .and()
-                .formLogin();
-        return http.build();
-    }
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    // Note: CSRF protection only required when using cookies for authentication
+    // This requires an X-XSRF-TOKEN header read from the XSRF-TOKEN cookie by JavaScript so set
+    // HttpOnly to false.
+    // Angular has automatic XSRF protection support:
+    // https://angular.io/guide/http#security-xsrf-protection
+    CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+    csrfTokenRepository.setCookiePath("/");
+    http.csrf()
+        .csrfTokenRepository(csrfTokenRepository)
+        .and()
+        .authorizeHttpRequests()
+        .requestMatchers("/admin/**")
+        .hasRole("ADMIN")
+        .anyRequest()
+        .permitAll()
+        .and()
+        .formLogin();
+    return http.build();
+  }
 }

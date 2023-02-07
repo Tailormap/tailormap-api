@@ -70,11 +70,11 @@ components:
       properties: # mostly properties from table "application"
         initialExtent:
           description: 'initial bounds for the map'
-          $ref: './model.yaml#/components/schemas/Bounds'
+          $ref: './viewer-schemas.yaml#/components/schemas/Bounds'
           nullable: true
         maxExtent:
           description: 'maximum bounds for the map'
-          $ref: './model.yaml#/components/schemas/Bounds'
+          $ref: './viewer-schemas.yaml#/components/schemas/Bounds'
           nullable: true
         services: # TODO in the current implementation this is an object with the id of a service as elemnt
           #      eg. "1": {"protocol": "tiled", "matrixSets":[], "id": 1
@@ -83,29 +83,29 @@ components:
           type: array
           uniqueItems: true
           items:
-            $ref: './model.yaml#/components/schemas/Service'
+            $ref: './viewer-schemas.yaml#/components/schemas/Service'
         baseLayerTreeNodes:
           description: 'Unordered list of all tree nodes of base layers. Start with the node with root set to true and 
             use the ordered children array property to order the tree. For base layers, only one child node (with all
             its'' child layers) of the root should be displayed at one time.'
           type: array
           items:
-            $ref: './model.yaml#/components/schemas/LayerTreeNode'
+            $ref: './viewer-schemas.yaml#/components/schemas/LayerTreeNode'
         layerTreeNodes:
           description: 'Unordered list of all tree nodes of overlay/thematic/transparent layers. Start with the node 
             with root set to true and use the ordered children array property to order the tree.'
           type: array
           items:
-            $ref: './model.yaml#/components/schemas/LayerTreeNode'
+            $ref: './viewer-schemas.yaml#/components/schemas/LayerTreeNode'
         appLayers:
           description: 'Unordered list of all AppLayers referenced from baseLayerTreeNodes and layerTreeNodes. Note that
             you need to lookup these by id, but OpenAPI only supports a map by using strings as keys, so an array is 
             used instead.'
           type: array
           items:
-            $ref: './model.yaml#/components/schemas/AppLayer'
+            $ref: './viewer-schemas.yaml#/components/schemas/AppLayer'
         crs:
-          $ref: './model.yaml#/components/schemas/CoordinateReferenceSystem'
+          $ref: './viewer-schemas.yaml#/components/schemas/CoordinateReferenceSystem'
       required:
         - initialExtent
         - services
@@ -119,7 +119,7 @@ components:
       type: array
       minLength: 0
       items:
-        $ref: './model.yaml#/components/schemas/AppLayer'
+        $ref: './viewer-schemas.yaml#/components/schemas/AppLayer'
 
     AppResponse:
       description: 'Answers API version and (default|requested) application id.'
@@ -149,7 +149,7 @@ components:
             - 'en_US'
           default: 'nl_NL'
         styling:
-          $ref: './model.yaml#/components/schemas/AppStyling'
+          $ref: './viewer-schemas.yaml#/components/schemas/AppStyling'
         components:
           description: '
           Provides the collection of configured components (controls) for the application.
@@ -161,7 +161,7 @@ components:
           # also, since layout is fixed, that information is no longer needed
           minLength: 0
           items:
-            $ref: './model.yaml#/components/schemas/Component'
+            $ref: './viewer-schemas.yaml#/components/schemas/Component'
 
     FeaturesResponse:
       description: 'A -possibly empty- list of features with requested attributes and presentation metadata'
@@ -193,13 +193,13 @@ components:
           type: array
           minLength: 0
           items:
-            $ref: './model.yaml#/components/schemas/Feature'
+            $ref: './viewer-schemas.yaml#/components/schemas/Feature'
         columnMetadata:
           description: 'presentation metadata'
           type: array
           minLength: 0
           items:
-            $ref: './model.yaml#/components/schemas/ColumnMetadata'
+            $ref: './viewer-schemas.yaml#/components/schemas/ColumnMetadata'
       example:
         total: 400
         page: 5
@@ -303,61 +303,42 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
-
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
   /app/:
     description: 'Will return general setup information such as name, appId, language, but not map specific information.'
     get:
-      operationId: 'validateApp'
       description: '
         Use this endpoint to get the id of the requested or default application.
-        Either call this with `name` and optional `version` or `appId` alone.
+        Either call this with `name` or `appId` or without any parameters for the default application.
         '
       security:
         - formAuth: [ ]
       parameters:
-        - description: 'app name from applications list'
-          in: query
+        - in: query
           name: name
-          required: false
           schema:
             type: string
-        - description: 'version from applications list'
-          in: query
-          name: version
-          required: false
-          schema:
-            type: string
-        - description: 'app id from application table'
-          in: query
+        - in: query
           name: appId
-          required: false
           schema:
             type: integer
             format: int64
       responses:
         '200':
-          description: 'OK. Application exists.'
+          description: OK
           content:
             application/json:
-              example:
-                id: 7
-                apiVersion: 'v1'
-                name: 'cool app'
-                version: '2'
-                title: 'This is a cool mapping app'
-                lang: 'nl_NL'
               schema:
                 $ref: '#/components/schemas/AppResponse'
         '401':
           description: 'Authentication required.'
           content:
             application/json:
-              schema: # not an actual HTTP redirect, but  provides login url
-                # we need to rethink login mechanism eg. a login form popover in the
-                # application that is shown on this status
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+              schema:
+                # not an actual HTTP redirect, but provides login url
+                # frontend can decide to show a login form
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
               example:
                 code: 401
                 message: 'login required'
@@ -366,30 +347,20 @@ paths:
           description: 'Access denied'
           content:
             application/json:
-              example:
-                code: 403
-                message: 'Access denied'
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
         '404':
-          description: '
-          The specified application was not found,
-          Use the `url` from the response to get the default application.
-          '
+          description: Not found
           content:
             application/json:
-              example:
-                code: 404
-                message: 'Application not found'
-                url: /app/?appId=1
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
         '500':
           description: 'Internal server error'
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
 
   /app/{appId}/map:
@@ -420,13 +391,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
         '500':
           description: 'Error'
           content:
@@ -435,7 +406,7 @@ paths:
                 code: 500
                 message: 'Internal server error'
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
   /app/{appId}/layer/{layerId}/describe:
     description: '
@@ -467,13 +438,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './model.yaml#/components/schemas/LayerDetails'
+                $ref: './viewer-schemas.yaml#/components/schemas/LayerDetails'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
   /app/{appId}/layer/{layerId}/export/capabilities:
     description: Returns layer export capabilities. Retrieving this information may take some time.
@@ -502,13 +473,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './model.yaml#/components/schemas/LayerExportCapabilities'
+                $ref: './viewer-schemas.yaml#/components/schemas/LayerExportCapabilities'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
   /app/{appId}/layer/{layerId}/export/download:
     description: Directly stream layer data export response for download. POST request to allow a large filter in the
@@ -581,7 +552,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
   /app/{appId}/layer/{layerId}/features:
     summary: 'Use this endpoint to access features.'
@@ -704,19 +675,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
         '500':
           description: 'Internal server error'
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
     post:
       operationId: 'getFeaturesPOST'
       description: The same as GET, but allows for a large (spatial) filter.
@@ -734,19 +705,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
         '500':
           description: 'Internal server error'
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
   /app/{appId}/layer/{layerId}/unique/{attributeName}:
     summary: 'Use this endpoint to get a list of unique value of a layer''s feature type attribute.'
@@ -797,19 +768,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
         '500':
           description: 'Internal server error'
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
     post:
       operationId: 'getUniqueValuesPOST'
       description: POST variant for filters too large for a query parameter.
@@ -827,19 +798,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
         '500':
           description: 'Internal server error'
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
   /app/{appId}/layer/{layerId}/proxy/{protocol}:
     parameters:
@@ -913,7 +884,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
         '403':
           description: 'Forbidden. Proxy not enabled for service or the proxy has credentials but the app is public.'
           content:
@@ -971,7 +942,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
         '403':
           description: 'Forbidden. Proxy not enabled for service or the proxy has credentials but the app is public.'
           content:

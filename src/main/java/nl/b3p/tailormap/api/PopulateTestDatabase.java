@@ -1,0 +1,97 @@
+/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api;
+
+import javax.annotation.PostConstruct;
+import nl.b3p.tailormap.api.persistence.Application;
+import nl.b3p.tailormap.api.persistence.Configuration;
+import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
+import nl.b3p.tailormap.api.persistence.json.AppContent;
+import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.repository.ConfigurationRepository;
+import nl.b3p.tailormap.api.repository.GeoServiceRepository;
+import nl.b3p.tailormap.api.viewer.model.Bounds;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Profile;
+
+@org.springframework.context.annotation.Configuration
+@Profile("!test")
+public class PopulateTestDatabase {
+  private static final Log log = LogFactory.getLog(PopulateTestDatabase.class);
+
+  private final GeoServiceRepository geoServiceRepository;
+  private final GeoServiceHelper geoServiceHelper;
+  private final ApplicationRepository applicationRepository;
+  private final ConfigurationRepository configurationRepository;
+
+  public PopulateTestDatabase(
+      GeoServiceRepository geoServiceRepository,
+      GeoServiceHelper geoServiceHelper,
+      ApplicationRepository applicationRepository,
+      ConfigurationRepository configurationRepository) {
+    this.geoServiceRepository = geoServiceRepository;
+    this.geoServiceHelper = geoServiceHelper;
+    this.applicationRepository = applicationRepository;
+    this.configurationRepository = configurationRepository;
+  }
+
+  @PostConstruct
+  public void populate() throws Exception {
+
+    if (configurationRepository.existsById(Configuration.DEFAULT_APP)) {
+      // Test database already initialized for integration tests
+      return;
+    }
+
+    String[][] services = {
+      {"wms", "Test GeoServer", "https://snapshot.tailormap.nl/geoserver/wms"},
+      {"wmts", "Openbasiskaart", "https://www.openbasiskaart.nl/mapcache/wmts"},
+      {"wmts", "PDOK HWH luchtfoto", "https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0"},
+      {"wmts", "basemap.at", "https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml"},
+    };
+
+    for (String[] service : services) {
+      GeoService geoService = new GeoService();
+      geoService.setProtocol(service[0]);
+      geoService.setTitle(service[1]);
+      geoService.setUrl(service[2]);
+      geoServiceHelper.loadServiceCapabilities(geoService);
+      geoServiceRepository.save(geoService);
+    }
+
+    Long testId = 1L;
+
+    Application app = new Application();
+    app.setName("default");
+    app.setTitle("Tailormap demo");
+    app.setCrs("EPSG:28992");
+    app.setContentRoot(
+        new AppContent()
+            .addLayersItem(
+                new AppLayerRef().serviceId(testId).layerName("postgis:begroeidterreindeel"))
+            .addLayersItem(new AppLayerRef().serviceId(testId).layerName("sqlserver:wegdeel"))
+            .addLayersItem(new AppLayerRef().serviceId(testId).layerName("BGT")));
+    app.setInitialExtent(new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));
+    app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));
+    applicationRepository.save(app);
+
+    app = new Application();
+    app.setName("web-mercator");
+    app.setCrs("EPSG:3857");
+    app.setTitle("Web Mercator");
+    applicationRepository.save(app);
+
+    Configuration config = new Configuration();
+    config.setKey(Configuration.DEFAULT_APP);
+    config.setValue("default");
+    configurationRepository.save(config);
+
+    log.info("Test entities created");
+  }
+}

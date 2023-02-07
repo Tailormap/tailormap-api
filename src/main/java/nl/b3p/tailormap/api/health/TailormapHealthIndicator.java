@@ -6,7 +6,6 @@
 package nl.b3p.tailormap.api.health;
 
 import nl.b3p.tailormap.api.controller.VersionController;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,33 +24,33 @@ import org.springframework.stereotype.Component;
 @Component
 @ConditionalOnEnabledHealthIndicator("tailormap")
 public class TailormapHealthIndicator implements HealthIndicator {
-    private final Log logger = LogFactory.getLog(getClass());
-    private final VersionController versionController;
+  private final Log logger = LogFactory.getLog(getClass());
+  private final VersionController versionController;
 
-    @Value("${management.health.tailormap.enabled}")
-    private boolean healthEnabled = false;
+  @Value("${management.health.tailormap.enabled}")
+  private boolean healthEnabled = false;
 
-    public TailormapHealthIndicator(VersionController versionController) {
-        this.versionController = versionController;
+  public TailormapHealthIndicator(VersionController versionController) {
+    this.versionController = versionController;
+  }
+
+  @Override
+  public Health health() {
+    Health.Builder health = Health.unknown();
+
+    logger.info("tailormap health indicator " + (healthEnabled ? "enabled" : "disabled"));
+
+    if (healthEnabled) {
+      try {
+        // TODO check some other statistics
+        health.up().withDetails(versionController.getVersion());
+      } catch (Exception e) {
+        logger.fatal("Error checking Tailormap health. " + e.getMessage());
+        logger.debug("Error checking Tailormap health", e);
+        health.outOfService().withDetail("message", "Error checking database");
+      }
     }
 
-    @Override
-    public Health health() {
-        Health.Builder health = Health.unknown();
-
-        logger.info("tailormap health indicator " + (healthEnabled ? "enabled" : "disabled"));
-
-        if (healthEnabled) {
-            try {
-                // TODO check some other statistics
-                health.up().withDetails(versionController.getVersion());
-            } catch (Exception e) {
-                logger.fatal("Error checking Tailormap health. " + e.getMessage());
-                logger.debug("Error checking Tailormap health", e);
-                health.outOfService().withDetail("message", "Error checking database");
-            }
-        }
-
-        return health.build();
-    }
+    return health.build();
+  }
 }

@@ -6,6 +6,6 @@
 package nl.b3p.tailormap.api.util;
 
 public interface Constants {
-    String FID = "__fid";
-    int DEFAULT_MAX_FEATURES = 10;
+  String FID = "__fid";
+  int DEFAULT_MAX_FEATURES = 10;
 }

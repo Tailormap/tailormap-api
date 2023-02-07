@@ -9,7 +9,13 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import io.micrometer.core.annotation.Timed;
-
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
@@ -24,7 +30,6 @@ import nl.tailormap.viewer.config.services.AttributeDescriptor;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.Query;
@@ -60,486 +65,454 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.validation.constraints.NotNull;
-
 @AppRestController
 @Validated
 @RequestMapping(
-        path = "/app/{appId}/layer/{appLayerId}/features",
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    path = "/app/{appId}/layer/{appLayerId}/features",
+    produces = MediaType.APPLICATION_JSON_VALUE)
 public class FeaturesController implements Constants {
-    @Value("${tailormap-api.pageSize:100}")
-    private int pageSize;
+  @Value("${tailormap-api.pageSize:100}")
+  private int pageSize;
 
-    @Value("${tailormap-api.features.wfs_count_exact:false}")
-    private boolean exactWfsCounts;
+  @Value("${tailormap-api.features.wfs_count_exact:false}")
+  private boolean exactWfsCounts;
 
-    @Value("${tailormap-api.features.skip_geometry_output:true}")
-    private boolean skipGeometryOutput;
+  @Value("${tailormap-api.features.skip_geometry_output:true}")
+  private boolean skipGeometryOutput;
 
-    private final FilterFactory2 ff =
-            CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
-    private final Log logger = LogFactory.getLog(getClass());
-    @PersistenceContext private EntityManager entityManager;
+  private final FilterFactory2 ff =
+      CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+  private final Log logger = LogFactory.getLog(getClass());
+  @PersistenceContext private EntityManager entityManager;
 
-    /**
-     * Retrieve features that fulfill the requested conditions (parameters).
-     *
-     * @return a (possibly empty) list of features
-     * @param application the application
-     * @param applicationLayer the application layer id
-     * @param x x-coordinate
-     * @param y y-coordinate
-     * @param crs CRS for x- and y-coordinate
-     * @param distance buffer distance for radius around selection point(x,y)
-     * @param __fid id of feature to get
-     * @param simplify set to {@code true} to simplify geometry, defaults to {@code false}
-     * @param filter CQL? filter to apply
-     * @param page Page number to retrieve, starts at 1
-     * @param sortBy attribute to sort by
-     * @param sortOrder sort order of features, defaults to {@code ASC}
-     * @param onlyGeometries return only the default geometry attribute for each feature
-     */
-    @RequestMapping(method = {GET, POST})
-    @Timed(value = "get_features", description = "time spent to process get features call")
-    public ResponseEntity<Serializable> getFeatures(
-            @ModelAttribute Application application,
-            @ModelAttribute ApplicationLayer applicationLayer,
-            @RequestParam(required = false) Double x,
-            @RequestParam(required = false) Double y,
-            @RequestParam(required = false) String crs,
-            @RequestParam(defaultValue = "4") Double distance,
-            @RequestParam(required = false) String __fid,
-            @RequestParam(defaultValue = "false") Boolean simplify,
-            @RequestParam(required = false) String filter,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false, defaultValue = "asc") String sortOrder,
-            @RequestParam(defaultValue = "false") boolean onlyGeometries) {
+  /**
+   * Retrieve features that fulfill the requested conditions (parameters).
+   *
+   * @return a (possibly empty) list of features
+   * @param application the application
+   * @param applicationLayer the application layer id
+   * @param x x-coordinate
+   * @param y y-coordinate
+   * @param crs CRS for x- and y-coordinate
+   * @param distance buffer distance for radius around selection point(x,y)
+   * @param __fid id of feature to get
+   * @param simplify set to {@code true} to simplify geometry, defaults to {@code false}
+   * @param filter CQL? filter to apply
+   * @param page Page number to retrieve, starts at 1
+   * @param sortBy attribute to sort by
+   * @param sortOrder sort order of features, defaults to {@code ASC}
+   * @param onlyGeometries return only the default geometry attribute for each feature
+   */
+  @RequestMapping(method = {GET, POST})
+  @Timed(value = "get_features", description = "time spent to process get features call")
+  public ResponseEntity<Serializable> getFeatures(
+      @ModelAttribute Application application,
+      @ModelAttribute ApplicationLayer applicationLayer,
+      @RequestParam(required = false) Double x,
+      @RequestParam(required = false) Double y,
+      @RequestParam(required = false) String crs,
+      @RequestParam(defaultValue = "4") Double distance,
+      @RequestParam(required = false) String __fid,
+      @RequestParam(defaultValue = "false") Boolean simplify,
+      @RequestParam(required = false) String filter,
+      @RequestParam(required = false) Integer page,
+      @RequestParam(required = false) String sortBy,
+      @RequestParam(required = false, defaultValue = "asc") String sortOrder,
+      @RequestParam(defaultValue = "false") boolean onlyGeometries) {
 
-        FeaturesResponse featuresResponse;
+    FeaturesResponse featuresResponse;
 
-        if (null != __fid) {
-            featuresResponse = getFeatureByFID(applicationLayer, __fid, crs);
-        } else if (null != x && null != y) {
-            featuresResponse = getFeaturesByXY(applicationLayer, x, y, crs, distance, simplify);
-        } else if (null != page && page > 0) {
-            featuresResponse =
-                    getAllFeatures(
-                            applicationLayer, crs, page, filter, sortBy, sortOrder, onlyGeometries);
+    if (null != __fid) {
+      featuresResponse = getFeatureByFID(applicationLayer, __fid, crs);
+    } else if (null != x && null != y) {
+      featuresResponse = getFeaturesByXY(applicationLayer, x, y, crs, distance, simplify);
+    } else if (null != page && page > 0) {
+      featuresResponse =
+          getAllFeatures(applicationLayer, crs, page, filter, sortBy, sortOrder, onlyGeometries);
+    } else {
+      // TODO other implementations
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Unsupported combination of request parameters, please check the documentation");
+    }
+
+    return ResponseEntity.status(HttpStatus.OK).body(featuresResponse);
+  }
+
+  @NotNull
+  private FeaturesResponse getAllFeatures(
+      @NotNull ApplicationLayer appLayer,
+      String crs,
+      Integer page,
+      String filterCQL,
+      String sortBy,
+      String sortOrder,
+      boolean onlyGeometries) {
+    FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);
+
+    // find attribute source of layer
+    final Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), entityManager);
+    final SimpleFeatureType sft = layer.getFeatureType();
+    if (null == sft) {
+      return featuresResponse;
+    }
+    List<ConfiguredAttribute> configuredAttributes = getVisibleAttributes(appLayer, sft);
+    try {
+      SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
+
+      List<String> propNames =
+          configuredAttributes.stream()
+              .map(ConfiguredAttribute::getAttributeName)
+              .collect(Collectors.toList());
+
+      // TODO evaluate; do we want geometry in this response or not?
+      //  if we do the geometry attribute must not be removed from propNames
+      propNames.remove(sft.getGeometryAttribute());
+
+      String sortAttrName;
+
+      if (onlyGeometries) {
+        propNames = List.of(sft.getGeometryAttribute());
+        sortAttrName = null; // do not try to sort by geometry
+      } else {
+        // determine sorting attribute, default to first attribute or primary key
+        sortAttrName = propNames.get(0);
+        if (sft.getPrimaryKeyAttribute() != null
+            && propNames.contains(sft.getPrimaryKeyAttribute())) {
+          // there is a primary key and it is known, use that for sorting
+          sortAttrName = sft.getPrimaryKeyAttribute();
+          logger.trace("Sorting by primary key");
         } else {
-            // TODO other implementations
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Unsupported combination of request parameters, please check the documentation");
+          // there is no primary key we know of
+          // pick the first one from sft that is not geometry and is in the list of configured
+          // attributes
+          // note that propNames does not have the default geometry attribute (see above)
+          for (AttributeDescriptor attrDesc : sft.getAttributes()) {
+            if (propNames.contains(attrDesc.getName())) {
+              sortAttrName = attrDesc.getName();
+              break;
+            }
+          }
         }
+      }
 
-        return ResponseEntity.status(HttpStatus.OK).body(featuresResponse);
+      if (null != sortBy) {
+        // validate sortBy attribute is in the list of configured attributes
+        // and not a geometry type
+
+        if (propNames.contains(sortBy)
+            && !(sft.getAttribute(sortBy) instanceof GeometryDescriptor)) {
+          sortAttrName = sortBy;
+        } else {
+          logger.warn(
+              "Requested sortBy attribute "
+                  + sortBy
+                  + " was not found in configured attributes or is a geometry attribute.");
+        }
+      }
+
+      SortOrder _sortOrder = SortOrder.ASCENDING;
+      if (null != sortOrder
+          && (sortOrder.equalsIgnoreCase("desc") || sortOrder.equalsIgnoreCase("asc"))) {
+        _sortOrder = SortOrder.valueOf(sortOrder.toUpperCase());
+      }
+
+      // setup query, attributes and filter
+      Query q = new Query(fs.getName().toString());
+      q.setPropertyNames(propNames);
+
+      // count can be -1 if too costly eg. some WFS
+      int featureCount;
+      if (null != filterCQL) {
+        Filter filter = ECQL.toFilter(filterCQL);
+        q.setFilter(filter);
+        featureCount = fs.getCount(q);
+        // this will execute the query twice, once to get the count and once to get the data
+        if (featureCount == -1 && exactWfsCounts) {
+          featureCount = fs.getFeatures(q).size();
+        }
+      } else {
+        featureCount = fs.getCount(Query.ALL);
+        // this will execute the query twice, once to get the count and once to get the data
+        if (featureCount == -1 && exactWfsCounts) {
+          featureCount = fs.getFeatures(Query.ALL).size();
+        }
+      }
+      featuresResponse.setTotal(featureCount);
+
+      // setup page query
+      if (sortAttrName != null) {
+        q.setSortBy(ff.sort(sortAttrName, _sortOrder));
+      }
+      q.setMaxFeatures(pageSize);
+      q.setStartIndex((page - 1) * pageSize);
+      logger.debug("Attribute query: " + q);
+
+      executeQueryOnFeatureSourceAndClose(
+          false,
+          featuresResponse,
+          sft,
+          configuredAttributes,
+          onlyGeometries,
+          fs,
+          q,
+          determineProjectToCRS(crs, fs));
+    } catch (IOException e) {
+      logger.error("Could not retrieve attribute data.", e);
+    } catch (CQLException e) {
+      logger.error("Could not parse requested filter.", e);
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Could not parse requested filter.");
     }
 
-    @NotNull
-    private FeaturesResponse getAllFeatures(
-            @NotNull ApplicationLayer appLayer,
-            String crs,
-            Integer page,
-            String filterCQL,
-            String sortBy,
-            String sortOrder,
-            boolean onlyGeometries) {
-        FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);
+    return featuresResponse;
+  }
 
-        // find attribute source of layer
-        final Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), entityManager);
-        final SimpleFeatureType sft = layer.getFeatureType();
-        if (null == sft) {
-            return featuresResponse;
+  @NotNull
+  private FeaturesResponse getFeatureByFID(
+      @NotNull ApplicationLayer appLayer, @NotNull String fid, String crs) {
+    FeaturesResponse featuresResponse = new FeaturesResponse();
+
+    // find attribute source of layer
+    final Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), entityManager);
+    final SimpleFeatureType sft = layer.getFeatureType();
+    if (null == sft) {
+      return featuresResponse;
+    }
+    List<ConfiguredAttribute> configuredAttributes = getVisibleAttributes(appLayer, sft);
+    try {
+      SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
+
+      List<String> propNames =
+          configuredAttributes.stream()
+              .map(ConfiguredAttribute::getAttributeName)
+              .collect(Collectors.toList());
+      if (!propNames.contains(sft.getGeometryAttribute())) {
+        // add geom attribute for highlighting
+        propNames.add(sft.getGeometryAttribute());
+      }
+
+      // setup page query
+      Query q = new Query(fs.getName().toString());
+      q.setFilter(ff.id(ff.featureId(fid)));
+      q.setPropertyNames(propNames);
+      q.setMaxFeatures(1);
+      logger.debug("FID query: " + q);
+
+      executeQueryOnFeatureSourceAndClose(
+          false,
+          featuresResponse,
+          sft,
+          configuredAttributes,
+          false,
+          fs,
+          q,
+          determineProjectToCRS(crs, fs));
+    } catch (IOException e) {
+      logger.error("Could not retrieve attribute data.", e);
+    }
+
+    return featuresResponse;
+  }
+
+  /**
+   * @param requestCrs requeste CRS, may be null
+   * @param fs the feature source to query
+   * @return the CRS to use for the reprojection of query results, {@code null} if no CRS is
+   *     requested or when datasource CRS is the same as the requested crs
+   */
+  private CoordinateReferenceSystem determineProjectToCRS(
+      String requestCrs, SimpleFeatureSource fs) {
+    CoordinateReferenceSystem projectToCRS = null;
+    if (null != requestCrs) {
+      // reproject to feature source CRS if different from source CRS
+      try {
+        // this is the CRS of the "default geometry" attribute
+        final CoordinateReferenceSystem dataSourceCRS =
+            fs.getSchema().getCoordinateReferenceSystem();
+        if (!((DefaultProjectedCRS) dataSourceCRS)
+            .getIdentifier(null)
+            .toString()
+            .equalsIgnoreCase(requestCrs)) {
+          projectToCRS = CRS.decode(requestCrs);
         }
-        List<ConfiguredAttribute> configuredAttributes = getVisibleAttributes(appLayer, sft);
+      } catch (FactoryException e) {
+        logger.warn("Unable to transform query geometry to desired CRS", e);
+      }
+    }
+    return projectToCRS;
+  }
+
+  @NotNull
+  private FeaturesResponse getFeaturesByXY(
+      @NotNull ApplicationLayer appLayer,
+      @NotNull Double x,
+      @NotNull Double y,
+      String crs,
+      @NotNull Double distance,
+      @NotNull Boolean simplifyGeometry) {
+    // validate buffer
+    if (null != distance && 0 > distance) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Buffer distance must be greater than 0");
+    }
+
+    FeaturesResponse featuresResponse = new FeaturesResponse();
+    // find attribute source of layer
+    GeoService geoService = appLayer.getService();
+    Layer layer = geoService.getLayer(appLayer.getLayerName(), entityManager);
+    SimpleFeatureType sft = layer.getFeatureType();
+    if (null == sft) {
+      return featuresResponse;
+    }
+    List<ConfiguredAttribute> configuredAttributes = appLayer.getAttributes(sft);
+    configuredAttributes =
+        configuredAttributes.stream()
+            .filter(ConfiguredAttribute::isVisible)
+            .collect(Collectors.toList());
+
+    try {
+      SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
+      Query q = new Query(fs.getName().toString());
+
+      GeometricShapeFactory shapeFact = new GeometricShapeFactory();
+      shapeFact.setNumPoints(32);
+      shapeFact.setCentre(new Coordinate(x, y));
+      //noinspection ConstantConditions
+      shapeFact.setSize(distance * 2d);
+      Geometry p = shapeFact.createCircle();
+      logger.debug("created geometry: " + p);
+
+      CoordinateReferenceSystem fromCRS = determineProjectToCRS(crs, fs);
+      if (null != fromCRS) {
+        // reproject requested x/y-geom to feature source CRS if different from source CRS
         try {
-            SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
+          // this is the CRS of the "default geometry" attribute
+          final CoordinateReferenceSystem toCRS = fs.getSchema().getCoordinateReferenceSystem();
+          MathTransform transform = CRS.findMathTransform(fromCRS, toCRS, true);
+          p = JTS.transform(p, transform);
+          logger.debug("reprojected geometry to: " + p);
+        } catch (FactoryException | TransformException e) {
+          logger.warn(
+              "Unable to transform query geometry to desired CRS, trying with original CRS");
+        }
+      }
+      logger.debug("using geometry: " + p);
+      Filter spatialFilter = ff.intersects(ff.property(sft.getGeometryAttribute()), ff.literal(p));
 
-            List<String> propNames =
-                    configuredAttributes.stream()
-                            .map(ConfiguredAttribute::getAttributeName)
-                            .collect(Collectors.toList());
+      // TODO flamingo does some fancy stuff to combine with existing filters using
+      //      TailormapCQL and some filter visitors
 
-            // TODO evaluate; do we want geometry in this response or not?
-            //  if we do the geometry attribute must not be removed from propNames
-            propNames.remove(sft.getGeometryAttribute());
+      List<String> propNames =
+          configuredAttributes.stream()
+              .map(ConfiguredAttribute::getAttributeName)
+              .collect(Collectors.toList());
+      if (!propNames.contains(sft.getGeometryAttribute())) {
+        // add geom attribute for highlighting
+        propNames.add(sft.getGeometryAttribute());
+      }
 
-            String sortAttrName;
+      q.setPropertyNames(propNames);
+      q.setFilter(spatialFilter);
+      q.setMaxFeatures(DEFAULT_MAX_FEATURES);
 
-            if (onlyGeometries) {
-                propNames = List.of(sft.getGeometryAttribute());
-                sortAttrName = null; // do not try to sort by geometry
-            } else {
-                // determine sorting attribute, default to first attribute or primary key
-                sortAttrName = propNames.get(0);
-                if (sft.getPrimaryKeyAttribute() != null
-                        && propNames.contains(sft.getPrimaryKeyAttribute())) {
-                    // there is a primary key and it is known, use that for sorting
-                    sortAttrName = sft.getPrimaryKeyAttribute();
-                    logger.trace("Sorting by primary key");
+      executeQueryOnFeatureSourceAndClose(
+          simplifyGeometry, featuresResponse, sft, configuredAttributes, false, fs, q, fromCRS);
+    } catch (IOException e) {
+      logger.error("Could not retrieve attribute data.", e);
+    }
+    return featuresResponse;
+  }
+
+  private void executeQueryOnFeatureSourceAndClose(
+      boolean simplifyGeometry,
+      @NotNull FeaturesResponse featuresResponse,
+      @NotNull SimpleFeatureType sft,
+      List<ConfiguredAttribute> configuredAttributes,
+      boolean onlyGeometries,
+      @NotNull SimpleFeatureSource fs,
+      @NotNull Query q,
+      CoordinateReferenceSystem projectToCRS)
+      throws IOException {
+    boolean addFields = false;
+
+    MathTransform transform = null;
+    if (null != projectToCRS) {
+      try {
+        transform =
+            CRS.findMathTransform(
+                fs.getSchema().getCoordinateReferenceSystem(), projectToCRS, true);
+      } catch (FactoryException e) {
+        logger.error("Can not transform geometry to desired CRS.", e);
+      }
+    }
+
+    // send request to attribute source
+    try (SimpleFeatureIterator feats = fs.getFeatures(q).features()) {
+      while (feats.hasNext()) {
+        addFields = true;
+        // reformat found features to list of Feature, filtering on configuredAttributes
+        SimpleFeature feature = feats.next();
+        // processedGeometry can be null
+        String processedGeometry =
+            GeometryProcessor.processGeometry(
+                feature.getAttribute(sft.getGeometryAttribute()), simplifyGeometry, transform);
+        Feature newFeat =
+            new Feature().fid(feature.getIdentifier().getID()).geometry(processedGeometry);
+
+        if (!onlyGeometries) {
+          configuredAttributes.forEach(
+              configuredAttribute -> {
+                if (configuredAttribute.getAttributeName().equals(sft.getGeometryAttribute())) {
+                  newFeat.putAttributesItem(
+                      configuredAttribute.getAttributeName(), processedGeometry);
                 } else {
-                    // there is no primary key we know of
-                    // pick the first one from sft that is not geometry and is in the list of
-                    // configured
-                    // attributes
-                    // note that propNames does not have the default geometry attribute (see above)
-                    for (AttributeDescriptor attrDesc : sft.getAttributes()) {
-                        if (propNames.contains(attrDesc.getName())) {
-                            sortAttrName = attrDesc.getName();
-                            break;
-                        }
+                  Object attrValue = feature.getAttribute(configuredAttribute.getAttributeName());
+                  if (attrValue instanceof Geometry) {
+                    if (skipGeometryOutput) {
+                      attrValue = null;
+                    } else {
+                      attrValue = GeometryProcessor.geometryToJson((Geometry) attrValue);
                     }
+                  }
+                  newFeat.putAttributesItem(configuredAttribute.getAttributeName(), attrValue);
                 }
-            }
-
-            if (null != sortBy) {
-                // validate sortBy attribute is in the list of configured attributes
-                // and not a geometry type
-
-                if (propNames.contains(sortBy)
-                        && !(sft.getAttribute(sortBy) instanceof GeometryDescriptor)) {
-                    sortAttrName = sortBy;
-                } else {
-                    logger.warn(
-                            "Requested sortBy attribute "
-                                    + sortBy
-                                    + " was not found in configured attributes or is a geometry attribute.");
-                }
-            }
-
-            SortOrder _sortOrder = SortOrder.ASCENDING;
-            if (null != sortOrder
-                    && (sortOrder.equalsIgnoreCase("desc") || sortOrder.equalsIgnoreCase("asc"))) {
-                _sortOrder = SortOrder.valueOf(sortOrder.toUpperCase());
-            }
-
-            // setup query, attributes and filter
-            Query q = new Query(fs.getName().toString());
-            q.setPropertyNames(propNames);
-
-            // count can be -1 if too costly eg. some WFS
-            int featureCount;
-            if (null != filterCQL) {
-                Filter filter = ECQL.toFilter(filterCQL);
-                q.setFilter(filter);
-                featureCount = fs.getCount(q);
-                // this will execute the query twice, once to get the count and once to get the data
-                if (featureCount == -1 && exactWfsCounts) {
-                    featureCount = fs.getFeatures(q).size();
-                }
-            } else {
-                featureCount = fs.getCount(Query.ALL);
-                // this will execute the query twice, once to get the count and once to get the data
-                if (featureCount == -1 && exactWfsCounts) {
-                    featureCount = fs.getFeatures(Query.ALL).size();
-                }
-            }
-            featuresResponse.setTotal(featureCount);
-
-            // setup page query
-            if (sortAttrName != null) {
-                q.setSortBy(ff.sort(sortAttrName, _sortOrder));
-            }
-            q.setMaxFeatures(pageSize);
-            q.setStartIndex((page - 1) * pageSize);
-            logger.debug("Attribute query: " + q);
-
-            executeQueryOnFeatureSourceAndClose(
-                    false,
-                    featuresResponse,
-                    sft,
-                    configuredAttributes,
-                    onlyGeometries,
-                    fs,
-                    q,
-                    determineProjectToCRS(crs, fs));
-        } catch (IOException e) {
-            logger.error("Could not retrieve attribute data.", e);
-        } catch (CQLException e) {
-            logger.error("Could not parse requested filter.", e);
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Could not parse requested filter.");
+              });
         }
-
-        return featuresResponse;
+        featuresResponse.addFeaturesItem(newFeat);
+      }
+    } finally {
+      fs.getDataStore().dispose();
     }
+    if (addFields) {
+      // get attributes from feature type
+      configuredAttributes.forEach(
+          configuredAttribute -> {
+            AttributeDescriptor attributeDescriptor =
+                sft.getAttribute(configuredAttribute.getAttributeName());
+            String type = attributeDescriptor.getType();
 
-    @NotNull
-    private FeaturesResponse getFeatureByFID(
-            @NotNull ApplicationLayer appLayer, @NotNull String fid, String crs) {
-        FeaturesResponse featuresResponse = new FeaturesResponse();
-
-        // find attribute source of layer
-        final Layer layer = appLayer.getService().getLayer(appLayer.getLayerName(), entityManager);
-        final SimpleFeatureType sft = layer.getFeatureType();
-        if (null == sft) {
-            return featuresResponse;
-        }
-        List<ConfiguredAttribute> configuredAttributes = getVisibleAttributes(appLayer, sft);
-        try {
-            SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
-
-            List<String> propNames =
-                    configuredAttributes.stream()
-                            .map(ConfiguredAttribute::getAttributeName)
-                            .collect(Collectors.toList());
-            if (!propNames.contains(sft.getGeometryAttribute())) {
-                // add geom attribute for highlighting
-                propNames.add(sft.getGeometryAttribute());
+            // If the type is unknown the admin still saves an AttributeDescriptor
+            if (StringUtils.hasText(type)) {
+              // Only return generic 'geometry' type for now
+              if (AttributeDescriptor.GEOMETRY_TYPES.contains(type)) {
+                type = AttributeDescriptor.TYPE_GEOMETRY;
+              }
+              featuresResponse.addColumnMetadataItem(
+                  new ColumnMetadata()
+                      .key(attributeDescriptor.getName())
+                      .type(ColumnMetadata.TypeEnum.fromValue(type))
+                      .alias(attributeDescriptor.getAlias()));
             }
-
-            // setup page query
-            Query q = new Query(fs.getName().toString());
-            q.setFilter(ff.id(ff.featureId(fid)));
-            q.setPropertyNames(propNames);
-            q.setMaxFeatures(1);
-            logger.debug("FID query: " + q);
-
-            executeQueryOnFeatureSourceAndClose(
-                    false,
-                    featuresResponse,
-                    sft,
-                    configuredAttributes,
-                    false,
-                    fs,
-                    q,
-                    determineProjectToCRS(crs, fs));
-        } catch (IOException e) {
-            logger.error("Could not retrieve attribute data.", e);
-        }
-
-        return featuresResponse;
+          });
     }
+  }
 
-    /**
-     * @param requestCrs requeste CRS, may be null
-     * @param fs the feature source to query
-     * @return the CRS to use for the reprojection of query results, {@code null} if no CRS is
-     *     requested or when datasource CRS is the same as the requested crs
-     */
-    private CoordinateReferenceSystem determineProjectToCRS(
-            String requestCrs, SimpleFeatureSource fs) {
-        CoordinateReferenceSystem projectToCRS = null;
-        if (null != requestCrs) {
-            // reproject to feature source CRS if different from source CRS
-            try {
-                // this is the CRS of the "default geometry" attribute
-                final CoordinateReferenceSystem dataSourceCRS =
-                        fs.getSchema().getCoordinateReferenceSystem();
-                if (!((DefaultProjectedCRS) dataSourceCRS)
-                        .getIdentifier(null)
-                        .toString()
-                        .equalsIgnoreCase(requestCrs)) {
-                    projectToCRS = CRS.decode(requestCrs);
-                }
-            } catch (FactoryException e) {
-                logger.warn("Unable to transform query geometry to desired CRS", e);
-            }
-        }
-        return projectToCRS;
-    }
-
-    @NotNull
-    private FeaturesResponse getFeaturesByXY(
-            @NotNull ApplicationLayer appLayer,
-            @NotNull Double x,
-            @NotNull Double y,
-            String crs,
-            @NotNull Double distance,
-            @NotNull Boolean simplifyGeometry) {
-        // validate buffer
-        if (null != distance && 0 > distance) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Buffer distance must be greater than 0");
-        }
-
-        FeaturesResponse featuresResponse = new FeaturesResponse();
-        // find attribute source of layer
-        GeoService geoService = appLayer.getService();
-        Layer layer = geoService.getLayer(appLayer.getLayerName(), entityManager);
-        SimpleFeatureType sft = layer.getFeatureType();
-        if (null == sft) {
-            return featuresResponse;
-        }
-        List<ConfiguredAttribute> configuredAttributes = appLayer.getAttributes(sft);
-        configuredAttributes =
-                configuredAttributes.stream()
-                        .filter(ConfiguredAttribute::isVisible)
-                        .collect(Collectors.toList());
-
-        try {
-            SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
-            Query q = new Query(fs.getName().toString());
-
-            GeometricShapeFactory shapeFact = new GeometricShapeFactory();
-            shapeFact.setNumPoints(32);
-            shapeFact.setCentre(new Coordinate(x, y));
-            //noinspection ConstantConditions
-            shapeFact.setSize(distance * 2d);
-            Geometry p = shapeFact.createCircle();
-            logger.debug("created geometry: " + p);
-
-            CoordinateReferenceSystem fromCRS = determineProjectToCRS(crs, fs);
-            if (null != fromCRS) {
-                // reproject requested x/y-geom to feature source CRS if different from source CRS
-                try {
-                    // this is the CRS of the "default geometry" attribute
-                    final CoordinateReferenceSystem toCRS =
-                            fs.getSchema().getCoordinateReferenceSystem();
-                    MathTransform transform = CRS.findMathTransform(fromCRS, toCRS, true);
-                    p = JTS.transform(p, transform);
-                    logger.debug("reprojected geometry to: " + p);
-                } catch (FactoryException | TransformException e) {
-                    logger.warn(
-                            "Unable to transform query geometry to desired CRS, trying with original CRS");
-                }
-            }
-            logger.debug("using geometry: " + p);
-            Filter spatialFilter =
-                    ff.intersects(ff.property(sft.getGeometryAttribute()), ff.literal(p));
-
-            // TODO flamingo does some fancy stuff to combine with existing filters using
-            //      TailormapCQL and some filter visitors
-
-            List<String> propNames =
-                    configuredAttributes.stream()
-                            .map(ConfiguredAttribute::getAttributeName)
-                            .collect(Collectors.toList());
-            if (!propNames.contains(sft.getGeometryAttribute())) {
-                // add geom attribute for highlighting
-                propNames.add(sft.getGeometryAttribute());
-            }
-
-            q.setPropertyNames(propNames);
-            q.setFilter(spatialFilter);
-            q.setMaxFeatures(DEFAULT_MAX_FEATURES);
-
-            executeQueryOnFeatureSourceAndClose(
-                    simplifyGeometry,
-                    featuresResponse,
-                    sft,
-                    configuredAttributes,
-                    false,
-                    fs,
-                    q,
-                    fromCRS);
-        } catch (IOException e) {
-            logger.error("Could not retrieve attribute data.", e);
-        }
-        return featuresResponse;
-    }
-
-    private void executeQueryOnFeatureSourceAndClose(
-            boolean simplifyGeometry,
-            @NotNull FeaturesResponse featuresResponse,
-            @NotNull SimpleFeatureType sft,
-            List<ConfiguredAttribute> configuredAttributes,
-            boolean onlyGeometries,
-            @NotNull SimpleFeatureSource fs,
-            @NotNull Query q,
-            CoordinateReferenceSystem projectToCRS)
-            throws IOException {
-        boolean addFields = false;
-
-        MathTransform transform = null;
-        if (null != projectToCRS) {
-            try {
-                transform =
-                        CRS.findMathTransform(
-                                fs.getSchema().getCoordinateReferenceSystem(), projectToCRS, true);
-            } catch (FactoryException e) {
-                logger.error("Can not transform geometry to desired CRS.", e);
-            }
-        }
-
-        // send request to attribute source
-        try (SimpleFeatureIterator feats = fs.getFeatures(q).features()) {
-            while (feats.hasNext()) {
-                addFields = true;
-                // reformat found features to list of Feature, filtering on configuredAttributes
-                SimpleFeature feature = feats.next();
-                // processedGeometry can be null
-                String processedGeometry =
-                        GeometryProcessor.processGeometry(
-                                feature.getAttribute(sft.getGeometryAttribute()),
-                                simplifyGeometry,
-                                transform);
-                Feature newFeat =
-                        new Feature()
-                                .fid(feature.getIdentifier().getID())
-                                .geometry(processedGeometry);
-
-                if (!onlyGeometries) {
-                    configuredAttributes.forEach(
-                            configuredAttribute -> {
-                                if (configuredAttribute
-                                        .getAttributeName()
-                                        .equals(sft.getGeometryAttribute())) {
-                                    newFeat.putAttributesItem(
-                                            configuredAttribute.getAttributeName(),
-                                            processedGeometry);
-                                } else {
-                                    Object attrValue =
-                                            feature.getAttribute(
-                                                    configuredAttribute.getAttributeName());
-                                    if (attrValue instanceof Geometry) {
-                                        if (skipGeometryOutput) {
-                                            attrValue = null;
-                                        } else {
-                                            attrValue =
-                                                    GeometryProcessor.geometryToJson(
-                                                            (Geometry) attrValue);
-                                        }
-                                    }
-                                    newFeat.putAttributesItem(
-                                            configuredAttribute.getAttributeName(), attrValue);
-                                }
-                            });
-                }
-                featuresResponse.addFeaturesItem(newFeat);
-            }
-        } finally {
-            fs.getDataStore().dispose();
-        }
-        if (addFields) {
-            // get attributes from feature type
-            configuredAttributes.forEach(
-                    configuredAttribute -> {
-                        AttributeDescriptor attributeDescriptor =
-                                sft.getAttribute(configuredAttribute.getAttributeName());
-                        String type = attributeDescriptor.getType();
-
-                        // If the type is unknown the admin still saves an AttributeDescriptor
-                        if (StringUtils.hasText(type)) {
-                            // Only return generic 'geometry' type for now
-                            if (AttributeDescriptor.GEOMETRY_TYPES.contains(type)) {
-                                type = AttributeDescriptor.TYPE_GEOMETRY;
-                            }
-                            featuresResponse.addColumnMetadataItem(
-                                    new ColumnMetadata()
-                                            .key(attributeDescriptor.getName())
-                                            .type(ColumnMetadata.TypeEnum.fromValue(type))
-                                            .alias(attributeDescriptor.getAlias()));
-                        }
-                    });
-        }
-    }
-
-    private List<ConfiguredAttribute> getVisibleAttributes(
-            @NotNull ApplicationLayer appLayer, @NotNull SimpleFeatureType sft) {
-        List<ConfiguredAttribute> configuredAttributes = appLayer.getAttributes(sft);
-        return configuredAttributes.stream()
-                .filter(ConfiguredAttribute::isVisible)
-                .collect(Collectors.toList());
-    }
+  private List<ConfiguredAttribute> getVisibleAttributes(
+      @NotNull ApplicationLayer appLayer, @NotNull SimpleFeatureType sft) {
+    List<ConfiguredAttribute> configuredAttributes = appLayer.getAttributes(sft);
+    return configuredAttributes.stream()
+        .filter(ConfiguredAttribute::isVisible)
+        .collect(Collectors.toList());
+  }
 }

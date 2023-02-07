@@ -15,25 +15,24 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 
 public class WFSProxy {
-    public static HttpResponse<InputStream> proxyWfsRequest(
-            URI wfsRequest, String username, String password, HttpServletRequest request)
-            throws Exception {
-        final HttpClient httpClient = java.net.http.HttpClient.newBuilder().build();
+  public static HttpResponse<InputStream> proxyWfsRequest(
+      URI wfsRequest, String username, String password, HttpServletRequest request)
+      throws Exception {
+    final HttpClient httpClient = java.net.http.HttpClient.newBuilder().build();
 
-        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(wfsRequest);
+    HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(wfsRequest);
 
-        addForwardedForRequestHeaders(requestBuilder, request);
+    addForwardedForRequestHeaders(requestBuilder, request);
 
-        // Just a few headers for logging, conditional or range requests not likely to be supported
-        // by a WFS
-        passthroughRequestHeaders(requestBuilder, request, Set.of("Referer", "User-Agent"));
+    // Just a few headers for logging, conditional or range requests not likely to be supported by a
+    // WFS
+    passthroughRequestHeaders(requestBuilder, request, Set.of("Referer", "User-Agent"));
 
-        setHttpBasicAuthenticationHeader(requestBuilder, username, password);
+    setHttpBasicAuthenticationHeader(requestBuilder, username, password);
 
-        return httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
-    }
+    return httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
+  }
 }

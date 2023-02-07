@@ -5,8 +5,6 @@
  */
 package nl.b3p.tailormap.api;
 
-import org.junit.jupiter.api.BeforeAll;
-
 import java.io.IOException;
 import java.util.Properties;
 
@@ -15,11 +13,18 @@ import java.util.Properties;
  *
  * @author mprins
  */
-public abstract class StaticTestData {
-    protected static final Properties testData = new Properties();
+public class StaticTestData {
+  public static final Properties testData = new Properties();
 
-    @BeforeAll
-    static void readTestData() throws IOException {
-        testData.load(StaticTestData.class.getResourceAsStream("/StaticTestData.properties"));
+  static {
+    try {
+      testData.load(StaticTestData.class.getResourceAsStream("/StaticTestData.properties"));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
+  }
+
+  public static String get(String key) {
+    return testData.getProperty(key);
+  }
 }

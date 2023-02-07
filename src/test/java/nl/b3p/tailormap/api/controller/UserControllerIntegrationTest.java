@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import nl.b3p.tailormap.api.JPAConfiguration;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -27,45 +26,47 @@ import org.springframework.test.web.servlet.MockMvc;
 
 /** Testcases for {@link UserController}. */
 @SpringBootTest(
-        classes = {
-            JPAConfiguration.class,
-            SecurityConfig.class,
-            AuthorizationService.class,
-            UserController.class,
-        })
+    classes = {
+      JPAConfiguration.class,
+      SecurityConfig.class,
+      AuthorizationService.class,
+      UserController.class,
+    })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
 @ActiveProfiles("test")
 class UserControllerIntegrationTest {
 
-    @Autowired private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @Autowired UserController userController;
+  @Autowired UserController userController;
 
-    @Test
-    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    void testUnauthenticatedGetUser() throws Exception {
-        assertNotNull(userController, "userController can not be `null` if Spring Boot works");
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void testUnauthenticatedGetUser() throws Exception {
+    assertNotNull(userController, "userController can not be `null` if Spring Boot works");
 
-        mockMvc.perform(get("/user"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.isAuthenticated").value(false))
-                .andExpect(jsonPath("$.username").value(""));
-    }
+    mockMvc
+        .perform(get("/user"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.isAuthenticated").value(false))
+        .andExpect(jsonPath("$.username").value(""));
+  }
 
-    @Test
-    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-    @WithMockUser(
-            username = "admin",
-            authorities = {"Admin"})
-    void testAuthenticatedGetUser() throws Exception {
-        assertNotNull(userController, "userController can not be `null` if Spring Boot works");
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "admin",
+      authorities = {"Admin"})
+  void testAuthenticatedGetUser() throws Exception {
+    assertNotNull(userController, "userController can not be `null` if Spring Boot works");
 
-        mockMvc.perform(get("/user"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.isAuthenticated").value(true))
-                .andExpect(jsonPath("$.username").value("admin"));
-    }
+    mockMvc
+        .perform(get("/user"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.isAuthenticated").value(true))
+        .andExpect(jsonPath("$.username").value("admin"));
+  }
 }

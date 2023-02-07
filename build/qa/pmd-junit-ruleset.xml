@@ -8,7 +8,6 @@ SPDX-License-Identifier: MIT
   <description>
 Junit ruleset. https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html
 </description>
-  <rule ref="category/java/bestpractices.xml/JUnitAssertionsShouldIncludeMessage" />
   <!-- if this fails check https://github.com/pmd/pmd/issues/2147 /-->
   <rule ref="category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert" />
   <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion" />
