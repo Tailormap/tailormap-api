@@ -14,6 +14,7 @@ import nl.b3p.tailormap.api.viewer.model.MapResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,7 @@ public class MapController {
 
   @GetMapping
   @Timed(value = "get_map", description = "get the map config of an application")
+  @Transactional
   public ResponseEntity<Serializable> get(@ModelAttribute Application application) {
     MapResponse mapResponse = applicationHelper.toMapResponse(application);
     return ResponseEntity.status(HttpStatus.OK).body(mapResponse);
