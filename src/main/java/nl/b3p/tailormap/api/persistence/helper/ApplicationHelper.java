@@ -5,14 +5,15 @@
  */
 package nl.b3p.tailormap.api.persistence.helper;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
-import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
+import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.viewer.model.AppLayer;
@@ -69,22 +70,112 @@ public class ApplicationHelper {
   }
 
   public void setLayers(Application app, MapResponse mr) {
+    new MapResponseLayerBuilder(app, mr).buildLayers();
+  }
 
-    AppContent content = app.getContentRoot();
+  private class MapResponseLayerBuilder {
+    private int layerIdCounter = 0;
+    private int levelIdCounter = 0;
 
-    LayerTreeNode root = new LayerTreeNode().id("root").root(true);
-    mr.addLayerTreeNodesItem(root);
-    int layerIdCounter = 0;
-    Set<Long> addedServiceIds = new HashSet<>();
+    private final Application app;
+    private final MapResponse mr;
 
-    for (AppLayerRef layerRef : content.getLayers()) {
+    // XXX not needed if we have GeoServiceLayer.getService().getId()
+    private final Map<GeoServiceLayer, Long> serviceLayerServiceIds = new HashMap<>();
+
+    public MapResponseLayerBuilder(Application app, MapResponse mr) {
+      this.app = app;
+      this.mr = mr;
+    }
+
+    public void buildLayers() {
+      if (app.getContentRoot() != null) {
+        buildBackgroundLayers();
+        buildOverlayLayers();
+      }
+    }
+
+    private void buildBackgroundLayers() {
+      LayerTreeNode backgroundRootNode =
+          new LayerTreeNode().id("base-layer-root").name("Base layers").root(true);
+      mr.addBaseLayerTreeNodesItem(backgroundRootNode);
+
+      if (app.getContentRoot().getBaseLayers() != null) {
+        for (BaseLayerInner baseLayer : app.getContentRoot().getBaseLayers()) {
+          LayerTreeNode backgroundNode =
+              new LayerTreeNode()
+                  .id("lvl_" + levelIdCounter++)
+                  .name(baseLayer.getTitle())
+                  .root(false);
+
+          for (AppLayerRef layerRef : baseLayer.getLayers()) {
+            addAppLayerItem(layerRef, backgroundNode, mr.getBaseLayerTreeNodes());
+          }
+          if (!backgroundNode.getChildrenIds().isEmpty()) {
+            backgroundRootNode.addChildrenIdsItem(backgroundNode.getId());
+            mr.addBaseLayerTreeNodesItem(backgroundNode);
+          }
+        }
+      }
+    }
+
+    private void buildOverlayLayers() {
+      LayerTreeNode rootNode = new LayerTreeNode().id("root").name("Overlays").root(true);
+      mr.addLayerTreeNodesItem(rootNode);
+      // TODO: just supporting layers at the root node for now
+      if (app.getContentRoot().getLayers() != null) {
+        for (AppLayerRef layerRef : app.getContentRoot().getLayers()) {
+          addAppLayerItem(layerRef, rootNode, mr.getLayerTreeNodes());
+        }
+      }
+    }
+
+    private void addAppLayerItem(
+        AppLayerRef layerRef, LayerTreeNode parent, List<LayerTreeNode> layerTreeNodeList) {
+      GeoServiceLayer serviceLayer = findServiceLayer(layerRef);
+      if (serviceLayer != null) {
+        String title =
+            Objects.requireNonNullElse(
+                layerRef.getTitle(),
+                Objects.requireNonNullElse(serviceLayer.getTitle(), layerRef.getLayerName()));
+        mr.addAppLayersItem(
+            new AppLayer()
+                .id(
+                    (long)
+                        layerIdCounter) // XXX id's must be from config, not generated -> use string
+                // identifiers instead
+                .hasAttributes(false)
+                .layerName(layerRef.getLayerName())
+                .opacity(layerRef.getOpacity())
+                // Can't set opaque, not mapped by GeoTools gt-wms?
+                .maxScale(serviceLayer.getMaxScale())
+                .minScale(serviceLayer.getMinScale())
+                .serviceId(serviceLayerServiceIds.get(serviceLayer))
+                .title(title)
+                .opacity(layerRef.getOpacity())
+                .visible(layerRef.getVisible()));
+
+        LayerTreeNode layerNode =
+            new LayerTreeNode()
+                .id("lyr_" + layerIdCounter)
+                .appLayerId(layerIdCounter)
+                .description(serviceLayer.getAbstractText())
+                .name(title)
+                .root(false);
+        parent.addChildrenIdsItem(layerNode.getId());
+        layerTreeNodeList.add(layerNode);
+        layerIdCounter++;
+      }
+    }
+
+    private GeoServiceLayer findServiceLayer(AppLayerRef layerRef) {
       GeoService service = geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);
       if (service == null) {
         log.warn(
             String.format(
                 "App %d references layer \"%s\" of missing service %d",
                 app.getId(), layerRef.getLayerName(), layerRef.getServiceId()));
-        continue;
+        return null;
       }
       GeoServiceLayer serviceLayer =
           service.getLayers().stream()
@@ -97,39 +188,18 @@ public class ApplicationHelper {
             String.format(
                 "App %d references layer \"%s\" not found in capabilities of service %d",
                 app.getId(), layerRef.getLayerName(), service.getId()));
-        continue;
+        return null;
       }
 
-      if (!addedServiceIds.contains(service.getId())) {
+      serviceLayerServiceIds.put(serviceLayer, service.getId());
+
+      if (mr.getServices().stream()
+          .filter(s -> s.getId().equals(service.getId()))
+          .findAny()
+          .isEmpty()) {
         mr.addServicesItem(service.toJsonPojo());
-        addedServiceIds.add(service.getId());
       }
-
-      mr.addAppLayersItem(
-          new AppLayer()
-              .id((long) layerIdCounter) // XXX
-              .hasAttributes(false)
-              .layerName(layerRef.getLayerName())
-              .opacity(100)
-              // Can't set opaque, not mapped by GeoTools gt-wms?
-              .maxScale(serviceLayer.getMaxScale())
-              .minScale(serviceLayer.getMinScale())
-              .serviceId(service.getId())
-              .title(
-                  // Evt Opzoeken in layerSettings, alleen bij service of ook per app?
-                  layerRef.getLayerName())
-              .visible(true));
-
-      mr.addLayerTreeNodesItem(
-          new LayerTreeNode()
-              .id("lyr_" + layerIdCounter)
-              .appLayerId(layerIdCounter)
-              .description(serviceLayer.getAbstractText())
-              .name(layerRef.getLayerName())
-              .root(false));
-
-      root.addChildrenIdsItem("lyr_" + layerIdCounter);
-      layerIdCounter++;
+      return serviceLayer;
     }
   }
 }

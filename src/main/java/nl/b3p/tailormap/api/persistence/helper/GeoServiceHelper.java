@@ -27,15 +27,10 @@ import org.geotools.data.ServiceInfo;
 import org.geotools.data.ows.AbstractOpenWebService;
 import org.geotools.data.ows.Capabilities;
 import org.geotools.data.ows.OperationType;
-import org.geotools.data.ows.Specification;
 import org.geotools.http.HTTPClient;
 import org.geotools.http.HTTPClientFinder;
 import org.geotools.ows.ServiceException;
 import org.geotools.ows.wms.Layer;
-import org.geotools.ows.wms.WMS1_0_0;
-import org.geotools.ows.wms.WMS1_1_0;
-import org.geotools.ows.wms.WMS1_1_1;
-import org.geotools.ows.wms.WMS1_3_0;
 import org.geotools.ows.wms.WMSCapabilities;
 import org.geotools.ows.wms.WebMapServer;
 import org.geotools.ows.wmts.WebMapTileServer;
@@ -215,11 +210,12 @@ public class GeoServiceHelper {
     // Als we niet setupSpecifications() override krijgen we WMS 1.3.0 capabilities terug zonder
     // DescribeLayer
     return new WebMapServer(new URL(url), client) {
-      @Override
+      /*  XXX does not work with https://wms.geonorge.no/skwms1/wms.adm_enheter2 (MapServer 7.4.2) */
+      /*      @Override
       protected void setupSpecifications() {
         specs =
             new Specification[] {new WMS1_3_0(), new WMS1_1_1(), new WMS1_1_0(), new WMS1_0_0()};
-      }
+      }*/
     };
   }
 
