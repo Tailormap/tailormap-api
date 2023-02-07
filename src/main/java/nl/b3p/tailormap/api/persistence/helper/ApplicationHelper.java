@@ -140,17 +140,15 @@ public class ApplicationHelper {
                 Objects.requireNonNullElse(serviceLayer.getTitle(), layerRef.getLayerName()));
         mr.addAppLayersItem(
             new AppLayer()
-                .id(
-                    (long)
-                        layerIdCounter) // XXX id's must be from config, not generated -> use string
-                // identifiers instead
+                // XXX id's must be from config, not generated -> use string identifiers instead
+                .id((long) layerIdCounter)
                 .hasAttributes(false)
+                .serviceId(serviceLayerServiceIds.get(serviceLayer))
                 .layerName(layerRef.getLayerName())
-                .opacity(layerRef.getOpacity())
-                // Can't set opaque, not mapped by GeoTools gt-wms?
+                // Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools
+                // gt-wms Layer class?
                 .maxScale(serviceLayer.getMaxScale())
                 .minScale(serviceLayer.getMinScale())
-                .serviceId(serviceLayerServiceIds.get(serviceLayer))
                 .title(title)
                 .opacity(layerRef.getOpacity())
                 .visible(layerRef.getVisible()));
