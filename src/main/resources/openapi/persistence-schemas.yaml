@@ -106,6 +106,19 @@ components:
     AppContent:
       description: Configuration for including content (layers) in an application.
       properties:
+        baseLayers:
+          title: BaseLayer
+          type: array
+          items:
+            type: object
+            required: [title, layers]
+            properties:
+              title:
+                type: string
+              layers:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppLayerRef'
         layers:
           type: array
           items:
@@ -117,10 +130,22 @@ components:
             $ref: '#/components/schemas/AppContent'
 
     AppLayerRef:
-      required: [serviceId, layerName]
+      required: [serviceId, layerName, visible, opacity]
       properties:
         serviceId:
           type: integer
           format: int64
+          nullable: false
         layerName:
           type: string
+          nullable: false
+        title:
+          type: string
+        visible:
+          type: boolean
+          nullable: false
+          default: true
+        opacity:
+          type: integer
+          nullable: false
+          default: 100

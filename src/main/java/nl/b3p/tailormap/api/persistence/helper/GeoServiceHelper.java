@@ -212,8 +212,10 @@ public class GeoServiceHelper {
 
   private WebMapServer getWebMapServer(HTTPClient client, String url)
       throws IOException, ServiceException {
-    // Als we niet setupSpecifications() override krijgen we WMS 1.3.0 capabilities terug zonder
-    // DescribeLayer
+    // If we don't override setupSpecifications() we get WMS 1.3.0 capabilities without
+    // DescribeLayer, but WMS 1.1.1 does not work for a WMS like
+    // https://wms.geonorge.no/skwms1/wms.adm_enheter2 (MapServer 7.4.2).
+    // TODO: Needs some more tuning to make it work for all situations.
     return new WebMapServer(new URL(url), client) {
       @Override
       protected void setupSpecifications() {

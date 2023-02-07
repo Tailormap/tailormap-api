@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api.persistence;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -244,13 +245,26 @@ public class GeoService {
   // </editor-fold>
 
   public Service toJsonPojo() {
-    return new Service()
-        .id(this.id)
-        .url(this.url)
-        .name(this.title)
-        .protocol(Service.ProtocolEnum.fromValue(this.protocol))
-        .tilingDisabled(false)
-        .tilingGutter(0)
-        .serverType(Service.ServerTypeEnum.AUTO);
+    Service.ProtocolEnum protocol =
+        "wmts".equals(this.protocol)
+            ? Service.ProtocolEnum.TILED
+            : Service.ProtocolEnum.fromValue(this.protocol);
+    Service s =
+        new Service()
+            .id(this.id)
+            .url(this.url)
+            .name(this.title)
+            .protocol(protocol)
+            .tilingDisabled(true)
+            .tilingGutter(0)
+            .serverType(Service.ServerTypeEnum.AUTO);
+
+    if (protocol == Service.ProtocolEnum.TILED) {
+      s.tilingDisabled(false);
+      s.tilingProtocol(Service.TilingProtocolEnum.WMTS);
+      s.capabilities(new String(getCapabilities(), StandardCharsets.UTF_8));
+    }
+
+    return s;
   }
 }
