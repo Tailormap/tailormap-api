@@ -16,6 +16,7 @@ import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,6 +28,9 @@ class AppControllerIntegrationTest {
   @Autowired private MockMvc mockMvc;
   @Autowired ConfigurationRepository configurationRepository;
 
+  @Value("${tailormap-api.viewer.basePath}")
+  private String basePath;
+
   private String getApiVersionFromPom() {
     String apiVersion = System.getenv("API_VERSION");
     assumeFalse(null == apiVersion, "API version unknown, should be set in environment");
@@ -37,7 +41,7 @@ class AppControllerIntegrationTest {
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void returns_default_when_no_arguments() throws Exception {
     mockMvc
-        .perform(get("/app").accept(MediaType.APPLICATION_JSON))
+        .perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.apiVersion").value(getApiVersionFromPom()))
@@ -59,7 +63,7 @@ class AppControllerIntegrationTest {
     Configuration defaultApp = configurationRepository.findByKey(Configuration.DEFAULT_APP).get();
     configurationRepository.delete(defaultApp);
     mockMvc
-        .perform(get("/app").accept(MediaType.APPLICATION_JSON))
+        .perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
@@ -76,7 +80,7 @@ class AppControllerIntegrationTest {
     defaultApp.setValue("non existing app!");
     configurationRepository.save(defaultApp);
     mockMvc
-        .perform(get("/app").accept(MediaType.APPLICATION_JSON))
+        .perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
@@ -89,7 +93,7 @@ class AppControllerIntegrationTest {
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void finds_by_name() throws Exception {
     mockMvc
-        .perform(get("/app").param("name", "default").accept(MediaType.APPLICATION_JSON))
+        .perform(get(basePath + "/app").param("name", "default").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.id").value(1))
@@ -100,7 +104,7 @@ class AppControllerIntegrationTest {
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void not_found_by_name() throws Exception {
     mockMvc
-        .perform(get("/app").param("name", "waldo").accept(MediaType.APPLICATION_JSON))
+        .perform(get(basePath + "/app").param("name", "waldo").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
@@ -111,7 +115,7 @@ class AppControllerIntegrationTest {
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void finds_by_id() throws Exception {
     mockMvc
-        .perform(get("/app").param("id", "1").accept(MediaType.APPLICATION_JSON))
+        .perform(get(basePath + "/app").param("id", "1").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.id").value(1))
@@ -122,7 +126,7 @@ class AppControllerIntegrationTest {
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void not_found_by_id() throws Exception {
     mockMvc
-        .perform(get("/app").param("appId", "-9000").accept(MediaType.APPLICATION_JSON))
+        .perform(get(basePath + "/app").param("appId", "-9000").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
@@ -134,7 +138,7 @@ class AppControllerIntegrationTest {
   void bad_request_when_both_parameters() throws Exception {
     mockMvc
         .perform(
-            get("/app")
+            get(basePath + "/app")
                 .param("appId", "100")
                 .param("name", "test")
                 .accept(MediaType.APPLICATION_JSON))
@@ -151,7 +155,7 @@ class AppControllerIntegrationTest {
   //    applicationRepository.getReferenceById(1L).setLang(null);
   //
   //    mockMvc
-  //        .perform(get("/app").param("appId", "1").accept(MediaType.APPLICATION_JSON))
+  //        .perform(get(basePath + "/app").param("appId", "1").accept(MediaType.APPLICATION_JSON))
   //        .andExpect(status().isOk())
   //        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
   //        .andExpect(jsonPath("$.apiVersion").value(getApiVersionFromPom()))
@@ -175,7 +179,7 @@ class AppControllerIntegrationTest {
   //    applicationRepository.setAuthenticatedRequired(1L, true);
   //
   //    mockMvc
-  //        .perform(get("/app").param("appId", "1").accept(MediaType.APPLICATION_JSON))
+  //        .perform(get(basePath + "/app").param("appId", "1").accept(MediaType.APPLICATION_JSON))
   //        .andExpect(status().isUnauthorized())
   //        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
   //        .andExpect(jsonPath("$.code").value(401))

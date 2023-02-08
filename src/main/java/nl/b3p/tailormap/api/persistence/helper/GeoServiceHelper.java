@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import nl.b3p.tailormap.api.config.HttpClientConfig;
+import nl.b3p.tailormap.api.configuration.HttpClientConfig;
 import nl.b3p.tailormap.api.geotools.ResponseTeeingHTTPClient;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;

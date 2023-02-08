@@ -9,7 +9,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import nl.b3p.tailormap.api.JPAConfiguration;
+import nl.b3p.tailormap.api.configuration.JPAConfiguration;
 import nl.b3p.tailormap.api.security.TestSecurityConfig;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
-package nl.b3p.tailormap.api;
+package nl.b3p.tailormap.api.configuration.dev;
 
 import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.Application;
