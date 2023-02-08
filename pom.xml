@@ -158,7 +158,7 @@ SPDX-License-Identifier: MIT
         <docker.skip>false</docker.skip>
         <maven-fluido-skin.version>2.0.0-M2</maven-fluido-skin.version>
         <swagger-ui.version>4.15.5</swagger-ui.version>
-        <sentry.version>6.13.0</sentry.version>
+        <sentry.version>6.13.1</sentry.version>
     </properties>
     <dependencyManagement>
         <dependencies>
