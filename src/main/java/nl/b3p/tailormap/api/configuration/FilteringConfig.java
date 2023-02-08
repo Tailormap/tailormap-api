@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
-package nl.b3p.tailormap.api;
+package nl.b3p.tailormap.api.configuration;
 
 import java.util.List;
 import javax.servlet.DispatcherType;
@@ -13,12 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.web.filter.ForwardedHeaderFilter;
 
-/**
- * (Servlet) filtering config.
- *
- * @author mprins
- * @since 0.1
- */
+/** (Servlet) filtering config. */
 @Configuration
 public class FilteringConfig {
 

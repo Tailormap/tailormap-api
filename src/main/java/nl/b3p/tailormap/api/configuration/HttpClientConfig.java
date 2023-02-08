@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
-package nl.b3p.tailormap.api.config;
+package nl.b3p.tailormap.api.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

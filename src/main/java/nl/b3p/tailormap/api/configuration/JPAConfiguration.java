@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
-package nl.b3p.tailormap.api;
+package nl.b3p.tailormap.api.configuration;
 
 import javax.persistence.EntityManagerFactory;
 import org.springframework.boot.autoconfigure.domain.EntityScan;

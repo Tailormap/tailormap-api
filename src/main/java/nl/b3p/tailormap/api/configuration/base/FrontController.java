@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
-package nl.b3p.tailormap.api;
+package nl.b3p.tailormap.api.configuration.base;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
-package nl.b3p.tailormap.api;
+package nl.b3p.tailormap.api.configuration;
 
 import java.io.File;
 import java.io.IOException;
