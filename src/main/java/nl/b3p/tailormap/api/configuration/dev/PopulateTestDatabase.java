@@ -5,16 +5,20 @@
  */
 package nl.b3p.tailormap.api.configuration.dev;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.GeoServiceCatalog;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceCatalogNode;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
+import nl.b3p.tailormap.api.repository.GeoServiceCatalogRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.viewer.model.Bounds;
 import org.apache.commons.logging.Log;
@@ -26,16 +30,19 @@ import org.springframework.context.annotation.Profile;
 public class PopulateTestDatabase {
   private static final Log log = LogFactory.getLog(PopulateTestDatabase.class);
 
+  private final GeoServiceCatalogRepository geoServiceCatalogRepository;
   private final GeoServiceRepository geoServiceRepository;
   private final GeoServiceHelper geoServiceHelper;
   private final ApplicationRepository applicationRepository;
   private final ConfigurationRepository configurationRepository;
 
   public PopulateTestDatabase(
+      GeoServiceCatalogRepository geoServiceCatalogRepository,
       GeoServiceRepository geoServiceRepository,
       GeoServiceHelper geoServiceHelper,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository) {
+    this.geoServiceCatalogRepository = geoServiceCatalogRepository;
     this.geoServiceRepository = geoServiceRepository;
     this.geoServiceHelper = geoServiceHelper;
     this.applicationRepository = applicationRepository;
@@ -49,6 +56,11 @@ public class PopulateTestDatabase {
       // Test database already initialized for integration tests
       return;
     }
+
+    GeoServiceCatalog catalog =
+        new GeoServiceCatalog()
+            .setNodes(List.of(new GeoServiceCatalogNode().root(true).title("Root").id("root")));
+    geoServiceCatalogRepository.save(catalog);
 
     String[][] services = {
       {"wms", "Test GeoServer", "https://snapshot.tailormap.nl/geoserver/wms"},

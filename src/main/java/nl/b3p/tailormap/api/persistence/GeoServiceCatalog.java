@@ -5,12 +5,13 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceCatalogNode;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -21,7 +22,7 @@ public class GeoServiceCatalog {
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private JsonNode services;
+  private List<GeoServiceCatalogNode> nodes;
 
   public Long getId() {
     return id;
@@ -31,11 +32,12 @@ public class GeoServiceCatalog {
     this.id = id;
   }
 
-  public JsonNode getServices() {
-    return services;
+  public List<GeoServiceCatalogNode> getNodes() {
+    return nodes;
   }
 
-  public void setServices(JsonNode services) {
-    this.services = services;
+  public GeoServiceCatalog setNodes(List<GeoServiceCatalogNode> nodes) {
+    this.nodes = nodes;
+    return this;
   }
 }

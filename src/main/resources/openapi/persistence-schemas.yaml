@@ -15,6 +15,24 @@ paths: { }
 
 components:
   schemas:
+    GeoServiceCatalogNode:
+      description: Categorization for services.
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        root:
+          type: boolean
+        children:
+          type: array
+          items:
+            type: string
+        serviceIds:
+          type: array
+          items:
+            type: string
+
     ServiceCaps:
       type: object
       properties:
