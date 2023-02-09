@@ -5,15 +5,9 @@
 #
 FROM eclipse-temurin:11.0.18_10-jre
 
-
 ARG TAILORMAP_API_VERSION="10.0.0-rc2-SNAPSHOT"
 ARG TZ="Europe/Amsterdam"
 ARG DEBIAN_FRONTEND="noninteractive"
-
-# defaults
-ENV SPRING_DATASOURCE_URL="jdbc:postgresql://127.0.0.1/tailormap"
-ENV DB_USER="tailormap"
-ENV DB_PASSWORD="tailormap"
 
 LABEL org.opencontainers.image.authors="support@b3partners.nl" \
       org.opencontainers.image.description="Tailormap API service provides OpenAPI REST interface for Tailormap" \
