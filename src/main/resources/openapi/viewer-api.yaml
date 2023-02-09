@@ -61,8 +61,13 @@ components:
           type: boolean
           description: 'true if the user is authenticated'
         username:
+          type: string
+          description: 'username of the authenticated user'
+        roles:
+          type: array
+          uniqueItems: true
+          items:
             type: string
-            description: 'username of the authenticated user'
 
     MapResponse:
       description: 'Any information needed to draw a basic map on a page. May include base layers.'

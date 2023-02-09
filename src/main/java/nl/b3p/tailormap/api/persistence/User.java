@@ -22,7 +22,7 @@ import org.hibernate.annotations.Type;
 public class User {
   @Id private String username;
 
-  private String passwordHash;
+  private String password;
 
   private String email;
 
@@ -51,12 +51,12 @@ public class User {
     return this;
   }
 
-  public String getPasswordHash() {
-    return passwordHash;
+  public String getPassword() {
+    return password;
   }
 
-  public User setPasswordHash(String passwordHash) {
-    this.passwordHash = passwordHash;
+  public User setPassword(String passwordHash) {
+    this.password = passwordHash;
     return this;
   }
 
