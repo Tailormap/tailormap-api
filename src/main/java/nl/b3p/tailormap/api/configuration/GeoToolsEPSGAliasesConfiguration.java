@@ -5,11 +5,6 @@
  */
 package nl.b3p.tailormap.api.configuration;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import javax.annotation.PostConstruct;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.metadata.iso.citation.Citations;
@@ -21,6 +16,12 @@ import org.geotools.referencing.wkt.Formattable;
 import org.geotools.util.factory.Hints;
 import org.opengis.referencing.FactoryException;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class GeoToolsEPSGAliasesConfiguration {
@@ -52,6 +53,9 @@ public class GeoToolsEPSGAliasesConfiguration {
     ReferencingFactoryFinder.addAuthorityFactory(factory);
     ReferencingFactoryFinder.scanForPlugins();
 
-    log.info("Added extra CRS to GeoTools");
+    for (int[] alias : EPSG_ALIASES) {
+      log.info(
+          String.format("Added CRS alias to GeoTools: EPSG:%d -> EPSG:%d", alias[0], alias[1]));
+    }
   }
 }
