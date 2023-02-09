@@ -5,6 +5,11 @@
  */
 package nl.b3p.tailormap.api.configuration;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import javax.annotation.PostConstruct;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.metadata.iso.citation.Citations;
@@ -16,12 +21,6 @@ import org.geotools.referencing.wkt.Formattable;
 import org.geotools.util.factory.Hints;
 import org.opengis.referencing.FactoryException;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.PostConstruct;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class GeoToolsEPSGAliasesConfiguration {
