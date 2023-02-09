@@ -63,18 +63,13 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.author != 'dependabot[bot]' }}
     needs: build
-    env: &postgres_env # these defaults are also in the respective TM images
-      PG_PORT: 5432
-      DB_NAME: tailormap
-      DB_USER: tailormap
-      DB_PASS: tailormap
-    services: &postgres_service
+    services:
       postgres:
         image: postgres:15-alpine
         env:
-          POSTGRES_USER: ${{ env.DB_USER }}
-          POSTGRES_PASSWORD: ${{ env.DB_PASS }}
-          POSTGRES_DB: ${{ env.DB_NAME }}
+          POSTGRES_USER: tailormap
+          POSTGRES_PASSWORD: tailormap
+          POSTGRES_DB: tailormap
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 15s --health-timeout 5s --health-retries 5
@@ -192,10 +187,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if: ${{ github.event_name == 'pull_request' }}
-    env:
-      <<: *postgres_env
     services:
-      <<: *postgres_service
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: tailormap
+          POSTGRES_PASSWORD: tailormap
+          POSTGRES_DB: tailormap
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 15s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v3
 
