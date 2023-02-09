@@ -90,12 +90,7 @@ jobs:
           username: ${{ secrets.DOCKER_B3P_PULL_ACTOR }}
           password: ${{ secrets.DOCKER_B3P_PULL_TOKEN }}
 
-      - name: start gisdata databases
-        env:
-          APP_USER_PASSWORD: 980f1c8A-25933b2
-          GEODATA_PASSWORD: 980f1c8A-25933b2
-        run: ./build/ci/testdata-setup.sh
-
+      # TODO: activate Spring profile with Configuration to point to local gis databases
       - name: Test PostgreSQL with Maven
         run: |
           mvn -B -fae -e -DskipQA=true -Pqa-skip -Ddocker.skip=true -Ppostgresql verify 
