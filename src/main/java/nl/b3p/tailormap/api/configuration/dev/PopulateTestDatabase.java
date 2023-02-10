@@ -74,12 +74,6 @@ public class PopulateTestDatabase {
     u = new User().setUsername("admin").setPassword("{noop}admin");
     u.getGroups().add(new Group().setName(Group.ADMIN));
     userRepository.save(u);
-
-    // Account just for actuator, not for apps requiring authentication
-    // TODO set from @Value
-    u = new User().setUsername("actuator").setPassword("{noop}actuator");
-    u.getGroups().add(new Group().setName(Group.ACTUATOR));
-    userRepository.save(u);
   }
 
   @PostConstruct
