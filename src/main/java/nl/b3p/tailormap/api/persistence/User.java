@@ -18,6 +18,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 
@@ -26,6 +27,7 @@ import org.hibernate.annotations.Type;
 public class User {
   @Id private String username;
 
+  @NotNull
   private String password;
 
   @Email
