@@ -6,7 +6,6 @@
 package nl.b3p.tailormap.api.persistence;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +18,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -27,11 +25,9 @@ import org.hibernate.annotations.Type;
 public class User {
   @Id private String username;
 
-  @NotNull
-  private String password;
+  @NotNull private String password;
 
-  @Email
-  private String email;
+  @Email private String email;
 
   private String name;
 
