@@ -5,13 +5,16 @@
  */
 package nl.b3p.tailormap.api.security;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.persistence.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class TailormapUserDetails implements UserDetails {
 
@@ -41,12 +44,13 @@ public class TailormapUserDetails implements UserDetails {
 
   @Override
   public boolean isAccountNonExpired() {
-    return true;
+    return user.getValidUntil() == null
+        || user.getValidUntil().isAfter(ZonedDateTime.now(ZoneId.systemDefault()));
   }
 
   @Override
   public boolean isAccountNonLocked() {
-    return true;
+    return !user.isLocked();
   }
 
   @Override
@@ -56,6 +60,6 @@ public class TailormapUserDetails implements UserDetails {
 
   @Override
   public boolean isEnabled() {
-    return true;
+    return user.isEnabled();
   }
 }

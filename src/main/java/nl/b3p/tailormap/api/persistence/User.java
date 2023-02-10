@@ -6,6 +6,8 @@
 package nl.b3p.tailormap.api.persistence;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
@@ -15,6 +17,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -24,12 +28,19 @@ public class User {
 
   private String password;
 
+  @Email
   private String email;
 
   private String name;
 
   @Column(columnDefinition = "text")
   private String notes;
+
+  private java.time.ZonedDateTime validUntil;
+
+  private boolean locked = false;
+
+  private boolean enabled = true;
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
@@ -102,6 +113,33 @@ public class User {
 
   public User setGroups(Set<Group> groups) {
     this.groups = groups;
+    return this;
+  }
+
+  public ZonedDateTime getValidUntil() {
+    return validUntil;
+  }
+
+  public User setValidUntil(ZonedDateTime validUntil) {
+    this.validUntil = validUntil;
+    return this;
+  }
+
+  public boolean isLocked() {
+    return locked;
+  }
+
+  public User setLocked(boolean locked) {
+    this.locked = locked;
+    return this;
+  }
+
+  public boolean isEnabled() {
+    return enabled;
+  }
+
+  public User setEnabled(boolean enabled) {
+    this.enabled = enabled;
     return this;
   }
 }
