@@ -15,6 +15,31 @@ paths: { }
 
 components:
   schemas:
+    CatalogNode:
+      description: Categorization for items in the catalog.
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        root:
+          type: boolean
+        children:
+          type: array
+          items:
+            type: string
+        items:
+          type: array
+          items:
+            title: TailormapObjectRef
+            type: object
+            properties:
+              kind:
+                type: string
+                enum: ['geo-service', 'feature-source']
+              id:
+                type: string
+
     ServiceCaps:
       type: object
       properties:
