@@ -5,6 +5,8 @@
  */
 package nl.b3p.tailormap.api.security;
 
+import nl.b3p.tailormap.api.persistence.Group;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +17,12 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+  @Value("${tailormap-api.base-path}")
+  private String apiBasePath;
+
+  @Value("${tailormap-api.admin.base-path}")
+  private String adminApiBasePath;
+
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     // Note: CSRF protection only required when using cookies for authentication
@@ -28,12 +36,16 @@ public class SecurityConfig {
         .csrfTokenRepository(csrfTokenRepository)
         .and()
         .authorizeHttpRequests()
-        .requestMatchers("/admin/**")
-        .hasRole("ADMIN")
+        .requestMatchers(String.format("/%s/**", adminApiBasePath))
+        .hasRole(Group.ADMIN)
         .anyRequest()
         .permitAll()
         .and()
-        .formLogin();
+        .formLogin()
+        .loginProcessingUrl(String.format("/%s/login", apiBasePath))
+        .and()
+        .logout()
+        .logoutUrl(String.format("/%s/logout", apiBasePath));
     return http.build();
   }
 }

@@ -780,15 +780,10 @@ SPDX-License-Identifier: MIT
                         <exclude>**/LayerDescriptionController*.java</exclude>
                         <exclude>**/LayerExportController*.java</exclude>
                         <exclude>**/UniqueValuesController*.java</exclude>
-                        <exclude>**/UserController*.java</exclude>
                         <exclude>**/VersionController*.java</exclude>
-                        <exclude>**/UserRepository*.java</exclude>
                         <exclude>**/MicrometerHelper.java</exclude>
                         <exclude>**/health/*.java</exclude>
                         <exclude>**/nl/b3p/tailormap/api/geotools/featuresources/*.java</exclude>
-                        <exclude>**/StartupAdminAccountCreator.java</exclude>
-                        <exclude>**/TailormapUserDetails.java</exclude>
-                        <exclude>**/TailormapUserDetailsService.java</exclude>
                         <exclude>**/MetadataRepositoryTest.java</exclude>
                     </excludes>
                     <testExcludes>
@@ -799,12 +794,9 @@ SPDX-License-Identifier: MIT
                         <exclude>**/MapControllerIntegrationTest.java</exclude>
                         <exclude>**/MapControllerPostgresIntegrationTest.java</exclude>
                         <exclude>**/UniqueValuesController*.java</exclude>
-                        <exclude>**/UserController*.java</exclude>
                         <exclude>**/VersionController*.java</exclude>
-                        <exclude>**/UserRepository*.java</exclude>
                         <exclude>**/health/*.java</exclude>
                         <exclude>**/nl/b3p/tailormap/api/repository/ApplicationRepositoryTest.java</exclude>
-                        <exclude>**/TailormapUserDetailsServiceTest.java</exclude>
                     </testExcludes>
                 </configuration>
             </plugin>

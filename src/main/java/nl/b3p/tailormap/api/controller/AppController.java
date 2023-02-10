@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 @AppRestController
-@RequestMapping(path = "${tailormap-api.viewer.basePath}/app")
+@RequestMapping(path = "${tailormap-api.base-path}/app")
 public class AppController {
   private final ApplicationRepository applicationRepository;
   private final ConfigurationRepository configurationRepository;

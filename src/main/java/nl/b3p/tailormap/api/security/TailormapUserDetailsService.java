@@ -5,8 +5,8 @@
  */
 package nl.b3p.tailormap.api.security;
 
+import nl.b3p.tailormap.api.persistence.User;
 import nl.b3p.tailormap.api.repository.UserRepository;
-import nl.tailormap.viewer.config.security.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,6 +30,8 @@ public class TailormapUserDetailsService implements UserDetailsService {
     if (user == null) {
       throw new UsernameNotFoundException("User " + username + " not found");
     }
+    // This will usually log a {bcrypt}... password unless it was explicitly changed to {noop}...
+    // So no plaintext passwords are logged
     logger.trace("Found user: " + user.getUsername() + ", password " + user.getPassword());
     return new TailormapUserDetails(user);
   }
