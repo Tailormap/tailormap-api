@@ -25,7 +25,7 @@ public class Group {
 
   private boolean systemGroup;
 
-  private String title;
+  private String description;
 
   @Column(columnDefinition = "text")
   private String notes;
@@ -51,12 +51,12 @@ public class Group {
     return this;
   }
 
-  public String getTitle() {
-    return title;
+  public String getDescription() {
+    return description;
   }
 
-  public Group setTitle(String title) {
-    this.title = title;
+  public Group setDescription(String title) {
+    this.description = title;
     return this;
   }
 
