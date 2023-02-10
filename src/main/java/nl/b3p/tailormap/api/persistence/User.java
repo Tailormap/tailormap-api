@@ -36,8 +36,6 @@ public class User {
 
   private java.time.ZonedDateTime validUntil;
 
-  private boolean locked = false;
-
   private boolean enabled = true;
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
@@ -120,15 +118,6 @@ public class User {
 
   public User setValidUntil(ZonedDateTime validUntil) {
     this.validUntil = validUntil;
-    return this;
-  }
-
-  public boolean isLocked() {
-    return locked;
-  }
-
-  public User setLocked(boolean locked) {
-    this.locked = locked;
     return this;
   }
 
