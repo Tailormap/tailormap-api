@@ -28,7 +28,7 @@ class AppControllerIntegrationTest {
   @Autowired private MockMvc mockMvc;
   @Autowired ConfigurationRepository configurationRepository;
 
-  @Value("${tailormap-api.viewer.basePath}")
+  @Value("${tailormap-api.base-path}")
   private String basePath;
 
   private String getApiVersionFromPom() {

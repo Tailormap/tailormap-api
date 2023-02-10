@@ -1,0 +1,16 @@
+
+${AnsiColor.BLUE}${AnsiStyle.BOLD}
++------                                 ------+
+| +-----------------------------------------+ |
+| |${AnsiColor.BRIGHT_MAGENTA}  ______     _ __                        ${AnsiColor.BLUE}| |
+| |${AnsiColor.BRIGHT_MAGENTA} /_  __/__ _(_) /__  ______ _  ___ ____  ${AnsiColor.BLUE}| |
+| |${AnsiColor.BRIGHT_MAGENTA}  / / / _ `/ / / _ \/ __/  ' \/ _ `/ _ \ ${AnsiColor.BLUE}| |
+| |${AnsiColor.BRIGHT_MAGENTA} /_/  \_,_/_/_/\___/_/ /_/_/_/\_,_/ .__/ ${AnsiColor.BLUE}| |
+| |${AnsiColor.BRIGHT_MAGENTA}                                 /_/     ${AnsiColor.BLUE}| |
+| +-----------------------------------------+ |
++------                                 ------+${AnsiColor.DEFAULT}${AnsiStyle.NORMAL}
+
+*** Use this account for administrating users:
+
+*** Username: ${AnsiStyle.BOLD}${AnsiColor.BRIGHT_MAGENTA}${username}${AnsiStyle.NORMAL}${AnsiColor.DEFAULT}
+*** Password: ${AnsiStyle.BOLD}${AnsiColor.BRIGHT_MAGENTA}${password}${AnsiStyle.NORMAL}${AnsiColor.DEFAULT}

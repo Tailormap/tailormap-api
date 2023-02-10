@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @AppRestController
 @RequestMapping(
-    path = "${tailormap-api.viewer.basePath}/app/{appId}/map",
+    path = "${tailormap-api.base-path}/app/{appId}/map",
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class MapController {
 

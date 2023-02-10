@@ -11,35 +11,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import nl.b3p.tailormap.api.JPAConfiguration;
-import nl.b3p.tailormap.api.security.AuthorizationService;
-import nl.b3p.tailormap.api.security.SecurityConfig;
+import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
+import nl.b3p.tailormap.api.persistence.Group;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-/** Testcases for {@link UserController}. */
-@SpringBootTest(
-    classes = {
-      JPAConfiguration.class,
-      SecurityConfig.class,
-      AuthorizationService.class,
-      UserController.class,
-    })
+@PostgresIntegrationTest
 @AutoConfigureMockMvc
-@EnableAutoConfiguration
-@ActiveProfiles("test")
 class UserControllerIntegrationTest {
 
   @Autowired private MockMvc mockMvc;
 
   @Autowired UserController userController;
+
+  @Value("${tailormap-api.base-path}")
+  private String apiBasePath;
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
@@ -47,26 +38,29 @@ class UserControllerIntegrationTest {
     assertNotNull(userController, "userController can not be `null` if Spring Boot works");
 
     mockMvc
-        .perform(get("/user"))
+        .perform(get(apiBasePath + "/user"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.isAuthenticated").value(false))
-        .andExpect(jsonPath("$.username").value(""));
+        .andExpect(jsonPath("$.username").isEmpty())
+        .andExpect(jsonPath("$.roles").isEmpty());
   }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "admin",
-      authorities = {"Admin"})
+      authorities = {Group.ADMIN})
   void testAuthenticatedGetUser() throws Exception {
     assertNotNull(userController, "userController can not be `null` if Spring Boot works");
 
     mockMvc
-        .perform(get("/user"))
+        .perform(get(apiBasePath + "/user"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.isAuthenticated").value(true))
-        .andExpect(jsonPath("$.username").value("admin"));
+        .andExpect(jsonPath("$.username").value("admin"))
+        .andExpect(jsonPath("$.roles.length()").value(1))
+        .andExpect(jsonPath("$.roles[0]").value(Group.ADMIN));
   }
 }
