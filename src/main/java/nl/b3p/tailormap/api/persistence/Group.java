@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Table(name = "groups")
 public class Group {
   public static final String ADMIN = "admin";
-  public static final String ADMIN_GEO_SERVICES = "admin-geo-services";
+  public static final String ADMIN_CATALOG = "admin-catalog";
   public static final String ADMIN_USERS = "admin-users";
   public static final String ADMIN_APPLICATIONS = "admin-applications";
 
