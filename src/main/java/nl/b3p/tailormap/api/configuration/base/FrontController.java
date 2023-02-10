@@ -17,8 +17,13 @@ public class FrontController {
     return "forward:/index.html";
   }
 
+  @RequestMapping(value = {"/admin", "/admin/", "/admin/page/**"})
+  public String adminIndex() {
+    return "forward:/admin/index.html";
+  }
+
   @RequestMapping(value = {"/swagger-ui", "/swagger-ui/"})
   public String swaggerUiWelcomePage() {
-    return "forward:/swagger-ui/index.html";
+    return "redirect:/swagger-ui/index.html";
   }
 }
