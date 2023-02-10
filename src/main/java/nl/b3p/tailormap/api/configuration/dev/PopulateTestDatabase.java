@@ -5,24 +5,25 @@
  */
 package nl.b3p.tailormap.api.configuration.dev;
 
-import java.util.List;
 import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.Application;
+import nl.b3p.tailormap.api.persistence.Catalog;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.GeoService;
-import nl.b3p.tailormap.api.persistence.GeoServiceCatalog;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
-import nl.b3p.tailormap.api.persistence.json.GeoServiceCatalogNode;
+import nl.b3p.tailormap.api.persistence.json.CatalogNode;
+import nl.b3p.tailormap.api.persistence.json.TailormapObjectRef;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.repository.CatalogRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
-import nl.b3p.tailormap.api.repository.GeoServiceCatalogRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.viewer.model.Bounds;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 
 @org.springframework.context.annotation.Configuration
@@ -30,19 +31,19 @@ import org.springframework.context.annotation.Profile;
 public class PopulateTestDatabase {
   private static final Log log = LogFactory.getLog(PopulateTestDatabase.class);
 
-  private final GeoServiceCatalogRepository geoServiceCatalogRepository;
+  private final CatalogRepository catalogRepository;
   private final GeoServiceRepository geoServiceRepository;
   private final GeoServiceHelper geoServiceHelper;
   private final ApplicationRepository applicationRepository;
   private final ConfigurationRepository configurationRepository;
 
   public PopulateTestDatabase(
-      GeoServiceCatalogRepository geoServiceCatalogRepository,
+      CatalogRepository catalogRepository,
       GeoServiceRepository geoServiceRepository,
       GeoServiceHelper geoServiceHelper,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository) {
-    this.geoServiceCatalogRepository = geoServiceCatalogRepository;
+    this.catalogRepository = catalogRepository;
     this.geoServiceRepository = geoServiceRepository;
     this.geoServiceHelper = geoServiceHelper;
     this.applicationRepository = applicationRepository;
@@ -50,6 +51,7 @@ public class PopulateTestDatabase {
   }
 
   @PostConstruct
+  @DependsOn("tailormap-database-initialization")
   public void populate() throws Exception {
 
     if (configurationRepository.existsById(Configuration.DEFAULT_APP)) {
@@ -57,10 +59,11 @@ public class PopulateTestDatabase {
       return;
     }
 
-    GeoServiceCatalog catalog =
-        new GeoServiceCatalog()
-            .setNodes(List.of(new GeoServiceCatalogNode().root(true).title("Root").id("root")));
-    geoServiceCatalogRepository.save(catalog);
+    Catalog catalog = catalogRepository.findById(Catalog.MAIN).get();
+    CatalogNode rootCatalogNode = catalog.getNodes().get(0);
+    CatalogNode catalogNode = new CatalogNode().id("test").title("Test services");
+    rootCatalogNode.addChildrenItem(catalogNode.getId());
+    catalog.getNodes().add(catalogNode);
 
     String[][] services = {
       {"wms", "Test GeoServer", "https://snapshot.tailormap.nl/geoserver/wms"},
@@ -81,7 +84,13 @@ public class PopulateTestDatabase {
       geoService.setUrl(service[2]);
       geoServiceHelper.loadServiceCapabilities(geoService);
       geoServiceRepository.save(geoService);
+      // TODO change GeoService.id to String
+      catalogNode.addItemsItem(
+          new TailormapObjectRef()
+              .kind(TailormapObjectRef.KindEnum.GEO_SERVICE)
+              .id(geoService.getId() + ""));
     }
+    catalogRepository.save(catalog);
 
     Long testId = 1L;
 

@@ -15,8 +15,8 @@ paths: { }
 
 components:
   schemas:
-    GeoServiceCatalogNode:
-      description: Categorization for services.
+    CatalogNode:
+      description: Categorization for items in the catalog.
       properties:
         id:
           type: string
@@ -28,10 +28,17 @@ components:
           type: array
           items:
             type: string
-        serviceIds:
+        items:
           type: array
           items:
-            type: string
+            title: TailormapObjectRef
+            type: object
+            properties:
+              kind:
+                type: string
+                enum: ['geo-service', 'feature-source']
+              id:
+                type: string
 
     ServiceCaps:
       type: object

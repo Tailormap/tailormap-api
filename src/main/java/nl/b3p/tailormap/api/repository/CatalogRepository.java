@@ -5,7 +5,7 @@
  */
 package nl.b3p.tailormap.api.repository;
 
-import nl.b3p.tailormap.api.persistence.GeoServiceCatalog;
+import nl.b3p.tailormap.api.persistence.Catalog;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface GeoServiceCatalogRepository extends JpaRepository<GeoServiceCatalog, Long> {}
+public interface CatalogRepository extends JpaRepository<Catalog, String> {}
