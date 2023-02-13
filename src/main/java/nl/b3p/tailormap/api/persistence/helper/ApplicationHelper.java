@@ -14,13 +14,16 @@ import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.viewer.model.AppLayer;
 import nl.b3p.tailormap.api.viewer.model.Bounds;
 import nl.b3p.tailormap.api.viewer.model.CoordinateReferenceSystem;
 import nl.b3p.tailormap.api.viewer.model.LayerTreeNode;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.referencing.util.CRSUtilities;
@@ -31,9 +34,12 @@ import org.springframework.stereotype.Service;
 public class ApplicationHelper {
   private static final Log log = LogFactory.getLog(ApplicationHelper.class);
 
+  private final GeoServiceHelper geoServiceHelper;
   private final GeoServiceRepository geoServiceRepository;
 
-  public ApplicationHelper(GeoServiceRepository geoServiceRepository) {
+  public ApplicationHelper(
+      GeoServiceHelper geoServiceHelper, GeoServiceRepository geoServiceRepository) {
+    this.geoServiceHelper = geoServiceHelper;
     this.geoServiceRepository = geoServiceRepository;
   }
 
@@ -132,12 +138,51 @@ public class ApplicationHelper {
 
     private void addAppLayerItem(
         AppLayerRef layerRef, LayerTreeNode parent, List<LayerTreeNode> layerTreeNodeList) {
-      GeoServiceLayer serviceLayer = findServiceLayer(layerRef);
+      Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> serviceWithLayer =
+          findServiceLayer(layerRef);
+      GeoService service = serviceWithLayer.getLeft();
+      GeoServiceDefaultLayerSettings defaultLayerSettings =
+          Optional.ofNullable(service.getSettings().getDefaultLayerSettings())
+              .orElseGet(GeoServiceDefaultLayerSettings::new);
+      GeoServiceLayer serviceLayer = serviceWithLayer.getMiddle();
+      Optional<GeoServiceLayerSettings> serviceLayerSettings =
+          Optional.ofNullable(serviceWithLayer.getRight());
+
       if (serviceLayer != null) {
         String title =
             Objects.requireNonNullElse(
-                layerRef.getTitle(),
-                Objects.requireNonNullElse(serviceLayer.getTitle(), layerRef.getLayerName()));
+                layerRef.getTitle(), service.getTitleWithDefaults(layerRef.getLayerName()));
+
+        boolean tilingDisabled =
+            serviceLayerSettings
+                .map(GeoServiceLayerSettings::getTilingDisabled)
+                .orElse(
+                    Optional.ofNullable(defaultLayerSettings.getTilingDisabled()).orElse(false));
+        Integer tilingGutter =
+            serviceLayerSettings
+                .map(GeoServiceLayerSettings::getTilingGutter)
+                .orElse(defaultLayerSettings.getTilingGutter());
+        boolean hiDpiDisabled =
+            serviceLayerSettings
+                .map(GeoServiceLayerSettings::getHiDpiDisabled)
+                .orElse(
+                    Optional.ofNullable(defaultLayerSettings.getTilingDisabled()).orElse(false));
+        nl.b3p.tailormap.api.viewer.model.TileLayerHiDpiMode hiDpiMode =
+            Optional.ofNullable(
+                    serviceLayerSettings
+                        .map(GeoServiceLayerSettings::getHiDpiMode)
+                        .orElse(defaultLayerSettings.getHiDpiMode()))
+                // TODO models from common-schemas.yaml should be the same classes, need to generate
+                // models for viewer and persistence in one go, use single package?
+                .map(
+                    otherEnum ->
+                        nl.b3p.tailormap.api.viewer.model.TileLayerHiDpiMode.fromValue(
+                            otherEnum.toString()))
+                .orElse(null);
+        // Do not get from defaultLayerSettings
+        String hiDpiSubstituteLayer =
+            serviceLayerSettings.map(GeoServiceLayerSettings::getHiDpiSubstituteLayer).orElse(null);
+
         mr.addAppLayersItem(
             new AppLayer()
                 // XXX id's must be from config, not generated -> use string identifiers instead
@@ -150,6 +195,11 @@ public class ApplicationHelper {
                 .maxScale(serviceLayer.getMaxScale())
                 .minScale(serviceLayer.getMinScale())
                 .title(title)
+                .tilingDisabled(tilingDisabled)
+                .tilingGutter(tilingGutter)
+                .hiDpiDisabled(hiDpiDisabled)
+                .hiDpiMode(hiDpiMode)
+                .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
                 .opacity(layerRef.getOpacity())
                 .visible(layerRef.getVisible()));
 
@@ -166,7 +216,8 @@ public class ApplicationHelper {
       }
     }
 
-    private GeoServiceLayer findServiceLayer(AppLayerRef layerRef) {
+    private Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> findServiceLayer(
+        AppLayerRef layerRef) {
       GeoService service = geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);
       if (service == null) {
         log.warn(
@@ -175,11 +226,7 @@ public class ApplicationHelper {
                 app.getId(), layerRef.getLayerName(), layerRef.getServiceId()));
         return null;
       }
-      GeoServiceLayer serviceLayer =
-          service.getLayers().stream()
-              .filter(sl -> layerRef.getLayerName().equals(sl.getName()))
-              .findFirst()
-              .orElse(null);
+      GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());
 
       if (serviceLayer == null) {
         log.warn(
@@ -195,9 +242,11 @@ public class ApplicationHelper {
           .filter(s -> s.getId().equals(service.getId()))
           .findAny()
           .isEmpty()) {
-        mr.addServicesItem(service.toJsonPojo());
+        mr.addServicesItem(service.toJsonPojo(geoServiceHelper));
       }
-      return serviceLayer;
+
+      GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());
+      return Triple.of(service, serviceLayer, layerSettings);
     }
   }
 }

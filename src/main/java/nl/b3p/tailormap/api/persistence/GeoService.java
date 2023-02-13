@@ -11,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +20,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
 import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
 import nl.b3p.tailormap.api.viewer.model.Service;
 import org.hibernate.annotations.Type;
@@ -32,8 +38,7 @@ public class GeoService {
   @Column(columnDefinition = "text")
   private String adminComments;
 
-  @Basic(optional = false)
-  private String protocol;
+  @Basic @NotNull private String protocol;
 
   /**
    * The URL from which the capabilities of this service can be loaded and the URL to use for the
@@ -42,7 +47,8 @@ public class GeoService {
    * be automatically converted to a relative URL if the hostname/port matches our URL? TODO: what
    * to do with parameters such as VERSION in the URL?
    */
-  @Basic(optional = false)
+  @Basic
+  @NotNull
   @Column(length = 2048)
   private String url;
 
@@ -68,7 +74,8 @@ public class GeoService {
   private Instant capabilitiesFetched;
 
   /** Title loaded from capabilities or as modified by user for display. */
-  @Basic(optional = false)
+  @Basic
+  @NotNull
   @Column(length = 2048)
   private String title;
 
@@ -94,11 +101,7 @@ public class GeoService {
    */
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private JsonNode settings;
-
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
-  @Column(columnDefinition = "jsonb")
-  private JsonNode layerSettings;
+  private GeoServiceSettings settings = new GeoServiceSettings();
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
@@ -125,32 +128,90 @@ public class GeoService {
     return id;
   }
 
-  public void setId(Long id) {
+  public GeoService setId(Long id) {
     this.id = id;
+    return this;
   }
 
   public String getAdminComments() {
     return adminComments;
   }
 
-  public void setAdminComments(String adminComments) {
+  public GeoService setAdminComments(String adminComments) {
     this.adminComments = adminComments;
+    return this;
   }
 
   public String getProtocol() {
     return protocol;
   }
 
-  public void setProtocol(String protocol) {
+  public GeoService setProtocol(String protocol) {
     this.protocol = protocol;
+    return this;
   }
 
   public String getUrl() {
     return url;
   }
 
-  public void setUrl(String url) {
+  public GeoService setUrl(String url) {
     this.url = url;
+    return this;
+  }
+
+  public JsonNode getAuthentication() {
+    return authentication;
+  }
+
+  public GeoService setAuthentication(JsonNode authentication) {
+    this.authentication = authentication;
+    return this;
+  }
+
+  public byte[] getCapabilities() {
+    return capabilities;
+  }
+
+  public GeoService setCapabilities(byte[] capabilities) {
+    this.capabilities = capabilities;
+    return this;
+  }
+
+  public String getCapabilitiesContentType() {
+    return capabilitiesContentType;
+  }
+
+  public GeoService setCapabilitiesContentType(String capabilitiesContentType) {
+    this.capabilitiesContentType = capabilitiesContentType;
+    return this;
+  }
+
+  public Instant getCapabilitiesFetched() {
+    return capabilitiesFetched;
+  }
+
+  public GeoService setCapabilitiesFetched(Instant capabilitiesFetched) {
+    this.capabilitiesFetched = capabilitiesFetched;
+    return this;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public GeoService setTitle(String title) {
+    this.title = title;
+    return this;
+  }
+
+  public String getAdvertisedUrl() {
+    return advertisedUrl;
+  }
+
+  public GeoService setAdvertisedUrl(String advertisedUrl) {
+    this.advertisedUrl = advertisedUrl;
+    return this;
   }
 
   public ServiceCaps getServiceCapabilities() {
@@ -162,109 +223,87 @@ public class GeoService {
     return this;
   }
 
-  public JsonNode getAuthentication() {
-    return authentication;
-  }
-
-  public void setAuthentication(JsonNode authentication) {
-    this.authentication = authentication;
-  }
-
-  public byte[] getCapabilities() {
-    return capabilities;
-  }
-
-  public void setCapabilities(byte[] capabilities) {
-    this.capabilities = capabilities;
-  }
-
-  public String getCapabilitiesContentType() {
-    return capabilitiesContentType;
-  }
-
-  public void setCapabilitiesContentType(String capabilitiesContentType) {
-    this.capabilitiesContentType = capabilitiesContentType;
-  }
-
-  public Instant getCapabilitiesFetched() {
-    return capabilitiesFetched;
-  }
-
-  public void setCapabilitiesFetched(Instant capabilitiesFetched) {
-    this.capabilitiesFetched = capabilitiesFetched;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public String getAdvertisedUrl() {
-    return advertisedUrl;
-  }
-
-  public void setAdvertisedUrl(String advertisedUrl) {
-    this.advertisedUrl = advertisedUrl;
-  }
-
   public List<GeoServiceLayer> getLayers() {
     return layers;
   }
 
-  public void setLayers(List<GeoServiceLayer> layers) {
+  public GeoService setLayers(List<GeoServiceLayer> layers) {
     this.layers = layers;
+    return this;
   }
 
-  public JsonNode getSettings() {
+  public GeoServiceSettings getSettings() {
     return settings;
   }
 
-  public void setSettings(JsonNode settings) {
+  public GeoService setSettings(GeoServiceSettings settings) {
     this.settings = settings;
-  }
-
-  public JsonNode getLayerSettings() {
-    return layerSettings;
-  }
-
-  public void setLayerSettings(JsonNode layerSettings) {
-    this.layerSettings = layerSettings;
+    return this;
   }
 
   public JsonNode getTileServiceInfo() {
     return tileServiceInfo;
   }
 
-  public void setTileServiceInfo(JsonNode tileServiceInfo) {
+  public GeoService setTileServiceInfo(JsonNode tileServiceInfo) {
     this.tileServiceInfo = tileServiceInfo;
+    return this;
   }
-
   // </editor-fold>
 
-  public Service toJsonPojo() {
-    Service.ProtocolEnum protocol =
-        "wmts".equals(this.protocol)
-            ? Service.ProtocolEnum.TILED
-            : Service.ProtocolEnum.fromValue(this.protocol);
+  public Service toJsonPojo(GeoServiceHelper geoServiceHelper) {
+    Service.ServerTypeEnum serverTypeEnum;
+    if (settings.getServerType() == GeoServiceSettings.ServerTypeEnum.AUTO) {
+      serverTypeEnum = geoServiceHelper.guessServerTypeFromUrl(getUrl());
+    } else {
+      serverTypeEnum = Service.ServerTypeEnum.fromValue(settings.getServerType().getValue());
+    }
+
     Service s =
         new Service()
             .id(this.id)
+            .title(this.title)
             .url(this.url)
-            .name(this.title)
-            .protocol(protocol)
-            .tilingDisabled(true)
-            .tilingGutter(0)
-            .serverType(Service.ServerTypeEnum.AUTO);
+            .protocol(Service.ProtocolEnum.fromValue(protocol))
+            .serverType(serverTypeEnum);
 
-    if (protocol == Service.ProtocolEnum.TILED) {
-      s.tilingDisabled(false);
-      s.tilingProtocol(Service.TilingProtocolEnum.WMTS);
+    if (Objects.equals(protocol, Service.ProtocolEnum.WMTS.getValue())) {
+      // Frontend requires WMTS capabilities to parse TilingMatrix, but WMS capabilities aren't used
       s.capabilities(new String(getCapabilities(), StandardCharsets.UTF_8));
     }
 
     return s;
+  }
+
+  public GeoServiceLayer findLayer(String name) {
+    return getLayers().stream().filter(sl -> name.equals(sl.getName())).findFirst().orElse(null);
+  }
+
+  public GeoServiceLayerSettings getLayerSettings(String layerName) {
+    return Optional.ofNullable(getSettings().getLayerSettings())
+        .map(m -> m.get(layerName))
+        .orElse(null);
+  }
+
+  public String getTitleWithDefaults(String layerName) {
+    // First use title in layer settings
+    String title =
+        Optional.ofNullable(getLayerSettings(layerName))
+            .map(GeoServiceLayerSettings::getTitle)
+            .orElse(null);
+
+    // If not set, title from capabilities
+    if (title == null) {
+      title = Optional.ofNullable(findLayer(layerName)).map(GeoServiceLayer::getTitle).orElse(null);
+    }
+
+    // Do not get title from default layer settings (a default wouldn't make sense)
+
+    // If still not set, use layer name as title
+    if (title == null) {
+      title = layerName;
+    }
+
+    return title;
   }
 }

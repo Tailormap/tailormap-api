@@ -98,6 +98,79 @@ components:
                 describe-layer:
                   type: boolean
 
+    GeoServiceSettings:
+      description: Settings applying to a GeoService.
+      required: [serverType, defaultLayerSettings]
+      properties:
+        serverType:
+          description: Server type to use for vendor-specific capabilities (high DPI, legends, etc.)
+          type: string
+          enum:
+            - auto
+            - disabled
+            - geoserver
+            - mapserver
+          nullable: false
+          default: auto
+        defaultLayerSettings:
+          title: GeoServiceDefaultLayerSettings
+          description: Default settings for all layers of this service which can be overridden on a per-layer basis.
+          anyOf:
+            - $ref: '#/components/schemas/LayerSettings'
+            - $ref: '#/components/schemas/WMSLayerSettings'
+            - $ref: '#/components/schemas/WMTSLayerSettings'
+          default:
+        layerSettings:
+          title: GeoServiceLayerSettings
+          type: object
+          additionalProperties:
+            anyOf:
+              - $ref: '#/components/schemas/LayerSettings'
+              - $ref: '#/components/schemas/WMSLayerSettings'
+              - $ref: '#/components/schemas/WMTSLayerSettings'
+          example:
+            'myLayer':
+              title: Some other title
+            'otherLayer':
+              hiDpiDisabled: true
+
+    LayerSettings:
+      description: Settings applying to any kind of layer.
+      required: [title, hiDpiDisabled]
+      properties:
+        title:
+          description: Override default title, null if not overridden.
+          type: string
+        hiDpiDisabled:
+          type: boolean
+          default: false
+
+    WMSLayerSettings:
+      description: Settings applying to a WMS layer.
+      allOf:
+        - $ref: '#/components/schemas/LayerSettings'
+        - type: object
+          required: [tilingDisabled, tilingGutter]
+          properties:
+            tilingDisabled:
+              type: boolean
+              default: false
+            tilingGutter:
+              type: integer
+              # TODO: set global default here or in frontend?
+
+    WMTSLayerSettings:
+      description: Settings applying to a WMTS layer.
+      allOf:
+        - $ref: '#/components/schemas/LayerSettings'
+        - type: object
+          properties:
+            hiDpiMode:
+              $ref: './common-schemas.yaml#/components/schemas/TileLayerHiDpiMode'
+            hiDpiSubstituteLayer:
+              description: Layer name of this service to substitute when rendering at high dpi.
+              type: string
+
     GeoServiceLayer:
       description: Layer of a service which can be an OGC WMS/WMTS service or from XYZ/ArcGIS REST.
       required: [name, root, virtual, children]
