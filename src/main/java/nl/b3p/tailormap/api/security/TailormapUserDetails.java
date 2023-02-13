@@ -49,7 +49,7 @@ public class TailormapUserDetails implements UserDetails {
 
   @Override
   public boolean isAccountNonLocked() {
-    return !user.isLocked();
+    return true;
   }
 
   @Override
