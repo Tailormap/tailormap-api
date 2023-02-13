@@ -5,7 +5,7 @@
 #
 FROM eclipse-temurin:11.0.18_10-jre
 
-ARG TAILORMAP_API_VERSION="10.0.0-rc2-SNAPSHOT"
+ARG TAILORMAP_API_VERSION
 ARG TZ="Europe/Amsterdam"
 ARG DEBIAN_FRONTEND="noninteractive"
 
@@ -21,7 +21,9 @@ LABEL org.opencontainers.image.authors="support@b3partners.nl" \
 
 # set-up timezone and local user
 RUN set -eux;ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
-    && apt update && apt upgrade -y && apt autoremove -y && apt autoclean && apt clean && rm -rf /tmp/* && rm -rf /var/tmp/* && rm -rf /var/lib/apt/lists/* \
+    && apt update && apt upgrade -y  \
+    && apt install -y jq  \
+    && apt autoremove -y && apt autoclean && apt clean && rm -rf /tmp/* && rm -rf /var/tmp/* && rm -rf /var/lib/apt/lists/* \
     && useradd -ms /bin/bash spring
 
 USER spring:spring
@@ -31,8 +33,8 @@ WORKDIR /home/spring
 COPY ./target/tailormap-api-exec.jar tailormap-api.jar
 
 EXPOSE 8080
-# see https://docs.spring.io/spring-boot/docs/current/actuator-api/htmlsingle/#health
-HEALTHCHECK --interval=25s --timeout=3s --retries=2 CMD wget -nv --spider --tries=1 --no-verbose --header 'Accept: application/json' http://127.0.0.1:8081/api/actuator/health || exit 1
+
+HEALTHCHECK CMD curl --fail --max-time 5 http://localhost:8080/api/actuator/health | jq -e '.status == "UP"'
 
 # note that Spring Boot logs to the console, there is no logfile
 ENTRYPOINT ["java", "-jar", "tailormap-api.jar"]

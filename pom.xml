@@ -544,24 +544,6 @@ SPDX-License-Identifier: MIT
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>it.ozimov</groupId>
-                <artifactId>yaml-properties-maven-plugin</artifactId>
-                <version>1.1.3</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <phase>initialize</phase>
-                        <configuration>
-                            <files>
-                                <file>${project.basedir}/src/main/resources/openapi/viewer-api.yaml</file>
-                            </files>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>io.github.git-commit-id</groupId>
                 <artifactId>git-commit-id-maven-plugin</artifactId>
                 <version>5.0.0</version>
@@ -647,18 +629,6 @@ SPDX-License-Identifier: MIT
                 <configuration>
                     <!--suppress UnresolvedMavenProperty -->
                     <argLine>${surefireArgLine}</argLine>
-                    <systemPropertyVariables>
-                        <project.version>${project.version}</project.version>
-                    </systemPropertyVariables>
-                    <environmentVariables>
-                        <!--suppress UnresolvedMavenProperty -->
-                        <API_VERSION>${info.version}</API_VERSION>
-                        <!--suppress UnresolvedMavenProperty -->
-                        <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
-                        <!--suppress UnresolvedMavenProperty -->
-                        <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
-                        <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
-                    </environmentVariables>
                     <excludes>
                         <exclude>**/*IntegrationTest.java</exclude>
                     </excludes>
@@ -687,18 +657,6 @@ SPDX-License-Identifier: MIT
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <classifier>exec</classifier>
-                    <systemPropertyVariables>
-                        <project.version>${project.version}</project.version>
-                    </systemPropertyVariables>
-                    <environmentVariables>
-                        <!--suppress UnresolvedMavenProperty -->
-                        <API_VERSION>${info.version}</API_VERSION>
-                        <!--suppress UnresolvedMavenProperty -->
-                        <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
-                        <!--suppress UnresolvedMavenProperty -->
-                        <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
-                        <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
-                    </environmentVariables>
                     <cleanCache>true</cleanCache>
                     <!--suppress UnresolvedMavenProperty -->
                     <jvmArguments>${surefireArgLine}</jvmArguments>
@@ -729,18 +687,6 @@ SPDX-License-Identifier: MIT
                             <!--suppress UnresolvedMavenProperty -->
                             <jvmArguments>${failsafeArgLine}</jvmArguments>
                             <useTestClasspath>true</useTestClasspath>
-                            <environmentVariables>
-                                <!--suppress UnresolvedMavenProperty -->
-                                <API_VERSION>${info.version}</API_VERSION>
-                                <!--suppress UnresolvedMavenProperty -->
-                                <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
-                                <!--suppress UnresolvedMavenProperty -->
-                                <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
-                                <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
-                            </environmentVariables>
-                            <systemPropertyVariables>
-                                <project.version>${project.version}</project.version>
-                            </systemPropertyVariables>
                         </configuration>
                     </execution>
                     <execution>
@@ -780,9 +726,7 @@ SPDX-License-Identifier: MIT
                         <exclude>**/LayerDescriptionController*.java</exclude>
                         <exclude>**/LayerExportController*.java</exclude>
                         <exclude>**/UniqueValuesController*.java</exclude>
-                        <exclude>**/VersionController*.java</exclude>
                         <exclude>**/MicrometerHelper.java</exclude>
-                        <exclude>**/health/*.java</exclude>
                         <exclude>**/nl/b3p/tailormap/api/geotools/featuresources/*.java</exclude>
                         <exclude>**/MetadataRepositoryTest.java</exclude>
                     </excludes>
@@ -794,8 +738,6 @@ SPDX-License-Identifier: MIT
                         <exclude>**/MapControllerIntegrationTest.java</exclude>
                         <exclude>**/MapControllerPostgresIntegrationTest.java</exclude>
                         <exclude>**/UniqueValuesController*.java</exclude>
-                        <exclude>**/VersionController*.java</exclude>
-                        <exclude>**/health/*.java</exclude>
                         <exclude>**/nl/b3p/tailormap/api/repository/ApplicationRepositoryTest.java</exclude>
                     </testExcludes>
                 </configuration>
@@ -1533,18 +1475,6 @@ SPDX-License-Identifier: MIT
                             <!--suppress UnresolvedMavenProperty -->
                             <argLine>${failsafeArgLine} -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql</argLine>
                             <trimStackTrace>false</trimStackTrace>
-                            <systemPropertyVariables>
-                                <project.version>${project.version}</project.version>
-                            </systemPropertyVariables>
-                            <environmentVariables>
-                                <!--suppress UnresolvedMavenProperty -->
-                                <API_VERSION>${info.version}</API_VERSION>
-                                <!--suppress UnresolvedMavenProperty -->
-                                <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
-                                <!--suppress UnresolvedMavenProperty -->
-                                <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
-                                <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
-                            </environmentVariables>
                             <useFile>false</useFile>
                         </configuration>
                         <executions>
@@ -1575,18 +1505,6 @@ SPDX-License-Identifier: MIT
                                     <!--suppress UnresolvedMavenProperty -->
                                     <jvmArguments>${failsafeArgLine} -Dspring.profiles.active=postgresql</jvmArguments>
                                     <useTestClasspath>true</useTestClasspath>
-                                    <environmentVariables>
-                                        <!--suppress UnresolvedMavenProperty -->
-                                        <API_VERSION>${info.version}</API_VERSION>
-                                        <!--suppress UnresolvedMavenProperty -->
-                                        <DATABASE_VERSION>${org.tailormap.database.version}</DATABASE_VERSION>
-                                        <!--suppress UnresolvedMavenProperty -->
-                                        <GIT_COMMIT_ID>${git.commit.id}</GIT_COMMIT_ID>
-                                        <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
-                                    </environmentVariables>
-                                    <systemPropertyVariables>
-                                        <project.version>${project.version}</project.version>
-                                    </systemPropertyVariables>
                                 </configuration>
                             </execution>
                             <execution>

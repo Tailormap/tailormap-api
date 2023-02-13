@@ -10,6 +10,8 @@ import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Catalog;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.Group;
+import nl.b3p.tailormap.api.persistence.User;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
@@ -20,6 +22,7 @@ import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.CatalogRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
+import nl.b3p.tailormap.api.repository.UserRepository;
 import nl.b3p.tailormap.api.viewer.model.Bounds;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,9 +31,11 @@ import org.springframework.context.annotation.Profile;
 
 @org.springframework.context.annotation.Configuration
 @Profile("!test")
+// TODO: Only in recreate-db profile
 public class PopulateTestDatabase {
   private static final Log log = LogFactory.getLog(PopulateTestDatabase.class);
 
+  private final UserRepository userRepository;
   private final CatalogRepository catalogRepository;
   private final GeoServiceRepository geoServiceRepository;
   private final GeoServiceHelper geoServiceHelper;
@@ -38,16 +43,37 @@ public class PopulateTestDatabase {
   private final ConfigurationRepository configurationRepository;
 
   public PopulateTestDatabase(
+      UserRepository userRepository,
       CatalogRepository catalogRepository,
       GeoServiceRepository geoServiceRepository,
       GeoServiceHelper geoServiceHelper,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository) {
+    this.userRepository = userRepository;
     this.catalogRepository = catalogRepository;
     this.geoServiceRepository = geoServiceRepository;
     this.geoServiceHelper = geoServiceHelper;
     this.applicationRepository = applicationRepository;
     this.configurationRepository = configurationRepository;
+  }
+
+  @PostConstruct
+  @DependsOn("tailormap-database-initialization")
+  public void createTestUsers() {
+    // User with access to any app which requires authentication
+    User u = new User().setUsername("user").setPassword("{noop}user");
+    u.getGroups().add(new Group().setName(Group.APP_AUTHENTICATED));
+    userRepository.save(u);
+
+    // Only user admin
+    u = new User().setUsername("useradmin").setPassword("{noop}useradmin");
+    u.getGroups().add(new Group().setName(Group.ADMIN_USERS));
+    userRepository.save(u);
+
+    // Superuser with all access (even admin-users without explicitly having that authority)
+    u = new User().setUsername("tm-admin").setPassword("{noop}tm-admin");
+    u.getGroups().add(new Group().setName(Group.ADMIN));
+    userRepository.save(u);
   }
 
   @PostConstruct

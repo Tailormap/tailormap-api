@@ -12,7 +12,6 @@ import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +25,6 @@ public class AppController {
   private final ApplicationRepository applicationRepository;
   private final ConfigurationRepository configurationRepository;
   private final AuthorizationService authorizationService;
-
-  @Value("${tailormap-api.apiVersion}")
-  private String apiVersion;
 
   public AppController(
       ApplicationRepository applicationRepository,
@@ -77,6 +73,6 @@ public class AppController {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
-    return ResponseEntity.ok(app.toAppResponse().apiVersion(apiVersion));
+    return ResponseEntity.ok(app.toAppResponse());
   }
 }

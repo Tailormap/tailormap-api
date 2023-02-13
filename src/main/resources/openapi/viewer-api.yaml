@@ -127,17 +127,13 @@ components:
         $ref: './viewer-schemas.yaml#/components/schemas/AppLayer'
 
     AppResponse:
-      description: 'Answers API version and (default|requested) application id.'
+      description: 'Basic app information'
       type: object
       properties:
         id:
           description: 'application id'
           type: integer
           format: int64
-          example: 7
-        apiVersion:
-          type: string
-          default: 'v1'
         name:
           type: string
         version:
@@ -235,24 +231,6 @@ components:
         values: [ "value 1", "value 2" ]
 
 paths:
-  /version:
-    summary: 'Provides version information of the backend'
-    get:
-      operationId: 'getVersion'
-      summary: 'Provides version information of the backend'
-      security: [ ]
-      responses:
-        '200':
-          description: 'OK'
-          content:
-            application/json:
-              example:
-                version: '0.1-SNAPSHOT'
-                databaseversion: '49'
-                apiVersion: 'v1'
-                commitSha: 'b8f8f8f'
-
-
   /login:
     summary: 'form login url'
     post:
@@ -366,7 +344,6 @@ paths:
             application/json:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
-
 
   /app/{appId}/map:
     get:
