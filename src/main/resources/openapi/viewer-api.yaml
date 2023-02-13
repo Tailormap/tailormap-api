@@ -24,21 +24,7 @@ info:
     url: 'https://mit-license.org/'
   version: 'v1'
 servers:
-  - description: 'development server'
-    url: 'http://localhost:{port}{basePath}'
-    variables:
-      port:
-        enum:
-          - '8080'
-          - '443'
-          - '8443'
-        default: '8080'
-        description: 'port number'
-      basePath:
-        description: base path
-        default: '/api'
-  - description: 'test server'
-    url: 'https://snapshot.tailormap.nl{basePath}'
+  - url: '{basePath}'
     variables:
       basePath:
         description: base path
@@ -295,6 +281,7 @@ paths:
         Use this endpoint to get the id of the requested or default application.
         Either call this with `name` or `appId` or without any parameters for the default application.
         '
+      operationId: 'getApp'
       security:
         - formAuth: [ ]
       parameters:
