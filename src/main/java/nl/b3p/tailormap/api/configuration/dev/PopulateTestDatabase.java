@@ -59,7 +59,7 @@ public class PopulateTestDatabase {
 
   @PostConstruct
   @DependsOn("tailormap-database-initialization")
-  public void createTestUsers() throws Exception {
+  public void createTestUsers() {
     // User with access to any app which requires authentication
     User u = new User().setUsername("user").setPassword("{noop}user");
     u.getGroups().add(new Group().setName(Group.APP_AUTHENTICATED));
@@ -71,7 +71,7 @@ public class PopulateTestDatabase {
     userRepository.save(u);
 
     // Superuser with all access (even admin-users without explicitly having that authority)
-    u = new User().setUsername("admin").setPassword("{noop}admin");
+    u = new User().setUsername("tm-admin").setPassword("{noop}tm-admin");
     u.getGroups().add(new Group().setName(Group.ADMIN));
     userRepository.save(u);
   }
