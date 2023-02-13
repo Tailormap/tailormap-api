@@ -34,7 +34,7 @@ COPY ./target/tailormap-api-exec.jar tailormap-api.jar
 
 EXPOSE 8080
 
-HEALTHCHECK CMD curl --fail --max-time 5 http://localhost:8080/api/actuator/health | jq -e '.status == "UP"'
+HEALTHCHECK CMD set -o pipefail; wget -O - -T 5 -q http://127.0.0.1:8080/api/actuator/health | jq -e '.status == "UP"'
 
 # note that Spring Boot logs to the console, there is no logfile
 ENTRYPOINT ["java", "-jar", "tailormap-api.jar"]
