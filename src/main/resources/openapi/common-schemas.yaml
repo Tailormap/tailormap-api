@@ -20,6 +20,10 @@ info:
 servers: [ ]
 paths: { }
 
+# The openapi-generator plugin is run twice: once for the persistence layer JSON and once for the
+# models used in the API. Specify all common models in <importMappings> for the second run so common
+# models use the same class, and add them to the common-schemas-openapi-ignore file.
+
 components:
   schemas:
     TileLayerHiDpiMode:

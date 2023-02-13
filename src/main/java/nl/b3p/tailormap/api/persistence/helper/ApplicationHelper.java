@@ -17,6 +17,7 @@ import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
+import nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.viewer.model.AppLayer;
 import nl.b3p.tailormap.api.viewer.model.Bounds;
@@ -167,18 +168,10 @@ public class ApplicationHelper {
                 .map(GeoServiceLayerSettings::getHiDpiDisabled)
                 .orElse(
                     Optional.ofNullable(defaultLayerSettings.getTilingDisabled()).orElse(false));
-        nl.b3p.tailormap.api.viewer.model.TileLayerHiDpiMode hiDpiMode =
-            Optional.ofNullable(
-                    serviceLayerSettings
-                        .map(GeoServiceLayerSettings::getHiDpiMode)
-                        .orElse(defaultLayerSettings.getHiDpiMode()))
-                // TODO models from common-schemas.yaml should be the same classes, need to generate
-                // models for viewer and persistence in one go, use single package?
-                .map(
-                    otherEnum ->
-                        nl.b3p.tailormap.api.viewer.model.TileLayerHiDpiMode.fromValue(
-                            otherEnum.toString()))
-                .orElse(null);
+        TileLayerHiDpiMode hiDpiMode =
+            serviceLayerSettings
+                .map(GeoServiceLayerSettings::getHiDpiMode)
+                .orElse(defaultLayerSettings.getHiDpiMode());
         // Do not get from defaultLayerSettings
         String hiDpiSubstituteLayer =
             serviceLayerSettings.map(GeoServiceLayerSettings::getHiDpiSubstituteLayer).orElse(null);

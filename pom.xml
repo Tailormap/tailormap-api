@@ -747,47 +747,6 @@ SPDX-License-Identifier: MIT
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>generate-viewer-models</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <!-- see https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin -->
-                            <inputSpec>${project.basedir}/src/main/resources/openapi/viewer-api.yaml</inputSpec>
-                            <generatorName>spring</generatorName>
-                            <modelPackage>nl.b3p.tailormap.api.viewer.model</modelPackage>
-                            <!--<invokerPackage>nl.b3p.tailormap.api.invoker</invokerPackage>-->
-                            <library>spring-boot</library>
-                            <!--              <generateAliasAsModel>false</generateAliasAsModel>-->
-                            <configOptions>
-                                <!-- see https://openapi-generator.tech/docs/generators/spring/ -->
-                                <dateLibrary>java8</dateLibrary>
-                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
-                                <openApiNullable>false</openApiNullable>
-                                <serializableModel>true</serializableModel>
-                                <useOptional>true</useOptional>
-                            </configOptions>
-                            <!--              <instantiationTypes>array=ArrayList,map=HashMap,object=Map</instantiationTypes>-->
-                            <!--              <typeMappings>array=List,map=Map,object=Map</typeMappings>-->
-                            <generateApis>false</generateApis>
-                            <generateModels>true</generateModels>
-                            <generateSupportingFiles>false</generateSupportingFiles>
-                            <generateModelTests>true</generateModelTests>
-                            <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>generate-spec</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/openapi/viewer-api.yaml</inputSpec>
-                            <generatorName>openapi</generatorName>
-                            <output>${project.build.directory}/classes/static/swagger-ui</output>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>generate-code-persistence-models</id>
                         <goals>
                             <goal>generate</goal>
@@ -813,6 +772,50 @@ SPDX-License-Identifier: MIT
                             <generateSupportingFiles>false</generateSupportingFiles>
                             <generateModelTests>false</generateModelTests>
                             <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-viewer-models</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <!-- see https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin -->
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/viewer-api.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <modelPackage>nl.b3p.tailormap.api.viewer.model</modelPackage>
+                            <!--<invokerPackage>nl.b3p.tailormap.api.invoker</invokerPackage>-->
+                            <library>spring-boot</library>
+                            <!--              <generateAliasAsModel>false</generateAliasAsModel>-->
+                            <configOptions>
+                                <!-- see https://openapi-generator.tech/docs/generators/spring/ -->
+                                <dateLibrary>java8</dateLibrary>
+                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                <openApiNullable>false</openApiNullable>
+                                <serializableModel>true</serializableModel>
+                                <useOptional>true</useOptional>
+                            </configOptions>
+                            <!-- All common models from common-schemas.yaml here, comma separated -->
+                            <importMappings>TileLayerHiDpiMode=nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode</importMappings>
+                            <ignoreFileOverride>${project.basedir}/src/main/resources/openapi/common-schemas-openapi-ignore</ignoreFileOverride>
+                            <!--              <instantiationTypes>array=ArrayList,map=HashMap,object=Map</instantiationTypes>-->
+                            <!--              <typeMappings>array=List,map=Map,object=Map</typeMappings>-->
+                            <generateApis>false</generateApis>
+                            <generateModels>true</generateModels>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <generateModelTests>true</generateModelTests>
+                            <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-spec</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/viewer-api.yaml</inputSpec>
+                            <generatorName>openapi</generatorName>
+                            <output>${project.build.directory}/classes/static/swagger-ui</output>
                         </configuration>
                     </execution>
                 </executions>
