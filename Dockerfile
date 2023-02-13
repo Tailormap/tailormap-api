@@ -3,11 +3,10 @@
 #
 # SPDX-License-Identifier: MIT
 #
-FROM eclipse-temurin:11.0.18_10-jre
+FROM eclipse-temurin:11.0.18_10-jre-alpine
 
 ARG TAILORMAP_API_VERSION
 ARG TZ="Europe/Amsterdam"
-ARG DEBIAN_FRONTEND="noninteractive"
 
 LABEL org.opencontainers.image.authors="support@b3partners.nl" \
       org.opencontainers.image.description="Tailormap API service provides OpenAPI REST interface for Tailormap" \
@@ -20,11 +19,12 @@ LABEL org.opencontainers.image.authors="support@b3partners.nl" \
       org.opencontainers.image.version=$TAILORMAP_API_VERSION
 
 # set-up timezone and local user
-RUN set -eux;ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
-    && apt update && apt upgrade -y  \
-    && apt install -y jq  \
-    && apt autoremove -y && apt autoclean && apt clean && rm -rf /tmp/* && rm -rf /var/tmp/* && rm -rf /var/lib/apt/lists/* \
-    && useradd -ms /bin/bash spring
+RUN set -eux; \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+    && apk upgrade --update \
+    && apk -U add --no-cache jq \
+    && rm -rf /tmp/* /var/cache/apk/* /var/tmp/* \
+    && addgroup spring && adduser -G spring -h /home/spring -D spring
 
 USER spring:spring
 
