@@ -11,15 +11,15 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties
-@ConfigurationProperties(prefix = "tailormap-api.http")
-public class HttpClientConfig {
+@ConfigurationProperties(prefix = "tailormap-api")
+public class TailormapConfig {
   private int timeout;
 
   public int getTimeout() {
     return timeout;
   }
 
-  public HttpClientConfig setTimeout(int timeout) {
+  public TailormapConfig setTimeout(int timeout) {
     this.timeout = timeout;
     return this;
   }

@@ -6,10 +6,13 @@
 package nl.b3p.tailormap.api.geotools.featuresources;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import nl.b3p.tailormap.api.persistence.FeatureSource;
 import nl.b3p.tailormap.api.persistence.FeatureType;
+import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
+import nl.b3p.tailormap.api.persistence.json.ServiceInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
@@ -64,5 +67,32 @@ public class WFSFeatureSourceHelper implements FeatureSourceHelper {
     DataStore ds = WFSFeatureSourceHelper.createDataStore(extraParams, fs);
 
     return ds.getFeatureSource(sft.getTypeName());
+  }
+
+  public void loadCapabilities(FeatureSource pfs, int timeout) throws IOException {
+    Map<String, Object> extraParams = new HashMap<>();
+    extraParams.put(WFSDataStoreFactory.TIMEOUT.key, timeout);
+    DataStore ds = WFSFeatureSourceHelper.createDataStore(extraParams, pfs);
+
+    pfs.setTitle(ds.getInfo().getTitle());
+
+    org.geotools.data.ServiceInfo si = ds.getInfo();
+    pfs.setServiceCapabilities(
+        new ServiceCaps()
+            .serviceInfo(
+                new ServiceInfo()
+                    .title(si.getTitle())
+                    .keywords(si.getKeywords())
+                    .description(si.getDescription())
+                    .publisher(si.getPublisher())
+                    .schema(si.getSchema())
+                    .source(si.getSource())));
+
+    String[] typeNames = ds.getTypeNames();
+    log.info(String.format("type names for WFS %s: %s", pfs.getUrl(), Arrays.toString(typeNames)));
+
+    for (String typeName : typeNames) {
+      pfs.getFeatureTypes().add(new FeatureType().setFeatureSource(pfs).setTypeName(typeName));
+    }
   }
 }

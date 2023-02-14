@@ -23,6 +23,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.validation.constraints.NotNull;
+import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -84,6 +85,10 @@ public class FeatureSource {
   @ManyToOne
   @JoinColumn(name = "linked_service")
   private GeoService linkedService;
+
+  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Column(columnDefinition = "jsonb")
+  private ServiceCaps serviceCapabilities;
 
   @OneToMany(cascade = CascadeType.ALL)
   @JoinTable(
@@ -154,6 +159,15 @@ public class FeatureSource {
 
   public FeatureSource setLinkedService(GeoService linkedService) {
     this.linkedService = linkedService;
+    return this;
+  }
+
+  public ServiceCaps getServiceCapabilities() {
+    return serviceCapabilities;
+  }
+
+  public FeatureSource setServiceCapabilities(ServiceCaps serviceCapabilities) {
+    this.serviceCapabilities = serviceCapabilities;
     return this;
   }
 
