@@ -26,6 +26,11 @@ paths: { }
 
 components:
   schemas:
+    GeoServiceProtocol:
+      type: string
+      enum:
+        - wms
+        - wmts
     TileLayerHiDpiMode:
       type: string
       enum:

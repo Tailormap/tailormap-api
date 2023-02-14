@@ -17,6 +17,7 @@ import nl.b3p.tailormap.api.configuration.HttpClientConfig;
 import nl.b3p.tailormap.api.geotools.ResponseTeeingHTTPClient;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
 import nl.b3p.tailormap.api.persistence.json.ServiceCapabilitiesRequestGetFeatureInfo;
 import nl.b3p.tailormap.api.persistence.json.ServiceCapabilitiesRequestGetMap;
 import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
@@ -93,10 +94,10 @@ public class GeoServiceHelper {
     // TODO: micrometer met tags voor URL/id van service
 
     switch (geoService.getProtocol()) {
-      case "wms":
+      case WMS:
         loadWMSCapabilities(geoService, client);
         break;
-      case "wmts":
+      case WMTS:
         loadWMTSCapabilities(geoService, client);
         break;
       default:

@@ -8,9 +8,9 @@ package nl.b3p.tailormap.api.geotools.featuresources;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import nl.tailormap.viewer.config.services.FeatureSource;
-import nl.tailormap.viewer.config.services.JDBCFeatureSource;
-import nl.tailormap.viewer.config.services.SimpleFeatureType;
+
+import nl.b3p.tailormap.api.persistence.FeatureSource;
+import nl.b3p.tailormap.api.persistence.FeatureType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
@@ -18,19 +18,18 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.sqlserver.SQLServerDataStoreFactory;
 import org.geotools.jdbc.JDBCDataStoreFactory;
-import org.json.JSONObject;
 
 public class JDBCFeatureSourceHelper implements FeatureSourceHelper {
 
   private static final Log log = LogFactory.getLog(JDBCFeatureSourceHelper.class);
 
   public static SimpleFeatureSource openGeoToolsFSFeatureSource(
-      JDBCFeatureSource fs, SimpleFeatureType sft) throws IOException {
+      FeatureSource fs, FeatureType sft) throws IOException {
     DataStore ds = createDataStore(fs);
     return ds.getFeatureSource(sft.getTypeName());
   }
 
-  public static DataStore createDataStore(JDBCFeatureSource fs) throws IOException {
+  public static DataStore createDataStore(FeatureSource fs) throws IOException {
     Map<String, Object> params = new HashMap<>();
     JSONObject urlObj = new JSONObject(fs.getUrl());
     params.put("dbtype", urlObj.get("dbtype"));

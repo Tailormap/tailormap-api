@@ -17,22 +17,53 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import org.hibernate.annotations.Type;
 
 @Entity
 public class FeatureSource {
+
+  public enum Protocol {
+    WFS("wfs"),
+
+    JDBC("jdbc");
+
+    private final String value;
+
+    Protocol(String value) {
+      this.value = value;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static FeatureSource.Protocol fromValue(String value) {
+      for (FeatureSource.Protocol p : FeatureSource.Protocol.values()) {
+        if (p.value.equals(value)) {
+          return p;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(columnDefinition = "text")
-  private String adminComments;
+  private String notes;
 
   @Basic(optional = false)
-  private String protocol;
+  private FeatureSource.Protocol protocol;
 
   @Basic(optional = false)
   private String title;
@@ -49,7 +80,7 @@ public class FeatureSource {
   @JoinColumn(name = "linked_service")
   private GeoService linkedService;
 
-  @ManyToMany(cascade = CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268
+  @OneToMany(cascade = CascadeType.ALL)
   @JoinTable(
       name = "feature_source_feature_types",
       inverseJoinColumns = @JoinColumn(name = "feature_type"),
@@ -65,20 +96,21 @@ public class FeatureSource {
     this.id = id;
   }
 
-  public String getAdminComments() {
-    return adminComments;
+  public String getNotes() {
+    return notes;
   }
 
-  public void setAdminComments(String adminComments) {
-    this.adminComments = adminComments;
+  public void setNotes(String adminComments) {
+    this.notes = adminComments;
   }
 
-  public String getProtocol() {
+  public Protocol getProtocol() {
     return protocol;
   }
 
-  public void setProtocol(String protocol) {
+  public FeatureSource setProtocol(Protocol protocol) {
     this.protocol = protocol;
+    return this;
   }
 
   public String getTitle() {

@@ -426,11 +426,7 @@ components:
           type: string
           nullable: false
         protocol:
-          type: string
-          nullable: false
-          enum:
-            - wms
-            - wmts
+          $ref: './common-schemas.yaml#/components/schemas/GeoServiceProtocol'
         capabilities:
           description: 'capabilities document of the service - currently only for WMTS'
           type: string
