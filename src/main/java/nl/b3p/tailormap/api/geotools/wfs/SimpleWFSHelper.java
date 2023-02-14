@@ -17,7 +17,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -195,12 +198,12 @@ public class SimpleWFSHelper {
     return new WebMapServer(new URL(url), client);
   }
 
-  public static SimpleWFSLayerDescription describeWMSLayer(
+  public static Map<String, SimpleWFSLayerDescription> describeWMSLayer(
       String url, String username, String password, List<String> layers) {
     try {
       WebMapServer wms = getWebMapServer(url, username, password);
       // Directly create WMS 1.1.1 request. Creating it from WebMapServer errors with GeoServer
-      // about unsupported request in capabilities unless we override WebMapServer to setup
+      // about unsupported request in capabilities unless we override WebMapServer to set up
       // specifications.
       DescribeLayerRequest describeLayerRequest =
           new WMS1_1_1().createDescribeLayerRequest(new URL(url));
@@ -209,6 +212,7 @@ public class SimpleWFSHelper {
       describeLayerRequest.setLayers(String.join(",", layers));
       DescribeLayerResponse describeLayerResponse = wms.issueRequest(describeLayerRequest);
 
+      Map<String, SimpleWFSLayerDescription> descriptions = new HashMap<>();
       for (LayerDescription ld : describeLayerResponse.getLayerDescs()) {
         String wfsUrl = ld.getWfs() != null ? ld.getWfs().toString() : null;
         if (wfsUrl == null && "WFS".equalsIgnoreCase(ld.getOwsType())) {
@@ -222,10 +226,10 @@ public class SimpleWFSHelper {
         }
 
         if (wfsUrl != null && ld.getQueries() != null && ld.getQueries().length != 0) {
-          // Return the first one we find
-          return new SimpleWFSLayerDescription(wfsUrl, ld.getQueries());
+          descriptions.put(ld.getName(), new SimpleWFSLayerDescription(wfsUrl, ld.getQueries()));
         }
       }
+      return Collections.unmodifiableMap(descriptions);
     } catch (ServiceException | IOException e) {
       String msg =
           String.format(
@@ -238,6 +242,6 @@ public class SimpleWFSHelper {
       }
     }
 
-    return null;
+    return Collections.emptyMap();
   }
 }

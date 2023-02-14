@@ -12,6 +12,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,6 +22,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
+import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -62,13 +65,15 @@ public class FeatureSource {
   @Column(columnDefinition = "text")
   private String notes;
 
-  @Basic(optional = false)
+  @Basic
+  @NotNull
+  @Enumerated(EnumType.STRING)
   private FeatureSource.Protocol protocol;
 
-  @Basic(optional = false)
-  private String title;
+  @Basic @NotNull private String title;
 
-  @Basic(optional = false)
+  @Basic
+  @NotNull
   @Column(length = 2048)
   private String url;
 
@@ -88,20 +93,23 @@ public class FeatureSource {
   @OrderColumn(name = "list_index")
   private List<FeatureType> featureTypes = new ArrayList<>();
 
+  // <editor-fold desc="getters and setters">
   public Long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public FeatureSource setId(Long id) {
     this.id = id;
+    return this;
   }
 
   public String getNotes() {
     return notes;
   }
 
-  public void setNotes(String adminComments) {
-    this.notes = adminComments;
+  public FeatureSource setNotes(String notes) {
+    this.notes = notes;
+    return this;
   }
 
   public Protocol getProtocol() {
@@ -117,39 +125,45 @@ public class FeatureSource {
     return title;
   }
 
-  public void setTitle(String title) {
+  public FeatureSource setTitle(String title) {
     this.title = title;
+    return this;
   }
 
   public String getUrl() {
     return url;
   }
 
-  public void setUrl(String url) {
+  public FeatureSource setUrl(String url) {
     this.url = url;
+    return this;
   }
 
   public JsonNode getAuthentication() {
     return authentication;
   }
 
-  public void setAuthentication(JsonNode authentication) {
+  public FeatureSource setAuthentication(JsonNode authentication) {
     this.authentication = authentication;
+    return this;
   }
 
   public GeoService getLinkedService() {
     return linkedService;
   }
 
-  public void setLinkedService(GeoService linkedService) {
+  public FeatureSource setLinkedService(GeoService linkedService) {
     this.linkedService = linkedService;
+    return this;
   }
 
   public List<FeatureType> getFeatureTypes() {
     return featureTypes;
   }
 
-  public void setFeatureTypes(List<FeatureType> featureTypes) {
+  public FeatureSource setFeatureTypes(List<FeatureType> featureTypes) {
     this.featureTypes = featureTypes;
+    return this;
   }
+  // </editor-fold>
 }

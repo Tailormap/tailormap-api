@@ -8,7 +8,6 @@ package nl.b3p.tailormap.api.geotools.featuresources;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import nl.b3p.tailormap.api.persistence.FeatureSource;
 import nl.b3p.tailormap.api.persistence.FeatureType;
 import org.apache.commons.logging.Log;
@@ -40,15 +39,15 @@ public class WFSFeatureSourceHelper implements FeatureSourceHelper {
     }
 
     params.put(WFSDataStoreFactory.URL.key, wfsUrl);
-    //params.put(WFSDataStoreFactory.USERNAME.key, fs.getUsername());
-    //params.put(WFSDataStoreFactory.PASSWORD.key, fs.getPassword());
+    // params.put(WFSDataStoreFactory.USERNAME.key, fs.getUsername());
+    // params.put(WFSDataStoreFactory.PASSWORD.key, fs.getPassword());
 
     Map<String, Object> logParams = new HashMap<>(params);
-//    if (fs.getPassword() != null) {
-//      logParams.put(
-//          WFSDataStoreFactory.PASSWORD.key,
-//          String.valueOf(new char[fs.getPassword().length()]).replace("\0", "*"));
-//    }
+    //    if (fs.getPassword() != null) {
+    //      logParams.put(
+    //          WFSDataStoreFactory.PASSWORD.key,
+    //          String.valueOf(new char[fs.getPassword().length()]).replace("\0", "*"));
+    //    }
     log.debug("Opening datastore using parameters: " + logParams);
     DataStore ds = DataStoreFinder.getDataStore(params);
     if (ds == null) {

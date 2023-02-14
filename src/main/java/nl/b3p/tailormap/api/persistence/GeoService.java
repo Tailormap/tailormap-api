@@ -15,6 +15,8 @@ import java.util.Optional;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -39,7 +41,10 @@ public class GeoService {
   @Column(columnDefinition = "text")
   private String notes;
 
-  @Basic @NotNull private GeoServiceProtocol protocol;
+  @Basic
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  private GeoServiceProtocol protocol;
 
   /**
    * The URL from which the capabilities of this service can be loaded and the URL to use for the

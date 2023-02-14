@@ -5,26 +5,35 @@
  */
 package nl.b3p.tailormap.api.persistence.helper;
 
+import static nl.b3p.tailormap.api.persistence.FeatureSource.Protocol.WFS;
+
 import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.configuration.HttpClientConfig;
 import nl.b3p.tailormap.api.geotools.ResponseTeeingHTTPClient;
+import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
+import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSLayerDescription;
+import nl.b3p.tailormap.api.persistence.FeatureSource;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
-import nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
 import nl.b3p.tailormap.api.persistence.json.ServiceCapabilitiesRequestGetFeatureInfo;
 import nl.b3p.tailormap.api.persistence.json.ServiceCapabilitiesRequestGetMap;
 import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
 import nl.b3p.tailormap.api.persistence.json.ServiceCapsCapabilities;
+import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.plexus.util.StringUtils;
 import org.geotools.data.ServiceInfo;
 import org.geotools.data.ows.AbstractOpenWebService;
 import org.geotools.data.ows.Capabilities;
@@ -44,16 +53,20 @@ import org.geotools.ows.wmts.WebMapTileServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class GeoServiceHelper {
 
   private static final Log log = LogFactory.getLog(GeoServiceHelper.class);
   private final HttpClientConfig httpClientConfig;
+  private final FeatureSourceRepository featureSourceRepository;
 
   @Autowired
-  public GeoServiceHelper(HttpClientConfig httpClientConfig) {
+  public GeoServiceHelper(
+      HttpClientConfig httpClientConfig, FeatureSourceRepository featureSourceRepository) {
     this.httpClientConfig = httpClientConfig;
+    this.featureSourceRepository = featureSourceRepository;
   }
 
   public nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum guessServerTypeFromUrl(
@@ -253,5 +266,87 @@ public class GeoServiceHelper {
     // TODO set capabilities if we need something from it
 
     setLayerList(geoService, wmts.getCapabilities().getLayerList());
+  }
+
+  public Map<String, SimpleWFSLayerDescription> findRelatedWFS(GeoService geoService) {
+    // TODO: report back progress
+
+    if (CollectionUtils.isEmpty(geoService.getLayers())) {
+      return Collections.emptyMap();
+    }
+
+    // Do one DescribeLayer request for all layers in a WMS. This is faster than one request per
+    // layer, but when one layer has an error this prevents describing valid layers. But that's a
+    // problem with the WMS / GeoServer.
+    // For now at least ignore layers with space in the name because GeoServer chokes out invalid
+    // XML for those.
+
+    List<String> layers =
+        geoService.getLayers().stream()
+            .filter(l -> !l.getVirtual())
+            .map(GeoServiceLayer::getName)
+            .filter(
+                n -> {
+                  // filter out white-space (non-greedy regex)
+                  boolean noWhitespace = !n.contains("(.*?)\\s(.*?)");
+                  if (!noWhitespace) {
+                    log.warn(
+                        String.format(
+                            "Not doing WFS DescribeLayer request for layer name with space: \"%s\" of WMS %s",
+                            n, geoService.getUrl()));
+                  }
+                  return noWhitespace;
+                })
+            .collect(Collectors.toList());
+
+    // TODO: add authentication
+    Map<String, SimpleWFSLayerDescription> descriptions =
+        SimpleWFSHelper.describeWMSLayer(geoService.getUrl(), null, null, layers);
+
+    for (Map.Entry<String, SimpleWFSLayerDescription> entry : descriptions.entrySet()) {
+      String layerName = entry.getKey();
+      SimpleWFSLayerDescription description = entry.getValue();
+      if (description.getTypeNames().length == 1
+          && layerName.equals(description.getFirstTypeName())) {
+        log.info(
+            String.format(
+                "layer \"%s\" linked to feature type with same name of WFS %s",
+                layerName, description.getWfsUrl()));
+      } else {
+        log.info(
+            String.format(
+                "layer \"%s\" -> feature type(s) %s of WFS %s",
+                layerName, Arrays.toString(description.getTypeNames()), description.getWfsUrl()));
+      }
+    }
+    return descriptions;
+  }
+
+  public void findAndSaveRelatedWFS(GeoService geoService) {
+    // TODO: report back progress
+
+    Map<String, SimpleWFSLayerDescription> wfsByLayer = this.findRelatedWFS(geoService);
+
+    Map<String, FeatureSource> wfsByUrl =
+        wfsByLayer.values().stream()
+            .map(SimpleWFSLayerDescription::getWfsUrl)
+            .distinct()
+            .map(
+                url -> {
+                  FeatureSource fs = featureSourceRepository.findByUrl(url);
+                  if (fs == null) {
+                    fs =
+                        new FeatureSource()
+                            .setProtocol(WFS)
+                            .setUrl(url)
+                            .setTitle("WFS for " + geoService.getTitle())
+                            .setLinkedService(geoService);
+                    // WFSFeatureSourceHelper.loadCapabilities(...)
+                    featureSourceRepository.save(fs);
+                  }
+                  return Pair.of(url, fs);
+                })
+            .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+    log.info("WFS map by URL: " + wfsByUrl);
   }
 }
