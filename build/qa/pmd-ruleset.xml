@@ -98,4 +98,31 @@ SPDX-License-Identifier: MIT
             <property name="reportLevel" value="140"/>
         </properties>
     </rule>
+    <rule name="no-commons-logging" language="java" message="Do not import Commons Logging (use SLF4J instead)"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>Do not use Commons Logging</description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value><![CDATA[
+          //ImportDeclaration[@ImportedName='org.apache.commons.logging.Log']
+          ]]></value>
+            </property>
+        </properties>
+    </rule>
+    <rule ref="category/java/errorprone.xml/MoreThanOneLogger" />
+    <rule name="slf4j-use-methodhandles-lookup" language="java" message="Use MethodHandles.lookup().lookupClass() to get logger"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>Use MethodHandles.lookup().lookupClass() to get logger</description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value><![CDATA[
+          //VariableInitializer[Expression//PrimaryPrefix/Name[@Image='LoggerFactory.getLogger'] and not(Expression//PrimarySuffix//PrimaryPrefix/Name[@Image='MethodHandles.lookup'])]
+          ]]></value>
+            </property>
+        </properties>
+    </rule>
 </ruleset>

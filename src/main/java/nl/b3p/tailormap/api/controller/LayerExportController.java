@@ -14,6 +14,7 @@ import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
@@ -36,8 +37,8 @@ import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
 import nl.tailormap.viewer.config.services.WFSFeatureSource;
 import nl.tailormap.viewer.config.services.WMSService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Validated
 @RequestMapping(path = "/app/{appId}/layer/{appLayerId}/export/")
 public class LayerExportController {
-  private static final Log LOG = LogFactory.getLog(LayerExportController.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final MeterRegistry meterRegistry;
 
   private final LayerRepository layerRepository;
@@ -96,10 +98,10 @@ public class LayerExportController {
           } catch (Exception e) {
             String msg =
                 String.format("Error getting capabilities for WFS \"%s\"", params.getWfsUrl());
-            if (LOG.isTraceEnabled()) {
-              LOG.trace(msg, e);
+            if (logger.isTraceEnabled()) {
+              logger.trace(msg, e);
             } else {
-              LOG.warn(String.format("%s: %s: %s", msg, e.getClass(), e.getMessage()));
+              logger.warn("{}: {}: {}", msg, e.getClass(), e.getMessage());
             }
             capabilities.setOutputFormats(null);
           }
@@ -184,10 +186,8 @@ public class LayerExportController {
     URI wfsGetFeature =
         SimpleWFSHelper.getWFSRequestURL(params.getWfsUrl(), "GetFeature", getFeatureParameters);
 
-    LOG.info(
-        String.format(
-            "Layer download %s, proxying WFS GetFeature request %s",
-            tagsToString(tags), wfsGetFeature));
+    logger.info(
+        "Layer download {}, proxying WFS GetFeature request {}", tagsToString(tags), wfsGetFeature);
 
     try {
       // TODO: close JPA connection before proxying
@@ -205,16 +205,15 @@ public class LayerExportController {
               "export_download_response", tags.and("response_status", response.statusCode() + ""))
           .increment();
 
-      LOG.info(
-          String.format(
-              "Layer download response code: %s, content type: %s, disposition: %s",
-              response.statusCode(),
-              response.headers().firstValue("Content-Type").map(Object::toString).orElse("<none>"),
-              response
-                  .headers()
-                  .firstValue("Content-Disposition")
-                  .map(Object::toString)
-                  .orElse("<none>")));
+      logger.info(
+          "Layer download response code: {}, content type: {}, disposition: {}",
+          response.statusCode(),
+          response.headers().firstValue("Content-Type").map(Object::toString).orElse("<none>"),
+          response
+              .headers()
+              .firstValue("Content-Disposition")
+              .map(Object::toString)
+              .orElse("<none>"));
 
       InputStreamResource body = new InputStreamResource(response.body());
 
@@ -354,13 +353,12 @@ public class LayerExportController {
                         wmsService.getPassword(),
                         List.of(serviceLayer.getName())));
     if (wfsLayerDescription != null && wfsLayerDescription.getTypeNames().length > 0) {
-      LOG.info(
-          String.format(
-              "WMS described layer \"%s\" with typeNames \"%s\" of WFS \"%s\" for WMS \"%s\"",
-              serviceLayer.getName(),
-              Arrays.toString(wfsLayerDescription.getTypeNames()),
-              wfsLayerDescription.getWfsUrl(),
-              wmsService.getUrl()));
+      logger.info(
+          "WMS described layer \"{}\" with typeNames \"{}\" of WFS \"{}\" for WMS \"{}\"",
+          serviceLayer.getName(),
+          Arrays.toString(wfsLayerDescription.getTypeNames()),
+          wfsLayerDescription.getWfsUrl(),
+          wmsService.getUrl());
 
       return wfsLayerDescription;
     }

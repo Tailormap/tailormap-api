@@ -6,20 +6,22 @@
 package nl.b3p.tailormap.api.geotools.featuresources;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 import nl.tailormap.viewer.config.services.FeatureSource;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
 import nl.tailormap.viewer.config.services.WFSFeatureSource;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WFSFeatureSourceHelper implements FeatureSourceHelper {
-  private static final Log log = LogFactory.getLog(WFSFeatureSourceHelper.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public static DataStore createDataStore(
       Map<String, Object> extraDataStoreParams, WFSFeatureSource fs) throws IOException {
@@ -52,7 +54,7 @@ public class WFSFeatureSourceHelper implements FeatureSourceHelper {
           WFSDataStoreFactory.PASSWORD.key,
           String.valueOf(new char[fs.getPassword().length()]).replace("\0", "*"));
     }
-    log.debug("Opening datastore using parameters: " + logParams);
+    logger.debug("Opening datastore using parameters: {}", logParams);
     DataStore ds = DataStoreFinder.getDataStore(params);
     if (ds == null) {
       throw new IOException("Cannot open datastore using parameters " + logParams);
