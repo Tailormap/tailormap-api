@@ -23,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 class ApplicationHelperTest {
 
   @MockBean GeoServiceRepository geoServiceRepository;
+  @MockBean GeoServiceHelper geoServiceHelper;
   @Autowired ApplicationHelper applicationHelper;
 
   @Test

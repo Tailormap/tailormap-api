@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.configuration.dev;
 
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Catalog;
@@ -17,7 +18,11 @@ import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
 import nl.b3p.tailormap.api.persistence.json.CatalogNode;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
 import nl.b3p.tailormap.api.persistence.json.TailormapObjectRef;
+import nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.CatalogRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
@@ -91,23 +96,45 @@ public class PopulateTestDatabase {
     rootCatalogNode.addChildrenItem(catalogNode.getId());
     catalog.getNodes().add(catalogNode);
 
-    String[][] services = {
-      {"wms", "Test GeoServer", "https://snapshot.tailormap.nl/geoserver/wms"},
-      {"wmts", "Openbasiskaart", "https://www.openbasiskaart.nl/mapcache/wmts"},
-      {"wmts", "PDOK HWH luchtfoto", "https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0"},
-      {"wmts", "basemap.at", "https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml"},
-      //      {
-      //        "wms",
-      //        "Norway - Administrative enheter",
-      //        "https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk"
-      //      },
+    GeoService[] services = {
+      new GeoService()
+          .setProtocol("wms")
+          .setTitle("Test GeoServer")
+          .setUrl("https://snapshot.tailormap.nl/geoserver/wms"),
+      new GeoService()
+          .setProtocol("wmts")
+          .setTitle("Openbasiskaart")
+          .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
+          .setSettings(
+              new GeoServiceSettings()
+                  .layerSettings(
+                      Map.of(
+                          "osm",
+                          new GeoServiceLayerSettings()
+                              .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
+                              .hiDpiSubstituteLayer("osm-hq")))),
+      new GeoService()
+          .setProtocol("wmts")
+          .setTitle("PDOK HWH luchtfoto")
+          .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
+          .setSettings(
+              new GeoServiceSettings()
+                  .defaultLayerSettings(
+                      new GeoServiceDefaultLayerSettings()
+                          .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))),
+      new GeoService()
+          .setProtocol("wmts")
+          .setTitle("basemap.at")
+          .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml"),
+      //        new GeoService()
+      //            .setProtocol("wms")
+      //            .setTitle("Norway - Administrative enheter")
+      //            .setUrl("https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk")
+      //            .setSettings(new
+      // GeoServiceSettings().serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)),
     };
 
-    for (String[] service : services) {
-      GeoService geoService = new GeoService();
-      geoService.setProtocol(service[0]);
-      geoService.setTitle(service[1]);
-      geoService.setUrl(service[2]);
+    for (GeoService geoService : services) {
       geoServiceHelper.loadServiceCapabilities(geoService);
       geoServiceRepository.save(geoService);
       // TODO change GeoService.id to String

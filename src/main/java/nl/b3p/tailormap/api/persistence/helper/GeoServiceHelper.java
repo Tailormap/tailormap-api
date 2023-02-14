@@ -23,6 +23,7 @@ import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
 import nl.b3p.tailormap.api.persistence.json.ServiceCapsCapabilities;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.plexus.util.StringUtils;
 import org.geotools.data.ServiceInfo;
 import org.geotools.data.ows.AbstractOpenWebService;
 import org.geotools.data.ows.Capabilities;
@@ -52,6 +53,24 @@ public class GeoServiceHelper {
   @Autowired
   public GeoServiceHelper(HttpClientConfig httpClientConfig) {
     this.httpClientConfig = httpClientConfig;
+  }
+
+  public nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum guessServerTypeFromUrl(
+      String url) {
+
+    if (StringUtils.isBlank(url)) {
+      return nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;
+    }
+    if (url.contains("/arcgis/")) {
+      return nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;
+    }
+    if (url.contains("/geoserver/")) {
+      return nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.GEOSERVER;
+    }
+    if (url.contains("/mapserv")) { // /cgi-bin/mapserv, /cgi-bin/mapserv.cgi, /cgi-bin/mapserv.fcgi
+      return nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.MAPSERVER;
+    }
+    return nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;
   }
 
   public void loadServiceCapabilities(GeoService geoService) throws Exception {

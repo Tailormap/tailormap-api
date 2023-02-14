@@ -1,0 +1,37 @@
+#
+# Copyright (C) 2021 B3Partners B.V.
+#
+# SPDX-License-Identifier: MIT
+#
+openapi: 3.0.3
+info:
+  title: 'models'
+  description: 'Tailormap API models common to the persistence layer and the API.'
+  version: '1.0'
+  license:
+    name: 'MIT'
+    url: 'https://mit-license.org/'
+  contact:
+    name: 'B3Partners BV'
+    url: 'https://www.b3partners.nl/'
+    email: 'info@b3partners.nl'
+
+# no servers or paths, just the models in this document
+servers: [ ]
+paths: { }
+
+# The openapi-generator plugin is run twice: once for the persistence layer JSON and once for the
+# models used in the API. Specify all common models in <importMappings> for the second run so common
+# models use the same class, and add them to the common-schemas-openapi-ignore file.
+
+components:
+  schemas:
+    TileLayerHiDpiMode:
+      type: string
+      enum:
+        - showNextZoomLevel
+        # Show the deeper zoomlevel of the substituted layer
+        - substituteLayerShowNextZoomLevel
+        # Show the same zoomlevel of the substituted layer but set tilePixelRatio to 2: the layer
+        # must be a 2x sized tile compared to the size in the capabilities
+        - substituteLayerTilePixelRatioOnly

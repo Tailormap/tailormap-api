@@ -112,6 +112,13 @@ components:
       For advanced functionality that required access to attributes the LayerDetails should be requested.
       '
       type: object
+      required:
+        - id
+        - layerName
+        - title
+        - serviceId
+        - visible
+        - hasAttributes
       properties:
         id:
           type: integer
@@ -145,27 +152,24 @@ components:
         legendImageUrl:
           description: URL to an image with the layer legend.
           type: string
+        tilingDisabled:
+          description: Request a single tile for WMS (may result in errors when max size/mem exceeded)
+          type: boolean
+        tilingGutter:
+          description: Gutter around tile to discard to avoid tile edge rendering artifacts
+          type: integer
+        hiDpiDisabled:
+          description: Whether the layer should not be rendered in high DPI when available
+          type: boolean
+          nullable: false
         hiDpiMode:
-          type: string
-          description: 'For tiled services only'
-          enum:
-            - disabled
-            - showNextZoomLevel
-            - substituteLayerShowNextZoomLevel
-            - substituteLayerTilePixelRatioOnly
+          $ref: './common-schemas.yaml#/components/schemas/TileLayerHiDpiMode'
         hiDpiSubstituteLayer:
           description: 'The layer name of this service to substitute when the device pixel ratio is higher'
           type: string
         hasAttributes:
           description: 'Whether this layer has attributes that can be accessed eg. for feature info or attribute list'
           type: boolean
-      required:
-        - id
-        - layerName
-        - title
-        - serviceId
-        - visible
-        - hasAtributes
 
     LayerTreeNode:
       description: Grouping of layers in a tree structure.
@@ -409,47 +413,36 @@ components:
     Service:
       description: 'A service provides one or more appLayers'
       type: object
+      required: [id, title, url, protocol, capabilities, serverType]
       properties:
         id:
           type: integer
           format: int64
-        name:
+          nullable: false
+        title:
           type: string
           nullable: false
         url:
           type: string
-          nullable: true
-        styleLibraries:
-          type: object
-        serverType:
+          nullable: false
+        protocol:
           type: string
           nullable: false
           enum:
-            - auto
-            - disabled
-            - geoserver
-            - mapserver
-        tilingDisabled:
-          type: boolean
-        tilingGutter:
-          type: integer
-        protocol:
-          type: string
-          enum:
-            - tiled
             - wms
-            - arcgis
-        tilingProtocol:
-          type: string
-          enum:
-            - WMTS
-            - TMS
+            - wmts
         capabilities:
           description: 'capabilities document of the service - currently only for WMTS'
           type: string
           nullable: true
-      required:
-        - id
+        serverType:
+          type: string
+          nullable: false
+          enum:
+            - generic
+            - geoserver
+            - mapserver
+          default: generic
 
     Component:
       description: 'a component to be used in the application'
