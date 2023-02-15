@@ -29,8 +29,7 @@ public class Group {
 
   @Id private String name;
 
-  @Version
-  private Long version;
+  @Version private Long version;
 
   private boolean systemGroup;
 

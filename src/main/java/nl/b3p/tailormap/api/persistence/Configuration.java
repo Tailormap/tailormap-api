@@ -10,7 +10,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Version;
-
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -19,8 +18,7 @@ public class Configuration {
 
   @Id private String key;
 
-  @Version
-  private Long version;
+  @Version private Long version;
 
   @Column(columnDefinition = "text")
   private String value;

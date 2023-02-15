@@ -27,11 +27,9 @@ import org.hibernate.annotations.Type;
 public class User {
   @Id private String username;
 
-  @Version
-  private Long version;
+  @Version private Long version;
 
-  @NotNull @JsonIgnore
-  private String password;
+  @NotNull @JsonIgnore private String password;
 
   @Email private String email;
 

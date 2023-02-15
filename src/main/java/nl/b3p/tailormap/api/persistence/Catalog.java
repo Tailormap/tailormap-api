@@ -10,7 +10,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Version;
-
 import nl.b3p.tailormap.api.persistence.json.CatalogNode;
 import org.hibernate.annotations.Type;
 
@@ -19,8 +18,7 @@ public class Catalog {
   public static final String MAIN = "main";
   @Id private String id;
 
-  @Version
-  private Long version;
+  @Version private Long version;
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")

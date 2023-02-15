@@ -11,7 +11,6 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -19,7 +18,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
-
+import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.viewer.model.AppResponse;
 import nl.b3p.tailormap.api.viewer.model.AppStyling;
@@ -39,11 +38,9 @@ public class Application {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Version
-  private Long version;
+  @Version private Long version;
 
-  @Basic(optional = false)
-  private String name;
+  @NotNull private String name;
 
   private String title;
 
@@ -53,8 +50,7 @@ public class Application {
   @Column(columnDefinition = "text")
   private String previewText;
 
-  @Basic(optional = false)
-  private String crs;
+  @NotNull private String crs;
 
   @Embedded
   @AttributeOverrides({
