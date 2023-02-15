@@ -11,6 +11,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.util.Set;
 import java.util.TreeSet;
 import nl.b3p.tailormap.api.annotation.AppRestController;
@@ -22,8 +23,6 @@ import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
@@ -34,6 +33,8 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.Function;
 import org.opengis.filter.sort.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -57,7 +58,8 @@ public class UniqueValuesController {
 
   private final FilterFactory2 ff =
       CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
-  private final Log logger = LogFactory.getLog(getClass());
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final LayerRepository layerRepository;
 
   @Autowired
@@ -109,7 +111,7 @@ public class UniqueValuesController {
       if (null != filter) {
         existingFilter = ECQL.toFilter(filter);
       }
-      logger.trace("existingFilter: " + existingFilter);
+      logger.trace("existingFilter: {}", existingFilter);
 
       Filter notNull = ff.not(ff.isNull(ff.property(attributeName)));
       Filter f = notNull;
@@ -121,7 +123,7 @@ public class UniqueValuesController {
       Query q = new Query(sft.getTypeName(), f);
       q.setPropertyNames(attributeName);
       q.setSortBy(ff.sort(attributeName, SortOrder.ASCENDING));
-      logger.trace("Unique values query: " + q);
+      logger.trace("Unique values query: {}", q);
 
       SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
       // and then there are 2 scenarios:

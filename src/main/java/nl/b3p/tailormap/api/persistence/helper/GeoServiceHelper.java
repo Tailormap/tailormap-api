@@ -9,6 +9,7 @@ import static nl.b3p.tailormap.api.persistence.FeatureSource.Protocol.WFS;
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.time.Instant;
 import java.util.Arrays;
@@ -33,8 +34,6 @@ import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
 import nl.b3p.tailormap.api.persistence.json.ServiceCapsCapabilities;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.geotools.data.ServiceInfo;
 import org.geotools.data.ows.AbstractOpenWebService;
 import org.geotools.data.ows.Capabilities;
@@ -51,6 +50,8 @@ import org.geotools.ows.wms.WMS1_3_0;
 import org.geotools.ows.wms.WMSCapabilities;
 import org.geotools.ows.wms.WebMapServer;
 import org.geotools.ows.wmts.WebMapTileServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -59,7 +60,8 @@ import org.springframework.util.CollectionUtils;
 @Service
 public class GeoServiceHelper {
 
-  private static final Log log = LogFactory.getLog(GeoServiceHelper.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final TailormapConfig tailormapConfig;
   private final FeatureSourceRepository featureSourceRepository;
 
@@ -98,12 +100,11 @@ public class GeoServiceHelper {
     client.setConnectTimeout(this.tailormapConfig.getTimeout());
     client.setTryGzip(true);
 
-    log.info(
-        String.format(
-            "Get capabilities for %s %s from URL %s",
-            geoService.getProtocol(),
-            geoService.getId() == null ? "(new)" : "id " + geoService.getId(),
-            geoService.getUrl()));
+    logger.info(
+        "Get capabilities for {} {} from URL {}",
+        geoService.getProtocol(),
+        geoService.getId() == null ? "(new)" : "id " + geoService.getId(),
+        geoService.getUrl());
 
     // TODO: micrometer met tags voor URL/id van service
 
@@ -119,15 +120,15 @@ public class GeoServiceHelper {
             "Unsupported geo service protocol: " + geoService.getProtocol());
     }
 
-    if (log.isDebugEnabled()) {
-      log.debug("Loaded service layers: " + geoService.getLayers());
+    if (logger.isDebugEnabled()) {
+      logger.debug("Loaded service layers: {}", geoService.getLayers());
     } else {
-      log.info(
-          "Loaded service layers: "
-              + geoService.getLayers().stream()
-                  .filter(Predicate.not(GeoServiceLayer::getVirtual))
-                  .map(GeoServiceLayer::getName)
-                  .collect(Collectors.toList()));
+      logger.info(
+          "Loaded service layers: {}",
+          geoService.getLayers().stream()
+              .filter(Predicate.not(GeoServiceLayer::getVirtual))
+              .map(GeoServiceLayer::getName)
+              .collect(Collectors.toList()));
     }
   }
 
@@ -227,18 +228,17 @@ public class GeoServiceHelper {
                         .describeLayer(
                             wms.getCapabilities().getRequest().getDescribeLayer() != null)));
 
-    if (log.isDebugEnabled()) {
-      log.debug(
-          "Loaded capabilities, service capabilities: " + geoService.getServiceCapabilities());
+    if (logger.isDebugEnabled()) {
+      logger.debug(
+          "Loaded capabilities, service capabilities: {}", geoService.getServiceCapabilities());
     } else {
-      log.info(
-          String.format(
-              "Loaded capabilities from \"%s\", title: \"%s\"",
-              geoService.getUrl(),
-              geoService.getServiceCapabilities() != null
-                      && geoService.getServiceCapabilities().getServiceInfo() != null
-                  ? geoService.getServiceCapabilities().getServiceInfo().getTitle()
-                  : "(none)"));
+      logger.info(
+          "Loaded capabilities from \"{}\", title: \"{}\"",
+          geoService.getUrl(),
+          geoService.getServiceCapabilities() != null
+                  && geoService.getServiceCapabilities().getServiceInfo() != null
+              ? geoService.getServiceCapabilities().getServiceInfo().getTitle()
+              : "(none)");
     }
 
     setLayerList(geoService, wms.getCapabilities().getLayerList());
@@ -291,7 +291,7 @@ public class GeoServiceHelper {
                   // filter out white-space (non-greedy regex)
                   boolean noWhitespace = !n.contains("(.*?)\\s(.*?)");
                   if (!noWhitespace) {
-                    log.warn(
+                    logger.warn(
                         String.format(
                             "Not doing WFS DescribeLayer request for layer name with space: \"%s\" of WMS %s",
                             n, geoService.getUrl()));
@@ -309,12 +309,12 @@ public class GeoServiceHelper {
       SimpleWFSLayerDescription description = entry.getValue();
       if (description.getTypeNames().length == 1
           && layerName.equals(description.getFirstTypeName())) {
-        log.info(
+        logger.info(
             String.format(
                 "layer \"%s\" linked to feature type with same name of WFS %s",
                 layerName, description.getWfsUrl()));
       } else {
-        log.info(
+        logger.info(
             String.format(
                 "layer \"%s\" -> feature type(s) %s of WFS %s",
                 layerName, Arrays.toString(description.getTypeNames()), description.getWfsUrl()));
@@ -352,10 +352,10 @@ public class GeoServiceHelper {
                       String.format(
                           "Error loading WFS from URL %s: %s: %s",
                           url, e.getClass(), e.getMessage());
-                  if (log.isTraceEnabled()) {
-                    log.error(msg, e);
+                  if (logger.isTraceEnabled()) {
+                    logger.error(msg, e);
                   } else {
-                    log.error(msg);
+                    logger.error(msg);
                   }
                 }
                 featureSourceRepository.save(fs);

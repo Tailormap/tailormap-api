@@ -13,15 +13,17 @@ import nl.b3p.tailormap.api.persistence.FeatureSource;
 import nl.b3p.tailormap.api.persistence.FeatureType;
 import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
 import nl.b3p.tailormap.api.persistence.json.ServiceInfo;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.lang.invoke.MethodHandles;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WFSFeatureSourceHelper implements FeatureSourceHelper {
-  private static final Log log = LogFactory.getLog(WFSFeatureSourceHelper.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public static DataStore createDataStore(
       Map<String, Object> extraDataStoreParams, FeatureSource fs) throws IOException {
@@ -51,7 +53,7 @@ public class WFSFeatureSourceHelper implements FeatureSourceHelper {
     //          WFSDataStoreFactory.PASSWORD.key,
     //          String.valueOf(new char[fs.getPassword().length()]).replace("\0", "*"));
     //    }
-    log.debug("Opening datastore using parameters: " + logParams);
+    logger.debug("Opening datastore using parameters: {}", logParams);
     DataStore ds = DataStoreFinder.getDataStore(params);
     if (ds == null) {
       throw new IOException("Cannot open datastore using parameters " + logParams);
@@ -89,7 +91,7 @@ public class WFSFeatureSourceHelper implements FeatureSourceHelper {
                     .source(si.getSource())));
 
     String[] typeNames = ds.getTypeNames();
-    log.info(String.format("type names for WFS %s: %s", pfs.getUrl(), Arrays.toString(typeNames)));
+    logger.info("Type names for WFS {}: {}", pfs.getUrl(), Arrays.toString(typeNames));
 
     for (String typeName : typeNames) {
       pfs.getFeatureTypes().add(new FeatureType().setFeatureSource(pfs).setTypeName(typeName));

@@ -9,6 +9,7 @@ import static nl.b3p.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthentication
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -28,8 +29,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.geotools.http.HTTPClient;
 import org.geotools.http.SimpleHttpClient;
 import org.geotools.ows.ServiceException;
@@ -38,6 +37,8 @@ import org.geotools.ows.wms.WMS1_1_1;
 import org.geotools.ows.wms.WebMapServer;
 import org.geotools.ows.wms.request.DescribeLayerRequest;
 import org.geotools.ows.wms.response.DescribeLayerResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.xml.DomUtils;
@@ -53,7 +54,8 @@ import org.w3c.dom.NodeList;
  * GeoTools WFS DataStore.
  */
 public class SimpleWFSHelper {
-  private static final Log LOG = LogFactory.getLog(SimpleWFSHelper.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   public static final int TIMEOUT = 5000;
 
   private static HttpClient getDefaultHttpClient() {
@@ -235,10 +237,10 @@ public class SimpleWFSHelper {
           String.format(
               "Error in DescribeLayer request to WMS \"%s\": %s: %s",
               url, e.getClass(), e.getMessage());
-      if (LOG.isTraceEnabled()) {
-        LOG.trace(msg, e);
+      if (logger.isTraceEnabled()) {
+        logger.trace(msg, e);
       } else {
-        LOG.debug(msg + ". Set log level to TRACE for stacktrace.");
+        logger.debug(msg + ". Set log level to TRACE for stacktrace.");
       }
     }
 

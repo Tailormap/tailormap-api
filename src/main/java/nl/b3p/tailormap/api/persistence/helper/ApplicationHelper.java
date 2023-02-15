@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.persistence.helper;
 
+import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,16 +26,17 @@ import nl.b3p.tailormap.api.viewer.model.CoordinateReferenceSystem;
 import nl.b3p.tailormap.api.viewer.model.LayerTreeNode;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
 import org.apache.commons.lang3.tuple.Triple;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.geotools.referencing.util.CRSUtilities;
 import org.geotools.referencing.wkt.Formattable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 @Service
 public class ApplicationHelper {
-  private static final Log log = LogFactory.getLog(ApplicationHelper.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final GeoServiceHelper geoServiceHelper;
   private final GeoServiceRepository geoServiceRepository;
@@ -214,19 +216,21 @@ public class ApplicationHelper {
         AppLayerRef layerRef) {
       GeoService service = geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);
       if (service == null) {
-        log.warn(
-            String.format(
-                "App %d references layer \"%s\" of missing service %d",
-                app.getId(), layerRef.getLayerName(), layerRef.getServiceId()));
+        logger.warn(
+            "App {} references layer \"{}\" of missing service {}",
+            app.getId(),
+            layerRef.getLayerName(),
+            layerRef.getServiceId());
         return Triple.of(null, null, null);
       }
       GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());
 
       if (serviceLayer == null) {
-        log.warn(
-            String.format(
-                "App %d references layer \"%s\" not found in capabilities of service %d",
-                app.getId(), layerRef.getLayerName(), service.getId()));
+        logger.warn(
+            "App {} references layer \"{}\" not found in capabilities of service {}",
+            app.getId(),
+            layerRef.getLayerName(),
+            service.getId());
         return Triple.of(null, null, null);
       }
 

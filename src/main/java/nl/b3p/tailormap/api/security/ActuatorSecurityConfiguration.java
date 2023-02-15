@@ -6,13 +6,14 @@
 
 package nl.b3p.tailormap.api.security;
 
+import java.lang.invoke.MethodHandles;
 import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.persistence.User;
 import nl.b3p.tailormap.api.repository.UserRepository;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.codehaus.plexus.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +26,8 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Configuration
 @Order(1)
 public class ActuatorSecurityConfiguration {
-  private static final Log log = LogFactory.getLog(ActuatorSecurityConfiguration.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Value("${management.endpoints.web.base-path}")
   private String basePath;
@@ -54,18 +56,17 @@ public class ActuatorSecurityConfiguration {
       } else {
         msg = "with a different password from";
       }
-      log.info(
-          String.format(
-              "Actuator account already exists %s the MANAGEMENT_HASHED_ACCOUNT environment variable",
-              msg));
+      logger.info(
+          "Actuator account already exists {} the MANAGEMENT_HASHED_ACCOUNT environment variable",
+          msg);
     } else {
       if (!hashedPassword.startsWith("{bcrypt}")) {
-        log.error("Invalid password hash, must start with {bcrypt}");
+        logger.error("Invalid password hash, must start with {bcrypt}");
       } else {
         account = new User().setUsername(Group.ACTUATOR).setPassword(hashedPassword);
         account.getGroups().add(new Group().setName(Group.ACTUATOR));
         userRepository.save(account);
-        log.info("Created " + Group.ACTUATOR + " account with hashed password for management");
+        logger.info("Created {} account with hashed password for management", Group.ACTUATOR);
       }
     }
   }

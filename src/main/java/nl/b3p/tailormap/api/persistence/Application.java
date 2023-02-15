@@ -6,6 +6,7 @@
 package nl.b3p.tailormap.api.persistence;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -21,14 +22,15 @@ import nl.b3p.tailormap.api.viewer.model.AppResponse;
 import nl.b3p.tailormap.api.viewer.model.AppStyling;
 import nl.b3p.tailormap.api.viewer.model.Bounds;
 import nl.b3p.tailormap.api.viewer.model.Component;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.geotools.referencing.CRS;
 import org.hibernate.annotations.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 public class Application {
-  private static final Log log = LogFactory.getLog(Application.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -227,10 +229,10 @@ public class Application {
           String.format(
               "Application %d: error decoding CRS from code \"%s\": %s: %s",
               getId(), getCrs(), e.getClass(), e.getMessage());
-      if (log.isDebugEnabled()) {
-        log.error(message, e);
+      if (logger.isDebugEnabled()) {
+        logger.error(message, e);
       } else {
-        log.error(message);
+        logger.error(message);
       }
     }
     return gtCrs;
