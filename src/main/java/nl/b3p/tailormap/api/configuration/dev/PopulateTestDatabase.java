@@ -102,39 +102,49 @@ public class PopulateTestDatabase {
     Map<String, GeoService> services =
         Map.of(
             "geoserver",
-                new GeoService()
-                    .setProtocol(WMS)
-                    .setTitle("Test GeoServer")
-                    .setUrl("https://snapshot.tailormap.nl/geoserver/wms"),
+            new GeoService()
+                .setProtocol(WMS)
+                .setTitle("Test GeoServer")
+                .setUrl("https://snapshot.tailormap.nl/geoserver/wms"),
             "openbasiskaart",
-                new GeoService()
-                    .setProtocol(WMTS)
-                    .setTitle("Openbasiskaart")
-                    .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
-                    .setSettings(
-                        new GeoServiceSettings()
-                            .layerSettings(
-                                Map.of(
-                                    "osm",
-                                    new GeoServiceLayerSettings()
-                                        .hiDpiMode(
-                                            TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
-                                        .hiDpiSubstituteLayer("osm-hq")))),
+            new GeoService()
+                .setProtocol(WMTS)
+                .setTitle("Openbasiskaart")
+                .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
+                .setSettings(
+                    new GeoServiceSettings()
+                        .layerSettings(
+                            Map.of(
+                                "osm",
+                                new GeoServiceLayerSettings()
+                                    .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
+                                    .hiDpiSubstituteLayer("osm-hq")))),
             "pdok luchtfoto",
-                new GeoService()
-                    .setProtocol(WMTS)
-                    .setTitle("PDOK HWH luchtfoto")
-                    .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
-                    .setSettings(
-                        new GeoServiceSettings()
-                            .defaultLayerSettings(
-                                new GeoServiceDefaultLayerSettings()
-                                    .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))),
+            new GeoService()
+                .setProtocol(WMTS)
+                .setTitle("PDOK HWH luchtfoto")
+                .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
+                .setSettings(
+                    new GeoServiceSettings()
+                        .defaultLayerSettings(
+                            new GeoServiceDefaultLayerSettings()
+                                .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))),
             "basemap.at",
-                new GeoService()
-                    .setProtocol(WMTS)
-                    .setTitle("basemap.at")
-                    .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
+            new GeoService()
+                .setProtocol(WMTS)
+                .setTitle("basemap.at")
+                .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
+                .setSettings(
+                    new GeoServiceSettings()
+                        .layerSettings(
+                            Map.of(
+                                "geolandbasemap",
+                                new GeoServiceLayerSettings()
+                                    .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERTILEPIXELRATIOONLY)
+                                    .hiDpiSubstituteLayer("bmaphidpi"),
+                                "bmaporthofoto30cm",
+                                new GeoServiceLayerSettings()
+                                    .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))))
             //        new GeoService()
             //            .setProtocol(WMS)
             //            .setTitle("Norway - Administrative enheter")
@@ -225,10 +235,13 @@ public class PopulateTestDatabase {
                             .addLayersItem(
                                 new AppLayerRef()
                                     .serviceId(basemapAtId)
+                                    .layerName("bmapoverlay")
+                                    .visible(false))
+                            .addLayersItem(
+                                new AppLayerRef()
+                                    .serviceId(basemapAtId)
                                     .layerName("bmaporthofoto30cm")
-                                    .visible(false)))
-                    .addLayersItem(
-                        new AppLayerRef().serviceId(4L).layerName("bmapoverlay").visible(false)));
+                                    .visible(false))));
     applicationRepository.save(app);
 
     // WMS doesn't work, issue with WMS 1.1.1 vs 1.3.0?
