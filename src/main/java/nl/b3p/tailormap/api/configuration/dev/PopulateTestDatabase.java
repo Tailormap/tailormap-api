@@ -5,9 +5,9 @@
  */
 package nl.b3p.tailormap.api.configuration.dev;
 
-
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
+
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import javax.annotation.PostConstruct;

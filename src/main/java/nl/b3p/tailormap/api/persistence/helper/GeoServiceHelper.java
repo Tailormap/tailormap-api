@@ -244,7 +244,7 @@ public class GeoServiceHelper {
     setLayerList(geoService, wms.getCapabilities().getLayerList());
   }
 
-  private WebMapServer getWebMapServer(HTTPClient client, String url)
+  public WebMapServer getWebMapServer(HTTPClient client, String url)
       throws IOException, ServiceException {
     // If we don't override setupSpecifications() we get WMS 1.3.0 capabilities without
     // DescribeLayer, but WMS 1.1.1 does not work for a WMS like

@@ -6,6 +6,7 @@
 package nl.b3p.tailormap.api.geotools.featuresources;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +14,6 @@ import nl.b3p.tailormap.api.persistence.FeatureSource;
 import nl.b3p.tailormap.api.persistence.FeatureType;
 import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
 import nl.b3p.tailormap.api.persistence.json.ServiceInfo;
-import java.lang.invoke.MethodHandles;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;

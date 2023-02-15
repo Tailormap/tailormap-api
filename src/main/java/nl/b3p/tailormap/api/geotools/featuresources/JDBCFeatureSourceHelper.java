@@ -14,8 +14,8 @@ import org.geotools.data.simple.SimpleFeatureSource;
 
 public class JDBCFeatureSourceHelper implements FeatureSourceHelper {
 
-//  private static final Logger logger =
-//      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  //  private static final Logger logger =
+  //      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public static SimpleFeatureSource openGeoToolsFSFeatureSource(FeatureSource fs, FeatureType sft)
       throws IOException {
