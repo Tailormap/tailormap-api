@@ -34,8 +34,11 @@ components:
     TileLayerHiDpiMode:
       type: string
       enum:
+        # Tiles are DPI-independent, for example an orthofoto - just show the next zoom level at
+        # high DPI.
         - showNextZoomLevel
-        # Show the deeper zoomlevel of the substituted layer
+        # Substitute a layer which renders features larger (using more pixels for lines, labels,
+        # etc.) but show a deeper zoomlevel of the substituted layer.
         - substituteLayerShowNextZoomLevel
         # Show the same zoomlevel of the substituted layer but set tilePixelRatio to 2: the layer
         # must be a 2x sized tile compared to the size in the capabilities
