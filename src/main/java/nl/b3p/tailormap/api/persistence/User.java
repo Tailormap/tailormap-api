@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
@@ -25,6 +26,9 @@ import org.hibernate.annotations.Type;
 @Table(name = "users")
 public class User {
   @Id private String username;
+
+  @Version
+  private Long version;
 
   @NotNull @JsonIgnore
   private String password;
@@ -57,6 +61,15 @@ public class User {
 
   public User setUsername(String username) {
     this.username = username;
+    return this;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
+  public User setVersion(Long version) {
+    this.version = version;
     return this;
   }
 

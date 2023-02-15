@@ -22,6 +22,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
 import org.hibernate.annotations.Type;
@@ -62,6 +63,9 @@ public class FeatureSource {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Version
+  private Long version;
 
   @Column(columnDefinition = "text")
   private String notes;
@@ -105,6 +109,15 @@ public class FeatureSource {
 
   public FeatureSource setId(Long id) {
     this.id = id;
+    return this;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
+  public FeatureSource setVersion(Long version) {
+    this.version = version;
     return this;
   }
 

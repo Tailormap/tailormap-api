@@ -21,6 +21,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
@@ -37,6 +38,9 @@ public class GeoService {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Version
+  private Long version;
 
   @Column(columnDefinition = "text")
   private String notes;
@@ -130,6 +134,15 @@ public class GeoService {
 
   public GeoService setId(Long id) {
     this.id = id;
+    return this;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
+  public GeoService setVersion(Long version) {
+    this.version = version;
     return this;
   }
 

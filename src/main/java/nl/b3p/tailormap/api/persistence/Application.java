@@ -18,6 +18,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
+
 import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.viewer.model.AppResponse;
 import nl.b3p.tailormap.api.viewer.model.AppStyling;
@@ -36,6 +38,9 @@ public class Application {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Version
+  private Long version;
 
   @Basic(optional = false)
   private String name;
@@ -95,6 +100,15 @@ public class Application {
 
   public Application setId(Long id) {
     this.id = id;
+    return this;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
+  public Application setVersion(Long version) {
+    this.version = version;
     return this;
   }
 
