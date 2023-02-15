@@ -5,10 +5,11 @@
  */
 package nl.b3p.tailormap.api.security;
 
+import java.lang.invoke.MethodHandles;
 import nl.b3p.tailormap.api.persistence.User;
 import nl.b3p.tailormap.api.repository.UserRepository;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,7 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 @EnableWebSecurity
 public class TailormapUserDetailsService implements UserDetailsService {
-  private final Log logger = LogFactory.getLog(getClass());
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final UserRepository userRepository;
 

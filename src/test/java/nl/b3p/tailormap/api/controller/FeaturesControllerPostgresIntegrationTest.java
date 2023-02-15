@@ -14,14 +14,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.jayway.jsonpath.JsonPath;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.stream.Stream;
 import nl.b3p.tailormap.api.JPAConfiguration;
 import nl.b3p.tailormap.api.model.Service;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.security.SecurityConfig;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -34,6 +33,8 @@ import org.junitpioneer.jupiter.Stopwatch;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.WKTReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -59,6 +60,9 @@ import org.springframework.test.web.servlet.MvcResult;
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
 class FeaturesControllerPostgresIntegrationTest {
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   /** bestuurlijke gebieden WFS; provincies . */
   private static final String provinciesWFS = "/app/1/layer/2/features";
 
@@ -74,7 +78,6 @@ class FeaturesControllerPostgresIntegrationTest {
   private static final int begroeidterreindeelTotalCount = 3662;
   private static final int waterdeelTotalCount = 282;
   private static final int wegdeelTotalCount = 5934;
-  private final Log logger = LogFactory.getLog(getClass());
 
   @Value("${tailormap-api.features.wfs_count_exact:false}")
   private boolean exactWfsCounts;

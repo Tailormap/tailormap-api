@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.configuration.dev;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.Application;
@@ -29,8 +30,8 @@ import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.repository.UserRepository;
 import nl.b3p.tailormap.api.viewer.model.Bounds;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 
@@ -38,7 +39,8 @@ import org.springframework.context.annotation.Profile;
 @Profile("!test")
 // TODO: Only in recreate-db profile
 public class PopulateTestDatabase {
-  private static final Log log = LogFactory.getLog(PopulateTestDatabase.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final UserRepository userRepository;
   private final CatalogRepository catalogRepository;
@@ -254,6 +256,6 @@ public class PopulateTestDatabase {
     config.setValue("default");
     configurationRepository.save(config);
 
-    log.info("Test entities created");
+    logger.info("Test entities created");
   }
 }

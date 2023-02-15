@@ -8,10 +8,9 @@ package nl.b3p.tailormap.api.configuration;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import javax.annotation.PostConstruct;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.geotools.metadata.iso.citation.Citations;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.ReferencingFactoryFinder;
@@ -20,11 +19,14 @@ import org.geotools.referencing.factory.ReferencingFactoryContainer;
 import org.geotools.referencing.wkt.Formattable;
 import org.geotools.util.factory.Hints;
 import org.opengis.referencing.FactoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class GeoToolsEPSGAliasesConfiguration {
-  private static final Log log = LogFactory.getLog(GeoToolsEPSGAliasesConfiguration.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   // Registering this unofficial EPSG code for web mercator is required to properly load a CRS like
   // urn:ogc:def:crs:EPSG:6.3:900913 used by MapCache, for example here:
@@ -53,8 +55,7 @@ public class GeoToolsEPSGAliasesConfiguration {
     ReferencingFactoryFinder.scanForPlugins();
 
     for (int[] alias : EPSG_ALIASES) {
-      log.info(
-          String.format("Added CRS alias to GeoTools: EPSG:%d -> EPSG:%d", alias[0], alias[1]));
+      logger.info("Added CRS alias to GeoTools: EPSG:{} -> EPSG:{}", alias[0], alias[1]);
     }
   }
 }

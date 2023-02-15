@@ -6,6 +6,7 @@
 package nl.b3p.tailormap.api.persistence.helper;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.time.Instant;
 import java.util.List;
@@ -21,8 +22,6 @@ import nl.b3p.tailormap.api.persistence.json.ServiceCapabilitiesRequestGetFeatur
 import nl.b3p.tailormap.api.persistence.json.ServiceCapabilitiesRequestGetMap;
 import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
 import nl.b3p.tailormap.api.persistence.json.ServiceCapsCapabilities;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.codehaus.plexus.util.StringUtils;
 import org.geotools.data.ServiceInfo;
 import org.geotools.data.ows.AbstractOpenWebService;
@@ -40,6 +39,8 @@ import org.geotools.ows.wms.WMS1_3_0;
 import org.geotools.ows.wms.WMSCapabilities;
 import org.geotools.ows.wms.WebMapServer;
 import org.geotools.ows.wmts.WebMapTileServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class GeoServiceHelper {
 
-  private static final Log log = LogFactory.getLog(GeoServiceHelper.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final HttpClientConfig httpClientConfig;
 
   @Autowired
@@ -83,12 +85,11 @@ public class GeoServiceHelper {
     client.setConnectTimeout(this.httpClientConfig.getTimeout());
     client.setTryGzip(true);
 
-    log.info(
-        String.format(
-            "Get capabilities for %s %s from URL %s",
-            geoService.getProtocol(),
-            geoService.getId() == null ? "(new)" : "id " + geoService.getId(),
-            geoService.getUrl()));
+    logger.info(
+        "Get capabilities for {} {} from URL {}",
+        geoService.getProtocol(),
+        geoService.getId() == null ? "(new)" : "id " + geoService.getId(),
+        geoService.getUrl());
 
     // TODO: micrometer met tags voor URL/id van service
 
@@ -104,15 +105,15 @@ public class GeoServiceHelper {
             "Unsupported geo service protocol: " + geoService.getProtocol());
     }
 
-    if (log.isDebugEnabled()) {
-      log.debug("Loaded service layers: " + geoService.getLayers());
+    if (logger.isDebugEnabled()) {
+      logger.debug("Loaded service layers: {}", geoService.getLayers());
     } else {
-      log.info(
-          "Loaded service layers: "
-              + geoService.getLayers().stream()
-                  .filter(Predicate.not(GeoServiceLayer::getVirtual))
-                  .map(GeoServiceLayer::getName)
-                  .collect(Collectors.toList()));
+      logger.info(
+          "Loaded service layers: {}",
+          geoService.getLayers().stream()
+              .filter(Predicate.not(GeoServiceLayer::getVirtual))
+              .map(GeoServiceLayer::getName)
+              .collect(Collectors.toList()));
     }
   }
 
@@ -212,18 +213,17 @@ public class GeoServiceHelper {
                         .describeLayer(
                             wms.getCapabilities().getRequest().getDescribeLayer() != null)));
 
-    if (log.isDebugEnabled()) {
-      log.debug(
-          "Loaded capabilities, service capabilities: " + geoService.getServiceCapabilities());
+    if (logger.isDebugEnabled()) {
+      logger.debug(
+          "Loaded capabilities, service capabilities: {}", geoService.getServiceCapabilities());
     } else {
-      log.info(
-          String.format(
-              "Loaded capabilities from \"%s\", title: \"%s\"",
-              geoService.getUrl(),
-              geoService.getServiceCapabilities() != null
-                      && geoService.getServiceCapabilities().getServiceInfo() != null
-                  ? geoService.getServiceCapabilities().getServiceInfo().getTitle()
-                  : "(none)"));
+      logger.info(
+          "Loaded capabilities from \"{}\", title: \"{}\"",
+          geoService.getUrl(),
+          geoService.getServiceCapabilities() != null
+                  && geoService.getServiceCapabilities().getServiceInfo() != null
+              ? geoService.getServiceCapabilities().getServiceInfo().getTitle()
+              : "(none)");
     }
 
     setLayerList(geoService, wms.getCapabilities().getLayerList());

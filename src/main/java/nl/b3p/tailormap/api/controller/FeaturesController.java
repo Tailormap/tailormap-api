@@ -11,6 +11,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
@@ -30,8 +31,6 @@ import nl.tailormap.viewer.config.services.AttributeDescriptor;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -54,6 +53,8 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -82,7 +83,8 @@ public class FeaturesController implements Constants {
 
   private final FilterFactory2 ff =
       CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
-  private final Log logger = LogFactory.getLog(getClass());
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   @PersistenceContext private EntityManager entityManager;
 
   /**
@@ -246,7 +248,7 @@ public class FeaturesController implements Constants {
       }
       q.setMaxFeatures(pageSize);
       q.setStartIndex((page - 1) * pageSize);
-      logger.debug("Attribute query: " + q);
+      logger.debug("Attribute query: {}", q);
 
       executeQueryOnFeatureSourceAndClose(
           false,
@@ -297,7 +299,7 @@ public class FeaturesController implements Constants {
       q.setFilter(ff.id(ff.featureId(fid)));
       q.setPropertyNames(propNames);
       q.setMaxFeatures(1);
-      logger.debug("FID query: " + q);
+      logger.debug("FID query: {}", q);
 
       executeQueryOnFeatureSourceAndClose(
           false,
@@ -381,7 +383,7 @@ public class FeaturesController implements Constants {
       //noinspection ConstantConditions
       shapeFact.setSize(distance * 2d);
       Geometry p = shapeFact.createCircle();
-      logger.debug("created geometry: " + p);
+      logger.debug("created geometry: {}", p);
 
       CoordinateReferenceSystem fromCRS = determineProjectToCRS(crs, fs);
       if (null != fromCRS) {
@@ -391,13 +393,13 @@ public class FeaturesController implements Constants {
           final CoordinateReferenceSystem toCRS = fs.getSchema().getCoordinateReferenceSystem();
           MathTransform transform = CRS.findMathTransform(fromCRS, toCRS, true);
           p = JTS.transform(p, transform);
-          logger.debug("reprojected geometry to: " + p);
+          logger.debug("reprojected geometry to: {}", p);
         } catch (FactoryException | TransformException e) {
           logger.warn(
               "Unable to transform query geometry to desired CRS, trying with original CRS");
         }
       }
-      logger.debug("using geometry: " + p);
+      logger.debug("using geometry: {}", p);
       Filter spatialFilter = ff.intersects(ff.property(sft.getGeometryAttribute()), ff.literal(p));
 
       // TODO flamingo does some fancy stuff to combine with existing filters using

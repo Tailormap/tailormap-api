@@ -6,6 +6,7 @@
 package nl.b3p.tailormap.api.security;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
@@ -14,8 +15,8 @@ import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.persistence.User;
 import nl.b3p.tailormap.api.repository.UserRepository;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ansi.AnsiPropertySource;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +32,8 @@ import org.springframework.util.StreamUtils;
 @Configuration
 @Profile("!test")
 public class StartupAdminAccountCreator {
-  private final Log logger = LogFactory.getLog(getClass());
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Value("${tailormap-api.new-admin-username:admin}")
   private String newAdminUsername;

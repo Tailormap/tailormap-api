@@ -10,18 +10,20 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class ValidateGeoToolsInArtifactIntegrationTest {
 
-  private static final Log LOG = LogFactory.getLog(ValidateGeoToolsInArtifactIntegrationTest.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   /** this name is set in the pom file */
   private static final String RUNNABLE_JAR = "target/tailormap-api-exec.jar";
 
@@ -32,7 +34,7 @@ class ValidateGeoToolsInArtifactIntegrationTest {
    */
   @Test
   void checkArtifact() {
-    LOG.debug("Checking Tailormap API artifact: " + RUNNABLE_JAR + " for GeoTools artifacts.");
+    logger.debug("Checking Tailormap API artifact: {} for GeoTools artifacts.", RUNNABLE_JAR);
     try (ZipFile zipFile = new ZipFile(RUNNABLE_JAR)) {
       Enumeration<? extends ZipEntry> e = zipFile.entries();
       List<ZipEntry> gtMainJars = new ArrayList<>();
@@ -59,7 +61,7 @@ class ValidateGeoToolsInArtifactIntegrationTest {
           1, gtEPSGJars.size(), "There are more than 1 gt-epsg artifacts in the runnable jar file");
 
     } catch (IOException e) {
-      LOG.error(e);
+      logger.error("Failed", e);
       fail(e.getLocalizedMessage());
     }
   }
