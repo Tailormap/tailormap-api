@@ -57,7 +57,7 @@ public class ActuatorSecurityConfiguration {
     InternalAdminAuthentication.setInSecurityContext();
     try {
       // Use the group/authority name as account name
-      User account = userRepository.findByUsername(Group.ACTUATOR);
+      User account = userRepository.findById(Group.ACTUATOR).orElse(null);
       if (account != null) {
         String msg;
         if (hashedPassword.equals(account.getPassword())) {

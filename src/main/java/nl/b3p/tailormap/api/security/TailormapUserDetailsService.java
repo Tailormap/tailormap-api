@@ -28,7 +28,7 @@ public class TailormapUserDetailsService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User user = userRepository.findByUsername(username);
+    User user = userRepository.findById(username).orElse(null);
     if (user == null) {
       throw new UsernameNotFoundException("User " + username + " not found");
     }
