@@ -15,6 +15,9 @@ paths: { }
 
 components:
   schemas:
+    GeoServiceProtocol:
+      $ref: './common-schemas.yaml#/components/schemas/GeoServiceProtocol'
+
     CatalogNode:
       description: Categorization for items in the catalog.
       properties:

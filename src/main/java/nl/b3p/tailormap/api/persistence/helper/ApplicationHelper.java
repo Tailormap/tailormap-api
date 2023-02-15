@@ -31,6 +31,7 @@ import org.geotools.referencing.wkt.Formattable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class ApplicationHelper {
@@ -120,7 +121,7 @@ public class ApplicationHelper {
           for (AppLayerRef layerRef : baseLayer.getLayers()) {
             addAppLayerItem(layerRef, backgroundNode, mr.getBaseLayerTreeNodes());
           }
-          if (!backgroundNode.getChildrenIds().isEmpty()) {
+          if (!CollectionUtils.isEmpty(backgroundNode.getChildrenIds())) {
             backgroundRootNode.addChildrenIdsItem(backgroundNode.getId());
             mr.addBaseLayerTreeNodesItem(backgroundNode);
           }
@@ -144,71 +145,71 @@ public class ApplicationHelper {
       Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> serviceWithLayer =
           findServiceLayer(layerRef);
       GeoService service = serviceWithLayer.getLeft();
+      GeoServiceLayer serviceLayer = serviceWithLayer.getMiddle();
+
+      if (service == null || serviceLayer == null) {
+        return;
+      }
       GeoServiceDefaultLayerSettings defaultLayerSettings =
           Optional.ofNullable(service.getSettings().getDefaultLayerSettings())
               .orElseGet(GeoServiceDefaultLayerSettings::new);
-      GeoServiceLayer serviceLayer = serviceWithLayer.getMiddle();
       Optional<GeoServiceLayerSettings> serviceLayerSettings =
           Optional.ofNullable(serviceWithLayer.getRight());
 
-      if (serviceLayer != null) {
-        String title =
-            Objects.requireNonNullElse(
-                layerRef.getTitle(), service.getTitleWithDefaults(layerRef.getLayerName()));
+      String title =
+          Objects.requireNonNullElse(
+              layerRef.getTitle(), service.getTitleWithDefaults(layerRef.getLayerName()));
 
-        boolean tilingDisabled =
-            serviceLayerSettings
-                .map(GeoServiceLayerSettings::getTilingDisabled)
-                .orElse(
-                    Optional.ofNullable(defaultLayerSettings.getTilingDisabled()).orElse(false));
-        Integer tilingGutter =
-            serviceLayerSettings
-                .map(GeoServiceLayerSettings::getTilingGutter)
-                .orElse(defaultLayerSettings.getTilingGutter());
-        boolean hiDpiDisabled =
-            serviceLayerSettings
-                .map(GeoServiceLayerSettings::getHiDpiDisabled)
-                .orElse(
-                    Optional.ofNullable(defaultLayerSettings.getTilingDisabled()).orElse(false));
-        TileLayerHiDpiMode hiDpiMode =
-            serviceLayerSettings
-                .map(GeoServiceLayerSettings::getHiDpiMode)
-                .orElse(defaultLayerSettings.getHiDpiMode());
-        // Do not get from defaultLayerSettings
-        String hiDpiSubstituteLayer =
-            serviceLayerSettings.map(GeoServiceLayerSettings::getHiDpiSubstituteLayer).orElse(null);
+      boolean tilingDisabled =
+          serviceLayerSettings
+              .map(GeoServiceLayerSettings::getTilingDisabled)
+              .orElse(Optional.ofNullable(defaultLayerSettings.getTilingDisabled()).orElse(false));
+      Integer tilingGutter =
+          serviceLayerSettings
+              .map(GeoServiceLayerSettings::getTilingGutter)
+              .orElse(defaultLayerSettings.getTilingGutter());
+      boolean hiDpiDisabled =
+          serviceLayerSettings
+              .map(GeoServiceLayerSettings::getHiDpiDisabled)
+              .orElse(Optional.ofNullable(defaultLayerSettings.getTilingDisabled()).orElse(false));
+      TileLayerHiDpiMode hiDpiMode =
+          serviceLayerSettings
+              .map(GeoServiceLayerSettings::getHiDpiMode)
+              .orElse(defaultLayerSettings.getHiDpiMode());
+      // Do not get from defaultLayerSettings
+      String hiDpiSubstituteLayer =
+          serviceLayerSettings.map(GeoServiceLayerSettings::getHiDpiSubstituteLayer).orElse(null);
 
-        mr.addAppLayersItem(
-            new AppLayer()
-                // XXX id's must be from config, not generated -> use string identifiers instead
-                .id((long) layerIdCounter)
-                .hasAttributes(false)
-                .serviceId(serviceLayerServiceIds.get(serviceLayer))
-                .layerName(layerRef.getLayerName())
-                // Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools
-                // gt-wms Layer class?
-                .maxScale(serviceLayer.getMaxScale())
-                .minScale(serviceLayer.getMinScale())
-                .title(title)
-                .tilingDisabled(tilingDisabled)
-                .tilingGutter(tilingGutter)
-                .hiDpiDisabled(hiDpiDisabled)
-                .hiDpiMode(hiDpiMode)
-                .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
-                .opacity(layerRef.getOpacity())
-                .visible(layerRef.getVisible()));
+      mr.addAppLayersItem(
+          new AppLayer()
+              // XXX id's must be from config, not generated -> use string identifiers instead
+              .id((long) layerIdCounter)
+              .hasAttributes(false)
+              .serviceId(serviceLayerServiceIds.get(serviceLayer))
+              .layerName(layerRef.getLayerName())
+              // Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools
+              // gt-wms Layer class?
+              .maxScale(serviceLayer.getMaxScale())
+              .minScale(serviceLayer.getMinScale())
+              .title(title)
+              .tilingDisabled(tilingDisabled)
+              .tilingGutter(tilingGutter)
+              .hiDpiDisabled(hiDpiDisabled)
+              .hiDpiMode(hiDpiMode)
+              .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
+              .opacity(layerRef.getOpacity())
+              .visible(layerRef.getVisible()));
 
-        LayerTreeNode layerNode =
-            new LayerTreeNode()
-                .id("lyr_" + layerIdCounter)
-                .appLayerId(layerIdCounter)
-                .description(serviceLayer.getAbstractText())
-                .name(title)
-                .root(false);
-        parent.addChildrenIdsItem(layerNode.getId());
-        layerTreeNodeList.add(layerNode);
-        layerIdCounter++;
-      }
+      LayerTreeNode layerNode =
+          new LayerTreeNode()
+              .id("lyr_" + layerIdCounter)
+              .appLayerId(layerIdCounter)
+              .description(serviceLayer.getAbstractText())
+              .name(title)
+              .root(false);
+      parent.addChildrenIdsItem(layerNode.getId());
+      layerTreeNodeList.add(layerNode);
+      layerIdCounter++;
     }
 
     private Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> findServiceLayer(
@@ -220,7 +221,7 @@ public class ApplicationHelper {
             app.getId(),
             layerRef.getLayerName(),
             layerRef.getServiceId());
-        return null;
+        return Triple.of(null, null, null);
       }
       GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());
 
@@ -230,7 +231,7 @@ public class ApplicationHelper {
             app.getId(),
             layerRef.getLayerName(),
             service.getId());
-        return null;
+        return Triple.of(null, null, null);
       }
 
       serviceLayerServiceIds.put(serviceLayer, service.getId());

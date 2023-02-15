@@ -70,107 +70,122 @@ public class FeatureType {
   @Column(columnDefinition = "jsonb")
   private JsonNode settings;
 
+  // <editor-fold desc="getters and setters">
   public Long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public FeatureType setId(Long id) {
     this.id = id;
+    return this;
   }
 
   public String getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public FeatureType setType(String type) {
     this.type = type;
+    return this;
   }
 
   public FeatureSource getFeatureSource() {
     return featureSource;
   }
 
-  public void setFeatureSource(FeatureSource featureSource) {
+  public FeatureType setFeatureSource(FeatureSource featureSource) {
     this.featureSource = featureSource;
+    return this;
   }
 
   public String getTypeName() {
     return typeName;
   }
 
-  public void setTypeName(String typeName) {
+  public FeatureType setTypeName(String typeName) {
     this.typeName = typeName;
+    return this;
   }
 
   public String getDescription() {
     return description;
   }
 
-  public void setDescription(String description) {
+  public FeatureType setDescription(String description) {
     this.description = description;
+    return this;
   }
 
   public String getComment() {
     return comment;
   }
 
-  public void setComment(String comment) {
+  public FeatureType setComment(String comment) {
     this.comment = comment;
+    return this;
   }
 
   public String getOwner() {
     return owner;
   }
 
-  public void setOwner(String owner) {
+  public FeatureType setOwner(String owner) {
     this.owner = owner;
+    return this;
   }
 
   public JsonNode getAdditionalProperties() {
     return additionalProperties;
   }
 
-  public void setAdditionalProperties(JsonNode additionalProperties) {
+  public FeatureType setAdditionalProperties(JsonNode additionalProperties) {
     this.additionalProperties = additionalProperties;
+    return this;
   }
 
   public boolean isWriteable() {
     return writeable;
   }
 
-  public void setWriteable(boolean writeable) {
+  public FeatureType setWriteable(boolean writeable) {
     this.writeable = writeable;
+    return this;
   }
 
   public String getDefaultGeometryAttribute() {
     return defaultGeometryAttribute;
   }
 
-  public void setDefaultGeometryAttribute(String defaultGeometryAttribute) {
+  public FeatureType setDefaultGeometryAttribute(String defaultGeometryAttribute) {
     this.defaultGeometryAttribute = defaultGeometryAttribute;
+    return this;
   }
 
   public String getPrimaryKeyAttribute() {
     return primaryKeyAttribute;
   }
 
-  public void setPrimaryKeyAttribute(String primaryKeyAttribute) {
+  public FeatureType setPrimaryKeyAttribute(String primaryKeyAttribute) {
     this.primaryKeyAttribute = primaryKeyAttribute;
+    return this;
   }
 
   public List<AttributeDescriptor> getAttributes() {
     return attributes;
   }
 
-  public void setAttributes(List<AttributeDescriptor> attributes) {
+  public FeatureType setAttributes(List<AttributeDescriptor> attributes) {
     this.attributes = attributes;
+    return this;
   }
 
   public JsonNode getSettings() {
     return settings;
   }
 
-  public void setSettings(JsonNode settings) {
+  public FeatureType setSettings(JsonNode settings) {
     this.settings = settings;
+    return this;
   }
+  // </editor-fold>
 }

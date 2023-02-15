@@ -12,32 +12,69 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
+import javax.validation.constraints.NotNull;
+import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
 import org.hibernate.annotations.Type;
 
 @Entity
 public class FeatureSource {
+
+  public enum Protocol {
+    WFS("wfs"),
+
+    JDBC("jdbc");
+
+    private final String value;
+
+    Protocol(String value) {
+      this.value = value;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static FeatureSource.Protocol fromValue(String value) {
+      for (FeatureSource.Protocol p : FeatureSource.Protocol.values()) {
+        if (p.value.equals(value)) {
+          return p;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(columnDefinition = "text")
-  private String adminComments;
+  private String notes;
 
-  @Basic(optional = false)
-  private String protocol;
+  @Basic
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  private FeatureSource.Protocol protocol;
 
-  @Basic(optional = false)
-  private String title;
+  @Basic @NotNull private String title;
 
-  @Basic(optional = false)
+  @Basic
+  @NotNull
   @Column(length = 2048)
   private String url;
 
@@ -49,7 +86,11 @@ public class FeatureSource {
   @JoinColumn(name = "linked_service")
   private GeoService linkedService;
 
-  @ManyToMany(cascade = CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268
+  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Column(columnDefinition = "jsonb")
+  private ServiceCaps serviceCapabilities;
+
+  @OneToMany(cascade = CascadeType.ALL)
   @JoinTable(
       name = "feature_source_feature_types",
       inverseJoinColumns = @JoinColumn(name = "feature_type"),
@@ -57,67 +98,86 @@ public class FeatureSource {
   @OrderColumn(name = "list_index")
   private List<FeatureType> featureTypes = new ArrayList<>();
 
+  // <editor-fold desc="getters and setters">
   public Long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public FeatureSource setId(Long id) {
     this.id = id;
+    return this;
   }
 
-  public String getAdminComments() {
-    return adminComments;
+  public String getNotes() {
+    return notes;
   }
 
-  public void setAdminComments(String adminComments) {
-    this.adminComments = adminComments;
+  public FeatureSource setNotes(String notes) {
+    this.notes = notes;
+    return this;
   }
 
-  public String getProtocol() {
+  public Protocol getProtocol() {
     return protocol;
   }
 
-  public void setProtocol(String protocol) {
+  public FeatureSource setProtocol(Protocol protocol) {
     this.protocol = protocol;
+    return this;
   }
 
   public String getTitle() {
     return title;
   }
 
-  public void setTitle(String title) {
+  public FeatureSource setTitle(String title) {
     this.title = title;
+    return this;
   }
 
   public String getUrl() {
     return url;
   }
 
-  public void setUrl(String url) {
+  public FeatureSource setUrl(String url) {
     this.url = url;
+    return this;
   }
 
   public JsonNode getAuthentication() {
     return authentication;
   }
 
-  public void setAuthentication(JsonNode authentication) {
+  public FeatureSource setAuthentication(JsonNode authentication) {
     this.authentication = authentication;
+    return this;
   }
 
   public GeoService getLinkedService() {
     return linkedService;
   }
 
-  public void setLinkedService(GeoService linkedService) {
+  public FeatureSource setLinkedService(GeoService linkedService) {
     this.linkedService = linkedService;
+    return this;
+  }
+
+  public ServiceCaps getServiceCapabilities() {
+    return serviceCapabilities;
+  }
+
+  public FeatureSource setServiceCapabilities(ServiceCaps serviceCapabilities) {
+    this.serviceCapabilities = serviceCapabilities;
+    return this;
   }
 
   public List<FeatureType> getFeatureTypes() {
     return featureTypes;
   }
 
-  public void setFeatureTypes(List<FeatureType> featureTypes) {
+  public FeatureSource setFeatureTypes(List<FeatureType> featureTypes) {
     this.featureTypes = featureTypes;
+    return this;
   }
+  // </editor-fold>
 }
