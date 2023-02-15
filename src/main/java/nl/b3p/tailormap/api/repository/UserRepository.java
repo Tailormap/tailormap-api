@@ -6,22 +6,18 @@
 package nl.b3p.tailormap.api.repository;
 
 import java.util.Collection;
-import java.util.List;
-
 import nl.b3p.tailormap.api.persistence.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import nl.b3p.tailormap.api.security.annotation.PreAuthorizeAdmin;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.security.access.prepost.PreAuthorize;
 
-import javax.validation.constraints.NotNull;
-
+@PreAuthorizeAdmin
 @RepositoryRestResource
 public interface UserRepository extends JpaRepository<User, Long> {
 
+  @PreAuthorize("permitAll()")
   @EntityGraph(attributePaths = {"groups"})
   User findByUsername(String username);
 

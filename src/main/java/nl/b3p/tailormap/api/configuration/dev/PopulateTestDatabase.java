@@ -32,6 +32,7 @@ import nl.b3p.tailormap.api.repository.CatalogRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.repository.UserRepository;
+import nl.b3p.tailormap.api.security.InternalAdminAuthentication;
 import nl.b3p.tailormap.api.viewer.model.Bounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +70,16 @@ public class PopulateTestDatabase {
 
   @PostConstruct
   @DependsOn("tailormap-database-initialization")
+  public void populate() throws Exception {
+    InternalAdminAuthentication.setInSecurityContext();
+    try {
+      createTestUsers();
+      createTestConfiguration();
+    } finally {
+      InternalAdminAuthentication.clearSecurityContextAuthentication();
+    }
+  }
+
   public void createTestUsers() {
     // User with access to any app which requires authentication
     User u = new User().setUsername("user").setPassword("{noop}user");
@@ -86,9 +97,7 @@ public class PopulateTestDatabase {
     userRepository.save(u);
   }
 
-  @PostConstruct
-  @DependsOn("tailormap-database-initialization")
-  public void populate() throws Exception {
+  public void createTestConfiguration() throws Exception {
 
     if (configurationRepository.existsById(Configuration.DEFAULT_APP)) {
       // Test database already initialized for integration tests

@@ -51,17 +51,22 @@ public class StartupAdminAccountCreator {
   public void postConstruct() throws IOException {
     logger.trace("Checking whether an admin or admin-users account exists...");
 
-    if (!userRepository.existsByGroupsNameIn(Arrays.asList(Group.ADMIN_USERS, Group.ADMIN))) {
-      // Create a new admin-users account with a random generated password
-      String password = UUID.randomUUID().toString();
+    InternalAdminAuthentication.setInSecurityContext();
+    try {
+      if (!userRepository.existsByGroupsNameIn(Arrays.asList(Group.ADMIN_USERS, Group.ADMIN))) {
+        // Create a new admin-users account with a random generated password
+        String password = UUID.randomUUID().toString();
 
-      User u =
-          new User().setUsername(newAdminUsername).setPassword(passwordEncoder.encode(password));
-      u.getGroups().add(new Group().setName(Group.ADMIN_USERS));
-      userRepository.saveAndFlush(u);
+        User u =
+            new User().setUsername(newAdminUsername).setPassword(passwordEncoder.encode(password));
+        u.getGroups().add(new Group().setName(Group.ADMIN_USERS));
+        userRepository.saveAndFlush(u);
 
-      // Log generated password
-      logger.info(getAccountBanner(newAdminUsername, password));
+        // Log generated password
+        logger.info(getAccountBanner(newAdminUsername, password));
+      }
+    } finally {
+      InternalAdminAuthentication.clearSecurityContextAuthentication();
     }
   }
 

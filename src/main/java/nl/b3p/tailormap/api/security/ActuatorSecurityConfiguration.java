@@ -47,27 +47,32 @@ public class ActuatorSecurityConfiguration {
     if (StringUtils.isBlank(hashedPassword)) {
       return;
     }
-    // Use the group/authority name as account name
-    User account = userRepository.findByUsername(Group.ACTUATOR);
-    if (account != null) {
-      String msg;
-      if (hashedPassword.equals(account.getPassword())) {
-        msg = "with the hashed password in";
+    InternalAdminAuthentication.setInSecurityContext();
+    try {
+      // Use the group/authority name as account name
+      User account = userRepository.findByUsername(Group.ACTUATOR);
+      if (account != null) {
+        String msg;
+        if (hashedPassword.equals(account.getPassword())) {
+          msg = "with the hashed password in";
+        } else {
+          msg = "with a different password from";
+        }
+        logger.info(
+            "Actuator account already exists {} the MANAGEMENT_HASHED_ACCOUNT environment variable",
+            msg);
       } else {
-        msg = "with a different password from";
+        if (!hashedPassword.startsWith("{bcrypt}")) {
+          logger.error("Invalid password hash, must start with {bcrypt}");
+        } else {
+          account = new User().setUsername(Group.ACTUATOR).setPassword(hashedPassword);
+          account.getGroups().add(new Group().setName(Group.ACTUATOR));
+          userRepository.save(account);
+          logger.info("Created {} account with hashed password for management", Group.ACTUATOR);
+        }
       }
-      logger.info(
-          "Actuator account already exists {} the MANAGEMENT_HASHED_ACCOUNT environment variable",
-          msg);
-    } else {
-      if (!hashedPassword.startsWith("{bcrypt}")) {
-        logger.error("Invalid password hash, must start with {bcrypt}");
-      } else {
-        account = new User().setUsername(Group.ACTUATOR).setPassword(hashedPassword);
-        account.getGroups().add(new Group().setName(Group.ACTUATOR));
-        userRepository.save(account);
-        logger.info("Created {} account with hashed password for management", Group.ACTUATOR);
-      }
+    } finally {
+      InternalAdminAuthentication.clearSecurityContextAuthentication();
     }
   }
 
