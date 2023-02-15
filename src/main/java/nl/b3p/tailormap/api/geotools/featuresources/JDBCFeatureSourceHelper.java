@@ -20,7 +20,7 @@ public class JDBCFeatureSourceHelper implements FeatureSourceHelper {
   public static SimpleFeatureSource openGeoToolsFSFeatureSource(FeatureSource fs, FeatureType sft)
       throws IOException {
     DataStore ds = createDataStore(fs);
-    return ds.getFeatureSource(sft.getTypeName());
+    return ds.getFeatureSource(sft.getName());
   }
 
   @SuppressWarnings("DoNotCallSuggester")
