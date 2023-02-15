@@ -7,21 +7,24 @@
 package nl.b3p.tailormap.api.security;
 
 import java.lang.invoke.MethodHandles;
-import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.persistence.User;
+import nl.b3p.tailormap.api.repository.GroupRepository;
 import nl.b3p.tailormap.api.repository.UserRepository;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
 @Order(1)
@@ -35,13 +38,17 @@ public class ActuatorSecurityConfiguration {
   @Value("${tailormap-api.management.hashed-password}")
   private String hashedPassword;
 
-  final UserRepository userRepository;
+  private final UserRepository userRepository;
+  private final GroupRepository groupRepository;
 
-  public ActuatorSecurityConfiguration(UserRepository userRepository) {
+  public ActuatorSecurityConfiguration(
+      UserRepository userRepository, GroupRepository groupRepository) {
     this.userRepository = userRepository;
+    this.groupRepository = groupRepository;
   }
 
-  @PostConstruct
+  @EventListener(ApplicationReadyEvent.class)
+  @Transactional
   @DependsOn("tailormap-database-initialization")
   public void createActuatorAccount() {
     if (StringUtils.isBlank(hashedPassword)) {
@@ -66,7 +73,7 @@ public class ActuatorSecurityConfiguration {
           logger.error("Invalid password hash, must start with {bcrypt}");
         } else {
           account = new User().setUsername(Group.ACTUATOR).setPassword(hashedPassword);
-          account.getGroups().add(new Group().setName(Group.ACTUATOR));
+          account.getGroups().add(groupRepository.findById(Group.ACTUATOR).get());
           userRepository.save(account);
           logger.info("Created {} account with hashed password for management", Group.ACTUATOR);
         }

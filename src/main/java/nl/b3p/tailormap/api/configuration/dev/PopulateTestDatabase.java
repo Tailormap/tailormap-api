@@ -10,7 +10,6 @@ import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
 
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Catalog;
 import nl.b3p.tailormap.api.persistence.Configuration;
@@ -31,13 +30,17 @@ import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.CatalogRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
+import nl.b3p.tailormap.api.repository.GroupRepository;
 import nl.b3p.tailormap.api.repository.UserRepository;
 import nl.b3p.tailormap.api.security.InternalAdminAuthentication;
 import nl.b3p.tailormap.api.viewer.model.Bounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.EventListener;
+import org.springframework.transaction.annotation.Transactional;
 
 @org.springframework.context.annotation.Configuration
 @Profile("!test")
@@ -47,6 +50,7 @@ public class PopulateTestDatabase {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final UserRepository userRepository;
+  private final GroupRepository groupRepository;
   private final CatalogRepository catalogRepository;
   private final GeoServiceRepository geoServiceRepository;
   private final GeoServiceHelper geoServiceHelper;
@@ -55,12 +59,14 @@ public class PopulateTestDatabase {
 
   public PopulateTestDatabase(
       UserRepository userRepository,
+      GroupRepository groupRepository,
       CatalogRepository catalogRepository,
       GeoServiceRepository geoServiceRepository,
       GeoServiceHelper geoServiceHelper,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository) {
     this.userRepository = userRepository;
+    this.groupRepository = groupRepository;
     this.catalogRepository = catalogRepository;
     this.geoServiceRepository = geoServiceRepository;
     this.geoServiceHelper = geoServiceHelper;
@@ -68,7 +74,8 @@ public class PopulateTestDatabase {
     this.configurationRepository = configurationRepository;
   }
 
-  @PostConstruct
+  @EventListener(ApplicationReadyEvent.class)
+  @Transactional
   @DependsOn("tailormap-database-initialization")
   public void populate() throws Exception {
     InternalAdminAuthentication.setInSecurityContext();
@@ -83,17 +90,17 @@ public class PopulateTestDatabase {
   public void createTestUsers() {
     // User with access to any app which requires authentication
     User u = new User().setUsername("user").setPassword("{noop}user");
-    u.getGroups().add(new Group().setName(Group.APP_AUTHENTICATED));
+    u.getGroups().add(groupRepository.findById(Group.APP_AUTHENTICATED).get());
     userRepository.save(u);
 
     // Only user admin
     u = new User().setUsername("useradmin").setPassword("{noop}useradmin");
-    u.getGroups().add(new Group().setName(Group.ADMIN_USERS));
+    u.getGroups().add(groupRepository.findById(Group.ADMIN_USERS).get());
     userRepository.save(u);
 
     // Superuser with all access (even admin-users without explicitly having that authority)
     u = new User().setUsername("tm-admin").setPassword("{noop}tm-admin");
-    u.getGroups().add(new Group().setName(Group.ADMIN));
+    u.getGroups().add(groupRepository.findById(Group.ADMIN).get());
     userRepository.save(u);
   }
 
