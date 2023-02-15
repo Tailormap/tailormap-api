@@ -8,7 +8,6 @@ package nl.b3p.tailormap.api.persistence;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +20,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -31,25 +32,22 @@ public class FeatureType {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String type;
+  @Version private Long version;
+
+  @NotNull private String name;
 
   @ManyToOne(cascade = CascadeType.PERSIST, optional = false)
   @JoinColumn(name = "feature_source")
   private FeatureSource featureSource;
 
-  @Basic(optional = false)
-  private String typeName;
-
   private String description;
 
+  // Note: this will vanish when feature type disappears at the source, unless we move this to a
+  // separate featureTypeSettings JSON property in FeatureSource
   @Column(columnDefinition = "text")
   private String comment;
 
   private String owner;
-
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
-  @Column(columnDefinition = "jsonb")
-  private JsonNode additionalProperties;
 
   private boolean writeable;
 
@@ -80,12 +78,21 @@ public class FeatureType {
     return this;
   }
 
-  public String getType() {
-    return type;
+  public Long getVersion() {
+    return version;
   }
 
-  public FeatureType setType(String type) {
-    this.type = type;
+  public FeatureType setVersion(Long version) {
+    this.version = version;
+    return this;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public FeatureType setName(String type) {
+    this.name = type;
     return this;
   }
 
@@ -95,15 +102,6 @@ public class FeatureType {
 
   public FeatureType setFeatureSource(FeatureSource featureSource) {
     this.featureSource = featureSource;
-    return this;
-  }
-
-  public String getTypeName() {
-    return typeName;
-  }
-
-  public FeatureType setTypeName(String typeName) {
-    this.typeName = typeName;
     return this;
   }
 
@@ -131,15 +129,6 @@ public class FeatureType {
 
   public FeatureType setOwner(String owner) {
     this.owner = owner;
-    return this;
-  }
-
-  public JsonNode getAdditionalProperties() {
-    return additionalProperties;
-  }
-
-  public FeatureType setAdditionalProperties(JsonNode additionalProperties) {
-    this.additionalProperties = additionalProperties;
     return this;
   }
 

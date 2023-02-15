@@ -68,7 +68,7 @@ public class WFSFeatureSourceHelper implements FeatureSourceHelper {
     extraParams.put(WFSDataStoreFactory.TIMEOUT.key, timeout);
     DataStore ds = WFSFeatureSourceHelper.createDataStore(extraParams, fs);
 
-    return ds.getFeatureSource(sft.getTypeName());
+    return ds.getFeatureSource(sft.getName());
   }
 
   public void loadCapabilities(FeatureSource pfs, int timeout) throws IOException {
@@ -94,7 +94,7 @@ public class WFSFeatureSourceHelper implements FeatureSourceHelper {
     logger.info("Type names for WFS {}: {}", pfs.getUrl(), Arrays.toString(typeNames));
 
     for (String typeName : typeNames) {
-      pfs.getFeatureTypes().add(new FeatureType().setFeatureSource(pfs).setTypeName(typeName));
+      pfs.getFeatureTypes().add(new FeatureType().setName(typeName).setFeatureSource(pfs));
     }
   }
 }
