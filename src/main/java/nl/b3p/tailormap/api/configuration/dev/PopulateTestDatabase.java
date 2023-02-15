@@ -12,7 +12,6 @@ import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Catalog;
 import nl.b3p.tailormap.api.persistence.Configuration;
@@ -121,58 +120,61 @@ public class PopulateTestDatabase {
     catalog.getNodes().add(catalogNode);
 
     SortedMap<String, GeoService> services =
-        new TreeMap<>(Map.of(
-            "0geoserver",
-            new GeoService()
-                .setProtocol(WMS)
-                .setTitle("Test GeoServer")
-                .setUrl("https://snapshot.tailormap.nl/geoserver/wms"),
-            "1openbasiskaart",
-            new GeoService()
-                .setProtocol(WMTS)
-                .setTitle("Openbasiskaart")
-                .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
-                .setSettings(
-                    new GeoServiceSettings()
-                        .layerSettings(
-                            Map.of(
-                                "osm",
-                                new GeoServiceLayerSettings()
-                                    .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
-                                    .hiDpiSubstituteLayer("osm-hq")))),
-            "2pdok luchtfoto",
-            new GeoService()
-                .setProtocol(WMTS)
-                .setTitle("PDOK HWH luchtfoto")
-                .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
-                .setSettings(
-                    new GeoServiceSettings()
-                        .defaultLayerSettings(
-                            new GeoServiceDefaultLayerSettings()
-                                .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))),
-            "3basemap.at",
-            new GeoService()
-                .setProtocol(WMTS)
-                .setTitle("basemap.at")
-                .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
-                .setSettings(
-                    new GeoServiceSettings()
-                        .layerSettings(
-                            Map.of(
-                                "geolandbasemap",
-                                new GeoServiceLayerSettings()
-                                    .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERTILEPIXELRATIOONLY)
-                                    .hiDpiSubstituteLayer("bmaphidpi"),
-                                "bmaporthofoto30cm",
-                                new GeoServiceLayerSettings()
-                                    .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))))
-            //        new GeoService()
-            //            .setProtocol(WMS)
-            //            .setTitle("Norway - Administrative enheter")
-            //            .setUrl("https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk")
-            //            .setSettings(new
-            // GeoServiceSettings().serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)),
-            ));
+        new TreeMap<>(
+            Map.of(
+                "0-geoserver",
+                new GeoService()
+                    .setProtocol(WMS)
+                    .setTitle("Test GeoServer")
+                    .setUrl("https://snapshot.tailormap.nl/geoserver/wms"),
+                "1-openbasiskaart",
+                new GeoService()
+                    .setProtocol(WMTS)
+                    .setTitle("Openbasiskaart")
+                    .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
+                    .setSettings(
+                        new GeoServiceSettings()
+                            .layerSettings(
+                                Map.of(
+                                    "osm",
+                                    new GeoServiceLayerSettings()
+                                        .hiDpiMode(
+                                            TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
+                                        .hiDpiSubstituteLayer("osm-hq")))),
+                "2-pdok luchtfoto",
+                new GeoService()
+                    .setProtocol(WMTS)
+                    .setTitle("PDOK HWH luchtfoto")
+                    .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
+                    .setSettings(
+                        new GeoServiceSettings()
+                            .defaultLayerSettings(
+                                new GeoServiceDefaultLayerSettings()
+                                    .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))),
+                "3-basemap.at",
+                new GeoService()
+                    .setProtocol(WMTS)
+                    .setTitle("basemap.at")
+                    .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
+                    .setSettings(
+                        new GeoServiceSettings()
+                            .layerSettings(
+                                Map.of(
+                                    "geolandbasemap",
+                                    new GeoServiceLayerSettings()
+                                        .hiDpiMode(
+                                            TileLayerHiDpiMode.SUBSTITUTELAYERTILEPIXELRATIOONLY)
+                                        .hiDpiSubstituteLayer("bmaphidpi"),
+                                    "bmaporthofoto30cm",
+                                    new GeoServiceLayerSettings()
+                                        .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))))
+                //        new GeoService()
+                //            .setProtocol(WMS)
+                //            .setTitle("Norway - Administrative enheter")
+                //            .setUrl("https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk")
+                //            .setSettings(new
+                // GeoServiceSettings().serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)),
+                ));
 
     for (GeoService geoService : services.values()) {
       geoServiceHelper.loadServiceCapabilities(geoService);
@@ -190,9 +192,9 @@ public class PopulateTestDatabase {
         .filter(s -> s.getProtocol() == WMS)
         .forEach(geoServiceHelper::findAndSaveRelatedWFS);
 
-    Long testId = services.get("0geoserver").getId();
-    Long obkId = services.get("1openbasiskaart").getId();
-    Long lufoId = services.get("2pdok luchtfoto").getId();
+    Long testId = services.get("0-geoserver").getId();
+    Long obkId = services.get("1-openbasiskaart").getId();
+    Long lufoId = services.get("2-pdok luchtfoto").getId();
 
     Application app =
         new Application()
@@ -224,7 +226,7 @@ public class PopulateTestDatabase {
     app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));
     applicationRepository.save(app);
 
-    Long basemapAtId = services.get("3basemap.at").getId();
+    Long basemapAtId = services.get("3-basemap.at").getId();
 
     app =
         new Application()
