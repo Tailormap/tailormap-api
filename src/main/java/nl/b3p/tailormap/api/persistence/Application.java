@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -217,6 +218,7 @@ public class Application {
    *
    * @return CoordinateReferenceSystem
    */
+  @JsonIgnore
   public org.opengis.referencing.crs.CoordinateReferenceSystem
       getGeoToolsCoordinateReferenceSystem() {
     org.opengis.referencing.crs.CoordinateReferenceSystem gtCrs = null;
