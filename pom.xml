@@ -159,6 +159,7 @@ SPDX-License-Identifier: MIT
         <maven-fluido-skin.version>2.0.0-M3</maven-fluido-skin.version>
         <swagger-ui.version>4.15.5</swagger-ui.version>
         <sentry.version>6.13.1</sentry.version>
+        <spring.boot.admin.version>2.7.10</spring.boot.admin.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -200,6 +201,21 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-micrometer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-server</artifactId>
+            <version>${spring.boot.admin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+            <version>${spring.boot.admin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jolokia</groupId>
+            <artifactId>jolokia-core</artifactId>
+            <version>1.7.2</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate.orm.tooling</groupId>
@@ -1063,6 +1079,9 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
                                         <exclude>org.springframework.hateoas:spring-hateoas</exclude>
                                         <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
+                                        <exclude>de.codecentric:spring-boot-admin-starter-server</exclude>
+                                        <exclude>de.codecentric:spring-boot-admin-starter-client</exclude>
+                                        <exclude>org.springframework.cloud:spring-cloud-starter-config</exclude>
                                         <exclude>org.hibernate:hibernate-micrometer</exclude>
                                         <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
                                         <exclude>io.sentry:sentry-spring-boot-starter</exclude>
@@ -1072,6 +1091,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.geotools:*</exclude>
                                         <exclude>org.geotools.xsd:*</exclude>
                                         <exclude>org.junit-pioneer:junit-pioneer</exclude>
+                                        <exclude>org.jolokia:jolokia-core</exclude>
                                     </excludes>
                                 </banTransitiveDependencies>
                             </rules>

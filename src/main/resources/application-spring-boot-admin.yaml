@@ -1,0 +1,52 @@
+
+spring:
+  boot:
+    admin:
+      context-path: /admin/monitor
+      client:
+        url: http://127.0.0.1:8080${spring.boot.admin.context-path}
+        username: actuator
+        password: actuator
+        instance:
+          metadata:
+            user:
+              name: actuator
+              password: actuator
+
+      ui:
+        brand: <img src="/icons/logo.svg"><span>Tailormap Admin Monitor</span>
+        view-settings:
+          - name: journal
+            enabled: false
+          - name: about
+            enabled: false
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    metrics:
+      enabled: true
+
+logging:
+  file:
+    name: tailormap-api.log
+  pattern:
+    file: '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID}){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx'
+
+#spring.boot.admin.ui.view-settings.journal.enabled=false
+#
+#spring.boot.admin.client.username=actuator
+#spring.boot.admin.client.password=actuator
+#
+#spring.boot.admin.client.instance.metadata.user.name=actuator
+#spring.boot.admin.client.instance.metadata.user.password=actuator
+#
+#management.endpoints.enabled-by-default=true
+#management.endpoint.metrics.enabled=true
+#management.endpoints.web.exposure.include=*
+#
+#logging.file.name=tailormap-api.log

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserAdminController {
-  @GetMapping(path = "${tailormap-api.admin.base-path}/users")
+  @GetMapping(path = "${tailormap-api.admin.base-path}/user")
   public ResponseEntity<Serializable> test() {
     return ResponseEntity.ok(new ObjectMapper().createObjectNode().put("users", true));
   }

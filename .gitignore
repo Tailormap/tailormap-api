@@ -13,3 +13,4 @@ buildNumber.properties
 .idea/
 *.iml
 .run
+/tailormap-api.log

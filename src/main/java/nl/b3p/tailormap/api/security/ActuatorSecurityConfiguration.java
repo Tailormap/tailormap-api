@@ -22,6 +22,8 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,11 +37,14 @@ public class ActuatorSecurityConfiguration {
   @Value("${management.endpoints.web.base-path}")
   private String basePath;
 
-  @Value("${tailormap-api.management.hashed-password}")
-  private String hashedPassword;
+  @Value("${spring.boot.admin.client.instance.metadata.user.password}")
+  private String password;
 
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
+
+  private final PasswordEncoder passwordEncoder =
+      PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
   public ActuatorSecurityConfiguration(
       UserRepository userRepository, GroupRepository groupRepository) {
@@ -51,7 +56,7 @@ public class ActuatorSecurityConfiguration {
   @Transactional
   @DependsOn("tailormap-database-initialization")
   public void createActuatorAccount() {
-    if (StringUtils.isBlank(hashedPassword)) {
+    if (StringUtils.isBlank(password)) {
       return;
     }
     InternalAdminAuthentication.setInSecurityContext();
@@ -59,24 +64,13 @@ public class ActuatorSecurityConfiguration {
       // Use the group/authority name as account name
       User account = userRepository.findById(Group.ACTUATOR).orElse(null);
       if (account != null) {
-        String msg;
-        if (hashedPassword.equals(account.getPassword())) {
-          msg = "with the hashed password in";
-        } else {
-          msg = "with a different password from";
-        }
-        logger.info(
-            "Actuator account already exists {} the MANAGEMENT_HASHED_ACCOUNT environment variable",
-            msg);
+        logger.info("Actuator account already exists");
       } else {
-        if (!hashedPassword.startsWith("{bcrypt}")) {
-          logger.error("Invalid password hash, must start with {bcrypt}");
-        } else {
-          account = new User().setUsername(Group.ACTUATOR).setPassword(hashedPassword);
-          account.getGroups().add(groupRepository.findById(Group.ACTUATOR).get());
-          userRepository.save(account);
-          logger.info("Created {} account with hashed password for management", Group.ACTUATOR);
-        }
+        String hashedPassword = passwordEncoder.encode(password);
+        account = new User().setUsername(Group.ACTUATOR).setPassword(hashedPassword);
+        account.getGroups().add(groupRepository.findById(Group.ACTUATOR).get());
+        userRepository.save(account);
+        logger.info("Created {} account for management", Group.ACTUATOR);
       }
     } finally {
       InternalAdminAuthentication.clearSecurityContextAuthentication();
