@@ -82,6 +82,11 @@ public class PopulateTestDatabase {
   public void populate() throws Exception {
     InternalAdminAuthentication.setInSecurityContext();
     try {
+      if (configurationRepository.existsById(Configuration.DEFAULT_APP)) {
+        // Test database already initialized for integration tests
+        return;
+      }
+
       createTestUsers();
       createTestConfiguration();
     } finally {
@@ -107,11 +112,6 @@ public class PopulateTestDatabase {
   }
 
   public void createTestConfiguration() throws Exception {
-
-    if (configurationRepository.existsById(Configuration.DEFAULT_APP)) {
-      // Test database already initialized for integration tests
-      return;
-    }
 
     Catalog catalog = catalogRepository.findById(Catalog.MAIN).get();
     CatalogNode rootCatalogNode = catalog.getNodes().get(0);

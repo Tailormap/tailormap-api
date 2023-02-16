@@ -28,11 +28,13 @@ public class TailormapDatabaseInitialization {
   public void databaseInitialization() {
     InternalAdminAuthentication.setInSecurityContext();
     try {
-      Catalog catalog =
-          new Catalog()
-              .setId(Catalog.MAIN)
-              .setNodes(List.of(new CatalogNode().root(true).title("root").id("root")));
-      catalogRepository.save(catalog);
+      if (catalogRepository.findById(Catalog.MAIN).isEmpty()) {
+        Catalog catalog =
+            new Catalog()
+                .setId(Catalog.MAIN)
+                .setNodes(List.of(new CatalogNode().root(true).title("root").id("root")));
+        catalogRepository.save(catalog);
+      }
     } finally {
       InternalAdminAuthentication.clearSecurityContextAuthentication();
     }
