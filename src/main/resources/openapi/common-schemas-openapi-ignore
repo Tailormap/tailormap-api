@@ -1,1 +1,5 @@
 **/TileLayerHiDpiMode.java
+**/GeoServiceProtocol.java
+**/Bounds.java
+**/BoundsWithCRS.java
+**/TMAttributeType.java

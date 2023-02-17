@@ -26,6 +26,11 @@ paths: { }
 
 components:
   schemas:
+    GeoServiceProtocol:
+      type: string
+      enum:
+        - wms
+        - wmts
     TileLayerHiDpiMode:
       type: string
       enum:
@@ -35,3 +40,72 @@ components:
         # Show the same zoomlevel of the substituted layer but set tilePixelRatio to 2: the layer
         # must be a 2x sized tile compared to the size in the capabilities
         - substituteLayerTilePixelRatioOnly
+
+    Bounds:
+      type: object
+      properties:
+        miny:
+          description: 'lower bottom'
+          type: number
+          format: double
+        minx:
+          description: 'lower left'
+          type: number
+          format: double
+        maxy:
+          description: 'upper top'
+          type: number
+          format: double
+        maxx:
+          description: 'upper right'
+          type: number
+          format: double
+      required:
+        - miny
+        - minx
+        - maxy
+        - maxx
+      example:
+        miny: 400000
+        minx: 105000
+        maxy: 530000
+        maxx: 275000
+
+    # XXX: currently unused
+    BoundsWithCRS:
+      description: 'Bounds within the context of a coordinate reference system'
+      allOf:
+        - $ref: '#/components/schemas/Bounds'
+        - type: object
+          required: [crs]
+          properties:
+            crs:
+              description: '(EPSG) code of the projection'
+              type: string
+              nullable: false
+      example:
+        miny: 400000
+        minx: 105000
+        maxy: 530000
+        maxx: 275000
+        crs: 'EPSG:28992'
+
+    TMAttributeType:
+      description: 'data type. eg "date" or "string".
+          see also: nl.tailormap.api.persistence.TMAttributeDescriptor'
+      type: string
+      enum:
+        - geometry
+        - multipolygon
+        - polygon
+        - multilinestring
+        - linestring
+        - multipoint
+        - point
+        - boolean
+        - integer
+        - string
+        - double
+        - date
+        - timestamp
+        - object

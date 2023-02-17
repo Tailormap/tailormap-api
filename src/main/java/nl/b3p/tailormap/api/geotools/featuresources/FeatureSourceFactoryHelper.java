@@ -6,33 +6,36 @@
 package nl.b3p.tailormap.api.geotools.featuresources;
 
 import java.io.IOException;
-import nl.tailormap.viewer.config.services.FeatureSource;
-import nl.tailormap.viewer.config.services.JDBCFeatureSource;
-import nl.tailormap.viewer.config.services.SimpleFeatureType;
-import nl.tailormap.viewer.config.services.WFSFeatureSource;
+import nl.b3p.tailormap.api.persistence.TMFeatureSource;
+import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+@Service
 public class FeatureSourceFactoryHelper {
 
-  public static SimpleFeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft)
-      throws IOException {
-    return FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft.getFeatureSource(), sft, 30);
+  @Value("${tailormap-api.timeout}")
+  private int timeout;
+
+  public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType ft) throws IOException {
+    return FeatureSourceFactoryHelper.openGeoToolsFeatureSource(ft.getFeatureSource(), ft, timeout);
   }
 
   public static SimpleFeatureSource openGeoToolsFeatureSource(
-      FeatureSource fs, SimpleFeatureType sft, int timeout) throws IOException {
+      TMFeatureSource fs, TMFeatureType sft, int timeout) throws IOException {
     FeatureSourceHelper sh = getHelper(fs);
-    assert sh != null;
     return sh.openGeoToolsFeatureSource(fs, sft, timeout);
   }
 
-  private static FeatureSourceHelper getHelper(FeatureSource fs) {
-    if (fs instanceof JDBCFeatureSource) {
-      return new JDBCFeatureSourceHelper();
-    } else if (fs instanceof WFSFeatureSource) {
-      return new WFSFeatureSourceHelper();
+  private static FeatureSourceHelper getHelper(TMFeatureSource fs) {
+    switch (fs.getProtocol()) {
+      case JDBC:
+        return new JDBCFeatureSourceHelper();
+      case WFS:
+        return new WFSFeatureSourceHelper();
+      default:
+        throw new IllegalArgumentException("Invalid protocol: " + fs.getProtocol());
     }
-    // should never happen
-    return null;
   }
 }

@@ -6,23 +6,11 @@
 package nl.b3p.tailormap.api.geotools.featuresources;
 
 import java.io.IOException;
-import nl.tailormap.viewer.config.services.FeatureSource;
-import nl.tailormap.viewer.config.services.SimpleFeatureType;
+import nl.b3p.tailormap.api.persistence.TMFeatureSource;
+import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import org.geotools.data.simple.SimpleFeatureSource;
 
 public interface FeatureSourceHelper {
-
-  Integer TIMEOUT = 60000;
-
-  default SimpleFeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) throws IOException {
-    return openGeoToolsFeatureSource(sft.getFeatureSource(), sft, TIMEOUT);
-  }
-
-  default SimpleFeatureSource openGeoToolsFeatureSource(FeatureSource fs, SimpleFeatureType sft)
-      throws IOException {
-    return openGeoToolsFeatureSource(fs, sft, TIMEOUT);
-  }
-
-  SimpleFeatureSource openGeoToolsFeatureSource(
-      FeatureSource fs, SimpleFeatureType sft, int timeout) throws IOException;
+  SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureSource fs, TMFeatureType sft, int timeout)
+      throws IOException;
 }

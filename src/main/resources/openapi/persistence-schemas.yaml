@@ -15,6 +15,9 @@ paths: { }
 
 components:
   schemas:
+    GeoServiceProtocol:
+      $ref: './common-schemas.yaml#/components/schemas/GeoServiceProtocol'
+
     CatalogNode:
       description: Categorization for items in the catalog.
       properties:
@@ -40,11 +43,11 @@ components:
               id:
                 type: string
 
-    ServiceCaps:
+    TMServiceCaps:
       type: object
       properties:
         serviceInfo:
-          title: ServiceInfo
+          title: TMServiceInfo
           type: object
           properties:
             title:
@@ -75,7 +78,7 @@ components:
             abstractText:
               type: string
             request:
-              title: ServiceCapabilitiesRequest
+              title: TMServiceCapabilitiesRequest
               type: object
               properties:
                 get-map:
@@ -87,7 +90,7 @@ components:
                         type: string
                       uniqueItems: true
                 get-feature-info:
-                  title: ServiceCapabilitiesRequestGetFeatureInfo
+                  title: TMServiceCapabilitiesRequestGetFeatureInfo
                   type: object
                   properties:
                     formats:
@@ -97,6 +100,47 @@ components:
                       uniqueItems: true
                 describe-layer:
                   type: boolean
+
+    TMFeatureTypeInfo:
+      type: object
+      properties:
+        keywords:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+        description:
+          type: string
+        publisher:
+          type: string
+          format: uri
+        schema:
+          type: string
+          format: uri
+        source:
+          type: string
+          format: uri
+        bounds:
+          $ref: './common-schemas.yaml#/components/schemas/Bounds'
+        crs:
+          type: string
+        wgs84BoundingBox:
+          $ref: './common-schemas.yaml#/components/schemas/Bounds'
+        defaultSrs:
+          type: string
+        otherSrs:
+          items:
+            type: string
+          uniqueItems: true
+        outputFormats:
+          items:
+            type: string
+          uniqueItems: true
+        abstractText:
+          type: string
+
+    TMAttributeType:
+      $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
 
     GeoServiceSettings:
       description: Settings applying to a GeoService.

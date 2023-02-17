@@ -10,10 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import nl.b3p.tailormap.api.StaticTestData;
 import nl.b3p.tailormap.api.persistence.Application;
+import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
-import nl.b3p.tailormap.api.viewer.model.Bounds;
-import nl.b3p.tailormap.api.viewer.model.CoordinateReferenceSystem;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
+import nl.b3p.tailormap.api.viewer.model.TMCoordinateReferenceSystem;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,7 +31,7 @@ class ApplicationHelperTest {
     Application a = new Application().setCrs("EPSG:28992");
     MapResponse mr = new MapResponse();
     applicationHelper.setCrsAndBounds(a, mr);
-    CoordinateReferenceSystem crs = mr.getCrs();
+    TMCoordinateReferenceSystem crs = mr.getCrs();
     assertNotNull(crs);
     assertEquals("EPSG:28992", crs.getCode());
     assertEquals(StaticTestData.get("RDCrsWkt"), crs.getDefinition());
@@ -52,7 +52,7 @@ class ApplicationHelperTest {
     Application a = new Application().setCrs("EPSG:3857");
     MapResponse mr = new MapResponse();
     applicationHelper.setCrsAndBounds(a, mr);
-    CoordinateReferenceSystem crs = mr.getCrs();
+    TMCoordinateReferenceSystem crs = mr.getCrs();
     assertNotNull(crs);
     assertEquals("EPSG:3857", crs.getCode());
     assertEquals(StaticTestData.get("WebMercatorCrsWkt"), crs.getDefinition());
@@ -73,7 +73,7 @@ class ApplicationHelperTest {
     Application a = new Application().setCrs("EPSG:4326");
     MapResponse mr = new MapResponse();
     applicationHelper.setCrsAndBounds(a, mr);
-    CoordinateReferenceSystem crs = mr.getCrs();
+    TMCoordinateReferenceSystem crs = mr.getCrs();
     assertNotNull(crs);
     assertEquals("EPSG:4326", crs.getCode());
     assertEquals(StaticTestData.get("LonLatCrsWkt"), crs.getDefinition());

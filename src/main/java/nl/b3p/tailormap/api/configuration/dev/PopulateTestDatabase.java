@@ -5,6 +5,9 @@
  */
 package nl.b3p.tailormap.api.configuration.dev;
 
+import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
+import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
+
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -18,6 +21,7 @@ import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
+import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.CatalogNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
@@ -29,7 +33,6 @@ import nl.b3p.tailormap.api.repository.CatalogRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.repository.UserRepository;
-import nl.b3p.tailormap.api.viewer.model.Bounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.DependsOn;
@@ -102,12 +105,12 @@ public class PopulateTestDatabase {
         Map.of(
             "geoserver",
             new GeoService()
-                .setProtocol("wms")
+                .setProtocol(WMS)
                 .setTitle("Test GeoServer")
                 .setUrl("https://snapshot.tailormap.nl/geoserver/wms"),
             "openbasiskaart",
             new GeoService()
-                .setProtocol("wmts")
+                .setProtocol(WMTS)
                 .setTitle("Openbasiskaart")
                 .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
                 .setSettings(
@@ -120,7 +123,7 @@ public class PopulateTestDatabase {
                                     .hiDpiSubstituteLayer("osm-hq")))),
             "pdok luchtfoto",
             new GeoService()
-                .setProtocol("wmts")
+                .setProtocol(WMTS)
                 .setTitle("PDOK HWH luchtfoto")
                 .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
                 .setSettings(
@@ -130,7 +133,7 @@ public class PopulateTestDatabase {
                                 .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))),
             "basemap.at",
             new GeoService()
-                .setProtocol("wmts")
+                .setProtocol(WMTS)
                 .setTitle("basemap.at")
                 .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
                 .setSettings(
@@ -154,6 +157,7 @@ public class PopulateTestDatabase {
 
     for (GeoService geoService : services.values()) {
       geoServiceHelper.loadServiceCapabilities(geoService);
+
       geoServiceRepository.save(geoService);
       // TODO change GeoService.id to String
       catalogNode.addItemsItem(
@@ -162,6 +166,10 @@ public class PopulateTestDatabase {
               .id(geoService.getId() + ""));
     }
     catalogRepository.save(catalog);
+
+    services.values().stream()
+        .filter(s -> s.getProtocol() == WMS)
+        .forEach(geoServiceHelper::findAndSaveRelatedWFS);
 
     Long testId = services.get("geoserver").getId();
     Long obkId = services.get("openbasiskaart").getId();

@@ -22,7 +22,7 @@ paths: { }
 
 components:
   schemas:
-    CoordinateReferenceSystem:
+    TMCoordinateReferenceSystem:
       description: 'CRS information'
       type: object
       properties:
@@ -37,7 +37,7 @@ components:
         bounds:
           description: 'Area of validity of this CRS'
           nullable: true
-          $ref: '#/components/schemas/Bounds'
+          $ref: './common-schemas.yaml#/components/schemas/Bounds'
         unit:
           description: 'The unit if all axis use the same unit, null otherwise'
           nullable: true
@@ -57,54 +57,6 @@ components:
         }
         unit: 'm'
 
-    Bounds:
-      type: object
-      properties:
-        miny:
-          description: 'lower bottom'
-          type: number
-          format: double
-        minx:
-          description: 'lower left'
-          type: number
-          format: double
-        maxy:
-          description: 'upper top'
-          type: number
-          format: double
-        maxx:
-          description: 'upper right'
-          type: number
-          format: double
-      required:
-        - miny
-        - minx
-        - maxy
-        - maxx
-      example:
-        miny: 400000
-        minx: 105000
-        maxy: 530000
-        maxx: 275000
-
-    # XXX: currently unused
-    BoundsWithCRS:
-      description: 'Bounds within the context of a coordinate reference system'
-      allOf:
-        - $ref: '#/components/schemas/Bounds'
-        - type: object
-          required: [crs]
-          properties:
-            crs:
-              description: '(EPSG) code of the projection'
-              type: string
-              nullable: false
-      example:
-        miny: 400000
-        minx: 105000
-        maxy: 530000
-        maxx: 275000
-        crs: 'EPSG:28992'
 
     AppLayer:
       description: '
@@ -221,7 +173,7 @@ components:
         geometryType:
           description: '(editable) geometry type of this layer.
         We can have multiple geometry attributes in a layer, but only one is rendered and
-        optionally editable) see also see also: nl.tailormap.viewer.config.services.AttributeDescriptor'
+        optionally editable) see also see also: nl.tailormap.api.persistence.TMAttributeDescriptor'
           type: string
           enum:
             - 'linestring'
@@ -304,7 +256,7 @@ components:
           type: string
         type:
           description: 'data type. eg "date" or "string".
-          see also: nl.tailormap.viewer.config.services.AttributeDescriptor'
+          see also: nl.tailormap.api.persistence.TMAttributeDescriptor'
           type: string
           enum:
             - 'date'
@@ -394,17 +346,7 @@ components:
           type: string
           nullable: true
         type:
-          description: 'data type. eg "date" or "string".
-          see also: nl.tailormap.viewer.config.services.AttributeDescriptor'
-          type: string
-          enum:
-            - 'date'
-            - 'timestamp'
-            - 'string'
-            - 'double'
-            - 'integer'
-            - 'boolean'
-            - 'geometry'
+          $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
       example:
         key: 'geom'
         alias: 'Geometry'
@@ -426,11 +368,7 @@ components:
           type: string
           nullable: false
         protocol:
-          type: string
-          nullable: false
-          enum:
-            - wms
-            - wmts
+          $ref: './common-schemas.yaml#/components/schemas/GeoServiceProtocol'
         capabilities:
           description: 'capabilities document of the service - currently only for WMTS'
           type: string

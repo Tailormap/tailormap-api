@@ -8,7 +8,6 @@ package nl.b3p.tailormap.api.persistence;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,35 +20,39 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
+import nl.b3p.tailormap.api.persistence.json.TMFeatureTypeInfo;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "feature_type")
-public class FeatureType {
+public class TMFeatureType {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String type;
+  @Version private Long version;
+
+  @NotNull private String name;
 
   @ManyToOne(cascade = CascadeType.PERSIST, optional = false)
   @JoinColumn(name = "feature_source")
-  private FeatureSource featureSource;
+  private TMFeatureSource featureSource;
 
-  @Basic(optional = false)
-  private String typeName;
+  private String title;
 
-  private String description;
+  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Column(columnDefinition = "jsonb")
+  private TMFeatureTypeInfo info;
 
+  // Note: this will vanish when feature type disappears at the source, unless we move this to a
+  // separate featureTypeSettings JSON property in TMFeatureSource
   @Column(columnDefinition = "text")
   private String comment;
 
   private String owner;
-
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
-  @Column(columnDefinition = "jsonb")
-  private JsonNode additionalProperties;
 
   private boolean writeable;
 
@@ -64,113 +67,128 @@ public class FeatureType {
       name = "feature_type_attributes",
       joinColumns = @JoinColumn(name = "feature_type", referencedColumnName = "id"))
   @OrderColumn(name = "list_index")
-  private List<AttributeDescriptor> attributes = new ArrayList<>();
+  private List<TMAttributeDescriptor> attributes = new ArrayList<>();
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
   private JsonNode settings;
 
+  // <editor-fold desc="getters and setters">
   public Long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public TMFeatureType setId(Long id) {
     this.id = id;
+    return this;
   }
 
-  public String getType() {
-    return type;
+  public Long getVersion() {
+    return version;
   }
 
-  public void setType(String type) {
-    this.type = type;
+  public TMFeatureType setVersion(Long version) {
+    this.version = version;
+    return this;
   }
 
-  public FeatureSource getFeatureSource() {
+  public String getName() {
+    return name;
+  }
+
+  public TMFeatureType setName(String type) {
+    this.name = type;
+    return this;
+  }
+
+  public TMFeatureSource getFeatureSource() {
     return featureSource;
   }
 
-  public void setFeatureSource(FeatureSource featureSource) {
+  public TMFeatureType setFeatureSource(TMFeatureSource featureSource) {
     this.featureSource = featureSource;
+    return this;
   }
 
-  public String getTypeName() {
-    return typeName;
+  public String getTitle() {
+    return title;
   }
 
-  public void setTypeName(String typeName) {
-    this.typeName = typeName;
+  public TMFeatureType setTitle(String title) {
+    this.title = title;
+    return this;
   }
 
-  public String getDescription() {
-    return description;
+  public TMFeatureTypeInfo getInfo() {
+    return info;
   }
 
-  public void setDescription(String description) {
-    this.description = description;
+  public TMFeatureType setInfo(TMFeatureTypeInfo info) {
+    this.info = info;
+    return this;
   }
 
   public String getComment() {
     return comment;
   }
 
-  public void setComment(String comment) {
+  public TMFeatureType setComment(String comment) {
     this.comment = comment;
+    return this;
   }
 
   public String getOwner() {
     return owner;
   }
 
-  public void setOwner(String owner) {
+  public TMFeatureType setOwner(String owner) {
     this.owner = owner;
-  }
-
-  public JsonNode getAdditionalProperties() {
-    return additionalProperties;
-  }
-
-  public void setAdditionalProperties(JsonNode additionalProperties) {
-    this.additionalProperties = additionalProperties;
+    return this;
   }
 
   public boolean isWriteable() {
     return writeable;
   }
 
-  public void setWriteable(boolean writeable) {
+  public TMFeatureType setWriteable(boolean writeable) {
     this.writeable = writeable;
+    return this;
   }
 
   public String getDefaultGeometryAttribute() {
     return defaultGeometryAttribute;
   }
 
-  public void setDefaultGeometryAttribute(String defaultGeometryAttribute) {
+  public TMFeatureType setDefaultGeometryAttribute(String defaultGeometryAttribute) {
     this.defaultGeometryAttribute = defaultGeometryAttribute;
+    return this;
   }
 
   public String getPrimaryKeyAttribute() {
     return primaryKeyAttribute;
   }
 
-  public void setPrimaryKeyAttribute(String primaryKeyAttribute) {
+  public TMFeatureType setPrimaryKeyAttribute(String primaryKeyAttribute) {
     this.primaryKeyAttribute = primaryKeyAttribute;
+    return this;
   }
 
-  public List<AttributeDescriptor> getAttributes() {
+  public List<TMAttributeDescriptor> getAttributes() {
     return attributes;
   }
 
-  public void setAttributes(List<AttributeDescriptor> attributes) {
+  public TMFeatureType setAttributes(List<TMAttributeDescriptor> attributes) {
     this.attributes = attributes;
+    return this;
   }
 
   public JsonNode getSettings() {
     return settings;
   }
 
-  public void setSettings(JsonNode settings) {
+  public TMFeatureType setSettings(JsonNode settings) {
     this.settings = settings;
+    return this;
   }
+  // </editor-fold>
 }

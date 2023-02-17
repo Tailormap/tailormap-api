@@ -11,11 +11,12 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,21 +25,25 @@ import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
-import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
+import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
 import nl.b3p.tailormap.api.viewer.model.Service;
 import org.hibernate.annotations.Type;
 
 @Entity
 public class GeoService {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(columnDefinition = "text")
-  private String adminComments;
+  private String notes;
 
-  @Basic @NotNull private String protocol;
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  private GeoServiceProtocol protocol;
 
   /**
    * The URL from which the capabilities of this service can be loaded and the URL to use for the
@@ -47,7 +52,6 @@ public class GeoService {
    * be automatically converted to a relative URL if the hostname/port matches our URL? TODO: what
    * to do with parameters such as VERSION in the URL?
    */
-  @Basic
   @NotNull
   @Column(length = 2048)
   private String url;
@@ -74,7 +78,6 @@ public class GeoService {
   private Instant capabilitiesFetched;
 
   /** Title loaded from capabilities or as modified by user for display. */
-  @Basic
   @NotNull
   @Column(length = 2048)
   private String title;
@@ -84,12 +87,11 @@ public class GeoService {
    * the service is behind a proxy. Usually this shouldn't be used.
    */
   @Column(length = 2048)
-  @Basic
   private String advertisedUrl;
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private ServiceCaps serviceCapabilities;
+  private TMServiceCaps serviceCapabilities;
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
@@ -106,12 +108,6 @@ public class GeoService {
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
   private JsonNode tileServiceInfo;
-
-  // TODO: Zit nu in json serviceInfo, handig? Native query nodig voor JSON component query.
-  //    @ElementCollection
-  //    @CollectionTable(joinColumns = @JoinColumn(name = "geo_service"))
-  //    @Column(name = "keyword", length = 2048)
-  //    private Set<String> keywords = new HashSet<>();
 
   /**
    * Roles authorized to read information from this service. May be reduced on a per-layer basis in
@@ -133,20 +129,20 @@ public class GeoService {
     return this;
   }
 
-  public String getAdminComments() {
-    return adminComments;
+  public String getNotes() {
+    return notes;
   }
 
-  public GeoService setAdminComments(String adminComments) {
-    this.adminComments = adminComments;
+  public GeoService setNotes(String adminComments) {
+    this.notes = adminComments;
     return this;
   }
 
-  public String getProtocol() {
+  public GeoServiceProtocol getProtocol() {
     return protocol;
   }
 
-  public GeoService setProtocol(String protocol) {
+  public GeoService setProtocol(GeoServiceProtocol protocol) {
     this.protocol = protocol;
     return this;
   }
@@ -214,11 +210,11 @@ public class GeoService {
     return this;
   }
 
-  public ServiceCaps getServiceCapabilities() {
+  public TMServiceCaps getServiceCapabilities() {
     return serviceCapabilities;
   }
 
-  public GeoService setServiceCapabilities(ServiceCaps serviceCapabilities) {
+  public GeoService setServiceCapabilities(TMServiceCaps serviceCapabilities) {
     this.serviceCapabilities = serviceCapabilities;
     return this;
   }
@@ -264,10 +260,10 @@ public class GeoService {
             .id(this.id)
             .title(this.title)
             .url(this.url)
-            .protocol(Service.ProtocolEnum.fromValue(protocol))
+            .protocol(this.protocol)
             .serverType(serverTypeEnum);
 
-    if (Objects.equals(protocol, Service.ProtocolEnum.WMTS.getValue())) {
+    if (this.protocol == GeoServiceProtocol.WMTS) {
       // Frontend requires WMTS capabilities to parse TilingMatrix, but WMS capabilities aren't used
       s.capabilities(new String(getCapabilities(), StandardCharsets.UTF_8));
     }
