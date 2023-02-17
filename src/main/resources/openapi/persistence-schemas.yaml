@@ -142,6 +142,46 @@ components:
     TMAttributeType:
       $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
 
+    ServiceAuthentication:
+      properties:
+        method:
+          type: string
+          enum:
+            - password
+        username:
+          type: string
+        password:
+          type: string
+
+    JDBCConnectionProperties:
+      type: object
+      properties:
+        dbtype:
+          type: string
+          enum:
+            - postgis
+            - oracle
+            - sqlserver
+        database:
+          type: string
+        port:
+          type: integer
+          nullable: false
+        host:
+          type: string
+        schema:
+          type: string
+        fetchSize:
+          type: integer
+        primaryKeyMetadataTable:
+          type: string
+        geometryMetadataTable:
+          type: string
+        additionalProperties:
+          type: object
+          additionalProperties:
+            type: string
+
     GeoServiceSettings:
       description: Settings applying to a GeoService.
       required: [serverType, defaultLayerSettings]
