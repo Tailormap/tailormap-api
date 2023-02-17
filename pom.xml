@@ -114,14 +114,15 @@ SPDX-License-Identifier: MIT
     to check
     -->
         <jackson-bom.version>2.14.2</jackson-bom.version>
-        <micrometer.version>1.10.3</micrometer.version>
-        <hibernate.version>5.6.14.Final</hibernate.version>
+        <micrometer.version>1.10.4</micrometer.version>
+        <hibernate.version>5.6.15.Final</hibernate.version>
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
         <mssql-jdbc.version>12.2.0.jre11</mssql-jdbc.version>
         <oracle-database.version>21.9.0.0</oracle-database.version>
-        <postgresql.version>42.5.3</postgresql.version>
+        <postgresql.version>42.5.4</postgresql.version>
         <snakeyaml.version>1.33</snakeyaml.version>
-        <spring-security.version>5.8.0</spring-security.version>
+        <spring-security.version>5.8.1</spring-security.version>
+        <spring-hateoas.version>1.5.3</spring-hateoas.version>
         <!-- Don't upgrade these; there are some fixed dependencies on org/slf4j/impl/StaticLoggerBinder
     <logback.version>1.4.1</logback.version>
     <slf4j.version>2.0.2</slf4j.version>
@@ -151,6 +152,7 @@ SPDX-License-Identifier: MIT
         <pmd.version>6.54.0</pmd.version>
         <errorProne.version>2.16</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
+        <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
         <compiler.lint>deprecation,unchecked</compiler.lint>
         <failOnValidation>true</failOnValidation>
         <fmt.action>format</fmt.action>
@@ -158,7 +160,7 @@ SPDX-License-Identifier: MIT
         <docker.skip>false</docker.skip>
         <maven-fluido-skin.version>2.0.0-M3</maven-fluido-skin.version>
         <swagger-ui.version>4.15.5</swagger-ui.version>
-        <sentry.version>6.13.1</sentry.version>
+        <sentry.version>6.14.0</sentry.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -210,7 +212,12 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.hypersistence</groupId>
             <artifactId>hypersistence-utils-hibernate-55</artifactId>
-            <version>3.1.2</version>
+            <version>3.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.hypersistence</groupId>
+            <artifactId>hypersistence-tsid</artifactId>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -707,7 +714,7 @@ SPDX-License-Identifier: MIT
                     <fork>true</fork>
                     <compilerArgs combine.children="append">
                         <arg>-XDcompilePolicy=simple</arg>
-                        <arg>-Xplugin:ErrorProne -XepExcludedPaths:${project.build.directory}/generated-sources/.* ${errorProneFlags}</arg>
+                        <arg>-Xplugin:ErrorProne -XepExcludedPaths:${errorProneExcludePaths} ${errorProneFlags}</arg>
                         <arg>-Xlint:${compiler.lint}</arg>
                         <arg>-Werror</arg>
                         <arg>-Xmaxwarns</arg>
@@ -1419,6 +1426,10 @@ SPDX-License-Identifier: MIT
             </activation>
             <properties>
                 <docker.skip>true</docker.skip>
+                <!-- on windows we need to use -XepExcludedPaths:\Q${project.build.directory}\E.
+                     see https://github.com/google/error-prone/issues/2394
+                -->
+                <errorProneExcludePaths>\Q${project.build.directory}\E.*</errorProneExcludePaths>
             </properties>
         </profile>
         <profile>
