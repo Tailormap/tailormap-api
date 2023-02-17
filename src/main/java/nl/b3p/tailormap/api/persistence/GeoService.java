@@ -28,7 +28,7 @@ import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
-import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
+import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
 import nl.b3p.tailormap.api.viewer.model.Service;
 import org.hibernate.annotations.Type;
 
@@ -44,7 +44,6 @@ public class GeoService {
   @Column(columnDefinition = "text")
   private String notes;
 
-  @Basic
   @NotNull
   @Enumerated(EnumType.STRING)
   private GeoServiceProtocol protocol;
@@ -56,7 +55,6 @@ public class GeoService {
    * be automatically converted to a relative URL if the hostname/port matches our URL? TODO: what
    * to do with parameters such as VERSION in the URL?
    */
-  @Basic
   @NotNull
   @Column(length = 2048)
   private String url;
@@ -83,7 +81,6 @@ public class GeoService {
   private Instant capabilitiesFetched;
 
   /** Title loaded from capabilities or as modified by user for display. */
-  @Basic
   @NotNull
   @Column(length = 2048)
   private String title;
@@ -93,12 +90,11 @@ public class GeoService {
    * the service is behind a proxy. Usually this shouldn't be used.
    */
   @Column(length = 2048)
-  @Basic
   private String advertisedUrl;
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private ServiceCaps serviceCapabilities;
+  private TMServiceCaps serviceCapabilities;
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
@@ -226,11 +222,11 @@ public class GeoService {
     return this;
   }
 
-  public ServiceCaps getServiceCapabilities() {
+  public TMServiceCaps getServiceCapabilities() {
     return serviceCapabilities;
   }
 
-  public GeoService setServiceCapabilities(ServiceCaps serviceCapabilities) {
+  public GeoService setServiceCapabilities(TMServiceCaps serviceCapabilities) {
     this.serviceCapabilities = serviceCapabilities;
     return this;
   }

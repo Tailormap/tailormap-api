@@ -7,8 +7,8 @@ package nl.b3p.tailormap.api.geotools.featuresources;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import nl.b3p.tailormap.api.persistence.FeatureSource;
-import nl.b3p.tailormap.api.persistence.FeatureType;
+import nl.b3p.tailormap.api.persistence.TMFeatureSource;
+import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import org.geotools.data.DataStore;
 import org.geotools.data.simple.SimpleFeatureSource;
 
@@ -17,14 +17,14 @@ public class JDBCFeatureSourceHelper implements FeatureSourceHelper {
   //  private static final Logger logger =
   //      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  public static SimpleFeatureSource openGeoToolsFSFeatureSource(FeatureSource fs, FeatureType sft)
-      throws IOException {
+  public static SimpleFeatureSource openGeoToolsFSFeatureSource(
+      TMFeatureSource fs, TMFeatureType sft) throws IOException {
     DataStore ds = createDataStore(fs);
     return ds.getFeatureSource(sft.getName());
   }
 
   @SuppressWarnings("DoNotCallSuggester")
-  public static DataStore createDataStore(FeatureSource fs) throws IOException {
+  public static DataStore createDataStore(TMFeatureSource fs) throws IOException {
     throw new UnsupportedEncodingException();
     //    Map<String, Object> params = new HashMap<>();
     //    JSONObject urlObj = new JSONObject(fs.getUrl());
@@ -62,7 +62,7 @@ public class JDBCFeatureSourceHelper implements FeatureSourceHelper {
 
   @Override
   public SimpleFeatureSource openGeoToolsFeatureSource(
-      FeatureSource fs, FeatureType sft, int timeout) throws IOException {
+      TMFeatureSource fs, TMFeatureType sft, int timeout) throws IOException {
     return JDBCFeatureSourceHelper.openGeoToolsFSFeatureSource(fs, sft);
   }
 }

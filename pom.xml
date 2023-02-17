@@ -806,7 +806,11 @@ SPDX-License-Identifier: MIT
                                 <useOptional>true</useOptional>
                             </configOptions>
                             <!-- All common models from common-schemas.yaml here, comma separated -->
-                            <importMappings>TileLayerHiDpiMode=nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode,GeoServiceProtocol=nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol</importMappings>
+                            <importMappings>TileLayerHiDpiMode=nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode,
+                                GeoServiceProtocol=nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol,
+                                Bounds=nl.b3p.tailormap.api.persistence.json.Bounds,
+                                BoundsWithCRS=nl.b3p.tailormap.api.persistence.json.BoundsWithCRS,
+                                TMAttributeType=nl.b3p.tailormap.api.persistence.json.TMAttributeType</importMappings>
                             <ignoreFileOverride>${project.basedir}/src/main/resources/openapi/common-schemas-openapi-ignore</ignoreFileOverride>
                             <!--              <instantiationTypes>array=ArrayList,map=HashMap,object=Map</instantiationTypes>-->
                             <!--              <typeMappings>array=List,map=Map,object=Map</typeMappings>-->

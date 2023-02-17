@@ -5,7 +5,7 @@
  */
 package nl.b3p.tailormap.api.persistence.helper;
 
-import static nl.b3p.tailormap.api.persistence.FeatureSource.Protocol.WFS;
+import static nl.b3p.tailormap.api.persistence.TMFeatureSource.Protocol.WFS;
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 
 import java.io.IOException;
@@ -25,13 +25,15 @@ import nl.b3p.tailormap.api.geotools.ResponseTeeingHTTPClient;
 import nl.b3p.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSLayerDescription;
-import nl.b3p.tailormap.api.persistence.FeatureSource;
 import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
-import nl.b3p.tailormap.api.persistence.json.ServiceCapabilitiesRequestGetFeatureInfo;
-import nl.b3p.tailormap.api.persistence.json.ServiceCapabilitiesRequestGetMap;
-import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
-import nl.b3p.tailormap.api.persistence.json.ServiceCapsCapabilities;
+import nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequest;
+import nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetFeatureInfo;
+import nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetMap;
+import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
+import nl.b3p.tailormap.api.persistence.json.TMServiceCapsCapabilities;
+import nl.b3p.tailormap.api.persistence.json.TMServiceInfo;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.geotools.data.ServiceInfo;
@@ -143,12 +145,12 @@ public class GeoServiceHelper {
 
     ServiceInfo info = ows.getInfo();
 
-    ServiceCaps caps = new ServiceCaps();
+    TMServiceCaps caps = new TMServiceCaps();
     geoService.setServiceCapabilities(caps);
 
     if (info != null) {
       caps.serviceInfo(
-          new nl.b3p.tailormap.api.persistence.json.ServiceInfo()
+          new TMServiceInfo()
               .keywords(info.getKeywords())
               .description(info.getDescription())
               .title(info.getTitle())
@@ -211,19 +213,19 @@ public class GeoServiceHelper {
     geoService
         .getServiceCapabilities()
         .capabilities(
-            new ServiceCapsCapabilities()
+            new TMServiceCapsCapabilities()
                 .version(wmsCapabilities.getVersion())
                 .updateSequence(wmsCapabilities.getUpdateSequence())
                 .abstractText(wmsCapabilities.getService().get_abstract())
                 .request(
-                    new nl.b3p.tailormap.api.persistence.json.ServiceCapabilitiesRequest()
+                    new TMServiceCapabilitiesRequest()
                         .getMap(
-                            new ServiceCapabilitiesRequestGetMap()
+                            new TMServiceCapabilitiesRequestGetMap()
                                 .formats(Set.copyOf(getMap.getFormats())))
                         .getFeatureInfo(
                             getFeatureInfo == null
                                 ? null
-                                : new ServiceCapabilitiesRequestGetFeatureInfo()
+                                : new TMServiceCapabilitiesRequestGetFeatureInfo()
                                     .formats(Set.copyOf(getFeatureInfo.getFormats())))
                         .describeLayer(
                             wms.getCapabilities().getRequest().getDescribeLayer() != null)));
@@ -337,10 +339,10 @@ public class GeoServiceHelper {
         .distinct()
         .forEach(
             url -> {
-              FeatureSource fs = featureSourceRepository.findByUrl(url);
+              TMFeatureSource fs = featureSourceRepository.findByUrl(url);
               if (fs == null) {
                 fs =
-                    new FeatureSource()
+                    new TMFeatureSource()
                         .setProtocol(WFS)
                         .setUrl(url)
                         .setTitle("WFS for " + geoService.getTitle())

@@ -61,11 +61,11 @@ components:
       properties: # mostly properties from table "application"
         initialExtent:
           description: 'initial bounds for the map'
-          $ref: './viewer-schemas.yaml#/components/schemas/Bounds'
+          $ref: './common-schemas.yaml#/components/schemas/Bounds'
           nullable: true
         maxExtent:
           description: 'maximum bounds for the map'
-          $ref: './viewer-schemas.yaml#/components/schemas/Bounds'
+          $ref: './common-schemas.yaml#/components/schemas/Bounds'
           nullable: true
         services: # TODO in the current implementation this is an object with the id of a service as elemnt
           #      eg. "1": {"protocol": "tiled", "matrixSets":[], "id": 1
@@ -96,7 +96,7 @@ components:
           items:
             $ref: './viewer-schemas.yaml#/components/schemas/AppLayer'
         crs:
-          $ref: './viewer-schemas.yaml#/components/schemas/CoordinateReferenceSystem'
+          $ref: './viewer-schemas.yaml#/components/schemas/TMCoordinateReferenceSystem'
       required:
         - initialExtent
         - services
