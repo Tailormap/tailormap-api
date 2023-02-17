@@ -5,64 +5,65 @@
  */
 package nl.b3p.tailormap.api.geotools.featuresources;
 
+import static org.geotools.data.sqlserver.SQLServerDataStoreFactory.GEOMETRY_METADATA_TABLE;
+import static org.geotools.jdbc.JDBCDataStoreFactory.DATABASE;
+import static org.geotools.jdbc.JDBCDataStoreFactory.DBTYPE;
+import static org.geotools.jdbc.JDBCDataStoreFactory.EXPOSE_PK;
+import static org.geotools.jdbc.JDBCDataStoreFactory.FETCHSIZE;
+import static org.geotools.jdbc.JDBCDataStoreFactory.HOST;
+import static org.geotools.jdbc.JDBCDataStoreFactory.PASSWD;
+import static org.geotools.jdbc.JDBCDataStoreFactory.PK_METADATA_TABLE;
+import static org.geotools.jdbc.JDBCDataStoreFactory.PORT;
+import static org.geotools.jdbc.JDBCDataStoreFactory.SCHEMA;
+import static org.geotools.jdbc.JDBCDataStoreFactory.USER;
+
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
-import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties;
+import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import org.geotools.data.DataStore;
-import org.geotools.data.simple.SimpleFeatureSource;
 
-public class JDBCFeatureSourceHelper implements FeatureSourceHelper {
-
-  //  private static final Logger logger =
-  //      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  public static SimpleFeatureSource openGeoToolsFSFeatureSource(
-      TMFeatureSource fs, TMFeatureType sft) throws IOException {
-    DataStore ds = createDataStore(fs);
-    return ds.getFeatureSource(sft.getName());
-  }
-
-  @SuppressWarnings("DoNotCallSuggester")
-  public static DataStore createDataStore(TMFeatureSource fs) throws IOException {
-    throw new UnsupportedEncodingException();
-    //    Map<String, Object> params = new HashMap<>();
-    //    JSONObject urlObj = new JSONObject(fs.getUrl());
-    //    params.put("dbtype", urlObj.get("dbtype"));
-    //    params.put("host", urlObj.get("host"));
-    //    params.put("port", urlObj.get("port"));
-    //    params.put("database", urlObj.get("database"));
-    //
-    //    params.put("schema", fs.schema);
-    //    params.put("user", fs.getUsername());
-    //    params.put(JDBCDataStoreFactory.FETCHSIZE.key, 50);
-    //    params.put("passwd", fs.getPassword());
-    //    params.put(JDBCDataStoreFactory.EXPOSE_PK.key, true);
-    //    params.put(JDBCDataStoreFactory.PK_METADATA_TABLE.key, "gt_pk_metadata");
-    //    // this key is available in ao. Oracle and MS SQL datastore factories, but not in the
-    // common
-    //    // parent..
-    //    // we need this for mssql to determine a featuretype on an empty table
-    //    if (!urlObj.get("dbtype").equals("oracle")) {
-    //      params.put(SQLServerDataStoreFactory.GEOMETRY_METADATA_TABLE.key, "geometry_columns");
-    //    }
-    //    Map<String, Object> logParams = new HashMap<>(params);
-    //    if (fs.getPassword() != null) {
-    //      logParams.put(
-    //          "passwd", String.valueOf(new char[fs.getPassword().length()]).replace("\0", "*"));
-    //    }
-    //    log.debug("Opening datastore using parameters: " + logParams);
-    //    DataStore ds = DataStoreFinder.getDataStore(params);
-    //
-    //    if (ds == null) {
-    //      throw new IOException("Cannot open datastore using parameters " + logParams);
-    //    }
-    //    return ds;
-  }
+public class JDBCFeatureSourceHelper extends FeatureSourceHelper {
+  private static final Map<JDBCConnectionProperties.DbtypeEnum, Integer> defaultPorts =
+      Map.of(
+          JDBCConnectionProperties.DbtypeEnum.POSTGIS, 5432,
+          JDBCConnectionProperties.DbtypeEnum.ORACLE, 1521,
+          JDBCConnectionProperties.DbtypeEnum.SQLSERVER, 1433);
 
   @Override
-  public SimpleFeatureSource openGeoToolsFeatureSource(
-      TMFeatureSource fs, TMFeatureType sft, int timeout) throws IOException {
-    return JDBCFeatureSourceHelper.openGeoToolsFSFeatureSource(fs, sft);
+  public DataStore createDataStore(TMFeatureSource tmfs, Integer timeout) throws IOException {
+    if (tmfs.getProtocol() != TMFeatureSource.Protocol.JDBC) {
+      throw new IllegalArgumentException(tmfs.getProtocol().getValue());
+    }
+    Objects.requireNonNull(tmfs.getJdbcConnection());
+    Objects.requireNonNull(tmfs.getAuthentication());
+    if (tmfs.getAuthentication().getMethod() != ServiceAuthentication.MethodEnum.PASSWORD) {
+      throw new IllegalArgumentException(tmfs.getAuthentication().getMethod().getValue());
+    }
+
+    JDBCConnectionProperties c = tmfs.getJdbcConnection();
+    Objects.requireNonNull(c.getDbtype());
+
+    Map<String, Object> params = new HashMap<>();
+    params.put(DBTYPE.key, c.getDbtype().getValue());
+    params.put(HOST.key, c.getHost());
+    params.put(PORT.key, c.getPort() != null ? c.getPort() : defaultPorts.get(c.getDbtype()));
+    params.put(DATABASE.key, c.getDatabase());
+    params.put(SCHEMA.key, c.getSchema());
+    params.put(USER.key, tmfs.getAuthentication().getUsername());
+    params.put(PASSWD.key, tmfs.getAuthentication().getPassword());
+    params.put(FETCHSIZE.key, c.getFetchSize());
+    params.put(EXPOSE_PK.key, true);
+    params.put(PK_METADATA_TABLE.key, c.getPrimaryKeyMetadataTable());
+    if (c.getDbtype() != JDBCConnectionProperties.DbtypeEnum.ORACLE) {
+      // this key is available in ao. Oracle and MS SQL datastore factories, but not in the common
+      // parent...
+      // we need this for mssql to determine a feature type on an empty table
+      params.put(GEOMETRY_METADATA_TABLE.key, "geometry_columns");
+    }
+    return openDatastore(params, PASSWD.key);
   }
 }

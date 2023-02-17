@@ -5,7 +5,6 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
@@ -24,6 +23,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties;
+import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
 import org.hibernate.annotations.Type;
 
@@ -68,21 +69,22 @@ public class TMFeatureSource {
   @Column(columnDefinition = "text")
   private String notes;
 
-  @Basic
   @NotNull
   @Enumerated(EnumType.STRING)
   private TMFeatureSource.Protocol protocol;
 
   @Basic @NotNull private String title;
 
-  @Basic
-  @NotNull
   @Column(length = 2048)
   private String url;
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private JsonNode authentication;
+  private JDBCConnectionProperties jdbcConnection;
+
+  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Column(columnDefinition = "jsonb")
+  private ServiceAuthentication authentication;
 
   @ManyToOne
   @JoinColumn(name = "linked_service")
@@ -146,11 +148,20 @@ public class TMFeatureSource {
     return this;
   }
 
-  public JsonNode getAuthentication() {
+  public JDBCConnectionProperties getJdbcConnection() {
+    return jdbcConnection;
+  }
+
+  public TMFeatureSource setJdbcConnection(JDBCConnectionProperties jdbcConnection) {
+    this.jdbcConnection = jdbcConnection;
+    return this;
+  }
+
+  public ServiceAuthentication getAuthentication() {
     return authentication;
   }
 
-  public TMFeatureSource setAuthentication(JsonNode authentication) {
+  public TMFeatureSource setAuthentication(ServiceAuthentication authentication) {
     this.authentication = authentication;
     return this;
   }
