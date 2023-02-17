@@ -6,8 +6,8 @@
 package nl.b3p.tailormap.api.geotools.featuresources;
 
 import java.io.IOException;
-import nl.b3p.tailormap.api.persistence.FeatureSource;
-import nl.b3p.tailormap.api.persistence.FeatureType;
+import nl.b3p.tailormap.api.persistence.TMFeatureSource;
+import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,17 +18,17 @@ public class FeatureSourceFactoryHelper {
   @Value("${tailormap-api.timeout}")
   private int timeout;
 
-  public SimpleFeatureSource openGeoToolsFeatureSource(FeatureType ft) throws IOException {
+  public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType ft) throws IOException {
     return FeatureSourceFactoryHelper.openGeoToolsFeatureSource(ft.getFeatureSource(), ft, timeout);
   }
 
   public static SimpleFeatureSource openGeoToolsFeatureSource(
-      FeatureSource fs, FeatureType sft, int timeout) throws IOException {
+      TMFeatureSource fs, TMFeatureType sft, int timeout) throws IOException {
     FeatureSourceHelper sh = getHelper(fs);
     return sh.openGeoToolsFeatureSource(fs, sft, timeout);
   }
 
-  private static FeatureSourceHelper getHelper(FeatureSource fs) {
+  private static FeatureSourceHelper getHelper(TMFeatureSource fs) {
     switch (fs.getProtocol()) {
       case JDBC:
         return new JDBCFeatureSourceHelper();

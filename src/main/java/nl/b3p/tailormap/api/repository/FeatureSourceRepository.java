@@ -6,9 +6,9 @@
 
 package nl.b3p.tailormap.api.repository;
 
-import nl.b3p.tailormap.api.persistence.FeatureSource;
+import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FeatureSourceRepository extends JpaRepository<FeatureSource, Long> {
-  FeatureSource findByUrl(String url);
+public interface FeatureSourceRepository extends JpaRepository<TMFeatureSource, Long> {
+  TMFeatureSource findByUrl(String url);
 }

@@ -22,12 +22,14 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import nl.b3p.tailormap.api.persistence.json.ServiceCaps;
+import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
 import org.hibernate.annotations.Type;
 
 @Entity
-public class FeatureSource {
+@Table(name = "feature_source")
+public class TMFeatureSource {
 
   public enum Protocol {
     WFS("wfs"),
@@ -49,8 +51,8 @@ public class FeatureSource {
       return String.valueOf(value);
     }
 
-    public static FeatureSource.Protocol fromValue(String value) {
-      for (FeatureSource.Protocol p : FeatureSource.Protocol.values()) {
+    public static TMFeatureSource.Protocol fromValue(String value) {
+      for (TMFeatureSource.Protocol p : TMFeatureSource.Protocol.values()) {
         if (p.value.equals(value)) {
           return p;
         }
@@ -69,7 +71,7 @@ public class FeatureSource {
   @Basic
   @NotNull
   @Enumerated(EnumType.STRING)
-  private FeatureSource.Protocol protocol;
+  private TMFeatureSource.Protocol protocol;
 
   @Basic @NotNull private String title;
 
@@ -88,7 +90,7 @@ public class FeatureSource {
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private ServiceCaps serviceCapabilities;
+  private TMServiceCaps serviceCapabilities;
 
   @OneToMany(cascade = CascadeType.ALL)
   @JoinTable(
@@ -96,14 +98,14 @@ public class FeatureSource {
       inverseJoinColumns = @JoinColumn(name = "feature_type"),
       joinColumns = @JoinColumn(name = "feature_source", referencedColumnName = "id"))
   @OrderColumn(name = "list_index")
-  private List<FeatureType> featureTypes = new ArrayList<>();
+  private List<TMFeatureType> featureTypes = new ArrayList<>();
 
   // <editor-fold desc="getters and setters">
   public Long getId() {
     return id;
   }
 
-  public FeatureSource setId(Long id) {
+  public TMFeatureSource setId(Long id) {
     this.id = id;
     return this;
   }
@@ -112,7 +114,7 @@ public class FeatureSource {
     return notes;
   }
 
-  public FeatureSource setNotes(String notes) {
+  public TMFeatureSource setNotes(String notes) {
     this.notes = notes;
     return this;
   }
@@ -121,7 +123,7 @@ public class FeatureSource {
     return protocol;
   }
 
-  public FeatureSource setProtocol(Protocol protocol) {
+  public TMFeatureSource setProtocol(Protocol protocol) {
     this.protocol = protocol;
     return this;
   }
@@ -130,7 +132,7 @@ public class FeatureSource {
     return title;
   }
 
-  public FeatureSource setTitle(String title) {
+  public TMFeatureSource setTitle(String title) {
     this.title = title;
     return this;
   }
@@ -139,7 +141,7 @@ public class FeatureSource {
     return url;
   }
 
-  public FeatureSource setUrl(String url) {
+  public TMFeatureSource setUrl(String url) {
     this.url = url;
     return this;
   }
@@ -148,7 +150,7 @@ public class FeatureSource {
     return authentication;
   }
 
-  public FeatureSource setAuthentication(JsonNode authentication) {
+  public TMFeatureSource setAuthentication(JsonNode authentication) {
     this.authentication = authentication;
     return this;
   }
@@ -157,25 +159,25 @@ public class FeatureSource {
     return linkedService;
   }
 
-  public FeatureSource setLinkedService(GeoService linkedService) {
+  public TMFeatureSource setLinkedService(GeoService linkedService) {
     this.linkedService = linkedService;
     return this;
   }
 
-  public ServiceCaps getServiceCapabilities() {
+  public TMServiceCaps getServiceCapabilities() {
     return serviceCapabilities;
   }
 
-  public FeatureSource setServiceCapabilities(ServiceCaps serviceCapabilities) {
+  public TMFeatureSource setServiceCapabilities(TMServiceCaps serviceCapabilities) {
     this.serviceCapabilities = serviceCapabilities;
     return this;
   }
 
-  public List<FeatureType> getFeatureTypes() {
+  public List<TMFeatureType> getFeatureTypes() {
     return featureTypes;
   }
 
-  public FeatureSource setFeatureTypes(List<FeatureType> featureTypes) {
+  public TMFeatureSource setFeatureTypes(List<TMFeatureType> featureTypes) {
     this.featureTypes = featureTypes;
     return this;
   }

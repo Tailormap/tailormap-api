@@ -15,19 +15,20 @@ import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
+import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.viewer.model.AppLayer;
-import nl.b3p.tailormap.api.viewer.model.Bounds;
-import nl.b3p.tailormap.api.viewer.model.CoordinateReferenceSystem;
 import nl.b3p.tailormap.api.viewer.model.LayerTreeNode;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
+import nl.b3p.tailormap.api.viewer.model.TMCoordinateReferenceSystem;
 import org.apache.commons.lang3.tuple.Triple;
 import org.geotools.referencing.util.CRSUtilities;
 import org.geotools.referencing.wkt.Formattable;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -55,19 +56,16 @@ public class ApplicationHelper {
   }
 
   public void setCrsAndBounds(Application a, MapResponse mapResponse) {
-
-    org.opengis.referencing.crs.CoordinateReferenceSystem gtCrs =
-        a.getGeoToolsCoordinateReferenceSystem();
-
+    CoordinateReferenceSystem gtCrs = a.getGeoToolsCoordinateReferenceSystem();
     if (gtCrs == null) {
       throw new IllegalArgumentException("Invalid CRS: " + a.getCrs());
     }
 
-    CoordinateReferenceSystem crs =
-        new CoordinateReferenceSystem()
+    TMCoordinateReferenceSystem crs =
+        new TMCoordinateReferenceSystem()
             .code(a.getCrs())
             .definition(((Formattable) gtCrs).toWKT(0))
-            .bounds(BoundsHelper.fromCRSEnvelope(gtCrs))
+            .bounds(GeoToolsHelper.fromCRSEnvelope(gtCrs))
             .unit(
                 Optional.ofNullable(CRSUtilities.getUnit(gtCrs.getCoordinateSystem()))
                     .map(Objects::toString)

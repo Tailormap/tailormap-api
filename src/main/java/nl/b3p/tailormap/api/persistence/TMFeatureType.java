@@ -22,11 +22,12 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+import nl.b3p.tailormap.api.persistence.json.TMFeatureTypeInfo;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "feature_type")
-public class FeatureType {
+public class TMFeatureType {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,12 +39,16 @@ public class FeatureType {
 
   @ManyToOne(cascade = CascadeType.PERSIST, optional = false)
   @JoinColumn(name = "feature_source")
-  private FeatureSource featureSource;
+  private TMFeatureSource featureSource;
 
-  private String description;
+  private String title;
+
+  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Column(columnDefinition = "jsonb")
+  private TMFeatureTypeInfo info;
 
   // Note: this will vanish when feature type disappears at the source, unless we move this to a
-  // separate featureTypeSettings JSON property in FeatureSource
+  // separate featureTypeSettings JSON property in TMFeatureSource
   @Column(columnDefinition = "text")
   private String comment;
 
@@ -62,7 +67,7 @@ public class FeatureType {
       name = "feature_type_attributes",
       joinColumns = @JoinColumn(name = "feature_type", referencedColumnName = "id"))
   @OrderColumn(name = "list_index")
-  private List<AttributeDescriptor> attributes = new ArrayList<>();
+  private List<TMAttributeDescriptor> attributes = new ArrayList<>();
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
@@ -73,7 +78,7 @@ public class FeatureType {
     return id;
   }
 
-  public FeatureType setId(Long id) {
+  public TMFeatureType setId(Long id) {
     this.id = id;
     return this;
   }
@@ -82,7 +87,7 @@ public class FeatureType {
     return version;
   }
 
-  public FeatureType setVersion(Long version) {
+  public TMFeatureType setVersion(Long version) {
     this.version = version;
     return this;
   }
@@ -91,26 +96,35 @@ public class FeatureType {
     return name;
   }
 
-  public FeatureType setName(String type) {
+  public TMFeatureType setName(String type) {
     this.name = type;
     return this;
   }
 
-  public FeatureSource getFeatureSource() {
+  public TMFeatureSource getFeatureSource() {
     return featureSource;
   }
 
-  public FeatureType setFeatureSource(FeatureSource featureSource) {
+  public TMFeatureType setFeatureSource(TMFeatureSource featureSource) {
     this.featureSource = featureSource;
     return this;
   }
 
-  public String getDescription() {
-    return description;
+  public String getTitle() {
+    return title;
   }
 
-  public FeatureType setDescription(String description) {
-    this.description = description;
+  public TMFeatureType setTitle(String title) {
+    this.title = title;
+    return this;
+  }
+
+  public TMFeatureTypeInfo getInfo() {
+    return info;
+  }
+
+  public TMFeatureType setInfo(TMFeatureTypeInfo info) {
+    this.info = info;
     return this;
   }
 
@@ -118,7 +132,7 @@ public class FeatureType {
     return comment;
   }
 
-  public FeatureType setComment(String comment) {
+  public TMFeatureType setComment(String comment) {
     this.comment = comment;
     return this;
   }
@@ -127,7 +141,7 @@ public class FeatureType {
     return owner;
   }
 
-  public FeatureType setOwner(String owner) {
+  public TMFeatureType setOwner(String owner) {
     this.owner = owner;
     return this;
   }
@@ -136,7 +150,7 @@ public class FeatureType {
     return writeable;
   }
 
-  public FeatureType setWriteable(boolean writeable) {
+  public TMFeatureType setWriteable(boolean writeable) {
     this.writeable = writeable;
     return this;
   }
@@ -145,7 +159,7 @@ public class FeatureType {
     return defaultGeometryAttribute;
   }
 
-  public FeatureType setDefaultGeometryAttribute(String defaultGeometryAttribute) {
+  public TMFeatureType setDefaultGeometryAttribute(String defaultGeometryAttribute) {
     this.defaultGeometryAttribute = defaultGeometryAttribute;
     return this;
   }
@@ -154,16 +168,16 @@ public class FeatureType {
     return primaryKeyAttribute;
   }
 
-  public FeatureType setPrimaryKeyAttribute(String primaryKeyAttribute) {
+  public TMFeatureType setPrimaryKeyAttribute(String primaryKeyAttribute) {
     this.primaryKeyAttribute = primaryKeyAttribute;
     return this;
   }
 
-  public List<AttributeDescriptor> getAttributes() {
+  public List<TMAttributeDescriptor> getAttributes() {
     return attributes;
   }
 
-  public FeatureType setAttributes(List<AttributeDescriptor> attributes) {
+  public TMFeatureType setAttributes(List<TMAttributeDescriptor> attributes) {
     this.attributes = attributes;
     return this;
   }
@@ -172,7 +186,7 @@ public class FeatureType {
     return settings;
   }
 
-  public FeatureType setSettings(JsonNode settings) {
+  public TMFeatureType setSettings(JsonNode settings) {
     this.settings = settings;
     return this;
   }
