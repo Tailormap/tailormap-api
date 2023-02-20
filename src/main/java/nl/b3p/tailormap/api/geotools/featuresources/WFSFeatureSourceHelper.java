@@ -8,10 +8,17 @@ package nl.b3p.tailormap.api.geotools.featuresources;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
+import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.helper.GeoToolsHelper;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
+import nl.b3p.tailormap.api.persistence.json.TMFeatureTypeInfo;
 import org.geotools.data.DataStore;
+import org.geotools.data.ResourceInfo;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
+import org.geotools.data.wfs.internal.FeatureTypeInfo;
 
 public class WFSFeatureSourceHelper extends FeatureSourceHelper {
   @Override
@@ -42,5 +49,22 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
       params.put(WFSDataStoreFactory.PASSWORD.key, authentication.getPassword());
     }
     return openDatastore(params, WFSDataStoreFactory.PASSWORD.key);
+  }
+
+  @Override
+  protected TMFeatureTypeInfo getFeatureTypeInfo(
+      TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
+    TMFeatureTypeInfo tmInfo = super.getFeatureTypeInfo(pft, info, gtFs);
+    if (info instanceof FeatureTypeInfo) {
+      FeatureTypeInfo ftInfo = (FeatureTypeInfo) info;
+      tmInfo
+          .schema(info.getSchema())
+          .wgs84BoundingBox(GeoToolsHelper.fromEnvelope(ftInfo.getWGS84BoundingBox()))
+          .defaultSrs(ftInfo.getDefaultSRS())
+          .otherSrs(Set.copyOf(ftInfo.getOtherSRS()))
+          .outputFormats(ftInfo.getOutputFormats())
+          .abstractText(ftInfo.getAbstract());
+    }
+    return tmInfo;
   }
 }

@@ -10,7 +10,8 @@ import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
 
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
-import javax.annotation.PostConstruct;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import nl.b3p.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Catalog;
@@ -37,13 +38,18 @@ import nl.b3p.tailormap.api.repository.CatalogRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
+import nl.b3p.tailormap.api.repository.GroupRepository;
 import nl.b3p.tailormap.api.repository.UserRepository;
+import nl.b3p.tailormap.api.security.InternalAdminAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
+import org.springframework.transaction.annotation.Transactional;
 
 @org.springframework.context.annotation.Configuration
 @Profile("!test")
@@ -53,6 +59,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final UserRepository userRepository;
+  private final GroupRepository groupRepository;
   private final CatalogRepository catalogRepository;
   private final GeoServiceRepository geoServiceRepository;
   private final GeoServiceHelper geoServiceHelper;
@@ -67,6 +74,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
 
   public PopulateTestDatabase(
       UserRepository userRepository,
+      GroupRepository groupRepository,
       CatalogRepository catalogRepository,
       GeoServiceRepository geoServiceRepository,
       GeoServiceHelper geoServiceHelper,
@@ -74,6 +82,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository) {
     this.userRepository = userRepository;
+    this.groupRepository = groupRepository;
     this.catalogRepository = catalogRepository;
     this.geoServiceRepository = geoServiceRepository;
     this.geoServiceHelper = geoServiceHelper;
@@ -88,34 +97,43 @@ public class PopulateTestDatabase implements EnvironmentAware {
     spatialDbsConnect = "true".equals(environment.getProperty("SPATIAL_DBS_CONNECT"));
   }
 
-  @PostConstruct
+  @EventListener(ApplicationReadyEvent.class)
+  @Transactional
   @DependsOn("tailormap-database-initialization")
+  public void populate() throws Exception {
+    InternalAdminAuthentication.setInSecurityContext();
+    try {
+      if (configurationRepository.existsById(Configuration.DEFAULT_APP)) {
+        // Test database already initialized for integration tests
+        return;
+      }
+
+      createTestUsers();
+      createTestConfiguration();
+    } finally {
+      InternalAdminAuthentication.clearSecurityContextAuthentication();
+    }
+  }
+
   public void createTestUsers() {
     // User with access to any app which requires authentication
     User u = new User().setUsername("user").setPassword("{noop}user");
-    u.getGroups().add(new Group().setName(Group.APP_AUTHENTICATED));
+    u.getGroups().add(groupRepository.findById(Group.APP_AUTHENTICATED).get());
     userRepository.save(u);
 
     // Only user admin
     u = new User().setUsername("useradmin").setPassword("{noop}useradmin");
-    u.getGroups().add(new Group().setName(Group.ADMIN_USERS));
+    u.getGroups().add(groupRepository.findById(Group.ADMIN_USERS).get());
     userRepository.save(u);
 
     // Superuser with all access (even admin-users without explicitly having that authority)
     u = new User().setUsername("tm-admin").setPassword("{noop}tm-admin");
-    u.getGroups().add(new Group().setName(Group.ADMIN));
+    u.getGroups().add(groupRepository.findById(Group.ADMIN).get());
     userRepository.save(u);
   }
 
-  @PostConstruct
-  @DependsOn("tailormap-database-initialization")
   @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
-  public void populate() throws Exception {
-
-    if (configurationRepository.existsById(Configuration.DEFAULT_APP)) {
-      // Test database already initialized for integration tests
-      return;
-    }
+  public void createTestConfiguration() throws Exception {
 
     Catalog catalog = catalogRepository.findById(Catalog.MAIN).get();
     CatalogNode rootCatalogNode = catalog.getNodes().get(0);
@@ -123,59 +141,62 @@ public class PopulateTestDatabase implements EnvironmentAware {
     rootCatalogNode.addChildrenItem(catalogNode.getId());
     catalog.getNodes().add(catalogNode);
 
-    Map<String, GeoService> services =
-        Map.of(
-            "geoserver",
-            new GeoService()
-                .setProtocol(WMS)
-                .setTitle("Test GeoServer")
-                .setUrl("https://snapshot.tailormap.nl/geoserver/wms"),
-            "openbasiskaart",
-            new GeoService()
-                .setProtocol(WMTS)
-                .setTitle("Openbasiskaart")
-                .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
-                .setSettings(
-                    new GeoServiceSettings()
-                        .layerSettings(
-                            Map.of(
-                                "osm",
-                                new GeoServiceLayerSettings()
-                                    .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
-                                    .hiDpiSubstituteLayer("osm-hq")))),
-            "pdok luchtfoto",
-            new GeoService()
-                .setProtocol(WMTS)
-                .setTitle("PDOK HWH luchtfoto")
-                .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
-                .setSettings(
-                    new GeoServiceSettings()
-                        .defaultLayerSettings(
-                            new GeoServiceDefaultLayerSettings()
-                                .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))),
-            "basemap.at",
-            new GeoService()
-                .setProtocol(WMTS)
-                .setTitle("basemap.at")
-                .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
-                .setSettings(
-                    new GeoServiceSettings()
-                        .layerSettings(
-                            Map.of(
-                                "geolandbasemap",
-                                new GeoServiceLayerSettings()
-                                    .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERTILEPIXELRATIOONLY)
-                                    .hiDpiSubstituteLayer("bmaphidpi"),
-                                "bmaporthofoto30cm",
-                                new GeoServiceLayerSettings()
-                                    .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))))
-            //        new GeoService()
-            //            .setProtocol(WMS)
-            //            .setTitle("Norway - Administrative enheter")
-            //            .setUrl("https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk")
-            //            .setSettings(new
-            // GeoServiceSettings().serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)),
-            );
+    SortedMap<String, GeoService> services =
+        new TreeMap<>(
+            Map.of(
+                "0-geoserver",
+                new GeoService()
+                    .setProtocol(WMS)
+                    .setTitle("Test GeoServer")
+                    .setUrl("https://snapshot.tailormap.nl/geoserver/wms"),
+                "1-openbasiskaart",
+                new GeoService()
+                    .setProtocol(WMTS)
+                    .setTitle("Openbasiskaart")
+                    .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
+                    .setSettings(
+                        new GeoServiceSettings()
+                            .layerSettings(
+                                Map.of(
+                                    "osm",
+                                    new GeoServiceLayerSettings()
+                                        .hiDpiMode(
+                                            TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
+                                        .hiDpiSubstituteLayer("osm-hq")))),
+                "2-pdok luchtfoto",
+                new GeoService()
+                    .setProtocol(WMTS)
+                    .setTitle("PDOK HWH luchtfoto")
+                    .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
+                    .setSettings(
+                        new GeoServiceSettings()
+                            .defaultLayerSettings(
+                                new GeoServiceDefaultLayerSettings()
+                                    .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))),
+                "3-basemap.at",
+                new GeoService()
+                    .setProtocol(WMTS)
+                    .setTitle("basemap.at")
+                    .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
+                    .setSettings(
+                        new GeoServiceSettings()
+                            .layerSettings(
+                                Map.of(
+                                    "geolandbasemap",
+                                    new GeoServiceLayerSettings()
+                                        .hiDpiMode(
+                                            TileLayerHiDpiMode.SUBSTITUTELAYERTILEPIXELRATIOONLY)
+                                        .hiDpiSubstituteLayer("bmaphidpi"),
+                                    "bmaporthofoto30cm",
+                                    new GeoServiceLayerSettings()
+                                        .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))))
+                //        new GeoService()
+                //            .setProtocol(WMS)
+                //            .setTitle("Norway - Administrative enheter")
+                //            .setUrl("https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk")
+                //            .setSettings(new
+                // GeoServiceSettings().serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)),
+                ));
 
     for (GeoService geoService : services.values()) {
       geoServiceHelper.loadServiceCapabilities(geoService);
@@ -247,7 +268,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
             "mssql",
                 new TMFeatureSource()
                     .setProtocol(TMFeatureSource.Protocol.JDBC)
-                    .setTitle("PostGIS")
+                    .setTitle("MS SQL Server")
                     .setJdbcConnection(
                         new JDBCConnectionProperties()
                             .dbtype(JDBCConnectionProperties.DbtypeEnum.SQLSERVER)
@@ -275,9 +296,9 @@ public class PopulateTestDatabase implements EnvironmentAware {
               });
     }
 
-    Long testId = services.get("geoserver").getId();
-    Long obkId = services.get("openbasiskaart").getId();
-    Long lufoId = services.get("pdok luchtfoto").getId();
+    Long testId = services.get("0-geoserver").getId();
+    Long obkId = services.get("1-openbasiskaart").getId();
+    Long lufoId = services.get("2-pdok luchtfoto").getId();
 
     Application app =
         new Application()
@@ -309,7 +330,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
     app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));
     applicationRepository.save(app);
 
-    Long basemapAtId = services.get("basemap.at").getId();
+    Long basemapAtId = services.get("3-basemap.at").getId();
 
     app =
         new Application()

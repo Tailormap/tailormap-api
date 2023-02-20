@@ -12,11 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.persistence.Configuration;
+import nl.b3p.tailormap.api.security.InternalAdminAuthentication;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 @PostgresIntegrationTest
 @TestMethodOrder(OrderAnnotation.class)
@@ -33,10 +35,16 @@ class ConfigurationRepositoryIntegrationTest {
   }
 
   @Test
+  @Transactional
   @Order(2)
   void it_should_not_find_value_after_deleting_key() {
-    configurationRepository.deleteConfigurationByKey(DEFAULT_APP);
-    final Configuration c = configurationRepository.findByKey(DEFAULT_APP).orElse(null);
-    assertNull(c);
+    InternalAdminAuthentication.setInSecurityContext();
+    try {
+      configurationRepository.deleteConfigurationByKey(DEFAULT_APP);
+      final Configuration c = configurationRepository.findByKey(DEFAULT_APP).orElse(null);
+      assertNull(c);
+    } finally {
+      InternalAdminAuthentication.clearSecurityContextAuthentication();
+    }
   }
 }

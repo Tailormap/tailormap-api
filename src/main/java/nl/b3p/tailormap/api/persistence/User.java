@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
@@ -25,7 +27,9 @@ import org.hibernate.annotations.Type;
 public class User {
   @Id private String username;
 
-  @NotNull private String password;
+  @Version private Long version;
+
+  @NotNull @JsonIgnore private String password;
 
   @Email private String email;
 
@@ -55,6 +59,15 @@ public class User {
 
   public User setUsername(String username) {
     this.username = username;
+    return this;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
+  public User setVersion(Long version) {
+    this.version = version;
     return this;
   }
 

@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
@@ -66,6 +67,8 @@ public class TMFeatureSource {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Version private Long version;
+
   @Column(columnDefinition = "text")
   private String notes;
 
@@ -73,7 +76,7 @@ public class TMFeatureSource {
   @Enumerated(EnumType.STRING)
   private TMFeatureSource.Protocol protocol;
 
-  @Basic @NotNull private String title;
+  @Basic private String title;
 
   @Column(length = 2048)
   private String url;
@@ -109,6 +112,15 @@ public class TMFeatureSource {
 
   public TMFeatureSource setId(Long id) {
     this.id = id;
+    return this;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
+  public TMFeatureSource setVersion(Long version) {
+    this.version = version;
     return this;
   }
 

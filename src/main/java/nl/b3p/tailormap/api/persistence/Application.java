@@ -5,18 +5,20 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.viewer.model.AppResponse;
@@ -36,8 +38,9 @@ public class Application {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Basic(optional = false)
-  private String name;
+  @Version private Long version;
+
+  @NotNull private String name;
 
   private String title;
 
@@ -47,8 +50,7 @@ public class Application {
   @Column(columnDefinition = "text")
   private String previewText;
 
-  @Basic(optional = false)
-  private String crs;
+  @NotNull private String crs;
 
   @Embedded
   @AttributeOverrides({
@@ -94,6 +96,15 @@ public class Application {
 
   public Application setId(Long id) {
     this.id = id;
+    return this;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
+  public Application setVersion(Long version) {
+    this.version = version;
     return this;
   }
 
@@ -217,6 +228,7 @@ public class Application {
    *
    * @return CoordinateReferenceSystem
    */
+  @JsonIgnore
   public org.opengis.referencing.crs.CoordinateReferenceSystem
       getGeoToolsCoordinateReferenceSystem() {
     org.opengis.referencing.crs.CoordinateReferenceSystem gtCrs = null;

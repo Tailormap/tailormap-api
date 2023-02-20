@@ -188,6 +188,10 @@ SPDX-License-Identifier: MIT
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-rest-hal-explorer</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
@@ -1060,6 +1064,7 @@ SPDX-License-Identifier: MIT
                                     <excludes>
                                         <exclude>org.springframework.boot:spring-boot-starter-web</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-data-jpa</exclude>
+                                        <exclude>org.springframework.data:spring-data-rest-hal-explorer</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-actuator</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-test</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-validation</exclude>

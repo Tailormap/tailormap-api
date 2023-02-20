@@ -5,7 +5,20 @@
  */
 package nl.b3p.tailormap.api.repository;
 
+import java.util.Optional;
 import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.security.annotation.PreAuthorizeAdmin;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.security.access.prepost.PreAuthorize;
 
-public interface GeoServiceRepository extends JpaRepository<GeoService, Long> {}
+@PreAuthorizeAdmin
+@RepositoryRestResource(
+    path = "geo-services",
+    collectionResourceRel = "geo-services",
+    itemResourceRel = "geo-service")
+public interface GeoServiceRepository extends JpaRepository<GeoService, Long> {
+  @PreAuthorize("permitAll()")
+  @Override
+  Optional<GeoService> findById(Long aLong);
+}

@@ -10,6 +10,7 @@ import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
 import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiLineString;
 import org.locationtech.jts.geom.MultiPoint;
@@ -69,6 +70,9 @@ public class GeoToolsHelper {
     }
     if (binding.equals(Geometry.class)) {
       return TMAttributeType.GEOMETRY;
+    }
+    if (binding.equals(GeometryCollection.class)) {
+      return TMAttributeType.GEOMETRY_COLLECTION;
     }
     if (binding.equals(Boolean.class)) {
       return TMAttributeType.BOOLEAN;

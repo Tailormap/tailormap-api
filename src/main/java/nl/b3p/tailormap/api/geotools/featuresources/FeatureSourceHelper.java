@@ -12,7 +12,6 @@ import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import nl.b3p.tailormap.api.persistence.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
@@ -25,7 +24,6 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.ResourceInfo;
 import org.geotools.data.simple.SimpleFeatureSource;
-import org.geotools.data.wfs.internal.FeatureTypeInfo;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.AttributeType;
@@ -61,7 +59,7 @@ public abstract class FeatureSourceHelper {
       logParams.put(passwordKey, String.valueOf(new char[passwd.length()]).replace("\0", "*"));
     }
     logger.debug("Opening datastore using parameters: {}", logParams);
-    DataStore ds = null;
+    DataStore ds;
     try {
       ds = DataStoreFinder.getDataStore(params);
     } catch (Exception e) {
@@ -76,7 +74,9 @@ public abstract class FeatureSourceHelper {
   public void loadCapabilities(TMFeatureSource tmfs, Integer timeout) throws IOException {
     DataStore ds = createDataStore(tmfs, timeout);
     try {
-      tmfs.setTitle(ds.getInfo().getTitle());
+      if (ds.getInfo().getTitle() != null) {
+        tmfs.setTitle(ds.getInfo().getTitle());
+      }
 
       org.geotools.data.ServiceInfo si = ds.getInfo();
       tmfs.setServiceCapabilities(
@@ -106,23 +106,7 @@ public abstract class FeatureSourceHelper {
           ResourceInfo info = gtFs.getInfo();
           if (info != null) {
             pft.setTitle(info.getTitle());
-            TMFeatureTypeInfo tmInfo =
-                new TMFeatureTypeInfo()
-                    .keywords(info.getKeywords())
-                    .description(info.getDescription())
-                    .bounds(GeoToolsHelper.fromEnvelope(info.getBounds()))
-                    .crs(crsToString(info.getCRS()));
-            if (info instanceof FeatureTypeInfo) {
-              FeatureTypeInfo ftInfo = (FeatureTypeInfo) info;
-              tmInfo
-                  .schema(info.getSchema()) // null for JDBC
-                  .wgs84BoundingBox(GeoToolsHelper.fromEnvelope(ftInfo.getWGS84BoundingBox()))
-                  .defaultSrs(ftInfo.getDefaultSRS())
-                  .otherSrs(Set.copyOf(ftInfo.getOtherSRS()))
-                  .outputFormats(ftInfo.getOutputFormats())
-                  .abstractText(ftInfo.getAbstract());
-            } // TODO more info for JDBC?
-            pft.setInfo(tmInfo);
+            pft.setInfo(getFeatureTypeInfo(pft, info, gtFs));
 
             SimpleFeatureType gtFt = gtFs.getSchema();
             for (AttributeDescriptor gtAttr : gtFt.getAttributeDescriptors()) {
@@ -134,7 +118,7 @@ public abstract class FeatureSourceHelper {
                       .setDescription(
                           type.getDescription() == null ? null : type.getDescription().toString());
               if (tmAttr.getType() == TMAttributeType.OBJECT) {
-                tmAttr.setUnknownTypeClassName(type.getClass().getName());
+                tmAttr.setUnknownTypeClassName(type.getBinding().getName());
               }
               pft.getAttributes().add(tmAttr);
             }
@@ -146,5 +130,14 @@ public abstract class FeatureSourceHelper {
     } finally {
       ds.dispose();
     }
+  }
+
+  protected TMFeatureTypeInfo getFeatureTypeInfo(
+      TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
+    return new TMFeatureTypeInfo()
+        .keywords(info.getKeywords())
+        .description(info.getDescription())
+        .bounds(GeoToolsHelper.fromEnvelope(info.getBounds()))
+        .crs(crsToString(info.getCRS()));
   }
 }

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Version;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -16,6 +17,8 @@ public class Configuration {
   public static final String DEFAULT_APP = "default-app";
 
   @Id private String key;
+
+  @Version private Long version;
 
   @Column(columnDefinition = "text")
   private String value;
@@ -30,6 +33,15 @@ public class Configuration {
 
   public void setKey(String key) {
     this.key = key;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
+  public Configuration setVersion(Long version) {
+    this.version = version;
+    return this;
   }
 
   public String getValue() {

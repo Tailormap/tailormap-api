@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.persistence.User;
 import nl.b3p.tailormap.api.repository.UserRepository;
@@ -19,14 +18,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ansi.AnsiPropertySource;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySourcesPropertyResolver;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 
 @Configuration
@@ -47,21 +49,27 @@ public class StartupAdminAccountCreator {
     this.userRepository = userRepository;
   }
 
-  @PostConstruct
+  @EventListener(ApplicationReadyEvent.class)
+  @Transactional
   public void postConstruct() throws IOException {
     logger.trace("Checking whether an admin or admin-users account exists...");
 
-    if (!userRepository.existsByGroupsNameIn(Arrays.asList(Group.ADMIN_USERS, Group.ADMIN))) {
-      // Create a new admin-users account with a random generated password
-      String password = UUID.randomUUID().toString();
+    InternalAdminAuthentication.setInSecurityContext();
+    try {
+      if (!userRepository.existsByGroupsNameIn(Arrays.asList(Group.ADMIN_USERS, Group.ADMIN))) {
+        // Create a new admin-users account with a random generated password
+        String password = UUID.randomUUID().toString();
 
-      User u =
-          new User().setUsername(newAdminUsername).setPassword(passwordEncoder.encode(password));
-      u.getGroups().add(new Group().setName(Group.ADMIN_USERS));
-      userRepository.saveAndFlush(u);
+        User u =
+            new User().setUsername(newAdminUsername).setPassword(passwordEncoder.encode(password));
+        u.getGroups().add(new Group().setName(Group.ADMIN_USERS));
+        userRepository.saveAndFlush(u);
 
-      // Log generated password
-      logger.info(getAccountBanner(newAdminUsername, password));
+        // Log generated password
+        logger.info(getAccountBanner(newAdminUsername, password));
+      }
+    } finally {
+      InternalAdminAuthentication.clearSecurityContextAuthentication();
     }
   }
 

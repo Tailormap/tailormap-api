@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.persistence.EntityManager;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
@@ -27,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 class AppControllerIntegrationTest {
   @Autowired private MockMvc mockMvc;
   @Autowired ConfigurationRepository configurationRepository;
+
+  @Autowired EntityManager entityManager;
 
   @Value("${tailormap-api.base-path}")
   private String basePath;
@@ -61,14 +64,14 @@ class AppControllerIntegrationTest {
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void not_found_when_no_default() throws Exception {
     Configuration defaultApp = configurationRepository.findByKey(Configuration.DEFAULT_APP).get();
-    configurationRepository.delete(defaultApp);
+    entityManager.remove(defaultApp);
     mockMvc
         .perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
         .andExpect(jsonPath("$.message").value("No default application configured"));
-    configurationRepository.save(defaultApp);
+    entityManager.persist(defaultApp);
   }
 
   @Test
@@ -78,7 +81,6 @@ class AppControllerIntegrationTest {
   void not_found_when_default_not_exists() throws Exception {
     Configuration defaultApp = configurationRepository.findByKey(Configuration.DEFAULT_APP).get();
     defaultApp.setValue("non existing app!");
-    configurationRepository.save(defaultApp);
     mockMvc
         .perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
@@ -86,7 +88,6 @@ class AppControllerIntegrationTest {
         .andExpect(jsonPath("$.code").value(404))
         .andExpect(jsonPath("$.message").value("Default application not found"));
     defaultApp.setValue("default");
-    configurationRepository.save(defaultApp);
   }
 
   @Test
