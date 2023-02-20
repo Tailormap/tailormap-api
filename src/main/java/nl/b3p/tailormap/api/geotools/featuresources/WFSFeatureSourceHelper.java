@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.helper.GeoToolsHelper;
@@ -53,7 +52,8 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
   }
 
   @Override
-  protected TMFeatureTypeInfo getFeatureTypeInfo(TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
+  protected TMFeatureTypeInfo getFeatureTypeInfo(
+      TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
     TMFeatureTypeInfo tmInfo = super.getFeatureTypeInfo(pft, info, gtFs);
     if (info instanceof FeatureTypeInfo) {
       FeatureTypeInfo ftInfo = (FeatureTypeInfo) info;

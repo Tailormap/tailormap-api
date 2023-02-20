@@ -132,11 +132,12 @@ public abstract class FeatureSourceHelper {
     }
   }
 
-  protected TMFeatureTypeInfo getFeatureTypeInfo(TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
+  protected TMFeatureTypeInfo getFeatureTypeInfo(
+      TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
     return new TMFeatureTypeInfo()
-            .keywords(info.getKeywords())
-            .description(info.getDescription())
-            .bounds(GeoToolsHelper.fromEnvelope(info.getBounds()))
-            .crs(crsToString(info.getCRS()));
+        .keywords(info.getKeywords())
+        .description(info.getDescription())
+        .bounds(GeoToolsHelper.fromEnvelope(info.getBounds()))
+        .crs(crsToString(info.getCRS()));
   }
 }

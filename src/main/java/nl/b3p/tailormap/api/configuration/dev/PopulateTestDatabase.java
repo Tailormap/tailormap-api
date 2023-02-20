@@ -44,12 +44,12 @@ import nl.b3p.tailormap.api.security.InternalAdminAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
+import org.springframework.transaction.annotation.Transactional;
 
 @org.springframework.context.annotation.Configuration
 @Profile("!test")
@@ -132,6 +132,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
     userRepository.save(u);
   }
 
+  @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
   public void createTestConfiguration() throws Exception {
 
     Catalog catalog = catalogRepository.findById(Catalog.MAIN).get();
