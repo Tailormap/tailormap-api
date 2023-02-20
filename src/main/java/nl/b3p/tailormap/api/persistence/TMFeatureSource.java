@@ -76,7 +76,7 @@ public class TMFeatureSource {
   @Enumerated(EnumType.STRING)
   private TMFeatureSource.Protocol protocol;
 
-  @Basic @NotNull private String title;
+  @Basic private String title;
 
   @Column(length = 2048)
   private String url;
