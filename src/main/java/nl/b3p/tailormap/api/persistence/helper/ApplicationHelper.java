@@ -82,7 +82,6 @@ public class ApplicationHelper {
   }
 
   private class MapResponseLayerBuilder {
-    private int layerIdCounter = 0;
     private int levelIdCounter = 0;
 
     private final Application app;
@@ -181,7 +180,7 @@ public class ApplicationHelper {
       mr.addAppLayersItem(
           new AppLayer()
               // XXX id's must be from config, not generated -> use string identifiers instead
-              .id((long) layerIdCounter)
+              .id(layerRef.getId())
               .hasAttributes(false)
               .serviceId(serviceLayerServiceIds.get(serviceLayer))
               .layerName(layerRef.getLayerName())
@@ -200,14 +199,13 @@ public class ApplicationHelper {
 
       LayerTreeNode layerNode =
           new LayerTreeNode()
-              .id("lyr_" + layerIdCounter)
-              .appLayerId(layerIdCounter)
+              .id("lyr_" + layerRef.getId())
+              .appLayerId(layerRef.getId().intValue())
               .description(serviceLayer.getAbstractText())
               .name(title)
               .root(false);
       parent.addChildrenIdsItem(layerNode.getId());
       layerTreeNodeList.add(layerNode);
-      layerIdCounter++;
     }
 
     private Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> findServiceLayer(

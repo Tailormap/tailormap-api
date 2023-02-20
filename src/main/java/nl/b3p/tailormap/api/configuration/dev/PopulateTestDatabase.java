@@ -26,6 +26,7 @@ import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.CatalogNode;
+import nl.b3p.tailormap.api.persistence.json.FeatureTypeRef;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
@@ -294,6 +295,14 @@ public class PopulateTestDatabase implements EnvironmentAware {
                       "Error loading capabilities for feature source {}", fs.getTitle(), e);
                 }
               });
+
+      services
+          .get("0-geoserver")
+          .getSettings()
+          .defaultLayerSettings(
+              new GeoServiceDefaultLayerSettings()
+                  .featureType(
+                      new FeatureTypeRef().featureSourceId(featureSources.get("postgis").getId())));
     }
 
     Long testId = services.get("0-geoserver").getId();
