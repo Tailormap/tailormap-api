@@ -42,9 +42,9 @@ public abstract class FeatureSourceHelper {
       throws IOException;
 
   public SimpleFeatureSource openGeoToolsFeatureSource(
-      TMFeatureSource tmfs, TMFeatureType sft, Integer timeout) throws IOException {
-    DataStore ds = createDataStore(tmfs, timeout);
-    return ds.getFeatureSource(sft.getName());
+      TMFeatureType tmft, Integer timeout) throws IOException {
+    DataStore ds = createDataStore(tmft.getFeatureSource(), timeout);
+    return ds.getFeatureSource(tmft.getName());
   }
 
   public void loadCapabilities(TMFeatureSource tmfs) throws IOException {

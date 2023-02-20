@@ -16,12 +16,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
-import nl.b3p.tailormap.api.model.UniqueValuesResponse;
-import nl.b3p.tailormap.api.repository.LayerRepository;
-import nl.tailormap.viewer.config.app.Application;
-import nl.tailormap.viewer.config.app.ApplicationLayer;
-import nl.tailormap.viewer.config.services.Layer;
-import nl.tailormap.viewer.config.services.SimpleFeatureType;
+import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.viewer.model.UniqueValuesResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -35,7 +31,6 @@ import org.opengis.filter.expression.Function;
 import org.opengis.filter.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -50,28 +45,28 @@ import org.springframework.web.server.ResponseStatusException;
 @AppRestController
 @Validated
 @RequestMapping(
-    path = "/app/{appId}/layer/{appLayerId}/unique/{attributeName}",
+    path = "${tailormap-api.base-path}/app/{appId}/layer/{appLayerId}/unique/{attributeName}",
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class UniqueValuesController {
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
+
   @Value("${tailormap-api.unique.use_geotools_unique_function:true}")
   private boolean useGeotoolsUniqueFunction;
 
   private final FilterFactory2 ff =
       CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
-  private static final Logger logger =
-      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private final LayerRepository layerRepository;
 
-  @Autowired
-  public UniqueValuesController(LayerRepository layerRepository) {
-    this.layerRepository = layerRepository;
+  public UniqueValuesController(FeatureSourceFactoryHelper featureSourceFactoryHelper) {
+    this.featureSourceFactoryHelper = featureSourceFactoryHelper;
   }
 
   /**
    * Get a list of unique attribute values for a given attribute name.
    *
-   * @param application the application
-   * @param applicationLayer the application layer id
+   * @param tmft the feature type provided by the controller advice
    * @param attributeName the attribute name
    * @param filter A filter that was already applied to the layer (on a different attribute or this
    *     attribute)
@@ -82,8 +77,7 @@ public class UniqueValuesController {
       value = "get_unique_attributes",
       description = "time spent to process get unique attributes call")
   public ResponseEntity<Serializable> getUniqueAttributes(
-      @ModelAttribute Application application,
-      @ModelAttribute ApplicationLayer applicationLayer,
+      @ModelAttribute TMFeatureType tmft,
       @PathVariable("attributeName") String attributeName,
       @RequestParam(required = false) String filter) {
     if (StringUtils.isBlank(attributeName)) {
@@ -91,21 +85,15 @@ public class UniqueValuesController {
     }
 
     UniqueValuesResponse uniqueValuesResponse =
-        getUniqueValues(applicationLayer, attributeName, filter);
+        getUniqueValues(tmft, attributeName, filter);
     return ResponseEntity.status(HttpStatus.OK).body(uniqueValuesResponse);
   }
 
   private UniqueValuesResponse getUniqueValues(
-      ApplicationLayer appLayer, String attributeName, String filter) {
+      TMFeatureType tmft, String attributeName, String filter) {
     final UniqueValuesResponse uniqueValuesResponse =
         new UniqueValuesResponse().filterApplied(false);
-    final Layer layer =
-        layerRepository.getByServiceAndName(appLayer.getService(), appLayer.getLayerName());
-    final SimpleFeatureType sft = layer.getFeatureType();
-    if (null == sft) {
-      return uniqueValuesResponse;
-    }
-
+    SimpleFeatureSource fs = null;
     try {
       Filter existingFilter = null;
       if (null != filter) {
@@ -120,12 +108,12 @@ public class UniqueValuesController {
         uniqueValuesResponse.filterApplied(true);
       }
 
-      Query q = new Query(sft.getTypeName(), f);
+      Query q = new Query(tmft.getName(), f);
       q.setPropertyNames(attributeName);
       q.setSortBy(ff.sort(attributeName, SortOrder.ASCENDING));
       logger.trace("Unique values query: {}", q);
 
-      SimpleFeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
+      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
       // and then there are 2 scenarios:
       // there might be a performance benefit for one or the other
       if (!useGeotoolsUniqueFunction) {
@@ -150,14 +138,16 @@ public class UniqueValuesController {
           uniqueValuesResponse.setValues(new TreeSet<>(uniqueValues));
         }
       }
-
-      fs.getDataStore().dispose();
     } catch (CQLException e) {
-      logger.error("Could not parse requested filter.", e);
+      logger.error("Could not parse requested filter", e);
       throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Could not parse requested filter.");
+          HttpStatus.BAD_REQUEST, "Could not parse requested filter");
     } catch (IOException e) {
-      logger.error("Could not retrieve attribute data.", e);
+      logger.error("Could not retrieve attribute data", e);
+    } finally {
+      if (fs != null) {
+        fs.getDataStore().dispose();
+      }
     }
 
     return uniqueValuesResponse;
