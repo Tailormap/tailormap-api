@@ -99,6 +99,7 @@ components:
       type: string
       enum:
         - geometry
+        - geometry_collection
         - multipolygon
         - polygon
         - multilinestring

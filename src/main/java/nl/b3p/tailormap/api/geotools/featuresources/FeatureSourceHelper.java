@@ -118,7 +118,7 @@ public abstract class FeatureSourceHelper {
                       .setDescription(
                           type.getDescription() == null ? null : type.getDescription().toString());
               if (tmAttr.getType() == TMAttributeType.OBJECT) {
-                tmAttr.setUnknownTypeClassName(type.getClass().getName());
+                tmAttr.setUnknownTypeClassName(type.getBinding().getName());
               }
               pft.getAttributes().add(tmAttr);
             }
