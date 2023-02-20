@@ -8,6 +8,7 @@ package nl.b3p.tailormap.api.persistence;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -206,5 +207,14 @@ public class TMFeatureType {
               .map(TMAttributeDescriptor::getName)
               .orElse(null);
     }
+  }
+
+  public Optional<TMAttributeDescriptor> getDefaultGeometryDescriptor() {
+    if (defaultGeometryAttribute == null) {
+      return Optional.empty();
+    }
+    return getAttributes().stream()
+        .filter(a -> defaultGeometryAttribute.equals(a.getName()))
+        .findFirst();
   }
 }

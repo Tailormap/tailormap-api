@@ -9,10 +9,12 @@ import java.io.Serializable;
 import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
+import nl.b3p.tailormap.api.persistence.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
+import nl.b3p.tailormap.api.persistence.json.TMGeometryType;
 import nl.b3p.tailormap.api.viewer.model.Attribute;
 import nl.b3p.tailormap.api.viewer.model.LayerDetails;
 import nl.b3p.tailormap.api.viewer.model.Service;
@@ -53,6 +55,13 @@ public class LayerDescriptionController {
             .serviceId(ref.getServiceId())
             .featureTypeName(featureType.getName())
             .geometryAttribute(featureType.getDefaultGeometryAttribute())
+            .geometryType(
+                featureType
+                    .getDefaultGeometryDescriptor()
+                    .map(TMAttributeDescriptor::getType)
+                    .map(TMAttributeType::getValue)
+                    .map(TMGeometryType::fromValue)
+                    .orElse(null))
             .attributes(
                 featureType.getAttributes().stream()
                     .map(

@@ -171,18 +171,7 @@ components:
           type: integer
           format: int32
         geometryType:
-          description: '(editable) geometry type of this layer.
-        We can have multiple geometry attributes in a layer, but only one is rendered and
-        optionally editable) see also see also: nl.tailormap.api.persistence.TMAttributeDescriptor'
-          type: string
-          enum:
-            - 'linestring'
-            - 'multilinestring'
-            - 'point'
-            - 'multipoint'
-            - 'polygon'
-            - 'multipolygon'
-            - 'geometry'
+          $ref: './common-schemas.yaml#/components/schemas/TMGeometryType'
         editable:
           type: boolean
           default: false

@@ -139,6 +139,9 @@ components:
         abstractText:
           type: string
 
+    TMGeometryType:
+      $ref: './common-schemas.yaml#/components/schemas/TMGeometryType'
+
     TMAttributeType:
       $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
 
