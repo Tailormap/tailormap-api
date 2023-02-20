@@ -91,7 +91,11 @@ public abstract class FeatureSourceHelper {
                       .source(si.getSource())));
 
       String[] typeNames = ds.getTypeNames();
-      logger.info("Type names for JDBC {}: {}", tmfs.getUrl(), Arrays.toString(typeNames));
+      logger.info(
+          "Type names for {} {}: {}",
+          tmfs.getProtocol().getValue(),
+          tmfs.getUrl(),
+          Arrays.toString(typeNames));
 
       for (String typeName : typeNames) {
         TMFeatureType pft =

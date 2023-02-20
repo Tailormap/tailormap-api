@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
+import java.util.Set;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Column;
 import javax.persistence.Converter;
@@ -50,6 +51,7 @@ public class TMAttributeDescriptor {
 
   private String description;
 
+  // <editor-fold desc="getters and setters">
   public Long getId() {
     return id;
   }
@@ -102,5 +104,21 @@ public class TMAttributeDescriptor {
   public TMAttributeDescriptor setDescription(String description) {
     this.description = description;
     return this;
+  }
+  // </editor-fold>
+
+  public static final Set<TMAttributeType> geometryTypes =
+      Set.of(
+          TMAttributeType.GEOMETRY,
+          TMAttributeType.GEOMETRY_COLLECTION,
+          TMAttributeType.POINT,
+          TMAttributeType.MULTIPOINT,
+          TMAttributeType.LINESTRING,
+          TMAttributeType.MULTILINESTRING,
+          TMAttributeType.POLYGON,
+          TMAttributeType.MULTIPOLYGON);
+
+  public boolean isGeometry() {
+    return geometryTypes.contains(getType());
   }
 }

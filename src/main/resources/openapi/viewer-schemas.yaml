@@ -234,12 +234,8 @@ components:
 
     Attribute:
       type: object
-      required: [id, name]
+      required: [name]
       properties:
-        id:
-          type: integer
-          format: int64
-          readOnly: true
         featureType:
           type: integer
           format: int64
@@ -255,23 +251,7 @@ components:
         editAlias:
           type: string
         type:
-          description: 'data type. eg "date" or "string".
-          see also: nl.tailormap.api.persistence.TMAttributeDescriptor'
-          type: string
-          enum:
-            - 'date'
-            - 'timestamp'
-            - 'string'
-            - 'double'
-            - 'integer'
-            - 'boolean'
-            - 'linestring'
-            - 'multilinestring'
-            - 'point'
-            - 'multipoint'
-            - 'polygon'
-            - 'multipolygon'
-            - 'geometry'
+          $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
         visible:
           type: boolean
         selectable:

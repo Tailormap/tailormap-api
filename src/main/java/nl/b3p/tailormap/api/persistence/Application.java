@@ -243,7 +243,7 @@ public class Application {
     getAllAppLayerRefs().filter(ref -> ref.getId() == null).forEach(ref -> ref.id(++highestId[0]));
   }
 
-  private Stream<AppLayerRef> getAllAppLayerRefs() {
+  public Stream<AppLayerRef> getAllAppLayerRefs() {
     if (this.getContentRoot() == null) {
       return Stream.empty();
     }

@@ -28,16 +28,11 @@ public class GeoServiceEventHandler {
   }
 
   @HandleBeforeCreate
-  public void handleBeforeCreate(GeoService geoService) throws Exception {
-    logger.info(
-        "Loading capabilities before creating geo service from URL: \"{}\"", geoService.getUrl());
-    geoServiceHelper.loadServiceCapabilities(geoService);
-  }
-
   @HandleBeforeSave
-  public void handleGeoServiceSave(GeoService geoService) throws Exception {
+  public void handleBeforeCreateOrSave(GeoService geoService) throws Exception {
     logger.info(
-        "Loading capabilities before saving geo service from URL: \"{}\"", geoService.getUrl());
+        "Loading capabilities before creating/saving geo service from URL: \"{}\"",
+        geoService.getUrl());
     geoServiceHelper.loadServiceCapabilities(geoService);
   }
 }

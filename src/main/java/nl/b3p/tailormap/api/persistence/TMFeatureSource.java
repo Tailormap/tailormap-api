@@ -5,6 +5,8 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
@@ -104,6 +106,28 @@ public class TMFeatureSource {
       joinColumns = @JoinColumn(name = "feature_source", referencedColumnName = "id"))
   @OrderColumn(name = "list_index")
   private List<TMFeatureType> featureTypes = new ArrayList<>();
+
+  @Override
+  public String toString() {
+    try {
+      return "TMFeatureSource{"
+          + "id="
+          + id
+          + ", protocol="
+          + protocol
+          + ", title='"
+          + title
+          + '\''
+          + ", url='"
+          + url
+          + '\''
+          + ", jdbcConnection="
+          + new ObjectMapper().writeValueAsString(jdbcConnection)
+          + '}';
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   // <editor-fold desc="getters and setters">
   public Long getId() {
