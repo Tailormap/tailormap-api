@@ -48,8 +48,6 @@ public class TMAttributeDescriptor {
 
   private String unknownTypeClassName;
 
-  private boolean identified;
-
   private String description;
 
   public Long getId() {
@@ -94,15 +92,6 @@ public class TMAttributeDescriptor {
 
   public TMAttributeDescriptor setUnknownTypeClassName(String unknownTypeClassName) {
     this.unknownTypeClassName = unknownTypeClassName;
-    return this;
-  }
-
-  public boolean isIdentified() {
-    return identified;
-  }
-
-  public TMAttributeDescriptor setIdentified(boolean identified) {
-    this.identified = identified;
     return this;
   }
 

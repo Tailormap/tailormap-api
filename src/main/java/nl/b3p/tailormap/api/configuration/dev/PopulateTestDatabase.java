@@ -12,11 +12,13 @@ import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import nl.b3p.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Catalog;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.Group;
+import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.User;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
@@ -27,11 +29,14 @@ import nl.b3p.tailormap.api.persistence.json.CatalogNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
+import nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties;
+import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import nl.b3p.tailormap.api.persistence.json.TailormapObjectRef;
 import nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.CatalogRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
+import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.repository.GroupRepository;
 import nl.b3p.tailormap.api.repository.UserRepository;
@@ -43,11 +48,13 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 
 @org.springframework.context.annotation.Configuration
 @Profile("!test")
 // TODO: Only in recreate-db profile
-public class PopulateTestDatabase {
+public class PopulateTestDatabase implements EnvironmentAware {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -56,8 +63,14 @@ public class PopulateTestDatabase {
   private final CatalogRepository catalogRepository;
   private final GeoServiceRepository geoServiceRepository;
   private final GeoServiceHelper geoServiceHelper;
+
+  private final FeatureSourceRepository featureSourceRepository;
   private final ApplicationRepository applicationRepository;
   private final ConfigurationRepository configurationRepository;
+
+  private boolean spatialDbsLocalhost = true;
+
+  private boolean spatialDbsConnect = false;
 
   public PopulateTestDatabase(
       UserRepository userRepository,
@@ -65,6 +78,7 @@ public class PopulateTestDatabase {
       CatalogRepository catalogRepository,
       GeoServiceRepository geoServiceRepository,
       GeoServiceHelper geoServiceHelper,
+      FeatureSourceRepository featureSourceRepository,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository) {
     this.userRepository = userRepository;
@@ -72,8 +86,15 @@ public class PopulateTestDatabase {
     this.catalogRepository = catalogRepository;
     this.geoServiceRepository = geoServiceRepository;
     this.geoServiceHelper = geoServiceHelper;
+    this.featureSourceRepository = featureSourceRepository;
     this.applicationRepository = applicationRepository;
     this.configurationRepository = configurationRepository;
+  }
+
+  @Override
+  public void setEnvironment(Environment environment) {
+    spatialDbsLocalhost = !"false".equals(environment.getProperty("SPATIAL_DBS_LOCALHOST"));
+    spatialDbsConnect = "true".equals(environment.getProperty("SPATIAL_DBS_CONNECT"));
   }
 
   @EventListener(ApplicationReadyEvent.class)
@@ -191,6 +212,88 @@ public class PopulateTestDatabase {
     services.values().stream()
         .filter(s -> s.getProtocol() == WMS)
         .forEach(geoServiceHelper::findAndSaveRelatedWFS);
+
+    String geodataPassword = "980f1c8A-25933b2";
+
+    Map<String, TMFeatureSource> featureSources =
+        Map.of(
+            "postgis",
+                new TMFeatureSource()
+                    .setProtocol(TMFeatureSource.Protocol.JDBC)
+                    .setTitle("PostGIS")
+                    .setJdbcConnection(
+                        new JDBCConnectionProperties()
+                            .dbtype(JDBCConnectionProperties.DbtypeEnum.POSTGIS)
+                            .host(spatialDbsLocalhost ? "127.0.0.1" : "postgis")
+                            .port(spatialDbsLocalhost ? 54322 : 5432)
+                            .database("geodata")
+                            .schema("public"))
+                    .setAuthentication(
+                        new ServiceAuthentication()
+                            .method(ServiceAuthentication.MethodEnum.PASSWORD)
+                            .username("geodata")
+                            .password(geodataPassword)),
+            "postgis_osm",
+                new TMFeatureSource()
+                    .setProtocol(TMFeatureSource.Protocol.JDBC)
+                    .setTitle("PostGIS OSM")
+                    .setJdbcConnection(
+                        new JDBCConnectionProperties()
+                            .dbtype(JDBCConnectionProperties.DbtypeEnum.POSTGIS)
+                            .host(spatialDbsLocalhost ? "127.0.0.1" : "postgis")
+                            .port(spatialDbsLocalhost ? 54322 : 5432)
+                            .database("geodata")
+                            .schema("osm"))
+                    .setAuthentication(
+                        new ServiceAuthentication()
+                            .method(ServiceAuthentication.MethodEnum.PASSWORD)
+                            .username("geodata")
+                            .password(geodataPassword)),
+            "oracle",
+                new TMFeatureSource()
+                    .setProtocol(TMFeatureSource.Protocol.JDBC)
+                    .setTitle("Oracle")
+                    .setJdbcConnection(
+                        new JDBCConnectionProperties()
+                            .dbtype(JDBCConnectionProperties.DbtypeEnum.ORACLE)
+                            .host(spatialDbsLocalhost ? "127.0.0.1" : "oracle")
+                            .database("/XEPDB1")
+                            .schema("GEODATA"))
+                    .setAuthentication(
+                        new ServiceAuthentication()
+                            .method(ServiceAuthentication.MethodEnum.PASSWORD)
+                            .username("geodata")
+                            .password(geodataPassword)),
+            "mssql",
+                new TMFeatureSource()
+                    .setProtocol(TMFeatureSource.Protocol.JDBC)
+                    .setTitle("MS SQL Server")
+                    .setJdbcConnection(
+                        new JDBCConnectionProperties()
+                            .dbtype(JDBCConnectionProperties.DbtypeEnum.SQLSERVER)
+                            .host(spatialDbsLocalhost ? "127.0.0.1" : "sqlserver")
+                            .database("geodata;encrypt=false")
+                            .schema("dbo"))
+                    .setAuthentication(
+                        new ServiceAuthentication()
+                            .method(ServiceAuthentication.MethodEnum.PASSWORD)
+                            .username("geodata")
+                            .password(geodataPassword)));
+    featureSourceRepository.saveAll(featureSources.values());
+
+    if (spatialDbsConnect) {
+      featureSources
+          .values()
+          .forEach(
+              fs -> {
+                try {
+                  new JDBCFeatureSourceHelper().loadCapabilities(fs);
+                } catch (Exception e) {
+                  logger.error(
+                      "Error loading capabilities for feature source {}", fs.getTitle(), e);
+                }
+              });
+    }
 
     Long testId = services.get("0-geoserver").getId();
     Long obkId = services.get("1-openbasiskaart").getId();
