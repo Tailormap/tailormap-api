@@ -37,7 +37,7 @@ public class ActuatorSecurityConfiguration {
   @Value("${management.endpoints.web.base-path}")
   private String basePath;
 
-  @Value("${spring.boot.admin.client.instance.metadata.user.password}")
+  @Value("${spring.boot.admin.client.instance.metadata.user.password:actuator}")
   private String password;
 
   private final UserRepository userRepository;
