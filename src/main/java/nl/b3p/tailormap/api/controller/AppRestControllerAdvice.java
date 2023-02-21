@@ -8,7 +8,6 @@ package nl.b3p.tailormap.api.controller;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
-import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
@@ -20,7 +19,6 @@ import nl.b3p.tailormap.api.viewer.model.RedirectResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -33,17 +31,14 @@ import org.springframework.web.server.ResponseStatusException;
 public class AppRestControllerAdvice {
   private final ApplicationRepository applicationRepository;
   private final GeoServiceRepository geoServiceRepository;
-  private final FeatureSourceRepository featureSourceRepository;
   private final AuthorizationService authorizationService;
 
   public AppRestControllerAdvice(
       ApplicationRepository applicationRepository,
       GeoServiceRepository geoServiceRepository,
-      FeatureSourceRepository featureSourceRepository,
       AuthorizationService authorizationService) {
     this.applicationRepository = applicationRepository;
     this.geoServiceRepository = geoServiceRepository;
-    this.featureSourceRepository = featureSourceRepository;
     this.authorizationService = authorizationService;
   }
 
@@ -133,18 +128,5 @@ public class AppRestControllerAdvice {
         .filter(l -> appLayerRef.getLayerName().equals(l.getName()))
         .findFirst()
         .orElse(null);
-  }
-
-  @ModelAttribute
-  @Transactional
-  public TMFeatureType populateFeatureType(
-      @ModelAttribute AppLayerRef appLayerRef,
-      @ModelAttribute GeoService service,
-      @ModelAttribute GeoServiceLayer layer) {
-    if (layer == null) {
-      // No binding
-      return null;
-    }
-    return service.findFeatureTypeForLayer(layer, featureSourceRepository);
   }
 }

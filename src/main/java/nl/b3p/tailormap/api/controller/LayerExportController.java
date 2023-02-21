@@ -27,12 +27,14 @@ import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
+import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.viewer.model.LayerExportCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,16 +50,21 @@ public class LayerExportController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  private final FeatureSourceRepository featureSourceRepository;
+
+  public LayerExportController(FeatureSourceRepository featureSourceRepository) {
+    this.featureSourceRepository = featureSourceRepository;
+  }
+
+  @Transactional
   @GetMapping(path = "capabilities")
   @Timed("export_get_capabilities")
   public ResponseEntity<Serializable> capabilities(
-      @ModelAttribute GeoService service,
-      @ModelAttribute GeoServiceLayer layer,
-      @ModelAttribute TMFeatureType tmft)
-      throws Exception {
+      @ModelAttribute GeoService service, @ModelAttribute GeoServiceLayer layer) throws Exception {
 
     final LayerExportCapabilities capabilities = new LayerExportCapabilities();
 
+    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
     WFSSearchResult wfsSearchResult = findWFSFeatureType(service, layer, tmft);
 
     if (!wfsSearchResult.found()) {
@@ -88,13 +95,13 @@ public class LayerExportController {
     return ResponseEntity.status(HttpStatus.OK).body(capabilities);
   }
 
+  @Transactional
   @RequestMapping(
       path = "download",
       method = {RequestMethod.GET, RequestMethod.POST})
   public ResponseEntity<?> download(
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,
-      @ModelAttribute TMFeatureType tmft,
       @RequestParam String outputFormat,
       @RequestParam(required = false) List<String> attributes,
       @RequestParam(required = false) String filter,
@@ -104,6 +111,7 @@ public class LayerExportController {
       HttpServletRequest request)
       throws Exception {
 
+    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
     WFSSearchResult wfsSearchResult = findWFSFeatureType(service, layer, tmft);
 
     if (!wfsSearchResult.found()) {

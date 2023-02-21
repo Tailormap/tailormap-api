@@ -20,11 +20,13 @@ import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
+import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
+import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.util.Constants;
 import nl.b3p.tailormap.api.viewer.model.ColumnMetadata;
 import nl.b3p.tailormap.api.viewer.model.Feature;
@@ -57,6 +59,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,6 +77,8 @@ public class FeaturesController implements Constants {
 
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
 
+  private final FeatureSourceRepository featureSourceRepository;
+
   @Value("${tailormap-api.pageSize:100}")
   private int pageSize;
 
@@ -86,16 +91,20 @@ public class FeaturesController implements Constants {
   private final FilterFactory2 ff =
       CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
-  public FeaturesController(FeatureSourceFactoryHelper featureSourceFactoryHelper) {
+  public FeaturesController(
+      FeatureSourceFactoryHelper featureSourceFactoryHelper,
+      FeatureSourceRepository featureSourceRepository) {
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
+    this.featureSourceRepository = featureSourceRepository;
   }
 
+  @Transactional
   @RequestMapping(method = {GET, POST})
   @Timed(value = "get_features", description = "time spent to process get features call")
   public ResponseEntity<Serializable> getFeatures(
       @ModelAttribute AppLayerRef ref,
+      @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,
-      @ModelAttribute TMFeatureType tmft,
       @RequestParam(required = false) Double x,
       @RequestParam(required = false) Double y,
       @RequestParam(required = false) String crs,
@@ -112,6 +121,7 @@ public class FeaturesController implements Constants {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find app layer ref " + ref);
     }
 
+    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
     if (tmft == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Layer does not have feature type");
     }
