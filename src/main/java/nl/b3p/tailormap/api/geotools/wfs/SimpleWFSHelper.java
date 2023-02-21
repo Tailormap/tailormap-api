@@ -200,7 +200,12 @@ public class SimpleWFSHelper {
     return new WebMapServer(new URL(url), client);
   }
 
-  public static Map<String, SimpleWFSLayerDescription> describeWMSLayer(
+  public static SimpleWFSLayerDescription describeWMSLayer(
+      String url, String username, String password, String layerName) {
+    return describeWMSLayers(url, username, password, List.of(layerName)).get(layerName);
+  }
+
+  public static Map<String, SimpleWFSLayerDescription> describeWMSLayers(
       String url, String username, String password, List<String> layers) {
     try {
       WebMapServer wms = getWebMapServer(url, username, password);

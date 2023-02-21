@@ -30,6 +30,7 @@ import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
+import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.viewer.model.Service;
@@ -68,7 +69,7 @@ public class GeoService {
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private JsonNode authentication;
+  private ServiceAuthentication authentication;
 
   /**
    * Original capabilities as received from the service. This can be used for capability information
@@ -175,11 +176,11 @@ public class GeoService {
     return this;
   }
 
-  public JsonNode getAuthentication() {
+  public ServiceAuthentication getAuthentication() {
     return authentication;
   }
 
-  public GeoService setAuthentication(JsonNode authentication) {
+  public GeoService setAuthentication(ServiceAuthentication authentication) {
     this.authentication = authentication;
     return this;
   }
