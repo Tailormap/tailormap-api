@@ -47,11 +47,6 @@ import org.springframework.web.server.ResponseStatusException;
 public class LayerExportController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  //  private final MeterRegistry meterRegistry;
-  //
-  //  public LayerExportController(MeterRegistry meterRegistry) {
-  //    this.meterRegistry = meterRegistry;
-  //  }
 
   @GetMapping(path = "capabilities")
   @Timed("export_get_capabilities")
@@ -70,12 +65,6 @@ public class LayerExportController {
     } else {
       try {
         List<String> outputFormats =
-            //            meterRegistry
-            //                .timer(
-            //                    "export_get_capabilities_get_wfs_capabilities",
-            // params.getMicrometerTags())
-            //                .recordCallable(
-            //                    () ->
             SimpleWFSHelper.getOutputFormats(
                 wfsSearchResult.getWfsUrl(),
                 wfsSearchResult.getTypeName(),
@@ -136,8 +125,6 @@ public class LayerExportController {
       String crs,
       HttpServletRequest request) {
 
-    //    Tags tags = params.getMicrometerTags().and(Tag.of("format", outputFormat));
-
     MultiValueMap<String, String> getFeatureParameters = new LinkedMultiValueMap<>();
     // A layer could have more than one featureType as source, currently we assume it's just one
     getFeatureParameters.add("typeNames", wfsSearchResult.getTypeName());
@@ -178,18 +165,8 @@ public class LayerExportController {
       // TODO: close JPA connection before proxying
 
       HttpResponse<InputStream> response =
-          //          meterRegistry
-          //              .timer("export_download_first_response", tags)
-          //              .recordCallable(
-          //                  () ->
           WFSProxy.proxyWfsRequest(
               wfsGetFeature, wfsSearchResult.getUsername(), wfsSearchResult.getPassword(), request);
-
-      //      meterRegistry
-      //          .counter(
-      //              "export_download_response", tags.and("response_status", response.statusCode()
-      // + ""))
-      //          .increment();
 
       logger.info(
           "Layer download response code: {}, content type: {}, disposition: {}",
@@ -207,7 +184,7 @@ public class LayerExportController {
           passthroughResponseHeaders(
               response.headers(), Set.of("Content-Type", "Content-Disposition"));
 
-      // TODO: micrometer record response size and time
+      // TODO: record response size and time with micrometer
       return ResponseEntity.status(response.statusCode()).headers(headers).body(body);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Bad Gateway");
@@ -220,21 +197,18 @@ public class LayerExportController {
     private final String geometryAttribute;
     private final String username;
     private final String password;
-    //    private final Tags micrometerTags;
 
     public WFSSearchResult(
         String wfsUrl,
         String typeName,
         String geometryAttribute,
         String username,
-        String password /*,
-        Tags micrometerTags*/) {
+        String password) {
       this.wfsUrl = wfsUrl;
       this.typeName = typeName;
       this.geometryAttribute = geometryAttribute;
       this.username = username;
       this.password = password;
-      //      this.micrometerTags = micrometerTags;
     }
 
     // <editor-fold desc="getters">
@@ -258,10 +232,6 @@ public class LayerExportController {
       return password;
     }
 
-    //    public Tags getMicrometerTags() {
-    //      return micrometerTags;
-    //    }
-
     public boolean found() {
       return wfsUrl != null && typeName != null;
     }
@@ -270,10 +240,6 @@ public class LayerExportController {
 
   private WFSSearchResult findWFSFeatureType(
       GeoService service, GeoServiceLayer layer, TMFeatureType tmft) throws Exception {
-
-    //    Tags tags =
-    //        MicrometerHelper.getTags(application, applicationLayer, service, serviceLayer,
-    // featureType);
 
     String wfsUrl = null;
     String typeName = null;
@@ -300,19 +266,12 @@ public class LayerExportController {
       SimpleWFSLayerDescription wfsLayerDescription =
           getWFSLayerDescriptionForWMS(service, layer.getName() /*, tags*/);
       if (wfsLayerDescription != null) {
-        //        tags =
-        //            tags.and("featureSourceUrl", wfsLayerDescription.getWfsUrl())
-        //                .and("featureTypeName", wfsLayerDescription.getFirstTypeName());
-
         wfsUrl = wfsLayerDescription.getWfsUrl();
         typeName = wfsLayerDescription.getFirstTypeName();
         auth = service.getAuthentication();
       }
     }
 
-    //    if (wfsUrl != null && typeName != null) {
-    //      tags = tags.and("featureSourceUrl", wfsUrl).and("featureTypeName", typeName);
-    //    }
     if (auth != null && auth.getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
       username = auth.getUsername();
       password = auth.getPassword();
@@ -331,10 +290,6 @@ public class LayerExportController {
       password = wmsService.getAuthentication().getPassword();
     }
     SimpleWFSLayerDescription wfsLayerDescription =
-        //        meterRegistry
-        //            .timer("export_get_capabilities_wms_describelayer", tags)
-        //            .recordCallable(
-        //                () ->
         SimpleWFSHelper.describeWMSLayer(wmsService.getUrl(), username, password, layerName);
     if (wfsLayerDescription != null && wfsLayerDescription.getTypeNames().length > 0) {
       logger.info(
