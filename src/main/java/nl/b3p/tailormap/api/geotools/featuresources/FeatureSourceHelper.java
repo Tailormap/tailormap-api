@@ -41,8 +41,8 @@ public abstract class FeatureSourceHelper {
   public abstract DataStore createDataStore(TMFeatureSource tmfs, Integer timeout)
       throws IOException;
 
-  public SimpleFeatureSource openGeoToolsFeatureSource(
-      TMFeatureType tmft, Integer timeout) throws IOException {
+  public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType tmft, Integer timeout)
+      throws IOException {
     DataStore ds = createDataStore(tmft.getFeatureSource(), timeout);
     return ds.getFeatureSource(tmft.getName());
   }

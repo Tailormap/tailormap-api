@@ -84,8 +84,7 @@ public class UniqueValuesController {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attribute name is required");
     }
 
-    UniqueValuesResponse uniqueValuesResponse =
-        getUniqueValues(tmft, attributeName, filter);
+    UniqueValuesResponse uniqueValuesResponse = getUniqueValues(tmft, attributeName, filter);
     return ResponseEntity.status(HttpStatus.OK).body(uniqueValuesResponse);
   }
 
@@ -140,8 +139,7 @@ public class UniqueValuesController {
       }
     } catch (CQLException e) {
       logger.error("Could not parse requested filter", e);
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Could not parse requested filter");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not parse requested filter");
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data", e);
     } finally {
