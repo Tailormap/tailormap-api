@@ -36,13 +36,13 @@ public class LayerDescriptionController {
   public ResponseEntity<Serializable> getAppLayerDescription(
       @ModelAttribute AppLayerRef ref,
       @ModelAttribute GeoServiceLayer layer,
-      @ModelAttribute TMFeatureType featureType) {
+      @ModelAttribute TMFeatureType tmft) {
 
     if (layer == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find app layer ref " + ref);
     }
 
-    if (featureType == null) {
+    if (tmft == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Layer does not have feature type");
     }
 
@@ -50,17 +50,17 @@ public class LayerDescriptionController {
         new LayerDetails()
             .id(ref.getId())
             .serviceId(ref.getServiceId())
-            .featureTypeName(featureType.getName())
-            .geometryAttribute(featureType.getDefaultGeometryAttribute())
+            .featureTypeName(tmft.getName())
+            .geometryAttribute(tmft.getDefaultGeometryAttribute())
             .geometryType(
-                featureType
+                tmft
                     .getDefaultGeometryDescriptor()
                     .map(TMAttributeDescriptor::getType)
                     .map(TMAttributeType::getValue)
                     .map(TMGeometryType::fromValue)
                     .orElse(null))
             .attributes(
-                featureType.getAttributes().stream()
+                tmft.getAttributes().stream()
                     .map(
                         a ->
                             new Attribute()
