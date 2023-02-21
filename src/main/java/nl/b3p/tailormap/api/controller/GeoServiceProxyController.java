@@ -23,15 +23,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import nl.b3p.tailormap.api.annotation.AppRestController;
-import nl.tailormap.viewer.config.app.Application;
-import nl.tailormap.viewer.config.app.ApplicationLayer;
-import nl.tailormap.viewer.config.services.GeoService;
-import nl.tailormap.viewer.config.services.TileService;
-import nl.tailormap.viewer.config.services.WMSService;
+import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,6 +39,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 
@@ -59,41 +57,29 @@ import org.springframework.web.util.UriUtils;
  */
 @AppRestController
 @Validated
-@RequestMapping(path = "/app/{appId}/layer/{appLayerId}/proxy/{protocol}")
+// Can't use ${tailormap-api.base-path} because linkTo() won't work
+@RequestMapping(path = "/api/app/{appId}/layer/{appLayerId}/proxy/{protocol}")
 public class GeoServiceProxyController {
 
   @RequestMapping(method = {GET, POST})
   public ResponseEntity<?> proxy(
-      @ModelAttribute Application application,
-      @ModelAttribute ApplicationLayer applicationLayer,
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
       @PathVariable("protocol") String protocol,
       HttpServletRequest request) {
 
-    Predicate<GeoService> serviceValidator;
-    if ("wmts".equals(protocol)) {
-      serviceValidator =
-          (GeoService gs) ->
-              TileService.PROTOCOL.equals(gs.getProtocol())
-                  && TileService.TILING_PROTOCOL_WMTS.equals(
-                      ((TileService) gs).getTilingProtocol());
-    } else if ("wms".equals(protocol)) {
-      serviceValidator = (GeoService gs) -> WMSService.PROTOCOL.equals(gs.getProtocol());
-    } else {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND)
-          .body("Unknown proxy protocol: " + protocol);
+    if (service == null || layer == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    final GeoService service = applicationLayer.getService();
-
-    if (!serviceValidator.test(service)) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-          .body("Invalid proxy protocol for service");
+    if (!service.getProtocol().getValue().equals(protocol)) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Invalid proxy protocol: " + protocol);
     }
 
-    if (!Boolean.parseBoolean(
-        String.valueOf(service.getDetails().get(GeoService.DETAIL_USE_PROXY)))) {
-      return ResponseEntity.status(HttpStatus.FORBIDDEN)
-          .body("Proxy not enabled for requested service");
+    if (!service.getSettings().getUseProxy()) {
+      throw new ResponseStatusException(
+          HttpStatus.FORBIDDEN, "Proxy not enabled for requested service");
     }
 
     final UriComponentsBuilder originalServiceUrl =
@@ -161,7 +147,13 @@ public class GeoServiceProxyController {
             "Referer",
             "User-Agent"));
 
-    setHttpBasicAuthenticationHeader(requestBuilder, service.getUsername(), service.getPassword());
+    if (service.getAuthentication() != null
+        && service.getAuthentication().getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
+      setHttpBasicAuthenticationHeader(
+          requestBuilder,
+          service.getAuthentication().getUsername(),
+          service.getAuthentication().getPassword());
+    }
 
     try {
       // TODO: close JPA connection before proxying

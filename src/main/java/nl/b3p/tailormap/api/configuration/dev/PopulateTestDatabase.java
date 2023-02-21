@@ -150,6 +150,12 @@ public class PopulateTestDatabase implements EnvironmentAware {
                     .setProtocol(WMS)
                     .setTitle("Test GeoServer")
                     .setUrl("https://snapshot.tailormap.nl/geoserver/wms"),
+                "0p-geoserver",
+                new GeoService()
+                    .setProtocol(WMS)
+                    .setTitle("Test GeoServer (proxied)")
+                    .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
+                    .setSettings(new GeoServiceSettings().useProxy(true)),
                 "1-openbasiskaart",
                 new GeoService()
                     .setProtocol(WMTS)
@@ -157,6 +163,21 @@ public class PopulateTestDatabase implements EnvironmentAware {
                     .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
                     .setSettings(
                         new GeoServiceSettings()
+                            .layerSettings(
+                                Map.of(
+                                    "osm",
+                                    new GeoServiceLayerSettings()
+                                        .hiDpiMode(
+                                            TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
+                                        .hiDpiSubstituteLayer("osm-hq")))),
+                "1p-openbasiskaart",
+                new GeoService()
+                    .setProtocol(WMTS)
+                    .setTitle("Openbasiskaart (proxied)")
+                    .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
+                    .setSettings(
+                        new GeoServiceSettings()
+                            .useProxy(true)
                             .layerSettings(
                                 Map.of(
                                     "osm",
@@ -319,7 +340,9 @@ public class PopulateTestDatabase implements EnvironmentAware {
     }
 
     Long testId = services.get("0-geoserver").getId();
+    Long testpId = services.get("0p-geoserver").getId();
     Long obkId = services.get("1-openbasiskaart").getId();
+    Long obkpId = services.get("1p-openbasiskaart").getId();
     Long lufoId = services.get("2-pdok luchtfoto").getId();
 
     Application app =
@@ -341,10 +364,24 @@ public class PopulateTestDatabase implements EnvironmentAware {
                                     .serviceId(lufoId)
                                     .layerName("Actueel_orthoHR")
                                     .visible(false)))
+                    .addBaseLayersItem(
+                        new BaseLayerInner()
+                            .title("Openbasiskaart (proxied)")
+                            .addLayersItem(
+                                new AppLayerRef()
+                                    .serviceId(obkpId)
+                                    .layerName("osm")
+                                    .visible(false)))
                     .addLayersItem(
                         new AppLayerRef()
                             .serviceId(testId)
                             .layerName("postgis:begroeidterreindeel"))
+                    .addLayersItem(
+                        new AppLayerRef()
+                            .serviceId(testpId)
+                            .title("begroeidterreindeel (proxied)")
+                            .layerName("postgis:begroeidterreindeel")
+                            .visible(false))
                     .addLayersItem(
                         new AppLayerRef().serviceId(testId).layerName("sqlserver:wegdeel"))
                     .addLayersItem(

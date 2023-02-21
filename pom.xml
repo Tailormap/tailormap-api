@@ -731,9 +731,6 @@ SPDX-License-Identifier: MIT
                             <version>${errorProne.version}</version>
                         </path>
                     </annotationProcessorPaths>
-                    <excludes>
-                        <exclude>**/GeoServiceProxyController*.java</exclude>
-                    </excludes>
                     <testExcludes>
                         <exclude>**/FeaturesController*.java</exclude>
                         <exclude>**/GeoServiceProxyController*.java</exclude>

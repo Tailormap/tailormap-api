@@ -11,7 +11,6 @@ import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.viewer.model.ErrorResponse;

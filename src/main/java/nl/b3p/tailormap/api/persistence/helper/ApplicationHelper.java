@@ -5,12 +5,15 @@
  */
 package nl.b3p.tailormap.api.persistence.helper;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import nl.b3p.tailormap.api.controller.GeoServiceProxyController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
@@ -185,12 +188,15 @@ public class ApplicationHelper {
 
       TMFeatureType tmft = service.findFeatureTypeForLayer(serviceLayer, featureSourceRepository);
 
+      boolean proxied = service.getSettings().getUseProxy();
+
       mr.addAppLayersItem(
           new AppLayer()
               // XXX id's must be from config, not generated -> use string identifiers instead
               .id(layerRef.getId())
               .hasAttributes(tmft != null)
               .serviceId(serviceLayerServiceIds.get(serviceLayer))
+              .url(proxied ? getProxyUrl(service, app, layerRef) : null)
               .layerName(layerRef.getLayerName())
               // Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools
               // gt-wms Layer class?
@@ -250,5 +256,16 @@ public class ApplicationHelper {
       GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());
       return Triple.of(service, serviceLayer, layerSettings);
     }
+  }
+
+  private String getProxyUrl(
+      GeoService geoService, Application application, AppLayerRef appLayerRef) {
+    return linkTo(
+            GeoServiceProxyController.class,
+            Map.of(
+                "appId", application.getId(),
+                "appLayerId", appLayerRef.getId(),
+                "protocol", geoService.getProtocol().getValue()))
+        .toString();
   }
 }
