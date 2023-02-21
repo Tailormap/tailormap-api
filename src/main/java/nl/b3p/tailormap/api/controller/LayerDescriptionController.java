@@ -69,7 +69,8 @@ public class LayerDescriptionController {
                             new Attribute()
                                 .name(a.getName())
                                 // Only return generic 'geometry' type for now, frontend doesn't
-                                // handle different geometry types yet
+                                // handle different geometry types. For the default geometry
+                                // attribute there is a specific geometry type set
                                 .type(a.isGeometry() ? TMAttributeType.GEOMETRY : a.getType()))
                     .collect(Collectors.toList()));
     return ResponseEntity.ok(r);
