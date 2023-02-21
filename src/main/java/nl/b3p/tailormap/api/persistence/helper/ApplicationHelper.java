@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
@@ -20,6 +21,7 @@ import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode;
+import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.viewer.model.AppLayer;
 import nl.b3p.tailormap.api.viewer.model.LayerTreeNode;
@@ -41,11 +43,15 @@ public class ApplicationHelper {
 
   private final GeoServiceHelper geoServiceHelper;
   private final GeoServiceRepository geoServiceRepository;
+  private final FeatureSourceRepository featureSourceRepository;
 
   public ApplicationHelper(
-      GeoServiceHelper geoServiceHelper, GeoServiceRepository geoServiceRepository) {
+      GeoServiceHelper geoServiceHelper,
+      GeoServiceRepository geoServiceRepository,
+      FeatureSourceRepository featureSourceRepository) {
     this.geoServiceHelper = geoServiceHelper;
     this.geoServiceRepository = geoServiceRepository;
+    this.featureSourceRepository = featureSourceRepository;
   }
 
   public MapResponse toMapResponse(Application app) {
@@ -177,11 +183,13 @@ public class ApplicationHelper {
       String hiDpiSubstituteLayer =
           serviceLayerSettings.map(GeoServiceLayerSettings::getHiDpiSubstituteLayer).orElse(null);
 
+      TMFeatureType tmft = service.findFeatureTypeForLayer(serviceLayer, featureSourceRepository);
+
       mr.addAppLayersItem(
           new AppLayer()
               // XXX id's must be from config, not generated -> use string identifiers instead
               .id(layerRef.getId())
-              .hasAttributes(false)
+              .hasAttributes(tmft != null)
               .serviceId(serviceLayerServiceIds.get(serviceLayer))
               .layerName(layerRef.getLayerName())
               // Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools

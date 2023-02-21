@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import nl.b3p.tailormap.api.StaticTestData;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
+import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
 import nl.b3p.tailormap.api.viewer.model.TMCoordinateReferenceSystem;
@@ -24,6 +25,7 @@ class ApplicationHelperTest {
 
   @MockBean GeoServiceRepository geoServiceRepository;
   @MockBean GeoServiceHelper geoServiceHelper;
+  @MockBean FeatureSourceRepository featureSourceRepository;
   @Autowired ApplicationHelper applicationHelper;
 
   @Test

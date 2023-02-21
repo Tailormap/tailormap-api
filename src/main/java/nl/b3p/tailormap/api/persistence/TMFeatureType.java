@@ -210,11 +210,13 @@ public class TMFeatureType {
   }
 
   public Optional<TMAttributeDescriptor> getDefaultGeometryDescriptor() {
-    if (defaultGeometryAttribute == null) {
+    return getAttributeByName(defaultGeometryAttribute);
+  }
+
+  public Optional<TMAttributeDescriptor> getAttributeByName(String name) {
+    if (name == null) {
       return Optional.empty();
     }
-    return getAttributes().stream()
-        .filter(a -> defaultGeometryAttribute.equals(a.getName()))
-        .findFirst();
+    return getAttributes().stream().filter(a -> name.equals(a.getName())).findFirst();
   }
 }

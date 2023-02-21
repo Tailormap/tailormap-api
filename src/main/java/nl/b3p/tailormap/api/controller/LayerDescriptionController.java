@@ -53,8 +53,7 @@ public class LayerDescriptionController {
             .featureTypeName(tmft.getName())
             .geometryAttribute(tmft.getDefaultGeometryAttribute())
             .geometryType(
-                tmft
-                    .getDefaultGeometryDescriptor()
+                tmft.getDefaultGeometryDescriptor()
                     .map(TMAttributeDescriptor::getType)
                     .map(TMAttributeType::getValue)
                     .map(TMGeometryType::fromValue)
