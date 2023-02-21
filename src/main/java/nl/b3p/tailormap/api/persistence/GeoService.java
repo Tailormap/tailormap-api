@@ -6,7 +6,6 @@
 package nl.b3p.tailormap.api.persistence;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -115,20 +114,6 @@ public class GeoService {
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
   private GeoServiceSettings settings = new GeoServiceSettings();
-
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
-  @Column(columnDefinition = "jsonb")
-  private JsonNode tileServiceInfo;
-
-  /**
-   * Roles authorized to read information from this service. May be reduced on a per-layer basis in
-   * the "layerSettings" property. TODO: replace 'readers' with 'authorizations' for more types of
-   * authorizations
-   */
-  //    @ElementCollection
-  //    @CollectionTable(joinColumns = @JoinColumn(name = "geo_service"))
-  //    @Column(name = "role_name")
-  //    private Set<String> readers = new HashSet<>();
 
   // <editor-fold desc="getters and setters">
   public Long getId() {
@@ -256,15 +241,6 @@ public class GeoService {
     this.settings = settings;
     return this;
   }
-
-  public JsonNode getTileServiceInfo() {
-    return tileServiceInfo;
-  }
-
-  public GeoService setTileServiceInfo(JsonNode tileServiceInfo) {
-    this.tileServiceInfo = tileServiceInfo;
-    return this;
-  }
   // </editor-fold>
 
   public Service toJsonPojo(GeoServiceHelper geoServiceHelper) {
@@ -285,6 +261,7 @@ public class GeoService {
 
     if (this.protocol == GeoServiceProtocol.WMTS) {
       // Frontend requires WMTS capabilities to parse TilingMatrix, but WMS capabilities aren't used
+      // XXX UTF-8 only, maybe use base64
       s.capabilities(new String(getCapabilities(), StandardCharsets.UTF_8));
     }
 
