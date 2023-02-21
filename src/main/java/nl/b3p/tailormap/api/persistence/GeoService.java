@@ -325,14 +325,17 @@ public class GeoService {
 
   public TMFeatureType findFeatureTypeForLayer(
       GeoServiceLayer layer, FeatureSourceRepository featureSourceRepository) {
-    String featureTypeName;
-    Long featureSourceId = null;
 
     GeoServiceDefaultLayerSettings defaultLayerSettings = getSettings().getDefaultLayerSettings();
     GeoServiceLayerSettings layerSettings = getLayerSettings(layer.getName());
 
+    Long featureSourceId = null;
+    String featureTypeName;
+
     if (layerSettings != null && layerSettings.getFeatureType() != null) {
-      featureTypeName = layerSettings.getFeatureType().getFeatureTypeName();
+      featureTypeName =
+          Optional.ofNullable(layerSettings.getFeatureType().getFeatureTypeName())
+              .orElse(layer.getName());
       featureSourceId = layerSettings.getFeatureType().getFeatureSourceId();
     } else {
       featureTypeName = layer.getName();
