@@ -87,6 +87,9 @@ public class UniqueValuesController {
     }
 
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
+    if (tmft == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Layer does not have feature type");
+    }
     UniqueValuesResponse uniqueValuesResponse = getUniqueValues(tmft, attributeName, filter);
     return ResponseEntity.status(HttpStatus.OK).body(uniqueValuesResponse);
   }
