@@ -171,18 +171,7 @@ components:
           type: integer
           format: int32
         geometryType:
-          description: '(editable) geometry type of this layer.
-        We can have multiple geometry attributes in a layer, but only one is rendered and
-        optionally editable) see also see also: nl.tailormap.api.persistence.TMAttributeDescriptor'
-          type: string
-          enum:
-            - 'linestring'
-            - 'multilinestring'
-            - 'point'
-            - 'multipoint'
-            - 'polygon'
-            - 'multipolygon'
-            - 'geometry'
+          $ref: './common-schemas.yaml#/components/schemas/TMGeometryType'
         editable:
           type: boolean
           default: false
@@ -234,12 +223,8 @@ components:
 
     Attribute:
       type: object
-      required: [id, name]
+      required: [name]
       properties:
-        id:
-          type: integer
-          format: int64
-          readOnly: true
         featureType:
           type: integer
           format: int64
@@ -255,23 +240,7 @@ components:
         editAlias:
           type: string
         type:
-          description: 'data type. eg "date" or "string".
-          see also: nl.tailormap.api.persistence.TMAttributeDescriptor'
-          type: string
-          enum:
-            - 'date'
-            - 'timestamp'
-            - 'string'
-            - 'double'
-            - 'integer'
-            - 'boolean'
-            - 'linestring'
-            - 'multilinestring'
-            - 'point'
-            - 'multipoint'
-            - 'polygon'
-            - 'multipolygon'
-            - 'geometry'
+          $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
         visible:
           type: boolean
         selectable:

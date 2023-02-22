@@ -26,6 +26,7 @@ import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.CatalogNode;
+import nl.b3p.tailormap.api.persistence.json.FeatureTypeRef;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
@@ -265,7 +266,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
                             .method(ServiceAuthentication.MethodEnum.PASSWORD)
                             .username("geodata")
                             .password(geodataPassword)),
-            "mssql",
+            "sqlserver",
                 new TMFeatureSource()
                     .setProtocol(TMFeatureSource.Protocol.JDBC)
                     .setTitle("MS SQL Server")
@@ -294,6 +295,27 @@ public class PopulateTestDatabase implements EnvironmentAware {
                       "Error loading capabilities for feature source {}", fs.getTitle(), e);
                 }
               });
+
+      services
+          .get("0-geoserver")
+          .getSettings()
+          .layerSettings(
+              Map.of(
+                  "postgis:begroeidterreindeel",
+                      new GeoServiceLayerSettings()
+                          .featureType(
+                              new FeatureTypeRef()
+                                  .featureSourceId(featureSources.get("postgis").getId())),
+                  "sqlserver:wegdeel",
+                      new GeoServiceLayerSettings()
+                          .featureType(
+                              new FeatureTypeRef()
+                                  .featureSourceId(featureSources.get("sqlserver").getId())),
+                  "oracle:WATERDEEL",
+                      new GeoServiceLayerSettings()
+                          .featureType(
+                              new FeatureTypeRef()
+                                  .featureSourceId(featureSources.get("oracle").getId()))));
     }
 
     Long testId = services.get("0-geoserver").getId();
@@ -325,7 +347,10 @@ public class PopulateTestDatabase implements EnvironmentAware {
                             .layerName("postgis:begroeidterreindeel"))
                     .addLayersItem(
                         new AppLayerRef().serviceId(testId).layerName("sqlserver:wegdeel"))
-                    .addLayersItem(new AppLayerRef().serviceId(testId).layerName("BGT")));
+                    .addLayersItem(
+                        new AppLayerRef().serviceId(testId).layerName("oracle:WATERDEEL"))
+                    .addLayersItem(
+                        new AppLayerRef().serviceId(testId).layerName("BGT").visible(false)));
     app.setInitialExtent(new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));
     app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));
     applicationRepository.save(app);

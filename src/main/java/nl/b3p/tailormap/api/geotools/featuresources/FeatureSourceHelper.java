@@ -41,10 +41,10 @@ public abstract class FeatureSourceHelper {
   public abstract DataStore createDataStore(TMFeatureSource tmfs, Integer timeout)
       throws IOException;
 
-  public SimpleFeatureSource openGeoToolsFeatureSource(
-      TMFeatureSource tmfs, TMFeatureType sft, Integer timeout) throws IOException {
-    DataStore ds = createDataStore(tmfs, timeout);
-    return ds.getFeatureSource(sft.getName());
+  public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType tmft, Integer timeout)
+      throws IOException {
+    DataStore ds = createDataStore(tmft.getFeatureSource(), timeout);
+    return ds.getFeatureSource(tmft.getName());
   }
 
   public void loadCapabilities(TMFeatureSource tmfs) throws IOException {
@@ -91,7 +91,11 @@ public abstract class FeatureSourceHelper {
                       .source(si.getSource())));
 
       String[] typeNames = ds.getTypeNames();
-      logger.info("Type names for JDBC {}: {}", tmfs.getUrl(), Arrays.toString(typeNames));
+      logger.info(
+          "Type names for {} {}: {}",
+          tmfs.getProtocol().getValue(),
+          tmfs.getUrl(),
+          Arrays.toString(typeNames));
 
       for (String typeName : typeNames) {
         TMFeatureType pft =

@@ -8,7 +8,9 @@ package nl.b3p.tailormap.api.persistence;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.invoke.MethodHandles;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -17,9 +19,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
+import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
+import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.viewer.model.AppResponse;
 import nl.b3p.tailormap.api.viewer.model.AppStyling;
@@ -89,7 +95,6 @@ public class Application {
   private AppStyling styling;
 
   // <editor-fold desc="getters and setters">
-
   public Long getId() {
     return id;
   }
@@ -220,6 +225,40 @@ public class Application {
 
   public AppResponse toAppResponse() {
     return new AppResponse().id(id).name(name).title(title).styling(styling).components(components);
+  }
+
+  @PrePersist
+  @PreUpdate
+  public void assignAppLayerRefIds() {
+    // TODO: keep using AppLayerRef id's or use different way to reference them?
+
+    // Only assign new id's to AppLayerRefs without id. AppLayerRef id are used in bookmarks
+    // Does not check uniqueness
+
+    final long[] highestId = {0L};
+    getAllAppLayerRefs()
+        .forEach(
+            ref -> highestId[0] = Math.max(highestId[0], ref.getId() == null ? 0L : ref.getId()));
+
+    getAllAppLayerRefs().filter(ref -> ref.getId() == null).forEach(ref -> ref.id(++highestId[0]));
+  }
+
+  public Stream<AppLayerRef> getAllAppLayerRefs() {
+    if (this.getContentRoot() == null) {
+      return Stream.empty();
+    }
+    Stream<AppLayerRef> baseLayers = Stream.empty();
+    if (this.getContentRoot().getBaseLayers() != null) {
+      baseLayers =
+          this.getContentRoot().getBaseLayers().stream()
+              .map(BaseLayerInner::getLayers)
+              .flatMap(Collection::stream);
+    }
+    Stream<AppLayerRef> layers = Stream.empty();
+    if (this.getContentRoot().getLayers() != null) {
+      layers = this.getContentRoot().getLayers().stream();
+    }
+    return Stream.concat(baseLayers, layers);
   }
 
   /**

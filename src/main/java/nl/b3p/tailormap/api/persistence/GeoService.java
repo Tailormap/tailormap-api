@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api.persistence;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
+import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -24,16 +25,23 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
+import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
+import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.viewer.model.Service;
 import org.hibernate.annotations.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 public class GeoService {
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,7 +69,7 @@ public class GeoService {
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private JsonNode authentication;
+  private ServiceAuthentication authentication;
 
   /**
    * Original capabilities as received from the service. This can be used for capability information
@@ -168,11 +176,11 @@ public class GeoService {
     return this;
   }
 
-  public JsonNode getAuthentication() {
+  public ServiceAuthentication getAuthentication() {
     return authentication;
   }
 
-  public GeoService setAuthentication(JsonNode authentication) {
+  public GeoService setAuthentication(ServiceAuthentication authentication) {
     this.authentication = authentication;
     return this;
   }
@@ -313,5 +321,70 @@ public class GeoService {
     }
 
     return title;
+  }
+
+  public TMFeatureType findFeatureTypeForLayer(
+      GeoServiceLayer layer, FeatureSourceRepository featureSourceRepository) {
+
+    GeoServiceDefaultLayerSettings defaultLayerSettings = getSettings().getDefaultLayerSettings();
+    GeoServiceLayerSettings layerSettings = getLayerSettings(layer.getName());
+
+    Long featureSourceId = null;
+    String featureTypeName;
+
+    if (layerSettings != null && layerSettings.getFeatureType() != null) {
+      featureTypeName =
+          Optional.ofNullable(layerSettings.getFeatureType().getFeatureTypeName())
+              .orElse(layer.getName());
+      featureSourceId = layerSettings.getFeatureType().getFeatureSourceId();
+    } else {
+      featureTypeName = layer.getName();
+    }
+
+    if (featureSourceId == null
+        && defaultLayerSettings != null
+        && defaultLayerSettings.getFeatureType() != null) {
+      featureSourceId = defaultLayerSettings.getFeatureType().getFeatureSourceId();
+    }
+
+    if (featureTypeName == null) {
+      return null;
+    }
+
+    TMFeatureSource tmfs;
+    if (featureSourceId == null) {
+      tmfs = featureSourceRepository.findByLinkedServiceId(getId()).orElse(null);
+    } else {
+      tmfs = featureSourceRepository.findById(featureSourceId).orElse(null);
+    }
+
+    if (tmfs == null) {
+      return null;
+    }
+    TMFeatureType tmft =
+        tmfs.getFeatureTypes().stream()
+            .filter(ft -> featureTypeName.equals(ft.getName()))
+            .findFirst()
+            .orElse(null);
+
+    if (tmft == null) {
+      String[] split = featureTypeName.split(":", 2);
+      if (split.length == 2) {
+        String shortFeatureTypeName = split[1];
+        tmft =
+            tmfs.getFeatureTypes().stream()
+                .filter(ft -> shortFeatureTypeName.equals(ft.getName()))
+                .findFirst()
+                .orElse(null);
+        if (tmft != null) {
+          logger.debug(
+              "Did not find feature type with full name \"{}\", using \"{}\" of feature source {}",
+              featureTypeName,
+              shortFeatureTypeName,
+              tmfs);
+        }
+      }
+    }
+    return tmft;
   }
 }

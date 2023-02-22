@@ -18,17 +18,17 @@ public class FeatureSourceFactoryHelper {
   @Value("${tailormap-api.timeout}")
   private int timeout;
 
-  public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType ft) throws IOException {
-    return FeatureSourceFactoryHelper.openGeoToolsFeatureSource(ft.getFeatureSource(), ft, timeout);
+  public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType tmft) throws IOException {
+    return openGeoToolsFeatureSource(tmft, timeout);
   }
 
-  public static SimpleFeatureSource openGeoToolsFeatureSource(
-      TMFeatureSource fs, TMFeatureType sft, int timeout) throws IOException {
-    FeatureSourceHelper sh = getHelper(fs);
-    return sh.openGeoToolsFeatureSource(fs, sft, timeout);
+  public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType tmft, int timeout)
+      throws IOException {
+    FeatureSourceHelper sh = getHelper(tmft.getFeatureSource());
+    return sh.openGeoToolsFeatureSource(tmft, timeout);
   }
 
-  private static FeatureSourceHelper getHelper(TMFeatureSource fs) {
+  private FeatureSourceHelper getHelper(TMFeatureSource fs) {
     switch (fs.getProtocol()) {
       case JDBC:
         return new JDBCFeatureSourceHelper();

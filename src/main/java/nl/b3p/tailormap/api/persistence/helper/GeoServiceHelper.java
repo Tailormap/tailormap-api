@@ -304,7 +304,7 @@ public class GeoServiceHelper {
 
     // TODO: add authentication
     Map<String, SimpleWFSLayerDescription> descriptions =
-        SimpleWFSHelper.describeWMSLayer(geoService.getUrl(), null, null, layers);
+        SimpleWFSHelper.describeWMSLayers(geoService.getUrl(), null, null, layers);
 
     for (Map.Entry<String, SimpleWFSLayerDescription> entry : descriptions.entrySet()) {
       String layerName = entry.getKey();

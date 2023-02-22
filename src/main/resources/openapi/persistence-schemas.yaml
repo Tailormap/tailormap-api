@@ -139,6 +139,9 @@ components:
         abstractText:
           type: string
 
+    TMGeometryType:
+      $ref: './common-schemas.yaml#/components/schemas/TMGeometryType'
+
     TMAttributeType:
       $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
 
@@ -220,7 +223,6 @@ components:
 
     LayerSettings:
       description: Settings applying to any kind of layer.
-      required: [title, hiDpiDisabled]
       properties:
         title:
           description: Override default title, null if not overridden.
@@ -228,6 +230,8 @@ components:
         hiDpiDisabled:
           type: boolean
           default: false
+        featureType:
+          $ref: FeatureTypeRef
 
     WMSLayerSettings:
       description: Settings applying to a WMS layer.
@@ -312,8 +316,12 @@ components:
             $ref: '#/components/schemas/AppContent'
 
     AppLayerRef:
-      required: [serviceId, layerName, visible, opacity]
+      required: [id, serviceId, layerName, visible, opacity]
       properties:
+        id:
+          type: integer
+          format: int64
+          nullable: false
         serviceId:
           type: integer
           format: int64
@@ -331,3 +339,14 @@ components:
           type: integer
           nullable: false
           default: 100
+
+    FeatureTypeRef:
+      required: [featureSourceId, featureTypeName]
+      properties:
+        featureSourceId:
+          type: integer
+          format: int64
+          nullable: false
+        featureTypeName:
+          type: string
+          nullable: false

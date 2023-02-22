@@ -93,6 +93,18 @@ components:
         maxx: 275000
         crs: 'EPSG:28992'
 
+    TMGeometryType:
+      type: string
+      enum:
+        - geometry
+        - geometry_collection
+        - multipolygon
+        - polygon
+        - multilinestring
+        - linestring
+        - multipoint
+        - point
+
     TMAttributeType:
       description: 'data type. eg "date" or "string".
           see also: nl.tailormap.api.persistence.TMAttributeDescriptor'

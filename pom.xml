@@ -732,13 +732,7 @@ SPDX-License-Identifier: MIT
                         </path>
                     </annotationProcessorPaths>
                     <excludes>
-                        <exclude>**/FeaturesController*.java</exclude>
                         <exclude>**/GeoServiceProxyController*.java</exclude>
-                        <exclude>**/LayerDescriptionController*.java</exclude>
-                        <exclude>**/LayerExportController*.java</exclude>
-                        <exclude>**/UniqueValuesController*.java</exclude>
-                        <exclude>**/MicrometerHelper.java</exclude>
-                        <exclude>**/MetadataRepositoryTest.java</exclude>
                     </excludes>
                     <testExcludes>
                         <exclude>**/FeaturesController*.java</exclude>
@@ -810,7 +804,8 @@ SPDX-License-Identifier: MIT
                                 GeoServiceProtocol=nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol,
                                 Bounds=nl.b3p.tailormap.api.persistence.json.Bounds,
                                 BoundsWithCRS=nl.b3p.tailormap.api.persistence.json.BoundsWithCRS,
-                                TMAttributeType=nl.b3p.tailormap.api.persistence.json.TMAttributeType</importMappings>
+                                TMAttributeType=nl.b3p.tailormap.api.persistence.json.TMAttributeType,
+                                TMGeometryType=nl.b3p.tailormap.api.persistence.json.TMGeometryType</importMappings>
                             <ignoreFileOverride>${project.basedir}/src/main/resources/openapi/common-schemas-openapi-ignore</ignoreFileOverride>
                             <!--              <instantiationTypes>array=ArrayList,map=HashMap,object=Map</instantiationTypes>-->
                             <!--              <typeMappings>array=List,map=Map,object=Map</typeMappings>-->

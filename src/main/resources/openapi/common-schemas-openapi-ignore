@@ -3,3 +3,4 @@
 **/Bounds.java
 **/BoundsWithCRS.java
 **/TMAttributeType.java
+**/TMGeometryType.java
