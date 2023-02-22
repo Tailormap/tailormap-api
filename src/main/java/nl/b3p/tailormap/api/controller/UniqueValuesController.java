@@ -16,7 +16,10 @@ import java.util.Set;
 import java.util.TreeSet;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.viewer.model.UniqueValuesResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.geotools.data.Query;
@@ -35,6 +38,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,37 +57,39 @@ public class UniqueValuesController {
 
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
 
+  private final FeatureSourceRepository featureSourceRepository;
+
   @Value("${tailormap-api.unique.use_geotools_unique_function:true}")
   private boolean useGeotoolsUniqueFunction;
 
   private final FilterFactory2 ff =
       CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
-  public UniqueValuesController(FeatureSourceFactoryHelper featureSourceFactoryHelper) {
+  public UniqueValuesController(
+      FeatureSourceFactoryHelper featureSourceFactoryHelper,
+      FeatureSourceRepository featureSourceRepository) {
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
+    this.featureSourceRepository = featureSourceRepository;
   }
 
-  /**
-   * Get a list of unique attribute values for a given attribute name.
-   *
-   * @param tmft the feature type provided by the controller advice
-   * @param attributeName the attribute name
-   * @param filter A filter that was already applied to the layer (on a different attribute or this
-   *     attribute)
-   * @return a list of unique values, can be empty parsed
-   */
+  @Transactional
   @RequestMapping(method = {GET, POST})
   @Timed(
       value = "get_unique_attributes",
       description = "time spent to process get unique attributes call")
   public ResponseEntity<Serializable> getUniqueAttributes(
-      @ModelAttribute TMFeatureType tmft,
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
       @PathVariable("attributeName") String attributeName,
       @RequestParam(required = false) String filter) {
     if (StringUtils.isBlank(attributeName)) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attribute name is required");
     }
 
+    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
+    if (tmft == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Layer does not have feature type");
+    }
     UniqueValuesResponse uniqueValuesResponse = getUniqueValues(tmft, attributeName, filter);
     return ResponseEntity.status(HttpStatus.OK).body(uniqueValuesResponse);
   }

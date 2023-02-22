@@ -187,7 +187,6 @@ components:
 
     GeoServiceSettings:
       description: Settings applying to a GeoService.
-      required: [serverType, defaultLayerSettings]
       properties:
         serverType:
           description: Server type to use for vendor-specific capabilities (high DPI, legends, etc.)
@@ -199,6 +198,10 @@ components:
             - mapserver
           nullable: false
           default: auto
+        useProxy:
+          type: boolean
+          nullable: false
+          default: false
         defaultLayerSettings:
           title: GeoServiceDefaultLayerSettings
           description: Default settings for all layers of this service which can be overridden on a per-layer basis.
