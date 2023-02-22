@@ -34,5 +34,9 @@ public class GeoServiceEventHandler {
         "Loading capabilities before creating/saving geo service from URL: \"{}\"",
         geoService.getUrl());
     geoServiceHelper.loadServiceCapabilities(geoService);
+
+    if (geoService.getTitle() == null) {
+      geoService.setTitle(geoService.getServiceCapabilities().getServiceInfo().getTitle());
+    }
   }
 }
