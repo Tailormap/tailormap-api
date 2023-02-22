@@ -74,7 +74,7 @@ public class ApplicationHelper {
         new TMCoordinateReferenceSystem()
             .code(a.getCrs())
             .definition(((Formattable) gtCrs).toWKT(0))
-            .bounds(GeoToolsHelper.fromCRSEnvelope(gtCrs))
+            .bounds(GeoToolsHelper.fromCRS(gtCrs))
             .unit(
                 Optional.ofNullable(CRSUtilities.getUnit(gtCrs.getCoordinateSystem()))
                     .map(Objects::toString)

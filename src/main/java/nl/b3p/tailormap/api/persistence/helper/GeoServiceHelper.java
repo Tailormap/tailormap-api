@@ -10,12 +10,16 @@ import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -28,12 +32,14 @@ import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSLayerDescription;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequest;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetFeatureInfo;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetMap;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCapsCapabilities;
 import nl.b3p.tailormap.api.persistence.json.TMServiceInfo;
+import nl.b3p.tailormap.api.persistence.json.WMSStyle;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.geotools.data.ServiceInfo;
@@ -95,9 +101,12 @@ public class GeoServiceHelper {
   public void loadServiceCapabilities(GeoService geoService) throws Exception {
     ResponseTeeingHTTPClient client = new ResponseTeeingHTTPClient(HTTPClientFinder.createClient());
 
-    // TODO geoService.getAuthentication()
-    client.setUser(null);
-    client.setPassword(null);
+    ServiceAuthentication auth = geoService.getAuthentication();
+    if (auth != null && auth.getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
+      client.setUser(auth.getUsername());
+      client.setPassword(auth.getPassword());
+    }
+
     client.setReadTimeout(this.tailormapConfig.getTimeout());
     client.setConnectTimeout(this.tailormapConfig.getTimeout());
     client.setTryGzip(true);
@@ -120,6 +129,14 @@ public class GeoServiceHelper {
       default:
         throw new UnsupportedOperationException(
             "Unsupported geo service protocol: " + geoService.getProtocol());
+    }
+
+    if (geoService.getTitle() == null) {
+      geoService.setTitle(
+          Optional.ofNullable(geoService.getServiceCapabilities())
+              .map(TMServiceCaps::getServiceInfo)
+              .map(TMServiceInfo::getTitle)
+              .orElse(null));
     }
 
     if (logger.isDebugEnabled()) {
@@ -182,10 +199,40 @@ public class GeoServiceHelper {
               .minScale(
                   Double.isNaN(l.getScaleDenominatorMin()) ? null : l.getScaleDenominatorMin())
               .virtual(l.getName() == null)
+              .crs(l.getSrs())
+              .latLonBoundingBox(GeoToolsHelper.boundsFromCRSEnvelope(l.getLatLonBoundingBox()))
+              .styles(
+                  l.getStyles().stream()
+                      .map(
+                          gtStyle -> {
+                            WMSStyle style =
+                                new WMSStyle()
+                                    .name(gtStyle.getName())
+                                    .title(
+                                        Optional.ofNullable(gtStyle.getTitle())
+                                            .map(Objects::toString)
+                                            .orElse(null))
+                                    .abstractText(
+                                        Optional.ofNullable(gtStyle.getAbstract())
+                                            .map(Objects::toString)
+                                            .orElse(null));
+                            try {
+                              List legendURLs = gtStyle.getLegendURLs();
+                              if (legendURLs != null && !legendURLs.isEmpty()) {
+                                style.legendURL(new URI((String) legendURLs.get(0)));
+                              }
+                            } catch (URISyntaxException ignored) {
+                              // Don't care
+                            }
+                            return style;
+                          })
+                      .collect(Collectors.toList()))
+              .queryable(l.isQueryable())
               .attribution(l.getAttribution() == null ? null : l.getAttribution().toString())
               .abstractText(l.get_abstract())
               .children(
                   l.getLayerChildren().stream().map(Layer::getName).collect(Collectors.toList()));
+
       if (consumer != null) {
         consumer.accept(l, geoServiceLayer);
       }

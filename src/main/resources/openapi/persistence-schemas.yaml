@@ -281,6 +281,20 @@ components:
         minScale:
           type: number
           format: double
+        crs:
+          description: Only the CRSes added by this layer, all parent CRSes are inherited.
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        latLonBoundingBox:
+          $ref: './common-schemas.yaml#/components/schemas/Bounds'
+        styles:
+          type: array
+          items:
+            $ref: './common-schemas.yaml#/components/schemas/WMSStyle'
+        queryable:
+          type: boolean
         attribution:
           type: string
         abstractText:

@@ -125,3 +125,18 @@ components:
         - date
         - timestamp
         - object
+
+    WMSStyle:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          nullable: false
+        title:
+          type: string
+        abstractText:
+          type: string
+        legendURL:
+          type: string
+          format: uri
