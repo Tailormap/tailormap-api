@@ -220,6 +220,9 @@ public class PopulateTestDatabase implements EnvironmentAware {
                     .setProtocol(WMS)
                     .setUrl(
                         "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
+                    .setSettings(
+                        new GeoServiceSettings()
+                            .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER))
                     .setPublished(true)
                 //        new GeoService()
                 //            .setProtocol(WMS)

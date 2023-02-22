@@ -13,10 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import javax.persistence.EntityManager;
 import nl.b3p.tailormap.api.controller.GeoServiceProxyController;
 import nl.b3p.tailormap.api.persistence.Application;
+import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
@@ -24,6 +27,8 @@ import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode;
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.viewer.model.AppLayer;
@@ -46,15 +51,25 @@ public class ApplicationHelper {
 
   private final GeoServiceHelper geoServiceHelper;
   private final GeoServiceRepository geoServiceRepository;
+
+  private final ConfigurationRepository configurationRepository;
   private final FeatureSourceRepository featureSourceRepository;
+  private final ApplicationRepository applicationRepository;
+  private final EntityManager entityManager;
 
   public ApplicationHelper(
       GeoServiceHelper geoServiceHelper,
       GeoServiceRepository geoServiceRepository,
-      FeatureSourceRepository featureSourceRepository) {
+      ConfigurationRepository configurationRepository,
+      FeatureSourceRepository featureSourceRepository,
+      ApplicationRepository applicationRepository,
+      EntityManager entityManager) {
     this.geoServiceHelper = geoServiceHelper;
     this.geoServiceRepository = geoServiceRepository;
+    this.configurationRepository = configurationRepository;
     this.featureSourceRepository = featureSourceRepository;
+    this.applicationRepository = applicationRepository;
+    this.entityManager = entityManager;
   }
 
   public MapResponse toMapResponse(Application app) {
@@ -88,6 +103,43 @@ public class ApplicationHelper {
 
   public void setLayers(Application app, MapResponse mr) {
     new MapResponseLayerBuilder(app, mr).buildLayers();
+  }
+
+  public MapResponse toMapResponse(GeoService service) {
+    String baseAppName =
+        configurationRepository
+            .findByKey(Configuration.DEFAULT_BASE_APP)
+            .map(Configuration::getValue)
+            .orElse(null);
+    Application baseApp = null;
+    if (baseAppName != null) {
+      baseApp = applicationRepository.findByName(baseAppName);
+      // We're going to add layers from this service to the base app, do not save changes
+      entityManager.detach(baseApp);
+    }
+
+    Application app;
+    if (baseApp != null) {
+      app = baseApp;
+    } else {
+      app = new Application().setContentRoot(new AppContent());
+    }
+
+    app.setName("service-" + service.getId()).setCrs("EPSG:28992");
+
+    service.getLayers().stream()
+        .filter(l -> !l.getVirtual() && l.getChildren().isEmpty())
+        .forEach(
+            l -> {
+              app.getContentRoot()
+                  .addLayersItem(
+                      new AppLayerRef()
+                          .serviceId(service.getId())
+                          .layerName(l.getName())
+                          .title(l.getTitle()));
+            });
+    app.assignAppLayerRefIds();
+    return toMapResponse(app);
   }
 
   private class MapResponseLayerBuilder {

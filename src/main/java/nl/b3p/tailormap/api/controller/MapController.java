@@ -7,36 +7,64 @@ package nl.b3p.tailormap.api.controller;
 
 import io.micrometer.core.annotation.Timed;
 import java.io.Serializable;
-import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
+import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.helper.ApplicationHelper;
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-@AppRestController
+@RestController
 @RequestMapping(
     path = "${tailormap-api.base-path}/app/{appId}/map",
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class MapController {
 
+  private final ApplicationRepository applicationRepository;
+  private final GeoServiceRepository geoServiceRepository;
+
   private final ApplicationHelper applicationHelper;
 
-  public MapController(ApplicationHelper applicationHelper) {
+  public MapController(
+      ApplicationRepository applicationRepository,
+      GeoServiceRepository geoServiceRepository,
+      ApplicationHelper applicationHelper) {
+    this.applicationRepository = applicationRepository;
+    this.geoServiceRepository = geoServiceRepository;
     this.applicationHelper = applicationHelper;
   }
 
   @GetMapping
   @Timed(value = "get_map", description = "get the map config of an application")
   @Transactional
-  public ResponseEntity<Serializable> get(@ModelAttribute Application application) {
-    MapResponse mapResponse = applicationHelper.toMapResponse(application);
-    return ResponseEntity.status(HttpStatus.OK).body(mapResponse);
+  public ResponseEntity<Serializable> get(@PathVariable Long appId) {
+
+    if (appId < 1000) {
+      Application app =
+          applicationRepository
+              .findById(appId)
+              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+      MapResponse mapResponse = applicationHelper.toMapResponse(app);
+      return ResponseEntity.ok(mapResponse);
+    } else {
+      GeoService service =
+          geoServiceRepository
+              .findById(appId - 1000)
+              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+      if (!service.isPublished()) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      }
+      return ResponseEntity.ok(applicationHelper.toMapResponse(service));
+    }
   }
 
   /*
