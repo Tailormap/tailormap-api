@@ -202,6 +202,18 @@ components:
           type: boolean
           nullable: false
           default: false
+        publishing:
+          title: ServicePublishingSettings
+          type: object
+          properties:
+            baseApp:
+              type: string
+            defaultProjection:
+              type: string
+            projections:
+              type: array
+              items:
+                type: string
         defaultLayerSettings:
           title: GeoServiceDefaultLayerSettings
           description: Default settings for all layers of this service which can be overridden on a per-layer basis.

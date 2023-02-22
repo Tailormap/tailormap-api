@@ -107,6 +107,8 @@ public class GeoService {
   @Column(columnDefinition = "jsonb")
   private List<GeoServiceLayer> layers = new ArrayList<>();
 
+  private boolean published;
+
   /**
    * Settings relevant for Tailormap use cases, such as configuring the specific server type for
    * vendor-specific capabilities etc.
@@ -230,6 +232,15 @@ public class GeoService {
 
   public GeoService setLayers(List<GeoServiceLayer> layers) {
     this.layers = layers;
+    return this;
+  }
+
+  public boolean isPublished() {
+    return published;
+  }
+
+  public GeoService setPublished(boolean published) {
+    this.published = published;
     return this;
   }
 

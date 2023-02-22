@@ -149,7 +149,8 @@ public class PopulateTestDatabase implements EnvironmentAware {
                 new GeoService()
                     .setProtocol(WMS)
                     .setTitle("Test GeoServer")
-                    .setUrl("https://snapshot.tailormap.nl/geoserver/wms"),
+                    .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
+                    .setPublished(true),
                 "0p-geoserver",
                 new GeoService()
                     .setProtocol(WMS)
@@ -190,6 +191,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
                     .setProtocol(WMTS)
                     .setTitle("PDOK HWH luchtfoto")
                     .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
+                    .setPublished(true)
                     .setSettings(
                         new GeoServiceSettings()
                             .defaultLayerSettings(
@@ -200,6 +202,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
                     .setProtocol(WMTS)
                     .setTitle("basemap.at")
                     .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
+                    .setPublished(true)
                     .setSettings(
                         new GeoServiceSettings()
                             .layerSettings(
@@ -217,6 +220,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
                     .setProtocol(WMS)
                     .setUrl(
                         "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
+                    .setPublished(true)
                 //        new GeoService()
                 //            .setProtocol(WMS)
                 //            .setTitle("Norway - Administrative enheter")
@@ -397,6 +401,27 @@ public class PopulateTestDatabase implements EnvironmentAware {
     app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));
     applicationRepository.save(app);
 
+    app =
+        new Application()
+            .setName("base")
+            .setTitle("Service base app")
+            .setCrs("EPSG:28992")
+            .setContentRoot(
+                new AppContent()
+                    .addBaseLayersItem(
+                        new BaseLayerInner()
+                            .title("Openbasiskaart")
+                            .addLayersItem(new AppLayerRef().serviceId(obkId).layerName("osm")))
+                    .addBaseLayersItem(
+                        new BaseLayerInner()
+                            .title("Luchtfoto")
+                            .addLayersItem(
+                                new AppLayerRef()
+                                    .serviceId(lufoId)
+                                    .layerName("Actueel_orthoHR")
+                                    .visible(false))));
+    applicationRepository.save(app);
+
     Long basemapAtId = services.get("3-basemap.at").getId();
 
     app =
@@ -454,6 +479,10 @@ public class PopulateTestDatabase implements EnvironmentAware {
     Configuration config = new Configuration();
     config.setKey(Configuration.DEFAULT_APP);
     config.setValue("default");
+    configurationRepository.save(config);
+    config = new Configuration();
+    config.setKey(Configuration.DEFAULT_BASE_APP);
+    config.setValue("base");
     configurationRepository.save(config);
 
     logger.info("Test entities created");

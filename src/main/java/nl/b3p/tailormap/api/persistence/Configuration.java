@@ -16,6 +16,8 @@ import org.hibernate.annotations.Type;
 public class Configuration {
   public static final String DEFAULT_APP = "default-app";
 
+  public static final String DEFAULT_BASE_APP = "default-base-app";
+
   @Id private String key;
 
   @Version private Long version;
