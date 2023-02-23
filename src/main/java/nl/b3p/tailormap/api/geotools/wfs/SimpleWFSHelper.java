@@ -217,6 +217,7 @@ public class SimpleWFSHelper {
       describeLayerRequest.setProperty(
           "VERSION", "1.1.1"); // Otherwise GeoTools will send VERSION=1.1.0...
       describeLayerRequest.setLayers(String.join(",", layers));
+      // GeoTools will throw a ClassCastException when a WMS ServiceException is returned
       DescribeLayerResponse describeLayerResponse = wms.issueRequest(describeLayerRequest);
 
       Map<String, SimpleWFSLayerDescription> descriptions = new HashMap<>();
@@ -237,7 +238,7 @@ public class SimpleWFSHelper {
         }
       }
       return Collections.unmodifiableMap(descriptions);
-    } catch (ServiceException | IOException e) {
+    } catch (Exception e) {
       String msg =
           String.format(
               "Error in DescribeLayer request to WMS \"%s\": %s: %s",

@@ -211,7 +211,12 @@ public class PopulateTestDatabase implements EnvironmentAware {
                                         .hiDpiSubstituteLayer("bmaphidpi"),
                                     "bmaporthofoto30cm",
                                     new GeoServiceLayerSettings()
-                                        .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))))
+                                        .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL)))),
+                "4-bestuurlijke-gebieden",
+                new GeoService()
+                    .setProtocol(WMS)
+                    .setUrl(
+                        "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
                 //        new GeoService()
                 //            .setProtocol(WMS)
                 //            .setTitle("Norway - Administrative enheter")

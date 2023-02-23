@@ -8,6 +8,7 @@ package nl.b3p.tailormap.api.persistence.helper;
 import java.math.BigDecimal;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
+import org.geotools.ows.wms.CRSEnvelope;
 import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
@@ -22,7 +23,18 @@ import org.opengis.geometry.Envelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 public class GeoToolsHelper {
-  public static Bounds fromCRSEnvelope(org.opengis.referencing.crs.CoordinateReferenceSystem crs) {
+
+  public static Bounds boundsFromCRSEnvelope(CRSEnvelope crsEnvelope) {
+    return crsEnvelope == null
+        ? null
+        : new Bounds()
+            .maxx(crsEnvelope.getMaxX())
+            .maxy(crsEnvelope.getMaxY())
+            .minx(crsEnvelope.getMinX())
+            .miny(crsEnvelope.getMinY());
+  }
+
+  public static Bounds fromCRS(org.opengis.referencing.crs.CoordinateReferenceSystem crs) {
     Envelope envelope = CRS.getEnvelope(crs);
     return envelope == null
         ? null
