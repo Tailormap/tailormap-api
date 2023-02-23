@@ -30,6 +30,7 @@ import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.viewer.model.AppResponse;
 import nl.b3p.tailormap.api.viewer.model.AppStyling;
 import nl.b3p.tailormap.api.viewer.model.Component;
+import nl.b3p.tailormap.api.viewer.model.ViewerResponse;
 import org.geotools.referencing.CRS;
 import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
@@ -287,5 +288,15 @@ public class Application {
       }
     }
     return gtCrs;
+  }
+
+  @JsonIgnore
+  public ViewerResponse getViewerResponse() {
+    return new ViewerResponse()
+        .kind(ViewerResponse.KindEnum.APP)
+        .name(getName())
+        .title(getTitle())
+        .languages(List.of("NL_nl"))
+        .projections(List.of(getCrs()));
   }
 }

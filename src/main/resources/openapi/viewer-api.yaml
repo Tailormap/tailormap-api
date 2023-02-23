@@ -8,9 +8,8 @@ openapi: 3.0.3
 info:
   title: 'Tailormap API'
   description: '
-  Tailormap API contains the calls necessary to draw a basic map on the screen.
-  This API will be augmented with component specific API calls that can retrieve
-  and or manipulate data.
+  Tailormap API contains the calls necessary to get the configuration for a map viewer and calls
+  to get features.
   
   Note: you need to send an X-XSRF-TOKEN header with the value from the XSRF-TOKEN
   cookie for non-GET requests. The Angular HttpClient does this automatically.
@@ -111,6 +110,55 @@ components:
       minLength: 0
       items:
         $ref: './viewer-schemas.yaml#/components/schemas/AppLayer'
+
+    ViewerResponse:
+      type: object
+      description: 'Basic viewer information'
+      required: [kind, name, title, baseViewers, languages, projections, styling, components]
+      properties:
+        kind:
+          description: Kind of viewer; a 'service' viewer has layers from a single service combined
+            with a base viewer. A 'viewer' has content configured from various services.
+          type: string
+          nullable: false
+          enum:
+            - service
+            - app
+        name:
+          type: string
+          nullable: false
+        title:
+          type: string
+          nullable: false
+        baseViewers:
+          description: Available base viewers. The first item is the default. May have one entry
+            if only one is available. The "none" value denotes no base viewer.
+          type: array
+          items:
+            type: string
+          nullable: false
+        languages:
+          description: Available languages for this application. The first item is the default.
+          type: array
+          items:
+            type: string
+          nullable: false
+        projections:
+          description: Available projections for this application. The first item is the default.
+            Not all layers may be available in all projections.
+          type: array
+          items:
+            type: string
+          nullable: false
+        styling:
+          $ref: './viewer-schemas.yaml#/components/schemas/AppStyling'
+        components:
+          description: 'Configured components (controls) for the viewer'
+          type: array
+          minLength: 0
+          items:
+            $ref: './viewer-schemas.yaml#/components/schemas/Component'
+          nullable: false
 
     AppResponse:
       description: 'Basic app information'
@@ -273,6 +321,158 @@ paths:
             application/json:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
+  /viewer:
+    get:
+      operationId: getDefaultViewer
+      summary: 'Get information the default viewer'
+      security:
+        - formAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewerResponse'
+        401:
+          description: Authentication required
+        404:
+          description: Not Found
+
+  /viewer/{name}:
+    get:
+      operationId: getViewerByName
+      summary: 'Get information about a viewer app'
+      security:
+        - formAuth: []
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewerResponse'
+        401:
+          description: Authentication required
+        404:
+          description: Not Found
+
+  /viewer/{name}/map:
+    get:
+      operationId: getViewerMap
+      summary: 'Get viewer map contents'
+      security:
+        - formAuth: []
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: base
+          schema:
+            type: string
+          description: Base viewer. Must be in the baseApps list or empty for the default.
+            'none' is the special value for no base app. If the baseApp is not in the list, the
+            default base app is used (returned in response).
+        - in: query
+          name: projection
+          schema:
+            type: string
+          description: Projection. Must be in the projections list or empty for the default. If the
+            projection is not in the list, the default projection is used (returned in response).
+        - in: query
+          name: lang
+          schema:
+            type: string
+          description: '[TODO] Language. Same as for base, projection, etc.'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapResponse'
+        401:
+          description: Authentication required
+        404:
+          description: Not Found
+
+  /service/{name}:
+    get:
+      operationId: getServiceViewer
+      summary: 'Get information about a service viewer'
+      security:
+        - formAuth: []
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+          description: Name of the service
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewerResponse'
+        401:
+          description: Authentication required
+        404:
+          description: Not Found
+
+  /service/{name}/map:
+    get:
+      operationId: getServiceViewerMap
+      summary: 'Get service viewer map contents'
+      security:
+        - formAuth: []
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+          description: Name of the service
+        - in: query
+          name: base
+          schema:
+            type: string
+          description: Base viewer app. Must be in the baseApps list or empty for the default. 
+            'none' is the special value for no base app. If the baseApp is not in the list, the 
+            default base app is used (returned in response).
+        - in: query
+          name: projection
+          schema:
+            type: string
+          description: Projection. Must be in the projections list or empty for the default. If the
+            projection is not in the list, the default projection is used (returned in response).
+        - in: query
+          name: lang
+          schema:
+            type: string
+          description: '[TODO] Language. Same as for base, projection, etc.'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapResponse'
+        401:
+          description: Authentication required
+        404:
+          description: Not Found
 
   /app/:
     description: 'Will return general setup information such as name, appId, language, but not map specific information.'

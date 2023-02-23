@@ -147,18 +147,21 @@ public class PopulateTestDatabase implements EnvironmentAware {
             Map.of(
                 "0-geoserver",
                 new GeoService()
+                    .setName("snapshot-geoserver")
                     .setProtocol(WMS)
                     .setTitle("Test GeoServer")
                     .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
                     .setPublished(true),
                 "0p-geoserver",
                 new GeoService()
+                    .setName("snapshot-geoserver-proxied")
                     .setProtocol(WMS)
                     .setTitle("Test GeoServer (proxied)")
                     .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
                     .setSettings(new GeoServiceSettings().useProxy(true)),
                 "1-openbasiskaart",
                 new GeoService()
+                    .setName("openbasiskaart")
                     .setProtocol(WMTS)
                     .setTitle("Openbasiskaart")
                     .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
@@ -173,6 +176,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
                                         .hiDpiSubstituteLayer("osm-hq")))),
                 "1p-openbasiskaart",
                 new GeoService()
+                    .setName("openbasiskaart-proxied")
                     .setProtocol(WMTS)
                     .setTitle("Openbasiskaart (proxied)")
                     .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
@@ -188,6 +192,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
                                         .hiDpiSubstituteLayer("osm-hq")))),
                 "2-pdok luchtfoto",
                 new GeoService()
+                    .setName("pdok-hwh-luchtfotorgb")
                     .setProtocol(WMTS)
                     .setTitle("PDOK HWH luchtfoto")
                     .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
@@ -199,6 +204,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
                                     .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))),
                 "3-basemap.at",
                 new GeoService()
+                    .setName("at-basemap")
                     .setProtocol(WMTS)
                     .setTitle("basemap.at")
                     .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
@@ -217,6 +223,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
                                         .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL)))),
                 "4-bestuurlijke-gebieden",
                 new GeoService()
+                    .setName("pdok-kadaster-bestuurlijkegebieden")
                     .setProtocol(WMS)
                     .setUrl(
                         "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")

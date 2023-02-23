@@ -29,6 +29,7 @@ public class Configuration {
   @Column(columnDefinition = "jsonb")
   private JsonNode jsonValue;
 
+  // <editor-fold desc="getters and setters">
   public String getKey() {
     return key;
   }
@@ -61,4 +62,5 @@ public class Configuration {
   public void setJsonValue(JsonNode jsonValue) {
     this.jsonValue = jsonValue;
   }
+  // </editor-fold>
 }
