@@ -782,7 +782,7 @@ SPDX-License-Identifier: MIT
                         </goals>
                         <configuration>
                             <!-- see https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin -->
-                            <inputSpec>${project.basedir}/src/main/resources/openapi/viewer-api.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/openapi.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <modelPackage>nl.b3p.tailormap.api.viewer.model</modelPackage>
                             <!--<invokerPackage>nl.b3p.tailormap.api.invoker</invokerPackage>-->
@@ -820,7 +820,7 @@ SPDX-License-Identifier: MIT
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/openapi/viewer-api.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/openapi.yaml</inputSpec>
                             <generatorName>openapi</generatorName>
                             <output>${project.build.directory}/classes/static/swagger-ui</output>
                         </configuration>
