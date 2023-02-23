@@ -6,7 +6,6 @@
 package nl.b3p.tailormap.api.controller;
 
 import java.io.Serializable;
-
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Configuration;
@@ -18,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @AppRestController
