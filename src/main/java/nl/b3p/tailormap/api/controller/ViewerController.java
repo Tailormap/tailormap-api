@@ -20,6 +20,7 @@ import nl.b3p.tailormap.api.viewer.model.ViewerResponse;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,14 +50,17 @@ public class ViewerController {
     this.entityManager = entityManager;
   }
 
-  @GetMapping(path = "${tailormap-api.base-path}/viewer")
-  public ViewerResponse defaultViewer() {
+  @GetMapping(path = "${tailormap-api.base-path}/app")
+  public ViewerResponse defaultApp() {
     String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);
-    return viewer(defaultAppName);
+    return app(defaultAppName);
   }
 
   @NonNull
   private Application getValidatedApplication(String name) {
+    if (name == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
     Application app = applicationRepository.findByName(name);
     if (app == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -65,12 +69,12 @@ public class ViewerController {
     return app;
   }
 
-  @GetMapping(path = "${tailormap-api.base-path}/viewer/{name}")
-  public ViewerResponse viewer(@PathVariable String name) {
+  @GetMapping(path = "${tailormap-api.base-path}/app/{name}")
+  public ViewerResponse app(@PathVariable String name) {
     return getValidatedApplication(name).getViewerResponse();
   }
 
-  @GetMapping(path = "${tailormap-api.base-path}/viewer/{name}/map")
+  @GetMapping(path = "${tailormap-api.base-path}/app/{name}/map")
   public MapResponse appMap(@PathVariable String name) {
     return applicationHelper.toMapResponse(getValidatedApplication(name));
   }
@@ -115,6 +119,7 @@ public class ViewerController {
     return response;
   }
 
+  @Transactional // XXX needed to fetch feature types for layers...
   @GetMapping(path = "${tailormap-api.base-path}/service/{name}/map")
   public MapResponse serviceMap(@PathVariable String name) {
     Pair<GeoService, Application> serviceApplicationPair =
