@@ -104,15 +104,15 @@ SPDX-License-Identifier: MIT
         <jts.version>1.19.0</jts.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <!--
-    Spring-Boot version overrides. see org.springframework.boot:spring-boot-dependencies
-    eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies
+        Spring-Boot version overrides. see org.springframework.boot:spring-boot-dependencies
+        eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies
 
-    and use
-        mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates
-    and
-        mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates
-    to check
-    -->
+        and use
+            mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates
+        and
+            mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates
+        to check
+        -->
         <jackson-bom.version>2.14.2</jackson-bom.version>
         <micrometer.version>1.10.4</micrometer.version>
         <hibernate.version>5.6.15.Final</hibernate.version>
@@ -121,23 +121,23 @@ SPDX-License-Identifier: MIT
         <oracle-database.version>21.9.0.0</oracle-database.version>
         <postgresql.version>42.5.4</postgresql.version>
         <snakeyaml.version>1.33</snakeyaml.version>
-        <spring-security.version>5.8.1</spring-security.version>
+        <spring-security.version>5.8.2</spring-security.version>
         <spring-hateoas.version>1.5.3</spring-hateoas.version>
         <!-- Don't upgrade these; there are some fixed dependencies on org/slf4j/impl/StaticLoggerBinder
-    <logback.version>1.4.1</logback.version>
-    <slf4j.version>2.0.2</slf4j.version>
-    -->
+        <logback.version>1.4.1</logback.version>
+        <slf4j.version>2.0.2</slf4j.version>
+        -->
         <webjars-locator-core.version>0.52</webjars-locator-core.version>
-        <maven.surefire.version>3.0.0-M7</maven.surefire.version>
+        <maven.surefire.version>3.0.0-M9</maven.surefire.version>
         <maven-surefire-plugin.version>${maven.surefire.version}</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>${maven.surefire.version}</maven-failsafe-plugin.version>
-        <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
-        <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
+        <maven-deploy-plugin.version>3.1.0</maven-deploy-plugin.version>
+        <maven-install-plugin.version>3.1.0</maven-install-plugin.version>
         <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
-        <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
-        <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
+        <maven-enforcer-plugin.version>3.2.1</maven-enforcer-plugin.version>
+        <maven-install-plugin.version>3.1.0</maven-install-plugin.version>
         <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
         <!-- end version overrides -->
         <maven-pmd-plugin.version>3.20.0</maven-pmd-plugin.version>
@@ -150,7 +150,7 @@ SPDX-License-Identifier: MIT
         <!-- skip QA checks -->
         <skipQA>false</skipQA>
         <pmd.version>6.54.0</pmd.version>
-        <errorProne.version>2.16</errorProne.version>
+        <errorProne.version>2.18.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
         <compiler.lint>deprecation,unchecked</compiler.lint>
@@ -440,6 +440,11 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.sentry</groupId>
             <artifactId>sentry-jdbc</artifactId>
+            <version>${sentry.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry</artifactId>
             <version>${sentry.version}</version>
         </dependency>
     </dependencies>
@@ -844,15 +849,15 @@ SPDX-License-Identifier: MIT
                                 <!--                  <replacevalue><![CDATA[private Map<String, String> config = new HashMap<>();]]></replacevalue>-->
                                 <!--                </replace>-->
                                 <!-- remove unused imports, this bug seems to be resolved in openapi-generator-maven-plugin 5.4.0
-                <replace dir="target/generated-sources/openapi/src/main/java/nl/b3p/tailormap/api/model/" summary="true">
-                  <replacetoken><![CDATA[import io.swagger.annotations.ApiModel;]]></replacetoken>
-                  <replacevalue></replacevalue>
-                </replace>
-                <replace dir="target/generated-sources/openapi/src/main/java/nl/b3p/tailormap/api/model/" summary="true">
-                  <replacetoken><![CDATA[import io.swagger.annotations.ApiModelProperty;]]></replacetoken>
-                  <replacevalue></replacevalue>
-                </replace>
-                -->
+                                <replace dir="target/generated-sources/openapi/src/main/java/nl/b3p/tailormap/api/model/" summary="true">
+                                  <replacetoken><![CDATA[import io.swagger.annotations.ApiModel;]]></replacetoken>
+                                  <replacevalue></replacevalue>
+                                </replace>
+                                <replace dir="target/generated-sources/openapi/src/main/java/nl/b3p/tailormap/api/model/" summary="true">
+                                  <replacetoken><![CDATA[import io.swagger.annotations.ApiModelProperty;]]></replacetoken>
+                                  <replacevalue></replacevalue>
+                                </replace>
+                                -->
                             </target>
                         </configuration>
                     </execution>
@@ -920,7 +925,7 @@ SPDX-License-Identifier: MIT
             </plugin>
             <plugin>
                 <!-- not bound to any lifecycle, but can be run from commandline using:
-        mvn -U install -DskipTests -DskipITs -Ddocker.skip=true org.owasp:dependency-check-maven:check -->
+                mvn -U install -DskipTests -DskipITs -Ddocker.skip=true org.owasp:dependency-check-maven:check -->
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
                 <configuration>
@@ -1074,6 +1079,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>p6spy:p6spy:jar</exclude>
                                         <!-- basically each and every geotools module has a load of transitive dependencies -->
                                         <exclude>org.geotools:*</exclude>
+                                        <exclude>org.geotools.jdbc:*</exclude>
                                         <exclude>org.geotools.xsd:*</exclude>
                                         <exclude>org.junit-pioneer:junit-pioneer</exclude>
                                     </excludes>
