@@ -160,44 +160,6 @@ components:
             $ref: './viewer-schemas.yaml#/components/schemas/Component'
           nullable: false
 
-    AppResponse:
-      description: 'Basic app information'
-      type: object
-      properties:
-        id:
-          description: 'application id'
-          type: integer
-          format: int64
-        name:
-          type: string
-        version:
-          type: string
-          nullable: true
-        title:
-          type: string
-          nullable: true
-        lang:
-          description: 'language code'
-          type: string
-          enum:
-            - 'nl_NL'
-            - 'en_US'
-          default: 'nl_NL'
-        styling:
-          $ref: './viewer-schemas.yaml#/components/schemas/AppStyling'
-        components:
-          description: '
-          Provides the collection of configured components (controls) for the application.
-          Note that default/built-in components do not have to be retrieved.
-          '
-          type: array
-          nullable: false
-          # 0, because there are a number of default components always loaded eg. mapcomponent, zoom, pan...
-          # also, since layout is fixed, that information is no longer needed
-          minLength: 0
-          items:
-            $ref: './viewer-schemas.yaml#/components/schemas/Component'
-
     FeaturesResponse:
       description: 'A -possibly empty- list of features with requested attributes and presentation metadata'
       type: object
@@ -322,10 +284,10 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
-  /viewer:
+  /app:
     get:
-      operationId: getDefaultViewer
-      summary: 'Get information the default viewer'
+      operationId: getDefaultApp
+      summary: 'Get information the default app'
       security:
         - formAuth: []
       responses:
@@ -337,13 +299,15 @@ paths:
                 $ref: '#/components/schemas/ViewerResponse'
         401:
           description: Authentication required
+        403:
+          description: Access denied
         404:
           description: Not Found
 
-  /viewer/{name}:
+  /app/{name}:
     get:
-      operationId: getViewerByName
-      summary: 'Get information about a viewer app'
+      operationId: getAppByName
+      summary: 'Get information about an app'
       security:
         - formAuth: []
       parameters:
@@ -361,13 +325,15 @@ paths:
                 $ref: '#/components/schemas/ViewerResponse'
         401:
           description: Authentication required
+        403:
+          description: Access denied
         404:
           description: Not Found
 
-  /viewer/{name}/map:
+  /app/{name}/map:
     get:
-      operationId: getViewerMap
-      summary: 'Get viewer map contents'
+      operationId: getAppMap
+      summary: 'Get app map'
       security:
         - formAuth: []
       parameters:
@@ -403,6 +369,8 @@ paths:
                 $ref: '#/components/schemas/MapResponse'
         401:
           description: Authentication required
+        403:
+          description: Access denied
         404:
           description: Not Found
 
@@ -428,13 +396,15 @@ paths:
                 $ref: '#/components/schemas/ViewerResponse'
         401:
           description: Authentication required
+        403:
+          description: Access denied
         404:
           description: Not Found
 
   /service/{name}/map:
     get:
       operationId: getServiceViewerMap
-      summary: 'Get service viewer map contents'
+      summary: 'Get service viewer map'
       security:
         - formAuth: []
       parameters:
@@ -471,136 +441,45 @@ paths:
                 $ref: '#/components/schemas/MapResponse'
         401:
           description: Authentication required
+        403:
+          description: Access denied
         404:
           description: Not Found
 
-  /app/:
-    description: 'Will return general setup information such as name, appId, language, but not map specific information.'
-    get:
-      description: '
-        Use this endpoint to get the id of the requested or default application.
-        Either call this with `name` or `appId` or without any parameters for the default application.
-        '
-      operationId: 'getApp'
-      security:
-        - formAuth: [ ]
-      parameters:
-        - in: query
-          name: name
-          schema:
-            type: string
-        - in: query
-          name: appId
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AppResponse'
-        '401':
-          description: 'Authentication required.'
-          content:
-            application/json:
-              schema:
-                # not an actual HTTP redirect, but provides login url
-                # frontend can decide to show a login form
-                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
-              example:
-                code: 401
-                message: 'login required'
-                url: '/login'
-        '403':
-          description: 'Access denied'
-          content:
-            application/json:
-              schema:
-                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
-        '404':
-          description: Not found
-          content:
-            application/json:
-              schema:
-                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
-        '500':
-          description: 'Internal server error'
-          content:
-            application/json:
-              schema:
-                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
-
-  /app/{appId}/map:
-    get:
-      description: 'Retrieve the map''s bounding box, projection, language and (optional) base layers.
-        This document provides all that is necessary to draw a map with (optional) baselayers.'
-      operationId: 'getMap'
-      security:
-        - formAuth: [ ]
-      parameters:
-        - description: 'application id'
-          in: path
-          name: appId
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: 'OK'
-          content:
-            application/json: # TODO
-              # example:
-              schema:
-                $ref: '#/components/schemas/MapResponse'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
-        '500':
-          description: 'Error'
-          content:
-            application/json:
-              example:
-                code: 500
-                message: 'Internal server error'
-              schema:
-                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
-
-  /app/{appId}/layer/{layerId}/describe:
-    description: '
-    Returns metadata and featuretype of the requested app layer, aka. layer details
-    '
+  /{kind}/{name}/service/{service}/layer/{layer}/describe:
+    description: 'Returns metadata and feature type of the requested layer'
     get:
       operationId: 'describeLayer'
       description: 'provides layer details'
       security:
         - formAuth: [ ]
       parameters:
-        - description: 'application id'
+        - description: 'viewer kind'
           in: path
-          name: appId
+          name: kind
+          schema:
+            type: string
+            enum:
+              - app
+              - service
+        - description: 'viewer name'
+          in: path
+          name: name
           required: true
           schema:
-            type: integer
-            format: int64
-        - description: 'layer id'
+            type: string
+        - description: 'service name'
           in: path
-          name: layerId
+          name: service
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
+        - description: 'layer name or alias'
+          in: path
+          name: layer
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -615,27 +494,39 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
-  /app/{appId}/layer/{layerId}/export/capabilities:
+  /{kind}/{name}/service/{service}/layer/{layer}/export/capabilities:
     description: Returns layer export capabilities. Retrieving this information may take some time.
     get:
       operationId: 'getLayerExportCapabilities'
       security:
         - formAuth: [ ]
       parameters:
-        - description: 'application id'
+        - description: 'viewer kind'
           in: path
-          name: appId
+          name: kind
+          schema:
+            type: string
+            enum:
+              - app
+              - service
+        - description: 'viewer name'
+          in: path
+          name: name
           required: true
           schema:
-            type: integer
-            format: int64
-        - description: 'layer id'
+            type: string
+        - description: 'service name'
           in: path
-          name: layerId
+          name: service
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
+        - description: 'layer name or alias'
+          in: path
+          name: layer
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -650,7 +541,7 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
-  /app/{appId}/layer/{layerId}/export/download:
+  /{kind}/{name}/service/{service}/layer/{layer}/export/download:
     description: Directly stream layer data export response for download. POST request to allow a large filter in the
       request body.
     post:
@@ -658,18 +549,32 @@ paths:
       security:
         - formAuth: [ ]
       parameters:
-        - name: appId
+        - description: 'viewer kind'
           in: path
+          name: kind
+          schema:
+            type: string
+            enum:
+              - app
+              - service
+        - description: 'viewer name'
+          in: path
+          name: name
           required: true
           schema:
-            type: integer
-            format: int64
-        - name: layerId
+            type: string
+        - description: 'service name'
           in: path
+          name: service
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
+        - description: 'layer name or alias'
+          in: path
+          name: layer
+          required: true
+          schema:
+            type: string
         - name: outputFormat
           description: Output format from capabilities.
           in: query
@@ -723,23 +628,35 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
-  /app/{appId}/layer/{layerId}/features:
+  /{kind}/{name}/service/{service}/layer/{layer}/features:
     summary: 'Use this endpoint to access features.'
     parameters:
-      - description: 'application id'
+      - description: 'viewer kind'
         in: path
-        name: appId
+        name: kind
+        schema:
+          type: string
+          enum:
+            - app
+            - service
+      - description: 'viewer name'
+        in: path
+        name: name
         required: true
         schema:
-          type: integer
-          format: int64
-      - description: 'application layer id'
+          type: string
+      - description: 'service name'
         in: path
-        name: layerId
+        name: service
         required: true
         schema:
-          type: integer
-          format: int64
+          type: string
+      - description: 'layer name or alias'
+        in: path
+        name: layer
+        required: true
+        schema:
+          type: string
       - description: 'x-coordinate, assumed in the coordinate reference system of the attribute source if crs is omitted'
         in: query
         name: x
@@ -888,23 +805,35 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
-  /app/{appId}/layer/{layerId}/unique/{attributeName}:
+  /{kind}/{name}/service/{service}/layer/{layer}/unique/{attributeName}:
     summary: 'Use this endpoint to get a list of unique value of a layer''s feature type attribute.'
     parameters:
-      - description: 'application id'
+      - description: 'viewer kind'
         in: path
-        name: appId
+        name: kind
+        schema:
+          type: string
+          enum:
+            - app
+            - service
+      - description: 'viewer name'
+        in: path
+        name: name
         required: true
         schema:
-          type: integer
-          format: int64
-      - description: 'application layer id'
+          type: string
+      - description: 'service name'
         in: path
-        name: layerId
+        name: service
         required: true
         schema:
-          type: integer
-          format: int64
+          type: string
+      - description: 'layer name or alias'
+        in: path
+        name: layer
+        required: true
+        schema:
+          type: string
       - description: 'attribute name'
         in: path
         name: attributeName
@@ -981,22 +910,34 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
-  /app/{appId}/layer/{layerId}/proxy/{protocol}:
+  /{kind}/{name}/service/{service}/layer/{layer}/proxy/{protocol}:
     parameters:
-      - description: 'application id'
+      - description: 'viewer kind'
         in: path
-        name: appId
+        name: kind
+        schema:
+          type: string
+          enum:
+            - app
+            - service
+      - description: 'viewer name'
+        in: path
+        name: name
         required: true
         schema:
-          type: integer
-          format: int64
-      - description: 'application layer id'
+          type: string
+      - description: 'service name'
         in: path
-        name: layerId
+        name: service
         required: true
         schema:
-          type: integer
-          format: int64
+          type: string
+      - description: 'layer name or alias'
+        in: path
+        name: layer
+        required: true
+        schema:
+          type: string
       - description: 'proxy protocol, must equal ''wmts'' or ''wms'''
         in: path
         name: protocol
