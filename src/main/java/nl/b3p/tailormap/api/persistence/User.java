@@ -5,8 +5,9 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,6 +21,8 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import nl.b3p.tailormap.api.util.TMPasswordDeserializer;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -29,7 +32,13 @@ public class User {
 
   @Version private Long version;
 
-  @NotNull @JsonIgnore private String password;
+  @NotNull
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  @JsonDeserialize(using = TMPasswordDeserializer.class)
+  // bcrypt MAX/MIN length is 60 + {bcrypt} token, but for testing we use shorter plain text
+  // passwords
+  @Size(max = (8 + 60))
+  private String password;
 
   @Email private String email;
 
