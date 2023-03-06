@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Locale;
@@ -30,27 +31,15 @@ public class TMPasswordDeserializer extends JsonDeserializer<String> {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private boolean enabled = true;
-  private int minLength = 8;
-  private int minStrength = 3;
-
   /**
-   * for testing purposes.
-   *
-   * @param enabled {@code true} if strong password validation is enabled, {@code false} otherwise,
-   *     defaults to true
-   * @param minLength minimum length of the password, defaults to 8
-   * @param minStrength minimum strength of the password, defaults to 4 (very strong
+   * {@code true} if strong password validation is enabled, {@code false} otherwise, defaults to
+   * true.
    */
-  TMPasswordDeserializer(boolean enabled, int minLength, int minStrength) {
-    this.enabled = enabled;
-    this.minLength = minLength;
-    this.minStrength = minStrength;
-  }
-
-  public TMPasswordDeserializer() {
-    // default constructor needed for jackson
-  }
+  private boolean enabled = true;
+  /** minimum length of the password, defaults to 8. */
+  private int minLength = 8;
+  /** minimum strength of the password, defaults to 4 (very strong). */
+  private int minStrength = 4;
 
   /**
    * Encrypt the password with the default PasswordEncoder (bcrypt).
@@ -66,14 +55,32 @@ public class TMPasswordDeserializer extends JsonDeserializer<String> {
       throws IOException {
     logger.debug("Deserializing password");
     ObjectCodec codec = jsonParser.getCodec();
-    JsonNode node = codec.readTree(jsonParser);
+    ObjectMapper mapper = (ObjectMapper) codec;
 
-    boolean isValid = validate(node, jsonParser);
-    if (!isValid) {
+    this.enabled =
+        (Boolean)
+            mapper
+                .getInjectableValues()
+                .findInjectableValue("tailormap-api.strong-password.validation", ctxt, null, null);
+    this.minLength =
+        (Integer)
+            mapper
+                .getInjectableValues()
+                .findInjectableValue("tailormap-api.strong-password.min-length", ctxt, null, null);
+    this.minStrength =
+        (Integer)
+            mapper
+                .getInjectableValues()
+                .findInjectableValue(
+                    "tailormap-api.strong-password.min-strength", ctxt, null, null);
+
+    JsonNode node = codec.readTree(jsonParser);
+    if (!validate(node, jsonParser)) {
       throw new InvalidPasswordException(jsonParser, "An invalid password was given.");
     }
 
     PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
     return encoder.encode(node.asText());
   }
 
@@ -82,7 +89,7 @@ public class TMPasswordDeserializer extends JsonDeserializer<String> {
    *
    * @param password the password to validate
    * @param jsonParser Parser used for reading JSON content, only used for error reporting
-   * @return true if the password is valid
+   * @return {@code true} if the password is valid
    * @throws InvalidPasswordException when the password is not valid according to the rules
    */
   private boolean validate(JsonNode password, JsonParser jsonParser)

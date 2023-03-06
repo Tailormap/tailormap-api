@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import nl.b3p.tailormap.api.security.InvalidPasswordException;
@@ -26,9 +27,16 @@ class TMPasswordDeserializerTest {
 
   @BeforeEach
   void setup() {
+    InjectableValues.Std std =
+        new InjectableValues.Std()
+            .addValue("tailormap-api.strong-password.validation", true)
+            .addValue("tailormap-api.strong-password.min-length", 8)
+            .addValue("tailormap-api.strong-password.min-strength", 4);
+
     this.mapper = new ObjectMapper();
+    this.mapper.setInjectableValues(std);
     this.ctxt = mapper.getDeserializationContext();
-    this.deserializer = new TMPasswordDeserializer(true, 8, 4);
+    this.deserializer = new TMPasswordDeserializer();
   }
 
   @Test
