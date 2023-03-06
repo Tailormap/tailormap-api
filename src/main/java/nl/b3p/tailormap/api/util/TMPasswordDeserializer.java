@@ -8,9 +8,11 @@ package nl.b3p.tailormap.api.util;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Locale;
@@ -55,24 +57,31 @@ public class TMPasswordDeserializer extends JsonDeserializer<String> {
       throws IOException {
     logger.debug("Deserializing password");
     ObjectCodec codec = jsonParser.getCodec();
-    ObjectMapper mapper = (ObjectMapper) codec;
 
-    this.enabled =
-        (Boolean)
-            mapper
-                .getInjectableValues()
-                .findInjectableValue("tailormap-api.strong-password.validation", ctxt, null, null);
-    this.minLength =
-        (Integer)
-            mapper
-                .getInjectableValues()
-                .findInjectableValue("tailormap-api.strong-password.min-length", ctxt, null, null);
-    this.minStrength =
-        (Integer)
-            mapper
-                .getInjectableValues()
-                .findInjectableValue(
-                    "tailormap-api.strong-password.min-strength", ctxt, null, null);
+    InjectableValues injectableValues = null;
+    // codec can also be JsonMapper or TomlMapper as well, those extend ObjectMapper
+    if (codec instanceof ObjectMapper) {
+      injectableValues = ((ObjectMapper) codec).getInjectableValues();
+    } else if (codec instanceof ObjectReader) {
+      injectableValues = ((ObjectReader) codec).getInjectableValues();
+    }
+
+    if (null != injectableValues) {
+      this.enabled =
+          (Boolean)
+              injectableValues.findInjectableValue(
+                  "tailormap-api.strong-password.validation", ctxt, null, null);
+      this.minLength =
+          (Integer)
+              injectableValues.findInjectableValue(
+                  "tailormap-api.strong-password.min-length", ctxt, null, null);
+      this.minStrength =
+          (Integer)
+              injectableValues.findInjectableValue(
+                  "tailormap-api.strong-password.min-strength", ctxt, null, null);
+    } else {
+      logger.warn("No configuration values found for password deserializer, using defaults");
+    }
 
     JsonNode node = codec.readTree(jsonParser);
     if (!validate(node, jsonParser)) {
