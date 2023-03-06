@@ -162,7 +162,7 @@ jobs:
         with:
           serverhostname: ${{ secrets.DEPENDENCY_TRACK_HOSTNAME }}
           apikey: ${{ secrets.DEPENDENCY_TRACK_APIKEY }}
-          project: '0863efa3-a35a-4b8d-9e0c-a590e310a094'
+          project: '00501150-f4b1-4d75-a099-a6a9d1d8f06a'
           bomfilename: 'target/bom.xml'
 
 
