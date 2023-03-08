@@ -347,7 +347,7 @@ paths:
           schema:
             type: string
           description: '[TODO] Base viewer. Must be in the baseApps list or empty for the default.
-            'none' is the special value for no base app. If the baseApp is not in the list, the
+            ''none'' is the special value for no base app. If the baseApp is not in the list, the
             default base app is used (returned in response).'
         - in: query
           name: projection
@@ -419,13 +419,13 @@ paths:
           schema:
             type: string
           description: '[TODO] Base viewer app. Must be in the baseApps list or empty for the default. 
-            'none' is the special value for no base app. If the baseApp is not in the list, the 
+            ''none'' is the special value for no base app. If the baseApp is not in the list, the 
             default base app is used (returned in response).'
         - in: query
           name: projection
           schema:
             type: string
-          description: ''[TODO] Projection. Must be in the projections list or empty for the default. If the
+          description: '[TODO] Projection. Must be in the projections list or empty for the default. If the
             projection is not in the list, the default projection is used (returned in response).'
         - in: query
           name: lang
