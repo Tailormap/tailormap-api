@@ -457,6 +457,7 @@ paths:
         - description: 'viewer kind'
           in: path
           name: kind
+          required: true
           schema:
             type: string
             enum:
@@ -504,6 +505,7 @@ paths:
         - description: 'viewer kind'
           in: path
           name: kind
+          required: true
           schema:
             type: string
             enum:
@@ -552,6 +554,7 @@ paths:
         - description: 'viewer kind'
           in: path
           name: kind
+          required: true
           schema:
             type: string
             enum:
@@ -634,6 +637,7 @@ paths:
       - description: 'viewer kind'
         in: path
         name: kind
+        required: true
         schema:
           type: string
           enum:
@@ -811,6 +815,7 @@ paths:
       - description: 'viewer kind'
         in: path
         name: kind
+        required: true
         schema:
           type: string
           enum:
@@ -915,6 +920,7 @@ paths:
       - description: 'viewer kind'
         in: path
         name: kind
+        required: true
         schema:
           type: string
           enum:

@@ -27,7 +27,6 @@ import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
-import nl.b3p.tailormap.api.viewer.model.AppResponse;
 import nl.b3p.tailormap.api.viewer.model.AppStyling;
 import nl.b3p.tailormap.api.viewer.model.Component;
 import nl.b3p.tailormap.api.viewer.model.ViewerResponse;
@@ -224,10 +223,6 @@ public class Application {
 
   // </editor-fold>
 
-  public AppResponse toAppResponse() {
-    return new AppResponse().id(id).name(name).title(title).styling(styling).components(components);
-  }
-
   @PrePersist
   @PreUpdate
   public void assignAppLayerRefIds() {
@@ -296,6 +291,8 @@ public class Application {
         .kind(ViewerResponse.KindEnum.APP)
         .name(getName())
         .title(getTitle())
+        .styling(styling)
+        .components(components)
         .languages(List.of("NL_nl"))
         .projections(List.of(getCrs()));
   }

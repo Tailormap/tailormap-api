@@ -231,8 +231,10 @@ components:
               - $ref: '#/components/schemas/WMSLayerSettings'
               - $ref: '#/components/schemas/WMTSLayerSettings'
           example:
-            'myLayer':
-              title: Some other title
+            'begroeidterreindeel':
+              title: laag 1
+            'begroeidterreindeel_2':
+              title: laag 2
             'otherLayer':
               hiDpiDisabled: true
 
