@@ -107,21 +107,23 @@ public class ApplicationHelper {
                 app.getContentRoot()
                     .addLayersItem(
                         new AppLayerRef()
-                            .serviceId(service.getId())
+                            .serviceName(service.getName())
                             .layerName(l.getName())
                             .title(l.getTitle())));
-    app.assignAppLayerRefIds();
+    app.assignAppLayerRefNames();
     return toMapResponse(app);
   }
 
   private class MapResponseLayerBuilder {
     private int levelIdCounter = 0;
 
+    private int layerIdCounter = 0;
+
     private final Application app;
     private final MapResponse mr;
 
-    // XXX not needed if we have GeoServiceLayer.getService().getId()
-    private final Map<GeoServiceLayer, Long> serviceLayerServiceIds = new HashMap<>();
+    // XXX not needed if we have GeoServiceLayer.getService().getName()
+    private final Map<GeoServiceLayer, String> serviceLayerServiceNames = new HashMap<>();
 
     public MapResponseLayerBuilder(Application app, MapResponse mr) {
       this.app = app;
@@ -216,12 +218,11 @@ public class ApplicationHelper {
 
       mr.addAppLayersItem(
           new AppLayer()
-              // XXX id's must be from config, not generated -> use string identifiers instead
-              .id(layerRef.getId())
-              .hasAttributes(tmft != null)
-              .serviceId(serviceLayerServiceIds.get(serviceLayer))
-              .url(proxied ? getProxyUrl(service, app, layerRef) : null)
+              .name(layerRef.getName())
+              .serviceName(serviceLayerServiceNames.get(serviceLayer))
               .layerName(layerRef.getLayerName())
+              .hasAttributes(tmft != null)
+              .url(proxied ? getProxyUrl(service, app, layerRef) : null)
               // Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools
               // gt-wms Layer class?
               .maxScale(serviceLayer.getMaxScale())
@@ -237,8 +238,8 @@ public class ApplicationHelper {
 
       LayerTreeNode layerNode =
           new LayerTreeNode()
-              .id("lyr_" + layerRef.getId())
-              .appLayerId(layerRef.getId().intValue())
+              .id("lyr_" + layerIdCounter++)
+              .appLayerName(layerRef.getName())
               .description(serviceLayer.getAbstractText())
               .name(title)
               .root(false);
@@ -248,13 +249,13 @@ public class ApplicationHelper {
 
     private Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> findServiceLayer(
         AppLayerRef layerRef) {
-      GeoService service = geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);
+      GeoService service = geoServiceRepository.findByName(layerRef.getServiceName());
       if (service == null) {
         logger.warn(
             "App {} references layer \"{}\" of missing service {}",
             app.getId(),
             layerRef.getLayerName(),
-            layerRef.getServiceId());
+            layerRef.getServiceName());
         return Triple.of(null, null, null);
       }
       GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());
@@ -268,10 +269,10 @@ public class ApplicationHelper {
         return Triple.of(null, null, null);
       }
 
-      serviceLayerServiceIds.put(serviceLayer, service.getId());
+      serviceLayerServiceNames.put(serviceLayer, service.getName());
 
       if (mr.getServices().stream()
-          .filter(s -> s.getId().equals(service.getId()))
+          .filter(s -> s.getName().equals(service.getName()))
           .findAny()
           .isEmpty()) {
         mr.addServicesItem(service.toJsonPojo(geoServiceHelper));
@@ -287,8 +288,9 @@ public class ApplicationHelper {
     return linkTo(
             GeoServiceProxyController.class,
             Map.of(
-                "appId", application.getId(),
-                "appLayerId", appLayerRef.getId(),
+                "kind", "app", // XXX
+                "name", application.getName(),
+                "appLayerName", appLayerRef.getName(),
                 "protocol", geoService.getProtocol().getValue()))
         .toString();
   }

@@ -39,8 +39,8 @@ components:
             properties:
               kind:
                 type: string
-                enum: ['geo-service', 'feature-source']
-              id:
+                enum: ['geo-service', 'feature-source', 'app']
+              name:
                 type: string
 
     TMServiceCaps:
@@ -347,15 +347,13 @@ components:
             $ref: '#/components/schemas/AppContent'
 
     AppLayerRef:
-      required: [id, serviceId, layerName, visible, opacity]
+      required: [name, serviceName, layerName, visible, opacity]
       properties:
-        id:
-          type: integer
-          format: int64
+        name:
+          type: string
           nullable: false
-        serviceId:
-          type: integer
-          format: int64
+        serviceName:
+          type: string
           nullable: false
         layerName:
           type: string

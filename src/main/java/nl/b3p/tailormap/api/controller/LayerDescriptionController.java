@@ -59,8 +59,8 @@ public class LayerDescriptionController {
 
     LayerDetails r =
         new LayerDetails()
-            .id(ref.getId())
-            .serviceId(ref.getServiceId())
+            // XXX.id(ref.getId())
+            // XXX.serviceId(ref.getServiceId())
             .featureTypeName(tmft.getName())
             .geometryAttribute(tmft.getDefaultGeometryAttribute())
             .geometryType(

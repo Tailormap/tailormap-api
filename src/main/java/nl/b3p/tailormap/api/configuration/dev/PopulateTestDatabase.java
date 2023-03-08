@@ -9,9 +9,9 @@ import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
 
 import java.lang.invoke.MethodHandles;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import nl.b3p.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Catalog;
@@ -142,121 +142,105 @@ public class PopulateTestDatabase implements EnvironmentAware {
     rootCatalogNode.addChildrenItem(catalogNode.getId());
     catalog.getNodes().add(catalogNode);
 
-    SortedMap<String, GeoService> services =
-        new TreeMap<>(
-            Map.of(
-                "0-geoserver",
-                new GeoService()
-                    .setName("snapshot-geoserver")
-                    .setProtocol(WMS)
-                    .setTitle("Test GeoServer")
-                    .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
-                    .setPublished(true),
-                "0p-geoserver",
-                new GeoService()
-                    .setName("snapshot-geoserver-proxied")
-                    .setProtocol(WMS)
-                    .setTitle("Test GeoServer (proxied)")
-                    .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
-                    .setSettings(new GeoServiceSettings().useProxy(true)),
-                "1-openbasiskaart",
-                new GeoService()
-                    .setName("openbasiskaart")
-                    .setProtocol(WMTS)
-                    .setTitle("Openbasiskaart")
-                    .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
-                    .setSettings(
-                        new GeoServiceSettings()
-                            .layerSettings(
-                                Map.of(
-                                    "osm",
-                                    new GeoServiceLayerSettings()
-                                        .hiDpiMode(
-                                            TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
-                                        .hiDpiSubstituteLayer("osm-hq")))),
-                "1p-openbasiskaart",
-                new GeoService()
-                    .setName("openbasiskaart-proxied")
-                    .setProtocol(WMTS)
-                    .setTitle("Openbasiskaart (proxied)")
-                    .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
-                    .setSettings(
-                        new GeoServiceSettings()
-                            .useProxy(true)
-                            .layerSettings(
-                                Map.of(
-                                    "osm",
-                                    new GeoServiceLayerSettings()
-                                        .hiDpiMode(
-                                            TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
-                                        .hiDpiSubstituteLayer("osm-hq")))),
-                "2-pdok luchtfoto",
-                new GeoService()
-                    .setName("pdok-hwh-luchtfotorgb")
-                    .setProtocol(WMTS)
-                    .setTitle("PDOK HWH luchtfoto")
-                    .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
-                    .setPublished(true)
-                    .setSettings(
-                        new GeoServiceSettings()
-                            .defaultLayerSettings(
-                                new GeoServiceDefaultLayerSettings()
-                                    .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))),
-                "3-basemap.at",
-                new GeoService()
-                    .setName("at-basemap")
-                    .setProtocol(WMTS)
-                    .setTitle("basemap.at")
-                    .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
-                    .setPublished(true)
-                    .setSettings(
-                        new GeoServiceSettings()
-                            .layerSettings(
-                                Map.of(
-                                    "geolandbasemap",
-                                    new GeoServiceLayerSettings()
-                                        .hiDpiMode(
-                                            TileLayerHiDpiMode.SUBSTITUTELAYERTILEPIXELRATIOONLY)
-                                        .hiDpiSubstituteLayer("bmaphidpi"),
-                                    "bmaporthofoto30cm",
-                                    new GeoServiceLayerSettings()
-                                        .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL)))),
-                "4-bestuurlijke-gebieden",
-                new GeoService()
-                    .setName("pdok-kadaster-bestuurlijkegebieden")
-                    .setProtocol(WMS)
-                    .setUrl(
-                        "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
-                    .setSettings(
-                        new GeoServiceSettings()
-                            .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER))
-                    .setPublished(true)
-                //        new GeoService()
-                //            .setProtocol(WMS)
-                //            .setTitle("Norway - Administrative enheter")
-                //            .setUrl("https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk")
-                //            .setSettings(new
-                // GeoServiceSettings().serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)),
-                ));
+    Collection<GeoService> services =
+        List.of(
+            new GeoService()
+                .setName("snapshot-geoserver")
+                .setProtocol(WMS)
+                .setTitle("Test GeoServer")
+                .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
+                .setPublished(true),
+            new GeoService()
+                .setName("snapshot-geoserver-proxied")
+                .setProtocol(WMS)
+                .setTitle("Test GeoServer (proxied)")
+                .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
+                .setSettings(new GeoServiceSettings().useProxy(true)),
+            new GeoService()
+                .setName("openbasiskaart")
+                .setProtocol(WMTS)
+                .setTitle("Openbasiskaart")
+                .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
+                .setSettings(
+                    new GeoServiceSettings()
+                        .layerSettings(
+                            Map.of(
+                                "osm",
+                                new GeoServiceLayerSettings()
+                                    .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
+                                    .hiDpiSubstituteLayer("osm-hq")))),
+            new GeoService()
+                .setName("openbasiskaart-proxied")
+                .setProtocol(WMTS)
+                .setTitle("Openbasiskaart (proxied)")
+                .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
+                .setSettings(
+                    new GeoServiceSettings()
+                        .useProxy(true)
+                        .layerSettings(
+                            Map.of(
+                                "osm",
+                                new GeoServiceLayerSettings()
+                                    .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
+                                    .hiDpiSubstituteLayer("osm-hq")))),
+            new GeoService()
+                .setName("pdok-hwh-luchtfotorgb")
+                .setProtocol(WMTS)
+                .setTitle("PDOK HWH luchtfoto")
+                .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
+                .setPublished(true)
+                .setSettings(
+                    new GeoServiceSettings()
+                        .defaultLayerSettings(
+                            new GeoServiceDefaultLayerSettings()
+                                .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL))),
+            new GeoService()
+                .setName("at-basemap")
+                .setProtocol(WMTS)
+                .setTitle("basemap.at")
+                .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
+                .setPublished(true)
+                .setSettings(
+                    new GeoServiceSettings()
+                        .layerSettings(
+                            Map.of(
+                                "geolandbasemap",
+                                new GeoServiceLayerSettings()
+                                    .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERTILEPIXELRATIOONLY)
+                                    .hiDpiSubstituteLayer("bmaphidpi"),
+                                "bmaporthofoto30cm",
+                                new GeoServiceLayerSettings()
+                                    .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL)))),
+            new GeoService()
+                .setName("pdok-kadaster-bestuurlijkegebieden")
+                .setProtocol(WMS)
+                .setUrl(
+                    "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
+                .setSettings(
+                    new GeoServiceSettings()
+                        .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER))
+                .setPublished(true)
+            // TODO MapServer WMS "https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk"
+            );
 
-    for (GeoService geoService : services.values()) {
+    for (GeoService geoService : services) {
       geoServiceHelper.loadServiceCapabilities(geoService);
 
       geoServiceRepository.save(geoService);
-      // TODO change GeoService.id to String
       catalogNode.addItemsItem(
           new TailormapObjectRef()
               .kind(TailormapObjectRef.KindEnum.GEO_SERVICE)
-              .id(geoService.getId() + ""));
+              .name(geoService.getName()));
     }
     catalogRepository.save(catalog);
 
-    services.values().stream()
+    services.stream()
         .filter(s -> s.getProtocol() == WMS)
         .forEach(geoServiceHelper::findAndSaveRelatedWFS);
 
     String geodataPassword = "980f1c8A-25933b2";
 
+    // TODO FeatureSource.id -> FeatureSource.name
     Map<String, TMFeatureSource> featureSources =
         Map.of(
             "postgis",
@@ -336,33 +320,32 @@ public class PopulateTestDatabase implements EnvironmentAware {
                 }
               });
 
-      services
-          .get("0-geoserver")
-          .getSettings()
-          .layerSettings(
-              Map.of(
-                  "postgis:begroeidterreindeel",
-                      new GeoServiceLayerSettings()
-                          .featureType(
-                              new FeatureTypeRef()
-                                  .featureSourceId(featureSources.get("postgis").getId())),
-                  "sqlserver:wegdeel",
-                      new GeoServiceLayerSettings()
-                          .featureType(
-                              new FeatureTypeRef()
-                                  .featureSourceId(featureSources.get("sqlserver").getId())),
-                  "oracle:WATERDEEL",
-                      new GeoServiceLayerSettings()
-                          .featureType(
-                              new FeatureTypeRef()
-                                  .featureSourceId(featureSources.get("oracle").getId()))));
+      services.stream()
+          .filter(s -> s.getName().startsWith("snapshot-geoserver"))
+          .forEach(
+              s ->
+                  s.getSettings()
+                      .layerSettings(
+                          Map.of(
+                              "postgis:begroeidterreindeel",
+                                  new GeoServiceLayerSettings()
+                                      .featureType(
+                                          new FeatureTypeRef()
+                                              .featureSourceId(
+                                                  featureSources.get("postgis").getId())),
+                              "sqlserver:wegdeel",
+                                  new GeoServiceLayerSettings()
+                                      .featureType(
+                                          new FeatureTypeRef()
+                                              .featureSourceId(
+                                                  featureSources.get("sqlserver").getId())),
+                              "oracle:WATERDEEL",
+                                  new GeoServiceLayerSettings()
+                                      .featureType(
+                                          new FeatureTypeRef()
+                                              .featureSourceId(
+                                                  featureSources.get("oracle").getId())))));
     }
-
-    Long testId = services.get("0-geoserver").getId();
-    Long testpId = services.get("0p-geoserver").getId();
-    Long obkId = services.get("1-openbasiskaart").getId();
-    Long obkpId = services.get("1p-openbasiskaart").getId();
-    Long lufoId = services.get("2-pdok luchtfoto").getId();
 
     Application app =
         new Application()
@@ -374,13 +357,14 @@ public class PopulateTestDatabase implements EnvironmentAware {
                     .addBaseLayersItem(
                         new BaseLayerInner()
                             .title("Openbasiskaart")
-                            .addLayersItem(new AppLayerRef().serviceId(obkId).layerName("osm")))
+                            .addLayersItem(
+                                new AppLayerRef().serviceName("openbasiskaart").layerName("osm")))
                     .addBaseLayersItem(
                         new BaseLayerInner()
                             .title("Luchtfoto")
                             .addLayersItem(
                                 new AppLayerRef()
-                                    .serviceId(lufoId)
+                                    .serviceName("pdok-hwh-luchtfotorgb")
                                     .layerName("Actueel_orthoHR")
                                     .visible(false)))
                     .addBaseLayersItem(
@@ -388,25 +372,32 @@ public class PopulateTestDatabase implements EnvironmentAware {
                             .title("Openbasiskaart (proxied)")
                             .addLayersItem(
                                 new AppLayerRef()
-                                    .serviceId(obkpId)
+                                    .serviceName("openbasiskaart-proxied")
                                     .layerName("osm")
                                     .visible(false)))
                     .addLayersItem(
                         new AppLayerRef()
-                            .serviceId(testId)
+                            .serviceName("snapshot-geoserver")
                             .layerName("postgis:begroeidterreindeel"))
                     .addLayersItem(
                         new AppLayerRef()
-                            .serviceId(testpId)
+                            .serviceName("snapshot-geoserver-proxied")
                             .title("begroeidterreindeel (proxied)")
                             .layerName("postgis:begroeidterreindeel")
                             .visible(false))
                     .addLayersItem(
-                        new AppLayerRef().serviceId(testId).layerName("sqlserver:wegdeel"))
+                        new AppLayerRef()
+                            .serviceName("snapshot-geoserver")
+                            .layerName("sqlserver:wegdeel"))
                     .addLayersItem(
-                        new AppLayerRef().serviceId(testId).layerName("oracle:WATERDEEL"))
+                        new AppLayerRef()
+                            .serviceName("snapshot-geoserver")
+                            .layerName("oracle:WATERDEEL"))
                     .addLayersItem(
-                        new AppLayerRef().serviceId(testId).layerName("BGT").visible(false)));
+                        new AppLayerRef()
+                            .serviceName("snapshot-geoserver")
+                            .layerName("BGT")
+                            .visible(false)));
     app.setInitialExtent(new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));
     app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));
     applicationRepository.save(app);
@@ -421,18 +412,17 @@ public class PopulateTestDatabase implements EnvironmentAware {
                     .addBaseLayersItem(
                         new BaseLayerInner()
                             .title("Openbasiskaart")
-                            .addLayersItem(new AppLayerRef().serviceId(obkId).layerName("osm")))
+                            .addLayersItem(
+                                new AppLayerRef().serviceName("openbasiskaart").layerName("osm")))
                     .addBaseLayersItem(
                         new BaseLayerInner()
                             .title("Luchtfoto")
                             .addLayersItem(
                                 new AppLayerRef()
-                                    .serviceId(lufoId)
+                                    .serviceName("pdok-hwh-luchtfotorgb")
                                     .layerName("Actueel_orthoHR")
                                     .visible(false))));
     applicationRepository.save(app);
-
-    Long basemapAtId = services.get("3-basemap.at").getId();
 
     app =
         new Application()
@@ -448,14 +438,14 @@ public class PopulateTestDatabase implements EnvironmentAware {
                             .title("Basemap")
                             .addLayersItem(
                                 new AppLayerRef()
-                                    .serviceId(basemapAtId)
+                                    .serviceName("at-basemap")
                                     .layerName("geolandbasemap")))
                     .addBaseLayersItem(
                         new BaseLayerInner()
                             .title("Orthofoto")
                             .addLayersItem(
                                 new AppLayerRef()
-                                    .serviceId(basemapAtId)
+                                    .serviceName("at-basemap")
                                     .layerName("bmaporthofoto30cm")
                                     .visible(false)))
                     .addBaseLayersItem(
@@ -463,12 +453,12 @@ public class PopulateTestDatabase implements EnvironmentAware {
                             .title("Orthofoto with labels")
                             .addLayersItem(
                                 new AppLayerRef()
-                                    .serviceId(basemapAtId)
+                                    .serviceName("at-basemap")
                                     .layerName("bmapoverlay")
                                     .visible(false))
                             .addLayersItem(
                                 new AppLayerRef()
-                                    .serviceId(basemapAtId)
+                                    .serviceName("at-basemap")
                                     .layerName("bmaporthofoto30cm")
                                     .visible(false))));
     applicationRepository.save(app);

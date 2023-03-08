@@ -281,7 +281,7 @@ public class GeoService {
 
     Service s =
         new Service()
-            .id(this.id)
+            .name(this.name)
             .title(this.title)
             .url(this.url)
             .protocol(this.protocol)

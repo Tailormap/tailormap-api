@@ -346,15 +346,15 @@ paths:
           name: base
           schema:
             type: string
-          description: Base viewer. Must be in the baseApps list or empty for the default.
+          description: '[TODO] Base viewer. Must be in the baseApps list or empty for the default.
             'none' is the special value for no base app. If the baseApp is not in the list, the
-            default base app is used (returned in response).
+            default base app is used (returned in response).'
         - in: query
           name: projection
           schema:
             type: string
-          description: Projection. Must be in the projections list or empty for the default. If the
-            projection is not in the list, the default projection is used (returned in response).
+          description: '[TODO] Projection. Must be in the projections list or empty for the default. If the
+            projection is not in the list, the default projection is used (returned in response).'
         - in: query
           name: lang
           schema:
@@ -418,15 +418,15 @@ paths:
           name: base
           schema:
             type: string
-          description: Base viewer app. Must be in the baseApps list or empty for the default. 
+          description: '[TODO] Base viewer app. Must be in the baseApps list or empty for the default. 
             'none' is the special value for no base app. If the baseApp is not in the list, the 
-            default base app is used (returned in response).
+            default base app is used (returned in response).'
         - in: query
           name: projection
           schema:
             type: string
-          description: Projection. Must be in the projections list or empty for the default. If the
-            projection is not in the list, the default projection is used (returned in response).
+          description: ''[TODO] Projection. Must be in the projections list or empty for the default. If the
+            projection is not in the list, the default projection is used (returned in response).'
         - in: query
           name: lang
           schema:
@@ -446,7 +446,7 @@ paths:
         404:
           description: Not Found
 
-  /{kind}/{name}/service/{service}/layer/{layer}/describe:
+  /{viewerKind}/{name}/layer/{appLayerName}/describe:
     description: 'Returns metadata and feature type of the requested layer'
     get:
       operationId: 'describeLayer'
@@ -454,9 +454,8 @@ paths:
       security:
         - formAuth: [ ]
       parameters:
-        - description: 'viewer kind'
-          in: path
-          name: kind
+        - in: path
+          name: viewerKind
           required: true
           schema:
             type: string
@@ -469,15 +468,8 @@ paths:
           required: true
           schema:
             type: string
-        - description: 'service name'
-          in: path
-          name: service
-          required: true
-          schema:
-            type: string
-        - description: 'layer name or alias'
-          in: path
-          name: layer
+        - in: path
+          name: appLayerName
           required: true
           schema:
             type: string
@@ -495,16 +487,15 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
-  /{kind}/{name}/service/{service}/layer/{layer}/export/capabilities:
+  /{viewerKind}/{name}/layer/{appLayerName}/export/capabilities:
     description: Returns layer export capabilities. Retrieving this information may take some time.
     get:
       operationId: 'getLayerExportCapabilities'
       security:
         - formAuth: [ ]
       parameters:
-        - description: 'viewer kind'
-          in: path
-          name: kind
+        - in: path
+          name: viewerKind
           required: true
           schema:
             type: string
@@ -517,15 +508,8 @@ paths:
           required: true
           schema:
             type: string
-        - description: 'service name'
-          in: path
-          name: service
-          required: true
-          schema:
-            type: string
-        - description: 'layer name or alias'
-          in: path
-          name: layer
+        - in: path
+          name: appLayerName
           required: true
           schema:
             type: string
@@ -543,7 +527,7 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
-  /{kind}/{name}/service/{service}/layer/{layer}/export/download:
+  /{viewerKind}/{name}/layer/{appLayerName}/export/download:
     description: Directly stream layer data export response for download. POST request to allow a large filter in the
       request body.
     post:
@@ -551,9 +535,8 @@ paths:
       security:
         - formAuth: [ ]
       parameters:
-        - description: 'viewer kind'
-          in: path
-          name: kind
+        - in: path
+          name: viewerKind
           required: true
           schema:
             type: string
@@ -566,15 +549,8 @@ paths:
           required: true
           schema:
             type: string
-        - description: 'service name'
-          in: path
-          name: service
-          required: true
-          schema:
-            type: string
-        - description: 'layer name or alias'
-          in: path
-          name: layer
+        - in: path
+          name: appLayerName
           required: true
           schema:
             type: string
@@ -631,12 +607,11 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
-  /{kind}/{name}/service/{service}/layer/{layer}/features:
+  /{viewerKind}/{name}/layer/{appLayerName}/features:
     summary: 'Use this endpoint to access features.'
     parameters:
-      - description: 'viewer kind'
-        in: path
-        name: kind
+      - in: path
+        name: viewerKind
         required: true
         schema:
           type: string
@@ -649,15 +624,8 @@ paths:
         required: true
         schema:
           type: string
-      - description: 'service name'
-        in: path
-        name: service
-        required: true
-        schema:
-          type: string
-      - description: 'layer name or alias'
-        in: path
-        name: layer
+      - in: path
+        name: appLayerName
         required: true
         schema:
           type: string
@@ -809,12 +777,11 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
-  /{kind}/{name}/service/{service}/layer/{layer}/unique/{attributeName}:
+  /{viewerKind}/{name}/layer/{appLayerName}/unique/{attributeName}:
     summary: 'Use this endpoint to get a list of unique value of a layer''s feature type attribute.'
     parameters:
-      - description: 'viewer kind'
-        in: path
-        name: kind
+      - in: path
+        name: viewerKind
         required: true
         schema:
           type: string
@@ -827,15 +794,8 @@ paths:
         required: true
         schema:
           type: string
-      - description: 'service name'
-        in: path
-        name: service
-        required: true
-        schema:
-          type: string
-      - description: 'layer name or alias'
-        in: path
-        name: layer
+      - in: path
+        name: appLayerName
         required: true
         schema:
           type: string
@@ -915,11 +875,10 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
-  /{kind}/{name}/service/{service}/layer/{layer}/proxy/{protocol}:
+  /{viewerKind}/{name}/layer/{appLayerName}/proxy/{protocol}:
     parameters:
-      - description: 'viewer kind'
-        in: path
-        name: kind
+      - in: path
+        name: viewerKind
         required: true
         schema:
           type: string
@@ -932,15 +891,8 @@ paths:
         required: true
         schema:
           type: string
-      - description: 'service name'
-        in: path
-        name: service
-        required: true
-        schema:
-          type: string
-      - description: 'layer name or alias'
-        in: path
-        name: layer
+      - in: path
+        name: appLayerName
         required: true
         schema:
           type: string

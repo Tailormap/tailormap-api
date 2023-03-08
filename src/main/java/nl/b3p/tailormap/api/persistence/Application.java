@@ -9,7 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -225,18 +227,29 @@ public class Application {
 
   @PrePersist
   @PreUpdate
-  public void assignAppLayerRefIds() {
-    // TODO: keep using AppLayerRef id's or use different way to reference them?
+  public void assignAppLayerRefNames() {
 
-    // Only assign new id's to AppLayerRefs without id. AppLayerRef id are used in bookmarks
-    // Does not check uniqueness
+    // Automatically assign appLayerRef names based on serviceName and layerName
+    final Set<String> appLayerNames = new HashSet<>();
 
-    final long[] highestId = {0L};
     getAllAppLayerRefs()
         .forEach(
-            ref -> highestId[0] = Math.max(highestId[0], ref.getId() == null ? 0L : ref.getId()));
-
-    getAllAppLayerRefs().filter(ref -> ref.getId() == null).forEach(ref -> ref.id(++highestId[0]));
+            ref -> {
+              if (ref.getName() != null) {
+                appLayerNames.add(ref.getName());
+              } else {
+                String name = ref.getServiceName() + ":" + ref.getLayerName();
+                int counter = 2;
+                while (true) {
+                  if (!appLayerNames.contains(name)) {
+                    ref.setName(name);
+                    appLayerNames.add(name);
+                    break;
+                  }
+                  name = ref.getServiceName() + ":" + ref.getLayerName() + "_" + counter++;
+                }
+              }
+            });
   }
 
   public Stream<AppLayerRef> getAllAppLayerRefs() {

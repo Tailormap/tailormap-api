@@ -65,26 +65,26 @@ components:
       '
       type: object
       required:
-        - id
+        - name
         - layerName
         - title
-        - serviceId
+        - serviceName
         - visible
         - hasAttributes
       properties:
-        id:
-          type: integer
-          format: int64
+        name:
+          type: string
+          description: Unique name of this layer reference in the application. Another app layer
+            may exist which references the same layerName of the same service, but with different
+            settings.
         layerName:
           description: Layer name as known by the service.
           type: string
         title:
           description: Layer title or display name.
           type: string
-        serviceId:
-          description: A reference to a Service id.
-          type: integer
-          format: int64
+        serviceName:
+          type: string
         url:
           description: URL for this specific layer. If empty use URL from the service.
           type: string
@@ -130,13 +130,13 @@ components:
         id:
           description: A unique identifier across all tree nodes.
           type: string
-        appLayerId:
-          type: integer
+        appLayerName:
+          type: string
         root:
           description: Only a single node in a tree will have this set to true.
           type: boolean
         name:
-          description: Display name of this tree node. If appLayerId is present, this is the title of that AppLayer.
+          description: Display name of this tree node. If appLayerName is present, this is the title of that AppLayer.
           type: string
         description:
           description: Description for this node entered by application admin.
@@ -324,11 +324,10 @@ components:
     Service:
       description: 'A service provides one or more appLayers'
       type: object
-      required: [id, title, url, protocol, capabilities, serverType]
+      required: [name, title, url, protocol, capabilities, serverType]
       properties:
-        id:
-          type: integer
-          format: int64
+        name:
+          type: string
           nullable: false
         title:
           type: string

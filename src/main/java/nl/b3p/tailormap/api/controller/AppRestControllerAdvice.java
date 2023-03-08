@@ -6,13 +6,13 @@
 package nl.b3p.tailormap.api.controller;
 
 import nl.b3p.tailormap.api.annotation.AppRestController;
-import nl.b3p.tailormap.api.persistence.Application;
-import nl.b3p.tailormap.api.persistence.GeoService;
-import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
-import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
-import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.repository.GeoServiceRepository;
-import nl.b3p.tailormap.api.security.AuthorizationService;
+// import nl.b3p.tailormap.api.persistence.Application;
+// import nl.b3p.tailormap.api.persistence.GeoService;
+// import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
+// import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+// import nl.b3p.tailormap.api.repository.ApplicationRepository;
+// import nl.b3p.tailormap.api.repository.GeoServiceRepository;
+// import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.viewer.model.ErrorResponse;
 import nl.b3p.tailormap.api.viewer.model.RedirectResponse;
 import org.springframework.http.HttpStatus;
@@ -21,14 +21,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
+// import org.springframework.web.bind.annotation.ModelAttribute;
+// import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice(annotations = AppRestController.class)
 public class AppRestControllerAdvice {
-  private final ApplicationRepository applicationRepository;
+  /*  private final ApplicationRepository applicationRepository;
   private final GeoServiceRepository geoServiceRepository;
   private final AuthorizationService authorizationService;
 
@@ -39,11 +39,11 @@ public class AppRestControllerAdvice {
     this.applicationRepository = applicationRepository;
     this.geoServiceRepository = geoServiceRepository;
     this.authorizationService = authorizationService;
-  }
+  }*/
 
   @InitBinder
   protected void initBinder(WebDataBinder binder) {
-    binder.setAllowedFields("appId", "appLayerId");
+    binder.setAllowedFields("kind", "name", "appLayerName");
   }
 
   @ExceptionHandler(ResponseStatusException.class)
@@ -60,7 +60,7 @@ public class AppRestControllerAdvice {
                 .message(ex.getReason() != null ? ex.getReason() : ex.getStatus().getReasonPhrase())
                 .code(ex.getRawStatusCode()));
   }
-
+  /*
   @ModelAttribute
   public Application populateApplication(@PathVariable(required = false) Long appId) {
     if (appId == null) {
@@ -76,8 +76,8 @@ public class AppRestControllerAdvice {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
     return application;
-  }
-
+  }*/
+  /*
   @ModelAttribute
   public AppLayerRef populateAppLayerRef(
       @ModelAttribute Application application, @PathVariable(required = false) Long appLayerId) {
@@ -127,5 +127,5 @@ public class AppRestControllerAdvice {
         .filter(l -> appLayerRef.getLayerName().equals(l.getName()))
         .findFirst()
         .orElse(null);
-  }
+  }*/
 }
