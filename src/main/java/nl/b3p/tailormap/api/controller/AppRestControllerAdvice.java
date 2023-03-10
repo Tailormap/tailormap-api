@@ -43,7 +43,7 @@ public class AppRestControllerAdvice {
 
   @InitBinder
   protected void initBinder(WebDataBinder binder) {
-    binder.setAllowedFields("kind", "name", "appLayerName");
+    binder.setAllowedFields("kind", "name", "appLayerId");
   }
 
   @ExceptionHandler(ResponseStatusException.class)

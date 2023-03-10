@@ -446,7 +446,7 @@ paths:
         404:
           description: Not Found
 
-  /{viewerKind}/{name}/layer/{appLayerName}/describe:
+  /{viewerKind}/{name}/layer/{appLayerId}/describe:
     description: 'Returns metadata and feature type of the requested layer'
     get:
       operationId: 'describeLayer'
@@ -469,7 +469,7 @@ paths:
           schema:
             type: string
         - in: path
-          name: appLayerName
+          name: appLayerId
           required: true
           schema:
             type: string
@@ -487,7 +487,7 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
-  /{viewerKind}/{name}/layer/{appLayerName}/export/capabilities:
+  /{viewerKind}/{name}/layer/{appLayerId}/export/capabilities:
     description: Returns layer export capabilities. Retrieving this information may take some time.
     get:
       operationId: 'getLayerExportCapabilities'
@@ -509,7 +509,7 @@ paths:
           schema:
             type: string
         - in: path
-          name: appLayerName
+          name: appLayerId
           required: true
           schema:
             type: string
@@ -527,7 +527,7 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
-  /{viewerKind}/{name}/layer/{appLayerName}/export/download:
+  /{viewerKind}/{name}/layer/{appLayerId}/export/download:
     description: Directly stream layer data export response for download. POST request to allow a large filter in the
       request body.
     post:
@@ -550,7 +550,7 @@ paths:
           schema:
             type: string
         - in: path
-          name: appLayerName
+          name: appLayerId
           required: true
           schema:
             type: string
@@ -607,7 +607,7 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
-  /{viewerKind}/{name}/layer/{appLayerName}/features:
+  /{viewerKind}/{name}/layer/{appLayerId}/features:
     summary: 'Use this endpoint to access features.'
     parameters:
       - in: path
@@ -625,7 +625,7 @@ paths:
         schema:
           type: string
       - in: path
-        name: appLayerName
+        name: appLayerId
         required: true
         schema:
           type: string
@@ -777,7 +777,7 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
-  /{viewerKind}/{name}/layer/{appLayerName}/unique/{attributeName}:
+  /{viewerKind}/{name}/layer/{appLayerId}/unique/{attributeName}:
     summary: 'Use this endpoint to get a list of unique value of a layer''s feature type attribute.'
     parameters:
       - in: path
@@ -795,7 +795,7 @@ paths:
         schema:
           type: string
       - in: path
-        name: appLayerName
+        name: appLayerId
         required: true
         schema:
           type: string
@@ -875,7 +875,7 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
-  /{viewerKind}/{name}/layer/{appLayerName}/proxy/{protocol}:
+  /{viewerKind}/{name}/layer/{appLayerId}/proxy/{protocol}:
     parameters:
       - in: path
         name: viewerKind
@@ -892,7 +892,7 @@ paths:
         schema:
           type: string
       - in: path
-        name: appLayerName
+        name: appLayerId
         required: true
         schema:
           type: string

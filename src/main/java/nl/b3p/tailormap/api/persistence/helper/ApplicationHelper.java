@@ -218,7 +218,7 @@ public class ApplicationHelper {
 
       mr.addAppLayersItem(
           new AppLayer()
-              .name(layerRef.getName())
+              .id(layerRef.getId())
               .serviceName(serviceLayerServiceNames.get(serviceLayer))
               .layerName(layerRef.getLayerName())
               .hasAttributes(tmft != null)
@@ -239,7 +239,7 @@ public class ApplicationHelper {
       LayerTreeNode layerNode =
           new LayerTreeNode()
               .id("lyr_" + layerIdCounter++)
-              .appLayerName(layerRef.getName())
+              .appLayerId(layerRef.getId())
               .description(serviceLayer.getAbstractText())
               .name(title)
               .root(false);
@@ -290,7 +290,7 @@ public class ApplicationHelper {
             Map.of(
                 "kind", "app", // XXX
                 "name", application.getName(),
-                "appLayerName", appLayerRef.getName(),
+                "appLayerId", appLayerRef.getId(),
                 "protocol", geoService.getProtocol().getValue()))
         .toString();
   }

@@ -65,16 +65,16 @@ components:
       '
       type: object
       required:
-        - name
+        - id
         - layerName
         - title
         - serviceName
         - visible
         - hasAttributes
       properties:
-        name:
+        id:
           type: string
-          description: Unique name of this layer reference in the application. Another app layer
+          description: Unique id of this layer reference in the application. Another app layer
             may exist which references the same layerName of the same service, but with different
             settings.
         layerName:
@@ -130,13 +130,13 @@ components:
         id:
           description: A unique identifier across all tree nodes.
           type: string
-        appLayerName:
+        appLayerId:
           type: string
         root:
           description: Only a single node in a tree will have this set to true.
           type: boolean
         name:
-          description: Display name of this tree node. If appLayerName is present, this is the title of that AppLayer.
+          description: Display name of this tree node. If appLayerId is present, this is the title of that AppLayer.
           type: string
         description:
           description: Description for this node entered by application admin.

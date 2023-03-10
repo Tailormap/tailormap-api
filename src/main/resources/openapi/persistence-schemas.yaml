@@ -347,9 +347,9 @@ components:
             $ref: '#/components/schemas/AppContent'
 
     AppLayerRef:
-      required: [name, serviceName, layerName, visible, opacity]
+      required: [id, serviceName, layerName, visible, opacity]
       properties:
-        name:
+        id:
           type: string
           nullable: false
         serviceName:

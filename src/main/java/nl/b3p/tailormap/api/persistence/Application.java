@@ -229,24 +229,24 @@ public class Application {
   @PreUpdate
   public void assignAppLayerRefNames() {
 
-    // Automatically assign appLayerRef names based on serviceName and layerName
-    final Set<String> appLayerNames = new HashSet<>();
+    // Automatically assign appLayerRef ids based on serviceName and layerName
+    final Set<String> appLayerIds = new HashSet<>();
 
     getAllAppLayerRefs()
         .forEach(
             ref -> {
-              if (ref.getName() != null) {
-                appLayerNames.add(ref.getName());
+              if (ref.getId() != null) {
+                appLayerIds.add(ref.getId());
               } else {
-                String name = ref.getServiceName() + ":" + ref.getLayerName();
+                String id = ref.getServiceName() + ":" + ref.getLayerName();
                 int counter = 2;
                 while (true) {
-                  if (!appLayerNames.contains(name)) {
-                    ref.setName(name);
-                    appLayerNames.add(name);
+                  if (!appLayerIds.contains(id)) {
+                    ref.setId(id);
+                    appLayerIds.add(id);
                     break;
                   }
-                  name = ref.getServiceName() + ":" + ref.getLayerName() + "_" + counter++;
+                  id = ref.getServiceName() + ":" + ref.getLayerName() + "_" + counter++;
                 }
               }
             });
