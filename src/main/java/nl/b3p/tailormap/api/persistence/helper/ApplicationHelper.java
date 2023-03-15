@@ -13,8 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import javax.persistence.EntityManager;
 import nl.b3p.tailormap.api.controller.GeoServiceProxyController;
 import nl.b3p.tailormap.api.persistence.Application;
+import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
@@ -24,7 +26,10 @@ import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
+import nl.b3p.tailormap.api.persistence.json.ServicePublishingSettings;
 import nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode;
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.viewer.model.AppLayer;
@@ -45,19 +50,78 @@ import org.springframework.util.CollectionUtils;
 public class ApplicationHelper {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final String DEFAULT_WEB_MERCATOR_CRS = "EPSG:3857";
 
   private final GeoServiceHelper geoServiceHelper;
   private final GeoServiceRepository geoServiceRepository;
-
+  private final ConfigurationRepository configurationRepository;
+  private final ApplicationRepository applicationRepository;
   private final FeatureSourceRepository featureSourceRepository;
+  private final EntityManager entityManager;
 
   public ApplicationHelper(
       GeoServiceHelper geoServiceHelper,
       GeoServiceRepository geoServiceRepository,
-      FeatureSourceRepository featureSourceRepository) {
+      ConfigurationRepository configurationRepository,
+      ApplicationRepository applicationRepository,
+      FeatureSourceRepository featureSourceRepository,
+      EntityManager entityManager) {
     this.geoServiceHelper = geoServiceHelper;
     this.geoServiceRepository = geoServiceRepository;
+    this.configurationRepository = configurationRepository;
+    this.applicationRepository = applicationRepository;
     this.featureSourceRepository = featureSourceRepository;
+    this.entityManager = entityManager;
+  }
+
+  public Application getServiceApplication(
+      String baseAppName, String projection, GeoService service) {
+    if (baseAppName == null) {
+      baseAppName =
+          Optional.ofNullable(service.getSettings().getPublishing())
+              .map(ServicePublishingSettings::getBaseApp)
+              .orElseGet(() -> configurationRepository.get(Configuration.DEFAULT_BASE_APP));
+    }
+
+    Application baseApp = null;
+    if (baseAppName != null) {
+      baseApp = applicationRepository.findByName(baseAppName);
+      if (baseApp != null) {
+        // Caller may be changing the app content to add layers from this service, detach so those
+        // aren't saved
+        entityManager.detach(baseApp);
+      }
+    }
+
+    Application app =
+        baseApp != null ? baseApp : new Application().setContentRoot(new AppContent());
+
+    if (projection != null) {
+      // TODO: filter layers by projection parameter (layer.crs must inherit crs from parent layers)
+      throw new UnsupportedOperationException("Projection filtering not yet supported");
+    } else {
+      if (baseApp != null) {
+        projection = baseApp.getCrs();
+      } else {
+        projection = DEFAULT_WEB_MERCATOR_CRS;
+      }
+    }
+
+    app.setName(service.getId()).setTitle(service.getTitle()).setCrs(projection);
+
+    service.getLayers().stream()
+        .filter(l -> !l.getVirtual())
+        .forEach(
+            l ->
+                app.getContentRoot()
+                    .addLayersItem(
+                        new AppLayerRef()
+                            .serviceId(service.getId())
+                            .layerName(l.getName())
+                            .title(l.getTitle())));
+    app.assignAppLayerRefNames();
+
+    return app;
   }
 
   @Transactional
@@ -94,26 +158,6 @@ public class ApplicationHelper {
     new MapResponseLayerBuilder(app, mr).buildLayers();
   }
 
-  public MapResponse toMapResponse(GeoService service, Application base) {
-    Application app = base != null ? base : new Application().setContentRoot(new AppContent());
-
-    // TODO: projection
-    app.setName(service.getName()).setCrs("EPSG:28992");
-
-    service.getLayers().stream()
-        .filter(l -> !l.getVirtual() && l.getChildren().isEmpty())
-        .forEach(
-            l ->
-                app.getContentRoot()
-                    .addLayersItem(
-                        new AppLayerRef()
-                            .serviceName(service.getName())
-                            .layerName(l.getName())
-                            .title(l.getTitle())));
-    app.assignAppLayerRefNames();
-    return toMapResponse(app);
-  }
-
   private class MapResponseLayerBuilder {
     private int levelIdCounter = 0;
 
@@ -123,7 +167,7 @@ public class ApplicationHelper {
     private final MapResponse mr;
 
     // XXX not needed if we have GeoServiceLayer.getService().getName()
-    private final Map<GeoServiceLayer, String> serviceLayerServiceNames = new HashMap<>();
+    private final Map<GeoServiceLayer, String> serviceLayerServiceIds = new HashMap<>();
 
     public MapResponseLayerBuilder(Application app, MapResponse mr) {
       this.app = app;
@@ -219,7 +263,7 @@ public class ApplicationHelper {
       mr.addAppLayersItem(
           new AppLayer()
               .id(layerRef.getId())
-              .serviceName(serviceLayerServiceNames.get(serviceLayer))
+              .serviceId(serviceLayerServiceIds.get(serviceLayer))
               .layerName(layerRef.getLayerName())
               .hasAttributes(tmft != null)
               .url(proxied ? getProxyUrl(service, app, layerRef) : null)
@@ -249,13 +293,13 @@ public class ApplicationHelper {
 
     private Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> findServiceLayer(
         AppLayerRef layerRef) {
-      GeoService service = geoServiceRepository.findByName(layerRef.getServiceName());
+      GeoService service = geoServiceRepository.findById(layerRef.getServiceId());
       if (service == null) {
         logger.warn(
             "App {} references layer \"{}\" of missing service {}",
             app.getId(),
             layerRef.getLayerName(),
-            layerRef.getServiceName());
+            layerRef.getServiceId());
         return Triple.of(null, null, null);
       }
       GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());
@@ -269,10 +313,10 @@ public class ApplicationHelper {
         return Triple.of(null, null, null);
       }
 
-      serviceLayerServiceNames.put(serviceLayer, service.getName());
+      serviceLayerServiceIds.put(serviceLayer, service.getId());
 
       if (mr.getServices().stream()
-          .filter(s -> s.getName().equals(service.getName()))
+          .filter(s -> s.getId().equals(service.getId()))
           .findAny()
           .isEmpty()) {
         mr.addServicesItem(service.toJsonPojo(geoServiceHelper));
@@ -288,8 +332,8 @@ public class ApplicationHelper {
     return linkTo(
             GeoServiceProxyController.class,
             Map.of(
-                "kind", "app", // XXX
-                "name", application.getName(),
+                "viewerKind", "app", // XXX
+                "viewerName", application.getName(),
                 "appLayerId", appLayerRef.getId(),
                 "protocol", geoService.getProtocol().getValue()))
         .toString();

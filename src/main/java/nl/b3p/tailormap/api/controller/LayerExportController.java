@@ -45,7 +45,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 @AppRestController
-@RequestMapping(path = "${tailormap-api.base-path}/app/{appId}/layer/{appLayerId}/export/")
+@RequestMapping(
+    path = "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/export/")
 public class LayerExportController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

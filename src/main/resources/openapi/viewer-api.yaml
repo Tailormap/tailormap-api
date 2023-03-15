@@ -130,9 +130,9 @@ components:
         title:
           type: string
           nullable: false
-        baseViewers:
-          description: Available base viewers. The first item is the default. May have one entry
-            if only one is available. The "none" value denotes no base viewer.
+        baseApps:
+          description: Available base apps. The first item is the default. May have one entry
+            if only one is available. An empty list means there are no base apps available.
           type: array
           items:
             type: string
@@ -287,7 +287,7 @@ paths:
   /app:
     get:
       operationId: getDefaultApp
-      summary: 'Get information the default app'
+      summary: 'Get information about the default app'
       security:
         - formAuth: []
       responses:
@@ -304,13 +304,21 @@ paths:
         404:
           description: Not Found
 
-  /app/{name}:
+  /{viewerKind}/{name}:
     get:
-      operationId: getAppByName
-      summary: 'Get information about an app'
+      operationId: getViewer
+      summary: 'Get information about a viewer'
       security:
         - formAuth: []
       parameters:
+        - in: path
+          name: viewerKind
+          required: true
+          schema:
+            type: string
+            enum:
+              - app
+              - service
         - in: path
           name: name
           required: true
@@ -330,13 +338,21 @@ paths:
         404:
           description: Not Found
 
-  /app/{name}/map:
+  /{viewerKind}/{name}/map:
     get:
-      operationId: getAppMap
-      summary: 'Get app map'
+      operationId: getMap
+      summary: 'Get viewer map'
       security:
         - formAuth: []
       parameters:
+        - in: path
+          name: viewerKind
+          required: true
+          schema:
+            type: string
+            enum:
+              - app
+              - service
         - in: path
           name: name
           required: true
@@ -348,78 +364,6 @@ paths:
             type: string
           description: '[TODO] Base viewer. Must be in the baseApps list or empty for the default.
             ''none'' is the special value for no base app. If the baseApp is not in the list, the
-            default base app is used (returned in response).'
-        - in: query
-          name: projection
-          schema:
-            type: string
-          description: '[TODO] Projection. Must be in the projections list or empty for the default. If the
-            projection is not in the list, the default projection is used (returned in response).'
-        - in: query
-          name: lang
-          schema:
-            type: string
-          description: '[TODO] Language. Same as for base, projection, etc.'
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MapResponse'
-        401:
-          description: Authentication required
-        403:
-          description: Access denied
-        404:
-          description: Not Found
-
-  /service/{name}:
-    get:
-      operationId: getServiceViewer
-      summary: 'Get information about a service viewer'
-      security:
-        - formAuth: []
-      parameters:
-        - in: path
-          name: name
-          required: true
-          schema:
-            type: string
-          description: Name of the service
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ViewerResponse'
-        401:
-          description: Authentication required
-        403:
-          description: Access denied
-        404:
-          description: Not Found
-
-  /service/{name}/map:
-    get:
-      operationId: getServiceViewerMap
-      summary: 'Get service viewer map'
-      security:
-        - formAuth: []
-      parameters:
-        - in: path
-          name: name
-          required: true
-          schema:
-            type: string
-          description: Name of the service
-        - in: query
-          name: base
-          schema:
-            type: string
-          description: '[TODO] Base viewer app. Must be in the baseApps list or empty for the default. 
-            ''none'' is the special value for no base app. If the baseApp is not in the list, the 
             default base app is used (returned in response).'
         - in: query
           name: projection

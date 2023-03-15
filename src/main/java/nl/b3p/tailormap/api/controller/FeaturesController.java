@@ -69,7 +69,7 @@ import org.springframework.web.server.ResponseStatusException;
 @AppRestController
 @Validated
 @RequestMapping(
-    path = "${tailormap-api.base-path}/app/{appId}/layer/{appLayerId}/features",
+    path = "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/features",
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class FeaturesController implements Constants {
   private static final Logger logger =
@@ -357,7 +357,7 @@ public class FeaturesController implements Constants {
 
     FeaturesResponse featuresResponse = new FeaturesResponse();
 
-    SimpleFeatureSource fs = null;
+    SimpleFeatureSource fs;
     try {
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
 

@@ -238,7 +238,7 @@ public class Application {
               if (ref.getId() != null) {
                 appLayerIds.add(ref.getId());
               } else {
-                String id = ref.getServiceName() + ":" + ref.getLayerName();
+                String id = ref.getServiceId() + ":" + ref.getLayerName();
                 int counter = 2;
                 while (true) {
                   if (!appLayerIds.contains(id)) {
@@ -246,7 +246,7 @@ public class Application {
                     appLayerIds.add(id);
                     break;
                   }
-                  id = ref.getServiceName() + ":" + ref.getLayerName() + "_" + counter++;
+                  id = ref.getServiceId() + ":" + ref.getLayerName() + "_" + counter++;
                 }
               }
             });

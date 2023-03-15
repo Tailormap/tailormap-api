@@ -58,7 +58,7 @@ import org.springframework.web.util.UriUtils;
 @AppRestController
 @Validated
 // Can't use ${tailormap-api.base-path} because linkTo() won't work
-@RequestMapping(path = "/api/{kind}/{name}/layer/{appLayerId}/proxy/{protocol}")
+@RequestMapping(path = "/api/{viewerKind}/{viewerName}/layer/{appLayerId}/proxy/{protocol}")
 public class GeoServiceProxyController {
 
   @RequestMapping(method = {GET, POST})

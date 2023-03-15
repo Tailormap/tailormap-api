@@ -40,7 +40,7 @@ components:
               kind:
                 type: string
                 enum: ['geo-service', 'feature-source', 'app']
-              name:
+              id:
                 type: string
 
     TMServiceCaps:
@@ -347,12 +347,12 @@ components:
             $ref: '#/components/schemas/AppContent'
 
     AppLayerRef:
-      required: [id, serviceName, layerName, visible, opacity]
+      required: [id, serviceId, layerName, visible, opacity]
       properties:
         id:
           type: string
           nullable: false
-        serviceName:
+        serviceId:
           type: string
           nullable: false
         layerName:

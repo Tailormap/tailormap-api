@@ -28,5 +28,5 @@ public interface FeatureSourceRepository extends JpaRepository<TMFeatureSource, 
   Optional<TMFeatureSource> findById(@NonNull Long id);
 
   @PreAuthorize(value = "permitAll()")
-  Optional<TMFeatureSource> findByLinkedServiceId(Long id);
+  Optional<TMFeatureSource> findByLinkedServiceId(String id);
 }

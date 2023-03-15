@@ -66,9 +66,9 @@ components:
       type: object
       required:
         - id
+        - serviceId
         - layerName
         - title
-        - serviceName
         - visible
         - hasAttributes
       properties:
@@ -77,13 +77,13 @@ components:
           description: Unique id of this layer reference in the application. Another app layer
             may exist which references the same layerName of the same service, but with different
             settings.
+        serviceId:
+          type: string
         layerName:
           description: Layer name as known by the service.
           type: string
         title:
           description: Layer title or display name.
-          type: string
-        serviceName:
           type: string
         url:
           description: URL for this specific layer. If empty use URL from the service.
@@ -155,15 +155,11 @@ components:
       type: object
       properties: # TODO aanvullen
         id:
-          type: integer
-          format: int64
-          readOnly: true
+          type: string
         featureTypeName:
           type: string
         serviceId:
-          type: integer
-          format: int64
-          readOnly: true
+          type: string
         geometryAttribute:
           type: string
         geometryAttributeIndex:
@@ -322,11 +318,11 @@ components:
         type: 'geometry'
 
     Service:
-      description: 'A service provides one or more appLayers'
+      description: 'A service provides one or more layers used in a viewer'
       type: object
-      required: [name, title, url, protocol, capabilities, serverType]
+      required: [id, title, url, protocol, capabilities, serverType]
       properties:
-        name:
+        id:
           type: string
           nullable: false
         title:

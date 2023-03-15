@@ -15,12 +15,9 @@ import java.util.Optional;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
@@ -31,10 +28,7 @@ import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
-import nl.b3p.tailormap.api.persistence.json.ServicePublishingSettings;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
-import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.viewer.model.Service;
 import org.hibernate.annotations.Type;
@@ -46,13 +40,7 @@ public class GeoService {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-
-  @Column(unique = true)
-  @NotNull
-  private String name;
+  @Id private String id;
 
   @Version private Long version;
 
@@ -126,21 +114,12 @@ public class GeoService {
   private GeoServiceSettings settings = new GeoServiceSettings();
 
   // <editor-fold desc="getters and setters">
-  public Long getId() {
+  public String getId() {
     return id;
   }
 
-  public GeoService setId(Long id) {
+  public GeoService setId(String id) {
     this.id = id;
-    return this;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public GeoService setName(String name) {
-    this.name = name;
     return this;
   }
 
@@ -281,7 +260,7 @@ public class GeoService {
 
     Service s =
         new Service()
-            .name(this.name)
+            .id(this.id)
             .title(this.title)
             .url(this.url)
             .protocol(this.protocol)
@@ -391,28 +370,5 @@ public class GeoService {
       }
     }
     return tmft;
-  }
-
-  @JsonIgnore
-  public Application getDetachedBaseApp(
-      ConfigurationRepository configurationRepository,
-      ApplicationRepository applicationRepository,
-      EntityManager entityManager) {
-
-    String baseAppName =
-        Optional.ofNullable(getSettings().getPublishing())
-            .map(ServicePublishingSettings::getBaseApp)
-            .orElseGet(() -> configurationRepository.get(Configuration.DEFAULT_BASE_APP));
-
-    Application baseApp = null;
-    if (baseAppName != null) {
-      baseApp = applicationRepository.findByName(baseAppName);
-      if (baseApp != null) {
-        // Caller may be changing the app content to add layers from this service, detach so those
-        // aren't saved
-        entityManager.detach(baseApp);
-      }
-    }
-    return baseApp;
   }
 }
