@@ -293,7 +293,7 @@ public class ApplicationHelper {
 
     private Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> findServiceLayer(
         AppLayerRef layerRef) {
-      GeoService service = geoServiceRepository.findById(layerRef.getServiceId());
+      GeoService service = geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);
       if (service == null) {
         logger.warn(
             "App {} references layer \"{}\" of missing service {}",

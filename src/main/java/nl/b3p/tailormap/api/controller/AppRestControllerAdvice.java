@@ -83,7 +83,7 @@ public class AppRestControllerAdvice {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
       }
     } else if ("service".equals(viewerKind)) {
-      GeoService service = geoServiceRepository.findById(viewerName);
+      GeoService service = geoServiceRepository.findById(viewerName).orElse(null);
 
       if (service == null) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -136,7 +136,7 @@ public class AppRestControllerAdvice {
     if (appLayerRef.getServiceId() == null) {
       return null;
     }
-    return geoServiceRepository.findById(appLayerRef.getServiceId());
+    return geoServiceRepository.findById(appLayerRef.getServiceId()).orElse(null);
   }
 
   @ModelAttribute
