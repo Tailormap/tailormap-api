@@ -48,12 +48,21 @@ public class ViewerController {
 
   // We can't parametrize viewerKind (/app/ and /service/) because they'd clash with /api/admin/...
   // so name the paths separately
-  @GetMapping(path = { "${tailormap-api.base-path}/app/{viewerName}", "${tailormap-api.base-path}/service/{viewerName}"})
-  public ViewerResponse viewer(@ModelAttribute Application app, @ModelAttribute ViewerResponse.KindEnum viewerKind) {
+  @GetMapping(
+      path = {
+        "${tailormap-api.base-path}/app/{viewerName}",
+        "${tailormap-api.base-path}/service/{viewerName}"
+      })
+  public ViewerResponse viewer(
+      @ModelAttribute Application app, @ModelAttribute ViewerResponse.KindEnum viewerKind) {
     return app.getViewerResponse().kind(viewerKind);
   }
 
-  @GetMapping(path = {"${tailormap-api.base-path}/app/{viewerName}/map", "${tailormap-api.base-path}/service/{viewerName}/map"})
+  @GetMapping(
+      path = {
+        "${tailormap-api.base-path}/app/{viewerName}/map",
+        "${tailormap-api.base-path}/service/{viewerName}/map"
+      })
   public MapResponse map(@ModelAttribute Application app) {
     return applicationHelper.toMapResponse(app);
   }
