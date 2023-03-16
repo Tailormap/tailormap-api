@@ -34,12 +34,6 @@ class AppControllerIntegrationTest {
   @Value("${tailormap-api.base-path}")
   private String basePath;
 
-  private String getApiVersionFromPom() {
-    String apiVersion = System.getenv("API_VERSION");
-    assumeFalse(null == apiVersion, "API version unknown, should be set in environment");
-    return apiVersion;
-  }
-
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void returns_default_when_no_arguments() throws Exception {
@@ -47,10 +41,8 @@ class AppControllerIntegrationTest {
         .perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.apiVersion").value(getApiVersionFromPom()))
-        .andExpect(jsonPath("$.id").value(1))
+        .andExpect(jsonPath("$.kind").value("app"))
         .andExpect(jsonPath("$.name").value("default"))
-        .andExpect(jsonPath("$.lang").value("nl_NL"))
         .andExpect(jsonPath("$.title").value("Tailormap demo"));
     //        .andExpect(jsonPath("$.components").isArray())
     //        .andExpect(jsonPath("$.components[0].type").value("measure"))
@@ -70,7 +62,7 @@ class AppControllerIntegrationTest {
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
-        .andExpect(jsonPath("$.message").value("No default application configured"));
+        .andExpect(jsonPath("$.message").value("Not Found"));
     entityManager.persist(defaultApp);
   }
 
@@ -86,7 +78,7 @@ class AppControllerIntegrationTest {
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
-        .andExpect(jsonPath("$.message").value("Default application not found"));
+        .andExpect(jsonPath("$.message").value("Not Found"));
     defaultApp.setValue("default");
   }
 
@@ -94,10 +86,10 @@ class AppControllerIntegrationTest {
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void finds_by_name() throws Exception {
     mockMvc
-        .perform(get(basePath + "/app").param("name", "default").accept(MediaType.APPLICATION_JSON))
+        .perform(get(basePath + "/app/default").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.id").value(1))
+        .andExpect(jsonPath("$.kind").value("app"))
         .andExpect(jsonPath("$.name").value("default"));
   }
 
@@ -105,46 +97,33 @@ class AppControllerIntegrationTest {
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void not_found_by_name() throws Exception {
     mockMvc
-        .perform(get(basePath + "/app").param("name", "waldo").accept(MediaType.APPLICATION_JSON))
+        .perform(get(basePath + "/app/waldo").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.code").value(404))
-        .andExpect(jsonPath("$.message").value("Application \"waldo\" not found"));
+        .andExpect(jsonPath("$.code").value(404));
   }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void finds_by_id() throws Exception {
+  void finds_service_viewer() throws Exception {
     mockMvc
-        .perform(get(basePath + "/app").param("id", "1").accept(MediaType.APPLICATION_JSON))
+        .perform(get(basePath + "/service/snapshot-geoserver").param("id", "1").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.id").value(1))
-        .andExpect(jsonPath("$.name").value("default"));
+        .andExpect(jsonPath("$.kind").value("service"))
+        .andExpect(jsonPath("$.name").value("service/snapshot-geoserver"))
+        .andExpect(jsonPath("$.title").value("Test GeoServer"));
   }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void not_found_by_id() throws Exception {
+  void not_found_unpublished_service_viewer() throws Exception {
     mockMvc
-        .perform(get(basePath + "/app").param("appId", "-9000").accept(MediaType.APPLICATION_JSON))
+        .perform(get(basePath + "/service/openbasiskaart").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
-        .andExpect(jsonPath("$.message").value("Application with id -9000 not found"));
-  }
-
-  @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void bad_request_when_both_parameters() throws Exception {
-    mockMvc
-        .perform(
-            get(basePath + "/app")
-                .param("appId", "100")
-                .param("name", "test")
-                .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        .andExpect(jsonPath("$.message").value("Not Found"));
   }
 
   //  @Test

@@ -55,6 +55,9 @@ public class ViewerController {
       })
   public ViewerResponse viewer(
       @ModelAttribute Application app, @ModelAttribute ViewerResponse.KindEnum viewerKind) {
+    if (app == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
     return app.getViewerResponse().kind(viewerKind);
   }
 
@@ -64,6 +67,9 @@ public class ViewerController {
         "${tailormap-api.base-path}/service/{viewerName}/map"
       })
   public MapResponse map(@ModelAttribute Application app) {
+    if (app == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
     return applicationHelper.toMapResponse(app);
   }
 }
