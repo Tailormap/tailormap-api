@@ -17,7 +17,6 @@ import nl.b3p.tailormap.api.viewer.model.ViewerResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 @AppRestController
@@ -44,15 +43,17 @@ public class ViewerController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
     // TODO check authorization for app
-    return viewer(app, ViewerResponse.KindEnum.APP.getValue());
+    return viewer(app, ViewerResponse.KindEnum.APP);
   }
 
-  @GetMapping(path = "${tailormap-api.base-path}/{viewerKind}/{viewerName}")
-  public ViewerResponse viewer(@ModelAttribute Application app, @PathVariable String viewerKind) {
-    return app.getViewerResponse().kind(ViewerResponse.KindEnum.fromValue(viewerKind));
+  // We can't parametrize viewerKind (/app/ and /service/) because they'd clash with /api/admin/...
+  // so name the paths separately
+  @GetMapping(path = { "${tailormap-api.base-path}/app/{viewerName}", "${tailormap-api.base-path}/service/{viewerName}"})
+  public ViewerResponse viewer(@ModelAttribute Application app, @ModelAttribute ViewerResponse.KindEnum viewerKind) {
+    return app.getViewerResponse().kind(viewerKind);
   }
 
-  @GetMapping(path = "${tailormap-api.base-path}/{viewerKind}/{viewerName}/map")
+  @GetMapping(path = {"${tailormap-api.base-path}/app/{viewerName}/map", "${tailormap-api.base-path}/service/{viewerName}/map"})
   public MapResponse map(@ModelAttribute Application app) {
     return applicationHelper.toMapResponse(app);
   }

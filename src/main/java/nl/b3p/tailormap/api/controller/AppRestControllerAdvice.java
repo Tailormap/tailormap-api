@@ -11,10 +11,13 @@ import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.helper.ApplicationHelper;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+import nl.b3p.tailormap.api.persistence.json.TailormapObjectRef;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.viewer.model.ErrorResponse;
 import nl.b3p.tailormap.api.viewer.model.RedirectResponse;
+import nl.b3p.tailormap.api.viewer.model.ViewerResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice(annotations = AppRestController.class)
 public class AppRestControllerAdvice {
@@ -33,6 +39,9 @@ public class AppRestControllerAdvice {
   private final GeoServiceRepository geoServiceRepository;
   private final ApplicationHelper applicationHelper;
   // private final AuthorizationService authorizationService;
+
+  @Value("${tailormap-api.base-path}")
+  private String basePath;
 
   public AppRestControllerAdvice(
       ApplicationRepository applicationRepository,
@@ -47,7 +56,7 @@ public class AppRestControllerAdvice {
   protected void initBinder(WebDataBinder binder) {
     // WARNING! These fields must NOT match properties of ModelAttribute classes, otherwise they
     // will be overwritten (for instance GeoServiceLayer.name might be set to the app name)
-    binder.setAllowedFields("viewerKind", "viewerName", "appLayerId", "base", "projection");
+    binder.setAllowedFields("viewerName", "appLayerId", "base", "projection");
   }
 
   @ExceptionHandler(ResponseStatusException.class)
@@ -66,8 +75,19 @@ public class AppRestControllerAdvice {
   }
 
   @ModelAttribute
+  public ViewerResponse.KindEnum populateViewerKind(HttpServletRequest request) {
+    if (request.getServletPath().startsWith(basePath + "/app/")) {
+      return ViewerResponse.KindEnum.APP;
+    } else if (request.getServletPath().startsWith(basePath + "/service/")) {
+      return ViewerResponse.KindEnum.SERVICE;
+    } else {
+      return null;
+    }
+  }
+
+  @ModelAttribute
   public Application populateApplication(
-      @PathVariable(required = false) String viewerKind,
+      @ModelAttribute ViewerResponse.KindEnum viewerKind,
       @PathVariable(required = false) String viewerName,
       @RequestParam(required = false) String base,
       @RequestParam(required = false) String projection) {
@@ -77,12 +97,12 @@ public class AppRestControllerAdvice {
     }
 
     Application app;
-    if ("app".equals(viewerKind)) {
+    if (viewerKind == ViewerResponse.KindEnum.APP) {
       app = applicationRepository.findByName(viewerName);
       if (app == null) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
       }
-    } else if ("service".equals(viewerKind)) {
+    } else if (viewerKind == ViewerResponse.KindEnum.SERVICE) {
       GeoService service = geoServiceRepository.findById(viewerName).orElse(null);
 
       if (service == null) {
