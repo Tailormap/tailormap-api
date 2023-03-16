@@ -5,7 +5,6 @@
  */
 package nl.b3p.tailormap.api.controller;
 
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -21,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.transaction.annotation.Transactional;
 
 @AutoConfigureMockMvc
@@ -33,6 +33,14 @@ class AppControllerIntegrationTest {
 
   @Value("${tailormap-api.base-path}")
   private String basePath;
+
+  // Required for AppRestControllerAdvice.populateViewerKind()
+  private static RequestPostProcessor requestPostProcessor(String servletPath) {
+    return request -> {
+      request.setServletPath(servletPath);
+      return request;
+    };
+  }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
@@ -85,8 +93,9 @@ class AppControllerIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void finds_by_name() throws Exception {
+    String path = basePath + "/app/default";
     mockMvc
-        .perform(get(basePath + "/app/default").accept(MediaType.APPLICATION_JSON))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.kind").value("app"))
@@ -96,8 +105,9 @@ class AppControllerIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void not_found_by_name() throws Exception {
+    String path = basePath + "/app/waldo";
     mockMvc
-        .perform(get(basePath + "/app/waldo").accept(MediaType.APPLICATION_JSON))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404));
@@ -106,20 +116,22 @@ class AppControllerIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void finds_service_viewer() throws Exception {
+    String path = basePath + "/service/snapshot-geoserver";
     mockMvc
-        .perform(get(basePath + "/service/snapshot-geoserver").param("id", "1").accept(MediaType.APPLICATION_JSON))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.kind").value("service"))
-        .andExpect(jsonPath("$.name").value("service/snapshot-geoserver"))
+        .andExpect(jsonPath("$.name").value("snapshot-geoserver"))
         .andExpect(jsonPath("$.title").value("Test GeoServer"));
   }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void not_found_unpublished_service_viewer() throws Exception {
+    String path = basePath + "/service/openbasiskaart";
     mockMvc
-        .perform(get(basePath + "/service/openbasiskaart").accept(MediaType.APPLICATION_JSON))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
