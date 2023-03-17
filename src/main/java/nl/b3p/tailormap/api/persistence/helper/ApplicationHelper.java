@@ -161,8 +161,6 @@ public class ApplicationHelper {
   private class MapResponseLayerBuilder {
     private int levelIdCounter = 0;
 
-    private int layerIdCounter = 0;
-
     private final Application app;
     private final MapResponse mr;
 
@@ -282,7 +280,7 @@ public class ApplicationHelper {
 
       LayerTreeNode layerNode =
           new LayerTreeNode()
-              .id("lyr_" + layerIdCounter++)
+              .id("lyr_" + layerRef.getId())
               .appLayerId(layerRef.getId())
               .description(serviceLayer.getAbstractText())
               .name(title)
