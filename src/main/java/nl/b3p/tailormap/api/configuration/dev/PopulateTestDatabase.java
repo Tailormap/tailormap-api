@@ -118,7 +118,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
 
   public void createTestUsers() {
     // User with access to any app which requires authentication
-    User u = new User().setUsername("user").setPassword("{noop}user");
+    User u = new User().setUsername("user").setPassword("{noop}user").setEmail("user@example.com");
     u.getGroups().add(groupRepository.findById(Group.APP_AUTHENTICATED).get());
     userRepository.save(u);
 
