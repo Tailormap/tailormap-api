@@ -8,9 +8,12 @@ package nl.b3p.tailormap.api.persistence.helper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import javax.persistence.EntityManager;
 import nl.b3p.tailormap.api.StaticTestData;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
@@ -26,6 +29,9 @@ class ApplicationHelperTest {
   @MockBean GeoServiceRepository geoServiceRepository;
   @MockBean GeoServiceHelper geoServiceHelper;
   @MockBean FeatureSourceRepository featureSourceRepository;
+  @MockBean ConfigurationRepository configurationRepository;
+  @MockBean ApplicationRepository applicationRepository;
+  @MockBean EntityManager entityManager;
   @Autowired ApplicationHelper applicationHelper;
 
   @Test

@@ -66,25 +66,25 @@ components:
       type: object
       required:
         - id
+        - serviceId
         - layerName
         - title
-        - serviceId
         - visible
         - hasAttributes
       properties:
         id:
-          type: integer
-          format: int64
+          type: string
+          description: Unique id of this layer reference in the application. Another app layer
+            may exist which references the same layerName of the same service, but with different
+            settings.
+        serviceId:
+          type: string
         layerName:
           description: Layer name as known by the service.
           type: string
         title:
           description: Layer title or display name.
           type: string
-        serviceId:
-          description: A reference to a Service id.
-          type: integer
-          format: int64
         url:
           description: URL for this specific layer. If empty use URL from the service.
           type: string
@@ -131,7 +131,7 @@ components:
           description: A unique identifier across all tree nodes.
           type: string
         appLayerId:
-          type: integer
+          type: string
         root:
           description: Only a single node in a tree will have this set to true.
           type: boolean
@@ -155,15 +155,11 @@ components:
       type: object
       properties: # TODO aanvullen
         id:
-          type: integer
-          format: int64
-          readOnly: true
+          type: string
         featureTypeName:
           type: string
         serviceId:
-          type: integer
-          format: int64
-          readOnly: true
+          type: string
         geometryAttribute:
           type: string
         geometryAttributeIndex:
@@ -322,13 +318,12 @@ components:
         type: 'geometry'
 
     Service:
-      description: 'A service provides one or more appLayers'
+      description: 'A service provides one or more layers used in a viewer'
       type: object
       required: [id, title, url, protocol, capabilities, serverType]
       properties:
         id:
-          type: integer
-          format: int64
+          type: string
           nullable: false
         title:
           type: string

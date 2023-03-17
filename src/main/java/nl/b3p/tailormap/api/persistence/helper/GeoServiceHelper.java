@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -162,6 +163,10 @@ public class GeoServiceHelper {
 
     ServiceInfo info = ows.getInfo();
 
+    if (StringUtils.isBlank(geoService.getTitle())) {
+      geoService.setTitle(info.getTitle());
+    }
+
     TMServiceCaps caps = new TMServiceCaps();
     geoService.setServiceCapabilities(caps);
 
@@ -187,6 +192,7 @@ public class GeoServiceHelper {
       GeoService geoService,
       List<? extends Layer> layers,
       BiConsumer<Layer, GeoServiceLayer> consumer) {
+    geoService.setLayers(new ArrayList<>());
 
     for (Layer l : layers) {
       GeoServiceLayer geoServiceLayer =

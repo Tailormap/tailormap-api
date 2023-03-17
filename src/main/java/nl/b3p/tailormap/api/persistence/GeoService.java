@@ -18,8 +18,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
@@ -42,9 +40,7 @@ public class GeoService {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @Id private String id;
 
   @Version private Long version;
 
@@ -107,6 +103,8 @@ public class GeoService {
   @Column(columnDefinition = "jsonb")
   private List<GeoServiceLayer> layers = new ArrayList<>();
 
+  private boolean published;
+
   /**
    * Settings relevant for Tailormap use cases, such as configuring the specific server type for
    * vendor-specific capabilities etc.
@@ -116,11 +114,11 @@ public class GeoService {
   private GeoServiceSettings settings = new GeoServiceSettings();
 
   // <editor-fold desc="getters and setters">
-  public Long getId() {
+  public String getId() {
     return id;
   }
 
-  public GeoService setId(Long id) {
+  public GeoService setId(String id) {
     this.id = id;
     return this;
   }
@@ -230,6 +228,15 @@ public class GeoService {
 
   public GeoService setLayers(List<GeoServiceLayer> layers) {
     this.layers = layers;
+    return this;
+  }
+
+  public boolean isPublished() {
+    return published;
+  }
+
+  public GeoService setPublished(boolean published) {
+    this.published = published;
     return this;
   }
 

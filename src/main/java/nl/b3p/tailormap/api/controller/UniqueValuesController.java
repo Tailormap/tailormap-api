@@ -49,7 +49,8 @@ import org.springframework.web.server.ResponseStatusException;
 @AppRestController
 @Validated
 @RequestMapping(
-    path = "${tailormap-api.base-path}/app/{appId}/layer/{appLayerId}/unique/{attributeName}",
+    path =
+        "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/unique/{attributeName}",
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class UniqueValuesController {
   private static final Logger logger =

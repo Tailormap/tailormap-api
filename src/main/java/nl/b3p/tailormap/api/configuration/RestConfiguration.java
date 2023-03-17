@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 @Configuration
 public class RestConfiguration implements RepositoryRestConfigurer {
 
-  private EntityManager entityManager;
+  private final EntityManager entityManager;
 
   public RestConfiguration(EntityManager entityManager) {
     this.entityManager = entityManager;

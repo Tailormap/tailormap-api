@@ -31,7 +31,7 @@ import org.springframework.web.server.ResponseStatusException;
 @AppRestController
 @Validated
 @RequestMapping(
-    path = "${tailormap-api.base-path}/app/{appId}/layer/{appLayerId}/describe",
+    path = "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/describe",
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class LayerDescriptionController {
 

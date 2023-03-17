@@ -9,7 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -27,9 +29,9 @@ import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
-import nl.b3p.tailormap.api.viewer.model.AppResponse;
 import nl.b3p.tailormap.api.viewer.model.AppStyling;
 import nl.b3p.tailormap.api.viewer.model.Component;
+import nl.b3p.tailormap.api.viewer.model.ViewerResponse;
 import org.geotools.referencing.CRS;
 import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
@@ -223,24 +225,31 @@ public class Application {
 
   // </editor-fold>
 
-  public AppResponse toAppResponse() {
-    return new AppResponse().id(id).name(name).title(title).styling(styling).components(components);
-  }
-
   @PrePersist
   @PreUpdate
-  public void assignAppLayerRefIds() {
-    // TODO: keep using AppLayerRef id's or use different way to reference them?
+  public void assignAppLayerRefNames() {
 
-    // Only assign new id's to AppLayerRefs without id. AppLayerRef id are used in bookmarks
-    // Does not check uniqueness
+    // Automatically assign appLayerRef ids based on serviceName and layerName
+    final Set<String> appLayerIds = new HashSet<>();
 
-    final long[] highestId = {0L};
     getAllAppLayerRefs()
         .forEach(
-            ref -> highestId[0] = Math.max(highestId[0], ref.getId() == null ? 0L : ref.getId()));
-
-    getAllAppLayerRefs().filter(ref -> ref.getId() == null).forEach(ref -> ref.id(++highestId[0]));
+            ref -> {
+              if (ref.getId() != null) {
+                appLayerIds.add(ref.getId());
+              } else {
+                String id = ref.getServiceId() + ":" + ref.getLayerName();
+                int counter = 2;
+                while (true) {
+                  if (!appLayerIds.contains(id)) {
+                    ref.setId(id);
+                    appLayerIds.add(id);
+                    break;
+                  }
+                  id = ref.getServiceId() + ":" + ref.getLayerName() + "_" + counter++;
+                }
+              }
+            });
   }
 
   public Stream<AppLayerRef> getAllAppLayerRefs() {
@@ -287,5 +296,17 @@ public class Application {
       }
     }
     return gtCrs;
+  }
+
+  @JsonIgnore
+  public ViewerResponse getViewerResponse() {
+    return new ViewerResponse()
+        .kind(ViewerResponse.KindEnum.APP)
+        .name(getName())
+        .title(getTitle())
+        .styling(styling)
+        .components(components)
+        .languages(List.of("NL_nl"))
+        .projections(List.of(getCrs()));
   }
 }

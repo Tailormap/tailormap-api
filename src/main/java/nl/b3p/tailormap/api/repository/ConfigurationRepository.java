@@ -21,5 +21,15 @@ public interface ConfigurationRepository extends JpaRepository<Configuration, St
   @PreAuthorize("permitAll()")
   Optional<Configuration> findByKey(String key);
 
+  @PreAuthorize("permitAll()")
+  default String get(String key) {
+    return get(key, null);
+  }
+
+  @PreAuthorize("permitAll()")
+  default String get(String key, String defaultValue) {
+    return findByKey(key).map(Configuration::getValue).orElse(defaultValue);
+  }
+
   void deleteConfigurationByKey(String configKey);
 }
