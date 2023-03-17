@@ -163,6 +163,10 @@ public class GeoServiceHelper {
 
     ServiceInfo info = ows.getInfo();
 
+    if (StringUtils.isBlank(geoService.getTitle())) {
+      geoService.setTitle(info.getTitle());
+    }
+
     TMServiceCaps caps = new TMServiceCaps();
     geoService.setServiceCapabilities(caps);
 
