@@ -63,7 +63,7 @@ class AppControllerIntegrationTest {
   @Transactional
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void not_found_when_no_default() throws Exception {
-    Configuration defaultApp = configurationRepository.findByKey(Configuration.DEFAULT_APP).get();
+    Configuration defaultApp = configurationRepository.findByKey(Configuration.DEFAULT_APP).orElseThrow();
     entityManager.remove(defaultApp);
     mockMvc
         .perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
@@ -79,7 +79,7 @@ class AppControllerIntegrationTest {
   @Transactional
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void not_found_when_default_not_exists() throws Exception {
-    Configuration defaultApp = configurationRepository.findByKey(Configuration.DEFAULT_APP).get();
+    Configuration defaultApp = configurationRepository.findByKey(Configuration.DEFAULT_APP).orElseThrow();
     defaultApp.setValue("non existing app!");
     mockMvc
         .perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
