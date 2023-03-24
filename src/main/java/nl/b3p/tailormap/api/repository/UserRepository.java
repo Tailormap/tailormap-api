@@ -8,13 +8,16 @@ package nl.b3p.tailormap.api.repository;
 import java.util.Collection;
 import java.util.Optional;
 import nl.b3p.tailormap.api.persistence.User;
+import nl.b3p.tailormap.api.persistence.projections.UserGroups;
 import nl.b3p.tailormap.api.security.annotation.PreAuthorizeAdmin;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 @PreAuthorizeAdmin
+@RepositoryRestResource(excerptProjection = UserGroups.class)
 public interface UserRepository extends JpaRepository<User, String> {
   @Override
   @PreAuthorize("permitAll()")
