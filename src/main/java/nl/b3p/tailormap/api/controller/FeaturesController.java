@@ -207,7 +207,7 @@ public class FeaturesController implements Constants {
 
         Optional<TMAttributeDescriptor> sortByAttribute = tmft.getAttributeByName(sortBy);
 
-        if (sortByAttribute.isPresent() && !sortByAttribute.get().isGeometry()) {
+        if (sortByAttribute.isPresent() && !sortByAttribute.orElseThrow().isGeometry()) {
           sortAttrName = sortBy;
         } else {
           logger.warn(

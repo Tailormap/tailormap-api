@@ -73,7 +73,7 @@ public class ActuatorSecurityConfiguration {
           logger.error("Invalid password hash, must start with {bcrypt}");
         } else {
           account = new User().setUsername(Group.ACTUATOR).setPassword(hashedPassword);
-          account.getGroups().add(groupRepository.findById(Group.ACTUATOR).get());
+          account.getGroups().add(groupRepository.findById(Group.ACTUATOR).orElseThrow());
           userRepository.save(account);
           logger.info("Created {} account with hashed password for management", Group.ACTUATOR);
         }

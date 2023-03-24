@@ -119,24 +119,24 @@ public class PopulateTestDatabase implements EnvironmentAware {
   public void createTestUsers() {
     // User with access to any app which requires authentication
     User u = new User().setUsername("user").setPassword("{noop}user").setEmail("user@example.com");
-    u.getGroups().add(groupRepository.findById(Group.APP_AUTHENTICATED).get());
+    u.getGroups().add(groupRepository.findById(Group.APP_AUTHENTICATED).orElseThrow());
     userRepository.save(u);
 
     // Only user admin
     u = new User().setUsername("useradmin").setPassword("{noop}useradmin");
-    u.getGroups().add(groupRepository.findById(Group.ADMIN_USERS).get());
+    u.getGroups().add(groupRepository.findById(Group.ADMIN_USERS).orElseThrow());
     userRepository.save(u);
 
     // Superuser with all access (even admin-users without explicitly having that authority)
     u = new User().setUsername("tm-admin").setPassword("{noop}tm-admin");
-    u.getGroups().add(groupRepository.findById(Group.ADMIN).get());
+    u.getGroups().add(groupRepository.findById(Group.ADMIN).orElseThrow());
     userRepository.save(u);
   }
 
   @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
   public void createTestConfiguration() throws Exception {
 
-    Catalog catalog = catalogRepository.findById(Catalog.MAIN).get();
+    Catalog catalog = catalogRepository.findById(Catalog.MAIN).orElseThrow();
     CatalogNode rootCatalogNode = catalog.getNodes().get(0);
     CatalogNode catalogNode = new CatalogNode().id("test").title("Test services");
     rootCatalogNode.addChildrenItem(catalogNode.getId());
