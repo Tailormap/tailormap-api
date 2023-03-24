@@ -17,10 +17,8 @@ import com.jayway.jsonpath.JsonPath;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.stream.Stream;
-import nl.b3p.tailormap.api.JPAConfiguration;
-import nl.b3p.tailormap.api.model.Service;
-import nl.b3p.tailormap.api.security.AuthorizationService;
-import nl.b3p.tailormap.api.security.SecurityConfig;
+import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
+import nl.b3p.tailormap.api.viewer.model.Service;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -39,24 +37,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-@SpringBootTest(
-    classes = {
-      JPAConfiguration.class,
-      FeaturesController.class,
-      SecurityConfig.class,
-      AuthorizationService.class,
-      AppRestControllerAdvice.class,
-    })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
-@ActiveProfiles("postgresql")
+@PostgresIntegrationTest
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
 class FeaturesControllerPostgresIntegrationTest {

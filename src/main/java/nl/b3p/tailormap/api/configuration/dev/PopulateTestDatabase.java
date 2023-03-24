@@ -12,6 +12,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import nl.b3p.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Catalog;
@@ -116,7 +117,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
     }
   }
 
-  public void createTestUsers() {
+  public void createTestUsers() throws NoSuchElementException {
     // User with access to any app which requires authentication
     User u = new User().setUsername("user").setPassword("{noop}user").setEmail("user@example.com");
     u.getGroups().add(groupRepository.findById(Group.APP_AUTHENTICATED).orElseThrow());

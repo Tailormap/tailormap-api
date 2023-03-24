@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2022 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
 package nl.b3p.tailormap.api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -7,11 +12,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-/*
- * Copyright (C) 2022 B3Partners B.V.
- *
- * SPDX-License-Identifier: MIT
- */ class GeoServiceProxyControllerTest {
+class GeoServiceProxyControllerTest {
 
   @Test
   void buildOgcProxyRequestParams() {

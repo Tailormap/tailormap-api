@@ -18,34 +18,20 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import nl.b3p.tailormap.api.JPAConfiguration;
-import nl.b3p.tailormap.api.security.AuthorizationService;
-import nl.b3p.tailormap.api.security.SecurityConfig;
+import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest(
-    classes = {
-      JPAConfiguration.class,
-      GeoServiceProxyController.class,
-      SecurityConfig.class,
-      AuthorizationService.class,
-      AppRestControllerAdvice.class,
-    })
 @AutoConfigureMockMvc
-@EnableAutoConfiguration
-@ActiveProfiles("postgresql")
+@PostgresIntegrationTest
 @Execution(ExecutionMode.CONCURRENT)
 class GeoServiceProxyControllerPostgresIntegrationTest {
   @Autowired private MockMvc mockMvc;

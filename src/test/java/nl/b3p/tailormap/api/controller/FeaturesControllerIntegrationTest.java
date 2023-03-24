@@ -10,36 +10,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.persistence.EntityManager;
+import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.security.AuthorizationService;
-import nl.b3p.tailormap.api.security.SecurityConfig;
+import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest(
-    classes = {
-      HSQLDBTestProfileJPAConfiguration.class,
-      FeaturesController.class,
-      SecurityConfig.class,
-      AuthorizationService.class,
-      AppRestControllerAdvice.class,
-    })
+// @SpringBootTest(
+//    classes = {
+//      FeaturesController.class,
+//      AuthorizationService.class,
+//      AppRestControllerAdvice.class,
+//      EntityManagerFactory.class
+//    })
 @AutoConfigureMockMvc
-@EnableAutoConfiguration
-@ActiveProfiles("test")
+// @EnableAutoConfiguration
+@PostgresIntegrationTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class FeaturesControllerIntegrationTest {
   @Autowired private MockMvc mockMvc;
+  @Autowired ConfigurationRepository configurationRepository;
+
+  @Autowired EntityManager entityManager;
   @Autowired ApplicationRepository applicationRepository;
 
   @Test
