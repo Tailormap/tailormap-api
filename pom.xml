@@ -763,6 +763,7 @@ SPDX-License-Identifier: MIT
                     </annotationProcessorPaths>
                     <testExcludes>
                         <exclude>**/FeaturesController*.java</exclude>
+                        <exclude>**/GeoServiceProxyControllerPostgresIntegrationTest.java</exclude>
                         <exclude>**/LayerDescriptionController*.java</exclude>
                         <exclude>**/LayerExportController*.java</exclude>
                         <exclude>**/MapControllerIntegrationTest.java</exclude>
