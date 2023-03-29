@@ -47,6 +47,7 @@ public class User {
   @Column(columnDefinition = "text")
   private String notes;
 
+  @Column(columnDefinition = "timestamp with time zone")
   private java.time.ZonedDateTime validUntil;
 
   private boolean enabled = true;
