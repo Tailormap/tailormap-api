@@ -566,7 +566,7 @@ SPDX-License-Identifier: MIT
                 </plugin>
                 <plugin>
                     <artifactId>maven-scm-publish-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
