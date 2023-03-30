@@ -244,7 +244,15 @@ public class PopulateTestDatabase implements EnvironmentAware {
         .filter(s -> s.getProtocol() == WMS)
         .forEach(
             s -> {
-              geoServiceHelper.findAndSaveRelatedWFS(s, wfsFeatureSourceCatalogNode);
+              geoServiceHelper.findAndSaveRelatedWFS(s);
+              List<TMFeatureSource> linkedSources =
+                  featureSourceRepository.findByLinkedServiceId(s.getId());
+              for (TMFeatureSource linkedSource : linkedSources) {
+                wfsFeatureSourceCatalogNode.addItemsItem(
+                    new TailormapObjectRef()
+                        .kind(TailormapObjectRef.KindEnum.FEATURE_SOURCE)
+                        .id(linkedSource.getId().toString()));
+              }
             });
 
     String geodataPassword = "980f1c8A-25933b2";

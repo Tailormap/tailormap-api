@@ -6,6 +6,7 @@
 
 package nl.b3p.tailormap.api.repository;
 
+import java.util.List;
 import java.util.Optional;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.security.annotation.PreAuthorizeAdmin;
@@ -28,5 +29,5 @@ public interface FeatureSourceRepository extends JpaRepository<TMFeatureSource, 
   Optional<TMFeatureSource> findById(@NonNull Long id);
 
   @PreAuthorize(value = "permitAll()")
-  Optional<TMFeatureSource> findByLinkedServiceId(String id);
+  List<TMFeatureSource> findByLinkedServiceId(String id);
 }

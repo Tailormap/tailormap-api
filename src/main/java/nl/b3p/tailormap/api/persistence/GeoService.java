@@ -335,31 +335,34 @@ public class GeoService {
       return null;
     }
 
-    TMFeatureSource tmfs;
+    TMFeatureSource tmfs = null;
+    TMFeatureType tmft = null;
+
     if (featureSourceId == null) {
-      tmfs = featureSourceRepository.findByLinkedServiceId(getId()).orElse(null);
+      List<TMFeatureSource> linkedSources = featureSourceRepository.findByLinkedServiceId(getId());
+      for (TMFeatureSource linkedFs : linkedSources) {
+        tmft = linkedFs.findFeatureTypeByName(featureTypeName);
+        if (tmft != null) {
+          tmfs = linkedFs;
+          break;
+        }
+      }
     } else {
       tmfs = featureSourceRepository.findById(featureSourceId).orElse(null);
+      if (tmfs != null) {
+        tmft = tmfs.findFeatureTypeByName(featureTypeName);
+      }
     }
 
     if (tmfs == null) {
       return null;
     }
-    TMFeatureType tmft =
-        tmfs.getFeatureTypes().stream()
-            .filter(ft -> featureTypeName.equals(ft.getName()))
-            .findFirst()
-            .orElse(null);
 
     if (tmft == null) {
       String[] split = featureTypeName.split(":", 2);
       if (split.length == 2) {
         String shortFeatureTypeName = split[1];
-        tmft =
-            tmfs.getFeatureTypes().stream()
-                .filter(ft -> shortFeatureTypeName.equals(ft.getName()))
-                .findFirst()
-                .orElse(null);
+        tmft = tmfs.findFeatureTypeByName(shortFeatureTypeName);
         if (tmft != null) {
           logger.debug(
               "Did not find feature type with full name \"{}\", using \"{}\" of feature source {}",

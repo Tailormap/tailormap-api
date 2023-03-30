@@ -5,13 +5,12 @@
  */
 package nl.b3p.tailormap.api.repository.events;
 
+import nl.b3p.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
 import org.springframework.data.rest.core.annotation.HandleBeforeSave;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.stereotype.Component;
-import nl.b3p.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
-
 
 @RepositoryEventHandler
 @Component
