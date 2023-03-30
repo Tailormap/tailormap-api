@@ -234,11 +234,26 @@ public class PopulateTestDatabase implements EnvironmentAware {
               .kind(TailormapObjectRef.KindEnum.GEO_SERVICE)
               .id(geoService.getId()));
     }
-    catalogRepository.save(catalog);
+
+    CatalogNode wfsFeatureSourceCatalogNode =
+        new CatalogNode().id("wfs_feature_sources").title("WFS feature sources");
+    rootCatalogNode.addChildrenItem(wfsFeatureSourceCatalogNode.getId());
+    catalog.getNodes().add(wfsFeatureSourceCatalogNode);
 
     services.stream()
         .filter(s -> s.getProtocol() == WMS)
-        .forEach(geoServiceHelper::findAndSaveRelatedWFS);
+        .forEach(
+            s -> {
+              geoServiceHelper.findAndSaveRelatedWFS(s);
+              List<TMFeatureSource> linkedSources =
+                  featureSourceRepository.findByLinkedServiceId(s.getId());
+              for (TMFeatureSource linkedSource : linkedSources) {
+                wfsFeatureSourceCatalogNode.addItemsItem(
+                    new TailormapObjectRef()
+                        .kind(TailormapObjectRef.KindEnum.FEATURE_SOURCE)
+                        .id(linkedSource.getId().toString()));
+              }
+            });
 
     String geodataPassword = "980f1c8A-25933b2";
 
@@ -308,6 +323,20 @@ public class PopulateTestDatabase implements EnvironmentAware {
                             .username("geodata")
                             .password(geodataPassword)));
     featureSourceRepository.saveAll(featureSources.values());
+
+    CatalogNode featureSourceCatalogNode =
+        new CatalogNode().id("feature_sources").title("Test feature sources");
+    rootCatalogNode.addChildrenItem(featureSourceCatalogNode.getId());
+    catalog.getNodes().add(featureSourceCatalogNode);
+
+    for (TMFeatureSource featureSource : featureSources.values()) {
+      featureSourceCatalogNode.addItemsItem(
+          new TailormapObjectRef()
+              .kind(TailormapObjectRef.KindEnum.FEATURE_SOURCE)
+              .id(featureSource.getId().toString()));
+    }
+
+    catalogRepository.save(catalog);
 
     if (spatialDbsConnect) {
       featureSources

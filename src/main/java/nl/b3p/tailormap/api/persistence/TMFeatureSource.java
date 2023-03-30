@@ -229,4 +229,11 @@ public class TMFeatureSource {
     return this;
   }
   // </editor-fold>
+
+  public TMFeatureType findFeatureTypeByName(String featureTypeName) {
+    return getFeatureTypes().stream()
+        .filter(ft -> featureTypeName.equals(ft.getName()))
+        .findFirst()
+        .orElse(null);
+  }
 }
