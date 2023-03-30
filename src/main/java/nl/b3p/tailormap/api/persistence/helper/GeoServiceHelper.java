@@ -32,6 +32,7 @@ import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSLayerDescription;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
+import nl.b3p.tailormap.api.persistence.json.CatalogNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequest;
@@ -378,7 +379,7 @@ public class GeoServiceHelper {
     return descriptions;
   }
 
-  public void findAndSaveRelatedWFS(GeoService geoService) {
+  public void findAndSaveRelatedWFS(GeoService geoService, CatalogNode catalogNode) {
     if (geoService.getProtocol() != WMS) {
       throw new IllegalArgumentException();
     }
@@ -414,6 +415,10 @@ public class GeoServiceHelper {
                   }
                 }
                 featureSourceRepository.save(fs);
+                catalogNode.addItemsItem(
+                    new TailormapObjectRef()
+                        .kind(TailormapObjectRef.KindEnum.FEATURE_SOURCE)
+                        .id(fs.getId().toString()));
               }
             });
   }
