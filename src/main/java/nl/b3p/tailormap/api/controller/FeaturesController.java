@@ -12,6 +12,7 @@ import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -152,7 +153,10 @@ public class FeaturesController implements Constants {
       String sortBy,
       String sortOrder,
       boolean onlyGeometries) {
-    FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);
+    FeaturesResponse featuresResponse =
+        new FeaturesResponse(Collections.emptyList(), Collections.emptyList())
+            .page(page)
+            .pageSize(pageSize);
 
     SimpleFeatureSource fs = null;
     try {
@@ -280,7 +284,7 @@ public class FeaturesController implements Constants {
   @NotNull
   private FeaturesResponse getFeatureByFID(
       @NotNull TMFeatureType tmft, @NotNull String fid, String crs) {
-    FeaturesResponse featuresResponse = new FeaturesResponse();
+    FeaturesResponse featuresResponse = new FeaturesResponse(null, null);
 
     SimpleFeatureSource fs = null;
     try {
@@ -355,7 +359,7 @@ public class FeaturesController implements Constants {
           HttpStatus.BAD_REQUEST, "Buffer distance must be greater than 0");
     }
 
-    FeaturesResponse featuresResponse = new FeaturesResponse();
+    FeaturesResponse featuresResponse = new FeaturesResponse(null, null);
 
     SimpleFeatureSource fs;
     try {
@@ -446,7 +450,7 @@ public class FeaturesController implements Constants {
                 simplifyGeometry,
                 transform);
         Feature newFeat =
-            new Feature().fid(feature.getIdentifier().getID()).geometry(processedGeometry);
+            new Feature(feature.getIdentifier().getID(), null).geometry(processedGeometry);
 
         if (!onlyGeometries) {
           for (AttributeDescriptor att : feature.getFeatureType().getAttributeDescriptors()) {

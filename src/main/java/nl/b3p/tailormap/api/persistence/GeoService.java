@@ -258,13 +258,7 @@ public class GeoService {
       serverTypeEnum = Service.ServerTypeEnum.fromValue(settings.getServerType().getValue());
     }
 
-    Service s =
-        new Service()
-            .id(this.id)
-            .title(this.title)
-            .url(this.url)
-            .protocol(this.protocol)
-            .serverType(serverTypeEnum);
+    Service s = new Service(this.id, this.title, this.url, this.protocol, null, serverTypeEnum);
 
     if (this.protocol == GeoServiceProtocol.WMTS) {
       // Frontend requires WMTS capabilities to parse TilingMatrix, but WMS capabilities aren't used

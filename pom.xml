@@ -796,6 +796,9 @@ SPDX-License-Identifier: MIT
                                 <openApiNullable>false</openApiNullable>
                                 <serializableModel>true</serializableModel>
                                 <useOptional>true</useOptional>
+                                <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
+                                <developerOrganization>${project.organization.name}</developerOrganization>
+                                <developerOrganizationUrl>${project.organization.url}</developerOrganizationUrl>
                             </configOptions>
                             <!--              <instantiationTypes>array=ArrayList,map=HashMap,object=Map</instantiationTypes>-->
                             <!--              <typeMappings>array=List,map=Map,object=Map</typeMappings>-->

@@ -63,7 +63,7 @@ public class LayerExportController {
   public ResponseEntity<Serializable> capabilities(
       @ModelAttribute GeoService service, @ModelAttribute GeoServiceLayer layer) throws Exception {
 
-    final LayerExportCapabilities capabilities = new LayerExportCapabilities();
+    final LayerExportCapabilities capabilities = new LayerExportCapabilities(false);
 
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
     WFSSearchResult wfsSearchResult = findWFSFeatureType(service, layer, tmft);

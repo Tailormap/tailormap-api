@@ -189,12 +189,14 @@ components:
           description: 'list of features. When the pagenumber*pagesize exceeds the number of features this list will be empty'
           type: array
           minLength: 0
+          default: []
           items:
             $ref: './viewer-schemas.yaml#/components/schemas/Feature'
         columnMetadata:
           description: 'presentation metadata'
           type: array
           minLength: 0
+          default: []
           items:
             $ref: './viewer-schemas.yaml#/components/schemas/ColumnMetadata'
       example:
