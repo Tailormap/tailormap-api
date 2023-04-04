@@ -300,13 +300,13 @@ public class Application {
 
   @JsonIgnore
   public ViewerResponse getViewerResponse() {
-    return new ViewerResponse()
-        .kind(ViewerResponse.KindEnum.APP)
-        .name(getName())
-        .title(getTitle())
-        .styling(styling)
-        .components(components)
-        .languages(List.of("NL_nl"))
-        .projections(List.of(getCrs()));
+    return new ViewerResponse(
+        ViewerResponse.KindEnum.APP,
+        getName(),
+        getTitle(),
+        List.of("NL_nl"),
+        List.of(getCrs()),
+        styling,
+        components);
   }
 }

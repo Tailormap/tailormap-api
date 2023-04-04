@@ -126,7 +126,7 @@ public class ApplicationHelper {
 
   @Transactional
   public MapResponse toMapResponse(Application app) {
-    MapResponse mapResponse = new MapResponse();
+    MapResponse mapResponse = new MapResponse(null, null, null, null, null, null);
     setCrsAndBounds(app, mapResponse);
     setLayers(app, mapResponse);
     return mapResponse;
@@ -139,9 +139,7 @@ public class ApplicationHelper {
     }
 
     TMCoordinateReferenceSystem crs =
-        new TMCoordinateReferenceSystem()
-            .code(a.getCrs())
-            .definition(((Formattable) gtCrs).toWKT(0))
+        new TMCoordinateReferenceSystem(a.getCrs(), ((Formattable) gtCrs).toWKT(0))
             .bounds(GeoToolsHelper.fromCRS(gtCrs))
             .unit(
                 Optional.ofNullable(CRSUtilities.getUnit(gtCrs.getCoordinateSystem()))
@@ -158,14 +156,24 @@ public class ApplicationHelper {
     new MapResponseLayerBuilder(app, mr).buildLayers();
   }
 
-  private class MapResponseLayerBuilder {
-    private int levelIdCounter = 0;
+  private String getProxyUrl(
+      GeoService geoService, Application application, AppLayerRef appLayerRef) {
+    return linkTo(
+            GeoServiceProxyController.class,
+            Map.of(
+                "viewerKind", "app", // XXX
+                "viewerName", application.getName(),
+                "appLayerId", appLayerRef.getId(),
+                "protocol", geoService.getProtocol().getValue()))
+        .toString();
+  }
 
+  private class MapResponseLayerBuilder {
     private final Application app;
     private final MapResponse mr;
-
     // XXX not needed if we have GeoServiceLayer.getService().getName()
     private final Map<GeoServiceLayer, String> serviceLayerServiceIds = new HashMap<>();
+    private int levelIdCounter = 0;
 
     public MapResponseLayerBuilder(Application app, MapResponse mr) {
       this.app = app;
@@ -181,16 +189,13 @@ public class ApplicationHelper {
 
     private void buildBackgroundLayers() {
       LayerTreeNode backgroundRootNode =
-          new LayerTreeNode().id("base-layer-root").name("Base layers").root(true);
+          new LayerTreeNode("base-layer-root", "Base layers").root(true);
       mr.addBaseLayerTreeNodesItem(backgroundRootNode);
 
       if (app.getContentRoot().getBaseLayers() != null) {
         for (BaseLayerInner baseLayer : app.getContentRoot().getBaseLayers()) {
           LayerTreeNode backgroundNode =
-              new LayerTreeNode()
-                  .id("lvl_" + levelIdCounter++)
-                  .name(baseLayer.getTitle())
-                  .root(false);
+              new LayerTreeNode(("lvl_" + levelIdCounter++), (baseLayer.getTitle())).root(false);
 
           for (AppLayerRef layerRef : baseLayer.getLayers()) {
             addAppLayerItem(layerRef, backgroundNode, mr.getBaseLayerTreeNodes());
@@ -204,7 +209,7 @@ public class ApplicationHelper {
     }
 
     private void buildOverlayLayers() {
-      LayerTreeNode rootNode = new LayerTreeNode().id("root").name("Overlays").root(true);
+      LayerTreeNode rootNode = new LayerTreeNode("root", "Overlays").root(true);
       mr.addLayerTreeNodesItem(rootNode);
       // TODO: just supporting layers at the root node for now
       if (app.getContentRoot().getLayers() != null) {
@@ -259,31 +264,29 @@ public class ApplicationHelper {
       boolean proxied = service.getSettings().getUseProxy();
 
       mr.addAppLayersItem(
-          new AppLayer()
-              .id(layerRef.getId())
-              .serviceId(serviceLayerServiceIds.get(serviceLayer))
-              .layerName(layerRef.getLayerName())
-              .hasAttributes(tmft != null)
+          new AppLayer(
+                  (layerRef.getId()),
+                  (serviceLayerServiceIds.get(serviceLayer)),
+                  (layerRef.getLayerName()),
+                  (title),
+                  layerRef.getVisible(),
+                  (tmft != null))
               .url(proxied ? getProxyUrl(service, app, layerRef) : null)
               // Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools
               // gt-wms Layer class?
               .maxScale(serviceLayer.getMaxScale())
               .minScale(serviceLayer.getMinScale())
-              .title(title)
               .tilingDisabled(tilingDisabled)
               .tilingGutter(tilingGutter)
               .hiDpiDisabled(hiDpiDisabled)
               .hiDpiMode(hiDpiMode)
               .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
-              .opacity(layerRef.getOpacity())
-              .visible(layerRef.getVisible()));
+              .opacity(layerRef.getOpacity()));
 
       LayerTreeNode layerNode =
-          new LayerTreeNode()
-              .id("lyr_" + layerRef.getId())
+          new LayerTreeNode(("lyr_" + layerRef.getId()), title)
               .appLayerId(layerRef.getId())
               .description(serviceLayer.getAbstractText())
-              .name(title)
               .root(false);
       parent.addChildrenIdsItem(layerNode.getId());
       layerTreeNodeList.add(layerNode);
@@ -323,17 +326,5 @@ public class ApplicationHelper {
       GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());
       return Triple.of(service, serviceLayer, layerSettings);
     }
-  }
-
-  private String getProxyUrl(
-      GeoService geoService, Application application, AppLayerRef appLayerRef) {
-    return linkTo(
-            GeoServiceProxyController.class,
-            Map.of(
-                "viewerKind", "app", // XXX
-                "viewerName", application.getName(),
-                "appLayerId", appLayerRef.getId(),
-                "protocol", geoService.getProtocol().getValue()))
-        .toString();
   }
 }

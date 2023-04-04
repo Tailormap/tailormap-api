@@ -58,9 +58,7 @@ public class LayerDescriptionController {
     }
 
     LayerDetails r =
-        new LayerDetails()
-            .id(ref.getId())
-            .serviceId(ref.getServiceId())
+        new LayerDetails((ref.getId()), (ref.getServiceId()))
             .featureTypeName(tmft.getName())
             .geometryAttribute(tmft.getDefaultGeometryAttribute())
             .geometryType(
@@ -73,8 +71,7 @@ public class LayerDescriptionController {
                 tmft.getAttributes().stream()
                     .map(
                         a ->
-                            new Attribute()
-                                .name(a.getName())
+                            new Attribute((a.getName()))
                                 // Only return generic 'geometry' type for now, frontend doesn't
                                 // handle different geometry types. For the default geometry
                                 // attribute there is a specific geometry type set

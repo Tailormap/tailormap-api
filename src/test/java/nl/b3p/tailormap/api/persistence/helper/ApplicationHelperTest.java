@@ -37,7 +37,7 @@ class ApplicationHelperTest {
   @Test
   void testAppWithCrsRD() {
     Application a = new Application().setCrs("EPSG:28992");
-    MapResponse mr = new MapResponse();
+    MapResponse mr = new MapResponse(null, null, null, null, null, null);
     applicationHelper.setCrsAndBounds(a, mr);
     TMCoordinateReferenceSystem crs = mr.getCrs();
     assertNotNull(crs);
@@ -58,7 +58,7 @@ class ApplicationHelperTest {
   @Test
   void testAppWithCrs3857() {
     Application a = new Application().setCrs("EPSG:3857");
-    MapResponse mr = new MapResponse();
+    MapResponse mr = new MapResponse(null, null, null, null, null, null);
     applicationHelper.setCrsAndBounds(a, mr);
     TMCoordinateReferenceSystem crs = mr.getCrs();
     assertNotNull(crs);
@@ -79,7 +79,7 @@ class ApplicationHelperTest {
   @Test
   void testAppWithCrs4326() {
     Application a = new Application().setCrs("EPSG:4326");
-    MapResponse mr = new MapResponse();
+    MapResponse mr = new MapResponse(null, null, null, null, null, null);
     applicationHelper.setCrsAndBounds(a, mr);
     TMCoordinateReferenceSystem crs = mr.getCrs();
     assertNotNull(crs);
