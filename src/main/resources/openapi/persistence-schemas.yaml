@@ -269,6 +269,17 @@ components:
         featureType:
           $ref: FeatureTypeRef
 
+    FeatureTypeRef:
+      required: [featureSourceId, featureTypeName]
+      properties:
+        featureSourceId:
+          type: integer
+          format: int64
+          nullable: false
+        featureTypeName:
+          type: string
+          nullable: false
+
     WMSLayerSettings:
       description: Settings applying to a WMS layer.
       allOf:
@@ -338,63 +349,90 @@ components:
             # layer name
             type: string
 
+    AppTreeNode:
+      description: Abstract base schema for nodes in tree.
+      type: object
+      properties:
+        id:
+          description: A unique identifier across all tree nodes.
+          type: string
+        description:
+          description: Description for this node entered by application admin.
+          type: string
+      required:
+        - id
+
+    AppTreeFolderNode:
+      description: Node for organizing app layer referencing nodes in a folder tree.
+      allOf:     # Combines the BasicErrorModel and the inline model
+        - $ref: '#/components/schemas/AppTreeNode'
+        - type: object
+          properties:
+            title:
+              description: Display title of this tree node.
+              type: string
+            root:
+              description: Only a single node in a tree will have this set to true.
+              type: boolean
+            childrenIds:
+              description: Ordered list of ids of LayerTreeNodes that are children of this node.
+              type: array
+              items:
+                type: string
+          required:
+            - root
+            - title
+
+    AppTreeLayerNode:
+      description: Node referencing a layer.
+      allOf:     # Combines the BasicErrorModel and the inline model
+        - $ref: '#/components/schemas/AppTreeNode'
+        - type: object
+          properties:
+            serviceId:
+              type: string
+            layerName:
+              type: string
+              nullable: false
+            visible:
+              type: boolean
+              description: Whether this layer should be shown on the map on startup.
+              nullable: false
+              default: true
+          required:
+            - serviceId
+            - layerName
+
     # TODO: slimmigheden zoals ook nieuwe lagen opnemen met defaults, default configs, etc.
     AppContent:
       description: Configuration for including content (layers) in an application.
       properties:
-        baseLayers:
-          title: BaseLayer
+        baseLayerNodes:
+#          title: BaseLayer
           type: array
           items:
-            type: object
-            required: [title, layers]
-            properties:
-              title:
-                type: string
-              layers:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AppLayerRef'
-        layers:
+            $ref: '#/components/schemas/AppTreeNode'
+        layerNodes:
           type: array
           items:
-            # TODO oneOf opties voor meerdere soorten content?
-            $ref: '#/components/schemas/AppLayerRef'
-        children:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppContent'
+            $ref: '#/components/schemas/AppTreeNode'
 
-    AppLayerRef:
-      required: [id, serviceId, layerName, visible, opacity]
+    AppSettings:
+      description: Settings applying to a viewer application.
       properties:
-        id:
-          type: string
-          nullable: false
-        serviceId:
-          type: string
-          nullable: false
-        layerName:
-          type: string
-          nullable: false
+        layerSettings:
+          title: AppLayerSettings
+          description: Map of id of an AppTreeLayerNode to its' settings.
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/AppLayerSettings'
+
+    AppLayerSettings:
+      properties:
         title:
           type: string
-        visible:
-          type: boolean
-          nullable: false
-          default: true
         opacity:
           type: integer
           nullable: false
           default: 100
-
-    FeatureTypeRef:
-      required: [featureSourceId, featureTypeName]
-      properties:
-        featureSourceId:
-          type: integer
-          format: int64
-          nullable: false
-        featureTypeName:
-          type: string
-          nullable: false
+        # TODO add properties for selected WMS style, feature info popup template, etc.
