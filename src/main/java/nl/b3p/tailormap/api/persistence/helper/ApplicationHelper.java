@@ -195,7 +195,7 @@ public class ApplicationHelper {
       if (app.getContentRoot().getBaseLayers() != null) {
         for (BaseLayerInner baseLayer : app.getContentRoot().getBaseLayers()) {
           LayerTreeNode backgroundNode =
-              new LayerTreeNode(("lvl_" + levelIdCounter++), (baseLayer.getTitle())).root(false);
+              new LayerTreeNode("lvl_" + levelIdCounter++, baseLayer.getTitle()).root(false);
 
           for (AppLayerRef layerRef : baseLayer.getLayers()) {
             addAppLayerItem(layerRef, backgroundNode, mr.getBaseLayerTreeNodes());
@@ -265,12 +265,12 @@ public class ApplicationHelper {
 
       mr.addAppLayersItem(
           new AppLayer(
-                  (layerRef.getId()),
-                  (serviceLayerServiceIds.get(serviceLayer)),
-                  (layerRef.getLayerName()),
-                  (title),
+                  layerRef.getId(),
+                  serviceLayerServiceIds.get(serviceLayer),
+                  layerRef.getLayerName(),
+                  title,
                   layerRef.getVisible(),
-                  (tmft != null))
+                  tmft != null)
               .url(proxied ? getProxyUrl(service, app, layerRef) : null)
               // Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools
               // gt-wms Layer class?
