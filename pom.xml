@@ -828,6 +828,7 @@ SPDX-License-Identifier: MIT
                                 <hideGenerationTimestamp>true</hideGenerationTimestamp>
                                 <openApiNullable>false</openApiNullable>
                                 <serializableModel>true</serializableModel>
+                                <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
                                 <useOptional>true</useOptional>
                             </configOptions>
                             <!-- All common models from common-schemas.yaml here, comma separated -->
