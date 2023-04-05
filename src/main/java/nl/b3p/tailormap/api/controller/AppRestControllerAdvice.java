@@ -131,7 +131,10 @@ public class AppRestControllerAdvice {
     }
 
     final AppTreeLayerNode layerNode =
-        app.getAllAppTreeLayerNode().filter(r -> r.getId().equals(appLayerId)).findFirst().orElse(null);
+        app.getAllAppTreeLayerNode()
+            .filter(r -> r.getId().equals(appLayerId))
+            .findFirst()
+            .orElse(null);
     if (layerNode == null) {
       throw new ResponseStatusException(
           HttpStatus.NOT_FOUND, "Application layer with id " + appLayerId + " not found");

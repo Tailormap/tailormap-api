@@ -5,6 +5,8 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
+
 import java.io.Serializable;
 import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.annotation.AppRestController;
@@ -28,8 +30,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
-import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
-
 @AppRestController
 @Validated
 @RequestMapping(
@@ -51,7 +51,8 @@ public class LayerDescriptionController {
       @ModelAttribute GeoServiceLayer layer) {
 
     if (layer == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find app layer " + appTreeLayerNode);
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND, "Can't find layer " + appTreeLayerNode);
     }
 
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
@@ -80,7 +81,10 @@ public class LayerDescriptionController {
                                 // Only return generic 'geometry' type for now, frontend doesn't
                                 // handle different geometry types. For the default geometry
                                 // attribute there is a specific geometry type set
-                                .type(isGeometry(a.getType()) ? TMAttributeType.GEOMETRY : a.getType()))
+                                .type(
+                                    isGeometry(a.getType())
+                                        ? TMAttributeType.GEOMETRY
+                                        : a.getType()))
                     .collect(Collectors.toList()));
     return ResponseEntity.ok(r);
   }

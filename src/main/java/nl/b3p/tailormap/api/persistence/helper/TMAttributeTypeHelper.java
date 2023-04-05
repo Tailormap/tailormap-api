@@ -6,8 +6,8 @@
 
 package nl.b3p.tailormap.api.persistence.helper;
 
-import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
 import java.util.Set;
+import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
 
 public class TMAttributeTypeHelper {
   private static final Set<TMAttributeType> geometryTypes =

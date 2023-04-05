@@ -118,7 +118,8 @@ public class FeaturesController implements Constants {
       @RequestParam(defaultValue = "false") boolean onlyGeometries) {
 
     if (layer == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find app layer ref " + appTreeLayerNode);
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND, "Can't find layer " + appTreeLayerNode);
     }
 
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);

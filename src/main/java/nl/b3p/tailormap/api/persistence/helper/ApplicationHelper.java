@@ -109,18 +109,6 @@ public class ApplicationHelper {
 
     app.setName(service.getId()).setTitle(service.getTitle()).setCrs(projection);
 
-/*    service.getLayers().stream()
-        .filter(l -> !l.getVirtual())
-        .forEach(
-            l ->
-                app.getContentRoot()
-                    .addLayersItem(
-                        new AppTreeLayerNode()
-                            .serviceId(service.getId())
-                            .layerName(l.getName())
-                            .title(l.getTitle())));
-    app.assignAppTreeLayerNodeNames();*/
-
     return app;
   }
 
@@ -209,7 +197,8 @@ public class ApplicationHelper {
       if ("AppTreeLayerNode".equals(node.getObjectType())) {
         AppTreeLayerNode appTreeLayerNode = (AppTreeLayerNode) node;
         layerTreeNode.setId(appTreeLayerNode.getId());
-        layerTreeNode.setAppLayerId("lyr:" + appTreeLayerNode.getServiceId() + ":" + appTreeLayerNode.getLayerName());
+        layerTreeNode.setAppLayerId(
+            "lyr:" + appTreeLayerNode.getServiceId() + ":" + appTreeLayerNode.getLayerName());
         addAppLayerItem(appTreeLayerNode);
         // TODO haal uit settings
         layerTreeNode.setName(appTreeLayerNode.getLayerName());
@@ -240,9 +229,9 @@ public class ApplicationHelper {
           Optional.ofNullable(serviceWithLayer.getRight());
 
       String title =
-//          Objects.requireNonNullElse(
-// TODO get title from settings
-              service.getTitleWithDefaults(layerRef.getLayerName());
+          // TODO get title from settings
+          // Objects.requireNonNullElse(
+          service.getTitleWithDefaults(layerRef.getLayerName());
 
       boolean tilingDisabled =
           serviceLayerSettings
@@ -285,7 +274,7 @@ public class ApplicationHelper {
               .hiDpiDisabled(hiDpiDisabled)
               .hiDpiMode(hiDpiMode)
               .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
-              //.opacity(layerRef.getOpacity()) TODO get from settings
+              // .opacity(layerRef.getOpacity()) TODO get from settings
               .visible(layerRef.getVisible()));
     }
 

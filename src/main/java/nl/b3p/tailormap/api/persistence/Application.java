@@ -6,7 +6,6 @@
 package nl.b3p.tailormap.api.persistence;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.stream.Stream;
@@ -19,12 +18,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
-import nl.b3p.tailormap.api.persistence.json.AppTreeNode;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.viewer.model.AppStyling;
 import nl.b3p.tailormap.api.viewer.model.Component;
@@ -33,8 +30,6 @@ import org.geotools.referencing.CRS;
 import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
 
 @Entity
 public class Application {
@@ -237,9 +232,10 @@ public class Application {
     }
     Stream<AppTreeLayerNode> layers = Stream.empty();
     if (this.getContentRoot().getLayerNodes() != null) {
-      layers = this.getContentRoot().getLayerNodes().stream()
-          .filter(n -> "AppTreeLayerNode".equals(n.getObjectType()))
-          .map(n -> (AppTreeLayerNode) n);
+      layers =
+          this.getContentRoot().getLayerNodes().stream()
+              .filter(n -> "AppTreeLayerNode".equals(n.getObjectType()))
+              .map(n -> (AppTreeLayerNode) n);
     }
     return Stream.concat(baseLayers, layers);
   }
