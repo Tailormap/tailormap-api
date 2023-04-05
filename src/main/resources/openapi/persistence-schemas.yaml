@@ -350,58 +350,63 @@ components:
             type: string
 
     AppTreeNode:
-      description: Abstract base schema for nodes in tree.
-      type: object
+      oneOf:
+        - $ref: '#/components/schemas/AppTreeLevelNode'
+        - $ref: '#/components/schemas/AppTreeLayerNode'
+      discriminator:
+        propertyName: objectType
+        mapping:
+          AppTreeLevelNode: '#/components/schemas/AppTreeLevelNode'
+          AppTreeLayerNode: '#/components/schemas/AppTreeLayerNode'
+      required:
+        - id
+
+
+    AppTreeLevelNode:
+      description: Node for organizing app layer referencing nodes in a folder tree.
       properties:
         id:
           description: A unique identifier across all tree nodes.
           type: string
-        description:
-          description: Description for this node entered by application admin.
+        objectType:
           type: string
+        title:
+          description: Display title of this tree node.
+          type: string
+        root:
+          description: Only a single node in a tree will have this set to true.
+          type: boolean
+        childrenIds:
+          description: Ordered list of ids of LayerTreeNodes that are children of this node.
+          type: array
+          items:
+            type: string
       required:
-        - id
-
-    AppTreeFolderNode:
-      description: Node for organizing app layer referencing nodes in a folder tree.
-      allOf:     # Combines the BasicErrorModel and the inline model
-        - $ref: '#/components/schemas/AppTreeNode'
-        - type: object
-          properties:
-            title:
-              description: Display title of this tree node.
-              type: string
-            root:
-              description: Only a single node in a tree will have this set to true.
-              type: boolean
-            childrenIds:
-              description: Ordered list of ids of LayerTreeNodes that are children of this node.
-              type: array
-              items:
-                type: string
-          required:
-            - root
-            - title
+        - root
+        - title
+        - childrenIds
 
     AppTreeLayerNode:
       description: Node referencing a layer.
-      allOf:     # Combines the BasicErrorModel and the inline model
-        - $ref: '#/components/schemas/AppTreeNode'
-        - type: object
-          properties:
-            serviceId:
-              type: string
-            layerName:
-              type: string
-              nullable: false
-            visible:
-              type: boolean
-              description: Whether this layer should be shown on the map on startup.
-              nullable: false
-              default: true
-          required:
-            - serviceId
-            - layerName
+      properties:
+        id:
+          description: A unique identifier across all tree nodes.
+          type: string
+        objectType:
+          type: string
+        serviceId:
+          type: string
+        layerName:
+          type: string
+          nullable: false
+        visible:
+          type: boolean
+          description: Whether this layer should be shown on the map on startup.
+          nullable: false
+          default: true
+      required:
+        - serviceId
+        - layerName
 
     # TODO: slimmigheden zoals ook nieuwe lagen opnemen met defaults, default configs, etc.
     AppContent:

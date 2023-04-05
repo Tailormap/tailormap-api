@@ -6,12 +6,9 @@
 package nl.b3p.tailormap.api.persistence;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.JsonNode;
+
 import java.lang.invoke.MethodHandles;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -21,14 +18,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Version;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
-import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.AppSettings;
-import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
+import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
+import nl.b3p.tailormap.api.persistence.json.AppTreeNode;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.viewer.model.AppStyling;
 import nl.b3p.tailormap.api.viewer.model.Component;
@@ -37,6 +33,8 @@ import org.geotools.referencing.CRS;
 import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
 
 @Entity
 public class Application {
@@ -87,7 +85,7 @@ public class Application {
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private AppSettings layerSettings;
+  private AppSettings settings;
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
@@ -197,12 +195,12 @@ public class Application {
     return this;
   }
 
-  public JsonNode getLayerSettings() {
-    return layerSettings;
+  public AppSettings getSettings() {
+    return settings;
   }
 
-  public Application setLayerSettings(JsonNode layerSettings) {
-    this.layerSettings = layerSettings;
+  public Application setSettings(AppSettings layerSettings) {
+    this.settings = layerSettings;
     return this;
   }
 
@@ -226,47 +224,22 @@ public class Application {
 
   // </editor-fold>
 
-  @PrePersist
-  @PreUpdate
-  public void assignAppLayerRefNames() {
-
-    // Automatically assign appLayerRef ids based on serviceName and layerName
-    final Set<String> appLayerIds = new HashSet<>();
-
-    getAllAppLayerRefs()
-        .forEach(
-            ref -> {
-              if (ref.getId() != null) {
-                appLayerIds.add(ref.getId());
-              } else {
-                String id = ref.getServiceId() + ":" + ref.getLayerName();
-                int counter = 2;
-                while (true) {
-                  if (!appLayerIds.contains(id)) {
-                    ref.setId(id);
-                    appLayerIds.add(id);
-                    break;
-                  }
-                  id = ref.getServiceId() + ":" + ref.getLayerName() + "_" + counter++;
-                }
-              }
-            });
-  }
-
-  public Stream<AppLayerRef> getAllAppLayerRefs() {
+  public Stream<AppTreeLayerNode> getAllAppTreeLayerNode() {
     if (this.getContentRoot() == null) {
       return Stream.empty();
     }
-    Stream<AppLayerRef> baseLayers = Stream.empty();
-    if (this.getContentRoot().getBaseLayers() != null) {
+    Stream<AppTreeLayerNode> baseLayers = Stream.empty();
+    if (this.getContentRoot().getBaseLayerNodes() != null) {
       baseLayers =
-          this.getContentRoot().getBaseLayers().stream()
-              .map(BaseLayerInner::getLayers)
-              .flatMap(Collection::stream);
+          this.getContentRoot().getBaseLayerNodes().stream()
+              .filter(n -> "AppTreeLayerNode".equals(n.getObjectType()))
+              .map(n -> (AppTreeLayerNode) n);
     }
-    Stream<AppLayerRef> layers = Stream.empty();
-    if (this.getContentRoot().getLayers() != null) {
-      layers = this.getContentRoot().getLayers().stream();
+    Stream<AppTreeLayerNode> layers = Stream.empty();
+    if (this.getContentRoot().getLayerNodes() != null) {
+      layers = this.getContentRoot().getLayerNodes().stream()
+          .filter(n -> "AppTreeLayerNode".equals(n.getObjectType()))
+          .map(n -> (AppTreeLayerNode) n);
     }
     return Stream.concat(baseLayers, layers);
   }

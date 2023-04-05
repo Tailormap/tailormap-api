@@ -22,7 +22,7 @@ import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
-import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
+import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
@@ -102,7 +102,7 @@ public class FeaturesController implements Constants {
   @RequestMapping(method = {GET, POST})
   @Timed(value = "get_features", description = "time spent to process get features call")
   public ResponseEntity<Serializable> getFeatures(
-      @ModelAttribute AppLayerRef ref,
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,
       @RequestParam(required = false) Double x,
@@ -118,7 +118,7 @@ public class FeaturesController implements Constants {
       @RequestParam(defaultValue = "false") boolean onlyGeometries) {
 
     if (layer == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find app layer ref " + ref);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find app layer ref " + appTreeLayerNode);
     }
 
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);

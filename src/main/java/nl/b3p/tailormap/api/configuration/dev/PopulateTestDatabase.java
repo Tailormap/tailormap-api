@@ -23,8 +23,9 @@ import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.User;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
-import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
-import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
+import nl.b3p.tailormap.api.persistence.json.AppTreeLevelNode;
+import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
+import nl.b3p.tailormap.api.persistence.json.AppTreeNode;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.CatalogNode;
 import nl.b3p.tailormap.api.persistence.json.FeatureTypeRef;
@@ -377,6 +378,31 @@ public class PopulateTestDatabase implements EnvironmentAware {
                                               .featureSourceId(
                                                   featureSources.get("oracle").getId())))));
     }
+    
+    List<AppTreeNode> baseNodes = List.of(
+        new AppTreeLevelNode()
+            .objectType("AppTreeLevelNode")
+            .id("lvl:openbasiskaart")
+            .title("Openbasiskaart")
+            .addChildrenIdsItem("lyr:openbasiskaart:osm"),
+        new AppTreeLayerNode()
+            .objectType("AppTreeLayerNode")
+            .id("lyr:openbasiskaart:osm")
+            .serviceId("openbasiskaart")
+            .layerName("osm")
+            .visible(true),
+        new AppTreeLevelNode()
+            .objectType("AppTreeLevelNode")
+            .id("lvl:pdok-hwh-luchtfotorgb")
+            .title("Luchtfoto")
+            .addChildrenIdsItem("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"),
+        new AppTreeLayerNode()
+            .objectType("AppTreeLayerNode")
+            .id("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR")
+            .serviceId("pdok-hwh-luchtfotorgb")
+            .layerName("Actueel_orthoHR")
+            .visible(false)
+    );
 
     Application app =
         new Application()
@@ -385,50 +411,71 @@ public class PopulateTestDatabase implements EnvironmentAware {
             .setCrs("EPSG:28992")
             .setContentRoot(
                 new AppContent()
-                    .addBaseLayersItem(
-                        new BaseLayerInner()
-                            .title("Openbasiskaart")
-                            .addLayersItem(
-                                new AppLayerRef().serviceId("openbasiskaart").layerName("osm")))
-                    .addBaseLayersItem(
-                        new BaseLayerInner()
-                            .title("Luchtfoto")
-                            .addLayersItem(
-                                new AppLayerRef()
-                                    .serviceId("pdok-hwh-luchtfotorgb")
-                                    .layerName("Actueel_orthoHR")
-                                    .visible(false)))
-                    .addBaseLayersItem(
-                        new BaseLayerInner()
-                            .title("Openbasiskaart (proxied)")
-                            .addLayersItem(
-                                new AppLayerRef()
-                                    .serviceId("openbasiskaart-proxied")
-                                    .layerName("osm")
-                                    .visible(false)))
-                    .addLayersItem(
-                        new AppLayerRef()
-                            .serviceId("snapshot-geoserver")
-                            .layerName("postgis:begroeidterreindeel"))
-                    .addLayersItem(
-                        new AppLayerRef()
-                            .serviceId("snapshot-geoserver-proxied")
-                            .title("begroeidterreindeel (proxied)")
-                            .layerName("postgis:begroeidterreindeel")
-                            .visible(false))
-                    .addLayersItem(
-                        new AppLayerRef()
-                            .serviceId("snapshot-geoserver")
-                            .layerName("sqlserver:wegdeel"))
-                    .addLayersItem(
-                        new AppLayerRef()
-                            .serviceId("snapshot-geoserver")
-                            .layerName("oracle:WATERDEEL"))
-                    .addLayersItem(
-                        new AppLayerRef()
-                            .serviceId("snapshot-geoserver")
-                            .layerName("BGT")
-                            .visible(false)));
+                    .addBaseLayerNodesItem(new AppTreeLevelNode()
+                        .objectType("AppTreeLevelNode")
+                        .id("root-base-layers")
+                        .root(true)
+                        .title("Base layers")
+                        .childrenIds(List.of("lvl:openbasiskaart", "lvl:pdok-hwh-luchtfotorgb", "lvl:openbasiskaart-proxied")))
+                    .addBaseLayerNodesItem(new AppTreeLevelNode()
+                        .objectType("AppTreeLevelNode")
+                        .id("lvl:openbasiskaart-proxied")
+                        .title("Openbasiskaart (proxied)")
+                        .addChildrenIdsItem("lyr:openbasiskaart-proxied:osm"))
+                    .addBaseLayerNodesItem(new AppTreeLayerNode()
+                        .objectType("AppTreeLayerNode")
+                        .id("lyr:openbasiskaart-proxied:osm")
+                        .serviceId("openbasiskaart-proxied")
+                        .layerName("osm")
+                        .visible(false))
+                    .addLayerNodesItem(new AppTreeLevelNode()
+                        .objectType("AppTreeLevelNode")
+                        .id("root")
+                        .root(true)
+                        .title("Layers")
+                        .childrenIds(List.of(
+                            "lyr:snapshot-geoserver:postgis:begroeidterreindeel", 
+                            "lyr:snapshot-geoserver:sqlserver:wegdeel", 
+                            "lyr:snapshot-geoserver:oracle:WATERDEEL", 
+                            "lyr:snapshot-geoserver:BGT", 
+                            "lvl:proxied")))
+                    .addLayerNodesItem(new AppTreeLayerNode()
+                        .objectType("AppTreeLayerNode")
+                        .id("lyr:snapshot-geoserver:postgis:begroeidterreindeel")
+                        .serviceId("snapshot-geoserver")
+                        .layerName("postgis:begroeidterreindeel")
+                        .visible(true))
+                    .addLayerNodesItem(new AppTreeLayerNode()
+                        .objectType("AppTreeLayerNode")
+                        .id("lyr:snapshot-geoserver:sqlserver:wegdeel")
+                        .serviceId("snapshot-geoserver")
+                        .layerName("sqlserver:wegdeel")
+                        .visible(true))
+                    .addLayerNodesItem(new AppTreeLayerNode()
+                        .objectType("AppTreeLayerNode")
+                        .id("lyr:snapshot-geoserver:oracle:WATERDEEL")
+                        .serviceId("snapshot-geoserver")
+                        .layerName("oracle:WATERDEEL")
+                        .visible(true))
+                    .addLayerNodesItem(new AppTreeLayerNode()
+                        .objectType("AppTreeLayerNode")
+                        .id("lyr:snapshot-geoserver:BGT")
+                        .serviceId("snapshot-geoserver")
+                        .layerName("BGT")
+                        .visible(false))
+                    .addLayerNodesItem(new AppTreeLevelNode()
+                        .objectType("AppTreeLevelNode")
+                        .id("lvl:proxied")
+                        .title("Proxied")
+                        .childrenIds(List.of(
+                            "lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel")))
+                    .addLayerNodesItem(new AppTreeLayerNode()
+                        .objectType("AppTreeLayerNode")
+                        .id("lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel")
+                        .serviceId("snapshot-geoserver-proxied")
+                        .layerName("postgis:begroeidterreindeel")
+                        .visible(false)));
+    app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     app.setInitialExtent(new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));
     app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));
     applicationRepository.save(app);
@@ -440,19 +487,14 @@ public class PopulateTestDatabase implements EnvironmentAware {
             .setCrs("EPSG:28992")
             .setContentRoot(
                 new AppContent()
-                    .addBaseLayersItem(
-                        new BaseLayerInner()
-                            .title("Openbasiskaart")
-                            .addLayersItem(
-                                new AppLayerRef().serviceId("openbasiskaart").layerName("osm")))
-                    .addBaseLayersItem(
-                        new BaseLayerInner()
-                            .title("Luchtfoto")
-                            .addLayersItem(
-                                new AppLayerRef()
-                                    .serviceId("pdok-hwh-luchtfotorgb")
-                                    .layerName("Actueel_orthoHR")
-                                    .visible(false))));
+                    .addBaseLayerNodesItem(new AppTreeLevelNode()
+                        .objectType("AppTreeLevelNode")
+                        .id("root-base-layers")
+                        .root(true)
+                        .title("Base layers")
+                        .childrenIds(List.of("lvl:openbasiskaart", "lvl:pdok-hwh-luchtfotorgb")))
+                );
+    app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     applicationRepository.save(app);
 
     app =
@@ -464,34 +506,52 @@ public class PopulateTestDatabase implements EnvironmentAware {
                 new Bounds().minx(987982d).miny(5799551d).maxx(1963423d).maxy(6320708d))
             .setContentRoot(
                 new AppContent()
-                    .addBaseLayersItem(
-                        new BaseLayerInner()
-                            .title("Basemap")
-                            .addLayersItem(
-                                new AppLayerRef()
-                                    .serviceId("at-basemap")
-                                    .layerName("geolandbasemap")))
-                    .addBaseLayersItem(
-                        new BaseLayerInner()
-                            .title("Orthofoto")
-                            .addLayersItem(
-                                new AppLayerRef()
-                                    .serviceId("at-basemap")
-                                    .layerName("bmaporthofoto30cm")
-                                    .visible(false)))
-                    .addBaseLayersItem(
-                        new BaseLayerInner()
-                            .title("Orthofoto with labels")
-                            .addLayersItem(
-                                new AppLayerRef()
-                                    .serviceId("at-basemap")
-                                    .layerName("bmapoverlay")
-                                    .visible(false))
-                            .addLayersItem(
-                                new AppLayerRef()
-                                    .serviceId("at-basemap")
-                                    .layerName("bmaporthofoto30cm")
-                                    .visible(false))));
+                    .addBaseLayerNodesItem(new AppTreeLevelNode()
+                        .objectType("AppTreeLevelNode")
+                        .id("root-base-layers")
+                        .root(true)
+                        .title("Base layers")
+                        .childrenIds(List.of("lvl:basemap", "lvl:orthofoto", "lvl:orthofoto-labels")))
+                    .addBaseLayerNodesItem(new AppTreeLevelNode()
+                        .objectType("AppTreeLevelNode")
+                        .id("lvl:basemap")
+                        .title("Basemap")
+                        .addChildrenIdsItem("lyr:at-basemap:geolandbasemap"))
+                    .addBaseLayerNodesItem(new AppTreeLayerNode()
+                        .objectType("AppTreeLayerNode")
+                        .id("lyr:at-basemap:geolandbasemap")
+                        .serviceId("at-basemap")
+                        .layerName("geolandbasemap")
+                        .visible(true))
+                    .addBaseLayerNodesItem(new AppTreeLevelNode()
+                        .objectType("AppTreeLevelNode")
+                        .id("lvl:orthofoto")
+                        .title("Orthofoto")
+                        .addChildrenIdsItem("lyr:at-basemap:orthofoto"))
+                    .addBaseLayerNodesItem(new AppTreeLayerNode()
+                        .objectType("AppTreeLayerNode")
+                        .id("lyr:at-basemap:orthofoto")
+                        .serviceId("at-basemap")
+                        .layerName("bmaporthofoto30cm")
+                        .visible(false))
+                    .addBaseLayerNodesItem(new AppTreeLevelNode()
+                        .objectType("AppTreeLevelNode")
+                        .id("lvl:orthofoto-labels")
+                        .title("Orthofoto with labels")
+                        .childrenIds(List.of("lyr:at-basemap:bmapoverlay", "lyr:at-basemap:orthofoto_2")))
+                    .addBaseLayerNodesItem(new AppTreeLayerNode()
+                        .objectType("AppTreeLayerNode")
+                        .id("lyr:at-basemap:bmapoverlay")
+                        .serviceId("at-basemap")
+                        .layerName("bmapoverlay")
+                        .visible(false))
+                    .addBaseLayerNodesItem(new AppTreeLayerNode()
+                        .objectType("AppTreeLayerNode")
+                        .id("lyr:at-basemap:orthofoto_2")
+                        .serviceId("at-basemap")
+                        .layerName("bmaporthofoto30cm")
+                        .visible(false)));
+
     applicationRepository.save(app);
 
     // WMS doesn't work, issue with WMS 1.1.1 vs 1.3.0?

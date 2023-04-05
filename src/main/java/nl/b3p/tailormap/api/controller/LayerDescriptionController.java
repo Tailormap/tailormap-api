@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
-import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
+import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
@@ -46,12 +46,12 @@ public class LayerDescriptionController {
   @Transactional
   @GetMapping
   public ResponseEntity<Serializable> getAppLayerDescription(
-      @ModelAttribute AppLayerRef ref,
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer) {
 
     if (layer == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find app layer ref " + ref);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find app layer " + appTreeLayerNode);
     }
 
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
@@ -61,8 +61,8 @@ public class LayerDescriptionController {
 
     LayerDetails r =
         new LayerDetails()
-            .id(ref.getId())
-            .serviceId(ref.getServiceId())
+            .id(appTreeLayerNode.getId())
+            .serviceId(appTreeLayerNode.getServiceId())
             .featureTypeName(tmft.getName())
             .geometryAttribute(tmft.getDefaultGeometryAttribute())
             .geometryType(
