@@ -26,6 +26,9 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+
+import nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper;
+import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.json.TMFeatureTypeInfo;
 import org.hibernate.annotations.Type;
 
@@ -65,12 +68,8 @@ public class TMFeatureType {
   // XXX: multiple primary keys?
   private String primaryKeyAttribute;
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @JoinTable(
-      inverseJoinColumns = @JoinColumn(name = "attribute_descriptor"),
-      name = "feature_type_attributes",
-      joinColumns = @JoinColumn(name = "feature_type", referencedColumnName = "id"))
-  @OrderColumn(name = "list_index")
+  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Column(columnDefinition = "jsonb")
   private List<TMAttributeDescriptor> attributes = new ArrayList<>();
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
@@ -202,7 +201,7 @@ public class TMFeatureType {
     if (defaultGeometryAttribute == null) {
       defaultGeometryAttribute =
           getAttributes().stream()
-              .filter(TMAttributeDescriptor::isGeometry)
+              .filter(a -> TMAttributeTypeHelper.isGeometry(a.getType()))
               .findFirst()
               .map(TMAttributeDescriptor::getName)
               .orElse(null);

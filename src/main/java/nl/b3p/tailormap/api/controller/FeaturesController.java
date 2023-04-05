@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -14,17 +15,16 @@ import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
 import nl.b3p.tailormap.api.persistence.GeoService;
-import nl.b3p.tailormap.api.persistence.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.util.Constants;
@@ -162,7 +162,7 @@ public class FeaturesController implements Constants {
       //  if we do the geometry attribute must not be removed from propNames
       List<String> propNames =
           tmft.getAttributes().stream()
-              .filter(Predicate.not(TMAttributeDescriptor::isGeometry))
+              .filter(a -> !isGeometry(a.getType()))
               .map(TMAttributeDescriptor::getName)
               .collect(Collectors.toList());
 
@@ -207,7 +207,7 @@ public class FeaturesController implements Constants {
 
         Optional<TMAttributeDescriptor> sortByAttribute = tmft.getAttributeByName(sortBy);
 
-        if (sortByAttribute.isPresent() && !sortByAttribute.orElseThrow().isGeometry()) {
+        if (sortByAttribute.isPresent() && !isGeometry(sortByAttribute.orElseThrow().getType())) {
           sortAttrName = sortBy;
         } else {
           logger.warn(
@@ -472,7 +472,7 @@ public class FeaturesController implements Constants {
         featuresResponse.addColumnMetadataItem(
             new ColumnMetadata()
                 .key(tmAtt.getName())
-                .type(tmAtt.isGeometry() ? TMAttributeType.GEOMETRY : tmAtt.getType()));
+                .type(isGeometry(tmAtt.getType()) ? TMAttributeType.GEOMETRY : tmAtt.getType()));
       }
     }
   }

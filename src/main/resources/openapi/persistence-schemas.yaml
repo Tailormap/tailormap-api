@@ -145,6 +145,25 @@ components:
     TMAttributeType:
       $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
 
+    TMAttributeDescriptor:
+      properties:
+        name:
+          type: string
+        comment:
+          type: string
+          description: Comment from the source, if available (such as database comment) [TODO]
+        type:
+          $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
+        unknownTypeClassName:
+          type: string
+          description: Class name of type (as produced by GeoTools DataStore) which isn't in the
+            type enum list and thus unknown. When the type is 'object' this should contain the full
+            class-name, mostly for debugging purposes so the type may be added to the enum list.
+        nullable:
+          type: boolean
+        description:
+          type: string
+
     ServiceAuthentication:
       properties:
         method:

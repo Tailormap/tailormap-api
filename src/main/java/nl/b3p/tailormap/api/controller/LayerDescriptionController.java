@@ -9,10 +9,10 @@ import java.io.Serializable;
 import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.GeoService;
-import nl.b3p.tailormap.api.persistence.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
 import nl.b3p.tailormap.api.persistence.json.TMGeometryType;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
+
+import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
 
 @AppRestController
 @Validated
@@ -78,7 +80,7 @@ public class LayerDescriptionController {
                                 // Only return generic 'geometry' type for now, frontend doesn't
                                 // handle different geometry types. For the default geometry
                                 // attribute there is a specific geometry type set
-                                .type(a.isGeometry() ? TMAttributeType.GEOMETRY : a.getType()))
+                                .type(isGeometry(a.getType()) ? TMAttributeType.GEOMETRY : a.getType()))
                     .collect(Collectors.toList()));
     return ResponseEntity.ok(r);
   }

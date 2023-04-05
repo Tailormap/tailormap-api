@@ -12,11 +12,12 @@ import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import nl.b3p.tailormap.api.persistence.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.helper.GeoToolsHelper;
+import nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
+import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.json.TMFeatureTypeInfo;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
 import nl.b3p.tailormap.api.persistence.json.TMServiceInfo;
@@ -117,9 +118,10 @@ public abstract class FeatureSourceHelper {
               AttributeType type = gtAttr.getType();
               TMAttributeDescriptor tmAttr =
                   new TMAttributeDescriptor()
-                      .setName(gtAttr.getLocalName())
-                      .setType(GeoToolsHelper.toAttributeType(type))
-                      .setDescription(
+                      .name(gtAttr.getLocalName())
+                      .type(GeoToolsHelper.toAttributeType(type))
+                      .nullable(gtAttr.isNillable())
+                      .description(
                           type.getDescription() == null ? null : type.getDescription().toString());
               if (tmAttr.getType() == TMAttributeType.OBJECT) {
                 tmAttr.setUnknownTypeClassName(type.getBinding().getName());
