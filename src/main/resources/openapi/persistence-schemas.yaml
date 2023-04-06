@@ -205,6 +205,10 @@ components:
             type: string
 
     FeatureTypeSettings:
+      required:
+        - attributeOrder
+        - hideAttributes
+        - attributeSettings
       properties:
         attributeOrder:
           description: Reordering of the attributes by attribute names. Attributes in the feature
