@@ -23,6 +23,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper;
+import nl.b3p.tailormap.api.persistence.json.FeatureTypeSettings;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.json.TMFeatureTypeInfo;
 import org.hibernate.annotations.Type;
@@ -71,7 +72,8 @@ public class TMFeatureType {
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private JsonNode settings;
+  @NotNull
+  private FeatureTypeSettings settings = new FeatureTypeSettings();
 
   // <editor-fold desc="getters and setters">
   public Long getId() {
@@ -182,11 +184,11 @@ public class TMFeatureType {
     return this;
   }
 
-  public JsonNode getSettings() {
+  public FeatureTypeSettings getSettings() {
     return settings;
   }
 
-  public TMFeatureType setSettings(JsonNode settings) {
+  public TMFeatureType setSettings(FeatureTypeSettings settings) {
     this.settings = settings;
     return this;
   }

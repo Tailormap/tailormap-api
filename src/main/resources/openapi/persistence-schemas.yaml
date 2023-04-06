@@ -204,6 +204,34 @@ components:
           additionalProperties:
             type: string
 
+    FeatureTypeSettings:
+      properties:
+        attributeOrder:
+          description: Reordering of the attributes by attribute names. Attributes in the feature
+            type that are not in this array should still be shown; either after the attribute that
+            precedes the attribute in the original feature type attribute ordering or at the end.
+          type: array
+          items:
+            type: string
+        hideAttributes:
+          description: List of attribute names that should be hidden in all viewers.
+          type: array
+          items:
+            type: string
+        attributeSettings:
+          title: AttributeSettings
+          description: Map of attribute name to its' settings.
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/AppLayerSettings'
+
+    AttributeSettings:
+      properties:
+        title:
+          type: string
+          description: Display title for labels etc.
+      # TODO add additional settings here, for example for editing, formatting, etc.
+
     GeoServiceSettings:
       description: Settings applying to a GeoService.
       properties:
@@ -361,7 +389,6 @@ components:
       required:
         - id
 
-
     AppTreeLevelNode:
       description: Node for organizing app layer referencing nodes in a folder tree.
       properties:
@@ -408,12 +435,10 @@ components:
         - serviceId
         - layerName
 
-    # TODO: slimmigheden zoals ook nieuwe lagen opnemen met defaults, default configs, etc.
     AppContent:
       description: Configuration for including content (layers) in an application.
       properties:
         baseLayerNodes:
-#          title: BaseLayer
           type: array
           items:
             $ref: '#/components/schemas/AppTreeNode'
