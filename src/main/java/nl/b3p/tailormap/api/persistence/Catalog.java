@@ -5,11 +5,13 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.json.CatalogNode;
 import org.hibernate.annotations.Type;
 
@@ -22,7 +24,8 @@ public class Catalog {
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private List<CatalogNode> nodes;
+  @NotNull
+  private List<CatalogNode> nodes = new ArrayList<>();
 
   public String getId() {
     return id;

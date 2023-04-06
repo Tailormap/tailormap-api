@@ -47,7 +47,8 @@ public class TMFeatureType {
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private TMFeatureTypeInfo info;
+  @NotNull
+  private TMFeatureTypeInfo info = new TMFeatureTypeInfo();
 
   // Note: this will vanish when feature type disappears at the source, unless we move this to a
   // separate featureTypeSettings JSON property in TMFeatureSource
@@ -65,6 +66,7 @@ public class TMFeatureType {
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
+  @NotNull
   private List<TMAttributeDescriptor> attributes = new ArrayList<>();
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")

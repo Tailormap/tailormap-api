@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api.persistence;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import javax.persistence.AttributeOverride;
@@ -20,6 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
+import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.AppSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
@@ -30,6 +32,8 @@ import org.geotools.referencing.CRS;
 import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 @Entity
 public class Application {
@@ -76,19 +80,23 @@ public class Application {
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private AppContent contentRoot;
+  @NotNull
+  private AppContent contentRoot = new AppContent();
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private AppSettings settings;
+  @NotNull
+  private AppSettings settings = new AppSettings();
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private List<Component> components;
+  @NotNull
+  private List<Component> components = new ArrayList<>();
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private AppStyling styling;
+  @NotNull
+  private AppStyling styling = new AppStyling();
 
   // <editor-fold desc="getters and setters">
   public Long getId() {
@@ -278,5 +286,13 @@ public class Application {
         .components(components)
         .languages(List.of("NL_nl"))
         .projections(List.of(getCrs()));
+  }
+
+  @Nullable
+  public AppLayerSettings getAppLayerSettings(@NonNull AppTreeLayerNode node) {
+    if (getSettings() == null) {
+      return null;
+    }
+    return getSettings().getLayerSettings().get(node.getId());
   }
 }
