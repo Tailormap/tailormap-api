@@ -37,5 +37,5 @@ public interface GeoServiceRepository extends JpaRepository<GeoService, String> 
   @NonNull
   @PreAuthorize("permitAll()")
   @Query("from GeoService s where id in :ids")
-  List<GeoService> findByIds(@Param("ids") List<Long> ids);
+  List<GeoService> findByIds(@Param("ids") List<String> ids);
 }
