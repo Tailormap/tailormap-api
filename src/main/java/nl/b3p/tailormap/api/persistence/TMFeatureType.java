@@ -5,7 +5,6 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
