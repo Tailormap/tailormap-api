@@ -6,22 +6,16 @@
 
 package nl.b3p.tailormap.api.persistence.helper;
 
-import java.util.Set;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
+import nl.b3p.tailormap.api.persistence.json.TMGeometryType;
 
 public class TMAttributeTypeHelper {
-  private static final Set<TMAttributeType> geometryTypes =
-      Set.of(
-          TMAttributeType.GEOMETRY,
-          TMAttributeType.GEOMETRY_COLLECTION,
-          TMAttributeType.POINT,
-          TMAttributeType.MULTIPOINT,
-          TMAttributeType.LINESTRING,
-          TMAttributeType.MULTILINESTRING,
-          TMAttributeType.POLYGON,
-          TMAttributeType.MULTIPOLYGON);
-
   public static boolean isGeometry(TMAttributeType attributeType) {
-    return geometryTypes.contains(attributeType);
+    for (TMGeometryType gt: TMGeometryType.values()) {
+      if (gt.toString().equals(attributeType.toString())) {
+        return true;
+      }
+    }
+    return false;
   }
 }
