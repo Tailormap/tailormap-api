@@ -20,6 +20,7 @@ import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
+import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLevelNode;
 import nl.b3p.tailormap.api.persistence.json.AppTreeNode;
@@ -200,7 +201,7 @@ public class ApplicationHelper {
         layerTreeNode.setAppLayerId(
             "lyr:" + appTreeLayerNode.getServiceId() + ":" + appTreeLayerNode.getLayerName());
         addAppLayerItem(appTreeLayerNode);
-        // TODO haal uit settings
+        // This name is not displayed in the frontend, the title from the appLayer node is used
         layerTreeNode.setName(appTreeLayerNode.getLayerName());
 
       } else if ("AppTreeLevelNode".equals(node.getObjectType())) {
@@ -208,6 +209,7 @@ public class ApplicationHelper {
         layerTreeNode.setId(appTreeLevelNode.getId());
         layerTreeNode.setChildrenIds(appTreeLevelNode.getChildrenIds());
         layerTreeNode.setRoot(Boolean.TRUE.equals(appTreeLevelNode.getRoot()));
+        // The name for a level node does show in the frontend
         layerTreeNode.setName(appTreeLevelNode.getTitle());
       }
       layerTreeNodeList.add(layerTreeNode);
@@ -228,10 +230,13 @@ public class ApplicationHelper {
       Optional<GeoServiceLayerSettings> serviceLayerSettings =
           Optional.ofNullable(serviceWithLayer.getRight());
 
+      AppLayerSettings appLayerSettings =
+          Objects.requireNonNullElse(app.getAppLayerSettings(layerRef), new AppLayerSettings());
+
       String title =
-          // TODO get title from settings
-          // Objects.requireNonNullElse(
-          service.getTitleWithDefaults(layerRef.getLayerName());
+          Objects.requireNonNullElse(
+              appLayerSettings.getTitle(),
+              service.getTitleWithSettingsOverrides(layerRef.getLayerName()));
 
       boolean tilingDisabled =
           serviceLayerSettings
@@ -274,7 +279,7 @@ public class ApplicationHelper {
               .hiDpiDisabled(hiDpiDisabled)
               .hiDpiMode(hiDpiMode)
               .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
-              // .opacity(layerRef.getOpacity()) TODO get from settings
+              .opacity(appLayerSettings.getOpacity())
               .visible(layerRef.getVisible()));
     }
 

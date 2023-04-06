@@ -23,6 +23,8 @@ import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.User;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
+import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
+import nl.b3p.tailormap.api.persistence.json.AppSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLevelNode;
 import nl.b3p.tailormap.api.persistence.json.AppTreeNode;
@@ -490,7 +492,12 @@ public class PopulateTestDatabase implements EnvironmentAware {
                             .id("lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel")
                             .serviceId("snapshot-geoserver-proxied")
                             .layerName("postgis:begroeidterreindeel")
-                            .visible(false)));
+                            .visible(false)))
+            .setSettings(
+                new AppSettings()
+                    .putLayerSettingsItem(
+                        "lyr:snapshot-geoserver:oracle:WATERDEEL",
+                        new AppLayerSettings().opacity(50).title("Waterdeel andere titel")));
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     app.setInitialExtent(new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));
     app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));
