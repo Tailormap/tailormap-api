@@ -98,7 +98,7 @@ public class UniqueValuesController {
   private UniqueValuesResponse getUniqueValues(
       TMFeatureType tmft, String attributeName, String filter) {
     final UniqueValuesResponse uniqueValuesResponse =
-        new UniqueValuesResponse(null).filterApplied(false);
+        new UniqueValuesResponse().filterApplied(false);
     SimpleFeatureSource fs = null;
     try {
       Filter existingFilter = null;
