@@ -198,8 +198,7 @@ public class ApplicationHelper {
       if ("AppTreeLayerNode".equals(node.getObjectType())) {
         AppTreeLayerNode appTreeLayerNode = (AppTreeLayerNode) node;
         layerTreeNode.setId(appTreeLayerNode.getId());
-        layerTreeNode.setAppLayerId(
-            "lyr:" + appTreeLayerNode.getServiceId() + ":" + appTreeLayerNode.getLayerName());
+        layerTreeNode.setAppLayerId(appTreeLayerNode.getId());
         addAppLayerItem(appTreeLayerNode);
         // This name is not displayed in the frontend, the title from the appLayer node is used
         layerTreeNode.setName(appTreeLayerNode.getLayerName());
