@@ -62,6 +62,10 @@ public class GeoService {
   @Column(length = 2048)
   private String url;
 
+  /**
+   * Non-null when authentication is required for this service. Currently, the only authentication
+   * method is password (HTTP Basic).
+   */
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
   private ServiceAuthentication authentication;
@@ -101,6 +105,7 @@ public class GeoService {
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
+  @NotNull
   private List<GeoServiceLayer> layers = new ArrayList<>();
 
   private boolean published;
@@ -111,6 +116,7 @@ public class GeoService {
    */
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
+  @NotNull
   private GeoServiceSettings settings = new GeoServiceSettings();
 
   // <editor-fold desc="getters and setters">
@@ -280,12 +286,10 @@ public class GeoService {
   }
 
   public GeoServiceLayerSettings getLayerSettings(String layerName) {
-    return Optional.ofNullable(getSettings().getLayerSettings())
-        .map(m -> m.get(layerName))
-        .orElse(null);
+    return getSettings().getLayerSettings().get(layerName);
   }
 
-  public String getTitleWithDefaults(String layerName) {
+  public String getTitleWithSettingsOverrides(String layerName) {
     // First use title in layer settings
     String title =
         Optional.ofNullable(getLayerSettings(layerName))

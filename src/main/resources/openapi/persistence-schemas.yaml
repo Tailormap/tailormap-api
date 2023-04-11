@@ -145,6 +145,25 @@ components:
     TMAttributeType:
       $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
 
+    TMAttributeDescriptor:
+      properties:
+        name:
+          type: string
+        comment:
+          type: string
+          description: Comment from the source, if available (such as database comment) [TODO]
+        type:
+          $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
+        unknownTypeClassName:
+          type: string
+          description: Class name of type (as produced by GeoTools DataStore) which isn't in the
+            type enum list and thus unknown. When the type is 'object' this should contain the full
+            class-name, mostly for debugging purposes so the type may be added to the enum list.
+        nullable:
+          type: boolean
+        description:
+          type: string
+
     ServiceAuthentication:
       properties:
         method:
@@ -184,6 +203,38 @@ components:
           type: object
           additionalProperties:
             type: string
+
+    FeatureTypeSettings:
+      required:
+        - attributeOrder
+        - hideAttributes
+        - attributeSettings
+      properties:
+        attributeOrder:
+          description: Reordering of the attributes by attribute names. Attributes in the feature
+            type that are not in this array should still be shown; either after the attribute that
+            precedes the attribute in the original feature type attribute ordering or at the end.
+          type: array
+          items:
+            type: string
+        hideAttributes:
+          description: List of attribute names that should be hidden in all viewers.
+          type: array
+          items:
+            type: string
+        attributeSettings:
+          title: AttributeSettings
+          description: Map of attribute name to its' settings.
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/AppLayerSettings'
+
+    AttributeSettings:
+      properties:
+        title:
+          type: string
+          description: Display title for labels etc.
+      # TODO add additional settings here, for example for editing, formatting, etc.
 
     GeoServiceSettings:
       description: Settings applying to a GeoService.
@@ -249,6 +300,17 @@ components:
           default: false
         featureType:
           $ref: FeatureTypeRef
+
+    FeatureTypeRef:
+      required: [featureSourceId, featureTypeName]
+      properties:
+        featureSourceId:
+          type: integer
+          format: int64
+          nullable: false
+        featureTypeName:
+          type: string
+          nullable: false
 
     WMSLayerSettings:
       description: Settings applying to a WMS layer.
@@ -319,63 +381,92 @@ components:
             # layer name
             type: string
 
-    # TODO: slimmigheden zoals ook nieuwe lagen opnemen met defaults, default configs, etc.
-    AppContent:
-      description: Configuration for including content (layers) in an application.
-      properties:
-        baseLayers:
-          title: BaseLayer
-          type: array
-          items:
-            type: object
-            required: [title, layers]
-            properties:
-              title:
-                type: string
-              layers:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AppLayerRef'
-        layers:
-          type: array
-          items:
-            # TODO oneOf opties voor meerdere soorten content?
-            $ref: '#/components/schemas/AppLayerRef'
-        children:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppContent'
+    AppTreeNode:
+      oneOf:
+        - $ref: '#/components/schemas/AppTreeLevelNode'
+        - $ref: '#/components/schemas/AppTreeLayerNode'
+      discriminator:
+        propertyName: objectType
+        mapping:
+          AppTreeLevelNode: '#/components/schemas/AppTreeLevelNode'
+          AppTreeLayerNode: '#/components/schemas/AppTreeLayerNode'
+      required:
+        - id
 
-    AppLayerRef:
-      required: [id, serviceId, layerName, visible, opacity]
+    AppTreeLevelNode:
+      description: Node for organizing app layer referencing nodes in a folder tree.
       properties:
         id:
+          description: A unique identifier across all tree nodes.
           type: string
-          nullable: false
+        objectType:
+          type: string
+        title:
+          description: Display title of this tree node.
+          type: string
+        root:
+          description: Only a single node in a tree will have this set to true.
+          type: boolean
+        childrenIds:
+          description: Ordered list of ids of LayerTreeNodes that are children of this node.
+          type: array
+          items:
+            type: string
+      required:
+        - root
+        - title
+        - childrenIds
+
+    AppTreeLayerNode:
+      description: Node referencing a layer.
+      properties:
+        id:
+          description: A unique identifier across all tree nodes.
+          type: string
+        objectType:
+          type: string
         serviceId:
           type: string
-          nullable: false
         layerName:
           type: string
           nullable: false
-        title:
-          type: string
         visible:
           type: boolean
+          description: Whether this layer should be shown on the map on startup.
           nullable: false
           default: true
+      required:
+        - serviceId
+        - layerName
+
+    AppContent:
+      description: Configuration for including content (layers) in an application.
+      properties:
+        baseLayerNodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppTreeNode'
+        layerNodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppTreeNode'
+
+    AppSettings:
+      description: Settings applying to a viewer application.
+      properties:
+        layerSettings:
+          title: AppLayerSettings
+          description: Map of id of an AppTreeLayerNode to its' settings.
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/AppLayerSettings'
+
+    AppLayerSettings:
+      properties:
+        title:
+          type: string
         opacity:
           type: integer
           nullable: false
           default: 100
-
-    FeatureTypeRef:
-      required: [featureSourceId, featureTypeName]
-      properties:
-        featureSourceId:
-          type: integer
-          format: int64
-          nullable: false
-        featureTypeName:
-          type: string
-          nullable: false
+        # TODO add properties for selected WMS style, feature info popup template, etc.

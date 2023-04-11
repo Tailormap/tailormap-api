@@ -5,10 +5,13 @@
  */
 package nl.b3p.tailormap.api.repository;
 
+import java.util.List;
 import java.util.Optional;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.security.annotation.PreAuthorizeAdmin;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,4 +26,16 @@ public interface GeoServiceRepository extends JpaRepository<GeoService, String> 
   @NonNull
   @PreAuthorize("permitAll()")
   Optional<GeoService> findById(@NonNull String id);
+
+  /**
+   * Find multiple geo-services. Example URL:
+   * /api/admin/geo-services/search/findByIds?ids=openbasiskaart&amp;ids=at-basemap
+   *
+   * @param ids The ids to search for
+   * @return The geo services matching the ids
+   */
+  @NonNull
+  @PreAuthorize("permitAll()")
+  @Query("from GeoService s where id in :ids")
+  List<GeoService> findByIds(@Param("ids") List<String> ids);
 }

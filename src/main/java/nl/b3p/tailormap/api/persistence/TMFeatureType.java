@@ -5,27 +5,25 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+import nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper;
+import nl.b3p.tailormap.api.persistence.json.FeatureTypeSettings;
+import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.json.TMFeatureTypeInfo;
 import org.hibernate.annotations.Type;
 
@@ -49,7 +47,8 @@ public class TMFeatureType {
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private TMFeatureTypeInfo info;
+  @NotNull
+  private TMFeatureTypeInfo info = new TMFeatureTypeInfo();
 
   // Note: this will vanish when feature type disappears at the source, unless we move this to a
   // separate featureTypeSettings JSON property in TMFeatureSource
@@ -65,17 +64,15 @@ public class TMFeatureType {
   // XXX: multiple primary keys?
   private String primaryKeyAttribute;
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @JoinTable(
-      inverseJoinColumns = @JoinColumn(name = "attribute_descriptor"),
-      name = "feature_type_attributes",
-      joinColumns = @JoinColumn(name = "feature_type", referencedColumnName = "id"))
-  @OrderColumn(name = "list_index")
+  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Column(columnDefinition = "jsonb")
+  @NotNull
   private List<TMAttributeDescriptor> attributes = new ArrayList<>();
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
-  private JsonNode settings;
+  @NotNull
+  private FeatureTypeSettings settings = new FeatureTypeSettings();
 
   // <editor-fold desc="getters and setters">
   public Long getId() {
@@ -186,11 +183,11 @@ public class TMFeatureType {
     return this;
   }
 
-  public JsonNode getSettings() {
+  public FeatureTypeSettings getSettings() {
     return settings;
   }
 
-  public TMFeatureType setSettings(JsonNode settings) {
+  public TMFeatureType setSettings(FeatureTypeSettings settings) {
     this.settings = settings;
     return this;
   }
@@ -202,7 +199,7 @@ public class TMFeatureType {
     if (defaultGeometryAttribute == null) {
       defaultGeometryAttribute =
           getAttributes().stream()
-              .filter(TMAttributeDescriptor::isGeometry)
+              .filter(a -> TMAttributeTypeHelper.isGeometry(a.getType()))
               .findFirst()
               .map(TMAttributeDescriptor::getName)
               .orElse(null);

@@ -10,7 +10,7 @@ import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.helper.ApplicationHelper;
-import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
+import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
@@ -123,16 +123,19 @@ public class AppRestControllerAdvice {
   }
 
   @ModelAttribute
-  public AppLayerRef populateAppLayerRef(
+  public AppTreeLayerNode populateAppTreeLayerNode(
       @ModelAttribute Application app, @PathVariable(required = false) String appLayerId) {
     if (app == null || appLayerId == null) {
       // No binding
       return null;
     }
 
-    final AppLayerRef ref =
-        app.getAllAppLayerRefs().filter(r -> r.getId().equals(appLayerId)).findFirst().orElse(null);
-    if (ref == null) {
+    final AppTreeLayerNode layerNode =
+        app.getAllAppTreeLayerNode()
+            .filter(r -> r.getId().equals(appLayerId))
+            .findFirst()
+            .orElse(null);
+    if (layerNode == null) {
       throw new ResponseStatusException(
           HttpStatus.NOT_FOUND, "Application layer with id " + appLayerId + " not found");
     }
@@ -141,30 +144,30 @@ public class AppRestControllerAdvice {
     //    if (!this.authorizationService.mayUserRead(applicationLayer, application)) {
     //      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
     //    }
-    return ref;
+    return layerNode;
   }
 
   @ModelAttribute
-  public GeoService populateGeoService(@ModelAttribute AppLayerRef appLayerRef) {
-    if (appLayerRef == null) {
+  public GeoService populateGeoService(@ModelAttribute AppTreeLayerNode appTreeLayerNode) {
+    if (appTreeLayerNode == null) {
       // No binding
       return null;
     }
-    if (appLayerRef.getServiceId() == null) {
+    if (appTreeLayerNode.getServiceId() == null) {
       return null;
     }
-    return geoServiceRepository.findById(appLayerRef.getServiceId()).orElse(null);
+    return geoServiceRepository.findById(appTreeLayerNode.getServiceId()).orElse(null);
   }
 
   @ModelAttribute
   public GeoServiceLayer populateGeoServiceLayer(
-      @ModelAttribute AppLayerRef appLayerRef, @ModelAttribute GeoService service) {
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode, @ModelAttribute GeoService service) {
     if (service == null) {
       // No binding
       return null;
     }
     return service.getLayers().stream()
-        .filter(l -> appLayerRef.getLayerName().equals(l.getName()))
+        .filter(l -> appTreeLayerNode.getLayerName().equals(l.getName()))
         .findFirst()
         .orElse(null);
   }

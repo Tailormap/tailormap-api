@@ -20,8 +20,10 @@ import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
-import nl.b3p.tailormap.api.persistence.json.AppLayerRef;
-import nl.b3p.tailormap.api.persistence.json.BaseLayerInner;
+import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
+import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
+import nl.b3p.tailormap.api.persistence.json.AppTreeLevelNode;
+import nl.b3p.tailormap.api.persistence.json.AppTreeNode;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
@@ -44,7 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 @Service
 public class ApplicationHelper {
@@ -109,18 +110,6 @@ public class ApplicationHelper {
 
     app.setName(service.getId()).setTitle(service.getTitle()).setCrs(projection);
 
-    service.getLayers().stream()
-        .filter(l -> !l.getVirtual())
-        .forEach(
-            l ->
-                app.getContentRoot()
-                    .addLayersItem(
-                        new AppLayerRef()
-                            .serviceId(service.getId())
-                            .layerName(l.getName())
-                            .title(l.getTitle())));
-    app.assignAppLayerRefNames();
-
     return app;
   }
 
@@ -159,13 +148,13 @@ public class ApplicationHelper {
   }
 
   private String getProxyUrl(
-      GeoService geoService, Application application, AppLayerRef appLayerRef) {
+      GeoService geoService, Application application, AppTreeLayerNode appTreeLayerNode) {
     return linkTo(
             GeoServiceProxyController.class,
             Map.of(
                 "viewerKind", "app", // XXX
                 "viewerName", application.getName(),
-                "appLayerId", appLayerRef.getId(),
+                "appLayerId", appTreeLayerNode.getId(),
                 "protocol", geoService.getProtocol().getValue()))
         .toString();
   }
@@ -175,7 +164,6 @@ public class ApplicationHelper {
     private final MapResponse mr;
     // XXX not needed if we have GeoServiceLayer.getService().getName()
     private final Map<GeoServiceLayer, String> serviceLayerServiceIds = new HashMap<>();
-    private int levelIdCounter = 0;
 
     public MapResponseLayerBuilder(Application app, MapResponse mr) {
       this.app = app;
@@ -190,42 +178,43 @@ public class ApplicationHelper {
     }
 
     private void buildBackgroundLayers() {
-      LayerTreeNode backgroundRootNode =
-          new LayerTreeNode().id("base-layer-root").name("Base layers").root(true);
-      mr.addBaseLayerTreeNodesItem(backgroundRootNode);
-
-      if (app.getContentRoot().getBaseLayers() != null) {
-        for (BaseLayerInner baseLayer : app.getContentRoot().getBaseLayers()) {
-          LayerTreeNode backgroundNode =
-              new LayerTreeNode()
-                  .id("lvl_" + levelIdCounter++)
-                  .name(baseLayer.getTitle())
-                  .root(false);
-
-          for (AppLayerRef layerRef : baseLayer.getLayers()) {
-            addAppLayerItem(layerRef, backgroundNode, mr.getBaseLayerTreeNodes());
-          }
-          if (!CollectionUtils.isEmpty(backgroundNode.getChildrenIds())) {
-            backgroundRootNode.addChildrenIdsItem(backgroundNode.getId());
-            mr.addBaseLayerTreeNodesItem(backgroundNode);
-          }
+      if (app.getContentRoot().getBaseLayerNodes() != null) {
+        for (AppTreeNode node : app.getContentRoot().getBaseLayerNodes()) {
+          addAppTreeNodeItem(node, mr.getBaseLayerTreeNodes());
         }
       }
     }
 
     private void buildOverlayLayers() {
-      LayerTreeNode rootNode = new LayerTreeNode().id("root").name("Overlays").root(true);
-      mr.addLayerTreeNodesItem(rootNode);
-      // TODO: just supporting layers at the root node for now
-      if (app.getContentRoot().getLayers() != null) {
-        for (AppLayerRef layerRef : app.getContentRoot().getLayers()) {
-          addAppLayerItem(layerRef, rootNode, mr.getLayerTreeNodes());
+      if (app.getContentRoot().getLayerNodes() != null) {
+        for (AppTreeNode node : app.getContentRoot().getLayerNodes()) {
+          addAppTreeNodeItem(node, mr.getLayerTreeNodes());
         }
       }
     }
 
-    private void addAppLayerItem(
-        AppLayerRef layerRef, LayerTreeNode parent, List<LayerTreeNode> layerTreeNodeList) {
+    private void addAppTreeNodeItem(AppTreeNode node, List<LayerTreeNode> layerTreeNodeList) {
+      LayerTreeNode layerTreeNode = new LayerTreeNode();
+      if ("AppTreeLayerNode".equals(node.getObjectType())) {
+        AppTreeLayerNode appTreeLayerNode = (AppTreeLayerNode) node;
+        layerTreeNode.setId(appTreeLayerNode.getId());
+        layerTreeNode.setAppLayerId(appTreeLayerNode.getId());
+        addAppLayerItem(appTreeLayerNode);
+        // This name is not displayed in the frontend, the title from the appLayer node is used
+        layerTreeNode.setName(appTreeLayerNode.getLayerName());
+
+      } else if ("AppTreeLevelNode".equals(node.getObjectType())) {
+        AppTreeLevelNode appTreeLevelNode = (AppTreeLevelNode) node;
+        layerTreeNode.setId(appTreeLevelNode.getId());
+        layerTreeNode.setChildrenIds(appTreeLevelNode.getChildrenIds());
+        layerTreeNode.setRoot(Boolean.TRUE.equals(appTreeLevelNode.getRoot()));
+        // The name for a level node does show in the frontend
+        layerTreeNode.setName(appTreeLevelNode.getTitle());
+      }
+      layerTreeNodeList.add(layerTreeNode);
+    }
+
+    private void addAppLayerItem(AppTreeLayerNode layerRef) {
       Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> serviceWithLayer =
           findServiceLayer(layerRef);
       GeoService service = serviceWithLayer.getLeft();
@@ -240,9 +229,13 @@ public class ApplicationHelper {
       Optional<GeoServiceLayerSettings> serviceLayerSettings =
           Optional.ofNullable(serviceWithLayer.getRight());
 
+      AppLayerSettings appLayerSettings =
+          Objects.requireNonNullElse(app.getAppLayerSettings(layerRef), new AppLayerSettings());
+
       String title =
           Objects.requireNonNullElse(
-              layerRef.getTitle(), service.getTitleWithDefaults(layerRef.getLayerName()));
+              appLayerSettings.getTitle(),
+              service.getTitleWithSettingsOverrides(layerRef.getLayerName()));
 
       boolean tilingDisabled =
           serviceLayerSettings
@@ -285,22 +278,12 @@ public class ApplicationHelper {
               .hiDpiDisabled(hiDpiDisabled)
               .hiDpiMode(hiDpiMode)
               .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
-              .opacity(layerRef.getOpacity())
+              .opacity(appLayerSettings.getOpacity())
               .visible(layerRef.getVisible()));
-
-      LayerTreeNode layerNode =
-          new LayerTreeNode()
-              .id("lyr_" + layerRef.getId())
-              .appLayerId(layerRef.getId())
-              .description(serviceLayer.getAbstractText())
-              .name(title)
-              .root(false);
-      parent.addChildrenIdsItem(layerNode.getId());
-      layerTreeNodeList.add(layerNode);
     }
 
     private Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> findServiceLayer(
-        AppLayerRef layerRef) {
+        AppTreeLayerNode layerRef) {
       GeoService service = geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);
       if (service == null) {
         logger.warn(
