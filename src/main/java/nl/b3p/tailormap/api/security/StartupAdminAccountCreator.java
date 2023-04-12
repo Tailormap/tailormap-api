@@ -8,7 +8,7 @@ package nl.b3p.tailormap.api.security;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import nl.b3p.tailormap.api.persistence.Group;
@@ -37,7 +37,7 @@ public class StartupAdminAccountCreator {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Value("${tailormap-api.new-admin-username:admin}")
+  @Value("${tailormap-api.new-admin-username:tm-admin}")
   private String newAdminUsername;
 
   final UserRepository userRepository;
@@ -52,17 +52,17 @@ public class StartupAdminAccountCreator {
   @EventListener(ApplicationReadyEvent.class)
   @Transactional
   public void postConstruct() throws IOException {
-    logger.trace("Checking whether an admin or admin-users account exists...");
+    logger.trace("Checking whether an admin account exists...");
 
     InternalAdminAuthentication.setInSecurityContext();
     try {
-      if (!userRepository.existsByGroupsNameIn(Arrays.asList(Group.ADMIN_USERS, Group.ADMIN))) {
-        // Create a new admin-users account with a random generated password
+      if (!userRepository.existsByGroupsNameIn(List.of(Group.ADMIN))) {
+        // Create a new admin account with a random generated password
         String password = UUID.randomUUID().toString();
 
         User u =
             new User().setUsername(newAdminUsername).setPassword(passwordEncoder.encode(password));
-        u.getGroups().add(new Group().setName(Group.ADMIN_USERS));
+        u.getGroups().add(new Group().setName(Group.ADMIN));
         userRepository.saveAndFlush(u);
 
         // Log generated password

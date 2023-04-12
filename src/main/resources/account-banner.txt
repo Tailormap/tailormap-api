@@ -10,7 +10,7 @@ ${AnsiColor.BLUE}${AnsiStyle.BOLD}
 | +-----------------------------------------+ |
 +------                                 ------+${AnsiColor.DEFAULT}${AnsiStyle.NORMAL}
 
-*** Use this account for administrating users:
+*** Use this account to access the admin:
 
 *** Username: ${AnsiStyle.BOLD}${AnsiColor.BRIGHT_MAGENTA}${username}${AnsiStyle.NORMAL}${AnsiColor.DEFAULT}
 *** Password: ${AnsiStyle.BOLD}${AnsiColor.BRIGHT_MAGENTA}${password}${AnsiStyle.NORMAL}${AnsiColor.DEFAULT}

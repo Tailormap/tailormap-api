@@ -22,9 +22,6 @@ public class Group {
   // /api/actuator/ and not apps for which authentication is required.
   public static final String APP_AUTHENTICATED = "app-authenticated";
   public static final String ADMIN = "admin";
-  public static final String ADMIN_CATALOG = "admin-catalog";
-  public static final String ADMIN_USERS = "admin-users";
-  public static final String ADMIN_APPLICATIONS = "admin-applications";
   public static final String ACTUATOR = "actuator";
 
   @Id private String name;
