@@ -126,11 +126,6 @@ public class PopulateTestDatabase implements EnvironmentAware {
     u.getGroups().add(groupRepository.findById(Group.APP_AUTHENTICATED).orElseThrow());
     userRepository.save(u);
 
-    // Only user admin
-    u = new User().setUsername("useradmin").setPassword("{noop}useradmin");
-    u.getGroups().add(groupRepository.findById(Group.ADMIN_USERS).orElseThrow());
-    userRepository.save(u);
-
     // Superuser with all access (even admin-users without explicitly having that authority)
     u = new User().setUsername("tm-admin").setPassword("{noop}tm-admin");
     u.getGroups().add(groupRepository.findById(Group.ADMIN).orElseThrow());

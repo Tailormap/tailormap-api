@@ -62,11 +62,7 @@ public class ApiSecurityConfiguration implements EnvironmentAware {
     http.securityMatchers(matchers -> matchers.requestMatchers(apiBasePath + "/**"))
         .authorizeHttpRequests(
             authorize ->
-                authorize
-                    .requestMatchers(adminApiBasePath + "/users")
-                    .hasAnyAuthority(Group.ADMIN, Group.ADMIN_USERS)
-                    .requestMatchers(adminApiBasePath + "/**")
-                    .hasAuthority(Group.ADMIN))
+                authorize.requestMatchers(adminApiBasePath + "/**").hasAuthority(Group.ADMIN))
         .formLogin()
         .loginProcessingUrl(apiBasePath + "/login")
         .and()
