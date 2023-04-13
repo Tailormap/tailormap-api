@@ -94,7 +94,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
     this.applicationRepository = applicationRepository;
     this.configurationRepository = configurationRepository;
   }
-  
+
   @Override
   public void setEnvironment(Environment environment) {
     spatialDbsLocalhost = !"false".equals(environment.getProperty("SPATIAL_DBS_LOCALHOST"));

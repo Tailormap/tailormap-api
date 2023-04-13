@@ -47,7 +47,8 @@ public class StartupAdminAccountCreator {
   private final PasswordEncoder passwordEncoder =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-  public StartupAdminAccountCreator(UserRepository userRepository, GroupRepository groupRepository) {
+  public StartupAdminAccountCreator(
+      UserRepository userRepository, GroupRepository groupRepository) {
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
   }

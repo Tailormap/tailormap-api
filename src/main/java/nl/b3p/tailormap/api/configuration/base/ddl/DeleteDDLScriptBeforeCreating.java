@@ -48,6 +48,7 @@ public class DeleteDDLScriptBeforeCreating {
   public void setPassword(String password) {
     this.password = password;
   }
+
   @Bean
   public DataSource getDataSource() {
     return DataSourceBuilder.create().url(url).username(username).password(password).build();
@@ -58,7 +59,7 @@ public class DeleteDDLScriptBeforeCreating {
     File f = new File(target);
     if (f.exists()) {
       String absolutePath = f.getAbsolutePath();
-      if(!f.delete()) {
+      if (!f.delete()) {
         logger.info("Could not delete DDL target file {}", absolutePath);
       } else {
         logger.debug("Deleted DDL target file {}", absolutePath);
