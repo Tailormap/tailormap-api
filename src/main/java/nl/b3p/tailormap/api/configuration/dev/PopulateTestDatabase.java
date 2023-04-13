@@ -57,8 +57,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.Transactional;
 
 @org.springframework.context.annotation.Configuration
-@Profile("!test")
-// TODO: Only in recreate-db profile
+@Profile("populate-test-database")
 public class PopulateTestDatabase implements EnvironmentAware {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -95,7 +94,7 @@ public class PopulateTestDatabase implements EnvironmentAware {
     this.applicationRepository = applicationRepository;
     this.configurationRepository = configurationRepository;
   }
-
+  
   @Override
   public void setEnvironment(Environment environment) {
     spatialDbsLocalhost = !"false".equals(environment.getProperty("SPATIAL_DBS_LOCALHOST"));

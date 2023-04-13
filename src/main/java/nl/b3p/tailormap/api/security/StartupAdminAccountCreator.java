@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.persistence.User;
+import nl.b3p.tailormap.api.repository.GroupRepository;
 import nl.b3p.tailormap.api.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,13 +41,15 @@ public class StartupAdminAccountCreator {
   @Value("${tailormap-api.new-admin-username:tm-admin}")
   private String newAdminUsername;
 
-  final UserRepository userRepository;
+  private final UserRepository userRepository;
+  private final GroupRepository groupRepository;
 
   private final PasswordEncoder passwordEncoder =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-  public StartupAdminAccountCreator(UserRepository userRepository) {
+  public StartupAdminAccountCreator(UserRepository userRepository, GroupRepository groupRepository) {
     this.userRepository = userRepository;
+    this.groupRepository = groupRepository;
   }
 
   @EventListener(ApplicationReadyEvent.class)
@@ -62,7 +65,7 @@ public class StartupAdminAccountCreator {
 
         User u =
             new User().setUsername(newAdminUsername).setPassword(passwordEncoder.encode(password));
-        u.getGroups().add(new Group().setName(Group.ADMIN));
+        u.getGroups().add(groupRepository.getReferenceById(Group.ADMIN));
         userRepository.saveAndFlush(u);
 
         // Log generated password

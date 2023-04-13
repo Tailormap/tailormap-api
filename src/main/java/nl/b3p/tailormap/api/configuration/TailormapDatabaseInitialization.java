@@ -26,6 +26,8 @@ public class TailormapDatabaseInitialization {
 
   @PostConstruct
   public void databaseInitialization() {
+    // Initialize the database when it's easier in code than in import.sql
+
     InternalAdminAuthentication.setInSecurityContext();
     try {
       if (catalogRepository.findById(Catalog.MAIN).isEmpty()) {
