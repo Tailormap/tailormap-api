@@ -114,12 +114,12 @@ SPDX-License-Identifier: MIT
         to check
         -->
         <jackson-bom.version>2.14.2</jackson-bom.version>
-        <micrometer.version>1.10.5</micrometer.version>
+        <micrometer.version>1.10.6</micrometer.version>
         <hibernate.version>5.6.15.Final</hibernate.version>
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
-        <flyway.version>9.16.1</flyway.version>
+        <flyway.version>9.16.3</flyway.version>
         <mssql-jdbc.version>12.2.0.jre11</mssql-jdbc.version>
-        <oracle-database.version>21.9.0.0</oracle-database.version>
+        <oracle-database.version>23.2.0.0</oracle-database.version>
         <postgresql.version>42.6.0</postgresql.version>
         <hsqldb.version>2.7.1</hsqldb.version>
         <snakeyaml.version>2.0</snakeyaml.version>
@@ -164,6 +164,8 @@ SPDX-License-Identifier: MIT
         <docker.pull.policy>Always</docker.pull.policy>
         <!-- skip QA checks -->
         <skipQA>false</skipQA>
+        <skipSBOM>false</skipSBOM>
+        <skipJavaDoc>false</skipJavaDoc>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -910,10 +912,6 @@ SPDX-License-Identifier: MIT
             </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <!-- temporarily disabled -->
-                    <excludePackageNames>nl.b3p.tailormap.*</excludePackageNames>
-                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadoc</id>
@@ -925,6 +923,7 @@ SPDX-License-Identifier: MIT
                             <notimestamp>true</notimestamp>
                             <failOnWarnings>false</failOnWarnings>
                             <failOnError>${failOnValidation}</failOnError>
+                            <skip>${skipJavaDoc}</skip>
                         </configuration>
                     </execution>
                 </executions>
@@ -1223,7 +1222,7 @@ SPDX-License-Identifier: MIT
                 <version>2.7.6</version>
                 <configuration>
                     <projectType>application</projectType>
-                    <skip>${skipQA}</skip>
+                    <skip>${skipSBOM}</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -1494,11 +1493,13 @@ SPDX-License-Identifier: MIT
             </properties>
         </profile>
         <profile>
-            <!-- use this profile to deactivate QA actions and docker builds -->
+            <!-- use this profile to deactivate QA actions and docker builds etc -->
             <id>developing</id>
             <properties>
                 <docker.skip>true</docker.skip>
                 <skipQA>true</skipQA>
+                <skipSBOM>true</skipSBOM>
+                <skipJavaDoc>true</skipJavaDoc>
                 <docker.pull.policy>IfNotPresent</docker.pull.policy>
             </properties>
         </profile>
@@ -1513,6 +1514,7 @@ SPDX-License-Identifier: MIT
             </activation>
             <properties>
                 <skipQA>true</skipQA>
+                <skipJavaDoc>true</skipJavaDoc>
                 <failOnWarnings>false</failOnWarnings>
                 <docker.pull.policy>IfNotPresent</docker.pull.policy>
             </properties>

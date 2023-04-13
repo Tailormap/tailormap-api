@@ -47,11 +47,10 @@ jobs:
         run: mvn javadoc:javadoc
 
       - name: Build Maven site
-        if: false # disabled
         run: mvn site
 
       - name: Archive Maven Site
-        if: false # disabled ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
+        if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
         id: archive-site
         uses: actions/upload-artifact@v3
         with:
@@ -101,6 +100,7 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           verbose: true
+
 
   site-deploy:
     name: Publish gh-pages
@@ -168,7 +168,6 @@ jobs:
           bomfilename: 'target/bom.xml'
 
 
-
   deploy:
     name: Deploy stack
     runs-on: ubuntu-latest
@@ -225,6 +224,8 @@ jobs:
           docker logs tailormap-api
           curl http://localhost:8080/api/actuator/health
           curl http://localhost:8080/api/version
+
+
 
   cleanup:
     name: Maven cache cleanup
