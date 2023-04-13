@@ -27,8 +27,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -132,7 +132,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <hr>
-<pre>public class <span class="typeNameLabel">FeatureSourceFactoryHelper</span>
+<pre>@Service
+public class <span class="typeNameLabel">FeatureSourceFactoryHelper</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
 </li>
 </ul>
@@ -169,22 +170,21 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>static org.geotools.data.simple.SimpleFeatureSource</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#openGeoToolsFeatureSource(nl.tailormap.viewer.config.services.FeatureSource,nl.tailormap.viewer.config.services.SimpleFeatureType,int)">openGeoToolsFeatureSource</a></span>&#8203;(nl.tailormap.viewer.config.services.FeatureSource&nbsp;fs,
-                         nl.tailormap.viewer.config.services.SimpleFeatureType&nbsp;sft,
-                         int&nbsp;timeout)</code></th>
+<td class="colFirst"><code>org.geotools.data.simple.SimpleFeatureSource</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#openGeoToolsFeatureSource(nl.b3p.tailormap.api.persistence.TMFeatureType)">openGeoToolsFeatureSource</a></span>&#8203;(<a href="../../persistence/TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>static org.geotools.data.simple.SimpleFeatureSource</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#openGeoToolsFeatureSource(nl.tailormap.viewer.config.services.SimpleFeatureType)">openGeoToolsFeatureSource</a></span>&#8203;(nl.tailormap.viewer.config.services.SimpleFeatureType&nbsp;sft)</code></th>
+<td class="colFirst"><code>org.geotools.data.simple.SimpleFeatureSource</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#openGeoToolsFeatureSource(nl.b3p.tailormap.api.persistence.TMFeatureType,int)">openGeoToolsFeatureSource</a></span>&#8203;(<a href="../../persistence/TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft,
+                         int&nbsp;timeout)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -230,30 +230,29 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="openGeoToolsFeatureSource(nl.tailormap.viewer.config.services.SimpleFeatureType)">
+<a id="openGeoToolsFeatureSource(nl.b3p.tailormap.api.persistence.TMFeatureType)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>openGeoToolsFeatureSource</h4>
-<pre class="methodSignature">public static&nbsp;org.geotools.data.simple.SimpleFeatureSource&nbsp;openGeoToolsFeatureSource&#8203;(nl.tailormap.viewer.config.services.SimpleFeatureType&nbsp;sft)
-                                                                              throws <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></pre>
+<pre class="methodSignature">public&nbsp;org.geotools.data.simple.SimpleFeatureSource&nbsp;openGeoToolsFeatureSource&#8203;(<a href="../../persistence/TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft)
+                                                                       throws <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code></dd>
 </dl>
 </li>
 </ul>
-<a id="openGeoToolsFeatureSource(nl.tailormap.viewer.config.services.FeatureSource,nl.tailormap.viewer.config.services.SimpleFeatureType,int)">
+<a id="openGeoToolsFeatureSource(nl.b3p.tailormap.api.persistence.TMFeatureType,int)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>openGeoToolsFeatureSource</h4>
-<pre class="methodSignature">public static&nbsp;org.geotools.data.simple.SimpleFeatureSource&nbsp;openGeoToolsFeatureSource&#8203;(nl.tailormap.viewer.config.services.FeatureSource&nbsp;fs,
-                                                                                     nl.tailormap.viewer.config.services.SimpleFeatureType&nbsp;sft,
-                                                                                     int&nbsp;timeout)
-                                                                              throws <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></pre>
+<pre class="methodSignature">public&nbsp;org.geotools.data.simple.SimpleFeatureSource&nbsp;openGeoToolsFeatureSource&#8203;(<a href="../../persistence/TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmft,
+                                                                              int&nbsp;timeout)
+                                                                       throws <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code></dd>

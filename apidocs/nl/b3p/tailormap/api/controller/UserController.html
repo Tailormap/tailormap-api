@@ -136,10 +136,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 public class <span class="typeNameLabel">UserController</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
 <div class="block">Provides user and login information</div>
-<dl>
-<dt><span class="simpleTagLabel">Since:</span></dt>
-<dd>0.1</dd>
-</dl>
 </li>
 </ul>
 </div>
@@ -185,7 +181,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <td class="colFirst"><code>org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/Serializable.html?is-external=true" title="class or interface in java.io" class="externalLink">Serializable</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUser()">getUser</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Get user login information</div>
+<div class="block">Get user login information.</div>
 </td>
 </tr>
 </table>
@@ -237,13 +233,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getUser</h4>
-<pre class="methodSignature">@GetMapping(path="/user",
+<pre class="methodSignature">@GetMapping(path="${tailormap-api.base-path}/user",
             produces="application/json")
 public&nbsp;org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/Serializable.html?is-external=true" title="class or interface in java.io" class="externalLink">Serializable</a>&gt;&nbsp;getUser()</pre>
-<div class="block">Get user login information</div>
+<div class="block">Get user login information.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>isAuthenticated, username</dd>
+<dd>isAuthenticated, username, roles</dd>
 </dl>
 </li>
 </ul>

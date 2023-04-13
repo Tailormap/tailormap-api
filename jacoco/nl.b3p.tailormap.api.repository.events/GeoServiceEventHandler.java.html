@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeoServiceEventHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.repository.events</a> &gt; <span class="el_source">GeoServiceEventHandler.java</span></div><h1>GeoServiceEventHandler.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.repository.events;
+
+import io.hypersistence.tsid.TSID;
+import java.lang.invoke.MethodHandles;
+import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
+import org.springframework.data.rest.core.annotation.HandleBeforeSave;
+import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
+import org.springframework.stereotype.Component;
+
+@RepositoryEventHandler
+@Component
+public class GeoServiceEventHandler {
+<span class="nc" id="L23">  private static final Logger logger =</span>
+<span class="nc" id="L24">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  private final GeoServiceHelper geoServiceHelper;
+
+<span class="nc" id="L28">  public GeoServiceEventHandler(GeoServiceHelper geoServiceHelper) {</span>
+<span class="nc" id="L29">    this.geoServiceHelper = geoServiceHelper;</span>
+<span class="nc" id="L30">  }</span>
+
+  @HandleBeforeCreate
+  public void assignId(GeoService geoService) throws Exception {
+<span class="nc bnc" id="L34" title="All 2 branches missed.">    if (StringUtils.isBlank(geoService.getId())) {</span>
+      // We kind of misuse TSIDs here, because we store it as a string. This is because the id
+      // string can also be manually assigned. There won't be huge numbers of GeoServices, so it's
+      // more of a convenient way to generate an ID that isn't a huge UUID string.
+<span class="nc" id="L38">      geoService.setId(TSID.fast().toString());</span>
+    }
+<span class="nc" id="L40">  }</span>
+
+  @HandleBeforeCreate
+  @HandleBeforeSave
+  public void handleBeforeCreateOrSave(GeoService geoService) throws Exception {
+<span class="nc" id="L45">    logger.info(</span>
+        &quot;Loading capabilities before creating/saving geo service from URL: \&quot;{}\&quot;&quot;,
+<span class="nc" id="L47">        geoService.getUrl());</span>
+<span class="nc" id="L48">    geoServiceHelper.loadServiceCapabilities(geoService);</span>
+<span class="nc" id="L49">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

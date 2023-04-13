@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6,"i3":6};
+var data = {"i0":6,"i1":6,"i2":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -125,16 +125,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Superinterfaces:</dt>
-<dd><code>org.springframework.data.repository.CrudRepository&lt;nl.tailormap.viewer.config.app.Application,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&gt;</code>, <code>org.springframework.data.jpa.repository.JpaRepository&lt;nl.tailormap.viewer.config.app.Application,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&gt;</code>, <code>org.springframework.data.repository.PagingAndSortingRepository&lt;nl.tailormap.viewer.config.app.Application,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&gt;</code>, <code>org.springframework.data.repository.query.QueryByExampleExecutor&lt;nl.tailormap.viewer.config.app.Application&gt;</code>, <code>org.springframework.data.repository.Repository&lt;nl.tailormap.viewer.config.app.Application,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&gt;</code></dd>
+<dd><code>org.springframework.data.repository.CrudRepository&lt;<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&gt;</code>, <code>org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&gt;</code>, <code>org.springframework.data.repository.PagingAndSortingRepository&lt;<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&gt;</code>, <code>org.springframework.data.repository.query.QueryByExampleExecutor&lt;<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&gt;</code>, <code>org.springframework.data.repository.Repository&lt;<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&gt;</code></dd>
 </dl>
 <hr>
 <pre>public interface <span class="typeNameLabel">ApplicationRepository</span>
-extends org.springframework.data.jpa.repository.JpaRepository&lt;nl.tailormap.viewer.config.app.Application,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&gt;</pre>
-<div class="block">Easy to use methods to access <code>Application</code>.</div>
-<dl>
-<dt><span class="simpleTagLabel">Since:</span></dt>
-<dd>0.1</dd>
-</dl>
+extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&gt;</pre>
 </li>
 </ul>
 </div>
@@ -156,26 +151,17 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;nl.tailormap.vi
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;nl.tailormap.viewer.config.app.Application&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findByName(java.lang.String)">findByName</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name)</code></th>
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Optional.html?is-external=true" title="class or interface in java.util" class="externalLink">Optional</a>&lt;<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findById(java.lang.Long)">findById</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;aLong)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>nl.tailormap.viewer.config.app.Application</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findByNameAndVersion(java.lang.String,java.lang.String)">findByNameAndVersion</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name,
-                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;version)</code></th>
+<td class="colFirst"><code><a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findByName(java.lang.String)">findByName</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>nl.tailormap.viewer.config.app.Application</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findWithGeoservicesById(java.lang.Long)">findWithGeoservicesById</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id)</code></th>
-<td class="colLast">
-<div class="block">Equivalent to findById, but preloads some of the necessary entities to limit the amount of
- roundtrips.</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>int</code></td>
+<td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAuthenticatedRequired(java.lang.Long,java.lang.Boolean)">setAuthenticatedRequired</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id,
                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;required)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -186,7 +172,7 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;nl.tailormap.vi
 <!--   -->
 </a>
 <h3>Methods inherited from interface&nbsp;org.springframework.data.repository.CrudRepository</h3>
-<code>count, delete, deleteAll, deleteAll, deleteAllById, deleteById, existsById, findById, save</code></li>
+<code>count, delete, deleteAll, deleteAll, deleteAllById, deleteById, existsById, save</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.org.springframework.data.jpa.repository.JpaRepository">
@@ -231,34 +217,23 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;nl.tailormap.vi
 <ul class="blockList">
 <li class="blockList">
 <h4>findByName</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;nl.tailormap.viewer.config.app.Application&gt;&nbsp;findByName&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name)</pre>
+<pre class="methodSignature">@PreAuthorize("permitAll()")
+<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;findByName&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name)</pre>
 </li>
 </ul>
-<a id="findByNameAndVersion(java.lang.String,java.lang.String)">
+<a id="findById(java.lang.Long)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>findByNameAndVersion</h4>
-<pre class="methodSignature">nl.tailormap.viewer.config.app.Application&nbsp;findByNameAndVersion&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name,
-                                                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;version)</pre>
-</li>
-</ul>
-<a id="findWithGeoservicesById(java.lang.Long)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>findWithGeoservicesById</h4>
-<pre class="methodSignature">@EntityGraph(attributePaths={"startLayers.applicationLayer.service.details","startLayers.applicationLayer.service.readers","startLayers.applicationLayer.readers"})
-nl.tailormap.viewer.config.app.Application&nbsp;findWithGeoservicesById&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id)</pre>
-<div class="block">Equivalent to findById, but preloads some of the necessary entities to limit the amount of
- roundtrips.</div>
+<h4>findById</h4>
+<pre class="methodSignature">@PreAuthorize("permitAll()")
+@NonNull
+<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Optional.html?is-external=true" title="class or interface in java.util" class="externalLink">Optional</a>&lt;<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&gt;&nbsp;findById&#8203;(@NonNull
+                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;aLong)</pre>
 <dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>id</code> - the ID of the Application to return</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the Application entity, with extra cached attributes.</dd>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>findById</code>&nbsp;in interface&nbsp;<code>org.springframework.data.repository.CrudRepository&lt;<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&gt;</code></dd>
 </dl>
 </li>
 </ul>
@@ -271,8 +246,8 @@ nl.tailormap.viewer.config.app.Application&nbsp;findWithGeoservicesById&#8203;(<
 <pre class="methodSignature">@Transactional
 @Modifying
 @Query("update Application a set a.authenticatedRequired = :required  where a.id = :id")
-int&nbsp;setAuthenticatedRequired&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id,
-                             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;required)</pre>
+void&nbsp;setAuthenticatedRequired&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id,
+                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;required)</pre>
 </li>
 </ul>
 </li>

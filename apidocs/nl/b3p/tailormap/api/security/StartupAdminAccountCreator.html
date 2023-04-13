@@ -132,7 +132,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <hr>
-<pre>@Component
+<pre>@Configuration
 @Profile("!test")
 public class <span class="typeNameLabel">StartupAdminAccountCreator</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
@@ -179,7 +179,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onApplicationEvent(org.springframework.context.event.ContextRefreshedEvent)">onApplicationEvent</a></span>&#8203;(org.springframework.context.event.ContextRefreshedEvent&nbsp;event)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#postConstruct()">postConstruct</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -225,14 +225,20 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="onApplicationEvent(org.springframework.context.event.ContextRefreshedEvent)">
+<a id="postConstruct()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>onApplicationEvent</h4>
-<pre class="methodSignature">@EventListener
-public&nbsp;void&nbsp;onApplicationEvent&#8203;(org.springframework.context.event.ContextRefreshedEvent&nbsp;event)</pre>
+<h4>postConstruct</h4>
+<pre class="methodSignature">@EventListener(org.springframework.boot.context.event.ApplicationReadyEvent.class)
+@Transactional
+public&nbsp;void&nbsp;postConstruct()
+                   throws <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></pre>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code></dd>
+</dl>
 </li>
 </ul>
 </li>

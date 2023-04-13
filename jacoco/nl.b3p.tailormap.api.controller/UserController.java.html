@@ -5,46 +5,45 @@
  */
 package nl.b3p.tailormap.api.controller;
 
-import nl.b3p.tailormap.api.model.UserResponse;
-
+import java.io.Serializable;
+import java.util.stream.Collectors;
+import nl.b3p.tailormap.api.viewer.model.UserResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.Serializable;
-
-/**
- * Provides user and login information
- *
- * @since 0.1
- */
+/** Provides user and login information */
 @RestController
 public class UserController {
 
-<span class="fc" id="L29">    public UserController() {}</span>
+<span class="nc" id="L25">  public UserController() {}</span>
 
-    /**
-     * Get user login information
-     *
-     * @return isAuthenticated, username
-     */
-    @GetMapping(path = &quot;/user&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity&lt;Serializable&gt; getUser() {
-<span class="fc" id="L38">        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
-<span class="pc bpc" id="L39" title="1 of 4 branches missed.">        boolean isNotAuthenticated =</span>
-                authentication == null || authentication instanceof AnonymousAuthenticationToken;
-        String username =
-<span class="pc bpc" id="L42" title="1 of 4 branches missed.">                isNotAuthenticated || authentication.getName() == null</span>
-<span class="fc" id="L43">                        ? &quot;&quot;</span>
-<span class="fc" id="L44">                        : authentication.getName();</span>
-<span class="fc bfc" id="L45" title="All 2 branches covered.">        UserResponse userResponse =</span>
-<span class="fc" id="L46">                new UserResponse().isAuthenticated(!isNotAuthenticated).username(username);</span>
-<span class="fc" id="L47">        return ResponseEntity.status(HttpStatus.OK).body(userResponse);</span>
+  /**
+   * Get user login information.
+   *
+   * @return isAuthenticated, username, roles
+   */
+  @GetMapping(path = &quot;${tailormap-api.base-path}/user&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity&lt;Serializable&gt; getUser() {
+<span class="nc" id="L34">    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="nc bnc" id="L35" title="All 4 branches missed.">    boolean isAuthenticated =</span>
+        authentication != null &amp;&amp; !(authentication instanceof AnonymousAuthenticationToken);
+
+<span class="nc" id="L38">    UserResponse userResponse = new UserResponse().isAuthenticated(isAuthenticated);</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (isAuthenticated) {</span>
+<span class="nc" id="L40">      userResponse.username(authentication.getName());</span>
+<span class="nc" id="L41">      userResponse.setRoles(</span>
+<span class="nc" id="L42">          authentication.getAuthorities().stream()</span>
+<span class="nc" id="L43">              .map(GrantedAuthority::getAuthority)</span>
+<span class="nc" id="L44">              .collect(Collectors.toSet()));</span>
     }
+<span class="nc" id="L46">    return ResponseEntity.status(HttpStatus.OK).body(userResponse);</span>
+  }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

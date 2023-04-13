@@ -5,61 +5,88 @@
  */
 package nl.b3p.tailormap.api.security;
 
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import nl.b3p.tailormap.api.persistence.Group;
+import nl.b3p.tailormap.api.persistence.User;
 import nl.b3p.tailormap.api.repository.UserRepository;
-import nl.tailormap.viewer.config.security.Group;
-import nl.tailormap.viewer.config.security.User;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ansi.AnsiPropertySource;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertySourcesPropertyResolver;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StreamUtils;
 
-import java.util.Arrays;
-import java.util.UUID;
-
-@Component
+@Configuration
 @Profile(&quot;!test&quot;)
 public class StartupAdminAccountCreator {
-<span class="nc" id="L27">    private final Log logger = LogFactory.getLog(getClass());</span>
+<span class="nc" id="L37">  private static final Logger logger =</span>
+<span class="nc" id="L38">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
-    final UserRepository userRepository;
+  @Value(&quot;${tailormap-api.new-admin-username:tm-admin}&quot;)
+  private String newAdminUsername;
 
-<span class="nc" id="L31">    private final PasswordEncoder passwordEncoder =</span>
-<span class="nc" id="L32">            PasswordEncoderFactories.createDelegatingPasswordEncoder();</span>
+  final UserRepository userRepository;
 
-<span class="nc" id="L34">    public StartupAdminAccountCreator(UserRepository userRepository) {</span>
-<span class="nc" id="L35">        this.userRepository = userRepository;</span>
-<span class="nc" id="L36">    }</span>
+<span class="nc" id="L45">  private final PasswordEncoder passwordEncoder =</span>
+<span class="nc" id="L46">      PasswordEncoderFactories.createDelegatingPasswordEncoder();</span>
 
-    @EventListener
-    public void onApplicationEvent(ContextRefreshedEvent event) {
-<span class="nc" id="L40">        logger.trace(&quot;Checking whether an Admin or UserAdmin account exists...&quot;);</span>
+<span class="nc" id="L48">  public StartupAdminAccountCreator(UserRepository userRepository) {</span>
+<span class="nc" id="L49">    this.userRepository = userRepository;</span>
+<span class="nc" id="L50">  }</span>
 
-<span class="nc bnc" id="L42" title="All 2 branches missed.">        if (!userRepository.existsByGroupsNameIn(Arrays.asList(Group.USER_ADMIN, Group.ADMIN))) {</span>
-            // Create a new UserAdmin account with a random generated password that is logged
+  @EventListener(ApplicationReadyEvent.class)
+  @Transactional
+  public void postConstruct() throws IOException {
+<span class="nc" id="L55">    logger.trace(&quot;Checking whether an admin account exists...&quot;);</span>
 
-<span class="nc" id="L45">            String password = UUID.randomUUID().toString();</span>
+<span class="nc" id="L57">    InternalAdminAuthentication.setInSecurityContext();</span>
+    try {
+<span class="nc bnc" id="L59" title="All 2 branches missed.">      if (!userRepository.existsByGroupsNameIn(List.of(Group.ADMIN))) {</span>
+        // Create a new admin account with a random generated password
+<span class="nc" id="L61">        String password = UUID.randomUUID().toString();</span>
 
-<span class="nc" id="L47">            User u = new User();</span>
-<span class="nc" id="L48">            u.setUsername(&quot;admin&quot;);</span>
-<span class="nc" id="L49">            u.setPassword(passwordEncoder.encode(password));</span>
-<span class="nc" id="L50">            Group g = new Group();</span>
-<span class="nc" id="L51">            g.setName(Group.USER_ADMIN);</span>
-<span class="nc" id="L52">            u.getGroups().add(g);</span>
-<span class="nc" id="L53">            userRepository.saveAndFlush(u);</span>
+<span class="nc" id="L63">        User u =</span>
+<span class="nc" id="L64">            new User().setUsername(newAdminUsername).setPassword(passwordEncoder.encode(password));</span>
+<span class="nc" id="L65">        u.getGroups().add(new Group().setName(Group.ADMIN));</span>
+<span class="nc" id="L66">        userRepository.saveAndFlush(u);</span>
 
-<span class="nc" id="L55">            logger.info(</span>
-<span class="nc" id="L56">                    String.format(</span>
-                            &quot;\n***\n*** Use this account for administrating users:\n***&quot;
-                                    + &quot;\n*** Username: \033[0;1madmin\033[0m&quot;
-                                    + &quot;\n*** Password: \033[0;1m%s\033[0m&quot;
-                                    + &quot;\n***&quot;,
-                            password));
-        }
-<span class="nc" id="L63">    }</span>
+        // Log generated password
+<span class="nc" id="L69">        logger.info(getAccountBanner(newAdminUsername, password));</span>
+      }
+    } finally {
+<span class="nc" id="L72">      InternalAdminAuthentication.clearSecurityContextAuthentication();</span>
+    }
+<span class="nc" id="L74">  }</span>
+
+  private static String getAccountBanner(String username, String password) throws IOException {
+<span class="nc" id="L77">    String accountBanner =</span>
+<span class="nc" id="L78">        StreamUtils.copyToString(</span>
+<span class="nc" id="L79">            new ClassPathResource(&quot;account-banner.txt&quot;).getInputStream(),</span>
+            StandardCharsets.US_ASCII);
+<span class="nc" id="L81">    MutablePropertySources sources = new MutablePropertySources();</span>
+<span class="nc" id="L82">    sources.addFirst(new AnsiPropertySource(&quot;ansi&quot;, true));</span>
+<span class="nc" id="L83">    sources.addFirst(</span>
+        new MapPropertySource(
+            &quot;account&quot;,
+<span class="nc" id="L86">            Map.of(</span>
+                &quot;username&quot;, username,
+                &quot;password&quot;, password)));
+<span class="nc" id="L89">    return new PropertySourcesPropertyResolver(sources).resolvePlaceholders(accountBanner);</span>
+  }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

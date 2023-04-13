@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -155,9 +155,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.ApplicationLayerRepository,nl.b3p.tailormap.api.security.AuthorizationService)">AppRestControllerAdvice</a></span>&#8203;(<a href="../repository/ApplicationRepository.html" title="interface in nl.b3p.tailormap.api.repository">ApplicationRepository</a>&nbsp;applicationRepository,
-                       <a href="../repository/ApplicationLayerRepository.html" title="interface in nl.b3p.tailormap.api.repository">ApplicationLayerRepository</a>&nbsp;applicationLayerRepository,
-                       <a href="../security/AuthorizationService.html" title="class in nl.b3p.tailormap.api.security">AuthorizationService</a>&nbsp;authorizationService)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.GeoServiceRepository,nl.b3p.tailormap.api.persistence.helper.ApplicationHelper)">AppRestControllerAdvice</a></span>&#8203;(<a href="../repository/ApplicationRepository.html" title="interface in nl.b3p.tailormap.api.repository">ApplicationRepository</a>&nbsp;applicationRepository,
+                       <a href="../repository/GeoServiceRepository.html" title="interface in nl.b3p.tailormap.api.repository">GeoServiceRepository</a>&nbsp;geoServiceRepository,
+                       <a href="../persistence/helper/ApplicationHelper.html" title="class in nl.b3p.tailormap.api.persistence.helper">ApplicationHelper</a>&nbsp;applicationHelper)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -189,14 +189,33 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>nl.tailormap.viewer.config.app.Application</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#populateApplication(java.lang.Long)">populateApplication</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;appId)</code></th>
+<td class="colFirst"><code><a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#populateApplication(nl.b3p.tailormap.api.viewer.model.ViewerResponse.KindEnum,java.lang.String,java.lang.String,java.lang.String)">populateApplication</a></span>&#8203;(<a href="../viewer/model/ViewerResponse.KindEnum.html" title="enum in nl.b3p.tailormap.api.viewer.model">ViewerResponse.KindEnum</a>&nbsp;viewerKind,
+                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;viewerName,
+                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;base,
+                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;projection)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>nl.tailormap.viewer.config.app.ApplicationLayer</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#populateApplicationLayer(nl.tailormap.viewer.config.app.Application,java.lang.Long)">populateApplicationLayer</a></span>&#8203;(nl.tailormap.viewer.config.app.Application&nbsp;application,
-                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;appLayerId)</code></th>
+<td class="colFirst"><code><a href="../persistence/json/AppTreeLayerNode.html" title="class in nl.b3p.tailormap.api.persistence.json">AppTreeLayerNode</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#populateAppTreeLayerNode(nl.b3p.tailormap.api.persistence.Application,java.lang.String)">populateAppTreeLayerNode</a></span>&#8203;(<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;app,
+                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;appLayerId)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#populateGeoService(nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode)">populateGeoService</a></span>&#8203;(<a href="../persistence/json/AppTreeLayerNode.html" title="class in nl.b3p.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="../persistence/json/GeoServiceLayer.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayer</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#populateGeoServiceLayer(nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,nl.b3p.tailormap.api.persistence.GeoService)">populateGeoServiceLayer</a></span>&#8203;(<a href="../persistence/json/AppTreeLayerNode.html" title="class in nl.b3p.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
+                       <a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;service)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="../viewer/model/ViewerResponse.KindEnum.html" title="enum in nl.b3p.tailormap.api.viewer.model">ViewerResponse.KindEnum</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#populateViewerKind(javax.servlet.http.HttpServletRequest)">populateViewerKind</a></span>&#8203;(javax.servlet.http.HttpServletRequest&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -223,15 +242,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.ApplicationLayerRepository,nl.b3p.tailormap.api.security.AuthorizationService)">
+<a id="&lt;init&gt;(nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.GeoServiceRepository,nl.b3p.tailormap.api.persistence.helper.ApplicationHelper)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>AppRestControllerAdvice</h4>
 <pre>public&nbsp;AppRestControllerAdvice&#8203;(<a href="../repository/ApplicationRepository.html" title="interface in nl.b3p.tailormap.api.repository">ApplicationRepository</a>&nbsp;applicationRepository,
-                               <a href="../repository/ApplicationLayerRepository.html" title="interface in nl.b3p.tailormap.api.repository">ApplicationLayerRepository</a>&nbsp;applicationLayerRepository,
-                               <a href="../security/AuthorizationService.html" title="class in nl.b3p.tailormap.api.security">AuthorizationService</a>&nbsp;authorizationService)</pre>
+                               <a href="../repository/GeoServiceRepository.html" title="interface in nl.b3p.tailormap.api.repository">GeoServiceRepository</a>&nbsp;geoServiceRepository,
+                               <a href="../persistence/helper/ApplicationHelper.html" title="class in nl.b3p.tailormap.api.persistence.helper">ApplicationHelper</a>&nbsp;applicationHelper)</pre>
 </li>
 </ul>
 </li>
@@ -264,28 +283,68 @@ protected&nbsp;void&nbsp;initBinder&#8203;(org.springframework.web.bind.WebDataB
 protected&nbsp;org.springframework.http.ResponseEntity&lt;?&gt;&nbsp;handleResponseStatusException&#8203;(org.springframework.web.server.ResponseStatusException&nbsp;ex)</pre>
 </li>
 </ul>
-<a id="populateApplication(java.lang.Long)">
+<a id="populateViewerKind(javax.servlet.http.HttpServletRequest)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>populateViewerKind</h4>
+<pre class="methodSignature">@ModelAttribute
+public&nbsp;<a href="../viewer/model/ViewerResponse.KindEnum.html" title="enum in nl.b3p.tailormap.api.viewer.model">ViewerResponse.KindEnum</a>&nbsp;populateViewerKind&#8203;(javax.servlet.http.HttpServletRequest&nbsp;request)</pre>
+</li>
+</ul>
+<a id="populateApplication(nl.b3p.tailormap.api.viewer.model.ViewerResponse.KindEnum,java.lang.String,java.lang.String,java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>populateApplication</h4>
 <pre class="methodSignature">@ModelAttribute
-public&nbsp;nl.tailormap.viewer.config.app.Application&nbsp;populateApplication&#8203;(@PathVariable(required=false)
-                                                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;appId)</pre>
+public&nbsp;<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;populateApplication&#8203;(@ModelAttribute
+                                       <a href="../viewer/model/ViewerResponse.KindEnum.html" title="enum in nl.b3p.tailormap.api.viewer.model">ViewerResponse.KindEnum</a>&nbsp;viewerKind,
+                                       @PathVariable(required=false)
+                                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;viewerName,
+                                       @RequestParam(required=false)
+                                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;base,
+                                       @RequestParam(required=false)
+                                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;projection)</pre>
 </li>
 </ul>
-<a id="populateApplicationLayer(nl.tailormap.viewer.config.app.Application,java.lang.Long)">
+<a id="populateAppTreeLayerNode(nl.b3p.tailormap.api.persistence.Application,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>populateAppTreeLayerNode</h4>
+<pre class="methodSignature">@ModelAttribute
+public&nbsp;<a href="../persistence/json/AppTreeLayerNode.html" title="class in nl.b3p.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;populateAppTreeLayerNode&#8203;(@ModelAttribute
+                                                 <a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;app,
+                                                 @PathVariable(required=false)
+                                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;appLayerId)</pre>
+</li>
+</ul>
+<a id="populateGeoService(nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>populateGeoService</h4>
+<pre class="methodSignature">@ModelAttribute
+public&nbsp;<a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;populateGeoService&#8203;(@ModelAttribute
+                                     <a href="../persistence/json/AppTreeLayerNode.html" title="class in nl.b3p.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode)</pre>
+</li>
+</ul>
+<a id="populateGeoServiceLayer(nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,nl.b3p.tailormap.api.persistence.GeoService)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>populateApplicationLayer</h4>
+<h4>populateGeoServiceLayer</h4>
 <pre class="methodSignature">@ModelAttribute
-public&nbsp;nl.tailormap.viewer.config.app.ApplicationLayer&nbsp;populateApplicationLayer&#8203;(@ModelAttribute
-                                                                                nl.tailormap.viewer.config.app.Application&nbsp;application,
-                                                                                @PathVariable(required=false)
-                                                                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;appLayerId)</pre>
+public&nbsp;<a href="../persistence/json/GeoServiceLayer.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;populateGeoServiceLayer&#8203;(@ModelAttribute
+                                               <a href="../persistence/json/AppTreeLayerNode.html" title="class in nl.b3p.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
+                                               @ModelAttribute
+                                               <a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;service)</pre>
 </li>
 </ul>
 </li>

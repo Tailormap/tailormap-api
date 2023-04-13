@@ -5,38 +5,38 @@
  */
 package nl.b3p.tailormap.api.geotools.featuresources;
 
-import nl.tailormap.viewer.config.services.FeatureSource;
-import nl.tailormap.viewer.config.services.JDBCFeatureSource;
-import nl.tailormap.viewer.config.services.SimpleFeatureType;
-import nl.tailormap.viewer.config.services.WFSFeatureSource;
-
-import org.geotools.data.simple.SimpleFeatureSource;
-
 import java.io.IOException;
+import nl.b3p.tailormap.api.persistence.TMFeatureSource;
+import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
-<span class="nc" id="L17">public class FeatureSourceFactoryHelper {</span>
+@Service
+<span class="nc" id="L16">public class FeatureSourceFactoryHelper {</span>
 
-    public static SimpleFeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft)
-            throws IOException {
-<span class="nc" id="L21">        return FeatureSourceFactoryHelper.openGeoToolsFeatureSource(</span>
-<span class="nc" id="L22">                sft.getFeatureSource(), sft, 30);</span>
+  @Value(&quot;${tailormap-api.timeout}&quot;)
+  private int timeout;
+
+  public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType tmft) throws IOException {
+<span class="nc" id="L22">    return openGeoToolsFeatureSource(tmft, timeout);</span>
+  }
+
+  public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType tmft, int timeout)
+      throws IOException {
+<span class="nc" id="L27">    FeatureSourceHelper sh = getHelper(tmft.getFeatureSource());</span>
+<span class="nc" id="L28">    return sh.openGeoToolsFeatureSource(tmft, timeout);</span>
+  }
+
+  private FeatureSourceHelper getHelper(TMFeatureSource fs) {
+<span class="nc bnc" id="L32" title="All 3 branches missed.">    switch (fs.getProtocol()) {</span>
+      case JDBC:
+<span class="nc" id="L34">        return new JDBCFeatureSourceHelper();</span>
+      case WFS:
+<span class="nc" id="L36">        return new WFSFeatureSourceHelper();</span>
+      default:
+<span class="nc" id="L38">        throw new IllegalArgumentException(&quot;Invalid protocol: &quot; + fs.getProtocol());</span>
     }
-
-    public static SimpleFeatureSource openGeoToolsFeatureSource(
-            FeatureSource fs, SimpleFeatureType sft, int timeout) throws IOException {
-<span class="nc" id="L27">        FeatureSourceHelper sh = getHelper(fs);</span>
-<span class="nc bnc" id="L28" title="All 2 branches missed.">        assert sh != null;</span>
-<span class="nc" id="L29">        return sh.openGeoToolsFeatureSource(fs, sft, timeout);</span>
-    }
-
-    private static FeatureSourceHelper getHelper(FeatureSource fs) {
-<span class="nc bnc" id="L33" title="All 2 branches missed.">        if (fs instanceof JDBCFeatureSource) {</span>
-<span class="nc" id="L34">            return new JDBCFeatureSourceHelper();</span>
-<span class="nc bnc" id="L35" title="All 2 branches missed.">        } else if (fs instanceof WFSFeatureSource) {</span>
-<span class="nc" id="L36">            return new WFSFeatureSourceHelper();</span>
-        }
-        // should never happen
-<span class="nc" id="L39">        return null;</span>
-    }
+  }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -100,12 +100,1104 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <section>
-<h2 title="Package">Package&nbsp;nl.b3p.tailormap.api.model</h2>
+<h2 title="Package">Package&nbsp;nl.b3p.tailormap.api.persistence.json</h2>
 <ul class="blockList">
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.AppLayer">
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.AppContent">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/AppLayer.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.AppLayer</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/AppContent.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.AppContent</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>baseLayerNodes</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="nl/b3p/tailormap/api/persistence/json/AppTreeNode.html" title="interface in nl.b3p.tailormap.api.persistence.json">AppTreeNode</a>&gt; baseLayerNodes</pre>
+</li>
+<li class="blockListLast">
+<h4>layerNodes</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="nl/b3p/tailormap/api/persistence/json/AppTreeNode.html" title="interface in nl.b3p.tailormap.api.persistence.json">AppTreeNode</a>&gt; layerNodes</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.AppLayerSettings">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.AppLayerSettings</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>opacity</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a> opacity</pre>
+</li>
+<li class="blockListLast">
+<h4>title</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.AppSettings">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/AppSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.AppSettings</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>layerSettings</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="nl/b3p/tailormap/api/persistence/json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a>&gt; layerSettings</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/AppTreeLayerNode.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>id</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> id</pre>
+</li>
+<li class="blockList">
+<h4>layerName</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> layerName</pre>
+</li>
+<li class="blockList">
+<h4>objectType</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> objectType</pre>
+</li>
+<li class="blockList">
+<h4>serviceId</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> serviceId</pre>
+</li>
+<li class="blockListLast">
+<h4>visible</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> visible</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.AppTreeLevelNode">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/AppTreeLevelNode.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.AppTreeLevelNode</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>childrenIds</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; childrenIds</pre>
+</li>
+<li class="blockList">
+<h4>id</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> id</pre>
+</li>
+<li class="blockList">
+<h4>objectType</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> objectType</pre>
+</li>
+<li class="blockList">
+<h4>root</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> root</pre>
+</li>
+<li class="blockListLast">
+<h4>title</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.AttributeSettings">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/AttributeSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.AttributeSettings</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>title</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.Bounds">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/Bounds.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.Bounds</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>maxx</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Double.html?is-external=true" title="class or interface in java.lang" class="externalLink">Double</a> maxx</pre>
+</li>
+<li class="blockList">
+<h4>maxy</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Double.html?is-external=true" title="class or interface in java.lang" class="externalLink">Double</a> maxy</pre>
+</li>
+<li class="blockList">
+<h4>minx</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Double.html?is-external=true" title="class or interface in java.lang" class="externalLink">Double</a> minx</pre>
+</li>
+<li class="blockListLast">
+<h4>miny</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Double.html?is-external=true" title="class or interface in java.lang" class="externalLink">Double</a> miny</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.CatalogNode">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/CatalogNode.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.CatalogNode</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>children</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; children</pre>
+</li>
+<li class="blockList">
+<h4>id</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> id</pre>
+</li>
+<li class="blockList">
+<h4>items</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="nl/b3p/tailormap/api/persistence/json/TailormapObjectRef.html" title="class in nl.b3p.tailormap.api.persistence.json">TailormapObjectRef</a>&gt; items</pre>
+</li>
+<li class="blockList">
+<h4>root</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> root</pre>
+</li>
+<li class="blockListLast">
+<h4>title</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.FeatureTypeRef">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/FeatureTypeRef.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.FeatureTypeRef</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>featureSourceId</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a> featureSourceId</pre>
+</li>
+<li class="blockListLast">
+<h4>featureTypeName</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> featureTypeName</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.FeatureTypeSettings">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/FeatureTypeSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.FeatureTypeSettings</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>attributeOrder</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; attributeOrder</pre>
+</li>
+<li class="blockList">
+<h4>attributeSettings</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="nl/b3p/tailormap/api/persistence/json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a>&gt; attributeSettings</pre>
+</li>
+<li class="blockListLast">
+<h4>hideAttributes</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; hideAttributes</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>featureType</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/FeatureTypeRef.html" title="class in nl.b3p.tailormap.api.persistence.json">FeatureTypeRef</a> featureType</pre>
+</li>
+<li class="blockList">
+<h4>hiDpiDisabled</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> hiDpiDisabled</pre>
+</li>
+<li class="blockList">
+<h4>hiDpiMode</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TileLayerHiDpiMode.html" title="enum in nl.b3p.tailormap.api.persistence.json">TileLayerHiDpiMode</a> hiDpiMode</pre>
+</li>
+<li class="blockList">
+<h4>hiDpiSubstituteLayer</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> hiDpiSubstituteLayer</pre>
+</li>
+<li class="blockList">
+<h4>tilingDisabled</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> tilingDisabled</pre>
+</li>
+<li class="blockList">
+<h4>tilingGutter</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a> tilingGutter</pre>
+</li>
+<li class="blockListLast">
+<h4>title</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.GeoServiceLayer">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/GeoServiceLayer.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.GeoServiceLayer</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>abstractText</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> abstractText</pre>
+</li>
+<li class="blockList">
+<h4>attribution</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> attribution</pre>
+</li>
+<li class="blockList">
+<h4>children</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; children</pre>
+</li>
+<li class="blockList">
+<h4>crs</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; crs</pre>
+</li>
+<li class="blockList">
+<h4>latLonBoundingBox</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/Bounds.html" title="class in nl.b3p.tailormap.api.persistence.json">Bounds</a> latLonBoundingBox</pre>
+</li>
+<li class="blockList">
+<h4>maxScale</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Double.html?is-external=true" title="class or interface in java.lang" class="externalLink">Double</a> maxScale</pre>
+</li>
+<li class="blockList">
+<h4>minScale</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Double.html?is-external=true" title="class or interface in java.lang" class="externalLink">Double</a> minScale</pre>
+</li>
+<li class="blockList">
+<h4>name</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> name</pre>
+</li>
+<li class="blockList">
+<h4>queryable</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> queryable</pre>
+</li>
+<li class="blockList">
+<h4>root</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> root</pre>
+</li>
+<li class="blockList">
+<h4>styles</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="nl/b3p/tailormap/api/persistence/json/WMSStyle.html" title="class in nl.b3p.tailormap.api.persistence.json">WMSStyle</a>&gt; styles</pre>
+</li>
+<li class="blockList">
+<h4>title</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
+</li>
+<li class="blockListLast">
+<h4>virtual</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> virtual</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/GeoServiceLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>featureType</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/FeatureTypeRef.html" title="class in nl.b3p.tailormap.api.persistence.json">FeatureTypeRef</a> featureType</pre>
+</li>
+<li class="blockList">
+<h4>hiDpiDisabled</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> hiDpiDisabled</pre>
+</li>
+<li class="blockList">
+<h4>hiDpiMode</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TileLayerHiDpiMode.html" title="enum in nl.b3p.tailormap.api.persistence.json">TileLayerHiDpiMode</a> hiDpiMode</pre>
+</li>
+<li class="blockList">
+<h4>hiDpiSubstituteLayer</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> hiDpiSubstituteLayer</pre>
+</li>
+<li class="blockList">
+<h4>tilingDisabled</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> tilingDisabled</pre>
+</li>
+<li class="blockList">
+<h4>tilingGutter</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a> tilingGutter</pre>
+</li>
+<li class="blockListLast">
+<h4>title</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.GeoServiceSettings">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/GeoServiceSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.GeoServiceSettings</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>defaultLayerSettings</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceDefaultLayerSettings</a> defaultLayerSettings</pre>
+</li>
+<li class="blockList">
+<h4>layerSettings</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="nl/b3p/tailormap/api/persistence/json/GeoServiceLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayerSettings</a>&gt; layerSettings</pre>
+</li>
+<li class="blockList">
+<h4>publishing</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/ServicePublishingSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">ServicePublishingSettings</a> publishing</pre>
+</li>
+<li class="blockList">
+<h4>serverType</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/GeoServiceSettings.ServerTypeEnum.html" title="enum in nl.b3p.tailormap.api.persistence.json">GeoServiceSettings.ServerTypeEnum</a> serverType</pre>
+</li>
+<li class="blockListLast">
+<h4>useProxy</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> useProxy</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/JDBCConnectionProperties.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>additionalProperties</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; additionalProperties</pre>
+</li>
+<li class="blockList">
+<h4>database</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> database</pre>
+</li>
+<li class="blockList">
+<h4>dbtype</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/JDBCConnectionProperties.DbtypeEnum.html" title="enum in nl.b3p.tailormap.api.persistence.json">JDBCConnectionProperties.DbtypeEnum</a> dbtype</pre>
+</li>
+<li class="blockList">
+<h4>fetchSize</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a> fetchSize</pre>
+</li>
+<li class="blockList">
+<h4>geometryMetadataTable</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> geometryMetadataTable</pre>
+</li>
+<li class="blockList">
+<h4>host</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> host</pre>
+</li>
+<li class="blockList">
+<h4>port</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a> port</pre>
+</li>
+<li class="blockList">
+<h4>primaryKeyMetadataTable</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> primaryKeyMetadataTable</pre>
+</li>
+<li class="blockListLast">
+<h4>schema</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> schema</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.LayerSettings">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/LayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.LayerSettings</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>featureType</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/FeatureTypeRef.html" title="class in nl.b3p.tailormap.api.persistence.json">FeatureTypeRef</a> featureType</pre>
+</li>
+<li class="blockList">
+<h4>hiDpiDisabled</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> hiDpiDisabled</pre>
+</li>
+<li class="blockListLast">
+<h4>title</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.ServiceAuthentication">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/ServiceAuthentication.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.ServiceAuthentication</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>method</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/ServiceAuthentication.MethodEnum.html" title="enum in nl.b3p.tailormap.api.persistence.json">ServiceAuthentication.MethodEnum</a> method</pre>
+</li>
+<li class="blockList">
+<h4>password</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> password</pre>
+</li>
+<li class="blockListLast">
+<h4>username</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> username</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.ServicePublishingSettings">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/ServicePublishingSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.ServicePublishingSettings</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>baseApp</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> baseApp</pre>
+</li>
+<li class="blockList">
+<h4>defaultProjection</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> defaultProjection</pre>
+</li>
+<li class="blockListLast">
+<h4>projections</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; projections</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.TailormapObjectRef">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/TailormapObjectRef.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.TailormapObjectRef</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>id</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> id</pre>
+</li>
+<li class="blockListLast">
+<h4>kind</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TailormapObjectRef.KindEnum.html" title="enum in nl.b3p.tailormap.api.persistence.json">TailormapObjectRef.KindEnum</a> kind</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/TMAttributeDescriptor.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>comment</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> comment</pre>
+</li>
+<li class="blockList">
+<h4>description</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> description</pre>
+</li>
+<li class="blockList">
+<h4>name</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> name</pre>
+</li>
+<li class="blockList">
+<h4>nullable</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> nullable</pre>
+</li>
+<li class="blockList">
+<h4>type</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TMAttributeType.html" title="enum in nl.b3p.tailormap.api.persistence.json">TMAttributeType</a> type</pre>
+</li>
+<li class="blockListLast">
+<h4>unknownTypeClassName</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> unknownTypeClassName</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.TMFeatureTypeInfo">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/TMFeatureTypeInfo.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.TMFeatureTypeInfo</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>abstractText</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> abstractText</pre>
+</li>
+<li class="blockList">
+<h4>bounds</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/Bounds.html" title="class in nl.b3p.tailormap.api.persistence.json">Bounds</a> bounds</pre>
+</li>
+<li class="blockList">
+<h4>crs</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> crs</pre>
+</li>
+<li class="blockList">
+<h4>defaultSrs</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> defaultSrs</pre>
+</li>
+<li class="blockList">
+<h4>description</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> description</pre>
+</li>
+<li class="blockList">
+<h4>keywords</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; keywords</pre>
+</li>
+<li class="blockList">
+<h4>otherSrs</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; otherSrs</pre>
+</li>
+<li class="blockList">
+<h4>outputFormats</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; outputFormats</pre>
+</li>
+<li class="blockList">
+<h4>publisher</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a> publisher</pre>
+</li>
+<li class="blockList">
+<h4>schema</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a> schema</pre>
+</li>
+<li class="blockList">
+<h4>source</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a> source</pre>
+</li>
+<li class="blockListLast">
+<h4>wgs84BoundingBox</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/Bounds.html" title="class in nl.b3p.tailormap.api.persistence.json">Bounds</a> wgs84BoundingBox</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequest">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/TMServiceCapabilitiesRequest.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequest</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>describeLayer</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> describeLayer</pre>
+</li>
+<li class="blockList">
+<h4>getFeatureInfo</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TMServiceCapabilitiesRequestGetFeatureInfo.html" title="class in nl.b3p.tailormap.api.persistence.json">TMServiceCapabilitiesRequestGetFeatureInfo</a> getFeatureInfo</pre>
+</li>
+<li class="blockListLast">
+<h4>getMap</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TMServiceCapabilitiesRequestGetMap.html" title="class in nl.b3p.tailormap.api.persistence.json">TMServiceCapabilitiesRequestGetMap</a> getMap</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetFeatureInfo">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/TMServiceCapabilitiesRequestGetFeatureInfo.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetFeatureInfo</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>formats</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; formats</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetMap">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/TMServiceCapabilitiesRequestGetMap.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetMap</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>formats</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; formats</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.TMServiceCaps">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/TMServiceCaps.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.TMServiceCaps</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>capabilities</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TMServiceCapsCapabilities.html" title="class in nl.b3p.tailormap.api.persistence.json">TMServiceCapsCapabilities</a> capabilities</pre>
+</li>
+<li class="blockListLast">
+<h4>serviceInfo</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TMServiceInfo.html" title="class in nl.b3p.tailormap.api.persistence.json">TMServiceInfo</a> serviceInfo</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.TMServiceCapsCapabilities">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/TMServiceCapsCapabilities.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.TMServiceCapsCapabilities</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>abstractText</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> abstractText</pre>
+</li>
+<li class="blockList">
+<h4>request</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TMServiceCapabilitiesRequest.html" title="class in nl.b3p.tailormap.api.persistence.json">TMServiceCapabilitiesRequest</a> request</pre>
+</li>
+<li class="blockList">
+<h4>updateSequence</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> updateSequence</pre>
+</li>
+<li class="blockListLast">
+<h4>version</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> version</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.TMServiceInfo">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/TMServiceInfo.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.TMServiceInfo</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>description</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> description</pre>
+</li>
+<li class="blockList">
+<h4>keywords</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; keywords</pre>
+</li>
+<li class="blockList">
+<h4>publisher</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a> publisher</pre>
+</li>
+<li class="blockList">
+<h4>schema</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a> schema</pre>
+</li>
+<li class="blockList">
+<h4>source</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a> source</pre>
+</li>
+<li class="blockListLast">
+<h4>title</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.WMSLayerSettings">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/WMSLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.WMSLayerSettings</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>featureType</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/FeatureTypeRef.html" title="class in nl.b3p.tailormap.api.persistence.json">FeatureTypeRef</a> featureType</pre>
+</li>
+<li class="blockList">
+<h4>hiDpiDisabled</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> hiDpiDisabled</pre>
+</li>
+<li class="blockList">
+<h4>tilingDisabled</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> tilingDisabled</pre>
+</li>
+<li class="blockList">
+<h4>tilingGutter</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a> tilingGutter</pre>
+</li>
+<li class="blockListLast">
+<h4>title</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.WMSLayerSettingsAllOf">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/WMSLayerSettingsAllOf.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.WMSLayerSettingsAllOf</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>tilingDisabled</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> tilingDisabled</pre>
+</li>
+<li class="blockListLast">
+<h4>tilingGutter</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a> tilingGutter</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.WMSStyle">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/WMSStyle.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.WMSStyle</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>abstractText</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> abstractText</pre>
+</li>
+<li class="blockList">
+<h4>legendURL</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a> legendURL</pre>
+</li>
+<li class="blockList">
+<h4>name</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> name</pre>
+</li>
+<li class="blockListLast">
+<h4>title</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.WMTSLayerSettings">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/WMTSLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.WMTSLayerSettings</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>featureType</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/FeatureTypeRef.html" title="class in nl.b3p.tailormap.api.persistence.json">FeatureTypeRef</a> featureType</pre>
+</li>
+<li class="blockList">
+<h4>hiDpiDisabled</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> hiDpiDisabled</pre>
+</li>
+<li class="blockList">
+<h4>hiDpiMode</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TileLayerHiDpiMode.html" title="enum in nl.b3p.tailormap.api.persistence.json">TileLayerHiDpiMode</a> hiDpiMode</pre>
+</li>
+<li class="blockList">
+<h4>hiDpiSubstituteLayer</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> hiDpiSubstituteLayer</pre>
+</li>
+<li class="blockListLast">
+<h4>title</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.WMTSLayerSettingsAllOf">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/WMTSLayerSettingsAllOf.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.WMTSLayerSettingsAllOf</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>hiDpiMode</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TileLayerHiDpiMode.html" title="enum in nl.b3p.tailormap.api.persistence.json">TileLayerHiDpiMode</a> hiDpiMode</pre>
+</li>
+<li class="blockListLast">
+<h4>hiDpiSubstituteLayer</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> hiDpiSubstituteLayer</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</li>
+<li class="blockList">
+<section>
+<h2 title="Package">Package&nbsp;nl.b3p.tailormap.api.security</h2>
+<ul class="blockList">
+<li class="blockList"><a id="nl.b3p.tailormap.api.security.InternalAdminAuthentication">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/security/InternalAdminAuthentication.html" title="class in nl.b3p.tailormap.api.security">nl.b3p.tailormap.api.security.InternalAdminAuthentication</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.security.InvalidPasswordException">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/security/InvalidPasswordException.html" title="class in nl.b3p.tailormap.api.security">nl.b3p.tailormap.api.security.InvalidPasswordException</a> extends com.fasterxml.jackson.databind.JsonMappingException implements Serializable</h3>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.security.TailormapUserDetails">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/security/TailormapUserDetails.html" title="class in nl.b3p.tailormap.api.security">nl.b3p.tailormap.api.security.TailormapUserDetails</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>user</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/User.html" title="class in nl.b3p.tailormap.api.persistence">User</a> user</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</li>
+<li class="blockList">
+<section>
+<h2 title="Package">Package&nbsp;nl.b3p.tailormap.api.viewer.model</h2>
+<ul class="blockList">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.AppLayer">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/AppLayer.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.AppLayer</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -119,8 +1211,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> hasAttributes</pre>
 </li>
 <li class="blockList">
+<h4>hiDpiDisabled</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> hiDpiDisabled</pre>
+</li>
+<li class="blockList">
 <h4>hiDpiMode</h4>
-<pre><a href="nl/b3p/tailormap/api/model/AppLayer.HiDpiModeEnum.html" title="enum in nl.b3p.tailormap.api.model">AppLayer.HiDpiModeEnum</a> hiDpiMode</pre>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TileLayerHiDpiMode.html" title="enum in nl.b3p.tailormap.api.persistence.json">TileLayerHiDpiMode</a> hiDpiMode</pre>
 </li>
 <li class="blockList">
 <h4>hiDpiSubstituteLayer</h4>
@@ -128,7 +1224,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="blockList">
 <h4>id</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a> id</pre>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> id</pre>
 </li>
 <li class="blockList">
 <h4>layerName</h4>
@@ -152,7 +1248,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="blockList">
 <h4>serviceId</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a> serviceId</pre>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> serviceId</pre>
+</li>
+<li class="blockList">
+<h4>tilingDisabled</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> tilingDisabled</pre>
+</li>
+<li class="blockList">
+<h4>tilingGutter</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a> tilingGutter</pre>
 </li>
 <li class="blockList">
 <h4>title</h4>
@@ -170,58 +1274,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.AppResponse">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.AppStyling">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/AppResponse.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.AppResponse</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
-<dl class="nameValue">
-<dt>serialVersionUID:</dt>
-<dd>1L</dd>
-</dl>
-<ul class="blockList">
-<li class="blockList">
-<h3>Serialized Fields</h3>
-<ul class="blockList">
-<li class="blockList">
-<h4>apiVersion</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> apiVersion</pre>
-</li>
-<li class="blockList">
-<h4>components</h4>
-<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="nl/b3p/tailormap/api/model/Component.html" title="class in nl.b3p.tailormap.api.model">Component</a>&gt; components</pre>
-</li>
-<li class="blockList">
-<h4>id</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a> id</pre>
-</li>
-<li class="blockList">
-<h4>lang</h4>
-<pre><a href="nl/b3p/tailormap/api/model/AppResponse.LangEnum.html" title="enum in nl.b3p.tailormap.api.model">AppResponse.LangEnum</a> lang</pre>
-</li>
-<li class="blockList">
-<h4>name</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> name</pre>
-</li>
-<li class="blockList">
-<h4>styling</h4>
-<pre><a href="nl/b3p/tailormap/api/model/AppStyling.html" title="class in nl.b3p.tailormap.api.model">AppStyling</a> styling</pre>
-</li>
-<li class="blockList">
-<h4>title</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
-</li>
-<li class="blockListLast">
-<h4>version</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> version</pre>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.AppStyling">
-<!--   -->
-</a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/AppStyling.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.AppStyling</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/AppStyling.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.AppStyling</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -242,10 +1298,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.Attribute">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.Attribute">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/Attribute.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.Attribute</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/Attribute.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.Attribute</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -303,10 +1359,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> folderLabel</pre>
 </li>
 <li class="blockList">
-<h4>id</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a> id</pre>
-</li>
-<li class="blockList">
 <h4>longname</h4>
 <pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> longname</pre>
 </li>
@@ -320,7 +1372,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="blockList">
 <h4>type</h4>
-<pre><a href="nl/b3p/tailormap/api/model/Attribute.TypeEnum.html" title="enum in nl.b3p.tailormap.api.model">Attribute.TypeEnum</a> type</pre>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TMAttributeType.html" title="enum in nl.b3p.tailormap.api.persistence.json">TMAttributeType</a> type</pre>
 </li>
 <li class="blockList">
 <h4>valueList</h4>
@@ -334,46 +1386,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.Bounds">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.ColumnMetadata">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/Bounds.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.Bounds</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
-<dl class="nameValue">
-<dt>serialVersionUID:</dt>
-<dd>1L</dd>
-</dl>
-<ul class="blockList">
-<li class="blockList">
-<h3>Serialized Fields</h3>
-<ul class="blockList">
-<li class="blockList">
-<h4>crs</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> crs</pre>
-</li>
-<li class="blockList">
-<h4>maxx</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Double.html?is-external=true" title="class or interface in java.lang" class="externalLink">Double</a> maxx</pre>
-</li>
-<li class="blockList">
-<h4>maxy</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Double.html?is-external=true" title="class or interface in java.lang" class="externalLink">Double</a> maxy</pre>
-</li>
-<li class="blockList">
-<h4>minx</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Double.html?is-external=true" title="class or interface in java.lang" class="externalLink">Double</a> minx</pre>
-</li>
-<li class="blockListLast">
-<h4>miny</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Double.html?is-external=true" title="class or interface in java.lang" class="externalLink">Double</a> miny</pre>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.ColumnMetadata">
-<!--   -->
-</a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/ColumnMetadata.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.ColumnMetadata</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/ColumnMetadata.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.ColumnMetadata</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -392,16 +1408,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="blockListLast">
 <h4>type</h4>
-<pre><a href="nl/b3p/tailormap/api/model/ColumnMetadata.TypeEnum.html" title="enum in nl.b3p.tailormap.api.model">ColumnMetadata.TypeEnum</a> type</pre>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TMAttributeType.html" title="enum in nl.b3p.tailormap.api.persistence.json">TMAttributeType</a> type</pre>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.Component">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.Component">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/Component.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.Component</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/Component.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.Component</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -412,7 +1428,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <h4>config</h4>
-<pre><a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">ComponentConfig</a> config</pre>
+<pre><a href="nl/b3p/tailormap/api/viewer/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.viewer.model">ComponentConfig</a> config</pre>
 </li>
 <li class="blockListLast">
 <h4>type</h4>
@@ -422,10 +1438,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.ComponentConfig">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.ComponentConfig">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.ComponentConfig</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/HashMap.html?is-external=true" title="class or interface in java.util" class="externalLink">HashMap</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>&gt; implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/ComponentConfig.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.ComponentConfig</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/HashMap.html?is-external=true" title="class or interface in java.util" class="externalLink">HashMap</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>&gt; implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -442,38 +1458,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.CoordinateReferenceSystem">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.ErrorResponse">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.CoordinateReferenceSystem</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
-<dl class="nameValue">
-<dt>serialVersionUID:</dt>
-<dd>1L</dd>
-</dl>
-<ul class="blockList">
-<li class="blockList">
-<h3>Serialized Fields</h3>
-<ul class="blockList">
-<li class="blockList">
-<h4>bounds</h4>
-<pre><a href="nl/b3p/tailormap/api/model/Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a> bounds</pre>
-</li>
-<li class="blockList">
-<h4>code</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> code</pre>
-</li>
-<li class="blockListLast">
-<h4>definition</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> definition</pre>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.ErrorResponse">
-<!--   -->
-</a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/ErrorResponse.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.ErrorResponse</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/ErrorResponse.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.ErrorResponse</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -494,10 +1482,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.Feature">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.Feature">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/Feature.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.Feature</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/Feature.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.Feature</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -522,10 +1510,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.FeaturesResponse">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.FeaturesResponse">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/FeaturesResponse.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.FeaturesResponse</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/FeaturesResponse.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.FeaturesResponse</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -536,11 +1524,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <h4>columnMetadata</h4>
-<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="nl/b3p/tailormap/api/model/ColumnMetadata.html" title="class in nl.b3p.tailormap.api.model">ColumnMetadata</a>&gt; columnMetadata</pre>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="nl/b3p/tailormap/api/viewer/model/ColumnMetadata.html" title="class in nl.b3p.tailormap.api.viewer.model">ColumnMetadata</a>&gt; columnMetadata</pre>
 </li>
 <li class="blockList">
 <h4>features</h4>
-<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="nl/b3p/tailormap/api/model/Feature.html" title="class in nl.b3p.tailormap.api.model">Feature</a>&gt; features</pre>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="nl/b3p/tailormap/api/viewer/model/Feature.html" title="class in nl.b3p.tailormap.api.viewer.model">Feature</a>&gt; features</pre>
 </li>
 <li class="blockList">
 <h4>page</h4>
@@ -558,10 +1546,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.LayerDetails">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.LayerDetails">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/LayerDetails.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.LayerDetails</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/LayerDetails.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.LayerDetails</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -572,7 +1560,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <h4>attributes</h4>
-<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="nl/b3p/tailormap/api/model/Attribute.html" title="class in nl.b3p.tailormap.api.model">Attribute</a>&gt; attributes</pre>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="nl/b3p/tailormap/api/viewer/model/Attribute.html" title="class in nl.b3p.tailormap.api.viewer.model">Attribute</a>&gt; attributes</pre>
 </li>
 <li class="blockList">
 <h4>editable</h4>
@@ -592,11 +1580,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="blockList">
 <h4>geometryType</h4>
-<pre><a href="nl/b3p/tailormap/api/model/LayerDetails.GeometryTypeEnum.html" title="enum in nl.b3p.tailormap.api.model">LayerDetails.GeometryTypeEnum</a> geometryType</pre>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/TMGeometryType.html" title="enum in nl.b3p.tailormap.api.persistence.json">TMGeometryType</a> geometryType</pre>
 </li>
 <li class="blockList">
 <h4>id</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a> id</pre>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> id</pre>
 </li>
 <li class="blockList">
 <h4>metadata</h4>
@@ -604,20 +1592,20 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="blockList">
 <h4>relations</h4>
-<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="nl/b3p/tailormap/api/model/LayerDetailsRelationsInner.html" title="class in nl.b3p.tailormap.api.model">LayerDetailsRelationsInner</a>&gt; relations</pre>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="nl/b3p/tailormap/api/viewer/model/LayerDetailsRelationsInner.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerDetailsRelationsInner</a>&gt; relations</pre>
 </li>
 <li class="blockListLast">
 <h4>serviceId</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a> serviceId</pre>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> serviceId</pre>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.LayerDetailsRelationsInner">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.LayerDetailsRelationsInner">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/LayerDetailsRelationsInner.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.LayerDetailsRelationsInner</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/LayerDetailsRelationsInner.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.LayerDetailsRelationsInner</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -636,16 +1624,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="blockListLast">
 <h4>type</h4>
-<pre><a href="nl/b3p/tailormap/api/model/LayerDetailsRelationsInner.TypeEnum.html" title="enum in nl.b3p.tailormap.api.model">LayerDetailsRelationsInner.TypeEnum</a> type</pre>
+<pre><a href="nl/b3p/tailormap/api/viewer/model/LayerDetailsRelationsInner.TypeEnum.html" title="enum in nl.b3p.tailormap.api.viewer.model">LayerDetailsRelationsInner.TypeEnum</a> type</pre>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.LayerExportCapabilities">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.LayerExportCapabilities">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/LayerExportCapabilities.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.LayerExportCapabilities</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/LayerExportCapabilities.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.LayerExportCapabilities</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -666,10 +1654,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.LayerTreeNode">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.LayerTreeNode">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.LayerTreeNode</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.LayerTreeNode</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -680,7 +1668,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <h4>appLayerId</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a> appLayerId</pre>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> appLayerId</pre>
 </li>
 <li class="blockList">
 <h4>childrenIds</h4>
@@ -706,10 +1694,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.MapResponse">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.MapResponse">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/MapResponse.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.MapResponse</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/MapResponse.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.MapResponse</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -720,40 +1708,40 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <h4>appLayers</h4>
-<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="nl/b3p/tailormap/api/model/AppLayer.html" title="class in nl.b3p.tailormap.api.model">AppLayer</a>&gt; appLayers</pre>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="nl/b3p/tailormap/api/viewer/model/AppLayer.html" title="class in nl.b3p.tailormap.api.viewer.model">AppLayer</a>&gt; appLayers</pre>
 </li>
 <li class="blockList">
 <h4>baseLayerTreeNodes</h4>
-<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="nl/b3p/tailormap/api/model/LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&gt; baseLayerTreeNodes</pre>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerTreeNode</a>&gt; baseLayerTreeNodes</pre>
 </li>
 <li class="blockList">
 <h4>crs</h4>
-<pre><a href="nl/b3p/tailormap/api/model/CoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.model">CoordinateReferenceSystem</a> crs</pre>
+<pre><a href="nl/b3p/tailormap/api/viewer/model/TMCoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.viewer.model">TMCoordinateReferenceSystem</a> crs</pre>
 </li>
 <li class="blockList">
 <h4>initialExtent</h4>
-<pre><a href="nl/b3p/tailormap/api/model/Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a> initialExtent</pre>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/Bounds.html" title="class in nl.b3p.tailormap.api.persistence.json">Bounds</a> initialExtent</pre>
 </li>
 <li class="blockList">
 <h4>layerTreeNodes</h4>
-<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="nl/b3p/tailormap/api/model/LayerTreeNode.html" title="class in nl.b3p.tailormap.api.model">LayerTreeNode</a>&gt; layerTreeNodes</pre>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerTreeNode</a>&gt; layerTreeNodes</pre>
 </li>
 <li class="blockList">
 <h4>maxExtent</h4>
-<pre><a href="nl/b3p/tailormap/api/model/Bounds.html" title="class in nl.b3p.tailormap.api.model">Bounds</a> maxExtent</pre>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/Bounds.html" title="class in nl.b3p.tailormap.api.persistence.json">Bounds</a> maxExtent</pre>
 </li>
 <li class="blockListLast">
 <h4>services</h4>
-<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="nl/b3p/tailormap/api/model/Service.html" title="class in nl.b3p.tailormap.api.model">Service</a>&gt; services</pre>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;@Valid <a href="nl/b3p/tailormap/api/viewer/model/Service.html" title="class in nl.b3p.tailormap.api.viewer.model">Service</a>&gt; services</pre>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.RedirectResponse">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.RedirectResponse">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/RedirectResponse.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.RedirectResponse</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/RedirectResponse.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.RedirectResponse</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -774,10 +1762,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.Service">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.Service">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/Service.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.Service</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/Service.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.Service</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -792,35 +1780,19 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="blockList">
 <h4>id</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a> id</pre>
-</li>
-<li class="blockList">
-<h4>name</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> name</pre>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> id</pre>
 </li>
 <li class="blockList">
 <h4>protocol</h4>
-<pre><a href="nl/b3p/tailormap/api/model/Service.ProtocolEnum.html" title="enum in nl.b3p.tailormap.api.model">Service.ProtocolEnum</a> protocol</pre>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/GeoServiceProtocol.html" title="enum in nl.b3p.tailormap.api.persistence.json">GeoServiceProtocol</a> protocol</pre>
 </li>
 <li class="blockList">
 <h4>serverType</h4>
-<pre><a href="nl/b3p/tailormap/api/model/Service.ServerTypeEnum.html" title="enum in nl.b3p.tailormap.api.model">Service.ServerTypeEnum</a> serverType</pre>
+<pre><a href="nl/b3p/tailormap/api/viewer/model/Service.ServerTypeEnum.html" title="enum in nl.b3p.tailormap.api.viewer.model">Service.ServerTypeEnum</a> serverType</pre>
 </li>
 <li class="blockList">
-<h4>styleLibraries</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> styleLibraries</pre>
-</li>
-<li class="blockList">
-<h4>tilingDisabled</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> tilingDisabled</pre>
-</li>
-<li class="blockList">
-<h4>tilingGutter</h4>
-<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Integer.html?is-external=true" title="class or interface in java.lang" class="externalLink">Integer</a> tilingGutter</pre>
-</li>
-<li class="blockList">
-<h4>tilingProtocol</h4>
-<pre><a href="nl/b3p/tailormap/api/model/Service.TilingProtocolEnum.html" title="enum in nl.b3p.tailormap.api.model">Service.TilingProtocolEnum</a> tilingProtocol</pre>
+<h4>title</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
 </li>
 <li class="blockListLast">
 <h4>url</h4>
@@ -830,10 +1802,42 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.UniqueValuesResponse">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.TMCoordinateReferenceSystem">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/UniqueValuesResponse.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.UniqueValuesResponse</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/TMCoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.TMCoordinateReferenceSystem</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>bounds</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/Bounds.html" title="class in nl.b3p.tailormap.api.persistence.json">Bounds</a> bounds</pre>
+</li>
+<li class="blockList">
+<h4>code</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> code</pre>
+</li>
+<li class="blockList">
+<h4>definition</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> definition</pre>
+</li>
+<li class="blockListLast">
+<h4>unit</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> unit</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.UniqueValuesResponse">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/UniqueValuesResponse.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.UniqueValuesResponse</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -854,10 +1858,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
-<li class="blockList"><a id="nl.b3p.tailormap.api.model.UserResponse">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.UserResponse">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/model/UserResponse.html" title="class in nl.b3p.tailormap.api.model">nl.b3p.tailormap.api.model.UserResponse</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/UserResponse.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.UserResponse</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
 <dl class="nameValue">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -870,6 +1874,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h4>isAuthenticated</h4>
 <pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> isAuthenticated</pre>
 </li>
+<li class="blockList">
+<h4>roles</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; roles</pre>
+</li>
 <li class="blockListLast">
 <h4>username</h4>
 <pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> username</pre>
@@ -878,24 +1886,49 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
-</ul>
-</section>
-</li>
-<li class="blockList">
-<section>
-<h2 title="Package">Package&nbsp;nl.b3p.tailormap.api.security</h2>
-<ul class="blockList">
-<li class="blockList"><a id="nl.b3p.tailormap.api.security.TailormapUserDetails">
+<li class="blockList"><a id="nl.b3p.tailormap.api.viewer.model.ViewerResponse">
 <!--   -->
 </a>
-<h3>Class <a href="nl/b3p/tailormap/api/security/TailormapUserDetails.html" title="class in nl.b3p.tailormap.api.security">nl.b3p.tailormap.api.security.TailormapUserDetails</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<h3>Class <a href="nl/b3p/tailormap/api/viewer/model/ViewerResponse.html" title="class in nl.b3p.tailormap.api.viewer.model">nl.b3p.tailormap.api.viewer.model.ViewerResponse</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
 <ul class="blockList">
 <li class="blockList">
 <h3>Serialized Fields</h3>
 <ul class="blockList">
+<li class="blockList">
+<h4>baseApps</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; baseApps</pre>
+</li>
+<li class="blockList">
+<h4>components</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="nl/b3p/tailormap/api/viewer/model/Component.html" title="class in nl.b3p.tailormap.api.viewer.model">Component</a>&gt; components</pre>
+</li>
+<li class="blockList">
+<h4>kind</h4>
+<pre><a href="nl/b3p/tailormap/api/viewer/model/ViewerResponse.KindEnum.html" title="enum in nl.b3p.tailormap.api.viewer.model">ViewerResponse.KindEnum</a> kind</pre>
+</li>
+<li class="blockList">
+<h4>languages</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; languages</pre>
+</li>
+<li class="blockList">
+<h4>name</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> name</pre>
+</li>
+<li class="blockList">
+<h4>projections</h4>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; projections</pre>
+</li>
+<li class="blockList">
+<h4>styling</h4>
+<pre><a href="nl/b3p/tailormap/api/viewer/model/AppStyling.html" title="class in nl.b3p.tailormap.api.viewer.model">AppStyling</a> styling</pre>
+</li>
 <li class="blockListLast">
-<h4>user</h4>
-<pre>nl.tailormap.viewer.config.security.User user</pre>
+<h4>title</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> title</pre>
 </li>
 </ul>
 </li>

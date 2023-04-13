@@ -18,118 +18,123 @@
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.HSQLDBTestProfileJPAConfiguration;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.repository.ApplicationRepository;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.security.AuthorizationService;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.security.SecurityConfig;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.MethodOrderer;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Order;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.TestMethodOrder;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.test.context.SpringBootTest;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.MediaType;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.test.context.support.WithMockUser;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.context.ActiveProfiles;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.web.servlet.MockMvc;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  @SpringBootTest(
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>          classes = {
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>              HSQLDBTestProfileJPAConfiguration.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>              FeaturesController.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>              SecurityConfig.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>              AuthorizationService.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>              AppRestControllerAdvice.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>          })
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  @AutoConfigureMockMvc
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  @EnableAutoConfiguration
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  @ActiveProfiles(<span class="jxr_string">"test"</span>)
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  @TestMethodOrder(MethodOrderer.OrderAnnotation.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">class</strong> FeaturesControllerIntegrationTest {
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>      @Autowired <strong class="jxr_keyword">private</strong> MockMvc mockMvc;
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>      @Autowired ApplicationRepository applicationRepository;
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>      @Test
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>      @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>      @WithMockUser(
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>              username = <span class="jxr_string">"admin"</span>,
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>              authorities = {<span class="jxr_string">"Admin"</span>})
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">void</strong> only_filter_not_supported() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>          mockMvc.perform(get(<span class="jxr_string">"/app/1/layer/2/features"</span>).param(<span class="jxr_string">"filter"</span>, <span class="jxr_string">"naam=Utrecht"</span>))
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>                  .andExpect(status().is4xxClientError())
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(400));
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      }
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      @Test
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>      @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      @WithMockUser(
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>              username = <span class="jxr_string">"admin"</span>,
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>              authorities = {<span class="jxr_string">"Admin"</span>})
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      <strong class="jxr_keyword">void</strong> givenOnly_XorY_shouldError() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>          mockMvc.perform(get(<span class="jxr_string">"/app/1/layer/2/features"</span>).param(<span class="jxr_string">"x"</span>, <span class="jxr_string">"3"</span>))
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>                  .andExpect(status().is4xxClientError())
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(400));
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> javax.persistence.EntityManager;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.repository.ApplicationRepository;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.repository.ConfigurationRepository;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.MethodOrderer;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Order;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.TestMethodOrder;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.MediaType;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.test.context.support.WithMockUser;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.web.servlet.MockMvc;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_comment">// @SpringBootTest(</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_comment">//    classes = {</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_comment">//      FeaturesController.class,</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_comment">//      AuthorizationService.class,</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_comment">//      AppRestControllerAdvice.class,</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_comment">//      EntityManagerFactory.class</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_comment">//    })</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  @AutoConfigureMockMvc
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_comment">// @EnableAutoConfiguration</em>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  @PostgresIntegrationTest
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  @TestMethodOrder(MethodOrderer.OrderAnnotation.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">class</strong> <a name="FeaturesControllerIntegrationTest" href="../../../../../nl/b3p/tailormap/api/controller/FeaturesControllerIntegrationTest.html#FeaturesControllerIntegrationTest">FeaturesControllerIntegrationTest</a> {
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>    @Autowired <strong class="jxr_keyword">private</strong> MockMvc mockMvc;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>    @Autowired ConfigurationRepository configurationRepository;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>    @Autowired EntityManager entityManager;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>    @Autowired ApplicationRepository applicationRepository;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    @Test
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>    @WithMockUser(
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>        username = <span class="jxr_string">"admin"</span>,
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>        authorities = {<span class="jxr_string">"Admin"</span>})
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>    <strong class="jxr_keyword">void</strong> only_filter_not_supported() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      mockMvc
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          .perform(get(<span class="jxr_string">"/app/1/layer/2/features"</span>).param(<span class="jxr_string">"filter"</span>, <span class="jxr_string">"naam=Utrecht"</span>))
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          .andExpect(status().is4xxClientError())
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>          .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(400));
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>    }
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>    @Test
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>    @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>    @WithMockUser(
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>        username = <span class="jxr_string">"admin"</span>,
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>        authorities = {<span class="jxr_string">"Admin"</span>})
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>    <strong class="jxr_keyword">void</strong> givenOnly_XorY_shouldError() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>      mockMvc
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          .perform(get(<span class="jxr_string">"/app/1/layer/2/features"</span>).param(<span class="jxr_string">"x"</span>, <span class="jxr_string">"3"</span>))
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          .andExpect(status().is4xxClientError())
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(400));
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          mockMvc.perform(get(<span class="jxr_string">"/app/1/layer/2/features"</span>).param(<span class="jxr_string">"y"</span>, <span class="jxr_string">"3"</span>))
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>                  .andExpect(status().is4xxClientError())
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(400));
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>      }
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>      @Test
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>      @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>      @WithMockUser(
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>              username = <span class="jxr_string">"admin"</span>,
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>              authorities = {<span class="jxr_string">"Admin"</span>})
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>      <strong class="jxr_keyword">void</strong> given_distance_NotGreaterThanZero() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>          mockMvc.perform(get(<span class="jxr_string">"/app/1/layer/2/features?y=3&amp;y=3"</span>).param(<span class="jxr_string">"distance"</span>, <span class="jxr_string">"0"</span>))
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>                  .andExpect(status().is4xxClientError())
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(400));
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>  
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>          mockMvc.perform(get(<span class="jxr_string">"/app/1/layer/2/features?y=3&amp;y=3"</span>).param(<span class="jxr_string">"distance"</span>, <span class="jxr_string">"-1"</span>))
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>                  .andExpect(status().is4xxClientError())
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>                  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>                  .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(400));
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>      }
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>  
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>      @Test
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>      @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>      @WithMockUser(
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>              username = <span class="jxr_string">"admin"</span>,
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>              authorities = {<span class="jxr_string">"Admin"</span>})
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>      <strong class="jxr_keyword">void</strong> should_error_when_calling_with_nonexistent_appId() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>          mockMvc.perform(get(<span class="jxr_string">"/app/400/layer/1/features"</span>))
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>                 .andExpect(status().isNotFound())
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(404));
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>     }
-<a class="jxr_linenumber" name="L104" href="#L104">104</a> 
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>     @Test
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>     @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>     @WithMockUser(
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>             username = <span class="jxr_string">"admin"</span>,
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>             authorities = {<span class="jxr_string">"Admin"</span>})
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>     <strong class="jxr_keyword">void</strong> should_not_find_when_called_without_appId() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>         mockMvc.perform(get(<span class="jxr_string">"/app/layer/features"</span>)).andExpect(status().isNotFound());
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>     }
-<a class="jxr_linenumber" name="L113" href="#L113">113</a> 
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>     @Test
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>     @Order(Integer.MAX_VALUE)
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>     @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>     <strong class="jxr_keyword">void</strong> should_send_403_when_access_denied() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>         mockMvc.perform(get(<span class="jxr_string">"/app/1/layer/2/features"</span>).accept(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>                 .andExpect(status().isForbidden())
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(403))
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>                 .andExpect(jsonPath(<span class="jxr_string">"$.message"</span>).value(<span class="jxr_string">"Access denied"</span>));
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>     }
-<a class="jxr_linenumber" name="L124" href="#L124">124</a> }
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>      mockMvc
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          .perform(get(<span class="jxr_string">"/app/1/layer/2/features"</span>).param(<span class="jxr_string">"y"</span>, <span class="jxr_string">"3"</span>))
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          .andExpect(status().is4xxClientError())
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(400));
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>    }
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>    @Test
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>    @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>    @WithMockUser(
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>        username = <span class="jxr_string">"admin"</span>,
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>        authorities = {<span class="jxr_string">"Admin"</span>})
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>    <strong class="jxr_keyword">void</strong> given_distance_NotGreaterThanZero() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      mockMvc
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          .perform(get(<span class="jxr_string">"/app/1/layer/2/features?y=3&amp;y=3"</span>).param(<span class="jxr_string">"distance"</span>, <span class="jxr_string">"0"</span>))
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          .andExpect(status().is4xxClientError())
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(400));
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>  
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>      mockMvc
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>          .perform(get(<span class="jxr_string">"/app/1/layer/2/features?y=3&amp;y=3"</span>).param(<span class="jxr_string">"distance"</span>, <span class="jxr_string">"-1"</span>))
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>          .andExpect(status().is4xxClientError())
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>          .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(400));
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>    }
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>    @Test
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>    @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>    @WithMockUser(
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>        username = <span class="jxr_string">"admin"</span>,
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>       authorities = {<span class="jxr_string">"Admin"</span>})
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>   <strong class="jxr_keyword">void</strong> should_error_when_calling_with_nonexistent_appId() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     mockMvc
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>         .perform(get(<span class="jxr_string">"/app/400/layer/1/features"</span>))
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>         .andExpect(status().isNotFound())
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>         .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(404));
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>   }
+<a class="jxr_linenumber" name="L108" href="#L108">108</a> 
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>   @Test
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>       username = <span class="jxr_string">"admin"</span>,
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>       authorities = {<span class="jxr_string">"Admin"</span>})
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>   <strong class="jxr_keyword">void</strong> should_not_find_when_called_without_appId() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>     mockMvc.perform(get(<span class="jxr_string">"/app/layer/features"</span>)).andExpect(status().isNotFound());
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>   }
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> 
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>   @Test
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>   @Order(Integer.MAX_VALUE)
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>   <strong class="jxr_keyword">void</strong> should_send_403_when_access_denied() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>     mockMvc
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>         .perform(get(<span class="jxr_string">"/app/1/layer/2/features"</span>).accept(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>         .andExpect(status().isForbidden())
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>         .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(403))
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>         .andExpect(jsonPath(<span class="jxr_string">"$.message"</span>).value(<span class="jxr_string">"Access denied"</span>));
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>   }
+<a class="jxr_linenumber" name="L129" href="#L129">129</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2023 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

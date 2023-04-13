@@ -15,26 +15,25 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 
-<span class="nc" id="L21">public class WFSProxy {</span>
-    public static HttpResponse&lt;InputStream&gt; proxyWfsRequest(
-            URI wfsRequest, String username, String password, HttpServletRequest request)
-            throws Exception {
-<span class="nc" id="L25">        final HttpClient httpClient = java.net.http.HttpClient.newBuilder().build();</span>
+<span class="nc" id="L20">public class WFSProxy {</span>
+  public static HttpResponse&lt;InputStream&gt; proxyWfsRequest(
+      URI wfsRequest, String username, String password, HttpServletRequest request)
+      throws Exception {
+<span class="nc" id="L24">    final HttpClient httpClient = java.net.http.HttpClient.newBuilder().build();</span>
 
-<span class="nc" id="L27">        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(wfsRequest);</span>
+<span class="nc" id="L26">    HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(wfsRequest);</span>
 
-<span class="nc" id="L29">        addForwardedForRequestHeaders(requestBuilder, request);</span>
+<span class="nc" id="L28">    addForwardedForRequestHeaders(requestBuilder, request);</span>
 
-        // Just a few headers for logging, conditional or range requests not likely to be supported
-        // by a WFS
-<span class="nc" id="L33">        passthroughRequestHeaders(requestBuilder, request, Set.of(&quot;Referer&quot;, &quot;User-Agent&quot;));</span>
+    // Just a few headers for logging, conditional or range requests not likely to be supported by a
+    // WFS
+<span class="nc" id="L32">    passthroughRequestHeaders(requestBuilder, request, Set.of(&quot;Referer&quot;, &quot;User-Agent&quot;));</span>
 
-<span class="nc" id="L35">        setHttpBasicAuthenticationHeader(requestBuilder, username, password);</span>
+<span class="nc" id="L34">    setHttpBasicAuthenticationHeader(requestBuilder, username, password);</span>
 
-<span class="nc" id="L37">        return httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());</span>
-    }
+<span class="nc" id="L36">    return httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());</span>
+  }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
