@@ -65,43 +65,43 @@ releases.
 
 ### Spring profiles
 
-Spring profiles can be activated using `-Dspring.profiles.active=profile1,profile2` or using your 
-IDE. The following profiles are available:
+Spring profiles can be activated using a command line argument `-Dspring.profiles.active=profile1,profile2`
+or using your IDE.
 
-See also the comments in the `application-(profile).properties` files the in `src/main/resources` 
+When the **default** profile is active tailormap-api behaves as deployed in production. If the
+database schema is empty tables will be created or updated if necessary using Flyway. When an admin
+account is missing it is created using a random password which is logged.
+
+See also the comments in the `application-(profile).properties` files in the [resources](src%2Fmain%2Fresources)
 directory.
-
-When the **default** profile is active tailormap-api behaves as deployed in production. If the 
-database schema is empty the tables will be created or updated if necessary using Flyway. When an
-admin account is missing it is created using a random password which is logged.
 
 Other Spring profiles are useful during development:
 
-* **ddl**  
+* **[ddl](src%2Fmain%2Fresources%2Fapplication-ddl.properties)**  
  Use manually in development to create the initial Flyway migration script using the metadata from 
  the JPA entities. Use only once before going in production, after that use additional Flyway 
  migration scripts. __Warning:__ all tables in your current tailormap database will be removed!
-* **ddl-update**  
+* **[ddl-update](src%2Fmain%2Fresources%2Fapplication-ddl-update.properties)**  
  Use manually in development to create a SQL script to update the current database schema to match 
  the JPA entities. Rename the generated Flyway script to the correct version and give it a
  meaningful name. The script may need to be modified. If you need to migrate using Java code you can
  use a Flyway callback (executed before the entity manager is initialized) or add code to 
  [TailormapDatabaseMigration.java](src%2Fmain%2Fjava%2Fnl%2Fb3p%2Ftailormap%2Fapi%2Fconfiguration%2FTailormapDatabaseMigration.java) 
  if you can use the entity manager after all SQL migrations.
-* **dev**  
+* **[dev](src%2Fmain%2Fresources%2Fapplication-dev.properties)**  
  Use during development to:
   * Disable CSRF checking, so you can use the HAL explorer with PUT/POST/PATCH/DELETE HTTP requests
   * See stack traces in HTTP error responses
   * See SQL output
   
   Check [application-dev.properties](src%2Fmain%2Fresources%2Fapplication-dev.properties) for details.
-* **populate-testdata**  
+* **[populate-testdata](src%2Fmain%2Fresources%2Fapplication-populate-testdata.properties)**  
   Activate this profile to insert some test data in the tailormap database (all current data will be
   removed!). This testdata can be used to test or demo Tailormap functionality and is used in 
   integration tests. It relies on external services which may change or disappear and optionally 
   connects to spatial databases which can be started using Docker Compose, see [PopulateTestData.java](src%2Fmain%2Fjava%2Fnl%2Fb3p%2Ftailormap%2Fapi%2Fconfiguration%2Fdev%2FPopulateTestData.java)
   for details. 
-* **static-only**  
+* **[static-only](src%2Fmain%2Fresources%2Fapplication-static-only.properties)**  
   When this profile is active only the static Angular viewer and admin frontends are served and all
   other functionality is disabled. This is used for continuous deployment of frontend pull requests.
 
