@@ -128,7 +128,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>@Configuration
 @ComponentScan(basePackages="nl.b3p.tailormap.api")
-@Profile("!static-only")
+@ConditionalOnExpression("${tailormap-api.static-only:false} == false")
 public class <span class="typeNameLabel">TailormapApiConfiguration</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
 </li>

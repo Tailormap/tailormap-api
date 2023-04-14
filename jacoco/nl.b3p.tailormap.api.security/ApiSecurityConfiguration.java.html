@@ -6,12 +6,9 @@
 package nl.b3p.tailormap.api.security;
 
 import nl.b3p.tailormap.api.persistence.Group;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,19 +19,15 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-<span class="nc" id="L25">public class ApiSecurityConfiguration implements EnvironmentAware {</span>
+<span class="nc" id="L22">public class ApiSecurityConfiguration {</span>
   @Value(&quot;${tailormap-api.base-path}&quot;)
   private String apiBasePath;
 
   @Value(&quot;${tailormap-api.admin.base-path}&quot;)
   private String adminApiBasePath;
 
-  private Environment environment;
-
-  @Override
-  public void setEnvironment(Environment environment) {
-<span class="nc" id="L36">    this.environment = environment;</span>
-<span class="nc" id="L37">  }</span>
+  @Value(&quot;${tailormap-api.security.disable-csrf:false}&quot;)
+  private boolean disableCsrf;
 
   @Bean
   public CookieCsrfTokenRepository csrfTokenRepository() {
@@ -42,9 +35,9 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
     // X-XSRF-TOKEN header read from the XSRF-TOKEN cookie by JavaScript so set HttpOnly to false.
     // Angular has automatic XSRF protection support:
     // https://angular.io/guide/http#security-xsrf-protection
-<span class="nc" id="L45">    CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();</span>
-<span class="nc" id="L46">    csrfTokenRepository.setCookiePath(&quot;/&quot;);</span>
-<span class="nc" id="L47">    return csrfTokenRepository;</span>
+<span class="nc" id="L38">    CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();</span>
+<span class="nc" id="L39">    csrfTokenRepository.setCookiePath(&quot;/&quot;);</span>
+<span class="nc" id="L40">    return csrfTokenRepository;</span>
   }
 
   @Bean
@@ -53,24 +46,24 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
     // Disable CSRF protection for development with HAL explorer
     // https://github.com/spring-projects/spring-data-rest/issues/1347
-<span class="nc bnc" id="L56" title="All 2 branches missed.">    if (ArrayUtils.contains(environment.getActiveProfiles(), &quot;disable-csrf&quot;)) {</span>
-<span class="nc" id="L57">      http.csrf().disable();</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">    if (disableCsrf) {</span>
+<span class="nc" id="L50">      http.csrf().disable();</span>
     } else {
-<span class="nc" id="L59">      http = http.csrf().csrfTokenRepository(csrfTokenRepository).and();</span>
+<span class="nc" id="L52">      http = http.csrf().csrfTokenRepository(csrfTokenRepository).and();</span>
     }
 
-<span class="nc" id="L62">    http.securityMatchers(matchers -&gt; matchers.requestMatchers(apiBasePath + &quot;/**&quot;))</span>
-<span class="nc" id="L63">        .authorizeHttpRequests(</span>
+<span class="nc" id="L55">    http.securityMatchers(matchers -&gt; matchers.requestMatchers(apiBasePath + &quot;/**&quot;))</span>
+<span class="nc" id="L56">        .authorizeHttpRequests(</span>
             authorize -&gt;
-<span class="nc" id="L65">                authorize.requestMatchers(adminApiBasePath + &quot;/**&quot;).hasAuthority(Group.ADMIN))</span>
-<span class="nc" id="L66">        .formLogin()</span>
-<span class="nc" id="L67">        .loginProcessingUrl(apiBasePath + &quot;/login&quot;)</span>
-<span class="nc" id="L68">        .and()</span>
-<span class="nc" id="L69">        .logout()</span>
-<span class="nc" id="L70">        .logoutUrl(apiBasePath + &quot;/logout&quot;)</span>
-<span class="nc" id="L71">        .logoutSuccessHandler(</span>
-<span class="nc" id="L72">            (request, response, authentication) -&gt; response.sendError(HttpStatus.OK.value(), &quot;OK&quot;));</span>
-<span class="nc" id="L73">    return http.build();</span>
+<span class="nc" id="L58">                authorize.requestMatchers(adminApiBasePath + &quot;/**&quot;).hasAuthority(Group.ADMIN))</span>
+<span class="nc" id="L59">        .formLogin()</span>
+<span class="nc" id="L60">        .loginProcessingUrl(apiBasePath + &quot;/login&quot;)</span>
+<span class="nc" id="L61">        .and()</span>
+<span class="nc" id="L62">        .logout()</span>
+<span class="nc" id="L63">        .logoutUrl(apiBasePath + &quot;/logout&quot;)</span>
+<span class="nc" id="L64">        .logoutSuccessHandler(</span>
+<span class="nc" id="L65">            (request, response, authentication) -&gt; response.sendError(HttpStatus.OK.value(), &quot;OK&quot;));</span>
+<span class="nc" id="L66">    return http.build();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
