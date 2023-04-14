@@ -4,26 +4,21 @@
  * SPDX-License-Identifier: MIT
  */
 
-package nl.b3p.tailormap.api.configuration.base.ddl;
+package nl.b3p.tailormap.api.configuration.ddl;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.flywaydb.core.Flyway;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
-public class CleanSchema {
-
-  @Value("${tailormap-api.clean-database:false}")
-  private boolean cleanDatabase;
-
+@ConditionalOnProperty(name = "tailormap-api.database.clean", havingValue = "true")
+public class FlywayCleanSchema {
   @Bean
+  @Primary
   public FlywayMigrationStrategy flywayCleanMigrationStrategy() {
-    return flyway -> {
-      if (cleanDatabase) {
-        flyway.clean();
-      }
-      flyway.migrate();
-    };
+    return Flyway::clean;
   }
 }

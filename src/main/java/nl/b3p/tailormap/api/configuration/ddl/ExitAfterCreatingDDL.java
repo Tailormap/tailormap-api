@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package nl.b3p.tailormap.api.configuration.base.ddl;
+package nl.b3p.tailormap.api.configuration.ddl;
 
 import java.lang.invoke.MethodHandles;
 import javax.annotation.PostConstruct;

@@ -48,35 +48,30 @@ import nl.b3p.tailormap.api.repository.UserRepository;
 import nl.b3p.tailormap.api.security.InternalAdminAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.EnvironmentAware;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * <p>
-*  Populates entities to add services and applications to demo functionality, support development
+ * Populates entities to add services and applications to demo functionality, support development
  * and use in integration tests with a common set of test data.
- * </p><p>
- * Only connects to spatial databases when the environment variable SPATIAL_DBS_CONNECT is set to
+ *
+ * <p>Only connects to spatial databases when the environment variable SPATIAL_DBS_CONNECT is set to
  * 'true'. The spatial database stack can be started using a Docker Compose stack in
  * build/ci/docker-compose.yml. This stack creates a 'tailormap-data' network, but also exposes the
  * databases' listening ports on the host.
- * </p><p>
- * By default, the database hostname 'localhost' is used to connect to the local ports. If you run
- * tailormap-api using Docker in the 'tailormap-data' network, set the environment variable
+ *
+ * <p>By default, the database hostname 'localhost' is used to connect to the local ports. If you
+ * run tailormap-api using Docker in the 'tailormap-data' network, set the environment variable
  * SPATIAL_DBS_LOCALHOST to 'false' to use the database container names as hostnames to connect.
  * This is used for continuous deployment of the latest version.
- * </p>
  */
 @org.springframework.context.annotation.Configuration
+@ConditionalOnProperty(name = "tailormap-api.database.populate-testdata", havingValue = "true")
 public class PopulateTestData implements EnvironmentAware {
-
-  @Value("${tailormap-api.populate-testdata}")
-  private boolean enabled;
 
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -122,11 +117,7 @@ public class PopulateTestData implements EnvironmentAware {
 
   @EventListener(ApplicationReadyEvent.class)
   @Transactional
-  @DependsOn("tailormap-database-initialization")
   public void populate() throws Exception {
-    if (!enabled) {
-      return;
-    }
     InternalAdminAuthentication.setInSecurityContext();
     try {
       if (configurationRepository.existsById(Configuration.DEFAULT_APP)) {
