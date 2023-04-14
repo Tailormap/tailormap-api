@@ -19,9 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ansi.AnsiPropertySource;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
@@ -33,12 +33,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 
 @Configuration
-@Profile("!test")
-public class StartupAdminAccountCreator {
+@ConditionalOnProperty(
+    name = "tailormap-api.security.admin.create-if-not-exists",
+    havingValue = "true")
+public class AdminAccountCreator {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Value("${tailormap-api.new-admin-username:tm-admin}")
+  @Value("${tailormap-api.security.admin.username}")
   private String newAdminUsername;
 
   private final UserRepository userRepository;
@@ -47,8 +49,7 @@ public class StartupAdminAccountCreator {
   private final PasswordEncoder passwordEncoder =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-  public StartupAdminAccountCreator(
-      UserRepository userRepository, GroupRepository groupRepository) {
+  public AdminAccountCreator(UserRepository userRepository, GroupRepository groupRepository) {
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
   }
