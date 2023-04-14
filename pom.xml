@@ -200,7 +200,7 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-rest-hal-explorer</artifactId>
+            <artifactId>spring-data-rest-webmvc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -1096,6 +1096,7 @@ SPDX-License-Identifier: MIT
                                     <excludes>
                                         <exclude>org.springframework.boot:spring-boot-starter-web</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-data-jpa</exclude>
+                                        <exclude>org.springframework.data:spring-data-rest-webmvc</exclude>
                                         <exclude>org.springframework.data:spring-data-rest-hal-explorer</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-actuator</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-test</exclude>
@@ -1505,6 +1506,15 @@ SPDX-License-Identifier: MIT
             </properties>
         </profile>
         <profile>
+            <id>hal-browser</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.data</groupId>
+                    <artifactId>spring-data-rest-hal-explorer</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <!-- this profile will be activated in case the flag -DskipQA=true is passed to maven -->
             <id>qa-skip</id>
             <activation>
@@ -1534,9 +1544,6 @@ SPDX-License-Identifier: MIT
         </profile>
         <profile>
             <id>postgresql</id>
-            <properties>
-                <spring.profiles.active>postgresql</spring.profiles.active>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -1579,7 +1586,7 @@ SPDX-License-Identifier: MIT
                                     <!--suppress UnresolvedMavenProperty -->
                                     <skip>${skipTests}</skip>
                                     <profiles>
-                                        <profile>postgresql</profile>
+                                        <profile>populate-testdata</profile>
                                     </profiles>
                                     <!--suppress UnresolvedMavenProperty -->
                                     <jvmArguments>${failsafeArgLine} -Dspring.profiles.active=postgresql</jvmArguments>
@@ -1591,6 +1598,9 @@ SPDX-License-Identifier: MIT
                                 <goals>
                                     <goal>stop</goal>
                                 </goals>
+                                <!-- Leave Spring Boot with populate-testdata profile active running
+                                 during integration tests, can't stop it immediately -->
+                                <!-- TODO maybe add property to exit after populating testdata? -->
                                 <phase>post-integration-test</phase>
                                 <configuration>
                                     <!--suppress UnresolvedMavenProperty -->

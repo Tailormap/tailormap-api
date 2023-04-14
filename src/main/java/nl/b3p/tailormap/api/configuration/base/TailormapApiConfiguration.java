@@ -5,11 +5,11 @@
  */
 package nl.b3p.tailormap.api.configuration.base;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 @Configuration
 @ComponentScan(basePackages = "nl.b3p.tailormap.api")
-@Profile("!static-only")
+@ConditionalOnExpression("${tailormap-api.static-only:false} == false")
 public class TailormapApiConfiguration {}

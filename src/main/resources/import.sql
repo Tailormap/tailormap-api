@@ -3,4 +3,4 @@ insert into groups(name, system_group, description) values ('admin', true, 'Admi
 insert into groups(name, system_group, description) values ('app-authenticated', true, 'Users authorized for application with authentication required');
 insert into groups(name, system_group, description) values ('actuator', true, 'Users authorized for Spring Boot Actuator (monitoring and management)');
 
--- Default admin account created with StartupAdminAccountCreator
+-- Default admin account will be created by AdminAccountCreator with a random password

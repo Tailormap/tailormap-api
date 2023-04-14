@@ -13,14 +13,15 @@ import java.util.Map;
 import java.util.UUID;
 import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.persistence.User;
+import nl.b3p.tailormap.api.repository.GroupRepository;
 import nl.b3p.tailormap.api.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ansi.AnsiPropertySource;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
@@ -32,21 +33,25 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 
 @Configuration
-@Profile("!test")
-public class StartupAdminAccountCreator {
+@ConditionalOnProperty(
+    name = "tailormap-api.security.admin.create-if-not-exists",
+    havingValue = "true")
+public class AdminAccountCreator {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Value("${tailormap-api.new-admin-username:tm-admin}")
+  @Value("${tailormap-api.security.admin.username}")
   private String newAdminUsername;
 
-  final UserRepository userRepository;
+  private final UserRepository userRepository;
+  private final GroupRepository groupRepository;
 
   private final PasswordEncoder passwordEncoder =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-  public StartupAdminAccountCreator(UserRepository userRepository) {
+  public AdminAccountCreator(UserRepository userRepository, GroupRepository groupRepository) {
     this.userRepository = userRepository;
+    this.groupRepository = groupRepository;
   }
 
   @EventListener(ApplicationReadyEvent.class)
@@ -62,7 +67,7 @@ public class StartupAdminAccountCreator {
 
         User u =
             new User().setUsername(newAdminUsername).setPassword(passwordEncoder.encode(password));
-        u.getGroups().add(new Group().setName(Group.ADMIN));
+        u.getGroups().add(groupRepository.getReferenceById(Group.ADMIN));
         userRepository.saveAndFlush(u);
 
         // Log generated password
