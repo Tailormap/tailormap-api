@@ -17,7 +17,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 /**
  * Delete the file in the "javax.persistence.schema-generation.scripts.create-target" property
@@ -25,17 +24,19 @@ import org.springframework.context.annotation.Profile;
  */
 @Configuration
 @ConfigurationProperties(prefix = "spring.datasource")
-@Profile("ddl")
 public class DeleteDDLScriptBeforeCreating {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @Value("${spring.jpa.properties.javax.persistence.schema-generation.scripts.delete-first:false}")
+  private boolean deleteDdlScript;
+
+  @Value("${spring.jpa.properties.javax.persistence.schema-generation.scripts.create-target:null}")
+  private String target;
+
   private String url;
   private String username;
   private String password;
-
-  @Value("${spring.jpa.properties.javax.persistence.schema-generation.scripts.create-target}")
-  private String target;
 
   public void setUrl(String url) {
     this.url = url;
@@ -49,6 +50,9 @@ public class DeleteDDLScriptBeforeCreating {
     this.password = password;
   }
 
+  /* Override this bean, so we can execute code in @PostConstruct before the entity manager is
+   * initialized and write the DDL script.
+   */
   @Bean
   public DataSource getDataSource() {
     return DataSourceBuilder.create().url(url).username(username).password(password).build();
@@ -56,13 +60,15 @@ public class DeleteDDLScriptBeforeCreating {
 
   @PostConstruct
   public void delete() {
-    File f = new File(target);
-    if (f.exists()) {
-      String absolutePath = f.getAbsolutePath();
-      if (!f.delete()) {
-        logger.info("Could not delete DDL target file {}", absolutePath);
-      } else {
-        logger.debug("Deleted DDL target file {}", absolutePath);
+    if (deleteDdlScript && target != null) {
+      File f = new File(target);
+      if (f.exists()) {
+        String absolutePath = f.getAbsolutePath();
+        if (!f.delete()) {
+          logger.info("Could not delete DDL target file {}", absolutePath);
+        } else {
+          logger.debug("Deleted DDL target file {}", absolutePath);
+        }
       }
     }
   }

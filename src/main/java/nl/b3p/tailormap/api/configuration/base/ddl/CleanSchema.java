@@ -6,18 +6,23 @@
 
 package nl.b3p.tailormap.api.configuration.base.ddl;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile({"ddl && !ddl-update", "populate-test-database"})
 public class CleanSchema {
+
+  @Value("${tailormap-api.clean-database:false}")
+  private boolean cleanDatabase;
+
   @Bean
   public FlywayMigrationStrategy flywayCleanMigrationStrategy() {
     return flyway -> {
-      flyway.clean();
+      if (cleanDatabase) {
+        flyway.clean();
+      }
       flyway.migrate();
     };
   }
