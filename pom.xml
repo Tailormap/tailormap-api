@@ -200,7 +200,7 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-rest-hal-explorer</artifactId>
+            <artifactId>spring-data-rest-webmvc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -1503,6 +1503,15 @@ SPDX-License-Identifier: MIT
                 <skipJavaDoc>true</skipJavaDoc>
                 <docker.pull.policy>IfNotPresent</docker.pull.policy>
             </properties>
+        </profile>
+        <profile>
+            <id>hal-browser</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.data</groupId>
+                    <artifactId>spring-data-rest-hal-explorer</artifactId>
+                </dependency>
+            </dependencies>
         </profile>
         <profile>
             <!-- this profile will be activated in case the flag -DskipQA=true is passed to maven -->
