@@ -20,8 +20,6 @@ public class FlywayDefaultStrategy {
 
   @Bean
   public FlywayMigrationStrategy flywayMigrationStrategy() {
-    return flyway -> {
-      this.migrationResult.setMigrateResult(flyway.migrate());
-    };
+    return flyway -> this.migrationResult.setMigrateResult(flyway.migrate());
   }
 }
