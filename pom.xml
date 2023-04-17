@@ -1506,7 +1506,7 @@ SPDX-License-Identifier: MIT
             </properties>
         </profile>
         <profile>
-            <id>hal-browser</id>
+            <id>hal-explorer</id>
             <dependencies>
                 <dependency>
                     <groupId>org.springframework.data</groupId>
