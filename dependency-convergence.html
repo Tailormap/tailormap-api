@@ -84,65 +84,23 @@
 </caption>
 <tr class="a">
 <th>Number of dependencies (NOD):</th>
-<td>336</td></tr>
+<td>299</td></tr>
 <tr class="b">
 <th>Number of unique artifacts (NOA):</th>
-<td>364</td></tr>
+<td>306</td></tr>
 <tr class="a">
 <th>Number of version-conflicting artifacts (NOC):</th>
-<td>16</td></tr>
+<td>6</td></tr>
 <tr class="b">
 <th>Number of SNAPSHOT artifacts (NOS):</th>
 <td>0</td></tr>
 <tr class="a">
 <th>Convergence (NOD/NOA):</th>
-<td><img src="images/icon_error_sml.gif" alt="[Error]" />&#160;<b>92 %</b></td></tr>
+<td><img src="images/icon_error_sml.gif" alt="[Error]" />&#160;<b>97 %</b></td></tr>
 <tr class="b">
 <th>Ready for release (100% convergence and no SNAPSHOTS):</th>
 <td><img src="images/icon_error_sml.gif" alt="[Error]" />&#160;<b>Error</b><br />You do not have 100% convergence.</td></tr></table></section><section>
 <h2>Dependencies used in this project</h2><section>
-<h3>com.google.code.findbugs:jsr305</h3>
-<table class="table table-striped">
-<tr class="a">
-<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
-<td>
-<table class="table table-striped">
-<tr class="b">
-<td>3.0.0</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apache.maven.shared:maven-shared-utils:jar:3.2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.google.code.findbugs:jsr305:jar:3.0.0:provided<br /><br /></ol></td></tr>
-<tr class="a">
-<td>3.0.2</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />+-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />|&#160;&#160;+-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />|&#160;&#160;|&#160;&#160;\-&#160;com.google.inject:guice:jar:no_aop:4.2.1:compile<br />|&#160;&#160;|&#160;&#160;&#160;&#160;&#160;\-&#160;com.google.guava:guava:jar:25.1-android:compile<br />|&#160;&#160;|&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.google.code.findbugs:jsr305:jar:3.0.2:compile<br />|&#160;&#160;\-&#160;net.bytebuddy:byte-buddy:jar:1.12.23:compile<br />|&#160;&#160;&#160;&#160;&#160;\-&#160;com.google.code.findbugs:jsr305:jar:3.0.2:provided<br />+-&#160;org.springframework.boot:spring-boot-starter-test:jar:2.7.10:test<br />|&#160;&#160;\-&#160;org.mockito:mockito-core:jar:4.5.1:test<br />|&#160;&#160;&#160;&#160;&#160;\-&#160;net.bytebuddy:byte-buddy-agent:jar:1.12.23:test<br />|&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.google.code.findbugs:jsr305:jar:3.0.2:test<br />\-&#160;org.webjars:webjars-locator-core:jar:0.52:compile<br />&#160;&#160;&#160;\-&#160;com.google.code.findbugs:jsr305:jar:3.0.2:compile<br /><br /></ol></td></tr></table></td></tr></table></section><section>
-<h3>com.google.inject:guice</h3>
-<table class="table table-striped">
-<tr class="a">
-<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
-<td>
-<table class="table table-striped">
-<tr class="b">
-<td>3.0</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;org.eclipse.sisu:org.eclipse.sisu.plexus:jar:0.3.4:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;|&#160;&#160;\-&#160;com.google.inject:guice:jar:3.0:provided<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.eclipse.sisu:org.eclipse.sisu.inject:jar:0.3.4:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.google.inject:guice:jar:3.0:provided<br /><br /></ol></td></tr>
-<tr class="a">
-<td>4.2.1</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.google.inject:guice:jar:no_aop:4.2.1:compile<br /><br /></ol></td></tr></table></td></tr></table></section><section>
-<h3>commons-io:commons-io</h3>
-<table class="table table-striped">
-<tr class="a">
-<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
-<td>
-<table class="table table-striped">
-<tr class="b">
-<td>2.10.0</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />+-&#160;org.geotools:gt-geojson-core:jar:29.0:compile<br />|&#160;&#160;\-&#160;commons-io:commons-io:jar:2.10.0:compile<br />+-&#160;org.geotools:gt-wfs-ng:jar:29.0:compile<br />|&#160;&#160;\-&#160;commons-io:commons-io:jar:2.10.0:compile<br />+-&#160;org.geotools.xsd:gt-xsd-core:jar:29.0:compile<br />|&#160;&#160;\-&#160;commons-io:commons-io:jar:2.10.0:compile<br />\-&#160;org.geotools:gt-wms:jar:29.0:compile<br />&#160;&#160;&#160;+-&#160;org.geotools:gt-coverage:jar:29.0:compile<br />&#160;&#160;&#160;|&#160;&#160;\-&#160;commons-io:commons-io:jar:2.10.0:compile<br />&#160;&#160;&#160;\-&#160;commons-io:commons-io:jar:2.10.0:compile<br /><br /></ol></td></tr>
-<tr class="a">
-<td>2.5</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apache.maven.shared:maven-shared-utils:jar:3.2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;commons-io:commons-io:jar:2.5:compile<br /><br /></ol></td></tr></table></td></tr></table></section><section>
 <h3>io.github.classgraph:classgraph</h3>
 <table class="table table-striped">
 <tr class="a">
@@ -157,20 +115,6 @@
 <td>4.8.147</td>
 <td>
 <ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.webjars:webjars-locator-core:jar:0.52:compile<br />&#160;&#160;&#160;\-&#160;io.github.classgraph:classgraph:jar:4.8.147:compile<br /><br /></ol></td></tr></table></td></tr></table></section><section>
-<h3>javax.enterprise:cdi-api</h3>
-<table class="table table-striped">
-<tr class="a">
-<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
-<td>
-<table class="table table-striped">
-<tr class="b">
-<td>1.0</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.eclipse.sisu:org.eclipse.sisu.plexus:jar:0.3.4:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;javax.enterprise:cdi-api:jar:1.0:compile<br /><br /></ol></td></tr>
-<tr class="a">
-<td>1.2</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:jar:1.1.1.Final:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;javax.enterprise:cdi-api:jar:1.2:compile<br /><br /></ol></td></tr></table></td></tr></table></section><section>
 <h3>javax.measure:unit-api</h3>
 <table class="table table-striped">
 <tr class="a">
@@ -189,38 +133,6 @@
 <td>2.1.3</td>
 <td>
 <ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.geotools:gt-opengis:jar:29.0:compile<br />&#160;&#160;&#160;\-&#160;tech.units:indriya:jar:2.1.3:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;javax.measure:unit-api:jar:2.1.3:compile<br /><br /></ol></td></tr></table></td></tr></table></section><section>
-<h3>org.apache.maven:maven-artifact</h3>
-<table class="table table-striped">
-<tr class="a">
-<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
-<td>
-<table class="table table-striped">
-<tr class="b">
-<td>3.0</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven.plugin-tools:maven-plugin-annotations:jar:3.2:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apache.maven:maven-artifact:jar:3.0:compile<br /><br /></ol></td></tr>
-<tr class="a">
-<td>3.0.5</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;+-&#160;org.apache.maven:maven-artifact:jar:3.0.5:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-plugin-api:jar:3.0.5:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apache.maven:maven-artifact:jar:3.0.5:compile<br /><br /></ol></td></tr>
-<tr class="b">
-<td>3.8.1</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;org.apache.maven:maven-artifact:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apache.maven:maven-model-builder:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apache.maven:maven-artifact:jar:3.8.1:compile<br /><br /></ol></td></tr></table></td></tr></table></section><section>
-<h3>org.apache.maven:maven-plugin-api</h3>
-<table class="table table-striped">
-<tr class="a">
-<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
-<td>
-<table class="table table-striped">
-<tr class="b">
-<td>3.0.5</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-plugin-api:jar:3.0.5:compile<br /><br /></ol></td></tr>
-<tr class="a">
-<td>3.8.1</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apache.maven:maven-plugin-api:jar:3.8.1:compile<br /><br /></ol></td></tr></table></td></tr></table></section><section>
 <h3>org.apiguardian:apiguardian-api</h3>
 <table class="table table-striped">
 <tr class="a">
@@ -235,78 +147,6 @@
 <td>1.1.2</td>
 <td>
 <ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />+-&#160;org.springframework.boot:spring-boot-starter-test:jar:2.7.10:test<br />|&#160;&#160;\-&#160;org.junit.jupiter:junit-jupiter:jar:5.9.2:test<br />|&#160;&#160;&#160;&#160;&#160;\-&#160;org.junit.jupiter:junit-jupiter-engine:jar:5.9.2:test<br />|&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apiguardian:apiguardian-api:jar:1.1.2:test<br />\-&#160;org.junit-pioneer:junit-pioneer:jar:2.0.1:test<br />&#160;&#160;&#160;+-&#160;org.junit.jupiter:junit-jupiter-api:jar:5.9.2:test<br />&#160;&#160;&#160;|&#160;&#160;+-&#160;org.junit.platform:junit-platform-commons:jar:1.9.2:test<br />&#160;&#160;&#160;|&#160;&#160;|&#160;&#160;\-&#160;org.apiguardian:apiguardian-api:jar:1.1.2:test<br />&#160;&#160;&#160;|&#160;&#160;\-&#160;org.apiguardian:apiguardian-api:jar:1.1.2:compile<br />&#160;&#160;&#160;+-&#160;org.junit.jupiter:junit-jupiter-params:jar:5.9.2:test<br />&#160;&#160;&#160;|&#160;&#160;\-&#160;org.apiguardian:apiguardian-api:jar:1.1.2:test<br />&#160;&#160;&#160;\-&#160;org.junit.platform:junit-platform-launcher:jar:1.9.2:test<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;org.junit.platform:junit-platform-engine:jar:1.9.2:test<br />&#160;&#160;&#160;&#160;&#160;&#160;|&#160;&#160;\-&#160;org.apiguardian:apiguardian-api:jar:1.1.2:test<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apiguardian:apiguardian-api:jar:1.1.2:test<br /><br /></ol></td></tr></table></td></tr></table></section><section>
-<h3>org.codehaus.plexus:plexus-classworlds</h3>
-<table class="table table-striped">
-<tr class="a">
-<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
-<td>
-<table class="table table-striped">
-<tr class="b">
-<td>2.5.2</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.eclipse.sisu:org.eclipse.sisu.plexus:jar:0.3.4:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.codehaus.plexus:plexus-classworlds:jar:2.5.2:compile<br /><br /></ol></td></tr>
-<tr class="a">
-<td>2.6.0</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.codehaus.plexus:plexus-classworlds:jar:2.6.0:compile<br /><br /></ol></td></tr></table></td></tr></table></section><section>
-<h3>org.codehaus.plexus:plexus-component-annotations</h3>
-<table class="table table-striped">
-<tr class="a">
-<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
-<td>
-<table class="table table-striped">
-<tr class="b">
-<td>1.5.5</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;+-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;|&#160;&#160;\-&#160;org.eclipse.sisu:org.eclipse.sisu.plexus:jar:0.3.4:compile<br />&#160;&#160;&#160;|&#160;&#160;&#160;&#160;&#160;\-&#160;org.codehaus.plexus:plexus-component-annotations:jar:1.5.5:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-plugin-api:jar:3.0.5:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.sonatype.sisu:sisu-inject-plexus:jar:2.3.0:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.codehaus.plexus:plexus-component-annotations:jar:1.5.5:compile<br /><br /></ol></td></tr>
-<tr class="a">
-<td>2.1.0</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.codehaus.plexus:plexus-component-annotations:jar:2.1.0:compile<br /><br /></ol></td></tr></table></td></tr></table></section><section>
-<h3>org.codehaus.plexus:plexus-container-default</h3>
-<table class="table table-striped">
-<tr class="a">
-<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
-<td>
-<table class="table table-striped">
-<tr class="b">
-<td>1.0-alpha-9</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.sonatype.plexus:plexus-build-api:jar:0.0.7:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.codehaus.plexus:plexus-container-default:jar:1.0-alpha-9:provided<br /><br /></ol></td></tr>
-<tr class="a">
-<td>1.0-alpha-9-stable-1</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apache.maven:maven-settings-builder:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.sonatype.plexus:plexus-sec-dispatcher:jar:1.4:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;org.sonatype.plexus:plexus-cipher:jar:1.4:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;|&#160;&#160;\-&#160;org.codehaus.plexus:plexus-container-default:jar:1.0-alpha-9-stable-1:provided<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.codehaus.plexus:plexus-container-default:jar:1.0-alpha-9-stable-1:provided<br /><br /></ol></td></tr>
-<tr class="b">
-<td>1.7.1</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apache.maven.shared:maven-shared-utils:jar:3.2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.codehaus.plexus:plexus-container-default:jar:1.7.1:provided<br /><br /></ol></td></tr></table></td></tr></table></section><section>
-<h3>org.codehaus.plexus:plexus-utils</h3>
-<table class="table table-striped">
-<tr class="a">
-<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
-<td>
-<table class="table table-striped">
-<tr class="b">
-<td>1.5.5</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.apache.maven:maven-settings-builder:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.sonatype.plexus:plexus-sec-dispatcher:jar:1.4:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.codehaus.plexus:plexus-utils:jar:1.5.5:compile<br /><br /></ol></td></tr>
-<tr class="a">
-<td>1.5.8</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.sonatype.plexus:plexus-build-api:jar:0.0.7:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.codehaus.plexus:plexus-utils:jar:1.5.8:compile<br /><br /></ol></td></tr>
-<tr class="b">
-<td>3.0.17</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.eclipse.sisu:org.eclipse.sisu.plexus:jar:0.3.4:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.codehaus.plexus:plexus-utils:jar:3.0.17:compile<br /><br /></ol></td></tr>
-<tr class="a">
-<td>3.0.24</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.codehaus.plexus:plexus-utils:jar:3.0.24:compile<br /><br /></ol></td></tr>
-<tr class="b">
-<td>3.2.1</td>
-<td>
-<ol style="list-style-type: decimal">nl.b3p.tailormap:tailormap-api:jar:10.1.0-SNAPSHOT<br />\-&#160;org.hibernate.orm.tooling:hibernate-enhance-maven-plugin:jar:5.6.15.Final:compile<br />&#160;&#160;&#160;\-&#160;org.apache.maven:maven-core:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;org.apache.maven:maven-model:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;|&#160;&#160;\-&#160;org.codehaus.plexus:plexus-utils:jar:3.2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;org.apache.maven:maven-settings:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;|&#160;&#160;\-&#160;org.codehaus.plexus:plexus-utils:jar:3.2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;org.apache.maven:maven-settings-builder:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;|&#160;&#160;\-&#160;org.codehaus.plexus:plexus-utils:jar:3.2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;org.apache.maven:maven-repository-metadata:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;|&#160;&#160;\-&#160;org.codehaus.plexus:plexus-utils:jar:3.2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;org.apache.maven:maven-model-builder:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;|&#160;&#160;\-&#160;org.codehaus.plexus:plexus-utils:jar:3.2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;+-&#160;org.apache.maven:maven-resolver-provider:jar:3.8.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;|&#160;&#160;\-&#160;org.codehaus.plexus:plexus-utils:jar:3.2.1:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.codehaus.plexus:plexus-utils:jar:3.2.1:compile<br /><br /></ol></td></tr></table></td></tr></table></section><section>
 <h3>org.jboss.logging:jboss-logging-annotations</h3>
 <table class="table table-striped">
 <tr class="a">
