@@ -56,8 +56,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Populates entities to add services and applications to demo functionality, support development
- * and use in integration tests with a common set of test data. See
- * application-populate-testdata.properties for usage details.
+ * and use in integration tests with a common set of test data. See README.md for usage details.
  */
 @org.springframework.context.annotation.Configuration
 @ConditionalOnProperty(name = "tailormap-api.database.populate-testdata", havingValue = "true")
