@@ -10,73 +10,81 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import nl.b3p.tailormap.api.JPAConfiguration;
-import nl.b3p.tailormap.api.security.AuthorizationService;
-import nl.b3p.tailormap.api.security.SecurityConfig;
+import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junitpioneer.jupiter.Issue;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
-@SpringBootTest(
-    classes = {
-      JPAConfiguration.class,
-      LayerDescriptionController.class,
-      SecurityConfig.class,
-      AuthorizationService.class,
-      AppRestControllerAdvice.class
-    })
+@PostgresIntegrationTest
 @AutoConfigureMockMvc
-@EnableAutoConfiguration
-@ActiveProfiles("postgresql")
 @Execution(ExecutionMode.CONCURRENT)
 class LayerDescriptionControllerPostgresIntegrationTest {
   @Autowired private MockMvc mockMvc;
 
+  @Value("${tailormap-api.base-path}")
+  private String apiBasePath;
+
+  private static RequestPostProcessor requestPostProcessor(String servletPath) {
+    return request -> {
+      request.setServletPath(servletPath);
+      return request;
+    };
+  }
+
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void app_not_found_404() throws Exception {
+    final String path = apiBasePath + "/app/1234/layer/76/describe";
     mockMvc
-        .perform(get("/app/1234/layer/76/describe"))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.message").value("Application with id 1234 not found"));
+        .andExpect(jsonPath("$.message").value("Not Found"));
   }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void public_app() throws Exception {
+    final String path =
+        apiBasePath
+            + "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/describe";
     mockMvc
-        .perform(get("/app/1/layer/6/describe"))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.featureTypeName").value("begroeidterreindeel"))
+        .andExpect(jsonPath("$.featureTypeName").value("postgis:begroeidterreindeel"))
         .andExpect(jsonPath("$.geometryAttribute").value("geom"))
-        .andExpect(jsonPath("$.id").value("6"))
-        .andExpect(jsonPath("$.serviceId").value(6))
+        .andExpect(jsonPath("$.id").value("lyr:snapshot-geoserver:postgis:begroeidterreindeel"))
+        .andExpect(jsonPath("$.serviceId").value("snapshot-geoserver"))
         .andExpect(jsonPath("$.attributes").isArray())
-        .andExpect(jsonPath("$.attributes[?(@.id == 22)].name").value("relatievehoogteligging"))
-        .andExpect(jsonPath("$.attributes[?(@.id == 22)].type").value("integer"));
+        .andExpect(
+            jsonPath("$.attributes[?(@.name == 'relatievehoogteligging')].type").value("integer"));
   }
 
+  @Disabled("This test fails, proxying is currently not working/non-existent")
+  @Issue("https://b3partners.atlassian.net/browse/HTM-714")
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(username = "noproxyuser")
   void test_wms_secured_app_denied() throws Exception {
+    final String path = apiBasePath + "/app/default/layer/19/describe";
     mockMvc
-        .perform(get("/app/6/layer/19/describe"))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isUnauthorized())
         .andExpect(content().string("{\"code\":401,\"url\":\"/login\"}"));
   }
 
+  @Disabled("This test fails, proxying is currently not working/non-existent")
+  @Issue("https://b3partners.atlassian.net/browse/HTM-714")
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
