@@ -10,33 +10,29 @@ import java.lang.invoke.MethodHandles;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ConditionalOnProperty(name = &quot;tailormap-api.exit-after-creating-ddl&quot;, havingValue = &quot;true&quot;)
 public class ExitAfterCreatingDDL {
-<span class="nc" id="L20">  private static final Logger logger =</span>
-<span class="nc" id="L21">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
-
-  @Value(&quot;${tailormap-api.exit-after-creating-ddl:false}&quot;)
-  private boolean exit;
+<span class="nc" id="L21">  private static final Logger logger =</span>
+<span class="nc" id="L22">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final ApplicationContext appContext;
 
-<span class="nc" id="L28">  public ExitAfterCreatingDDL(ApplicationContext appContext) {</span>
-<span class="nc" id="L29">    this.appContext = appContext;</span>
-<span class="nc" id="L30">  }</span>
+<span class="nc" id="L26">  public ExitAfterCreatingDDL(ApplicationContext appContext) {</span>
+<span class="nc" id="L27">    this.appContext = appContext;</span>
+<span class="nc" id="L28">  }</span>
 
   @PostConstruct
   public void exit() {
-<span class="nc bnc" id="L34" title="All 2 branches missed.">    if (exit) {</span>
-<span class="nc" id="L35">      logger.info(&quot;Created DDL, exiting Spring application&quot;);</span>
-<span class="nc" id="L36">      SpringApplication.exit(appContext, () -&gt; 0);</span>
-<span class="nc" id="L37">      logger.info(&quot;Exiting JVM&quot;);</span>
-<span class="nc" id="L38">      System.exit(0);</span>
-    }
-<span class="nc" id="L40">  }</span>
+<span class="nc" id="L32">    logger.info(&quot;Created DDL, exiting Spring application&quot;);</span>
+<span class="nc" id="L33">    SpringApplication.exit(appContext, () -&gt; 0);</span>
+<span class="nc" id="L34">    logger.info(&quot;Exiting JVM&quot;);</span>
+<span class="nc" id="L35">    System.exit(0);</span>
+<span class="nc" id="L36">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

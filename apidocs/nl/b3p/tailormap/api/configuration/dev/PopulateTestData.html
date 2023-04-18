@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10};
+var data = {"i0":10,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -131,29 +131,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
-<dl>
-<dt>All Implemented Interfaces:</dt>
-<dd><code>org.springframework.beans.factory.Aware</code>, <code>org.springframework.context.EnvironmentAware</code></dd>
-</dl>
 <hr>
 <pre>@Configuration
 @ConditionalOnProperty(name="tailormap-api.database.populate-testdata",
                        havingValue="true")
 public class <span class="typeNameLabel">PopulateTestData</span>
-extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>
-implements org.springframework.context.EnvironmentAware</pre>
+extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
 <div class="block">Populates entities to add services and applications to demo functionality, support development
- and use in integration tests with a common set of test data.
-
- <p>Only connects to spatial databases when the environment variable SPATIAL_DBS_CONNECT is set to
- 'true'. The spatial database stack can be started using a Docker Compose stack in
- build/ci/docker-compose.yml. This stack creates a 'tailormap-data' network, but also exposes the
- databases' listening ports on the host.
-
- <p>By default, the database hostname 'localhost' is used to connect to the local ports. If you
- run tailormap-api using Docker in the 'tailormap-data' network, set the environment variable
- SPATIAL_DBS_LOCALHOST to 'false' to use the database container names as hostnames to connect.
- This is used for continuous deployment of the latest version.</div>
+ and use in integration tests with a common set of test data. See README.md for usage details.</div>
 </li>
 </ul>
 </div>
@@ -217,11 +202,6 @@ implements org.springframework.context.EnvironmentAware</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#populate()">populate</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setEnvironment(org.springframework.core.env.Environment)">setEnvironment</a></span>&#8203;(org.springframework.core.env.Environment&nbsp;environment)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -272,19 +252,6 @@ implements org.springframework.context.EnvironmentAware</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="setEnvironment(org.springframework.core.env.Environment)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setEnvironment</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setEnvironment&#8203;(org.springframework.core.env.Environment&nbsp;environment)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>setEnvironment</code>&nbsp;in interface&nbsp;<code>org.springframework.context.EnvironmentAware</code></dd>
-</dl>
-</li>
-</ul>
 <a id="populate()">
 <!--   -->
 </a>
