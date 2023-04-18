@@ -110,12 +110,9 @@ Some Maven profiles are defined:
 
 ### Spring profiles
 
-Spring profiles can be activated using a command line argument `-Dspring.profiles.active=profile1,profile2`
-or using your IDE.
-
 When the **default** profile is active tailormap-api behaves as deployed in production. If the
-database schema is empty tables will be created or updated if necessary using Flyway. When an admin
-account is missing it is created using a random password which is logged.
+database schema is empty tables will be created or the existing schema will be updated if necessary
+by Flyway. When an admin account is missing it is created using a random password which is logged.
 
 See also the comments in the `application-(profile).properties` files in the [resources](src%2Fmain%2Fresources)
 directory.
@@ -145,11 +142,12 @@ Other Spring profiles are useful during development:
   removed!). This testdata can be used to test or demo Tailormap functionality and is used in 
   integration tests. It relies on external services which may change or disappear and optionally 
   connects to spatial databases which can be started using Docker Compose (see
-  [Spatial database stack](#Spatial database stack)).  
+  [Spatial database stack](#spatial-database-stack)).  
   The class which loads the testdata is 
-  [PopulateTestData.java](src%2Fmain%2Fjava%2Fnl%2Fb3p%2Ftailormap%2Fapi%2Fconfiguration%2Fdev%2FPopulateTestData.java)
+  [PopulateTestData.java](src%2Fmain%2Fjava%2Fnl%2Fb3p%2Ftailormap%2Fapi%2Fconfiguration%2Fdev%2FPopulateTestData.java).
   The default admin username and password is `tm-admin` instead of randomly generated 
-  as in the default profile. Make sure to change it if you expose your instance publicly.
+  as in the default profile, but you can change it if you expose your environment publicly by 
+  specifying a property.
 * **[static-only](src%2Fmain%2Fresources%2Fapplication-static-only.properties)**  
   When this profile is active only the static Angular viewer and admin frontends are served and all
   other functionality is disabled. This is used for continuous deployment of frontend pull requests.
