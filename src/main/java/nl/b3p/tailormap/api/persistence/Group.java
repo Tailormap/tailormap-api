@@ -25,6 +25,7 @@ public class Group {
   public static final String APP_AUTHENTICATED = "app-authenticated";
   public static final String ADMIN = "admin";
   public static final String ACTUATOR = "actuator";
+  public static final String ANONYMOUS = "anonymous";
 
   @Id
   @Pattern(regexp = Constants.NAME_REGEX, message = "Group " + Constants.NAME_REGEX_INVALID_MESSAGE)
