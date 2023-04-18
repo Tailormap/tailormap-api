@@ -71,6 +71,9 @@ public class PopulateTestData {
   @Value("${spatial.dbs.localhost:true}")
   private boolean connectToSpatialDbsAtLocalhost;
 
+  @Value("${tailormap-api.database.populate-testdata.admin-hashed-password}")
+  private String adminHashedPassword;
+
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
   private final CatalogRepository catalogRepository;
@@ -121,7 +124,7 @@ public class PopulateTestData {
     userRepository.save(u);
 
     // Superuser with all access (even admin-users without explicitly having that authority)
-    u = new User().setUsername("tm-admin").setPassword("{noop}tm-admin");
+    u = new User().setUsername("tm-admin").setPassword(adminHashedPassword);
     u.getGroups().add(groupRepository.findById(Group.ADMIN).orElseThrow());
     userRepository.save(u);
   }
