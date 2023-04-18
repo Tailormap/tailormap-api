@@ -10,18 +10,16 @@ import java.lang.invoke.MethodHandles;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ConditionalOnProperty(name = "tailormap-api.exit-after-creating-ddl", havingValue = "true")
 public class ExitAfterCreatingDDL {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  @Value("${tailormap-api.exit-after-creating-ddl:false}")
-  private boolean exit;
 
   private final ApplicationContext appContext;
 
@@ -31,11 +29,9 @@ public class ExitAfterCreatingDDL {
 
   @PostConstruct
   public void exit() {
-    if (exit) {
-      logger.info("Created DDL, exiting Spring application");
-      SpringApplication.exit(appContext, () -> 0);
-      logger.info("Exiting JVM");
-      System.exit(0);
-    }
+    logger.info("Created DDL, exiting Spring application");
+    SpringApplication.exit(appContext, () -> 0);
+    logger.info("Exiting JVM");
+    System.exit(0);
   }
 }

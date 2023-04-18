@@ -48,33 +48,31 @@ import nl.b3p.tailormap.api.repository.UserRepository;
 import nl.b3p.tailormap.api.security.InternalAdminAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Populates entities to add services and applications to demo functionality, support development
- * and use in integration tests with a common set of test data.
- *
- * <p>Only connects to spatial databases when the environment variable SPATIAL_DBS_CONNECT is set to
- * 'true'. The spatial database stack can be started using a Docker Compose stack in
- * build/ci/docker-compose.yml. This stack creates a 'tailormap-data' network, but also exposes the
- * databases' listening ports on the host.
- *
- * <p>By default, the database hostname 'localhost' is used to connect to the local ports. If you
- * run tailormap-api using Docker in the 'tailormap-data' network, set the environment variable
- * SPATIAL_DBS_LOCALHOST to 'false' to use the database container names as hostnames to connect.
- * This is used for continuous deployment of the latest version.
+ * and use in integration tests with a common set of test data. See README.md for usage details.
  */
 @org.springframework.context.annotation.Configuration
 @ConditionalOnProperty(name = "tailormap-api.database.populate-testdata", havingValue = "true")
-public class PopulateTestData implements EnvironmentAware {
+public class PopulateTestData {
 
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Value("${spatial.dbs.connect:false}")
+  private boolean connectToSpatialDbs;
+
+  @Value("${spatial.dbs.localhost:true}")
+  private boolean connectToSpatialDbsAtLocalhost;
+
+  @Value("${tailormap-api.database.populate-testdata.admin-hashed-password}")
+  private String adminHashedPassword;
 
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
@@ -85,10 +83,6 @@ public class PopulateTestData implements EnvironmentAware {
   private final FeatureSourceRepository featureSourceRepository;
   private final ApplicationRepository applicationRepository;
   private final ConfigurationRepository configurationRepository;
-
-  private boolean spatialDbsLocalhost = true;
-
-  private boolean spatialDbsConnect = false;
 
   public PopulateTestData(
       UserRepository userRepository,
@@ -109,22 +103,13 @@ public class PopulateTestData implements EnvironmentAware {
     this.configurationRepository = configurationRepository;
   }
 
-  @Override
-  public void setEnvironment(Environment environment) {
-    spatialDbsLocalhost = !"false".equals(environment.getProperty("SPATIAL_DBS_LOCALHOST"));
-    spatialDbsConnect = "true".equals(environment.getProperty("SPATIAL_DBS_CONNECT"));
-  }
-
   @EventListener(ApplicationReadyEvent.class)
   @Transactional
   public void populate() throws Exception {
     InternalAdminAuthentication.setInSecurityContext();
     try {
-      if (configurationRepository.existsById(Configuration.DEFAULT_APP)) {
-        // Test database already initialized for integration tests
-        return;
-      }
-
+      // Used in conjunction with tailormap-api.database.clean=true so the database has been cleaned
+      // and the latest schema re-created
       createTestUsers();
       createTestConfiguration();
     } finally {
@@ -139,7 +124,7 @@ public class PopulateTestData implements EnvironmentAware {
     userRepository.save(u);
 
     // Superuser with all access (even admin-users without explicitly having that authority)
-    u = new User().setUsername("tm-admin").setPassword("{noop}tm-admin");
+    u = new User().setUsername("tm-admin").setPassword(adminHashedPassword);
     u.getGroups().add(groupRepository.findById(Group.ADMIN).orElseThrow());
     userRepository.save(u);
   }
@@ -267,7 +252,6 @@ public class PopulateTestData implements EnvironmentAware {
 
     String geodataPassword = "980f1c8A-25933b2";
 
-    // TODO FeatureSource.id -> string
     Map<String, TMFeatureSource> featureSources =
         Map.of(
             "postgis",
@@ -277,8 +261,8 @@ public class PopulateTestData implements EnvironmentAware {
                     .setJdbcConnection(
                         new JDBCConnectionProperties()
                             .dbtype(JDBCConnectionProperties.DbtypeEnum.POSTGIS)
-                            .host(spatialDbsLocalhost ? "127.0.0.1" : "postgis")
-                            .port(spatialDbsLocalhost ? 54322 : 5432)
+                            .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "postgis")
+                            .port(connectToSpatialDbsAtLocalhost ? 54322 : 5432)
                             .database("geodata")
                             .schema("public"))
                     .setAuthentication(
@@ -293,8 +277,8 @@ public class PopulateTestData implements EnvironmentAware {
                     .setJdbcConnection(
                         new JDBCConnectionProperties()
                             .dbtype(JDBCConnectionProperties.DbtypeEnum.POSTGIS)
-                            .host(spatialDbsLocalhost ? "127.0.0.1" : "postgis")
-                            .port(spatialDbsLocalhost ? 54322 : 5432)
+                            .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "postgis")
+                            .port(connectToSpatialDbsAtLocalhost ? 54322 : 5432)
                             .database("geodata")
                             .schema("osm"))
                     .setAuthentication(
@@ -309,7 +293,7 @@ public class PopulateTestData implements EnvironmentAware {
                     .setJdbcConnection(
                         new JDBCConnectionProperties()
                             .dbtype(JDBCConnectionProperties.DbtypeEnum.ORACLE)
-                            .host(spatialDbsLocalhost ? "127.0.0.1" : "oracle")
+                            .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "oracle")
                             .database("/XEPDB1")
                             .schema("GEODATA"))
                     .setAuthentication(
@@ -324,7 +308,7 @@ public class PopulateTestData implements EnvironmentAware {
                     .setJdbcConnection(
                         new JDBCConnectionProperties()
                             .dbtype(JDBCConnectionProperties.DbtypeEnum.SQLSERVER)
-                            .host(spatialDbsLocalhost ? "127.0.0.1" : "sqlserver")
+                            .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "sqlserver")
                             .database("geodata;encrypt=false")
                             .schema("dbo"))
                     .setAuthentication(
@@ -348,7 +332,7 @@ public class PopulateTestData implements EnvironmentAware {
 
     catalogRepository.save(catalog);
 
-    if (spatialDbsConnect) {
+    if (connectToSpatialDbs) {
       featureSources
           .values()
           .forEach(
