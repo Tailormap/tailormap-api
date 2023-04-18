@@ -105,11 +105,8 @@ public class PopulateTestData {
   public void populate() throws Exception {
     InternalAdminAuthentication.setInSecurityContext();
     try {
-      if (configurationRepository.existsById(Configuration.DEFAULT_APP)) {
-        // Test database already initialized for integration tests
-        return;
-      }
-
+      // Used in conjunction with tailormap-api.database.clean=true so the database has been cleaned
+      // and the latest schema re-created
       createTestUsers();
       createTestConfiguration();
     } finally {
