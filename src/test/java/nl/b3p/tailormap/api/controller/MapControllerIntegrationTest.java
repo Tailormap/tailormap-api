@@ -15,39 +15,41 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.HashMap;
 import java.util.Map;
+import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
-import nl.b3p.tailormap.api.security.AuthorizationService;
-import nl.b3p.tailormap.api.security.SecurityConfig;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junitpioneer.jupiter.Issue;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
-@SpringBootTest(
-    classes = {
-      HSQLDBTestProfileJPAConfiguration.class,
-      MapController.class,
-      SecurityConfig.class,
-      AuthorizationService.class,
-      AppRestControllerAdvice.class,
-    })
 @AutoConfigureMockMvc
-@EnableAutoConfiguration
-@ActiveProfiles("test")
+@PostgresIntegrationTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MapControllerIntegrationTest {
   @Autowired ApplicationRepository applicationRepository;
   @Autowired private MockMvc mockMvc;
+
+  @Value("${tailormap-api.base-path}")
+  private String apiBasePath;
+
+  private static RequestPostProcessor requestPostProcessor(String servletPath) {
+    return request -> {
+      request.setServletPath(servletPath);
+      return request;
+    };
+  }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
@@ -55,8 +57,9 @@ class MapControllerIntegrationTest {
       username = "admin",
       authorities = {"Admin"})
   void should_return_data_for_configured_app() throws Exception {
+    final String path = apiBasePath + "/app/default/map";
     mockMvc
-        .perform(get("/app/1/map"))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.initialExtent").isMap())
@@ -64,29 +67,30 @@ class MapControllerIntegrationTest {
         .andExpect(jsonPath("$.services").isArray())
         .andExpect(jsonPath("$.appLayers").isArray())
         .andExpect(jsonPath("$.appLayers[0]").isMap())
-        .andExpect(jsonPath("$.appLayers.length()").value(5))
+        .andExpect(jsonPath("$.appLayers.length()").value(8))
         .andExpect(jsonPath("$.appLayers[0].hasAttributes").value(false))
-        .andExpect(jsonPath("$.appLayers[1].hasAttributes").value(true))
-        .andExpect(jsonPath("$.appLayers[2].legendImageUrl").exists())
-        .andExpect(jsonPath("$.appLayers[2].legendImageUrl").isNotEmpty())
+        .andExpect(jsonPath("$.appLayers[1].hasAttributes").value(false))
+        .andExpect(jsonPath("$.appLayers[2].legendImageUrl").isEmpty())
         .andExpect(jsonPath("$.appLayers[2].visible").value(false))
         .andExpect(jsonPath("$.appLayers[2].minScale").isEmpty())
         .andExpect(jsonPath("$.appLayers[2].maxScale").isEmpty())
-        .andExpect(jsonPath("$.appLayers[2].id").value(3))
+        .andExpect(jsonPath("$.appLayers[2].id").value("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"))
         .andExpect(jsonPath("$.appLayers[2].hiDpiMode").isEmpty())
         .andExpect(jsonPath("$.appLayers[2].hiDpiSubstituteLayer").isEmpty())
-        .andExpect(jsonPath("$.crs.code").value("EPSG:28992"))
-        .andReturn();
+        .andExpect(jsonPath("$.crs.code").value("EPSG:28992"));
   }
 
+  @Disabled("Authorization is not yet implemented")
+  @Issue("https://b3partners.atlassian.net/browse/HTM-704")
   @Test
   @WithMockUser(
       username = "admin",
       authorities = {"Admin"})
   void should_show_filtered_layer_tree() throws Exception {
+    final String path = apiBasePath + "/app/default/map";
     MvcResult result =
         mockMvc
-            .perform(get("/app/1/map"))
+            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andReturn();
@@ -94,8 +98,11 @@ class MapControllerIntegrationTest {
     Map<String, JSONObject> treeNodeMap = new HashMap<>();
     String body = result.getResponse().getContentAsString();
     JSONObject rootNode = null;
-    for (Object _node : new JSONObject(body).getJSONArray("layerTreeNodes")) {
-      JSONObject node = (JSONObject) _node;
+
+    JSONArray baseLayerTreeNodes = new JSONObject(body).getJSONArray("layerTreeNodes");
+    for (int i = 0; i < baseLayerTreeNodes.length(); i++) {
+      JSONObject node = (JSONObject) baseLayerTreeNodes.get(i);
+
       String id = node.getString("id");
       assertFalse(treeNodeMap.containsKey(id), String.format("node %s appears multiple times", id));
       treeNodeMap.put(id, node);
@@ -142,14 +149,17 @@ class MapControllerIntegrationTest {
         "incorrect appLayerId for first child (of second child)");
   }
 
+  @Disabled("Authorization is not yet implemented")
+  @Issue("https://b3partners.atlassian.net/browse/HTM-704")
   @Test
   @WithMockUser(
       username = "admin",
       authorities = {"NotAdmin"})
   void should_show_filtered_layer_tree_unauthorized() throws Exception {
+    final String path = apiBasePath + "/app/default/map";
     MvcResult result =
         mockMvc
-            .perform(get("/app/1/map"))
+            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andReturn();
@@ -157,8 +167,9 @@ class MapControllerIntegrationTest {
     Map<String, JSONObject> treeNodeMap = new HashMap<>();
     String body = result.getResponse().getContentAsString();
     JSONObject rootNode = null;
-    for (Object _node : new JSONObject(body).getJSONArray("layerTreeNodes")) {
-      JSONObject node = (JSONObject) _node;
+    JSONArray baseLayerTreeNodes = new JSONObject(body).getJSONArray("layerTreeNodes");
+    for (int i = 0; i < baseLayerTreeNodes.length(); i++) {
+      JSONObject node = (JSONObject) baseLayerTreeNodes.get(i);
       String id = node.getString("id");
       assertFalse(treeNodeMap.containsKey(id), String.format("node %s appears multiple times", id));
       treeNodeMap.put(id, node);
@@ -189,11 +200,14 @@ class MapControllerIntegrationTest {
         "second node of root had wrong amount of children");
   }
 
+  @Disabled("Authorization is not yet implemented")
+  @Issue("https://b3partners.atlassian.net/browse/HTM-705")
   @Test
   void should_show_filtered_base_layer_tree() throws Exception {
+    final String path = apiBasePath + "/app/default/map";
     MvcResult result =
         mockMvc
-            .perform(get("/app/1/map"))
+            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andReturn();
@@ -202,8 +216,9 @@ class MapControllerIntegrationTest {
     String body = result.getResponse().getContentAsString();
     JSONObject rootNode = null;
 
-    for (Object _node : new JSONObject(body).getJSONArray("baseLayerTreeNodes")) {
-      JSONObject node = (JSONObject) _node;
+    JSONArray baseLayerTreeNodes = new JSONObject(body).getJSONArray("baseLayerTreeNodes");
+    for (int i = 0; i < baseLayerTreeNodes.length(); i++) {
+      JSONObject node = (JSONObject) baseLayerTreeNodes.get(i);
       String id = node.getString("id");
       assertFalse(treeNodeMap.containsKey(id), String.format("node %s appears multiple times", id));
       treeNodeMap.put(id, node);
@@ -233,29 +248,34 @@ class MapControllerIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_error_when_calling_with_nonexistent_id() throws Exception {
+    final String path = apiBasePath + "/app/400/map";
     mockMvc
-        .perform(get("/app/400/map"))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
-        .andExpect(jsonPath("$.message").value("Application with id 400 not found"));
+        .andExpect(jsonPath("$.message").value("Not Found"));
   }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_not_find_when_called_without_id() throws Exception {
-    mockMvc.perform(get("/app/map")).andExpect(status().isNotFound());
+    final String path = apiBasePath + "/app/map";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .andExpect(status().isNotFound());
   }
 
+  @Disabled("Authorization is not yet implemented")
+  @Issue("https://b3partners.atlassian.net/browse/HTM-705")
   @Test
   /* this test changes database content */
   @Order(Integer.MAX_VALUE)
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_send_401_when_application_login_required() throws Exception {
     applicationRepository.setAuthenticatedRequired(1L, true);
-
     mockMvc
-        .perform(get("/app/1/map").accept(MediaType.APPLICATION_JSON))
+        .perform(get("/app/default/map").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))
