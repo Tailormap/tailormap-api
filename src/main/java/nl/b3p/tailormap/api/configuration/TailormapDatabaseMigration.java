@@ -45,7 +45,7 @@ public class TailormapDatabaseMigration {
 
     InternalAdminAuthentication.setInSecurityContext();
     try {
-      if ("1".equals(migrateResult.targetSchemaVersion)) {
+      if (migrateResult.migrations.stream().anyMatch(m -> "1".equals(m.version))) {
         createRootCatalog();
       }
     } finally {
