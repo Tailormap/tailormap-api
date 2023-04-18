@@ -12,6 +12,7 @@ import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.helper.ApplicationHelper;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
 import nl.b3p.tailormap.api.viewer.model.ViewerResponse;
 import org.springframework.http.HttpStatus;
@@ -25,14 +26,17 @@ public class ViewerController {
   private final ConfigurationRepository configurationRepository;
   private final ApplicationRepository applicationRepository;
   private final ApplicationHelper applicationHelper;
+  private final AuthorizationService authorizationService;
 
   public ViewerController(
       ConfigurationRepository configurationRepository,
       ApplicationRepository applicationRepository,
-      ApplicationHelper applicationHelper) {
+      ApplicationHelper applicationHelper,
+      AuthorizationService authorizationService) {
     this.configurationRepository = configurationRepository;
     this.applicationRepository = applicationRepository;
     this.applicationHelper = applicationHelper;
+    this.authorizationService = authorizationService;
   }
 
   @GetMapping(path = "${tailormap-api.base-path}/app")
@@ -42,7 +46,9 @@ public class ViewerController {
     if (app == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
-    // TODO check authorization for app
+    if (!this.authorizationService.mayUserRead(app)) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    }
     return viewer(app, ViewerResponse.KindEnum.APP);
   }
 

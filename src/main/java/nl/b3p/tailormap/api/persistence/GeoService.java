@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
+import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
@@ -102,6 +103,11 @@ public class GeoService {
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
   private TMServiceCaps serviceCapabilities;
+
+  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Column(columnDefinition = "jsonb")
+  @NotNull
+  private List<AuthorizationRule> authorizationRules = new ArrayList<>();
 
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
@@ -225,6 +231,15 @@ public class GeoService {
 
   public GeoService setServiceCapabilities(TMServiceCaps serviceCapabilities) {
     this.serviceCapabilities = serviceCapabilities;
+    return this;
+  }
+
+  public List<AuthorizationRule> getAuthorizationRules() {
+    return authorizationRules;
+  }
+
+  public GeoService setAuthorizationRules(List<AuthorizationRule> authorizationRules) {
+    this.authorizationRules = authorizationRules;
     return this;
   }
 

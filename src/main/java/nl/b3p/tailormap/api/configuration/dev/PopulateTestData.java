@@ -29,6 +29,9 @@ import nl.b3p.tailormap.api.persistence.json.AppSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLevelNode;
 import nl.b3p.tailormap.api.persistence.json.AppTreeNode;
+import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
+import nl.b3p.tailormap.api.persistence.json.AuthorizationRuleDecision;
+import nl.b3p.tailormap.api.persistence.json.AuthorizationRuleDecisionsValue;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.CatalogNode;
 import nl.b3p.tailormap.api.persistence.json.FeatureTypeRef;
@@ -163,6 +166,16 @@ public class PopulateTestData {
     rootCatalogNode.addChildrenItem(catalogNode.getId());
     catalog.getNodes().add(catalogNode);
 
+    List<AuthorizationRule> rule =
+        List.of(
+            new AuthorizationRule()
+                .groupName(Group.ANONYMOUS)
+                .decisions(
+                    Map.of(
+                        "read",
+                        new AuthorizationRuleDecisionsValue()
+                            .decision(AuthorizationRuleDecision.ALLOW))));
+
     Collection<GeoService> services =
         List.of(
             new GeoService()
@@ -170,18 +183,21 @@ public class PopulateTestData {
                 .setProtocol(WMS)
                 .setTitle("Test GeoServer")
                 .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
+                .setAuthorizationRules(rule)
                 .setPublished(true),
             new GeoService()
                 .setId("snapshot-geoserver-proxied")
                 .setProtocol(WMS)
                 .setTitle("Test GeoServer (proxied)")
                 .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
+                .setAuthorizationRules(rule)
                 .setSettings(new GeoServiceSettings().useProxy(true)),
             new GeoService()
                 .setId("openbasiskaart")
                 .setProtocol(WMTS)
                 .setTitle("Openbasiskaart")
                 .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
+                .setAuthorizationRules(rule)
                 .setSettings(
                     new GeoServiceSettings()
                         .layerSettings(
@@ -195,6 +211,7 @@ public class PopulateTestData {
                 .setProtocol(WMTS)
                 .setTitle("Openbasiskaart (proxied)")
                 .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
+                .setAuthorizationRules(rule)
                 .setSettings(
                     new GeoServiceSettings()
                         .useProxy(true)
@@ -209,6 +226,7 @@ public class PopulateTestData {
                 .setProtocol(WMTS)
                 .setTitle("PDOK HWH luchtfoto")
                 .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
+                .setAuthorizationRules(rule)
                 .setPublished(true)
                 .setSettings(
                     new GeoServiceSettings()
@@ -219,6 +237,7 @@ public class PopulateTestData {
                 .setProtocol(WMTS)
                 .setTitle("basemap.at")
                 .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
+                .setAuthorizationRules(rule)
                 .setPublished(true)
                 .setSettings(
                     new GeoServiceSettings()
@@ -238,6 +257,7 @@ public class PopulateTestData {
                 .setProtocol(WMS)
                 .setUrl(
                     "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
+                .setAuthorizationRules(rule)
                 .setSettings(
                     new GeoServiceSettings()
                         .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)

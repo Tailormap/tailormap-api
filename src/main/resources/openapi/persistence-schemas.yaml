@@ -15,6 +15,27 @@ paths: { }
 
 components:
   schemas:
+    AuthorizationRuleDecision:
+      type: string
+      enum: ['allow', 'deny']
+
+    AuthorizationRule:
+      description: A single authorization rule.
+      type: object
+      required: ['groupName', 'decisions']
+      properties:
+        groupName:
+          description: Name of the group.
+          type: string
+        decisions:
+          description: A map of access type to decision.
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              decision:
+                $ref: '#/components/schemas/AuthorizationRuleDecision'
+
     GeoServiceProtocol:
       $ref: './common-schemas.yaml#/components/schemas/GeoServiceProtocol'
 

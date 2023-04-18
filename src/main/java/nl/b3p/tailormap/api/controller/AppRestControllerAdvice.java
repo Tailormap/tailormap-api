@@ -14,6 +14,7 @@ import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.viewer.model.ErrorResponse;
 import nl.b3p.tailormap.api.viewer.model.RedirectResponse;
 import nl.b3p.tailormap.api.viewer.model.ViewerResponse;
@@ -35,7 +36,7 @@ public class AppRestControllerAdvice {
   private final ApplicationRepository applicationRepository;
   private final GeoServiceRepository geoServiceRepository;
   private final ApplicationHelper applicationHelper;
-  // private final AuthorizationService authorizationService;
+  private final AuthorizationService authorizationService;
 
   @Value("${tailormap-api.base-path}")
   private String basePath;
@@ -43,10 +44,12 @@ public class AppRestControllerAdvice {
   public AppRestControllerAdvice(
       ApplicationRepository applicationRepository,
       GeoServiceRepository geoServiceRepository,
-      ApplicationHelper applicationHelper) {
+      ApplicationHelper applicationHelper,
+      AuthorizationService authorizationService) {
     this.applicationRepository = applicationRepository;
     this.geoServiceRepository = geoServiceRepository;
     this.applicationHelper = applicationHelper;
+    this.authorizationService = authorizationService;
   }
 
   @InitBinder
@@ -106,6 +109,10 @@ public class AppRestControllerAdvice {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
       }
 
+      if (!authorizationService.mayUserRead(service)) {
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+      }
+
       // TODO: skip this check for users with admin role
       if (!service.isPublished()) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -115,10 +122,9 @@ public class AppRestControllerAdvice {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
-    // TODO check authorization for app
-    //    if (!this.authorizationService.mayUserRead(application)) {
-    //      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-    //    }
+    if (!this.authorizationService.mayUserRead(app)) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    }
     return app;
   }
 
@@ -156,7 +162,12 @@ public class AppRestControllerAdvice {
     if (appTreeLayerNode.getServiceId() == null) {
       return null;
     }
-    return geoServiceRepository.findById(appTreeLayerNode.getServiceId()).orElse(null);
+    GeoService service =
+        geoServiceRepository.findById(appTreeLayerNode.getServiceId()).orElse(null);
+    if (service != null && !authorizationService.mayUserRead(service)) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    }
+    return service;
   }
 
   @ModelAttribute
