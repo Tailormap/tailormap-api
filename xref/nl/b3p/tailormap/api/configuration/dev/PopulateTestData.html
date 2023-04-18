@@ -131,7 +131,7 @@
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     u.getGroups().add(groupRepository.findById(Group.APP_AUTHENTICATED).orElseThrow());
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>     userRepository.save(u);
 <a class="jxr_linenumber" name="L125" href="#L125">125</a> 
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>     <em class="jxr_comment">// Superuser with all access (even admin-users without explicitly having that authority)</em>
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>     <em class="jxr_comment">// Superuser with all access</em>
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>     u = <strong class="jxr_keyword">new</strong> <a name="User" href="../../../../../../nl/b3p/tailormap/api/persistence/User.html#User">User</a>().setUsername(<span class="jxr_string">"tm-admin"</span>).setPassword(adminHashedPassword);
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>     u.getGroups().add(groupRepository.findById(Group.ADMIN).orElseThrow());
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>     userRepository.save(u);
