@@ -45,7 +45,7 @@ public class TailormapDatabaseMigration {
 
 <span class="nc" id="L46">    InternalAdminAuthentication.setInSecurityContext();</span>
     try {
-<span class="nc bnc" id="L48" title="All 2 branches missed.">      if (&quot;1&quot;.equals(migrateResult.targetSchemaVersion)) {</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">      if (migrateResult.migrations.stream().anyMatch(m -&gt; &quot;1&quot;.equals(m.version))) {</span>
 <span class="nc" id="L49">        createRootCatalog();</span>
       }
     } finally {

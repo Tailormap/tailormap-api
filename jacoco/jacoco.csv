@@ -25,7 +25,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,JPAConfiguration,16,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,TailormapConfig,11,0,0,0,4,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,ObjectMapperConfiguration,61,0,0,0,13,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,FilteringConfig,36,0,0,0,7,0,2,0,2,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,TailormapDatabaseMigration,53,0,6,0,17,0,6,0,3,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,TailormapDatabaseMigration,59,0,6,0,17,0,7,0,4,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,GeoToolsEPSGAliasesConfiguration,124,0,4,0,17,0,5,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,MonitoringConfiguration,8,0,0,0,2,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,RestConfiguration,25,0,0,0,9,0,3,0,3,0
