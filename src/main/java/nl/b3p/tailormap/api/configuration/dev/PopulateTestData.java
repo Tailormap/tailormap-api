@@ -123,7 +123,7 @@ public class PopulateTestData {
     u.getGroups().add(groupRepository.findById(Group.APP_AUTHENTICATED).orElseThrow());
     userRepository.save(u);
 
-    // Superuser with all access (even admin-users without explicitly having that authority)
+    // Superuser with all access
     u = new User().setUsername("tm-admin").setPassword(adminHashedPassword);
     u.getGroups().add(groupRepository.findById(Group.ADMIN).orElseThrow());
     userRepository.save(u);
