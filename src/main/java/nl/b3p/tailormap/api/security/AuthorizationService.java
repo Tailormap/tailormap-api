@@ -28,20 +28,36 @@ public class AuthorizationService {
       List<AuthorizationRule> rules, String type) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
+    // Admins are allowed access to anything.
+    if (auth.getAuthorities().stream().anyMatch(x -> x.getAuthority().equals("admin"))) {
+      return Optional.of(AuthorizationRuleDecision.ALLOW);
+    }
+
+    boolean hasValidRule = false;
+
     for (AuthorizationRule rule : rules) {
       boolean matchesGroup =
-          auth.getAuthorities().stream()
-              .anyMatch(x -> x.getAuthority().equals(rule.getGroupName()));
+          rule.getGroupName().equals("anonymous")
+              || auth.getAuthorities().stream()
+                  .anyMatch(x -> x.getAuthority().equals(rule.getGroupName()));
       if (!matchesGroup) {
         continue;
       }
+
+      hasValidRule = true;
 
       AuthorizationRuleDecisionsValue value = rule.getDecisions().get(type);
       if (value == null) {
         return Optional.empty();
       }
 
-      return Optional.of(value.getDecision());
+      if (value.getDecision().equals(AuthorizationRuleDecision.DENY)) {
+        return Optional.of(value.getDecision());
+      }
+    }
+
+    if (hasValidRule) {
+      return Optional.of(AuthorizationRuleDecision.ALLOW);
     }
 
     return Optional.empty();
