@@ -765,9 +765,7 @@ SPDX-License-Identifier: MIT
                         <exclude>**/LayerDescriptionController*.java</exclude>
                         <exclude>**/LayerExportController*.java</exclude>
                         <exclude>**/MapControllerIntegrationTest.java</exclude>
-                        <exclude>**/MapControllerPostgresIntegrationTest.java</exclude>
                         <exclude>**/UniqueValuesController*.java</exclude>
-                        <exclude>**/nl/b3p/tailormap/api/repository/ApplicationRepositoryTest.java</exclude>
                     </testExcludes>
                 </configuration>
             </plugin>
@@ -1135,6 +1133,7 @@ SPDX-License-Identifier: MIT
                                 <dockerFile>${project.basedir}/Dockerfile</dockerFile>
                                 <args>
                                     <TAILORMAP_API_VERSION>${project.version}</TAILORMAP_API_VERSION>
+                                    <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
                                 </args>
                                 <buildx>
                                     <platforms>
