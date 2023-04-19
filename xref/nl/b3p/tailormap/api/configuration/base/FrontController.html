@@ -14,27 +14,46 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">package</strong> nl.b3p.tailormap.api.configuration.base;
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> org.springframework.stereotype.Controller;
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.RequestMapping;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.GetMapping;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  @Controller
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="FrontController" href="../../../../../../nl/b3p/tailormap/api/configuration/base/FrontController.html#FrontController">FrontController</a> {
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>    @RequestMapping(value = <span class="jxr_string">"/app/**"</span>)
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>    <strong class="jxr_keyword">public</strong> String appIndex() {
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>      <em class="jxr_comment">// Return static /index.html for URLs made the by Angular frontend app routing module which all</em>
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>      <em class="jxr_comment">// start with "/app/".</em>
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>      <strong class="jxr_keyword">return</strong> <span class="jxr_string">"forward:/index.html"</span>;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>    }
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>    @RequestMapping(value = {<span class="jxr_string">"/admin"</span>, <span class="jxr_string">"/admin/"</span>, <span class="jxr_string">"/admin/page/**"</span>})
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>    <strong class="jxr_keyword">public</strong> String adminIndex() {
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>      <strong class="jxr_keyword">return</strong> <span class="jxr_string">"forward:/admin/index.html"</span>;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>    }
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>    @RequestMapping(value = {<span class="jxr_string">"/swagger-ui"</span>, <span class="jxr_string">"/swagger-ui/"</span>})
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>    <strong class="jxr_keyword">public</strong> String swaggerUiWelcomePage() {
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>      <strong class="jxr_keyword">return</strong> <span class="jxr_string">"redirect:/swagger-ui/index.html"</span>;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>    }
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  }
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> * Front controller which forwards requests to URLs created by the Angular routing module to the</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> * proper viewer or admin index.html of the Angular bundle, for example when the user refreshes the</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * page. Unfortunately, a proper front controller would first check if the file which the requested</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * URL maps to exists and only return the index.html file if it doesn't. That is quite complicated</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> * to do in Spring Boot so as a poor-mans alternative we explicitly match the specific router URLs</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> * navigated to by the Angular frontends which don't map to files from the bundle.</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;It could happen that a frontend developer adds a route and forgets to update this front</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> * controller, and it is only noticed later when someone presses F5 and gets a 404.</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  @Controller
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="FrontController" href="../../../../../../nl/b3p/tailormap/api/configuration/base/FrontController.html#FrontController">FrontController</a> {
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>    @GetMapping(value = {<span class="jxr_string">"/login"</span>, <span class="jxr_string">"/app/**"</span>, <span class="jxr_string">"/service/**"</span>})
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>    <strong class="jxr_keyword">public</strong> String appIndex() {
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>      <strong class="jxr_keyword">return</strong> <span class="jxr_string">"forward:/index.html"</span>;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>    }
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>    @GetMapping(
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>        value = {
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>          <span class="jxr_string">"/admin"</span>,
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>          <span class="jxr_string">"/admin/login"</span>,
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>          <span class="jxr_string">"/admin/catalog"</span>,
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>          <span class="jxr_string">"/admin/catalog/**"</span>, <em class="jxr_comment">// Extra line needed in order to match slashes. Regexps won't match.</em>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>          <span class="jxr_string">"/admin/user**"</span>,
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          <span class="jxr_string">"/admin/group**"</span>,
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>          <span class="jxr_string">"/admin/applications"</span>,
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>          <span class="jxr_string">"/admin/applications/**"</span>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>        })
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>    <strong class="jxr_keyword">public</strong> String adminIndex() {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">return</strong> <span class="jxr_string">"forward:/admin/index.html"</span>;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>    }
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>    @GetMapping(value = {<span class="jxr_string">"/swagger-ui"</span>, <span class="jxr_string">"/swagger-ui/"</span>})
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    <strong class="jxr_keyword">public</strong> String swaggerUiWelcomePage() {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>      <strong class="jxr_keyword">return</strong> <span class="jxr_string">"redirect:/swagger-ui/index.html"</span>;
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>    }
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2023 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

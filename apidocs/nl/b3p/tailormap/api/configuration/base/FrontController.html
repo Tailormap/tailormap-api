@@ -135,6 +135,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>@Controller
 public class <span class="typeNameLabel">FrontController</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
+<div class="block">Front controller which forwards requests to URLs created by the Angular routing module to the
+ proper viewer or admin index.html of the Angular bundle, for example when the user refreshes the
+ page. Unfortunately, a proper front controller would first check if the file which the requested
+ URL maps to exists and only return the index.html file if it doesn't. That is quite complicated
+ to do in Spring Boot so as a poor-mans alternative we explicitly match the specific router URLs
+ navigated to by the Angular frontends which don't map to files from the bundle.
+
+ <p>It could happen that a frontend developer adds a route and forgets to update this front
+ controller, and it is only noticed later when someone presses F5 and gets a 404.</div>
 </li>
 </ul>
 </div>
@@ -240,7 +249,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockList">
 <li class="blockList">
 <h4>appIndex</h4>
-<pre class="methodSignature">@RequestMapping("/app/**")
+<pre class="methodSignature">@GetMapping({"/login","/app/**","/service/**"})
 public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;appIndex()</pre>
 </li>
 </ul>
@@ -250,7 +259,7 @@ public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.bas
 <ul class="blockList">
 <li class="blockList">
 <h4>adminIndex</h4>
-<pre class="methodSignature">@RequestMapping({"/admin","/admin/","/admin/page/**"})
+<pre class="methodSignature">@GetMapping({"/admin","/admin/login","/admin/catalog","/admin/catalog/**","/admin/user**","/admin/group**","/admin/applications","/admin/applications/**"})
 public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;adminIndex()</pre>
 </li>
 </ul>
@@ -260,7 +269,7 @@ public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.bas
 <ul class="blockListLast">
 <li class="blockList">
 <h4>swaggerUiWelcomePage</h4>
-<pre class="methodSignature">@RequestMapping({"/swagger-ui","/swagger-ui/"})
+<pre class="methodSignature">@GetMapping({"/swagger-ui","/swagger-ui/"})
 public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;swaggerUiWelcomePage()</pre>
 </li>
 </ul>
