@@ -51,11 +51,11 @@ class AppControllerIntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.kind").value("app"))
         .andExpect(jsonPath("$.name").value("default"))
-        .andExpect(jsonPath("$.title").value("Tailormap demo"));
-    //        .andExpect(jsonPath("$.components").isArray())
-    //        .andExpect(jsonPath("$.components[0].type").value("measure"))
-    //        .andExpect(jsonPath("$.styling.primaryColor").isEmpty())
-    //        .andExpect(jsonPath("$.styling.logo").isEmpty());
+        .andExpect(jsonPath("$.title").value("Tailormap demo"))
+        .andExpect(jsonPath("$.components").isArray())
+        .andExpect(jsonPath("$.components").isEmpty())
+        .andExpect(jsonPath("$.styling.primaryColor").isEmpty())
+        .andExpect(jsonPath("$.styling.logo").isEmpty());
   }
 
   @Test

@@ -6,6 +6,7 @@
 FROM eclipse-temurin:11.0.18_10-jre
 
 ARG TAILORMAP_API_VERSION
+ARG BUILD_DATE
 ARG TZ="Europe/Amsterdam"
 ARG DEBIAN_FRONTEND="noninteractive"
 
@@ -17,7 +18,10 @@ LABEL org.opencontainers.image.authors="support@b3partners.nl" \
       org.opencontainers.image.source="https://github.com/B3Partners/tailormap-api/" \
       org.opencontainers.image.documentation="https://github.com/B3Partners/tailormap-api/" \
       org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.version=$TAILORMAP_API_VERSION
+      org.opencontainers.image.version=$TAILORMAP_API_VERSION \
+      org.opencontainers.image.build-date=$BUILD_DATE \
+      tailormap-api.version=$TAILORMAP_API_VERSION \
+      tailormap-api.build-date=$BUILD_DATE
 
 # set-up timezone and local user
 RUN set -eux;ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
