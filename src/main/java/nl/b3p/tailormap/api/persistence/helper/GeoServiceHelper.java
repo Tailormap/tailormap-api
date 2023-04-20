@@ -47,15 +47,8 @@ import org.geotools.data.ServiceInfo;
 import org.geotools.data.ows.AbstractOpenWebService;
 import org.geotools.data.ows.Capabilities;
 import org.geotools.data.ows.OperationType;
-import org.geotools.data.ows.Specification;
-import org.geotools.http.HTTPClient;
 import org.geotools.http.HTTPClientFinder;
-import org.geotools.ows.ServiceException;
 import org.geotools.ows.wms.Layer;
-import org.geotools.ows.wms.WMS1_0_0;
-import org.geotools.ows.wms.WMS1_1_0;
-import org.geotools.ows.wms.WMS1_1_1;
-import org.geotools.ows.wms.WMS1_3_0;
 import org.geotools.ows.wms.WMSCapabilities;
 import org.geotools.ows.wms.WebMapServer;
 import org.geotools.ows.wmts.WebMapTileServer;
@@ -248,7 +241,7 @@ public class GeoServiceHelper {
 
   void loadWMSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client)
       throws Exception {
-    WebMapServer wms = getWebMapServer(client, geoService.getUrl());
+    WebMapServer wms = new WebMapServer(new URL(geoService.getUrl()), client);
 
     OperationType getMap = wms.getCapabilities().getRequest().getGetMap();
     OperationType getFeatureInfo = wms.getCapabilities().getRequest().getGetFeatureInfo();
@@ -297,21 +290,6 @@ public class GeoServiceHelper {
     }
 
     setLayerList(geoService, wms.getCapabilities().getLayerList());
-  }
-
-  public WebMapServer getWebMapServer(HTTPClient client, String url)
-      throws IOException, ServiceException {
-    // If we don't override setupSpecifications() we get WMS 1.3.0 capabilities without
-    // DescribeLayer, but WMS 1.1.1 does not work for a WMS like
-    // https://wms.geonorge.no/skwms1/wms.adm_enheter2 (MapServer 7.4.2).
-    // TODO: Needs some more tuning to make it work for all situations.
-    return new WebMapServer(new URL(url), client) {
-      @Override
-      protected void setupSpecifications() {
-        specs =
-            new Specification[] {new WMS1_3_0(), new WMS1_1_1(), new WMS1_1_0(), new WMS1_0_0()};
-      }
-    };
   }
 
   void loadWMTSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client)
