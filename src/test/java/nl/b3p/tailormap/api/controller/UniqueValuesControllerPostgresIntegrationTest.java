@@ -21,9 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import nl.b3p.tailormap.api.JPAConfiguration;
-import nl.b3p.tailormap.api.security.AuthorizationService;
-import nl.b3p.tailormap.api.security.SecurityConfig;
+import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -34,32 +32,35 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.RetryingTest;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
-@SpringBootTest(
-    classes = {
-      JPAConfiguration.class,
-      UniqueValuesController.class,
-      SecurityConfig.class,
-      AuthorizationService.class,
-      AppRestControllerAdvice.class
-    })
+@PostgresIntegrationTest
 @AutoConfigureMockMvc
-@EnableAutoConfiguration
-@ActiveProfiles("postgresql")
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
 class UniqueValuesControllerPostgresIntegrationTest {
+  @Value("${tailormap-api.base-path}")
+  private String apiBasePath;
+
+  private static RequestPostProcessor requestPostProcessor(String servletPath) {
+    return request -> {
+      request.setServletPath(servletPath);
+      return request;
+    };
+  }
+
   private static final String provinciesWFSUrl = "/app/1/layer/2/unique/naam";
-  private static final String begroeidterreindeelPostgisUrl = "/app/1/layer/6/unique/bronhouder";
-  private static final String waterdeelOracleUrl = "/app/1/layer/7/unique/BRONHOUDER";
-  private static final String wegdeelSqlserverUrl = "/app/1/layer/9/unique/bronhouder";
+  private static final String begroeidterreindeelPostgisUrl =
+      "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/unique/bronhouder";
+  private static final String waterdeelOracleUrl =
+      "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/BRONHOUDER";
+  private static final String wegdeelSqlserverUrl =
+      "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/unique/bronhouder";
   @Autowired private MockMvc mockMvc;
 
   /** layer url + bronhouders. */
@@ -77,10 +78,10 @@ class UniqueValuesControllerPostgresIntegrationTest {
   @ParameterizedTest(name = "#{index}: should return all unique values from database: {0}")
   @MethodSource("databaseArgumentsProvider")
   void bronhouder_unique_values_test(String url, String... expected) throws Exception {
+    url = apiBasePath + url;
     MvcResult result =
         mockMvc
-            .perform(
-                get(url).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+            .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.filterApplied").value(false))
@@ -102,6 +103,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
   @MethodSource("databaseArgumentsProvider")
   void bronhouder_with_filter_on_bronhouder_unique_values_test(String url, String... expected)
       throws Exception {
+    url = apiBasePath + url;
     String cqlFilter = "bronhouder='G0344'";
     if (url.contains("BRONHOUDER")) {
       // uppercase oracle cql filter
@@ -112,9 +114,9 @@ class UniqueValuesControllerPostgresIntegrationTest {
         mockMvc
             .perform(
                 get(url)
-                    .param("filter", cqlFilter)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.APPLICATION_JSON))
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(requestPostProcessor(url))
+                    .param("filter", cqlFilter))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.filterApplied").value(true))
@@ -135,6 +137,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
   @MethodSource("databaseArgumentsProvider")
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void bronhouder_with_filter_on_inonderzoek_unique_values_test(String url) throws Exception {
+    url = apiBasePath + url;
     String cqlFilter = "inonderzoek=TRUE";
     if (url.contains("BRONHOUDER")) {
       // uppercase oracle cql filter
@@ -144,8 +147,8 @@ class UniqueValuesControllerPostgresIntegrationTest {
     mockMvc
         .perform(
             get(url)
+                .with(requestPostProcessor(url))
                 .param("filter", cqlFilter)
-                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -157,13 +160,13 @@ class UniqueValuesControllerPostgresIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void broken_filter_returns_bad_request_message() throws Exception {
+    final String url = apiBasePath + begroeidterreindeelPostgisUrl + "bronhouder";
     mockMvc
-        .perform(
-            get(begroeidterreindeelPostgisUrl + "bronhouder").param("filter", "naam or Utrecht"))
+        .perform(get(url).param("filter", "naam or Utrecht").with(requestPostProcessor(url)))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))
-        .andExpect(jsonPath("$.message").value("Could not parse requested filter."));
+        .andExpect(jsonPath("$.message").value("Could not parse requested filter"));
   }
 
   @RetryingTest(2)
