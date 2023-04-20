@@ -40,6 +40,8 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 class GeoServiceProxyControllerPostgresIntegrationTest {
   private final String begroeidterreindeelUrl =
       "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wms";
+
+  private final String obkUrl = "/app/default/layer/lyr:openbasiskaart-proxied:osm/proxy/wmts";
   private final String pdokWmsGemeentegebiedUrl =
       "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/proxy/wms";
   private final String pdokWmsProvinciegebiedUrl =
@@ -181,8 +183,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
   void test_wms_secured_proxy_not_in_public_app() throws Exception {
     final String path = apiBasePath + pdokWmsProvinciegebiedUrl;
     mockMvc
-        .perform(
-            get(path).param("REQUEST", "GetCapabilities").param("VERSION", "1.0.0"))
+        .perform(get(path).param("REQUEST", "GetCapabilities").param("VERSION", "1.0.0"))
         .andExpect(status().isForbidden())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Access denied"));
@@ -225,10 +226,15 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void test_pdok_wmts_GetCapabilities() throws Exception {
+  void test_obk_wmts_GetCapabilities() throws Exception {
+    final String path = apiBasePath + obkUrl;
     mockMvc
         .perform(
-            get("/app/5/layer/16/proxy/wmts?Service=WMTS&Request=GetCapabilities&Version=1.0.0"))
+            get(path)
+                .param("SERVICE", "WMTS")
+                .param("REQUEST", "GetCapabilities")
+                .param("VERSION", "1.0.0")
+                .with(requestPostProcessor(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
         .andExpect(content().string(containsString("<TileMatrix")));
@@ -236,26 +242,50 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void test_pdok_wmts_GetTile() throws Exception {
+  void test_obk_wmts_GetTile() throws Exception {
+    final String path = apiBasePath + obkUrl;
     mockMvc
         .perform(
-            get(
-                "/app/5/layer/16/proxy/wmts?layer=Actueel_ortho25&style=default&tilematrixset=EPSG:28992&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image/jpeg&TileMatrix=04&TileCol=8&TileRow=7"))
+            get(path)
+                .param("SERVICE", "WMTS")
+                .param("VERSION", "1.0.0")
+                .param("REQUEST", "GetTile")
+                .param("LAYER", "osm")
+                .param("STYLE", "default")
+                .param("FORMAT", "image/png")
+                .param("TILEMATRIXSET", "rd")
+                .param("TILEMATRIX", "4")
+                .param("TILEROW", "7")
+                .param("TILECOL", "8")
+                .with(requestPostProcessor(path)))
         .andExpect(status().isOk())
-        .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_JPEG))
+        .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
         .andExpect(header().string("Content-Length", new StringIsNotZeroMatcher()))
         .andExpect(header().exists("Last-Modified"));
   }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void test_pdok_wmts_GetTile_Conditional() throws Exception {
+  void test_obk_wmts_GetTile_Conditional() throws Exception {
+    final String path = apiBasePath + obkUrl;
+
     final DateTimeFormatter httpDateHeaderFormatter =
         DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH)
             .withZone(ZoneId.of("GMT"));
     mockMvc
         .perform(
-            get("/app/5/layer/16/proxy/wmts?layer=Actueel_ortho25&style=default&tilematrixset=EPSG:28992&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image/jpeg&TileMatrix=04&TileCol=8&TileRow=7")
+            get(path)
+                .param("SERVICE", "WMTS")
+                .param("VERSION", "1.0.0")
+                .param("REQUEST", "GetTile")
+                .param("LAYER", "osm")
+                .param("STYLE", "default")
+                .param("FORMAT", "image/png")
+                .param("TILEMATRIXSET", "rd")
+                .param("TILEMATRIX", "4")
+                .param("TILEROW", "7")
+                .param("TILECOL", "8")
+                .with(requestPostProcessor(path))
                 .header("If-Modified-Since", httpDateHeaderFormatter.format(Instant.now())))
         .andExpect(status().isNotModified());
   }
