@@ -176,6 +176,16 @@ public class PopulateTestData {
                         new AuthorizationRuleDecisionsValue()
                             .decision(AuthorizationRuleDecision.ALLOW))));
 
+    List<AuthorizationRule> ruleLoggedIn =
+        List.of(
+            new AuthorizationRule()
+                .groupName(Group.APP_AUTHENTICATED)
+                .decisions(
+                    Map.of(
+                        "read",
+                        new AuthorizationRuleDecisionsValue()
+                            .decision(AuthorizationRuleDecision.ALLOW))));
+
     Collection<GeoService> services =
         List.of(
             new GeoService()
@@ -485,6 +495,7 @@ public class PopulateTestData {
             .setName("default")
             .setTitle("Tailormap demo")
             .setCrs("EPSG:28992")
+            .setAuthorizationRules(rule)
             .setContentRoot(
                 new AppContent()
                     .addBaseLayerNodesItem(
@@ -598,6 +609,7 @@ public class PopulateTestData {
             .setName("base")
             .setTitle("Service base app")
             .setCrs("EPSG:28992")
+            .setAuthorizationRules(rule)
             .setContentRoot(
                 new AppContent()
                     .addBaseLayerNodesItem(
@@ -615,8 +627,8 @@ public class PopulateTestData {
         new Application()
             .setName("secured")
             .setTitle("secured app")
-            .setAuthenticatedRequired(true)
             .setCrs("EPSG:28992")
+            .setAuthorizationRules(ruleLoggedIn)
             .setContentRoot(
                 new AppContent()
                     .addBaseLayerNodesItem(
@@ -691,6 +703,7 @@ public class PopulateTestData {
         new Application()
             .setName("austria")
             .setCrs("EPSG:3857")
+            .setAuthorizationRules(rule)
             .setTitle("Austria")
             .setInitialExtent(
                 new Bounds().minx(987982d).miny(5799551d).maxx(1963423d).maxy(6320708d))
