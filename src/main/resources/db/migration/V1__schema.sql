@@ -7,7 +7,6 @@
        admin_comments text,
        preview_text text,
        crs varchar(255) not null,
-       authenticated_required boolean not null,
        content_root jsonb not null,
        settings jsonb not null,
        components jsonb not null,

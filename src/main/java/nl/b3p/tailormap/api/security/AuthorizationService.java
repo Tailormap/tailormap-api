@@ -5,15 +5,19 @@
  */
 package nl.b3p.tailormap.api.security;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRuleDecision;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRuleDecisionsValue;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -27,19 +31,29 @@ public class AuthorizationService {
   private Optional<AuthorizationRuleDecision> isAuthorizedByRules(
       List<AuthorizationRule> rules, String type) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    Set<String> groups;
+
+    if (auth == null || auth instanceof AnonymousAuthenticationToken) {
+      groups = Set.of(Group.ANONYMOUS);
+    } else {
+      groups = new HashSet<>();
+      groups.add(Group.ANONYMOUS);
+      groups.add(Group.APP_AUTHENTICATED);
+
+      for (GrantedAuthority authority : auth.getAuthorities()) {
+        groups.add(authority.getAuthority());
+      }
+    }
 
     // Admins are allowed access to anything.
-    if (auth.getAuthorities().stream().anyMatch(x -> x.getAuthority().equals("admin"))) {
+    if (groups.contains(Group.ADMIN)) {
       return Optional.of(AuthorizationRuleDecision.ALLOW);
     }
 
     boolean hasValidRule = false;
 
     for (AuthorizationRule rule : rules) {
-      boolean matchesGroup =
-          rule.getGroupName().equals("anonymous")
-              || auth.getAuthorities().stream()
-                  .anyMatch(x -> x.getAuthority().equals(rule.getGroupName()));
+      boolean matchesGroup = groups.contains(rule.getGroupName());
       if (!matchesGroup) {
         continue;
       }
@@ -51,13 +65,13 @@ public class AuthorizationService {
         return Optional.empty();
       }
 
-      if (value.getDecision().equals(AuthorizationRuleDecision.DENY)) {
+      if (value.getDecision().equals(AuthorizationRuleDecision.ALLOW)) {
         return Optional.of(value.getDecision());
       }
     }
 
     if (hasValidRule) {
-      return Optional.of(AuthorizationRuleDecision.ALLOW);
+      return Optional.of(AuthorizationRuleDecision.DENY);
     }
 
     return Optional.empty();
@@ -70,15 +84,6 @@ public class AuthorizationService {
    * @return the results from the access control checks.
    */
   public boolean mayUserRead(Application application) {
-    if (!application.isAuthenticatedRequired()) {
-      return true;
-    }
-
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-      return false;
-    }
-
     return isAuthorizedByRules(application.getAuthorizationRules(), "read")
         .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
   }

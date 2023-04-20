@@ -77,8 +77,6 @@ public class Application {
   })
   private Bounds maxExtent;
 
-  private boolean authenticatedRequired;
-
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
   @NotNull
@@ -183,15 +181,6 @@ public class Application {
 
   public Application setMaxExtent(Bounds maxExtent) {
     this.maxExtent = maxExtent;
-    return this;
-  }
-
-  public boolean isAuthenticatedRequired() {
-    return authenticatedRequired;
-  }
-
-  public Application setAuthenticatedRequired(boolean authenticatedRequired) {
-    this.authenticatedRequired = authenticatedRequired;
     return this;
   }
 
