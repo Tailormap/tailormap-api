@@ -25,58 +25,94 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
-@AutoConfigureMockMvc
 @PostgresIntegrationTest
+@AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
 class GeoServiceProxyControllerPostgresIntegrationTest {
+  private final String begroeidterreindeelUrl =
+      "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wms";
+  private final String pdokWmsUrl =
+      "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/proxy/wms";
   @Autowired private MockMvc mockMvc;
+
+  @Value("${tailormap-api.base-path}")
+  private String apiBasePath;
+
+  private static RequestPostProcessor requestPostProcessor(String servletPath) {
+    return request -> {
+      request.setServletPath(servletPath);
+      return request;
+    };
+  }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void app_not_found_404() throws Exception {
+    final String path = apiBasePath + "/app/1234/layer/76/proxy/wms";
     mockMvc
-        .perform(get("/app/1234/layer/76/proxy/wms"))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.message").value("Application with id 1234 not found"));
+        .andExpect(jsonPath("$.message").value("Not Found"));
   }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void deny_non_proxied_service() throws Exception {
+    final String path = apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:BGT/proxy/wms";
     mockMvc
-        .perform(get("/app/1/layer/10/proxy/wms"))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isForbidden())
-        .andExpect(content().string("Proxy not enabled for requested service"));
+        .andExpect(jsonPath("$.message").value("Proxy not enabled for requested service"));
   }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void deny_wrong_protocol() throws Exception {
+    final String path =
+        apiBasePath
+            + "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wmts";
     mockMvc
-        .perform(get("/app/5/layer/15/proxy/wmts"))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isBadRequest())
-        .andExpect(content().string("Invalid proxy protocol for service"));
+        .andExpect(jsonPath("$.message").value("Invalid proxy protocol: wmts"));
   }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void deny_http_post() throws Exception {
-    // Forbidden instead of 405 Method Not Allowed?
-    mockMvc.perform(post("/app/5/layer/15/proxy/wms")).andExpect(status().isForbidden());
+  void allow_http_post() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelUrl;
+    mockMvc
+        .perform(post(path).param("REQUEST", "GetCapabilities").with(requestPostProcessor(path)))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void allow_http_get() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelUrl;
+    mockMvc
+        .perform(get(path).param("REQUEST", "GetCapabilities").with(requestPostProcessor(path)))
+        .andExpect(status().isOk());
   }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_pdok_wms_GetCapabilities() throws Exception {
+    final String path = apiBasePath + pdokWmsUrl;
     mockMvc
         .perform(
-            get("/app/5/layer/15/proxy/wms?REQUEST=GetCapabilities&SERVICE=WMS")
+            get(path)
+                .param("REQUEST", "GetCapabilities")
+                .param("SERVICE", "WMS")
+                .with(requestPostProcessor(path))
                 .header("User-Agent", "Pietje"))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_XML))
@@ -86,25 +122,27 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
                     startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<WMS_Capabilities")));
   }
 
-  private static class StringIsNotZeroMatcher extends TypeSafeMatcher<String> {
-    @Override
-    protected boolean matchesSafely(String item) {
-      return Long.parseLong(item) > 0;
-    }
-
-    @Override
-    public void describeTo(Description description) {
-      description.appendText("is not zero");
-    }
-  }
-
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_pdok_wms_GetMap() throws Exception {
+    final String path = apiBasePath + pdokWmsUrl;
     mockMvc
         .perform(
-            get(
-                "/app/5/layer/15/proxy/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&LAYERS=Gemeentegebied&SRS=EPSG:28992&STYLES=&WIDTH=1431&HEIGHT=1152&BBOX=5864.898958858859,340575.3140154673,283834.9241914773,564349.9255234873"))
+            get(path)
+                .param("REQUEST", "GetMap")
+                .param("VERSION", "1.1.1")
+                .param("FORMAT", "image/png")
+                .param("TRANSPARENT", "TRUE")
+                .param("LAYERS", "Gemeentegebied")
+                .param("SRS", "EPSG:28992")
+                .param("STYLES", "")
+                .param("WIDTH", "1431")
+                .param("HEIGHT", "1152")
+                .param(
+                    "BBOX",
+                    "5864.898958858859,340575.3140154673,283834.9241914773,564349.9255234873")
+                .param("SERVICE", "WMS")
+                .with(requestPostProcessor(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
         .andExpect(header().string("Content-Length", new StringIsNotZeroMatcher()));
@@ -113,10 +151,18 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_pdok_wms_GetLegendGraphic() throws Exception {
+    final String path = apiBasePath + pdokWmsUrl;
     mockMvc
         .perform(
-            get(
-                "/app/5/layer/15/proxy/wms?language=dut&version=1.1.1&service=WMS&request=GetLegendGraphic&layer=Gemeentegebied&format=image/png&STYLE=Gemeentegebied&SCALE=693745.6953993673"))
+            get(path)
+                .param("REQUEST", "GetLegendGraphic")
+                .param("VERSION", "1.1.1")
+                .param("FORMAT", "image/png")
+                .param("LAYER", "Gemeentegebied")
+                .param("STYLE", "Gemeentegebied")
+                .param("SCALE", "693745.6953993673")
+                .param("SERVICE", "WMS")
+                .with(requestPostProcessor(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
         .andExpect(header().string("Content-Length", new StringIsNotZeroMatcher()));
@@ -197,5 +243,17 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
             get("/app/5/layer/16/proxy/wmts?layer=Actueel_ortho25&style=default&tilematrixset=EPSG:28992&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image/jpeg&TileMatrix=04&TileCol=8&TileRow=7")
                 .header("If-Modified-Since", httpDateHeaderFormatter.format(Instant.now())))
         .andExpect(status().isNotModified());
+  }
+
+  private static class StringIsNotZeroMatcher extends TypeSafeMatcher<String> {
+    @Override
+    protected boolean matchesSafely(String item) {
+      return Long.parseLong(item) > 0;
+    }
+
+    @Override
+    public void describeTo(Description description) {
+      description.appendText("is not zero");
+    }
   }
 }
