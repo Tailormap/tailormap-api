@@ -163,14 +163,14 @@ public class GeoServiceHelper {
 
     ServiceInfo info = ows.getInfo();
 
-    if (StringUtils.isBlank(geoService.getTitle())) {
-      geoService.setTitle(info.getTitle());
-    }
-
     TMServiceCaps caps = new TMServiceCaps();
     geoService.setServiceCapabilities(caps);
 
     if (info != null) {
+      if (StringUtils.isBlank(geoService.getTitle())) {
+        geoService.setTitle(info.getTitle());
+      }
+
       caps.serviceInfo(
           new TMServiceInfo()
               .keywords(info.getKeywords())
@@ -181,6 +181,14 @@ public class GeoServiceHelper {
               .source(info.getSource()));
 
       geoService.setAdvertisedUrl(info.getSource().toString());
+    } else if (ows.getCapabilities() != null && ows.getCapabilities().getService() != null) {
+      org.geotools.data.ows.Service service = ows.getCapabilities().getService();
+
+      if (StringUtils.isBlank(geoService.getTitle())) {
+        geoService.setTitle(service.getTitle());
+      }
+      caps.setServiceInfo(
+          new TMServiceInfo().keywords(Set.copyOf(List.of(service.getKeywordList()))));
     }
   }
 
