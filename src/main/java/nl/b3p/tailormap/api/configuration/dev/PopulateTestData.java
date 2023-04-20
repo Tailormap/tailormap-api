@@ -215,8 +215,10 @@ public class PopulateTestData {
                     "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
                 .setSettings(
                     new GeoServiceSettings()
-                        .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER))
+                        .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)
+                        .useProxy(true))
                 .setPublished(true)
+                .setTitle("PDOK Kadaster bestuurlijke gebieden")
             // TODO MapServer WMS "https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk"
             );
 
@@ -436,11 +438,19 @@ public class PopulateTestData {
                             .title("Layers")
                             .childrenIds(
                                 List.of(
+                                    "lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied",
                                     "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
                                     "lyr:snapshot-geoserver:sqlserver:wegdeel",
                                     "lyr:snapshot-geoserver:oracle:WATERDEEL",
                                     "lyr:snapshot-geoserver:BGT",
                                     "lvl:proxied")))
+                    .addLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied")
+                            .serviceId("pdok-kadaster-bestuurlijkegebieden")
+                            .layerName("Gemeentegebied")
+                            .visible(true))
                     .addLayerNodesItem(
                         new AppTreeLayerNode()
                             .objectType("AppTreeLayerNode")
@@ -509,6 +519,82 @@ public class PopulateTestData {
                             .title("Base layers")
                             .childrenIds(
                                 List.of("lvl:openbasiskaart", "lvl:pdok-hwh-luchtfotorgb"))));
+    app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
+    applicationRepository.save(app);
+
+    app =
+        new Application()
+            .setName("secured")
+            .setTitle("secured app")
+            .setAuthenticatedRequired(true)
+            .setCrs("EPSG:28992")
+            .setContentRoot(
+                new AppContent()
+                    .addBaseLayerNodesItem(
+                        new AppTreeLevelNode()
+                            .objectType("AppTreeLevelNode")
+                            .id("root-base-layers")
+                            .root(true)
+                            .title("Base layers")
+                            .childrenIds(
+                                List.of(
+                                    "lvl:openbasiskaart",
+                                    "lvl:pdok-hwh-luchtfotorgb",
+                                    "lvl:openbasiskaart-proxied")))
+                    .addBaseLayerNodesItem(
+                        new AppTreeLevelNode()
+                            .objectType("AppTreeLevelNode")
+                            .id("lvl:openbasiskaart-proxied")
+                            .title("Openbasiskaart (proxied)")
+                            .addChildrenIdsItem("lyr:openbasiskaart-proxied:osm"))
+                    .addBaseLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:openbasiskaart-proxied:osm")
+                            .serviceId("openbasiskaart-proxied")
+                            .layerName("osm")
+                            .visible(false))
+                    .addLayerNodesItem(
+                        new AppTreeLevelNode()
+                            .objectType("AppTreeLevelNode")
+                            .id("root")
+                            .root(true)
+                            .title("Layers")
+                            .childrenIds(
+                                List.of(
+                                    "lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied",
+                                    "lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied",
+                                    "lvl:proxied")))
+                    .addLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied")
+                            .serviceId("pdok-kadaster-bestuurlijkegebieden")
+                            .layerName("Gemeentegebied")
+                            .visible(true))
+                    .addLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied")
+                            .serviceId("pdok-kadaster-bestuurlijkegebieden")
+                            .layerName("Provinciegebied")
+                            .visible(false))
+                    .addLayerNodesItem(
+                        new AppTreeLevelNode()
+                            .objectType("AppTreeLevelNode")
+                            .id("lvl:proxied")
+                            .title("Proxied")
+                            .childrenIds(
+                                List.of(
+                                    "lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel")))
+                    .addLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel")
+                            .serviceId("snapshot-geoserver-proxied")
+                            .layerName("postgis:begroeidterreindeel")
+                            .visible(false)));
+
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     applicationRepository.save(app);
 
