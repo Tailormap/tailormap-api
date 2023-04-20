@@ -16,6 +16,7 @@ import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
 import nl.b3p.tailormap.api.viewer.model.TMCoordinateReferenceSystem;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,7 @@ class ApplicationHelperTest {
   @MockBean ConfigurationRepository configurationRepository;
   @MockBean ApplicationRepository applicationRepository;
   @MockBean EntityManager entityManager;
+  @MockBean AuthorizationService authorizationService;
   @Autowired ApplicationHelper applicationHelper;
 
   @Test

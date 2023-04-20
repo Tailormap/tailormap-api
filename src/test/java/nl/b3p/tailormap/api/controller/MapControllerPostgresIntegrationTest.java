@@ -391,7 +391,7 @@ class MapControllerPostgresIntegrationTest {
   @Order(Integer.MAX_VALUE)
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_send_401_when_application_login_required() throws Exception {
-    applicationRepository.setAuthenticatedRequired(1L, true);
+    // applicationRepository.setAuthenticatedRequired(1L, true);
     mockMvc
         .perform(get("/app/default/map").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isUnauthorized())
