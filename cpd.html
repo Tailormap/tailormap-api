@@ -72,7 +72,54 @@
 <h1>CPD Results</h1>
 <p>The following document contains the results of PMD's  <a class="externalLink" href="https://pmd.github.io/latest/pmd_userdocs_cpd.html">CPD</a> 6.55.0.</p></section><section>
 <h1>Duplications</h1>
-<p>CPD found no problems in your source code.</p></section>
+<table class="table table-striped">
+<tr class="a">
+<th>File</th>
+<th>Line</th></tr>
+<tr class="b">
+<td>nl/b3p/tailormap/api/configuration/dev/PopulateTestData.java</td>
+<td><a href="./xref/nl/b3p/tailormap/api/configuration/dev/PopulateTestData.html#L405">405</a></td></tr>
+<tr class="a">
+<td>nl/b3p/tailormap/api/configuration/dev/PopulateTestData.java</td>
+<td><a href="./xref/nl/b3p/tailormap/api/configuration/dev/PopulateTestData.html#L529">529</a></td></tr>
+<tr class="b"><td colspan='2'>
+<div class="verbatim">
+<pre>.setTitle(&quot;Tailormap demo&quot;)
+            .setCrs(&quot;EPSG:28992&quot;)
+            .setContentRoot(
+                new AppContent()
+                    .addBaseLayerNodesItem(
+                        new AppTreeLevelNode()
+                            .objectType(&quot;AppTreeLevelNode&quot;)
+                            .id(&quot;root-base-layers&quot;)
+                            .root(true)
+                            .title(&quot;Base layers&quot;)
+                            .childrenIds(
+                                List.of(
+                                    &quot;lvl:openbasiskaart&quot;,
+                                    &quot;lvl:pdok-hwh-luchtfotorgb&quot;,
+                                    &quot;lvl:openbasiskaart-proxied&quot;)))
+                    .addBaseLayerNodesItem(
+                        new AppTreeLevelNode()
+                            .objectType(&quot;AppTreeLevelNode&quot;)
+                            .id(&quot;lvl:openbasiskaart-proxied&quot;)
+                            .title(&quot;Openbasiskaart (proxied)&quot;)
+                            .addChildrenIdsItem(&quot;lyr:openbasiskaart-proxied:osm&quot;))
+                    .addBaseLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType(&quot;AppTreeLayerNode&quot;)
+                            .id(&quot;lyr:openbasiskaart-proxied:osm&quot;)
+                            .serviceId(&quot;openbasiskaart-proxied&quot;)
+                            .layerName(&quot;osm&quot;)
+                            .visible(false))
+                    .addLayerNodesItem(
+                        new AppTreeLevelNode()
+                            .objectType(&quot;AppTreeLevelNode&quot;)
+                            .id(&quot;root&quot;)
+                            .root(true)
+                            .title(&quot;Layers&quot;)
+                            .childrenIds(
+                                List.of(</pre></div></td></tr></table></section>
         </main>
       </div>
     </div>
