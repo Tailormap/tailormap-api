@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.viewer.model.Service;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -43,7 +44,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @AutoConfigureMockMvc
-@EnableAutoConfiguration
 @PostgresIntegrationTest
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
@@ -1081,5 +1081,90 @@ class FeaturesControllerPostgresIntegrationTest {
         .andExpect(jsonPath("$.features").isArray())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andReturn();
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+          username = "admin",
+          authorities = {"Admin"})
+  void only_filter_not_supported() throws Exception {
+    mockMvc
+            .perform(get("/app/1/layer/2/features").param("filter", "naam=Utrecht"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.code").value(400));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+          username = "admin",
+          authorities = {"Admin"})
+  void givenOnly_XorY_shouldError() throws Exception {
+    mockMvc
+            .perform(get("/app/1/layer/2/features").param("x", "3"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.code").value(400));
+
+    mockMvc
+            .perform(get("/app/1/layer/2/features").param("y", "3"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.code").value(400));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+          username = "admin",
+          authorities = {"Admin"})
+  void given_distance_NotGreaterThanZero() throws Exception {
+    mockMvc
+            .perform(get("/app/1/layer/2/features?y=3&y=3").param("distance", "0"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.code").value(400));
+
+    mockMvc
+            .perform(get("/app/1/layer/2/features?y=3&y=3").param("distance", "-1"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.code").value(400));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+          username = "admin",
+          authorities = {"Admin"})
+  void should_error_when_calling_with_nonexistent_appId() throws Exception {
+    mockMvc
+            .perform(get("/app/400/layer/1/features"))
+            .andExpect(status().isNotFound())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.code").value(404));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+          username = "admin",
+          authorities = {"Admin"})
+  void should_not_find_when_called_without_appId() throws Exception {
+    mockMvc.perform(get("/app/layer/features")).andExpect(status().isNotFound());
+  }
+
+  @Test
+  @Order(Integer.MAX_VALUE)
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void should_send_403_when_access_denied() throws Exception {
+    mockMvc
+            .perform(get("/app/1/layer/2/features").accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isForbidden())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.code").value(403))
+            .andExpect(jsonPath("$.message").value("Access denied"));
   }
 }
