@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import nl.b3p.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
+import nl.b3p.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Catalog;
 import nl.b3p.tailormap.api.persistence.Configuration;
@@ -257,68 +258,99 @@ public class PopulateTestData {
     Map<String, TMFeatureSource> featureSources =
         Map.of(
             "postgis",
-                new TMFeatureSource()
-                    .setProtocol(TMFeatureSource.Protocol.JDBC)
-                    .setTitle("PostGIS")
-                    .setJdbcConnection(
-                        new JDBCConnectionProperties()
-                            .dbtype(JDBCConnectionProperties.DbtypeEnum.POSTGIS)
-                            .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "postgis")
-                            .port(connectToSpatialDbsAtLocalhost ? 54322 : 5432)
-                            .database("geodata")
-                            .schema("public"))
-                    .setAuthentication(
-                        new ServiceAuthentication()
-                            .method(ServiceAuthentication.MethodEnum.PASSWORD)
-                            .username("geodata")
-                            .password(geodataPassword)),
+            new TMFeatureSource()
+                .setProtocol(TMFeatureSource.Protocol.JDBC)
+                .setTitle("PostGIS")
+                .setJdbcConnection(
+                    new JDBCConnectionProperties()
+                        .dbtype(JDBCConnectionProperties.DbtypeEnum.POSTGIS)
+                        .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "postgis")
+                        .port(connectToSpatialDbsAtLocalhost ? 54322 : 5432)
+                        .database("geodata")
+                        .schema("public"))
+                .setAuthentication(
+                    new ServiceAuthentication()
+                        .method(ServiceAuthentication.MethodEnum.PASSWORD)
+                        .username("geodata")
+                        .password(geodataPassword)),
             "postgis_osm",
-                new TMFeatureSource()
-                    .setProtocol(TMFeatureSource.Protocol.JDBC)
-                    .setTitle("PostGIS OSM")
-                    .setJdbcConnection(
-                        new JDBCConnectionProperties()
-                            .dbtype(JDBCConnectionProperties.DbtypeEnum.POSTGIS)
-                            .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "postgis")
-                            .port(connectToSpatialDbsAtLocalhost ? 54322 : 5432)
-                            .database("geodata")
-                            .schema("osm"))
-                    .setAuthentication(
-                        new ServiceAuthentication()
-                            .method(ServiceAuthentication.MethodEnum.PASSWORD)
-                            .username("geodata")
-                            .password(geodataPassword)),
+            new TMFeatureSource()
+                .setProtocol(TMFeatureSource.Protocol.JDBC)
+                .setTitle("PostGIS OSM")
+                .setJdbcConnection(
+                    new JDBCConnectionProperties()
+                        .dbtype(JDBCConnectionProperties.DbtypeEnum.POSTGIS)
+                        .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "postgis")
+                        .port(connectToSpatialDbsAtLocalhost ? 54322 : 5432)
+                        .database("geodata")
+                        .schema("osm"))
+                .setAuthentication(
+                    new ServiceAuthentication()
+                        .method(ServiceAuthentication.MethodEnum.PASSWORD)
+                        .username("geodata")
+                        .password(geodataPassword)),
             "oracle",
-                new TMFeatureSource()
-                    .setProtocol(TMFeatureSource.Protocol.JDBC)
-                    .setTitle("Oracle")
-                    .setJdbcConnection(
-                        new JDBCConnectionProperties()
-                            .dbtype(JDBCConnectionProperties.DbtypeEnum.ORACLE)
-                            .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "oracle")
-                            .database("/XEPDB1")
-                            .schema("GEODATA"))
-                    .setAuthentication(
-                        new ServiceAuthentication()
-                            .method(ServiceAuthentication.MethodEnum.PASSWORD)
-                            .username("geodata")
-                            .password(geodataPassword)),
+            new TMFeatureSource()
+                .setProtocol(TMFeatureSource.Protocol.JDBC)
+                .setTitle("Oracle")
+                .setJdbcConnection(
+                    new JDBCConnectionProperties()
+                        .dbtype(JDBCConnectionProperties.DbtypeEnum.ORACLE)
+                        .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "oracle")
+                        .database("/XEPDB1")
+                        .schema("GEODATA"))
+                .setAuthentication(
+                    new ServiceAuthentication()
+                        .method(ServiceAuthentication.MethodEnum.PASSWORD)
+                        .username("geodata")
+                        .password(geodataPassword)),
             "sqlserver",
-                new TMFeatureSource()
-                    .setProtocol(TMFeatureSource.Protocol.JDBC)
-                    .setTitle("MS SQL Server")
-                    .setJdbcConnection(
-                        new JDBCConnectionProperties()
-                            .dbtype(JDBCConnectionProperties.DbtypeEnum.SQLSERVER)
-                            .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "sqlserver")
-                            .database("geodata;encrypt=false")
-                            .schema("dbo"))
-                    .setAuthentication(
-                        new ServiceAuthentication()
-                            .method(ServiceAuthentication.MethodEnum.PASSWORD)
-                            .username("geodata")
-                            .password(geodataPassword)));
+            new TMFeatureSource()
+                .setProtocol(TMFeatureSource.Protocol.JDBC)
+                .setTitle("MS SQL Server")
+                .setJdbcConnection(
+                    new JDBCConnectionProperties()
+                        .dbtype(JDBCConnectionProperties.DbtypeEnum.SQLSERVER)
+                        .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "sqlserver")
+                        .database("geodata;encrypt=false")
+                        .schema("dbo"))
+                .setAuthentication(
+                    new ServiceAuthentication()
+                        .method(ServiceAuthentication.MethodEnum.PASSWORD)
+                        .username("geodata")
+                        .password(geodataPassword)),
+            "pdok-kadaster-bestuurlijkegebieden",
+            new TMFeatureSource()
+                .setProtocol(TMFeatureSource.Protocol.WFS)
+                .setUrl(
+                    "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0?VERSION=2.0.0")
+                .setTitle("Bestuurlijke gebieden")
+                .setNotes(
+                    "Overzicht van de bestuurlijke indeling van Nederland in gemeenten en provincies alsmede de rijksgrens. Gegevens zijn afgeleid uit de Basisregistratie Kadaster (BRK)."));
     featureSourceRepository.saveAll(featureSources.values());
+
+    new WFSFeatureSourceHelper()
+        .loadCapabilities(featureSources.get("pdok-kadaster-bestuurlijkegebieden"));
+    geoServiceRepository
+        .findById("pdok-kadaster-bestuurlijkegebieden")
+        .ifPresent(
+            geoService -> {
+              geoService
+                  .getSettings()
+                  .layerSettings(
+                      Map.of(
+                          "Provinciegebied",
+                          new GeoServiceLayerSettings()
+                              .featureType(
+                                  new FeatureTypeRef()
+                                      .featureSourceId(
+                                          featureSources
+                                              .get("pdok-kadaster-bestuurlijkegebieden")
+                                              .getId())
+                                      .featureTypeName("bestuurlijkegebieden:Provinciegebied"))
+                              .title("Provinciegebied (WFS)")));
+              geoServiceRepository.save(geoService);
+            });
 
     CatalogNode featureSourceCatalogNode =
         new CatalogNode().id("feature_sources").title("Test feature sources");
@@ -331,7 +363,6 @@ public class PopulateTestData {
               .kind(TailormapObjectRef.KindEnum.FEATURE_SOURCE)
               .id(featureSource.getId().toString()));
     }
-
     catalogRepository.save(catalog);
 
     if (connectToSpatialDbs) {
@@ -340,7 +371,11 @@ public class PopulateTestData {
           .forEach(
               fs -> {
                 try {
-                  new JDBCFeatureSourceHelper().loadCapabilities(fs);
+                  if (fs.getProtocol() == TMFeatureSource.Protocol.JDBC) {
+                    new JDBCFeatureSourceHelper().loadCapabilities(fs);
+                  } else if (fs.getProtocol() == TMFeatureSource.Protocol.WFS) {
+                    new WFSFeatureSourceHelper().loadCapabilities(fs);
+                  }
                 } catch (Exception e) {
                   logger.error(
                       "Error loading capabilities for feature source {}", fs.getTitle(), e);
@@ -438,12 +473,20 @@ public class PopulateTestData {
                             .title("Layers")
                             .childrenIds(
                                 List.of(
+                                    "lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied",
                                     "lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied",
                                     "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
                                     "lyr:snapshot-geoserver:sqlserver:wegdeel",
                                     "lyr:snapshot-geoserver:oracle:WATERDEEL",
                                     "lyr:snapshot-geoserver:BGT",
                                     "lvl:proxied")))
+                    .addLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied")
+                            .serviceId("pdok-kadaster-bestuurlijkegebieden")
+                            .layerName("Provinciegebied")
+                            .visible(true))
                     .addLayerNodesItem(
                         new AppTreeLayerNode()
                             .objectType("AppTreeLayerNode")

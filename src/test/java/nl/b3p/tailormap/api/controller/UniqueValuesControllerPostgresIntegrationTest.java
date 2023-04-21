@@ -21,9 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import nl.b3p.tailormap.api.JPAConfiguration;
-import nl.b3p.tailormap.api.security.AuthorizationService;
-import nl.b3p.tailormap.api.security.SecurityConfig;
+import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -34,33 +32,38 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.RetryingTest;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
-@SpringBootTest(
-    classes = {
-      JPAConfiguration.class,
-      UniqueValuesController.class,
-      SecurityConfig.class,
-      AuthorizationService.class,
-      AppRestControllerAdvice.class
-    })
+@PostgresIntegrationTest
 @AutoConfigureMockMvc
-@EnableAutoConfiguration
-@ActiveProfiles("postgresql")
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
 class UniqueValuesControllerPostgresIntegrationTest {
-  private static final String provinciesWFSUrl = "/app/1/layer/2/unique/naam";
-  private static final String begroeidterreindeelPostgisUrl = "/app/1/layer/6/unique/bronhouder";
-  private static final String waterdeelOracleUrl = "/app/1/layer/7/unique/BRONHOUDER";
-  private static final String wegdeelSqlserverUrl = "/app/1/layer/9/unique/bronhouder";
+  private static final String provinciesWFSUrl =
+      "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/unique/naam";
+  private static final String begroeidterreindeelPostgisUrl =
+      "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/unique/bronhouder";
+  private static final String waterdeelOracleUrl =
+      "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/BRONHOUDER";
+  private static final String wegdeelSqlserverUrl =
+      "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/unique/bronhouder";
+
+  @Value("${tailormap-api.base-path}")
+  private String apiBasePath;
+
   @Autowired private MockMvc mockMvc;
+
+  private static RequestPostProcessor requestPostProcessor(String servletPath) {
+    return request -> {
+      request.setServletPath(servletPath);
+      return request;
+    };
+  }
 
   /** layer url + bronhouders. */
   static Stream<Arguments> databaseArgumentsProvider() {
@@ -77,10 +80,10 @@ class UniqueValuesControllerPostgresIntegrationTest {
   @ParameterizedTest(name = "#{index}: should return all unique values from database: {0}")
   @MethodSource("databaseArgumentsProvider")
   void bronhouder_unique_values_test(String url, String... expected) throws Exception {
+    url = apiBasePath + url;
     MvcResult result =
         mockMvc
-            .perform(
-                get(url).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+            .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.filterApplied").value(false))
@@ -96,12 +99,39 @@ class UniqueValuesControllerPostgresIntegrationTest {
     assertTrue(uniqueValues.containsAll(Set.of(expected)), "not all values are present");
   }
 
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void layer_without_featuretype() throws Exception {
+    final String url =
+        apiBasePath
+            + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/unique/naam";
+    mockMvc
+        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Layer does not have feature type"));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void attribute_name_required() throws Exception {
+    final String url =
+        apiBasePath
+            + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/unique/ ";
+    mockMvc
+        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Attribute name is required"));
+  }
+
   @ParameterizedTest(
       name =
           "#{index}: should return unique bronhouder from database when filtered on bronhouder: {0}")
   @MethodSource("databaseArgumentsProvider")
   void bronhouder_with_filter_on_bronhouder_unique_values_test(String url, String... expected)
       throws Exception {
+    url = apiBasePath + url;
     String cqlFilter = "bronhouder='G0344'";
     if (url.contains("BRONHOUDER")) {
       // uppercase oracle cql filter
@@ -112,9 +142,9 @@ class UniqueValuesControllerPostgresIntegrationTest {
         mockMvc
             .perform(
                 get(url)
-                    .param("filter", cqlFilter)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.APPLICATION_JSON))
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(requestPostProcessor(url))
+                    .param("filter", cqlFilter))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.filterApplied").value(true))
@@ -135,6 +165,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
   @MethodSource("databaseArgumentsProvider")
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void bronhouder_with_filter_on_inonderzoek_unique_values_test(String url) throws Exception {
+    url = apiBasePath + url;
     String cqlFilter = "inonderzoek=TRUE";
     if (url.contains("BRONHOUDER")) {
       // uppercase oracle cql filter
@@ -144,8 +175,8 @@ class UniqueValuesControllerPostgresIntegrationTest {
     mockMvc
         .perform(
             get(url)
+                .with(requestPostProcessor(url))
                 .param("filter", cqlFilter)
-                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -157,23 +188,26 @@ class UniqueValuesControllerPostgresIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void broken_filter_returns_bad_request_message() throws Exception {
+    final String url = apiBasePath + begroeidterreindeelPostgisUrl + "bronhouder";
     mockMvc
         .perform(
-            get(begroeidterreindeelPostgisUrl + "bronhouder").param("filter", "naam or Utrecht"))
+            get(url)
+                .param("filter", "naam or Utrecht")
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url)))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))
-        .andExpect(jsonPath("$.message").value("Could not parse requested filter."));
+        .andExpect(jsonPath("$.message").value("Could not parse requested filter"));
   }
 
   @RetryingTest(2)
+  // https://b3partners.atlassian.net/browse/HTM-758
   void unique_values_from_wfs() throws Exception {
+    final String url = apiBasePath + provinciesWFSUrl;
     MvcResult result =
         mockMvc
-            .perform(
-                get(provinciesWFSUrl)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.APPLICATION_JSON))
+            .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.filterApplied").value(false))
@@ -211,12 +245,13 @@ class UniqueValuesControllerPostgresIntegrationTest {
 
   @RetryingTest(2)
   void unique_values_from_wfs_with_filter_on_same() throws Exception {
-    String cqlFilter = "naam='Utrecht'";
+    final String url = apiBasePath + provinciesWFSUrl;
+    final String cqlFilter = "naam='Utrecht'";
     mockMvc
         .perform(
-            get(provinciesWFSUrl)
-                .contentType(MediaType.APPLICATION_JSON)
+            get(url)
                 .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
                 .param("filter", cqlFilter))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -229,12 +264,12 @@ class UniqueValuesControllerPostgresIntegrationTest {
   @RetryingTest(2)
   void unique_values_from_wfs_with_filter_on_different() throws Exception {
     String cqlFilter = "naam like '%Holland'";
-
+    final String url = apiBasePath + provinciesWFSUrl;
     mockMvc
         .perform(
-            get(provinciesWFSUrl)
-                .contentType(MediaType.APPLICATION_JSON)
+            get(url)
                 .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
                 .param("filter", cqlFilter))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
