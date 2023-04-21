@@ -99,6 +99,32 @@ class UniqueValuesControllerPostgresIntegrationTest {
     assertTrue(uniqueValues.containsAll(Set.of(expected)), "not all values are present");
   }
 
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void layer_without_featuretype() throws Exception {
+    final String url =
+        apiBasePath
+            + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/unique/naam";
+    mockMvc
+        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Layer does not have feature type"));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void attribute_name_required() throws Exception {
+    final String url =
+        apiBasePath
+            + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/unique/ ";
+    mockMvc
+        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Attribute name is required"));
+  }
+
   @ParameterizedTest(
       name =
           "#{index}: should return unique bronhouder from database when filtered on bronhouder: {0}")
