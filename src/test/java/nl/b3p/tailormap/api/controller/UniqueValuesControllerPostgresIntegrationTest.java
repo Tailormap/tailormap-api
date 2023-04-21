@@ -44,8 +44,19 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
 class UniqueValuesControllerPostgresIntegrationTest {
+  private static final String provinciesWFSUrl =
+      "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/unique/naam";
+  private static final String begroeidterreindeelPostgisUrl =
+      "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/unique/bronhouder";
+  private static final String waterdeelOracleUrl =
+      "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/BRONHOUDER";
+  private static final String wegdeelSqlserverUrl =
+      "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/unique/bronhouder";
+
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
+
+  @Autowired private MockMvc mockMvc;
 
   private static RequestPostProcessor requestPostProcessor(String servletPath) {
     return request -> {
@@ -53,15 +64,6 @@ class UniqueValuesControllerPostgresIntegrationTest {
       return request;
     };
   }
-
-  private static final String provinciesWFSUrl = "/app/1/layer/2/unique/naam";
-  private static final String begroeidterreindeelPostgisUrl =
-      "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/unique/bronhouder";
-  private static final String waterdeelOracleUrl =
-      "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/BRONHOUDER";
-  private static final String wegdeelSqlserverUrl =
-      "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/unique/bronhouder";
-  @Autowired private MockMvc mockMvc;
 
   /** layer url + bronhouders. */
   static Stream<Arguments> databaseArgumentsProvider() {
@@ -162,7 +164,11 @@ class UniqueValuesControllerPostgresIntegrationTest {
   void broken_filter_returns_bad_request_message() throws Exception {
     final String url = apiBasePath + begroeidterreindeelPostgisUrl + "bronhouder";
     mockMvc
-        .perform(get(url).param("filter", "naam or Utrecht").with(requestPostProcessor(url)))
+        .perform(
+            get(url)
+                .param("filter", "naam or Utrecht")
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url)))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))
@@ -170,13 +176,12 @@ class UniqueValuesControllerPostgresIntegrationTest {
   }
 
   @RetryingTest(2)
+  // https://b3partners.atlassian.net/browse/HTM-758
   void unique_values_from_wfs() throws Exception {
+    final String url = apiBasePath + provinciesWFSUrl;
     MvcResult result =
         mockMvc
-            .perform(
-                get(provinciesWFSUrl)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.APPLICATION_JSON))
+            .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.filterApplied").value(false))
@@ -214,12 +219,13 @@ class UniqueValuesControllerPostgresIntegrationTest {
 
   @RetryingTest(2)
   void unique_values_from_wfs_with_filter_on_same() throws Exception {
-    String cqlFilter = "naam='Utrecht'";
+    final String url = apiBasePath + provinciesWFSUrl;
+    final String cqlFilter = "naam='Utrecht'";
     mockMvc
         .perform(
-            get(provinciesWFSUrl)
-                .contentType(MediaType.APPLICATION_JSON)
+            get(url)
                 .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
                 .param("filter", cqlFilter))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -232,12 +238,12 @@ class UniqueValuesControllerPostgresIntegrationTest {
   @RetryingTest(2)
   void unique_values_from_wfs_with_filter_on_different() throws Exception {
     String cqlFilter = "naam like '%Holland'";
-
+    final String url = apiBasePath + provinciesWFSUrl;
     mockMvc
         .perform(
-            get(provinciesWFSUrl)
-                .contentType(MediaType.APPLICATION_JSON)
+            get(url)
                 .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
                 .param("filter", cqlFilter))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
