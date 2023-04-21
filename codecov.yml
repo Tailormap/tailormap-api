@@ -1,12 +1,11 @@
 # https://docs.codecov.com/docs/codecovyml-reference
 # validate: curl -X POST --data-binary @codecov.yml https://codecov.io/validate
 codecov:
-  bot: 'codecov-io'
   strict_yaml_branch: 'main'
   branch: 'main'
   require_ci_to_pass: true
   notify:
-    after_n_builds: 5
+    after_n_builds: 2
     wait_for_ci: true
 
 coverage:
@@ -33,4 +32,4 @@ comment:
   layout: "reach, diff, flags, files"
   behavior: default
   require_changes: true
-  after_n_builds: 5
+  after_n_builds: 2
