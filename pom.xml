@@ -1530,6 +1530,29 @@ SPDX-License-Identifier: MIT
                         </configuration>
                     </plugin>
                     <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>start-spring-boot</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <!-- start with populate-testdata profile before tests to populate database -->
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <!--suppress UnresolvedMavenProperty -->
+                                    <skip>${skipTests}</skip>
+                                    <profiles>
+                                        <profile>populate-testdata</profile>
+                                    </profiles>
+                                    <!--suppress UnresolvedMavenProperty -->
+                                    <jvmArguments>${failsafeArgLine} -Dspatial.dbs.connect=true -Dtailormap-api.database.populate-testdata.exit=true</jvmArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <configuration>
                             <!-- explicitly run any and all postgresql tests; includes does not work -->
@@ -1548,42 +1571,6 @@ SPDX-License-Identifier: MIT
                                     <goal>integration-test</goal>
                                     <goal>verify</goal>
                                 </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>start-spring-boot</id>
-                                <goals>
-                                    <goal>start</goal>
-                                </goals>
-                                <phase>pre-integration-test</phase>
-                                <configuration>
-                                    <!--suppress UnresolvedMavenProperty -->
-                                    <skip>${skipTests}</skip>
-                                    <!--suppress UnresolvedMavenProperty -->
-                                    <jvmArguments>${failsafeArgLine} -Dspring.profiles.active=postgresql</jvmArguments>
-                                    <useTestClasspath>true</useTestClasspath>
-                                    <!-- wait 60 seconds (extra) for Spring Boot to start and load all data from capabilities etc... -->
-                                    <wait>60000</wait>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>stop-spring-boot</id>
-                                <goals>
-                                    <goal>stop</goal>
-                                </goals>
-                                <!-- Leave Spring Boot with populate-testdata profile active running
-                                 during integration tests, can't stop it immediately -->
-                                <!-- TODO maybe add property to exit after populating testdata? -->
-                                <phase>post-integration-test</phase>
-                                <configuration>
-                                    <!--suppress UnresolvedMavenProperty -->
-                                    <skip>${skipTests}</skip>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
