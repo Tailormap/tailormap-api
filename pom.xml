@@ -1567,8 +1567,8 @@ SPDX-License-Identifier: MIT
                                     <!--suppress UnresolvedMavenProperty -->
                                     <jvmArguments>${failsafeArgLine} -Dspring.profiles.active=postgresql</jvmArguments>
                                     <useTestClasspath>true</useTestClasspath>
-                                    <!-- wait 30 seconds (extra) for Spring Boot to start and load all data from capabilities etc... -->
-                                    <wait>30000</wait>
+                                    <!-- wait 60 seconds (extra) for Spring Boot to start and load all data from capabilities etc... -->
+                                    <wait>60000</wait>
                                 </configuration>
                             </execution>
                             <execution>
