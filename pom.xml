@@ -1539,6 +1539,8 @@ SPDX-License-Identifier: MIT
                             <argLine>${failsafeArgLine} -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql</argLine>
                             <trimStackTrace>false</trimStackTrace>
                             <useFile>false</useFile>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <skipITs>${skipTests}</skipITs>
                         </configuration>
                         <executions>
                             <execution>
@@ -1562,12 +1564,11 @@ SPDX-License-Identifier: MIT
                                 <configuration>
                                     <!--suppress UnresolvedMavenProperty -->
                                     <skip>${skipTests}</skip>
-                                    <profiles>
-                                        <profile>populate-testdata</profile>
-                                    </profiles>
                                     <!--suppress UnresolvedMavenProperty -->
                                     <jvmArguments>${failsafeArgLine} -Dspring.profiles.active=postgresql</jvmArguments>
                                     <useTestClasspath>true</useTestClasspath>
+                                    <!-- wait 30 seconds (extra) for Spring Boot to start and load all data from capabilities etc... -->
+                                    <wait>30000</wait>
                                 </configuration>
                             </execution>
                             <execution>

@@ -91,9 +91,11 @@ jobs:
           username: ${{ secrets.DOCKER_B3P_PULL_ACTOR }}
           password: ${{ secrets.DOCKER_B3P_PULL_TOKEN }}
 
+      - name: 'Setup testdata databases'
+        run: ./build/ci/testdata-setup.sh
+
       - name: Test PostgreSQL with Maven
-        run: |
-          mvn -B -fae -e -DskipQA=true -Pqa-skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata -Dspring-boot.run.arguments=--spatial.dbs.connect=true
+        run: mvn -B -fae -e -DskipQA=true -Pqa-skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

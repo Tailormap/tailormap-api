@@ -394,19 +394,21 @@ public class PopulateTestData {
                                       .featureType(
                                           new FeatureTypeRef()
                                               .featureSourceId(
-                                                  featureSources.get("postgis").getId())),
+                                                  featureSources.get("postgis").getId())
+                                              .featureTypeName("begroeidterreindeel")),
                               "sqlserver:wegdeel",
                                   new GeoServiceLayerSettings()
                                       .featureType(
                                           new FeatureTypeRef()
                                               .featureSourceId(
-                                                  featureSources.get("sqlserver").getId())),
+                                                  featureSources.get("sqlserver").getId())
+                                              .featureTypeName("wegdeel")),
                               "oracle:WATERDEEL",
                                   new GeoServiceLayerSettings()
                                       .featureType(
                                           new FeatureTypeRef()
-                                              .featureSourceId(
-                                                  featureSources.get("oracle").getId())))));
+                                              .featureSourceId(featureSources.get("oracle").getId())
+                                              .featureTypeName("WATERDEEL")))));
     }
 
     List<AppTreeNode> baseNodes =

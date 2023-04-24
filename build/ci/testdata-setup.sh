@@ -11,11 +11,12 @@ ORACLE_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" oracle)
 SQLSERVER_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" sqlserver)
 _WAIT=0;
 
+printf "Waiting for databases to be ready...\n"
 while :
 do
   printf " $_WAIT"
   if [ "$POSTGIS_HEALTHY" == "healthy" ] && [ "$ORACLE_HEALTHY" == "healthy" ] && [ "$SQLSERVER_HEALTHY" == "healthy" ]; then
-    printf " Done waiting for databases to be ready\n"
+    printf "\nDone waiting for databases to be ready\n"
     break
   fi
 
@@ -28,9 +29,12 @@ do
 
 done
 
+printf "\nPostGIS logs:\n"
 docker logs postgis
-docker inspect postgis
+#docker inspect postgis
+printf "\nOracle logs:\n"
 docker logs oracle
-docker inspect oracle
+#docker inspect oracle
+printf "\nSQL Server logs:\n"
 docker logs sqlserver
-docker inspect sqlserver
+#docker inspect sqlserver
