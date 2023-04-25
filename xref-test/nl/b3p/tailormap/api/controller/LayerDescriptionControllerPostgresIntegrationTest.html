@@ -78,47 +78,52 @@
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>              jsonPath(<span class="jxr_string">"$.attributes[?(@.name == 'relatievehoogteligging')].type"</span>).value(<span class="jxr_string">"integer"</span>));
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>    }
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>    @Disabled(<span class="jxr_string">"This test fails, proxying is currently not working/non-existent"</span>)
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>    @Issue(<span class="jxr_string">"https://b3partners.atlassian.net/browse/HTM-714"</span>)
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>    @Test
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>    @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>    @WithMockUser(username = <span class="jxr_string">"noproxyuser"</span>)
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>    <strong class="jxr_keyword">void</strong> test_wms_secured_app_denied() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>      <strong class="jxr_keyword">final</strong> String path = apiBasePath + <span class="jxr_string">"/app/default/layer/19/describe"</span>;
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>      mockMvc
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>          .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>          .andExpect(status().isUnauthorized())
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>          .andExpect(content().string(<span class="jxr_string">"{\&quot;code\&quot;:401,\&quot;url\&quot;:\&quot;/login\&quot;}"</span>));
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>    }
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>    @Disabled(<span class="jxr_string">"This test fails, proxying is currently not working/non-existent"</span>)
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>    @Issue(<span class="jxr_string">"https://b3partners.atlassian.net/browse/HTM-714"</span>)
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>    @Test
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>    @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>    @WithMockUser(
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>        username = <span class="jxr_string">"proxyuser"</span>,
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>        authorities = {<span class="jxr_string">"ProxyGroup"</span>})
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>    <strong class="jxr_keyword">void</strong> test_wms_secured_app_granted_but_no_feature_type() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>      mockMvc
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>          .perform(get(<span class="jxr_string">"/app/6/layer/21/describe"</span>))
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>          .andExpect(status().isNotFound())
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>          .andExpect(content().string(<span class="jxr_string">"Layer does not have feature type"</span>));
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>    }
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>  
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>   @Test
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>   @Disabled(<span class="jxr_string">"TODO: test app was removed from integration dataset, restore later"</span>)
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>   <strong class="jxr_keyword">void</strong> handles_unknown_attribute_type() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>     <em class="jxr_comment">// Depends on external service, may fail/change</em>
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>     mockMvc
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>         .perform(get(<span class="jxr_string">"/app/7/layer/24/describe"</span>))
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>         .andExpect(status().isOk())
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes"</span>).isArray())
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.length()"</span>).value(9))
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>         .andReturn();
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>   }
-<a class="jxr_linenumber" name="L113" href="#L113">113</a> }
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>    @Disabled(<span class="jxr_string">"This test fails, authorisation is not working/non-existent"</span>)
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>    @Issue(<span class="jxr_string">"https://b3partners.atlassian.net/browse/HTM-705"</span>)
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>    <em class="jxr_comment">// TODO: fix this test</em>
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>    @Test
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>    @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>    @WithMockUser(username = <span class="jxr_string">"noproxyuser"</span>)
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>    <strong class="jxr_keyword">void</strong> test_wms_secured_app_denied() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">final</strong> String path =
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>          apiBasePath
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>              + <span class="jxr_string">"/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/describe"</span>;
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      mockMvc
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          .andExpect(status().isUnauthorized())
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          .andExpect(content().string(<span class="jxr_string">"{\&quot;code\&quot;:401,\&quot;url\&quot;:\&quot;/login\&quot;}"</span>));
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>    }
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>  
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>    @Test
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>    @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>    @WithMockUser(
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>        username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>        authorities = {<span class="jxr_string">"admin"</span>})
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>    <strong class="jxr_keyword">void</strong> test_wms_secured_app_granted_but_no_feature_type() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>      <strong class="jxr_keyword">final</strong> String path =
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>          apiBasePath
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>              + <span class="jxr_string">"/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/describe"</span>;
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>      mockMvc
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>          .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>         .andExpect(status().isNotFound())
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>         .andExpect(jsonPath(<span class="jxr_string">"$.message"</span>).value(<span class="jxr_string">"Layer does not have feature type"</span>));
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>   }
+<a class="jxr_linenumber" name="L103" href="#L103">103</a> 
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>   @Test
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>   @Disabled(<span class="jxr_string">"TODO: test app was removed from integration dataset, restore later"</span>)
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>   <em class="jxr_comment">// TODO: fix this test</em>
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>   <strong class="jxr_keyword">void</strong> handles_unknown_attribute_type() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>     <em class="jxr_comment">// Depends on external service, may fail/change</em>
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>     mockMvc
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>         .perform(get(<span class="jxr_string">"/app/7/layer/24/describe"</span>))
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>         .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes"</span>).isArray())
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>         .andExpect(jsonPath(<span class="jxr_string">"$.attributes.length()"</span>).value(9))
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>         .andReturn();
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>   }
+<a class="jxr_linenumber" name="L118" href="#L118">118</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2023 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>
