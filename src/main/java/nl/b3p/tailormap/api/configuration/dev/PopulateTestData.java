@@ -131,7 +131,9 @@ public class PopulateTestData {
               () -> {
                 try {
                   Thread.sleep(5000);
+
                 } catch (InterruptedException ignored) {
+                  // Ignore
                 }
                 SpringApplication.exit(appContext, () -> 0);
                 System.exit(0);
