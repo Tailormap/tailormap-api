@@ -70,36 +70,41 @@ class LayerDescriptionControllerPostgresIntegrationTest {
             jsonPath("$.attributes[?(@.name == 'relatievehoogteligging')].type").value("integer"));
   }
 
-  @Disabled("This test fails, proxying is currently not working/non-existent")
-  @Issue("https://b3partners.atlassian.net/browse/HTM-714")
+  @Disabled("This test fails, authorisation is not working/non-existent")
+  @Issue("https://b3partners.atlassian.net/browse/HTM-705")
+  // TODO: fix this test
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(username = "noproxyuser")
   void test_wms_secured_app_denied() throws Exception {
-    final String path = apiBasePath + "/app/default/layer/19/describe";
+    final String path =
+        apiBasePath
+            + "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/describe";
     mockMvc
         .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isUnauthorized())
         .andExpect(content().string("{\"code\":401,\"url\":\"/login\"}"));
   }
 
-  @Disabled("This test fails, proxying is currently not working/non-existent")
-  @Issue("https://b3partners.atlassian.net/browse/HTM-714")
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
-      username = "proxyuser",
-      authorities = {"ProxyGroup"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void test_wms_secured_app_granted_but_no_feature_type() throws Exception {
+    final String path =
+        apiBasePath
+            + "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/describe";
     mockMvc
-        .perform(get("/app/6/layer/21/describe"))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isNotFound())
-        .andExpect(content().string("Layer does not have feature type"));
+        .andExpect(jsonPath("$.message").value("Layer does not have feature type"));
   }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @Disabled("TODO: test app was removed from integration dataset, restore later")
+  // TODO: fix this test
   void handles_unknown_attribute_type() throws Exception {
     // Depends on external service, may fail/change
     mockMvc
