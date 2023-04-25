@@ -69,7 +69,7 @@
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>          .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>          .andExpect(jsonPath(<span class="jxr_string">"$.featureTypeName"</span>).value(<span class="jxr_string">"postgis:begroeidterreindeel"</span>))
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          .andExpect(jsonPath(<span class="jxr_string">"$.featureTypeName"</span>).value(<span class="jxr_string">"begroeidterreindeel"</span>))
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          .andExpect(jsonPath(<span class="jxr_string">"$.geometryAttribute"</span>).value(<span class="jxr_string">"geom"</span>))
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          .andExpect(jsonPath(<span class="jxr_string">"$.id"</span>).value(<span class="jxr_string">"lyr:snapshot-geoserver:postgis:begroeidterreindeel"</span>))
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          .andExpect(jsonPath(<span class="jxr_string">"$.serviceId"</span>).value(<span class="jxr_string">"snapshot-geoserver"</span>))
