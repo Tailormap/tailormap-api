@@ -5,9 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import nl.b3p.tailormap.api.JPAConfiguration;
 import nl.b3p.tailormap.api.security.AuthorizationService;
-import nl.b3p.tailormap.api.security.SecurityConfig;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -27,9 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
  */
 @SpringBootTest(
     classes = {
-      JPAConfiguration.class,
       LayerExportController.class,
-      SecurityConfig.class,
       AuthorizationService.class,
       AppRestControllerAdvice.class,
     })

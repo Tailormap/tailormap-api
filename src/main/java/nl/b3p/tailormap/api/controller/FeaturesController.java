@@ -267,8 +267,7 @@ public class FeaturesController implements Constants {
       logger.error("Could not retrieve attribute data.", e);
     } catch (CQLException e) {
       logger.error("Could not parse requested filter.", e);
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Could not parse requested filter.");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not parse requested filter");
     } finally {
       if (fs != null) {
         fs.getDataStore().dispose();
@@ -351,7 +350,7 @@ public class FeaturesController implements Constants {
       @NotNull Double distance,
       @NotNull Boolean simplifyGeometry) {
 
-    if (null != distance && 0 > distance) {
+    if (null != distance && 0d >= distance) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Buffer distance must be greater than 0");
     }

@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.viewer.model.Service;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -27,6 +28,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.DefaultTimeZone;
+import org.junitpioneer.jupiter.Issue;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
@@ -35,15 +37,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 @AutoConfigureMockMvc
-@EnableAutoConfiguration
 @PostgresIntegrationTest
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
@@ -52,11 +53,15 @@ class FeaturesControllerPostgresIntegrationTest {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /** bestuurlijke gebieden WFS; provincies . */
-  private static final String provinciesWFS = "/app/1/layer/2/features";
+  private static final String provinciesWFS =
+      "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/features";
 
-  private static final String begroeidterreindeelUrlPostgis = "/app/1/layer/6/features";
-  private static final String waterdeelUrlOracle = "/app/1/layer/7/features";
-  private static final String wegdeelUrlSqlserver = "/app/1/layer/9/features";
+  private static final String begroeidterreindeelUrlPostgis =
+      "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/features";
+  private static final String waterdeelUrlOracle =
+      "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/features";
+  private static final String wegdeelUrlSqlserver =
+      "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/features";
   /**
    * note that for WFS 2.0.0 this is -1 and for WFS 1.0.0 this is 12! depending on the value of
    * {@link #exactWfsCounts}.
@@ -67,13 +72,23 @@ class FeaturesControllerPostgresIntegrationTest {
   private static final int waterdeelTotalCount = 282;
   private static final int wegdeelTotalCount = 5934;
 
-  @Value("${tailormap-api.features.wfs_count_exact:false}")
-  private boolean exactWfsCounts;
+  @Value("${tailormap-api.base-path}")
+  private String apiBasePath;
 
   @Autowired private MockMvc mockMvc;
 
+  @Value("${tailormap-api.features.wfs_count_exact:false}")
+  private boolean exactWfsCounts;
+
   @Value("${tailormap-api.pageSize}")
   private int pageSize;
+
+  private static RequestPostProcessor requestPostProcessor(String servletPath) {
+    return request -> {
+      request.setServletPath(servletPath);
+      return request;
+    };
+  }
 
   static Stream<Arguments> argumentsProvider() {
     return Stream.of(
@@ -260,11 +275,17 @@ class FeaturesControllerPostgresIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void broken_filter_not_supported() throws Exception {
+    final String url = apiBasePath + provinciesWFS;
     mockMvc
-        .perform(get(provinciesWFS).param("filter", "naam or Utrecht").param("page", "1"))
+        .perform(
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
+                .param("filter", "naam or Utrecht")
+                .param("page", "1"))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400));
@@ -279,12 +300,18 @@ class FeaturesControllerPostgresIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void should_produce_for_valid_input_pdok_betuurlijkegebieden() throws Exception {
+    final String url = apiBasePath + provinciesWFS;
     mockMvc
         .perform(
-            get(provinciesWFS).param("x", "141247").param("y", "458118").param("simplify", "true"))
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
+                .param("x", "141247")
+                .param("y", "458118")
+                .param("simplify", "true"))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.features").isArray())
@@ -300,12 +327,15 @@ class FeaturesControllerPostgresIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void should_produce_for_valid_input_with_native_crs_pdok_betuurlijkegebieden() throws Exception {
+    final String url = apiBasePath + provinciesWFS;
     mockMvc
         .perform(
-            get(provinciesWFS)
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
                 .param("x", "141247")
                 .param("y", "458118")
                 .param("crs", "EPSG:28992")
@@ -325,12 +355,15 @@ class FeaturesControllerPostgresIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void should_produce_for_valid_input_with_alien_crs_pdok_betuurlijkegebieden() throws Exception {
+    final String url = apiBasePath + provinciesWFS;
     mockMvc
         .perform(
-            get(provinciesWFS)
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
                 .param("x", "577351")
                 .param("y", "6820242")
                 .param("crs", "EPSG:3857")
@@ -350,12 +383,15 @@ class FeaturesControllerPostgresIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void should_produce_for_valid_input_with_alien_crs_2_pdok_betuurlijkegebieden() throws Exception {
+    final String url = apiBasePath + provinciesWFS;
     mockMvc
         .perform(
-            get(provinciesWFS)
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
                 // note flipped axis
                 .param("y", "5.04173")
                 .param("x", "52.11937")
@@ -380,14 +416,19 @@ class FeaturesControllerPostgresIntegrationTest {
    */
   @Test
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void should_return_non_empty_featurecollections_for_valid_page_from_wfs() throws Exception {
     // bestuurlijke gebieden WFS; provincies
     // page 1
+    final String url = apiBasePath + provinciesWFS;
     MvcResult result =
         mockMvc
-            .perform(get(provinciesWFS).param("page", "1"))
+            .perform(
+                get(url)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(requestPostProcessor(url))
+                    .param("page", "1"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
@@ -399,7 +440,7 @@ class FeaturesControllerPostgresIntegrationTest {
             .andExpect(jsonPath("$.features[0]").isNotEmpty())
             .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
             .andExpect(jsonPath("$.features[0].geometry").isEmpty())
-            .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
+            .andExpect(jsonPath("$.features[0].attributes.naam").value("Zuid-Holland"))
             .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
             .andExpect(jsonPath("$.columnMetadata").isArray())
             .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
@@ -420,9 +461,13 @@ class FeaturesControllerPostgresIntegrationTest {
 
     // page 2
     result =
-        // bestturlijke gebieden WFS; provincies
+        // bestuurlijke gebieden WFS; provincies
         mockMvc
-            .perform(get(provinciesWFS).param("page", "2"))
+            .perform(
+                get(url)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(requestPostProcessor(url))
+                    .param("page", "2"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
@@ -460,14 +505,19 @@ class FeaturesControllerPostgresIntegrationTest {
    */
   @Test
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void should_return_empty_featurecollection_for_out_of_range_page_from_wfs() throws Exception {
     // bestuurlijke gebieden WFS; provincies
     // page 3
+    final String url = apiBasePath + provinciesWFS;
     MvcResult result =
         mockMvc
-            .perform(get(provinciesWFS).param("page", "3"))
+            .perform(
+                get(url)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(requestPostProcessor(url))
+                    .param("page", "3"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
@@ -486,13 +536,19 @@ class FeaturesControllerPostgresIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void should_return_default_sorted_featurecollections_for_no_or_invalid_sorting_from_wfs()
       throws Exception {
     // page 1, sort by naam, no direction
+    final String url = apiBasePath + provinciesWFS;
     mockMvc
-        .perform(get(provinciesWFS).param("page", "1").param("sortBy", "naam"))
+        .perform(
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
+                .param("page", "1")
+                .param("sortBy", "naam"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
@@ -518,7 +574,9 @@ class FeaturesControllerPostgresIntegrationTest {
     // page 1, sort by naam, invalid direction
     mockMvc
         .perform(
-            get(provinciesWFS)
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
                 .param("page", "1")
                 .param("sortBy", "naam")
                 .param("sortOrder", "invalid"))
@@ -548,14 +606,20 @@ class FeaturesControllerPostgresIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void should_return_sorted_featurecollections_for_valid_sorting_from_wfs() throws Exception {
     // bestuurlijke gebieden WFS; provincies
     // page 1, sort ascending by naam
+    final String url = apiBasePath + provinciesWFS;
     mockMvc
         .perform(
-            get(provinciesWFS).param("page", "1").param("sortBy", "naam").param("sortOrder", "asc"))
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
+                .param("page", "1")
+                .param("sortBy", "naam")
+                .param("sortOrder", "asc"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
@@ -581,7 +645,9 @@ class FeaturesControllerPostgresIntegrationTest {
     // page 1, sort descending by naam
     mockMvc
         .perform(
-            get(provinciesWFS)
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
                 .param("page", "1")
                 .param("sortBy", "naam")
                 .param("sortOrder", "desc"))
@@ -611,14 +677,17 @@ class FeaturesControllerPostgresIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void should_return_sorted_featurecollections_for_valid_sorting_from_database() throws Exception {
     // begroeidterreindeel from postgis
+    final String url = apiBasePath + begroeidterreindeelUrlPostgis;
     // page 1, sort ascending by gmlid
     mockMvc
         .perform(
-            get(begroeidterreindeelUrlPostgis)
+            get(url)
+                .with(requestPostProcessor(url))
+                .accept(MediaType.APPLICATION_JSON)
                 .param("page", "1")
                 .param("sortBy", "gmlid")
                 .param("sortOrder", "asc"))
@@ -639,7 +708,9 @@ class FeaturesControllerPostgresIntegrationTest {
     // page 1, sort descending by gmlid
     mockMvc
         .perform(
-            get(begroeidterreindeelUrlPostgis)
+            get(url)
+                .with(requestPostProcessor(url))
+                .accept(MediaType.APPLICATION_JSON)
                 .param("page", "1")
                 .param("sortBy", "gmlid")
                 .param("sortOrder", "desc"))
@@ -661,12 +732,14 @@ class FeaturesControllerPostgresIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void get_by_fid_from_database() throws Exception {
+    final String url = apiBasePath + begroeidterreindeelUrlPostgis;
     mockMvc
         .perform(
-            get(begroeidterreindeelUrlPostgis)
+            get(url)
+                .with(requestPostProcessor(url))
                 .param("__fid", "begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457")
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -685,17 +758,22 @@ class FeaturesControllerPostgresIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void get_by_fid_from_wfs() throws Exception {
     // note that this test may break when pdok decides to opdate the data or the service.
     // you can get the fid by clicking on the Utrecht feature in the map.
     // alternatively this test could be written to use the wfs service to first get Utrecht
-    // feature
-    // by naam and then do the fid test.
+    // feature by naam and then do the fid test.
     final String utrecht__fid = "Provinciegebied.209e5db1-05cc-4201-9ff6-02f60c51b880";
+    final String url = apiBasePath + provinciesWFS;
+
     mockMvc
-        .perform(get(provinciesWFS).param("__fid", utrecht__fid).accept(MediaType.APPLICATION_JSON))
+        .perform(
+            get(url)
+                .with(requestPostProcessor(url))
+                .param("__fid", utrecht__fid)
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.features").isArray())
@@ -718,15 +796,20 @@ class FeaturesControllerPostgresIntegrationTest {
           "#{index}: should return non-empty featurecollections for valid page from database: {0}, featuretype: {1}")
   @MethodSource("argumentsProvider")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void should_return_non_empty_featurecollections_for_valid_pages_from_database(
       String ignoredDatabase, String ignoredTableName, String applayerUrl, int totalCcount)
       throws Exception {
+    applayerUrl = apiBasePath + applayerUrl;
     // page 1
     MvcResult result =
         mockMvc
-            .perform(get(applayerUrl).param("page", "1"))
+            .perform(
+                get(applayerUrl)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(requestPostProcessor(applayerUrl))
+                    .param("page", "1"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.total").value(totalCcount))
@@ -758,7 +841,11 @@ class FeaturesControllerPostgresIntegrationTest {
     // page 2
     result =
         mockMvc
-            .perform(get(applayerUrl).param("page", "2"))
+            .perform(
+                get(applayerUrl)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(requestPostProcessor(applayerUrl))
+                    .param("page", "2"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.total").value(totalCcount))
@@ -800,8 +887,8 @@ class FeaturesControllerPostgresIntegrationTest {
           "should return expected polygon feature for valid coordinates and crs from database #{index}: x: {0}, y: {1}, crs: {2}")
   @MethodSource("projectionArgumentsProvider")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void should_produce_reprojected_features_from_database_using_different_crs(
       double x,
       double y,
@@ -810,15 +897,15 @@ class FeaturesControllerPostgresIntegrationTest {
       double expected1stCoordinate,
       double expected2ndCoordinate)
       throws Exception {
-    // https://snapshot.tailormap.nl/api/app/1/layer/6/features?x=130794&y=459169&crs=EPSG:28992&distance=5&simplify=false
-    // https://snapshot.tailormap.nl/api/app/1/layer/6/features?x=52.12021y=5.03377&&crs=EPSG:4326&distance=.00005&simplify=false
-    // https://snapshot.tailormap.nl/api/app/1/layer/6/features?x=560356&y=6821890&crs=EPSG:3857&distance=5&simplify=false
     final String expectedFid = "begroeidterreindeel.3fdcbafb5c4c1d7481e916ae5200fcc4";
+    final String url = apiBasePath + begroeidterreindeelUrlPostgis;
 
     MvcResult result =
         mockMvc
             .perform(
-                get(begroeidterreindeelUrlPostgis)
+                get(url)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(requestPostProcessor(url))
                     .param("x", String.valueOf(x))
                     .param("y", String.valueOf(y))
                     .param("crs", crs)
@@ -856,8 +943,8 @@ class FeaturesControllerPostgresIntegrationTest {
           "should return expected polygon feature for valid coordinates and crs from WFS #{index}: x: {0}, y: {1}, crs: {2}")
   @MethodSource("wfsProjectionArgumentsProvider")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void should_produce_reprojected_features_from_wfs_using_different_crs(
       double x,
       double y,
@@ -868,11 +955,14 @@ class FeaturesControllerPostgresIntegrationTest {
       throws Exception {
 
     final String expectedFid = "Provinciegebied.209e5db1-05cc-4201-9ff6-02f60c51b880";
+    final String url = apiBasePath + provinciesWFS;
 
     MvcResult result =
         mockMvc
             .perform(
-                get(provinciesWFS)
+                get(url)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(requestPostProcessor(url))
                     .param("x", String.valueOf(x))
                     .param("y", String.valueOf(y))
                     .param("crs", crs)
@@ -918,15 +1008,21 @@ class FeaturesControllerPostgresIntegrationTest {
           "#{index}: should return same featurecollection for same page from database: {0}, featuretype: {1}")
   @MethodSource("argumentsProvider")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void should_return_same_featurecollection_for_same_page_database(
       String ignoredDatabase, String ignoredTableName, String applayerUrl, int totalCcount)
       throws Exception {
+    applayerUrl = apiBasePath + applayerUrl;
+
     // page 1
     MvcResult result =
         mockMvc
-            .perform(get(applayerUrl).param("page", "1"))
+            .perform(
+                get(applayerUrl)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(requestPostProcessor(applayerUrl))
+                    .param("page", "1"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.total").value(totalCcount))
@@ -950,7 +1046,11 @@ class FeaturesControllerPostgresIntegrationTest {
     // page 1 again
     result =
         mockMvc
-            .perform(get(applayerUrl).param("page", "1"))
+            .perform(
+                get(applayerUrl)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(requestPostProcessor(applayerUrl))
+                    .param("page", "1"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.total").value(totalCcount))
@@ -987,17 +1087,21 @@ class FeaturesControllerPostgresIntegrationTest {
           "#{index}: should return empty featurecollection for out of range page from database: {0}, featuretype: {1}")
   @MethodSource("argumentsProvider")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   void should_return_empty_featurecollection_for_out_of_range_page_database(
       String ignoredDatabase, String ignoredTableName, String applayerUrl, int totalCcount)
       throws Exception {
-
+    applayerUrl = apiBasePath + applayerUrl;
     // request page ...
     int page = (totalCcount / pageSize) + 5;
     MvcResult result =
         mockMvc
-            .perform(get(applayerUrl).param("page", "" + page))
+            .perform(
+                get(applayerUrl)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(requestPostProcessor(applayerUrl))
+                    .param("page", String.valueOf(page)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.total").value(totalCcount))
@@ -1018,19 +1122,26 @@ class FeaturesControllerPostgresIntegrationTest {
           "#{index} should return a featurecollection for various ECQL filters on appLayer: {0}, filter: {1}")
   @MethodSource("filtersProvider")
   @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
+      username = "tm-admin",
+      authorities = {"admin"})
   @DefaultTimeZone("Europe/Amsterdam")
-  void filterTest(String applayerUrl, String filterCQL, int totalCount) throws Exception {
+  void filterTest(String appLayerUrl, String filterCQL, int totalCount) throws Exception {
     int listSize = Math.min(pageSize, totalCount);
-    if (!exactWfsCounts && applayerUrl.equals(provinciesWFS)) {
+    if (!exactWfsCounts && appLayerUrl.equals(provinciesWFS)) {
       // see #extractWfsCount and property 'tailormap-api.features.wfs_count_exact'
       totalCount = -1;
     }
 
+    appLayerUrl = apiBasePath + appLayerUrl;
+
     MvcResult result =
         mockMvc
-            .perform(get(applayerUrl).param("filter", filterCQL).param("page", "1"))
+            .perform(
+                get(appLayerUrl)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(requestPostProcessor(appLayerUrl))
+                    .param("filter", filterCQL)
+                    .param("page", "1"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.page").value(1))
@@ -1052,34 +1163,148 @@ class FeaturesControllerPostgresIntegrationTest {
   @MethodSource("differentFeatureSourcesProvider")
   void onlyGeometries(@SuppressWarnings("unused") String source, String appLayerUrl)
       throws Exception {
-    @SuppressWarnings("unused")
-    MvcResult result =
-        mockMvc
-            .perform(get(appLayerUrl).param("onlyGeometries", "true").param("page", "1"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.page").value(1))
-            .andExpect(jsonPath("$.features").isArray())
-            .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
-            .andReturn();
+
+    appLayerUrl = apiBasePath + appLayerUrl;
+
+    mockMvc
+        .perform(
+            get(appLayerUrl)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(appLayerUrl))
+                .param("onlyGeometries", "true")
+                .param("page", "1"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.page").value(1))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty());
   }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @Disabled("TODO: test app was removed from integration dataset, restore later")
-  void handles_unknown_attribute_type_from_external_wfs() throws Exception {
-    // Depends on external service, may fail/change
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void only_filter_not_supported() throws Exception {
+    final String url = apiBasePath + provinciesWFS;
     mockMvc
         .perform(
-            get("/app/7/layer/24/features")
-                .param("x", "181696.56159938296")
-                .param("y", "366543.8834898933")
-                .param("crs", "EPSG:28992")
-                .param("distance", "1292.3302021335905"))
-        .andExpect(status().isOk())
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
+                .param("filter", "naam=Utrecht"))
+        .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.features").isArray())
-        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
-        .andReturn();
+        .andExpect(jsonPath("$.code").value(400))
+        .andExpect(jsonPath("$.message").value("Unsupported combination of request parameters"));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void givenOnly_XorY_shouldError() throws Exception {
+    final String url = apiBasePath + provinciesWFS;
+    mockMvc
+        .perform(
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
+                .param("x", "3"))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(400));
+
+    mockMvc
+        .perform(
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
+                .param("y", "3"))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(400));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void given_distance_NotGreaterThanZero() throws Exception {
+    final String url = apiBasePath + provinciesWFS;
+    mockMvc
+        .perform(
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
+                .param("x", "3")
+                .param("y", "3")
+                .param("distance", "0"))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(400))
+        .andExpect(jsonPath("$.message").value("Buffer distance must be greater than 0"));
+
+    mockMvc
+        .perform(
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
+                .param("x", "3")
+                .param("y", "3")
+                .param("distance", "-1"))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(400))
+        .andExpect(jsonPath("$.message").value("Buffer distance must be greater than 0"));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void should_error_when_calling_with_nonexistent_appId() throws Exception {
+    final String url = apiBasePath + "/app/400/layer/1/features";
+    mockMvc
+        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(404));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void should_not_find_when_called_without_appId() throws Exception {
+    final String url = apiBasePath + "/app/layer/features";
+    mockMvc
+        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @Order(Integer.MAX_VALUE)
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  // TODO: fix this test
+  @Disabled("Since authorization is not yet implemented, this test is disabled")
+  @Issue("https://b3partners.atlassian.net/browse/HTM-705")
+  void should_send_403_when_access_denied() throws Exception {
+    final String url =
+        apiBasePath + "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied";
+    mockMvc
+        .perform(
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(requestPostProcessor(url))
+                .param("page", "1"))
+        .andExpect(status().isForbidden())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(403))
+        .andExpect(jsonPath("$.message").value("Access denied"));
   }
 }

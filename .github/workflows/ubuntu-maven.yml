@@ -91,10 +91,11 @@ jobs:
           username: ${{ secrets.DOCKER_B3P_PULL_ACTOR }}
           password: ${{ secrets.DOCKER_B3P_PULL_TOKEN }}
 
-      # TODO: activate Spring profile with Configuration to point to local gis databases
+      - name: 'Setup testdata databases'
+        run: ./build/ci/testdata-setup.sh
+
       - name: Test PostgreSQL with Maven
-        run: |
-          mvn -B -fae -e -DskipQA=true -Pqa-skip -Ddocker.skip=true -Ppostgresql verify 
+        run: mvn -B -fae -e -DskipQA=true -Pqa-skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

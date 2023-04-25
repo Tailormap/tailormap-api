@@ -61,7 +61,7 @@ class LayerDescriptionControllerPostgresIntegrationTest {
         .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.featureTypeName").value("postgis:begroeidterreindeel"))
+        .andExpect(jsonPath("$.featureTypeName").value("begroeidterreindeel"))
         .andExpect(jsonPath("$.geometryAttribute").value("geom"))
         .andExpect(jsonPath("$.id").value("lyr:snapshot-geoserver:postgis:begroeidterreindeel"))
         .andExpect(jsonPath("$.serviceId").value("snapshot-geoserver"))

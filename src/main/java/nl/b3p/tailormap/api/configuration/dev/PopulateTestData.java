@@ -50,8 +50,10 @@ import nl.b3p.tailormap.api.security.InternalAdminAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,6 +77,10 @@ public class PopulateTestData {
   @Value("${tailormap-api.database.populate-testdata.admin-hashed-password}")
   private String adminHashedPassword;
 
+  @Value("${tailormap-api.database.populate-testdata.exit:false}")
+  private boolean exit;
+
+  private final ApplicationContext appContext;
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
   private final CatalogRepository catalogRepository;
@@ -86,6 +92,7 @@ public class PopulateTestData {
   private final ConfigurationRepository configurationRepository;
 
   public PopulateTestData(
+      ApplicationContext appContext,
       UserRepository userRepository,
       GroupRepository groupRepository,
       CatalogRepository catalogRepository,
@@ -94,6 +101,7 @@ public class PopulateTestData {
       FeatureSourceRepository featureSourceRepository,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository) {
+    this.appContext = appContext;
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
     this.catalogRepository = catalogRepository;
@@ -115,6 +123,20 @@ public class PopulateTestData {
       createTestConfiguration();
     } finally {
       InternalAdminAuthentication.clearSecurityContextAuthentication();
+    }
+    if (exit) {
+      // Exit after transaction is completed - for 'mvn verify' to populate testdata before
+      // integration tests
+      new Thread(
+              () -> {
+                try {
+                  Thread.sleep(5000);
+                } catch (InterruptedException ignored) {
+                }
+                SpringApplication.exit(appContext, () -> 0);
+                System.exit(0);
+              })
+          .start();
     }
   }
 
@@ -394,19 +416,21 @@ public class PopulateTestData {
                                       .featureType(
                                           new FeatureTypeRef()
                                               .featureSourceId(
-                                                  featureSources.get("postgis").getId())),
+                                                  featureSources.get("postgis").getId())
+                                              .featureTypeName("begroeidterreindeel")),
                               "sqlserver:wegdeel",
                                   new GeoServiceLayerSettings()
                                       .featureType(
                                           new FeatureTypeRef()
                                               .featureSourceId(
-                                                  featureSources.get("sqlserver").getId())),
+                                                  featureSources.get("sqlserver").getId())
+                                              .featureTypeName("wegdeel")),
                               "oracle:WATERDEEL",
                                   new GeoServiceLayerSettings()
                                       .featureType(
                                           new FeatureTypeRef()
-                                              .featureSourceId(
-                                                  featureSources.get("oracle").getId())))));
+                                              .featureSourceId(featureSources.get("oracle").getId())
+                                              .featureTypeName("WATERDEEL")))));
     }
 
     List<AppTreeNode> baseNodes =
