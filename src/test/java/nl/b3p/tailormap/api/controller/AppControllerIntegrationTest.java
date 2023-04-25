@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -140,43 +141,17 @@ class AppControllerIntegrationTest {
         .andExpect(jsonPath("$.message").value("Not Found"));
   }
 
-  //  @Test
-  //  /* this test changes database content */
-  //  @Transactional
-  //  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  //  void should_return_default_lang_when_application_language_not_configured() throws Exception {
-  //    // unset language
-  //    applicationRepository.getReferenceById(1L).setLang(null);
-  //
-  //    mockMvc
-  //        .perform(get(basePath + "/app").param("appId", "1").accept(MediaType.APPLICATION_JSON))
-  //        .andExpect(status().isOk())
-  //        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-  //        .andExpect(jsonPath("$.apiVersion").value(getApiVersionFromPom()))
-  //        .andExpect(jsonPath("$.id").value(1))
-  //        .andExpect(jsonPath("$.name").value("test"))
-  //        .andExpect(jsonPath("$.version").value(1))
-  //        .andExpect(jsonPath("$.title").value("test title"))
-  //        // expect default value
-  //        .andExpect(jsonPath("$.lang").value("nl_NL"))
-  //        .andExpect(jsonPath("$.components").isArray())
-  //        .andExpect(jsonPath("$.components[0].type").value("measure"))
-  //        .andExpect(jsonPath("$.styling.primaryColor").isEmpty())
-  //        .andExpect(jsonPath("$.styling.logo").isEmpty());
-  //  }
-
-  //  @Test
-  //  /* this test changes database content */
-  //  @Order(Integer.MAX_VALUE - 1)
-  //  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  //  void should_send_401_when_application_configured() throws Exception {
-  //    applicationRepository.setAuthenticatedRequired(1L, true);
-  //
-  //    mockMvc
-  //        .perform(get(basePath + "/app").param("appId", "1").accept(MediaType.APPLICATION_JSON))
-  //        .andExpect(status().isUnauthorized())
-  //        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-  //        .andExpect(jsonPath("$.code").value(401))
-  //        .andExpect(jsonPath("$.url").value("/login"));
-  //  }
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  // TODO: implement authentication
+  @Disabled("Authentication is not yet implemented")
+  void should_send_401_when_application_configured() throws Exception {
+    String path = basePath + "/app/secured";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(401))
+        .andExpect(jsonPath("$.url").value("/login"));
+  }
 }
