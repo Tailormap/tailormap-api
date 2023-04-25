@@ -6,6 +6,7 @@
 package nl.b3p.tailormap.api.repository.events;
 
 import nl.b3p.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
+import nl.b3p.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
 import org.springframework.data.rest.core.annotation.HandleBeforeSave;
@@ -22,8 +23,9 @@ public class FeatureSourceEventHandler {
   @HandleBeforeSave
   public void handleBeforeCreateOrSave(TMFeatureSource featureSource) throws Exception {
     if (featureSource.getProtocol().equals(TMFeatureSource.Protocol.WFS)) {
-      return;
+      new WFSFeatureSourceHelper().loadCapabilities(featureSource);
+    } else if (featureSource.getProtocol().equals(TMFeatureSource.Protocol.JDBC)) {
+      new JDBCFeatureSourceHelper().loadCapabilities(featureSource);
     }
-    new JDBCFeatureSourceHelper().loadCapabilities(featureSource);
   }
 }
