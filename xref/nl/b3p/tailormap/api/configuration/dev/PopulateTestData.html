@@ -329,7 +329,7 @@
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>                     <strong class="jxr_keyword">new</strong> JDBCConnectionProperties()
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>                         .dbtype(JDBCConnectionProperties.DbtypeEnum.ORACLE)
 <a class="jxr_linenumber" name="L323" href="#L323">323</a>                         .host(connectToSpatialDbsAtLocalhost ? <span class="jxr_string">"127.0.0.1"</span> : <span class="jxr_string">"oracle"</span>)
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>                         .database(<span class="jxr_string">"/XEPDB1"</span>)
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>                         .database(<span class="jxr_string">"/XEPDB1?oracle.jdbc.J2EE13Compliant=true"</span>)
 <a class="jxr_linenumber" name="L325" href="#L325">325</a>                         .schema(<span class="jxr_string">"GEODATA"</span>))
 <a class="jxr_linenumber" name="L326" href="#L326">326</a>                 .setAuthentication(
 <a class="jxr_linenumber" name="L327" href="#L327">327</a>                     <strong class="jxr_keyword">new</strong> ServiceAuthentication()

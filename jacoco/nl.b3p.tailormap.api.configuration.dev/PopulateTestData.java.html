@@ -321,7 +321,7 @@ public class PopulateTestData {
                     new JDBCConnectionProperties()
 <span class="nc" id="L322">                        .dbtype(JDBCConnectionProperties.DbtypeEnum.ORACLE)</span>
 <span class="nc bnc" id="L323" title="All 2 branches missed.">                        .host(connectToSpatialDbsAtLocalhost ? &quot;127.0.0.1&quot; : &quot;oracle&quot;)</span>
-<span class="nc" id="L324">                        .database(&quot;/XEPDB1&quot;)</span>
+<span class="nc" id="L324">                        .database(&quot;/XEPDB1?oracle.jdbc.J2EE13Compliant=true&quot;)</span>
 <span class="nc" id="L325">                        .schema(&quot;GEODATA&quot;))</span>
 <span class="nc" id="L326">                .setAuthentication(</span>
                     new ServiceAuthentication()
