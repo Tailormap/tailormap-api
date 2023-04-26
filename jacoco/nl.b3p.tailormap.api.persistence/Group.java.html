@@ -13,10 +13,12 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import javax.validation.constraints.Pattern;
+import nl.b3p.tailormap.api.util.Constants;
 
 @Entity
 @Table(name = &quot;groups&quot;)
-<span class="nc" id="L19">public class Group {</span>
+<span class="fc" id="L21">public class Group {</span>
   // May access app for which authentication is required. Role to be assigned by default to any
   // users created manually. Exists to give the account with the &quot;actuator&quot; role only access to
   // /api/actuator/ and not apps for which authentication is required.
@@ -24,7 +26,9 @@ import javax.persistence.Version;
   public static final String ADMIN = &quot;admin&quot;;
   public static final String ACTUATOR = &quot;actuator&quot;;
 
-  @Id private String name;
+  @Id
+  @Pattern(regexp = Constants.NAME_REGEX, message = &quot;Group &quot; + Constants.NAME_REGEX_INVALID_MESSAGE)
+  private String name;
 
   @Version private Long version;
 
@@ -35,61 +39,61 @@ import javax.persistence.Version;
   @Column(columnDefinition = &quot;text&quot;)
   private String notes;
 
-<span class="nc" id="L38">  @ManyToMany(mappedBy = &quot;groups&quot;)</span>
+<span class="fc" id="L42">  @ManyToMany(mappedBy = &quot;groups&quot;)</span>
   private Set&lt;User&gt; members = new HashSet&lt;&gt;();
 
   public String getName() {
-<span class="nc" id="L42">    return name;</span>
+<span class="nc" id="L46">    return name;</span>
   }
 
   public Group setName(String name) {
-<span class="nc" id="L46">    this.name = name;</span>
-<span class="nc" id="L47">    return this;</span>
+<span class="fc" id="L50">    this.name = name;</span>
+<span class="fc" id="L51">    return this;</span>
   }
 
   public Long getVersion() {
-<span class="nc" id="L51">    return version;</span>
+<span class="nc" id="L55">    return version;</span>
   }
 
   public Group setVersion(Long version) {
-<span class="nc" id="L55">    this.version = version;</span>
-<span class="nc" id="L56">    return this;</span>
+<span class="nc" id="L59">    this.version = version;</span>
+<span class="nc" id="L60">    return this;</span>
   }
 
   public boolean isSystemGroup() {
-<span class="nc" id="L60">    return systemGroup;</span>
+<span class="nc" id="L64">    return systemGroup;</span>
   }
 
   public Group setSystemGroup(boolean systemGroup) {
-<span class="nc" id="L64">    this.systemGroup = systemGroup;</span>
-<span class="nc" id="L65">    return this;</span>
+<span class="nc" id="L68">    this.systemGroup = systemGroup;</span>
+<span class="nc" id="L69">    return this;</span>
   }
 
   public String getDescription() {
-<span class="nc" id="L69">    return description;</span>
+<span class="nc" id="L73">    return description;</span>
   }
 
   public Group setDescription(String title) {
-<span class="nc" id="L73">    this.description = title;</span>
-<span class="nc" id="L74">    return this;</span>
+<span class="nc" id="L77">    this.description = title;</span>
+<span class="nc" id="L78">    return this;</span>
   }
 
   public String getNotes() {
-<span class="nc" id="L78">    return notes;</span>
+<span class="nc" id="L82">    return notes;</span>
   }
 
   public Group setNotes(String notes) {
-<span class="nc" id="L82">    this.notes = notes;</span>
-<span class="nc" id="L83">    return this;</span>
+<span class="nc" id="L86">    this.notes = notes;</span>
+<span class="nc" id="L87">    return this;</span>
   }
 
   public Set&lt;User&gt; getMembers() {
-<span class="nc" id="L87">    return members;</span>
+<span class="nc" id="L91">    return members;</span>
   }
 
   public Group setMembers(Set&lt;User&gt; members) {
-<span class="nc" id="L91">    this.members = members;</span>
-<span class="nc" id="L92">    return this;</span>
+<span class="nc" id="L95">    this.members = members;</span>
+<span class="nc" id="L96">    return this;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

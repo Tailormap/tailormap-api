@@ -29,12 +29,12 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,TailormapDatabaseMigr
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,GeoToolsEPSGAliasesConfiguration,124,0,4,0,17,0,5,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,MonitoringConfiguration,8,0,0,0,2,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,RestConfiguration,25,0,0,0,9,0,3,0,3,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,Group,609,0,94,0,20,0,91,0,44,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,Group,577,32,92,2,16,4,86,5,39,5
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,TMFeatureSource,920,0,124,0,43,0,129,0,67,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,TMFeatureSource.Protocol,70,0,4,0,12,0,7,0,5,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,Application,1031,176,139,15,70,17,144,18,68,17
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,TMFeatureType,1040,0,140,0,55,0,147,0,77,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,User,646,182,100,18,16,17,89,30,31,29
+Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,User,623,205,98,20,14,19,87,32,29,31
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,GeoService,1347,0,184,0,111,0,179,0,87,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,Configuration,329,0,34,0,13,0,49,0,32,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,Catalog,450,0,76,0,11,0,70,0,32,0
