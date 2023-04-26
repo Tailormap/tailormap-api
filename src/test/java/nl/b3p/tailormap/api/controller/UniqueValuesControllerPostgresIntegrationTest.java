@@ -282,21 +282,26 @@ class UniqueValuesControllerPostgresIntegrationTest {
   }
 
   /**
-   * Testcase for <a href="https://b3partners.atlassian.net/browse/HTM-492">HTM-492</a> where Jackson
-   * fails to process oracle.sql.TIMESTAMP.
+   * Testcase for <a href="https://b3partners.atlassian.net/browse/HTM-492">HTM-492</a> where
+   * Jackson fails to process oracle.sql.TIMESTAMP.
    *
-   * <p>The exception is: {@code org.springframework.web.util.NestedServletException:
-   * Request processing failed; nested exception is java.lang.ClassCastException:
-   * class oracle.sql.TIMESTAMP cannot be cast to class java.lang.Comparable
-   * (oracle.sql.TIMESTAMP is in unnamed module of loader 'app';
-   * java.lang.Comparable is in module java.base of loader 'bootstrap')
-   * }
+   * <p>The exception is: {@code org.springframework.web.util.NestedServletException: Request
+   * processing failed; nested exception is java.lang.ClassCastException: class oracle.sql.TIMESTAMP
+   * cannot be cast to class java.lang.Comparable (oracle.sql.TIMESTAMP is in unnamed module of
+   * loader 'app'; java.lang.Comparable is in module java.base of loader 'bootstrap') }
    *
-   * <p>For this testcase to go green set the environment variable {@code -Doracle.jdbc.J2EE13Compliant=true}
+   * <p>For this testcase to go green set the environment variable {@code
+   * -Doracle.jdbc.J2EE13Compliant=true}
+   *
    * <p>See also:
+   *
    * <ul>
-   *     <li><a href="https://stackoverflow.com/questions/13269564/java-lang-classcastexception-oracle-sql-timestamp-cannot-be-cast-to-java-sql-ti">java.lang.ClassCastException: oracle.sql.TIMESTAMP cannot be cast to java.sql.Timestamp</a></li>
-   *     <li><a href="https://docs.oracle.com/en/database/oracle/oracle-database/19/jjdbc/accessing-and-manipulating-Oracle-data.html#GUID-C23007CA-E25D-4747-A3C0-4DE219AF56BD">Accessing and Manipulating Oracle Data</a></li>
+   *   <li><a
+   *       href="https://stackoverflow.com/questions/13269564/java-lang-classcastexception-oracle-sql-timestamp-cannot-be-cast-to-java-sql-ti">java.lang.ClassCastException:
+   *       oracle.sql.TIMESTAMP cannot be cast to java.sql.Timestamp</a>
+   *   <li><a
+   *       href="https://docs.oracle.com/en/database/oracle/oracle-database/19/jjdbc/accessing-and-manipulating-Oracle-data.html#GUID-C23007CA-E25D-4747-A3C0-4DE219AF56BD">Accessing
+   *       and Manipulating Oracle Data</a>
    * </ul>
    *
    * @throws Exception if any
@@ -305,15 +310,16 @@ class UniqueValuesControllerPostgresIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void unique_values_oracle_timestamp_HTM_492() throws Exception {
-    final String testUrl = apiBasePath +
-            "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/TIJDSTIPREGISTRATIE";
+    final String testUrl =
+        apiBasePath
+            + "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/TIJDSTIPREGISTRATIE";
     mockMvc
-            .perform(
-                    get(testUrl).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(testUrl)))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.filterApplied").value(false))
-            .andExpect(jsonPath("$.values").isArray())
-            .andExpect(jsonPath("$.values").isNotEmpty());
+        .perform(
+            get(testUrl).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(testUrl)))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.filterApplied").value(false))
+        .andExpect(jsonPath("$.values").isArray())
+        .andExpect(jsonPath("$.values").isNotEmpty());
   }
 }
