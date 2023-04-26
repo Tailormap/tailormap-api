@@ -29,6 +29,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junitpioneer.jupiter.Issue;
 import org.junitpioneer.jupiter.RetryingTest;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -281,32 +282,34 @@ class UniqueValuesControllerPostgresIntegrationTest {
   }
 
   /**
-   * Testcase for <a href="https://b3partners.atlassian.net/browse/HTM-492">HTM-492</a> where Jakson
+   * Testcase for <a href="https://b3partners.atlassian.net/browse/HTM-492">HTM-492</a> where Jackson
    * fails to process oracle.sql.TIMESTAMP.
    *
-   * <p>The exception is: {@code org.springframework.web.util.NestedServletException: Request
-   * processing failed; nested exception is
-   * org.springframework.http.converter.HttpMessageConversionException: Type definition error:
-   * [simple type, class java.io.ByteArrayInputStream]; nested exception is
-   * com.fasterxml.jackson.databind.exc.InvalidDefinitionException: No serializer found for class
-   * java.io.ByteArrayInputStream and no properties discovered to create BeanSerializer (to avoid
-   * exception, disable SerializationFeature.FAIL_ON_EMPTY_BEANS) (through reference chain:
-   * nl.b3p.tailormap.api.model.UniqueValuesResponse["values"]->java.util.HashSet[0]->oracle.sql.TIMESTAMP["stream"])
+   * <p>The exception is: {@code org.springframework.web.util.NestedServletException:
+   * Request processing failed; nested exception is java.lang.ClassCastException:
+   * class oracle.sql.TIMESTAMP cannot be cast to class java.lang.Comparable
+   * (oracle.sql.TIMESTAMP is in unnamed module of loader 'app';
+   * java.lang.Comparable is in module java.base of loader 'bootstrap')
    * }
+   *
+   * <p>For this testcase to go green set the environment variable {@code -Doracle.jdbc.J2EE13Compliant=true}
+   * <p>See also: <a href="https://stackoverflow.com/questions/13269564/java-lang-classcastexception-oracle-sql-timestamp-cannot-be-cast-to-java-sql-ti">java.lang.ClassCastException: oracle.sql.TIMESTAMP cannot be cast to java.sql.Timestamp</a>
    *
    * @throws Exception if any
    */
+  @Issue("https://b3partners.atlassian.net/browse/HTM-492")
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void unique_values_oracle_timestamp_HTM_492() throws Exception {
-    final String testUrl = "/app/1/layer/7/unique/TIJDSTIPREGISTRATIE";
+    final String testUrl = apiBasePath +
+            "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/TIJDSTIPREGISTRATIE";
     mockMvc
-        .perform(
-            get(testUrl).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.filterApplied").value(true))
-        .andExpect(jsonPath("$.values").isArray())
-        .andExpect(jsonPath("$.values").isNotEmpty());
+            .perform(
+                    get(testUrl).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(testUrl)))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.filterApplied").value(false))
+            .andExpect(jsonPath("$.values").isArray())
+            .andExpect(jsonPath("$.values").isNotEmpty());
   }
 }
