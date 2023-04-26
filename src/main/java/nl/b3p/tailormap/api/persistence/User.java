@@ -21,14 +21,19 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import nl.b3p.tailormap.api.util.Constants;
 import nl.b3p.tailormap.api.util.TMPasswordDeserializer;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "users")
 public class User {
-  @Id private String username;
+
+  @Id
+  @Pattern(regexp = Constants.NAME_REGEX, message = "User" + Constants.NAME_REGEX_INVALID_MESSAGE)
+  private String username;
 
   @Version private Long version;
 

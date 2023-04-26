@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import javax.validation.constraints.Pattern;
+import nl.b3p.tailormap.api.util.Constants;
 
 @Entity
 @Table(name = "groups")
@@ -24,7 +26,9 @@ public class Group {
   public static final String ADMIN = "admin";
   public static final String ACTUATOR = "actuator";
 
-  @Id private String name;
+  @Id
+  @Pattern(regexp = Constants.NAME_REGEX, message = "Group " + Constants.NAME_REGEX_INVALID_MESSAGE)
+  private String name;
 
   @Version private Long version;
 
