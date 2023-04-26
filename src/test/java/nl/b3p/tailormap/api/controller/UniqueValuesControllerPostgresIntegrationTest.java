@@ -293,7 +293,11 @@ class UniqueValuesControllerPostgresIntegrationTest {
    * }
    *
    * <p>For this testcase to go green set the environment variable {@code -Doracle.jdbc.J2EE13Compliant=true}
-   * <p>See also: <a href="https://stackoverflow.com/questions/13269564/java-lang-classcastexception-oracle-sql-timestamp-cannot-be-cast-to-java-sql-ti">java.lang.ClassCastException: oracle.sql.TIMESTAMP cannot be cast to java.sql.Timestamp</a>
+   * <p>See also:
+   * <ul>
+   *     <li><a href="https://stackoverflow.com/questions/13269564/java-lang-classcastexception-oracle-sql-timestamp-cannot-be-cast-to-java-sql-ti">java.lang.ClassCastException: oracle.sql.TIMESTAMP cannot be cast to java.sql.Timestamp</a></li>
+   *     <li><a href="https://docs.oracle.com/en/database/oracle/oracle-database/19/jjdbc/accessing-and-manipulating-Oracle-data.html#GUID-C23007CA-E25D-4747-A3C0-4DE219AF56BD">Accessing and Manipulating Oracle Data</a></li>
+   * </ul>
    *
    * @throws Exception if any
    */

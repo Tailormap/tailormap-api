@@ -321,7 +321,7 @@ public class PopulateTestData {
                     new JDBCConnectionProperties()
                         .dbtype(JDBCConnectionProperties.DbtypeEnum.ORACLE)
                         .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "oracle")
-                        .database("/XEPDB1")
+                        .database("/XEPDB1?oracle.jdbc.J2EE13Compliant=true")
                         .schema("GEODATA"))
                 .setAuthentication(
                     new ServiceAuthentication()
