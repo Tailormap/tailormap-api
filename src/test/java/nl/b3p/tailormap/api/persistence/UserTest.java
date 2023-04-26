@@ -14,7 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import nl.b3p.tailormap.api.security.InvalidPasswordException;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,9 +29,10 @@ import org.springframework.test.context.ActiveProfiles;
 /** Test for json serializing an deserializing {@link User}. */
 @JsonTest
 @ActiveProfiles("test")
-/** Test for json serializing an deserializing {@link User}. */
 class UserTest {
 
+  private static Validator validator;
+  private final String expectedMessage = "Username must consist of alphanumeric characters or -";
   private ObjectMapper mapper;
 
   @Value("${tailormap-api.strong-password.validation:true}")
@@ -37,6 +43,11 @@ class UserTest {
 
   @Value("${tailormap-api.strong-password.min-strength:4}")
   private int minStrength;
+
+  @BeforeAll
+  public static void setupValidatorInstance() {
+    validator = Validation.buildDefaultValidatorFactory().getValidator();
+  }
 
   @BeforeEach
   void setup() {
@@ -93,5 +104,40 @@ class UserTest {
         "bcrypted password should start with {bcrypt}$2a$");
     assertEquals(
         68, actualUser.getPassword().length(), "bcrypted password should be 8+60 characters");
+  }
+
+  @Test
+  void valid_Username() {
+    User user = new User().setUsername("markimarks").setPassword("myValidSecret$@12");
+
+    Set<ConstraintViolation<User>> violations = validator.validate(user);
+    assertTrue(violations.isEmpty(), "violations should be empty");
+
+    violations = validator.validate(user.setName("marki-marks"));
+    assertTrue(violations.isEmpty(), "violations should be empty");
+  }
+
+  @Test
+  void blank_Username() {
+    User user = new User().setUsername("").setPassword("myValidSecret$@12");
+
+    Set<ConstraintViolation<User>> violations = validator.validate(user);
+    assertEquals(1, violations.size(), "violations should not be empty");
+    violations.forEach(
+        action -> {
+          assertEquals(expectedMessage, action.getMessage(), "unexpected message");
+        });
+  }
+
+  @Test
+  void invalid_Username() {
+    User user = new User().setUsername("app user").setPassword("myValidSecret$@12");
+
+    Set<ConstraintViolation<User>> violations = validator.validate(user);
+    assertEquals(1, violations.size(), "violations should not be empty");
+    violations.forEach(
+        action -> {
+          assertEquals(expectedMessage, action.getMessage(), "unexpected message");
+        });
   }
 }
