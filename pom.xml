@@ -116,7 +116,7 @@ SPDX-License-Identifier: MIT
         <jackson-bom.version>2.14.2</jackson-bom.version>
         <micrometer.version>1.10.6</micrometer.version>
         <hibernate.version>5.6.15.Final</hibernate.version>
-        <junit-jupiter.version>5.9.2</junit-jupiter.version>
+        <junit-jupiter.version>5.9.3</junit-jupiter.version>
         <flyway.version>9.16.3</flyway.version>
         <mssql-jdbc.version>12.2.0.jre11</mssql-jdbc.version>
         <oracle-database.version>23.2.0.0</oracle-database.version>
