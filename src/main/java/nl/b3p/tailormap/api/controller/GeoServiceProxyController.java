@@ -13,6 +13,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -26,9 +27,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import nl.b3p.tailormap.api.annotation.AppRestController;
+import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
+import nl.b3p.tailormap.api.security.AuthorizationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -60,9 +65,17 @@ import org.springframework.web.util.UriUtils;
 // Can't use ${tailormap-api.base-path} because linkTo() won't work
 @RequestMapping(path = "/api/{viewerKind}/{viewerName}/layer/{appLayerId}/proxy/{protocol}")
 public class GeoServiceProxyController {
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private final AuthorizationService authorizationService;
+
+  public GeoServiceProxyController(AuthorizationService authorizationService) {
+    this.authorizationService = authorizationService;
+  }
 
   @RequestMapping(method = {GET, POST})
   public ResponseEntity<?> proxy(
+      @ModelAttribute Application application,
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,
       @PathVariable("protocol") String protocol,
@@ -80,6 +93,19 @@ public class GeoServiceProxyController {
     if (!service.getSettings().getUseProxy()) {
       throw new ResponseStatusException(
           HttpStatus.FORBIDDEN, "Proxy not enabled for requested service");
+    }
+
+    if (service.getAuthentication() != null) {
+      if (!authorizationService.allowProxyAccess(application, service)) {
+        logger.warn(
+            "App {} (\"{}\") is using layer \"{}\" from proxied secured service URL {} (username {}), but app is publicly accessible. Denying proxy, even if user is authenticated.",
+            application.getId(),
+            application.getName(),
+            layer.getName(),
+            service.getUrl(),
+            service.getAuthentication().getUsername());
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+      }
     }
 
     final UriComponentsBuilder originalServiceUrl =

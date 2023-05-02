@@ -100,4 +100,30 @@ public class AuthorizationService {
     return isAuthorizedByRules(geoService.getAuthorizationRules(), ACCESS_TYPE_READ)
         .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
   }
+
+  /**
+   * To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo
+   * service when the application is public (accessible by anonymous users). Do not even allow
+   * proxying a secured service if the user is logged viewing a public app!
+   *
+   * @param application The application
+   * @param geoService The geo service
+   * @return Whether to allow proxying this service for the application
+   */
+  public boolean allowProxyAccess(Application application, GeoService geoService) {
+    if (geoService.getAuthentication() == null) {
+      return true;
+    }
+    return application.getAuthorizationRules().stream()
+        .noneMatch(
+            rule ->
+                Group.ANONYMOUS.equals(rule.getGroupName())
+                    && AuthorizationRuleDecision.ALLOW.equals(
+                        rule.getDecisions()
+                            .getOrDefault(
+                                ACCESS_TYPE_READ,
+                                new AuthorizationRuleDecisionsValue()
+                                    .decision(AuthorizationRuleDecision.DENY))
+                            .getDecision()));
+  }
 }
