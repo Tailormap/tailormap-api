@@ -23,11 +23,13 @@ import org.springframework.stereotype.Service;
 
 /**
  * Validates access control rules. Any call to mayUserRead will verify that the currently logged in
- * user is not only allowed to read the current object, but any objcet above and below it in the
+ * user is not only allowed to read the current object, but any object above and below it in the
  * hierarchy.
  */
 @Service
 public class AuthorizationService {
+  public static final String ACCESS_TYPE_READ = "read";
+
   private Optional<AuthorizationRuleDecision> isAuthorizedByRules(
       List<AuthorizationRule> rules, String type) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -84,7 +86,7 @@ public class AuthorizationService {
    * @return the results from the access control checks.
    */
   public boolean mayUserRead(Application application) {
-    return isAuthorizedByRules(application.getAuthorizationRules(), "read")
+    return isAuthorizedByRules(application.getAuthorizationRules(), ACCESS_TYPE_READ)
         .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
   }
 
@@ -95,7 +97,7 @@ public class AuthorizationService {
    * @return the results from the access control checks.
    */
   public boolean mayUserRead(GeoService geoService) {
-    return isAuthorizedByRules(geoService.getAuthorizationRules(), "read")
+    return isAuthorizedByRules(geoService.getAuthorizationRules(), ACCESS_TYPE_READ)
         .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
   }
 }

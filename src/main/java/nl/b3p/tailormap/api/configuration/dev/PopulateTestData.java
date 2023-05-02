@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api.configuration.dev;
 
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
+import static nl.b3p.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
 
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
@@ -172,7 +173,7 @@ public class PopulateTestData {
                 .groupName(Group.ANONYMOUS)
                 .decisions(
                     Map.of(
-                        "read",
+                        ACCESS_TYPE_READ,
                         new AuthorizationRuleDecisionsValue()
                             .decision(AuthorizationRuleDecision.ALLOW))));
 
@@ -182,7 +183,7 @@ public class PopulateTestData {
                 .groupName(Group.APP_AUTHENTICATED)
                 .decisions(
                     Map.of(
-                        "read",
+                        ACCESS_TYPE_READ,
                         new AuthorizationRuleDecisionsValue()
                             .decision(AuthorizationRuleDecision.ALLOW))));
 
