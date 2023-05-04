@@ -14,7 +14,6 @@ import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRuleDecision;
-import nl.b3p.tailormap.api.persistence.json.AuthorizationRuleDecisionsValue;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -62,13 +61,13 @@ public class AuthorizationService {
 
       hasValidRule = true;
 
-      AuthorizationRuleDecisionsValue value = rule.getDecisions().get(type);
+      AuthorizationRuleDecision value = rule.getDecisions().get(type);
       if (value == null) {
         return Optional.empty();
       }
 
-      if (value.getDecision().equals(AuthorizationRuleDecision.ALLOW)) {
-        return Optional.of(value.getDecision());
+      if (value.equals(AuthorizationRuleDecision.ALLOW)) {
+        return Optional.of(value);
       }
     }
 
@@ -119,11 +118,6 @@ public class AuthorizationService {
             rule ->
                 Group.ANONYMOUS.equals(rule.getGroupName())
                     && AuthorizationRuleDecision.ALLOW.equals(
-                        rule.getDecisions()
-                            .getOrDefault(
-                                ACCESS_TYPE_READ,
-                                new AuthorizationRuleDecisionsValue()
-                                    .decision(AuthorizationRuleDecision.DENY))
-                            .getDecision()));
+                        rule.getDecisions().get(ACCESS_TYPE_READ)));
   }
 }

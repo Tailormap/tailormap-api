@@ -31,10 +31,7 @@ components:
           description: A map of access type to decision.
           type: object
           additionalProperties:
-            type: object
-            properties:
-              decision:
-                $ref: '#/components/schemas/AuthorizationRuleDecision'
+            $ref: '#/components/schemas/AuthorizationRuleDecision'
 
     GeoServiceProtocol:
       $ref: './common-schemas.yaml#/components/schemas/GeoServiceProtocol'

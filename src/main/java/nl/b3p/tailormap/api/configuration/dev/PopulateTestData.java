@@ -32,7 +32,6 @@ import nl.b3p.tailormap.api.persistence.json.AppTreeLevelNode;
 import nl.b3p.tailormap.api.persistence.json.AppTreeNode;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRuleDecision;
-import nl.b3p.tailormap.api.persistence.json.AuthorizationRuleDecisionsValue;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.CatalogNode;
 import nl.b3p.tailormap.api.persistence.json.FeatureTypeRef;
@@ -171,21 +170,13 @@ public class PopulateTestData {
         List.of(
             new AuthorizationRule()
                 .groupName(Group.ANONYMOUS)
-                .decisions(
-                    Map.of(
-                        ACCESS_TYPE_READ,
-                        new AuthorizationRuleDecisionsValue()
-                            .decision(AuthorizationRuleDecision.ALLOW))));
+                .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)));
 
     List<AuthorizationRule> ruleLoggedIn =
         List.of(
             new AuthorizationRule()
                 .groupName(Group.APP_AUTHENTICATED)
-                .decisions(
-                    Map.of(
-                        ACCESS_TYPE_READ,
-                        new AuthorizationRuleDecisionsValue()
-                            .decision(AuthorizationRuleDecision.ALLOW))));
+                .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)));
 
     Collection<GeoService> services =
         List.of(
