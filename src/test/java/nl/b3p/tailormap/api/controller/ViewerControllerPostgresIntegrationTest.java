@@ -6,9 +6,7 @@
 package nl.b3p.tailormap.api.controller;
 
 import static nl.b3p.tailormap.api.TestRequestProcessor.setServletPath;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
@@ -105,36 +103,50 @@ class ViewerControllerPostgresIntegrationTest {
   }
 
   @Test
-  @Disabled("This test fails, proxying is currently not working/non-existent")
-  @Issue("https://b3partners.atlassian.net/browse/HTM-714")
-  // TODO fix this test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_contain_proxy_url() throws Exception {
+    String path = apiBasePath + "/app/default/map";
     mockMvc
-        .perform(get("/app/5/map"))
+        .perform(get(path).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(
-            jsonPath("$.services[?(@.name == 'Bestuurlijke Gebieden View Service (proxied)')].url")
+            jsonPath("$.services[?(@.id == 'snapshot-geoserver-proxied')].url")
                 .value(contains(nullValue())))
         .andExpect(
-            jsonPath("$.appLayers[?(@.layerName === \"Gemeentegebied\")].url")
+            jsonPath(
+                    "$.appLayers[?(@.id === 'lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel')].url")
                 // Need to use contains() because jsonPath() returns an array even
                 // when the expression resolves to a single scalar property
-                .value(contains(endsWith("/app/5/layer/15/proxy/wms"))))
-        .andExpect(
-            jsonPath("$.services[?(@.name == 'PDOK HWH luchtfoto (proxied)')].url")
-                .value(contains(nullValue())))
-        .andExpect(
-            jsonPath("$.appLayers[?(@.layerName === \"Actueel_ortho25\")].url")
-                .value(contains(endsWith("/app/5/layer/16/proxy/wmts"))))
-        .andExpect(
-            jsonPath("$.appLayers[?(@.layerName === \"Gemeentegebied\")].legendImageUrl")
                 .value(
                     contains(
-                        allOf(
-                            containsString("/app/5/layer/15/proxy/wms"),
-                            containsString("request=GetLegendGraphic")))))
+                        endsWith(
+                            "/app/default/layer/lyr%3Asnapshot-geoserver-proxied%3Apostgis%3Abegroeidterreindeel/proxy/wms"))))
+        .andExpect(
+            jsonPath("$.services[?(@.id == 'pdok-kadaster-bestuurlijkegebieden')].url")
+                .value(contains(nullValue())))
+        .andExpect(
+            jsonPath(
+                    "$.appLayers[?(@.id === 'lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied')].url")
+                .value(
+                    contains(
+                        endsWith(
+                            "/app/default/layer/lyr%3Apdok-kadaster-bestuurlijkegebieden%3AProvinciegebied/proxy/wms"))))
+
+        // Backend does not save legendImageUrl from capabilities, and therefore also does not
+        // replace it with a proxied version. Frontend will use normal URL to create standard WMS
+        // GetLegendGraphic request, which usually works fine
+        // Old 10.0 code:
+        // https://github.com/B3Partners/tailormap-api/blob/tailormap-api-10.0.0/src/main/java/nl/b3p/tailormap/api/controller/MapController.java#L440
+        //        .andExpect(
+        //            jsonPath("$.appLayers[?(@.id ===
+        // 'lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied')].legendImageUrl")
+        //                .value(
+        //                    contains(
+        //                        allOf(
+        //
+        // containsString("/app/default/layer/lyr%3Apdok-kadaster-bestuurlijkegebieden%3AProvinciegebied/proxy/wms"),
+        //                            containsString("request=GetLegendGraphic")))))
         .andReturn();
   }
 

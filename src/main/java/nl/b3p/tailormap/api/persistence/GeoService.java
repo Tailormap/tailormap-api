@@ -283,7 +283,7 @@ public class GeoService {
         new Service()
             .id(this.id)
             .title(this.title)
-            .url(this.url)
+            .url(Boolean.TRUE.equals(this.getSettings().getUseProxy()) ? null : this.url)
             .protocol(this.protocol)
             .serverType(serverTypeEnum);
 
