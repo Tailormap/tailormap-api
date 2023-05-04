@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -38,7 +39,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -59,13 +59,6 @@ class UniqueValuesControllerPostgresIntegrationTest {
 
   @Autowired private MockMvc mockMvc;
 
-  private static RequestPostProcessor requestPostProcessor(String servletPath) {
-    return request -> {
-      request.setServletPath(servletPath);
-      return request;
-    };
-  }
-
   /** layer url + bronhouders. */
   static Stream<Arguments> databaseArgumentsProvider() {
     return Stream.of(
@@ -84,7 +77,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
     url = apiBasePath + url;
     MvcResult result =
         mockMvc
-            .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
+            .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.filterApplied").value(false))
@@ -107,7 +100,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
         apiBasePath
             + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/unique/naam";
     mockMvc
-        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
+        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Layer does not have feature type"));
@@ -120,7 +113,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
         apiBasePath
             + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/unique/ ";
     mockMvc
-        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
+        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Attribute name is required"));
@@ -144,7 +137,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
             .perform(
                 get(url)
                     .accept(MediaType.APPLICATION_JSON)
-                    .with(requestPostProcessor(url))
+                    .with(setServletPath(url))
                     .param("filter", cqlFilter))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -176,7 +169,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
     mockMvc
         .perform(
             get(url)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("filter", cqlFilter)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -195,7 +188,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
             get(url)
                 .param("filter", "naam or Utrecht")
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url)))
+                .with(setServletPath(url)))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))
@@ -208,7 +201,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
     final String url = apiBasePath + provinciesWFSUrl;
     MvcResult result =
         mockMvc
-            .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
+            .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.filterApplied").value(false))
@@ -252,7 +245,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("filter", cqlFilter))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -270,7 +263,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("filter", cqlFilter))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -314,8 +307,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
         apiBasePath
             + "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/TIJDSTIPREGISTRATIE";
     mockMvc
-        .perform(
-            get(testUrl).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(testUrl)))
+        .perform(get(testUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(testUrl)))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.filterApplied").value(false))

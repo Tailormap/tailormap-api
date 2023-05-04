@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,7 +32,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -49,19 +49,12 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
 
-  private static RequestPostProcessor requestPostProcessor(String servletPath) {
-    return request -> {
-      request.setServletPath(servletPath);
-      return request;
-    };
-  }
-
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void app_not_found_404() throws Exception {
     final String path = apiBasePath + "/app/1234/layer/76/proxy/wms";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Not Found"));
@@ -72,7 +65,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
   void deny_non_proxied_service() throws Exception {
     final String path = apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:BGT/proxy/wms";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isForbidden())
         .andExpect(jsonPath("$.message").value("Proxy not enabled for requested service"));
   }
@@ -84,7 +77,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
         apiBasePath
             + "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wmts";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value("Invalid proxy protocol: wmts"));
   }
@@ -94,7 +87,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
   void allow_http_post() throws Exception {
     final String path = apiBasePath + begroeidterreindeelUrl;
     mockMvc
-        .perform(post(path).param("REQUEST", "GetCapabilities").with(requestPostProcessor(path)))
+        .perform(post(path).param("REQUEST", "GetCapabilities").with(setServletPath(path)))
         .andExpect(status().isOk());
   }
 
@@ -103,7 +96,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
   void allow_http_get() throws Exception {
     final String path = apiBasePath + begroeidterreindeelUrl;
     mockMvc
-        .perform(get(path).param("REQUEST", "GetCapabilities").with(requestPostProcessor(path)))
+        .perform(get(path).param("REQUEST", "GetCapabilities").with(setServletPath(path)))
         .andExpect(status().isOk());
   }
 
@@ -116,7 +109,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
             get(path)
                 .param("REQUEST", "GetCapabilities")
                 .param("SERVICE", "WMS")
-                .with(requestPostProcessor(path))
+                .with(setServletPath(path))
                 .header("User-Agent", "Pietje"))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_XML))
@@ -146,7 +139,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
                     "BBOX",
                     "5864.898958858859,340575.3140154673,283834.9241914773,564349.9255234873")
                 .param("SERVICE", "WMS")
-                .with(requestPostProcessor(path)))
+                .with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
         .andExpect(header().string("Content-Length", new StringIsNotZeroMatcher()));
@@ -166,7 +159,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
                 .param("STYLE", "Gemeentegebied")
                 .param("SCALE", "693745.6953993673")
                 .param("SERVICE", "WMS")
-                .with(requestPostProcessor(path)))
+                .with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
         .andExpect(header().string("Content-Length", new StringIsNotZeroMatcher()));
@@ -182,7 +175,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
             get(path)
                 .param("REQUEST", "GetCapabilities")
                 .param("VERSION", "1.1.1")
-                .with(requestPostProcessor(path)))
+                .with(setServletPath(path)))
         .andExpect(status().isForbidden())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Forbidden"));
@@ -196,7 +189,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
         get(path)
             .param("REQUEST", "GetCapabilities")
             .param("VERSION", "1.1.1")
-            .with(requestPostProcessor(path)));
+            .with(setServletPath(path)));
   }
 
   @Test
@@ -230,7 +223,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
                 .param("SERVICE", "WMTS")
                 .param("REQUEST", "GetCapabilities")
                 .param("VERSION", "1.0.0")
-                .with(requestPostProcessor(path)))
+                .with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
         .andExpect(content().string(containsString("<TileMatrix")));
@@ -254,7 +247,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
                 .param("TILEMATRIX", "4")
                 .param("TILEROW", "7")
                 .param("TILECOL", "8")
-                .with(requestPostProcessor(path)))
+                .with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
         .andExpect(header().string("Content-Length", new StringIsNotZeroMatcher()))
@@ -283,7 +276,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
                 .param("TILEMATRIX", "4")
                 .param("TILEROW", "7")
                 .param("TILECOL", "8")
-                .with(requestPostProcessor(path))
+                .with(setServletPath(path))
                 .header("If-Modified-Since", httpDateHeaderFormatter.format(Instant.now())))
         .andExpect(status().isNotModified());
   }

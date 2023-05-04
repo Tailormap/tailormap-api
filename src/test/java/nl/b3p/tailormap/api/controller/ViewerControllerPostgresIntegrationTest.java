@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
@@ -45,25 +46,17 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
 @Stopwatch
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class MapControllerPostgresIntegrationTest {
+class ViewerControllerPostgresIntegrationTest {
   @Autowired ApplicationRepository applicationRepository;
   @Autowired private MockMvc mockMvc;
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
-
-  private static RequestPostProcessor requestPostProcessor(String servletPath) {
-    return request -> {
-      request.setServletPath(servletPath);
-      return request;
-    };
-  }
 
   @Test
   void services_should_be_unique() throws Exception {
@@ -71,7 +64,7 @@ class MapControllerPostgresIntegrationTest {
     final String path = apiBasePath + "/app/default/map";
     MvcResult result =
         mockMvc
-            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.initialExtent").isMap())
@@ -95,7 +88,7 @@ class MapControllerPostgresIntegrationTest {
   void should_error_when_calling_with_nonexistent_id() throws Exception {
     final String path = apiBasePath + "/app/400/map";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
@@ -107,7 +100,7 @@ class MapControllerPostgresIntegrationTest {
   void should_not_find_when_called_without_id() throws Exception {
     final String path = apiBasePath + "/app/map";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isNotFound());
   }
 
@@ -153,7 +146,7 @@ class MapControllerPostgresIntegrationTest {
   void should_not_contain_proxied_secured_service_layer() throws Exception {
     final String path = apiBasePath + "/app/default/map";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.services[?(@.name == 'Beveiligde proxy WMS')]").doesNotExist())
@@ -170,7 +163,7 @@ class MapControllerPostgresIntegrationTest {
     // GET https://snapshot.tailormap.nl/api/app/default/map
     final String path = apiBasePath + "/app/default/map";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(
@@ -193,7 +186,7 @@ class MapControllerPostgresIntegrationTest {
   void should_return_data_for_configured_app() throws Exception {
     final String path = apiBasePath + "/app/default/map";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.initialExtent").isMap())
@@ -225,7 +218,7 @@ class MapControllerPostgresIntegrationTest {
     final String path = apiBasePath + "/app/default/map";
     MvcResult result =
         mockMvc
-            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andReturn();
@@ -295,7 +288,7 @@ class MapControllerPostgresIntegrationTest {
     final String path = apiBasePath + "/app/default/map";
     MvcResult result =
         mockMvc
-            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andReturn();
@@ -344,7 +337,7 @@ class MapControllerPostgresIntegrationTest {
     final String path = apiBasePath + "/app/default/map";
     MvcResult result =
         mockMvc
-            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andReturn();
@@ -387,7 +380,7 @@ class MapControllerPostgresIntegrationTest {
   void should_send_401_when_application_login_required() throws Exception {
     String path = apiBasePath + "/app/secured/map";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))

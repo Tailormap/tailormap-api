@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -19,7 +20,6 @@ import java.util.List;
 import java.util.stream.Stream;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.viewer.model.Service;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -40,7 +40,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 @AutoConfigureMockMvc
 @PostgresIntegrationTest
@@ -80,13 +79,6 @@ class FeaturesControllerPostgresIntegrationTest {
 
   @Value("${tailormap-api.pageSize}")
   private int pageSize;
-
-  private static RequestPostProcessor requestPostProcessor(String servletPath) {
-    return request -> {
-      request.setServletPath(servletPath);
-      return request;
-    };
-  }
 
   static Stream<Arguments> argumentsProvider() {
     return Stream.of(
@@ -281,7 +273,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("filter", "naam or Utrecht")
                 .param("page", "1"))
         .andExpect(status().is4xxClientError())
@@ -306,7 +298,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("x", "141247")
                 .param("y", "458118")
                 .param("simplify", "true"))
@@ -333,7 +325,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("x", "141247")
                 .param("y", "458118")
                 .param("crs", "EPSG:28992")
@@ -361,7 +353,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("x", "577351")
                 .param("y", "6820242")
                 .param("crs", "EPSG:3857")
@@ -389,7 +381,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 // note flipped axis
                 .param("y", "5.04173")
                 .param("x", "52.11937")
@@ -425,7 +417,7 @@ class FeaturesControllerPostgresIntegrationTest {
             .perform(
                 get(url)
                     .accept(MediaType.APPLICATION_JSON)
-                    .with(requestPostProcessor(url))
+                    .with(setServletPath(url))
                     .param("page", "1"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -464,7 +456,7 @@ class FeaturesControllerPostgresIntegrationTest {
             .perform(
                 get(url)
                     .accept(MediaType.APPLICATION_JSON)
-                    .with(requestPostProcessor(url))
+                    .with(setServletPath(url))
                     .param("page", "2"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -514,7 +506,7 @@ class FeaturesControllerPostgresIntegrationTest {
             .perform(
                 get(url)
                     .accept(MediaType.APPLICATION_JSON)
-                    .with(requestPostProcessor(url))
+                    .with(setServletPath(url))
                     .param("page", "3"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -544,7 +536,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("page", "1")
                 .param("sortBy", "naam"))
         .andExpect(status().isOk())
@@ -574,7 +566,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("page", "1")
                 .param("sortBy", "naam")
                 .param("sortOrder", "invalid"))
@@ -614,7 +606,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("page", "1")
                 .param("sortBy", "naam")
                 .param("sortOrder", "asc"))
@@ -645,7 +637,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("page", "1")
                 .param("sortBy", "naam")
                 .param("sortOrder", "desc"))
@@ -684,7 +676,7 @@ class FeaturesControllerPostgresIntegrationTest {
     mockMvc
         .perform(
             get(url)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .accept(MediaType.APPLICATION_JSON)
                 .param("page", "1")
                 .param("sortBy", "gmlid")
@@ -707,7 +699,7 @@ class FeaturesControllerPostgresIntegrationTest {
     mockMvc
         .perform(
             get(url)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .accept(MediaType.APPLICATION_JSON)
                 .param("page", "1")
                 .param("sortBy", "gmlid")
@@ -737,7 +729,7 @@ class FeaturesControllerPostgresIntegrationTest {
     mockMvc
         .perform(
             get(url)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("__fid", "begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457")
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -769,7 +761,7 @@ class FeaturesControllerPostgresIntegrationTest {
     mockMvc
         .perform(
             get(url)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("__fid", utrecht__fid)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -806,7 +798,7 @@ class FeaturesControllerPostgresIntegrationTest {
             .perform(
                 get(applayerUrl)
                     .accept(MediaType.APPLICATION_JSON)
-                    .with(requestPostProcessor(applayerUrl))
+                    .with(setServletPath(applayerUrl))
                     .param("page", "1"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -842,7 +834,7 @@ class FeaturesControllerPostgresIntegrationTest {
             .perform(
                 get(applayerUrl)
                     .accept(MediaType.APPLICATION_JSON)
-                    .with(requestPostProcessor(applayerUrl))
+                    .with(setServletPath(applayerUrl))
                     .param("page", "2"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -903,7 +895,7 @@ class FeaturesControllerPostgresIntegrationTest {
             .perform(
                 get(url)
                     .accept(MediaType.APPLICATION_JSON)
-                    .with(requestPostProcessor(url))
+                    .with(setServletPath(url))
                     .param("x", String.valueOf(x))
                     .param("y", String.valueOf(y))
                     .param("crs", crs)
@@ -960,7 +952,7 @@ class FeaturesControllerPostgresIntegrationTest {
             .perform(
                 get(url)
                     .accept(MediaType.APPLICATION_JSON)
-                    .with(requestPostProcessor(url))
+                    .with(setServletPath(url))
                     .param("x", String.valueOf(x))
                     .param("y", String.valueOf(y))
                     .param("crs", crs)
@@ -1019,7 +1011,7 @@ class FeaturesControllerPostgresIntegrationTest {
             .perform(
                 get(applayerUrl)
                     .accept(MediaType.APPLICATION_JSON)
-                    .with(requestPostProcessor(applayerUrl))
+                    .with(setServletPath(applayerUrl))
                     .param("page", "1"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -1047,7 +1039,7 @@ class FeaturesControllerPostgresIntegrationTest {
             .perform(
                 get(applayerUrl)
                     .accept(MediaType.APPLICATION_JSON)
-                    .with(requestPostProcessor(applayerUrl))
+                    .with(setServletPath(applayerUrl))
                     .param("page", "1"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -1098,7 +1090,7 @@ class FeaturesControllerPostgresIntegrationTest {
             .perform(
                 get(applayerUrl)
                     .accept(MediaType.APPLICATION_JSON)
-                    .with(requestPostProcessor(applayerUrl))
+                    .with(setServletPath(applayerUrl))
                     .param("page", String.valueOf(page)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -1137,7 +1129,7 @@ class FeaturesControllerPostgresIntegrationTest {
             .perform(
                 get(appLayerUrl)
                     .accept(MediaType.APPLICATION_JSON)
-                    .with(requestPostProcessor(appLayerUrl))
+                    .with(setServletPath(appLayerUrl))
                     .param("filter", filterCQL)
                     .param("page", "1"))
             .andExpect(status().isOk())
@@ -1168,7 +1160,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(appLayerUrl)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(appLayerUrl))
+                .with(setServletPath(appLayerUrl))
                 .param("onlyGeometries", "true")
                 .param("page", "1"))
         .andExpect(status().isOk())
@@ -1189,7 +1181,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("filter", "naam=Utrecht"))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -1206,20 +1198,14 @@ class FeaturesControllerPostgresIntegrationTest {
     final String url = apiBasePath + provinciesWFS;
     mockMvc
         .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
-                .param("x", "3"))
+            get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)).param("x", "3"))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400));
 
     mockMvc
         .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
-                .param("y", "3"))
+            get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)).param("y", "3"))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400));
@@ -1236,7 +1222,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("x", "3")
                 .param("y", "3")
                 .param("distance", "0"))
@@ -1249,7 +1235,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("x", "3")
                 .param("y", "3")
                 .param("distance", "-1"))
@@ -1267,7 +1253,7 @@ class FeaturesControllerPostgresIntegrationTest {
   void should_error_when_calling_with_nonexistent_appId() throws Exception {
     final String url = apiBasePath + "/app/400/layer/1/features";
     mockMvc
-        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
+        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404));
@@ -1281,7 +1267,7 @@ class FeaturesControllerPostgresIntegrationTest {
   void should_not_find_when_called_without_appId() throws Exception {
     final String url = apiBasePath + "/app/layer/features";
     mockMvc
-        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
+        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isNotFound());
   }
 
@@ -1295,7 +1281,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("page", "1"))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
