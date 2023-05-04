@@ -24,6 +24,7 @@ import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.AppSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
+import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.viewer.model.AppStyling;
 import nl.b3p.tailormap.api.viewer.model.Component;
@@ -76,8 +77,6 @@ public class Application {
   })
   private Bounds maxExtent;
 
-  private boolean authenticatedRequired;
-
   @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
   @Column(columnDefinition = "jsonb")
   @NotNull
@@ -97,6 +96,11 @@ public class Application {
   @Column(columnDefinition = "jsonb")
   @NotNull
   private AppStyling styling = new AppStyling();
+
+  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Column(columnDefinition = "jsonb")
+  @NotNull
+  private List<AuthorizationRule> authorizationRules = new ArrayList<>();
 
   // <editor-fold desc="getters and setters">
   public Long getId() {
@@ -180,15 +184,6 @@ public class Application {
     return this;
   }
 
-  public boolean isAuthenticatedRequired() {
-    return authenticatedRequired;
-  }
-
-  public Application setAuthenticatedRequired(boolean authenticatedRequired) {
-    this.authenticatedRequired = authenticatedRequired;
-    return this;
-  }
-
   public AppContent getContentRoot() {
     return contentRoot;
   }
@@ -222,6 +217,15 @@ public class Application {
 
   public Application setStyling(AppStyling styling) {
     this.styling = styling;
+    return this;
+  }
+
+  public List<AuthorizationRule> getAuthorizationRules() {
+    return authorizationRules;
+  }
+
+  public Application setAuthorizationRules(List<AuthorizationRule> authorizationRules) {
+    this.authorizationRules = authorizationRules;
     return this;
   }
 

@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -14,14 +15,12 @@ import javax.persistence.EntityManager;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.transaction.annotation.Transactional;
 
 @AutoConfigureMockMvc
@@ -34,14 +33,6 @@ class AppControllerIntegrationTest {
 
   @Value("${tailormap-api.base-path}")
   private String basePath;
-
-  // Required for AppRestControllerAdvice.populateViewerKind()
-  private static RequestPostProcessor requestPostProcessor(String servletPath) {
-    return request -> {
-      request.setServletPath(servletPath);
-      return request;
-    };
-  }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
@@ -98,7 +89,7 @@ class AppControllerIntegrationTest {
   void finds_by_name() throws Exception {
     String path = basePath + "/app/default";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.kind").value("app"))
@@ -110,7 +101,7 @@ class AppControllerIntegrationTest {
   void not_found_by_name() throws Exception {
     String path = basePath + "/app/waldo";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404));
@@ -121,7 +112,7 @@ class AppControllerIntegrationTest {
   void finds_service_viewer() throws Exception {
     String path = basePath + "/service/snapshot-geoserver";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.kind").value("service"))
@@ -134,7 +125,7 @@ class AppControllerIntegrationTest {
   void not_found_unpublished_service_viewer() throws Exception {
     String path = basePath + "/service/openbasiskaart";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
@@ -143,12 +134,10 @@ class AppControllerIntegrationTest {
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  // TODO: implement authentication
-  @Disabled("Authentication is not yet implemented")
   void should_send_401_when_application_configured() throws Exception {
     String path = basePath + "/app/secured";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))

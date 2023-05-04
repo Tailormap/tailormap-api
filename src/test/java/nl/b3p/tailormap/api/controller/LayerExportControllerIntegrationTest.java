@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,7 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -42,19 +42,12 @@ class LayerExportControllerPostgresIntegrationTest {
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
 
-  private static RequestPostProcessor requestPostProcessor(String servletPath) {
-    return request -> {
-      request.setServletPath(servletPath);
-      return request;
-    };
-  }
-
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldReturnExportCapabilitiesWithJDBCFeatureSource() throws Exception {
     final String url = apiBasePath + waterdeelUrlOracle.replace("download", "capabilities");
     mockMvc
-        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(url)))
+        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.exportable").value(Boolean.TRUE))
@@ -93,7 +86,7 @@ class LayerExportControllerPostgresIntegrationTest {
   void shouldReturnExportCapabilitiesWithWFSFeatureSource() throws Exception {
     final String url = apiBasePath + pdokProvincies.replace("download", "capabilities");
     mockMvc
-        .perform(get(url).with(requestPostProcessor(url)).accept(MediaType.APPLICATION_JSON))
+        .perform(get(url).with(setServletPath(url)).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.exportable").value(Boolean.TRUE))
@@ -114,7 +107,7 @@ class LayerExportControllerPostgresIntegrationTest {
     mockMvc
         .perform(
             get(url)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .accept(MediaType.APPLICATION_JSON)
                 .param("outputFormat", "application/json")
                 .param("attributes", "geom,naam,code,ligtInLandCode,ligtInLandNaam"))
@@ -134,7 +127,7 @@ class LayerExportControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("outputFormat", "application/geopackage+sqlite3"))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/geopackage+sqlite3"));
@@ -148,7 +141,7 @@ class LayerExportControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("outputFormat", MediaType.APPLICATION_JSON_VALUE)
                 .param("filter", "(BRONHOUDER IN ('G1904'))"))
         .andExpect(status().isOk())
@@ -168,7 +161,7 @@ class LayerExportControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("outputFormat", "application/json")
                 .param("filter", "(BRONHOUDER IN ('G1904','L0002','L0004'))")
                 .param("sortBy", "CLASS")
@@ -185,7 +178,7 @@ class LayerExportControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
-                .with(requestPostProcessor(url))
+                .with(setServletPath(url))
                 .param("outputFormat", "application/json")
                 .param("filter", "(BRONHOUDER IN ('G1904','L0002','L0004'))")
                 .param("sortBy", "CLASS")

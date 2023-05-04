@@ -5,9 +5,8 @@
  */
 package nl.b3p.tailormap.api.controller;
 
-import static org.hamcrest.Matchers.allOf;
+import static nl.b3p.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
@@ -34,7 +33,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junitpioneer.jupiter.Issue;
@@ -46,25 +44,17 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
 @Stopwatch
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class MapControllerPostgresIntegrationTest {
+class ViewerControllerPostgresIntegrationTest {
   @Autowired ApplicationRepository applicationRepository;
   @Autowired private MockMvc mockMvc;
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
-
-  private static RequestPostProcessor requestPostProcessor(String servletPath) {
-    return request -> {
-      request.setServletPath(servletPath);
-      return request;
-    };
-  }
 
   @Test
   void services_should_be_unique() throws Exception {
@@ -72,7 +62,7 @@ class MapControllerPostgresIntegrationTest {
     final String path = apiBasePath + "/app/default/map";
     MvcResult result =
         mockMvc
-            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.initialExtent").isMap())
@@ -96,7 +86,7 @@ class MapControllerPostgresIntegrationTest {
   void should_error_when_calling_with_nonexistent_id() throws Exception {
     final String path = apiBasePath + "/app/400/map";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
@@ -108,41 +98,55 @@ class MapControllerPostgresIntegrationTest {
   void should_not_find_when_called_without_id() throws Exception {
     final String path = apiBasePath + "/app/map";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isNotFound());
   }
 
   @Test
-  @Disabled("This test fails, proxying is currently not working/non-existent")
-  @Issue("https://b3partners.atlassian.net/browse/HTM-714")
-  // TODO fix this test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_contain_proxy_url() throws Exception {
+    String path = apiBasePath + "/app/default/map";
     mockMvc
-        .perform(get("/app/5/map"))
+        .perform(get(path).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(
-            jsonPath("$.services[?(@.name == 'Bestuurlijke Gebieden View Service (proxied)')].url")
+            jsonPath("$.services[?(@.id == 'snapshot-geoserver-proxied')].url")
                 .value(contains(nullValue())))
         .andExpect(
-            jsonPath("$.appLayers[?(@.layerName === \"Gemeentegebied\")].url")
+            jsonPath(
+                    "$.appLayers[?(@.id === 'lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel')].url")
                 // Need to use contains() because jsonPath() returns an array even
                 // when the expression resolves to a single scalar property
-                .value(contains(endsWith("/app/5/layer/15/proxy/wms"))))
-        .andExpect(
-            jsonPath("$.services[?(@.name == 'PDOK HWH luchtfoto (proxied)')].url")
-                .value(contains(nullValue())))
-        .andExpect(
-            jsonPath("$.appLayers[?(@.layerName === \"Actueel_ortho25\")].url")
-                .value(contains(endsWith("/app/5/layer/16/proxy/wmts"))))
-        .andExpect(
-            jsonPath("$.appLayers[?(@.layerName === \"Gemeentegebied\")].legendImageUrl")
                 .value(
                     contains(
-                        allOf(
-                            containsString("/app/5/layer/15/proxy/wms"),
-                            containsString("request=GetLegendGraphic")))))
+                        endsWith(
+                            "/app/default/layer/lyr%3Asnapshot-geoserver-proxied%3Apostgis%3Abegroeidterreindeel/proxy/wms"))))
+        .andExpect(
+            jsonPath("$.services[?(@.id == 'pdok-kadaster-bestuurlijkegebieden')].url")
+                .value(contains(nullValue())))
+        .andExpect(
+            jsonPath(
+                    "$.appLayers[?(@.id === 'lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied')].url")
+                .value(
+                    contains(
+                        endsWith(
+                            "/app/default/layer/lyr%3Apdok-kadaster-bestuurlijkegebieden%3AProvinciegebied/proxy/wms"))))
+
+        // Backend does not save legendImageUrl from capabilities, and therefore also does not
+        // replace it with a proxied version. Frontend will use normal URL to create standard WMS
+        // GetLegendGraphic request, which usually works fine
+        // Old 10.0 code:
+        // https://github.com/B3Partners/tailormap-api/blob/tailormap-api-10.0.0/src/main/java/nl/b3p/tailormap/api/controller/MapController.java#L440
+        //        .andExpect(
+        //            jsonPath("$.appLayers[?(@.id ===
+        // 'lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied')].legendImageUrl")
+        //                .value(
+        //                    contains(
+        //                        allOf(
+        //
+        // containsString("/app/default/layer/lyr%3Apdok-kadaster-bestuurlijkegebieden%3AProvinciegebied/proxy/wms"),
+        //                            containsString("request=GetLegendGraphic")))))
         .andReturn();
   }
 
@@ -154,7 +158,7 @@ class MapControllerPostgresIntegrationTest {
   void should_not_contain_proxied_secured_service_layer() throws Exception {
     final String path = apiBasePath + "/app/default/map";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.services[?(@.name == 'Beveiligde proxy WMS')]").doesNotExist())
@@ -171,7 +175,7 @@ class MapControllerPostgresIntegrationTest {
     // GET https://snapshot.tailormap.nl/api/app/default/map
     final String path = apiBasePath + "/app/default/map";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(
@@ -194,7 +198,7 @@ class MapControllerPostgresIntegrationTest {
   void should_return_data_for_configured_app() throws Exception {
     final String path = apiBasePath + "/app/default/map";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.initialExtent").isMap())
@@ -226,7 +230,7 @@ class MapControllerPostgresIntegrationTest {
     final String path = apiBasePath + "/app/default/map";
     MvcResult result =
         mockMvc
-            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andReturn();
@@ -296,7 +300,7 @@ class MapControllerPostgresIntegrationTest {
     final String path = apiBasePath + "/app/default/map";
     MvcResult result =
         mockMvc
-            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andReturn();
@@ -345,7 +349,7 @@ class MapControllerPostgresIntegrationTest {
     final String path = apiBasePath + "/app/default/map";
     MvcResult result =
         mockMvc
-            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andReturn();
@@ -383,17 +387,12 @@ class MapControllerPostgresIntegrationTest {
         "incorrect appLayerId for first child");
   }
 
-  @Disabled("Authorization is not yet implemented")
-  @Issue("https://b3partners.atlassian.net/browse/HTM-705")
-  // TODO fix this test
   @Test
-  /* this test changes database content */
-  @Order(Integer.MAX_VALUE)
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_send_401_when_application_login_required() throws Exception {
-    applicationRepository.setAuthenticatedRequired(1L, true);
+    String path = apiBasePath + "/app/secured/map";
     mockMvc
-        .perform(get("/app/default/map").accept(MediaType.APPLICATION_JSON))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))

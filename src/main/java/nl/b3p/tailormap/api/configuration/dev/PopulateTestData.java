@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api.configuration.dev;
 
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
+import static nl.b3p.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
 
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
@@ -29,6 +30,8 @@ import nl.b3p.tailormap.api.persistence.json.AppSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLevelNode;
 import nl.b3p.tailormap.api.persistence.json.AppTreeNode;
+import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
+import nl.b3p.tailormap.api.persistence.json.AuthorizationRuleDecision;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.CatalogNode;
 import nl.b3p.tailormap.api.persistence.json.FeatureTypeRef;
@@ -143,9 +146,8 @@ public class PopulateTestData {
   }
 
   public void createTestUsers() throws NoSuchElementException {
-    // User with access to any app which requires authentication
+    // Normal user
     User u = new User().setUsername("user").setPassword("{noop}user").setEmail("user@example.com");
-    u.getGroups().add(groupRepository.findById(Group.APP_AUTHENTICATED).orElseThrow());
     userRepository.save(u);
 
     // Superuser with all access
@@ -163,6 +165,18 @@ public class PopulateTestData {
     rootCatalogNode.addChildrenItem(catalogNode.getId());
     catalog.getNodes().add(catalogNode);
 
+    List<AuthorizationRule> rule =
+        List.of(
+            new AuthorizationRule()
+                .groupName(Group.ANONYMOUS)
+                .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)));
+
+    List<AuthorizationRule> ruleLoggedIn =
+        List.of(
+            new AuthorizationRule()
+                .groupName(Group.AUTHENTICATED)
+                .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)));
+
     Collection<GeoService> services =
         List.of(
             new GeoService()
@@ -170,18 +184,21 @@ public class PopulateTestData {
                 .setProtocol(WMS)
                 .setTitle("Test GeoServer")
                 .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
+                .setAuthorizationRules(rule)
                 .setPublished(true),
             new GeoService()
                 .setId("snapshot-geoserver-proxied")
                 .setProtocol(WMS)
                 .setTitle("Test GeoServer (proxied)")
                 .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
+                .setAuthorizationRules(rule)
                 .setSettings(new GeoServiceSettings().useProxy(true)),
             new GeoService()
                 .setId("openbasiskaart")
                 .setProtocol(WMTS)
                 .setTitle("Openbasiskaart")
                 .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
+                .setAuthorizationRules(rule)
                 .setSettings(
                     new GeoServiceSettings()
                         .layerSettings(
@@ -195,6 +212,14 @@ public class PopulateTestData {
                 .setProtocol(WMTS)
                 .setTitle("Openbasiskaart (proxied)")
                 .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
+                .setAuthorizationRules(rule)
+                // The service actually doesn't require authentication, but also doesn't mind it
+                // Just for testing
+                .setAuthentication(
+                    new ServiceAuthentication()
+                        .method(ServiceAuthentication.MethodEnum.PASSWORD)
+                        .username("test")
+                        .password("test"))
                 .setSettings(
                     new GeoServiceSettings()
                         .useProxy(true)
@@ -209,6 +234,7 @@ public class PopulateTestData {
                 .setProtocol(WMTS)
                 .setTitle("PDOK HWH luchtfoto")
                 .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
+                .setAuthorizationRules(rule)
                 .setPublished(true)
                 .setSettings(
                     new GeoServiceSettings()
@@ -219,6 +245,7 @@ public class PopulateTestData {
                 .setProtocol(WMTS)
                 .setTitle("basemap.at")
                 .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
+                .setAuthorizationRules(rule)
                 .setPublished(true)
                 .setSettings(
                     new GeoServiceSettings()
@@ -238,6 +265,7 @@ public class PopulateTestData {
                 .setProtocol(WMS)
                 .setUrl(
                     "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
+                .setAuthorizationRules(rule)
                 .setSettings(
                     new GeoServiceSettings()
                         .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)
@@ -465,6 +493,7 @@ public class PopulateTestData {
             .setName("default")
             .setTitle("Tailormap demo")
             .setCrs("EPSG:28992")
+            .setAuthorizationRules(rule)
             .setContentRoot(
                 new AppContent()
                     .addBaseLayerNodesItem(
@@ -485,6 +514,8 @@ public class PopulateTestData {
                             .title("Openbasiskaart (proxied)")
                             .addChildrenIdsItem("lyr:openbasiskaart-proxied:osm"))
                     .addBaseLayerNodesItem(
+                        // This layer from a secured proxied service should not be proxyable in a
+                        // public app, see test_wms_secured_proxy_not_in_public_app() testcase
                         new AppTreeLayerNode()
                             .objectType("AppTreeLayerNode")
                             .id("lyr:openbasiskaart-proxied:osm")
@@ -578,6 +609,7 @@ public class PopulateTestData {
             .setName("base")
             .setTitle("Service base app")
             .setCrs("EPSG:28992")
+            .setAuthorizationRules(rule)
             .setContentRoot(
                 new AppContent()
                     .addBaseLayerNodesItem(
@@ -595,8 +627,8 @@ public class PopulateTestData {
         new Application()
             .setName("secured")
             .setTitle("secured app")
-            .setAuthenticatedRequired(true)
             .setCrs("EPSG:28992")
+            .setAuthorizationRules(ruleLoggedIn)
             .setContentRoot(
                 new AppContent()
                     .addBaseLayerNodesItem(
@@ -671,6 +703,7 @@ public class PopulateTestData {
         new Application()
             .setName("austria")
             .setCrs("EPSG:3857")
+            .setAuthorizationRules(rule)
             .setTitle("Austria")
             .setInitialExtent(
                 new Bounds().minx(987982d).miny(5799551d).maxx(1963423d).maxy(6320708d))

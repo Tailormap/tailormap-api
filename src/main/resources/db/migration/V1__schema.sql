@@ -7,11 +7,11 @@
        admin_comments text,
        preview_text text,
        crs varchar(255) not null,
-       authenticated_required boolean not null,
        content_root jsonb not null,
        settings jsonb not null,
        components jsonb not null,
        styling jsonb not null,
+       authorization_rules jsonb not null,
        initial_maxx float8,
        initial_maxy float8,
        initial_minx float8,
@@ -90,6 +90,7 @@
        layers jsonb not null,
        settings jsonb not null,
        service_capabilities jsonb,
+       authorization_rules jsonb not null,
        capabilities_content_type varchar(255),
        capabilities_fetched timestamp,
        capabilities bytea,
@@ -159,3 +160,4 @@
 insert into groups(name, system_group, description) values ('admin', true, 'Administrators with full access');
 insert into groups(name, system_group, description) values ('app-authenticated', true, 'Users authorized for application with authentication required');
 insert into groups(name, system_group, description) values ('actuator', true, 'Users authorized for Spring Boot Actuator (monitoring and management)');
+insert into groups(name, system_group, description) values ('anonymous', true, 'Any user, even when not signed in.');

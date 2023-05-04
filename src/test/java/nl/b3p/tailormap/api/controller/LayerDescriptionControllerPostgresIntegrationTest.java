@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -15,14 +16,12 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junitpioneer.jupiter.Issue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -33,19 +32,12 @@ class LayerDescriptionControllerPostgresIntegrationTest {
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
 
-  private static RequestPostProcessor requestPostProcessor(String servletPath) {
-    return request -> {
-      request.setServletPath(servletPath);
-      return request;
-    };
-  }
-
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void app_not_found_404() throws Exception {
     final String path = apiBasePath + "/app/1234/layer/76/describe";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Not Found"));
@@ -58,7 +50,7 @@ class LayerDescriptionControllerPostgresIntegrationTest {
         apiBasePath
             + "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/describe";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.featureTypeName").value("begroeidterreindeel"))
@@ -70,20 +62,18 @@ class LayerDescriptionControllerPostgresIntegrationTest {
             jsonPath("$.attributes[?(@.name == 'relatievehoogteligging')].type").value("integer"));
   }
 
-  @Disabled("This test fails, authorisation is not working/non-existent")
-  @Issue("https://b3partners.atlassian.net/browse/HTM-705")
-  // TODO: fix this test
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @WithMockUser(username = "noproxyuser")
   void test_wms_secured_app_denied() throws Exception {
     final String path =
         apiBasePath
-            + "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/describe";
+            + "/app/secured/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/describe";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isUnauthorized())
-        .andExpect(content().string("{\"code\":401,\"url\":\"/login\"}"));
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(401))
+        .andExpect(jsonPath("$.url").value("/login"));
   }
 
   @Test
@@ -96,7 +86,7 @@ class LayerDescriptionControllerPostgresIntegrationTest {
         apiBasePath
             + "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/describe";
     mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.message").value("Layer does not have feature type"));
   }

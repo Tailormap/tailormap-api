@@ -34,6 +34,7 @@ import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.viewer.model.AppLayer;
 import nl.b3p.tailormap.api.viewer.model.LayerTreeNode;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
@@ -59,6 +60,7 @@ public class ApplicationHelper {
   private final ApplicationRepository applicationRepository;
   private final FeatureSourceRepository featureSourceRepository;
   private final EntityManager entityManager;
+  private final AuthorizationService authorizationService;
 
   public ApplicationHelper(
       GeoServiceHelper geoServiceHelper,
@@ -66,13 +68,15 @@ public class ApplicationHelper {
       ConfigurationRepository configurationRepository,
       ApplicationRepository applicationRepository,
       FeatureSourceRepository featureSourceRepository,
-      EntityManager entityManager) {
+      EntityManager entityManager,
+      AuthorizationService authorizationService) {
     this.geoServiceHelper = geoServiceHelper;
     this.geoServiceRepository = geoServiceRepository;
     this.configurationRepository = configurationRepository;
     this.applicationRepository = applicationRepository;
     this.featureSourceRepository = featureSourceRepository;
     this.entityManager = entityManager;
+    this.authorizationService = authorizationService;
   }
 
   public Application getServiceApplication(
@@ -293,6 +297,11 @@ public class ApplicationHelper {
             layerRef.getServiceId());
         return Triple.of(null, null, null);
       }
+
+      if (!authorizationService.mayUserRead(service)) {
+        return Triple.of(null, null, null);
+      }
+
       GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());
 
       if (serviceLayer == null) {
