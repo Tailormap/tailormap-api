@@ -383,17 +383,12 @@ class MapControllerPostgresIntegrationTest {
         "incorrect appLayerId for first child");
   }
 
-  @Disabled("Authorization is not yet implemented")
-  @Issue("https://b3partners.atlassian.net/browse/HTM-705")
-  // TODO fix this test
   @Test
-  /* this test changes database content */
-  @Order(Integer.MAX_VALUE)
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_send_401_when_application_login_required() throws Exception {
-    // applicationRepository.setAuthenticatedRequired(1L, true);
+    String path = apiBasePath + "/app/secured/map";
     mockMvc
-        .perform(get("/app/default/map").accept(MediaType.APPLICATION_JSON))
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))

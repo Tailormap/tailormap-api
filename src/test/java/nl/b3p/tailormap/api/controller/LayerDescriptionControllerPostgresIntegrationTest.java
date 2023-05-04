@@ -70,20 +70,19 @@ class LayerDescriptionControllerPostgresIntegrationTest {
             jsonPath("$.attributes[?(@.name == 'relatievehoogteligging')].type").value("integer"));
   }
 
-  @Disabled("This test fails, authorisation is not working/non-existent")
-  @Issue("https://b3partners.atlassian.net/browse/HTM-705")
-  // TODO: fix this test
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @WithMockUser(username = "noproxyuser")
+
   void test_wms_secured_app_denied() throws Exception {
     final String path =
         apiBasePath
-            + "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/describe";
+            + "/app/secured/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/describe";
     mockMvc
         .perform(get(path).accept(MediaType.APPLICATION_JSON).with(requestPostProcessor(path)))
         .andExpect(status().isUnauthorized())
-        .andExpect(content().string("{\"code\":401,\"url\":\"/login\"}"));
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(401))
+        .andExpect(jsonPath("$.url").value("/login"));
   }
 
   @Test

@@ -143,8 +143,6 @@ class AppControllerIntegrationTest {
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  // TODO: implement authentication
-  @Disabled("Authentication is not yet implemented")
   void should_send_401_when_application_configured() throws Exception {
     String path = basePath + "/app/secured";
     mockMvc

@@ -1290,12 +1290,9 @@ class FeaturesControllerPostgresIntegrationTest {
   @Test
   @Order(Integer.MAX_VALUE)
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  // TODO: fix this test
-  @Disabled("Since authorization is not yet implemented, this test is disabled")
-  @Issue("https://b3partners.atlassian.net/browse/HTM-705")
   void should_send_403_when_access_denied() throws Exception {
     final String url =
-        apiBasePath + "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied";
+        apiBasePath + "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/features";
     mockMvc
         .perform(
             get(url)
