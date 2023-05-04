@@ -14,6 +14,7 @@ import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.viewer.model.ErrorResponse;
 import nl.b3p.tailormap.api.viewer.model.RedirectResponse;
 import nl.b3p.tailormap.api.viewer.model.ViewerResponse;
@@ -35,7 +36,7 @@ public class AppRestControllerAdvice {
   private final ApplicationRepository applicationRepository;
   private final GeoServiceRepository geoServiceRepository;
   private final ApplicationHelper applicationHelper;
-  // private final AuthorizationService authorizationService;
+  private final AuthorizationService authorizationService;
 
   @Value(&quot;${tailormap-api.base-path}&quot;)
   private String basePath;
@@ -43,42 +44,44 @@ public class AppRestControllerAdvice {
   public AppRestControllerAdvice(
       ApplicationRepository applicationRepository,
       GeoServiceRepository geoServiceRepository,
-<span class="nc" id="L46">      ApplicationHelper applicationHelper) {</span>
-<span class="nc" id="L47">    this.applicationRepository = applicationRepository;</span>
-<span class="nc" id="L48">    this.geoServiceRepository = geoServiceRepository;</span>
-<span class="nc" id="L49">    this.applicationHelper = applicationHelper;</span>
-<span class="nc" id="L50">  }</span>
+      ApplicationHelper applicationHelper,
+<span class="nc" id="L48">      AuthorizationService authorizationService) {</span>
+<span class="nc" id="L49">    this.applicationRepository = applicationRepository;</span>
+<span class="nc" id="L50">    this.geoServiceRepository = geoServiceRepository;</span>
+<span class="nc" id="L51">    this.applicationHelper = applicationHelper;</span>
+<span class="nc" id="L52">    this.authorizationService = authorizationService;</span>
+<span class="nc" id="L53">  }</span>
 
   @InitBinder
   protected void initBinder(WebDataBinder binder) {
     // WARNING! These fields must NOT match properties of ModelAttribute classes, otherwise they
     // will be overwritten (for instance GeoServiceLayer.name might be set to the app name)
-<span class="nc" id="L56">    binder.setAllowedFields(&quot;viewerName&quot;, &quot;appLayerId&quot;, &quot;base&quot;, &quot;projection&quot;);</span>
-<span class="nc" id="L57">  }</span>
+<span class="nc" id="L59">    binder.setAllowedFields(&quot;viewerName&quot;, &quot;appLayerId&quot;, &quot;base&quot;, &quot;projection&quot;);</span>
+<span class="nc" id="L60">  }</span>
 
   @ExceptionHandler(ResponseStatusException.class)
   protected ResponseEntity&lt;?&gt; handleResponseStatusException(ResponseStatusException ex) {
-<span class="nc bnc" id="L61" title="All 2 branches missed.">    if (HttpStatus.UNAUTHORIZED.equals(ex.getStatus())) {</span>
-<span class="nc" id="L62">      return ResponseEntity.status(ex.getStatus())</span>
-<span class="nc" id="L63">          .contentType(MediaType.APPLICATION_JSON)</span>
-<span class="nc" id="L64">          .body(new RedirectResponse());</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">    if (HttpStatus.UNAUTHORIZED.equals(ex.getStatus())) {</span>
+<span class="nc" id="L65">      return ResponseEntity.status(ex.getStatus())</span>
+<span class="nc" id="L66">          .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L67">          .body(new RedirectResponse());</span>
     }
-<span class="nc" id="L66">    return ResponseEntity.status(ex.getStatus())</span>
-<span class="nc" id="L67">        .contentType(MediaType.APPLICATION_JSON)</span>
-<span class="nc" id="L68">        .body(</span>
+<span class="nc" id="L69">    return ResponseEntity.status(ex.getStatus())</span>
+<span class="nc" id="L70">        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L71">        .body(</span>
             new ErrorResponse()
-<span class="nc bnc" id="L70" title="All 2 branches missed.">                .message(ex.getReason() != null ? ex.getReason() : ex.getStatus().getReasonPhrase())</span>
-<span class="nc" id="L71">                .code(ex.getRawStatusCode()));</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">                .message(ex.getReason() != null ? ex.getReason() : ex.getStatus().getReasonPhrase())</span>
+<span class="nc" id="L74">                .code(ex.getRawStatusCode()));</span>
   }
 
   @ModelAttribute
   public ViewerResponse.KindEnum populateViewerKind(HttpServletRequest request) {
-<span class="nc bnc" id="L76" title="All 2 branches missed.">    if (request.getServletPath().startsWith(basePath + &quot;/app/&quot;)) {</span>
-<span class="nc" id="L77">      return ViewerResponse.KindEnum.APP;</span>
-<span class="nc bnc" id="L78" title="All 2 branches missed.">    } else if (request.getServletPath().startsWith(basePath + &quot;/service/&quot;)) {</span>
-<span class="nc" id="L79">      return ViewerResponse.KindEnum.SERVICE;</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">    if (request.getServletPath().startsWith(basePath + &quot;/app/&quot;)) {</span>
+<span class="nc" id="L80">      return ViewerResponse.KindEnum.APP;</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">    } else if (request.getServletPath().startsWith(basePath + &quot;/service/&quot;)) {</span>
+<span class="nc" id="L82">      return ViewerResponse.KindEnum.SERVICE;</span>
     } else {
-<span class="nc" id="L81">      return null;</span>
+<span class="nc" id="L84">      return null;</span>
     }
   }
 
@@ -88,55 +91,58 @@ public class AppRestControllerAdvice {
       @PathVariable(required = false) String viewerName,
       @RequestParam(required = false) String base,
       @RequestParam(required = false) String projection) {
-<span class="nc bnc" id="L91" title="All 4 branches missed.">    if (viewerKind == null || viewerName == null) {</span>
+<span class="nc bnc" id="L94" title="All 4 branches missed.">    if (viewerKind == null || viewerName == null) {</span>
       // No binding required for ViewerController.defaultApp()
-<span class="nc" id="L93">      return null;</span>
+<span class="nc" id="L96">      return null;</span>
     }
 
     Application app;
-<span class="nc bnc" id="L97" title="All 2 branches missed.">    if (viewerKind == ViewerResponse.KindEnum.APP) {</span>
-<span class="nc" id="L98">      app = applicationRepository.findByName(viewerName);</span>
-<span class="nc bnc" id="L99" title="All 2 branches missed.">      if (app == null) {</span>
-<span class="nc" id="L100">        throw new ResponseStatusException(HttpStatus.NOT_FOUND);</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">    if (viewerKind == ViewerResponse.KindEnum.APP) {</span>
+<span class="nc" id="L101">      app = applicationRepository.findByName(viewerName);</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">      if (app == null) {</span>
+<span class="nc" id="L103">        throw new ResponseStatusException(HttpStatus.NOT_FOUND);</span>
       }
-<span class="nc bnc" id="L102" title="All 2 branches missed.">    } else if (viewerKind == ViewerResponse.KindEnum.SERVICE) {</span>
-<span class="nc" id="L103">      GeoService service = geoServiceRepository.findById(viewerName).orElse(null);</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">    } else if (viewerKind == ViewerResponse.KindEnum.SERVICE) {</span>
+<span class="nc" id="L106">      GeoService service = geoServiceRepository.findById(viewerName).orElse(null);</span>
 
-<span class="nc bnc" id="L105" title="All 2 branches missed.">      if (service == null) {</span>
-<span class="nc" id="L106">        throw new ResponseStatusException(HttpStatus.NOT_FOUND);</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">      if (service == null) {</span>
+<span class="nc" id="L109">        throw new ResponseStatusException(HttpStatus.NOT_FOUND);</span>
+      }
+
+<span class="nc bnc" id="L112" title="All 2 branches missed.">      if (!authorizationService.mayUserRead(service)) {</span>
+<span class="nc" id="L113">        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);</span>
       }
 
       // TODO: skip this check for users with admin role
-<span class="nc bnc" id="L110" title="All 2 branches missed.">      if (!service.isPublished()) {</span>
-<span class="nc" id="L111">        throw new ResponseStatusException(HttpStatus.NOT_FOUND);</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">      if (!service.isPublished()) {</span>
+<span class="nc" id="L118">        throw new ResponseStatusException(HttpStatus.NOT_FOUND);</span>
       }
-<span class="nc" id="L113">      app = applicationHelper.getServiceApplication(base, projection, service);</span>
-<span class="nc" id="L114">    } else {</span>
-<span class="nc" id="L115">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);</span>
+<span class="nc" id="L120">      app = applicationHelper.getServiceApplication(base, projection, service);</span>
+<span class="nc" id="L121">    } else {</span>
+<span class="nc" id="L122">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);</span>
     }
 
-    // TODO check authorization for app
-    //    if (!this.authorizationService.mayUserRead(application)) {
-    //      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-    //    }
-<span class="nc" id="L122">    return app;</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">    if (!this.authorizationService.mayUserRead(app)) {</span>
+<span class="nc" id="L126">      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);</span>
+    }
+<span class="nc" id="L128">    return app;</span>
   }
 
   @ModelAttribute
   public AppTreeLayerNode populateAppTreeLayerNode(
       @ModelAttribute Application app, @PathVariable(required = false) String appLayerId) {
-<span class="nc bnc" id="L128" title="All 4 branches missed.">    if (app == null || appLayerId == null) {</span>
+<span class="nc bnc" id="L134" title="All 4 branches missed.">    if (app == null || appLayerId == null) {</span>
       // No binding
-<span class="nc" id="L130">      return null;</span>
+<span class="nc" id="L136">      return null;</span>
     }
 
-<span class="nc" id="L133">    final AppTreeLayerNode layerNode =</span>
-<span class="nc" id="L134">        app.getAllAppTreeLayerNode()</span>
-<span class="nc" id="L135">            .filter(r -&gt; r.getId().equals(appLayerId))</span>
-<span class="nc" id="L136">            .findFirst()</span>
-<span class="nc" id="L137">            .orElse(null);</span>
-<span class="nc bnc" id="L138" title="All 2 branches missed.">    if (layerNode == null) {</span>
-<span class="nc" id="L139">      throw new ResponseStatusException(</span>
+<span class="nc" id="L139">    final AppTreeLayerNode layerNode =</span>
+<span class="nc" id="L140">        app.getAllAppTreeLayerNode()</span>
+<span class="nc" id="L141">            .filter(r -&gt; r.getId().equals(appLayerId))</span>
+<span class="nc" id="L142">            .findFirst()</span>
+<span class="nc" id="L143">            .orElse(null);</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">    if (layerNode == null) {</span>
+<span class="nc" id="L145">      throw new ResponseStatusException(</span>
           HttpStatus.NOT_FOUND, &quot;Application layer with id &quot; + appLayerId + &quot; not found&quot;);
     }
 
@@ -144,32 +150,37 @@ public class AppRestControllerAdvice {
     //    if (!this.authorizationService.mayUserRead(applicationLayer, application)) {
     //      throw new ResponseStatusException(HttpStatus.FORBIDDEN, &quot;Access denied&quot;);
     //    }
-<span class="nc" id="L147">    return layerNode;</span>
+<span class="nc" id="L153">    return layerNode;</span>
   }
 
   @ModelAttribute
   public GeoService populateGeoService(@ModelAttribute AppTreeLayerNode appTreeLayerNode) {
-<span class="nc bnc" id="L152" title="All 2 branches missed.">    if (appTreeLayerNode == null) {</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">    if (appTreeLayerNode == null) {</span>
       // No binding
-<span class="nc" id="L154">      return null;</span>
+<span class="nc" id="L160">      return null;</span>
     }
-<span class="nc bnc" id="L156" title="All 2 branches missed.">    if (appTreeLayerNode.getServiceId() == null) {</span>
-<span class="nc" id="L157">      return null;</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">    if (appTreeLayerNode.getServiceId() == null) {</span>
+<span class="nc" id="L163">      return null;</span>
     }
-<span class="nc" id="L159">    return geoServiceRepository.findById(appTreeLayerNode.getServiceId()).orElse(null);</span>
+<span class="nc" id="L165">    GeoService service =</span>
+<span class="nc" id="L166">        geoServiceRepository.findById(appTreeLayerNode.getServiceId()).orElse(null);</span>
+<span class="nc bnc" id="L167" title="All 4 branches missed.">    if (service != null &amp;&amp; !authorizationService.mayUserRead(service)) {</span>
+<span class="nc" id="L168">      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);</span>
+    }
+<span class="nc" id="L170">    return service;</span>
   }
 
   @ModelAttribute
   public GeoServiceLayer populateGeoServiceLayer(
       @ModelAttribute AppTreeLayerNode appTreeLayerNode, @ModelAttribute GeoService service) {
-<span class="nc bnc" id="L165" title="All 2 branches missed.">    if (service == null) {</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">    if (service == null) {</span>
       // No binding
-<span class="nc" id="L167">      return null;</span>
+<span class="nc" id="L178">      return null;</span>
     }
-<span class="nc" id="L169">    return service.getLayers().stream()</span>
-<span class="nc" id="L170">        .filter(l -&gt; appTreeLayerNode.getLayerName().equals(l.getName()))</span>
-<span class="nc" id="L171">        .findFirst()</span>
-<span class="nc" id="L172">        .orElse(null);</span>
+<span class="nc" id="L180">    return service.getLayers().stream()</span>
+<span class="nc" id="L181">        .filter(l -&gt; appTreeLayerNode.getLayerName().equals(l.getName()))</span>
+<span class="nc" id="L182">        .findFirst()</span>
+<span class="nc" id="L183">        .orElse(null);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

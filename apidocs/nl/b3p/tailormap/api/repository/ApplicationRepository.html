@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6};
+var data = {"i0":6,"i1":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -160,12 +160,6 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../per
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findByName(java.lang.String)">findByName</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAuthenticatedRequired(java.lang.Long,java.lang.Boolean)">setAuthenticatedRequired</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id,
-                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;required)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.org.springframework.data.repository.CrudRepository">
@@ -224,7 +218,7 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../per
 <a id="findById(java.lang.Long)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>findById</h4>
 <pre class="methodSignature">@PreAuthorize("permitAll()")
@@ -235,19 +229,6 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../per
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>findById</code>&nbsp;in interface&nbsp;<code>org.springframework.data.repository.CrudRepository&lt;<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&gt;</code></dd>
 </dl>
-</li>
-</ul>
-<a id="setAuthenticatedRequired(java.lang.Long,java.lang.Boolean)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>setAuthenticatedRequired</h4>
-<pre class="methodSignature">@Transactional
-@Modifying
-@Query("update Application a set a.authenticatedRequired = :required  where a.id = :id")
-void&nbsp;setAuthenticatedRequired&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&nbsp;id,
-                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;required)</pre>
 </li>
 </ul>
 </li>

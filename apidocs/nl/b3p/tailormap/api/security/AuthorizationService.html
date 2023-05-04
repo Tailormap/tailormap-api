@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10};
+var data = {"i0":10,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -90,13 +90,13 @@ loadScripts(document, 'script');</script>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -136,7 +136,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 public class <span class="typeNameLabel">AuthorizationService</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
 <div class="block">Validates access control rules. Any call to mayUserRead will verify that the currently logged in
- user is not only allowed to read the current object, but any objcet above and below it in the
+ user is not only allowed to read the current object, but any object above and below it in the
  hierarchy.</div>
 </li>
 </ul>
@@ -144,6 +144,29 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="memberSummary">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Field</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ACCESS_TYPE_READ">ACCESS_TYPE_READ</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
+</section>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <section>
 <ul class="blockList">
@@ -181,9 +204,25 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#allowProxyAccess(nl.b3p.tailormap.api.persistence.Application,nl.b3p.tailormap.api.persistence.GeoService)">allowProxyAccess</a></span>&#8203;(<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
+                <a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></th>
+<td class="colLast">
+<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo
+ service when the application is public (accessible by anonymous users).</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mayUserRead(nl.b3p.tailormap.api.persistence.Application)">mayUserRead</a></span>&#8203;(<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application)</code></th>
 <td class="colLast">
 <div class="block">Verifies that this user may read this Application.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mayUserRead(nl.b3p.tailormap.api.persistence.GeoService)">mayUserRead</a></span>&#8203;(<a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></th>
+<td class="colLast">
+<div class="block">Verifies that this user may read this GeoService.</div>
 </td>
 </tr>
 </table>
@@ -203,6 +242,29 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="field.detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a id="ACCESS_TYPE_READ">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>ACCESS_TYPE_READ</h4>
+<pre>public static final&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> ACCESS_TYPE_READ</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../constant-values.html#nl.b3p.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <section>
 <ul class="blockList">
@@ -232,7 +294,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <a id="mayUserRead(nl.b3p.tailormap.api.persistence.Application)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>mayUserRead</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;mayUserRead&#8203;(<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application)</pre>
@@ -242,6 +304,42 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <dd><code>application</code> - the Application to check</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the results from the access control checks.</dd>
+</dl>
+</li>
+</ul>
+<a id="mayUserRead(nl.b3p.tailormap.api.persistence.GeoService)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>mayUserRead</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;mayUserRead&#8203;(<a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</pre>
+<div class="block">Verifies that this user may read this GeoService.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>geoService</code> - the GeoService to check</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the results from the access control checks.</dd>
+</dl>
+</li>
+</ul>
+<a id="allowProxyAccess(nl.b3p.tailormap.api.persistence.Application,nl.b3p.tailormap.api.persistence.GeoService)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>allowProxyAccess</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;allowProxyAccess&#8203;(<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
+                                <a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</pre>
+<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo
+ service when the application is public (accessible by anonymous users). Do not even allow
+ proxying a secured service if the user is logged viewing a public app!</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>application</code> - The application</dd>
+<dd><code>geoService</code> - The geo service</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether to allow proxying this service for the application</dd>
 </dl>
 </li>
 </ul>
@@ -298,13 +396,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>

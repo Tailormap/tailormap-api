@@ -174,6 +174,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>org.springframework.http.ResponseEntity&lt;?&gt;</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">GeoServiceProxyController.</span><code><span class="memberNameLink"><a href="../../controller/GeoServiceProxyController.html#proxy(nl.b3p.tailormap.api.persistence.Application,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,java.lang.String,javax.servlet.http.HttpServletRequest)">proxy</a></span>&#8203;(<a href="../Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
+     <a href="../GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;service,
+     <a href="../json/GeoServiceLayer.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
+     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;protocol,
+     javax.servlet.http.HttpServletRequest&nbsp;request)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../viewer/model/ViewerResponse.html" title="class in nl.b3p.tailormap.api.viewer.model">ViewerResponse</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">ViewerController.</span><code><span class="memberNameLink"><a href="../../controller/ViewerController.html#viewer(nl.b3p.tailormap.api.persistence.Application,nl.b3p.tailormap.api.viewer.model.ViewerResponse.KindEnum)">viewer</a></span>&#8203;(<a href="../Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;app,
       <a href="../../viewer/model/ViewerResponse.KindEnum.html" title="enum in nl.b3p.tailormap.api.viewer.model">ViewerResponse.KindEnum</a>&nbsp;viewerKind)</code></th>
@@ -203,7 +212,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a></code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">Application.</span><code><span class="memberNameLink"><a href="../Application.html#setAuthenticatedRequired(boolean)">setAuthenticatedRequired</a></span>&#8203;(boolean&nbsp;authenticatedRequired)</code></th>
+<th class="colSecond" scope="row"><span class="typeNameLabel">Application.</span><code><span class="memberNameLink"><a href="../Application.html#setAuthorizationRules(java.util.List)">setAuthorizationRules</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="../json/AuthorizationRule.html" title="class in nl.b3p.tailormap.api.persistence.json">AuthorizationRule</a>&gt;&nbsp;authorizationRules)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
@@ -372,6 +381,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">AuthorizationService.</span><code><span class="memberNameLink"><a href="../../security/AuthorizationService.html#allowProxyAccess(nl.b3p.tailormap.api.persistence.Application,nl.b3p.tailormap.api.persistence.GeoService)">allowProxyAccess</a></span>&#8203;(<a href="../Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
+                <a href="../GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></th>
+<td class="colLast">
+<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo
+ service when the application is public (accessible by anonymous users).</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">AuthorizationService.</span><code><span class="memberNameLink"><a href="../../security/AuthorizationService.html#mayUserRead(nl.b3p.tailormap.api.persistence.Application)">mayUserRead</a></span>&#8203;(<a href="../Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application)</code></th>
 <td class="colLast">

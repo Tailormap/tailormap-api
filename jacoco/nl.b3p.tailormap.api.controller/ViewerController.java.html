@@ -12,6 +12,7 @@ import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.helper.ApplicationHelper;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
+import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
 import nl.b3p.tailormap.api.viewer.model.ViewerResponse;
 import org.springframework.http.HttpStatus;
@@ -25,25 +26,30 @@ public class ViewerController {
   private final ConfigurationRepository configurationRepository;
   private final ApplicationRepository applicationRepository;
   private final ApplicationHelper applicationHelper;
+  private final AuthorizationService authorizationService;
 
   public ViewerController(
       ConfigurationRepository configurationRepository,
       ApplicationRepository applicationRepository,
-<span class="nc" id="L32">      ApplicationHelper applicationHelper) {</span>
-<span class="nc" id="L33">    this.configurationRepository = configurationRepository;</span>
-<span class="nc" id="L34">    this.applicationRepository = applicationRepository;</span>
-<span class="nc" id="L35">    this.applicationHelper = applicationHelper;</span>
-<span class="nc" id="L36">  }</span>
+      ApplicationHelper applicationHelper,
+<span class="nc" id="L35">      AuthorizationService authorizationService) {</span>
+<span class="nc" id="L36">    this.configurationRepository = configurationRepository;</span>
+<span class="nc" id="L37">    this.applicationRepository = applicationRepository;</span>
+<span class="nc" id="L38">    this.applicationHelper = applicationHelper;</span>
+<span class="nc" id="L39">    this.authorizationService = authorizationService;</span>
+<span class="nc" id="L40">  }</span>
 
   @GetMapping(path = &quot;${tailormap-api.base-path}/app&quot;)
   public ViewerResponse defaultApp() {
-<span class="nc" id="L40">    String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);</span>
-<span class="nc" id="L41">    Application app = applicationRepository.findByName(defaultAppName);</span>
-<span class="nc bnc" id="L42" title="All 2 branches missed.">    if (app == null) {</span>
-<span class="nc" id="L43">      throw new ResponseStatusException(HttpStatus.NOT_FOUND);</span>
+<span class="nc" id="L44">    String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);</span>
+<span class="nc" id="L45">    Application app = applicationRepository.findByName(defaultAppName);</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">    if (app == null) {</span>
+<span class="nc" id="L47">      throw new ResponseStatusException(HttpStatus.NOT_FOUND);</span>
     }
-    // TODO check authorization for app
-<span class="nc" id="L46">    return viewer(app, ViewerResponse.KindEnum.APP);</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">    if (!this.authorizationService.mayUserRead(app)) {</span>
+<span class="nc" id="L50">      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);</span>
+    }
+<span class="nc" id="L52">    return viewer(app, ViewerResponse.KindEnum.APP);</span>
   }
 
   // We can't parametrize viewerKind (/app/ and /service/) because they'd clash with /api/admin/...
@@ -55,7 +61,7 @@ public class ViewerController {
       })
   public ViewerResponse viewer(
       @ModelAttribute Application app, @ModelAttribute ViewerResponse.KindEnum viewerKind) {
-<span class="nc" id="L58">    return app.getViewerResponse().kind(viewerKind);</span>
+<span class="nc" id="L64">    return app.getViewerResponse().kind(viewerKind);</span>
   }
 
   @GetMapping(
@@ -64,7 +70,7 @@ public class ViewerController {
         &quot;${tailormap-api.base-path}/service/{viewerName}/map&quot;
       })
   public MapResponse map(@ModelAttribute Application app) {
-<span class="nc" id="L67">    return applicationHelper.toMapResponse(app);</span>
+<span class="nc" id="L73">    return applicationHelper.toMapResponse(app);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

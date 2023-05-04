@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
+import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
@@ -36,9 +37,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Entity
-<span class="nc" id="L39">public class GeoService {</span>
-<span class="nc" id="L40">  private static final Logger logger =</span>
-<span class="nc" id="L41">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L40">public class GeoService {</span>
+<span class="nc" id="L41">  private static final Logger logger =</span>
+<span class="nc" id="L42">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   @Id private String id;
 
@@ -103,7 +104,12 @@ import org.slf4j.LoggerFactory;
   @Column(columnDefinition = &quot;jsonb&quot;)
   private TMServiceCaps serviceCapabilities;
 
-<span class="nc" id="L106">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
+<span class="nc" id="L107">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
+  @Column(columnDefinition = &quot;jsonb&quot;)
+  @NotNull
+  private List&lt;AuthorizationRule&gt; authorizationRules = new ArrayList&lt;&gt;();
+
+<span class="nc" id="L112">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull
   private List&lt;GeoServiceLayer&gt; layers = new ArrayList&lt;&gt;();
@@ -114,261 +120,270 @@ import org.slf4j.LoggerFactory;
    * Settings relevant for Tailormap use cases, such as configuring the specific server type for
    * vendor-specific capabilities etc.
    */
-<span class="nc" id="L117">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
+<span class="nc" id="L123">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull
   private GeoServiceSettings settings = new GeoServiceSettings();
 
   // &lt;editor-fold desc=&quot;getters and setters&quot;&gt;
   public String getId() {
-<span class="nc" id="L124">    return id;</span>
+<span class="nc" id="L130">    return id;</span>
   }
 
   public GeoService setId(String id) {
-<span class="nc" id="L128">    this.id = id;</span>
-<span class="nc" id="L129">    return this;</span>
+<span class="nc" id="L134">    this.id = id;</span>
+<span class="nc" id="L135">    return this;</span>
   }
 
   public Long getVersion() {
-<span class="nc" id="L133">    return version;</span>
+<span class="nc" id="L139">    return version;</span>
   }
 
   public GeoService setVersion(Long version) {
-<span class="nc" id="L137">    this.version = version;</span>
-<span class="nc" id="L138">    return this;</span>
+<span class="nc" id="L143">    this.version = version;</span>
+<span class="nc" id="L144">    return this;</span>
   }
 
   public String getNotes() {
-<span class="nc" id="L142">    return notes;</span>
+<span class="nc" id="L148">    return notes;</span>
   }
 
   public GeoService setNotes(String adminComments) {
-<span class="nc" id="L146">    this.notes = adminComments;</span>
-<span class="nc" id="L147">    return this;</span>
+<span class="nc" id="L152">    this.notes = adminComments;</span>
+<span class="nc" id="L153">    return this;</span>
   }
 
   public GeoServiceProtocol getProtocol() {
-<span class="nc" id="L151">    return protocol;</span>
+<span class="nc" id="L157">    return protocol;</span>
   }
 
   public GeoService setProtocol(GeoServiceProtocol protocol) {
-<span class="nc" id="L155">    this.protocol = protocol;</span>
-<span class="nc" id="L156">    return this;</span>
+<span class="nc" id="L161">    this.protocol = protocol;</span>
+<span class="nc" id="L162">    return this;</span>
   }
 
   public String getUrl() {
-<span class="nc" id="L160">    return url;</span>
+<span class="nc" id="L166">    return url;</span>
   }
 
   public GeoService setUrl(String url) {
-<span class="nc" id="L164">    this.url = url;</span>
-<span class="nc" id="L165">    return this;</span>
+<span class="nc" id="L170">    this.url = url;</span>
+<span class="nc" id="L171">    return this;</span>
   }
 
   public ServiceAuthentication getAuthentication() {
-<span class="nc" id="L169">    return authentication;</span>
+<span class="nc" id="L175">    return authentication;</span>
   }
 
   public GeoService setAuthentication(ServiceAuthentication authentication) {
-<span class="nc" id="L173">    this.authentication = authentication;</span>
-<span class="nc" id="L174">    return this;</span>
+<span class="nc" id="L179">    this.authentication = authentication;</span>
+<span class="nc" id="L180">    return this;</span>
   }
 
   public byte[] getCapabilities() {
-<span class="nc" id="L178">    return capabilities;</span>
+<span class="nc" id="L184">    return capabilities;</span>
   }
 
   public GeoService setCapabilities(byte[] capabilities) {
-<span class="nc" id="L182">    this.capabilities = capabilities;</span>
-<span class="nc" id="L183">    return this;</span>
+<span class="nc" id="L188">    this.capabilities = capabilities;</span>
+<span class="nc" id="L189">    return this;</span>
   }
 
   public String getCapabilitiesContentType() {
-<span class="nc" id="L187">    return capabilitiesContentType;</span>
+<span class="nc" id="L193">    return capabilitiesContentType;</span>
   }
 
   public GeoService setCapabilitiesContentType(String capabilitiesContentType) {
-<span class="nc" id="L191">    this.capabilitiesContentType = capabilitiesContentType;</span>
-<span class="nc" id="L192">    return this;</span>
+<span class="nc" id="L197">    this.capabilitiesContentType = capabilitiesContentType;</span>
+<span class="nc" id="L198">    return this;</span>
   }
 
   public Instant getCapabilitiesFetched() {
-<span class="nc" id="L196">    return capabilitiesFetched;</span>
+<span class="nc" id="L202">    return capabilitiesFetched;</span>
   }
 
   public GeoService setCapabilitiesFetched(Instant capabilitiesFetched) {
-<span class="nc" id="L200">    this.capabilitiesFetched = capabilitiesFetched;</span>
-<span class="nc" id="L201">    return this;</span>
+<span class="nc" id="L206">    this.capabilitiesFetched = capabilitiesFetched;</span>
+<span class="nc" id="L207">    return this;</span>
   }
 
   public String getTitle() {
-<span class="nc" id="L205">    return title;</span>
+<span class="nc" id="L211">    return title;</span>
   }
 
   public GeoService setTitle(String title) {
-<span class="nc" id="L209">    this.title = title;</span>
-<span class="nc" id="L210">    return this;</span>
+<span class="nc" id="L215">    this.title = title;</span>
+<span class="nc" id="L216">    return this;</span>
   }
 
   public String getAdvertisedUrl() {
-<span class="nc" id="L214">    return advertisedUrl;</span>
+<span class="nc" id="L220">    return advertisedUrl;</span>
   }
 
   public GeoService setAdvertisedUrl(String advertisedUrl) {
-<span class="nc" id="L218">    this.advertisedUrl = advertisedUrl;</span>
-<span class="nc" id="L219">    return this;</span>
+<span class="nc" id="L224">    this.advertisedUrl = advertisedUrl;</span>
+<span class="nc" id="L225">    return this;</span>
   }
 
   public TMServiceCaps getServiceCapabilities() {
-<span class="nc" id="L223">    return serviceCapabilities;</span>
+<span class="nc" id="L229">    return serviceCapabilities;</span>
   }
 
   public GeoService setServiceCapabilities(TMServiceCaps serviceCapabilities) {
-<span class="nc" id="L227">    this.serviceCapabilities = serviceCapabilities;</span>
-<span class="nc" id="L228">    return this;</span>
+<span class="nc" id="L233">    this.serviceCapabilities = serviceCapabilities;</span>
+<span class="nc" id="L234">    return this;</span>
+  }
+
+  public List&lt;AuthorizationRule&gt; getAuthorizationRules() {
+<span class="nc" id="L238">    return authorizationRules;</span>
+  }
+
+  public GeoService setAuthorizationRules(List&lt;AuthorizationRule&gt; authorizationRules) {
+<span class="nc" id="L242">    this.authorizationRules = authorizationRules;</span>
+<span class="nc" id="L243">    return this;</span>
   }
 
   public List&lt;GeoServiceLayer&gt; getLayers() {
-<span class="nc" id="L232">    return layers;</span>
+<span class="nc" id="L247">    return layers;</span>
   }
 
   public GeoService setLayers(List&lt;GeoServiceLayer&gt; layers) {
-<span class="nc" id="L236">    this.layers = layers;</span>
-<span class="nc" id="L237">    return this;</span>
+<span class="nc" id="L251">    this.layers = layers;</span>
+<span class="nc" id="L252">    return this;</span>
   }
 
   public boolean isPublished() {
-<span class="nc" id="L241">    return published;</span>
+<span class="nc" id="L256">    return published;</span>
   }
 
   public GeoService setPublished(boolean published) {
-<span class="nc" id="L245">    this.published = published;</span>
-<span class="nc" id="L246">    return this;</span>
+<span class="nc" id="L260">    this.published = published;</span>
+<span class="nc" id="L261">    return this;</span>
   }
 
   public GeoServiceSettings getSettings() {
-<span class="nc" id="L250">    return settings;</span>
+<span class="nc" id="L265">    return settings;</span>
   }
 
   public GeoService setSettings(GeoServiceSettings settings) {
-<span class="nc" id="L254">    this.settings = settings;</span>
-<span class="nc" id="L255">    return this;</span>
+<span class="nc" id="L269">    this.settings = settings;</span>
+<span class="nc" id="L270">    return this;</span>
   }
   // &lt;/editor-fold&gt;
 
   public Service toJsonPojo(GeoServiceHelper geoServiceHelper) {
     Service.ServerTypeEnum serverTypeEnum;
-<span class="nc bnc" id="L261" title="All 2 branches missed.">    if (settings.getServerType() == GeoServiceSettings.ServerTypeEnum.AUTO) {</span>
-<span class="nc" id="L262">      serverTypeEnum = geoServiceHelper.guessServerTypeFromUrl(getUrl());</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">    if (settings.getServerType() == GeoServiceSettings.ServerTypeEnum.AUTO) {</span>
+<span class="nc" id="L277">      serverTypeEnum = geoServiceHelper.guessServerTypeFromUrl(getUrl());</span>
     } else {
-<span class="nc" id="L264">      serverTypeEnum = Service.ServerTypeEnum.fromValue(settings.getServerType().getValue());</span>
+<span class="nc" id="L279">      serverTypeEnum = Service.ServerTypeEnum.fromValue(settings.getServerType().getValue());</span>
     }
 
-<span class="nc" id="L267">    Service s =</span>
+<span class="nc" id="L282">    Service s =</span>
         new Service()
-<span class="nc" id="L269">            .id(this.id)</span>
-<span class="nc" id="L270">            .title(this.title)</span>
-<span class="nc" id="L271">            .url(this.url)</span>
-<span class="nc" id="L272">            .protocol(this.protocol)</span>
-<span class="nc" id="L273">            .serverType(serverTypeEnum);</span>
+<span class="nc" id="L284">            .id(this.id)</span>
+<span class="nc" id="L285">            .title(this.title)</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">            .url(Boolean.TRUE.equals(this.getSettings().getUseProxy()) ? null : this.url)</span>
+<span class="nc" id="L287">            .protocol(this.protocol)</span>
+<span class="nc" id="L288">            .serverType(serverTypeEnum);</span>
 
-<span class="nc bnc" id="L275" title="All 2 branches missed.">    if (this.protocol == GeoServiceProtocol.WMTS) {</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">    if (this.protocol == GeoServiceProtocol.WMTS) {</span>
       // Frontend requires WMTS capabilities to parse TilingMatrix, but WMS capabilities aren't used
       // XXX UTF-8 only, maybe use base64
-<span class="nc" id="L278">      s.capabilities(new String(getCapabilities(), StandardCharsets.UTF_8));</span>
+<span class="nc" id="L293">      s.capabilities(new String(getCapabilities(), StandardCharsets.UTF_8));</span>
     }
 
-<span class="nc" id="L281">    return s;</span>
+<span class="nc" id="L296">    return s;</span>
   }
 
   public GeoServiceLayer findLayer(String name) {
-<span class="nc" id="L285">    return getLayers().stream().filter(sl -&gt; name.equals(sl.getName())).findFirst().orElse(null);</span>
+<span class="nc" id="L300">    return getLayers().stream().filter(sl -&gt; name.equals(sl.getName())).findFirst().orElse(null);</span>
   }
 
   public GeoServiceLayerSettings getLayerSettings(String layerName) {
-<span class="nc" id="L289">    return getSettings().getLayerSettings().get(layerName);</span>
+<span class="nc" id="L304">    return getSettings().getLayerSettings().get(layerName);</span>
   }
 
   public String getTitleWithSettingsOverrides(String layerName) {
     // First use title in layer settings
-<span class="nc" id="L294">    String title =</span>
-<span class="nc" id="L295">        Optional.ofNullable(getLayerSettings(layerName))</span>
-<span class="nc" id="L296">            .map(GeoServiceLayerSettings::getTitle)</span>
-<span class="nc" id="L297">            .orElse(null);</span>
+<span class="nc" id="L309">    String title =</span>
+<span class="nc" id="L310">        Optional.ofNullable(getLayerSettings(layerName))</span>
+<span class="nc" id="L311">            .map(GeoServiceLayerSettings::getTitle)</span>
+<span class="nc" id="L312">            .orElse(null);</span>
 
     // If not set, title from capabilities
-<span class="nc bnc" id="L300" title="All 2 branches missed.">    if (title == null) {</span>
-<span class="nc" id="L301">      title = Optional.ofNullable(findLayer(layerName)).map(GeoServiceLayer::getTitle).orElse(null);</span>
+<span class="nc bnc" id="L315" title="All 2 branches missed.">    if (title == null) {</span>
+<span class="nc" id="L316">      title = Optional.ofNullable(findLayer(layerName)).map(GeoServiceLayer::getTitle).orElse(null);</span>
     }
 
     // Do not get title from default layer settings (a default wouldn't make sense)
 
     // If still not set, use layer name as title
-<span class="nc bnc" id="L307" title="All 2 branches missed.">    if (title == null) {</span>
-<span class="nc" id="L308">      title = layerName;</span>
+<span class="nc bnc" id="L322" title="All 2 branches missed.">    if (title == null) {</span>
+<span class="nc" id="L323">      title = layerName;</span>
     }
 
-<span class="nc" id="L311">    return title;</span>
+<span class="nc" id="L326">    return title;</span>
   }
 
   public TMFeatureType findFeatureTypeForLayer(
       GeoServiceLayer layer, FeatureSourceRepository featureSourceRepository) {
 
-<span class="nc" id="L317">    GeoServiceDefaultLayerSettings defaultLayerSettings = getSettings().getDefaultLayerSettings();</span>
-<span class="nc" id="L318">    GeoServiceLayerSettings layerSettings = getLayerSettings(layer.getName());</span>
+<span class="nc" id="L332">    GeoServiceDefaultLayerSettings defaultLayerSettings = getSettings().getDefaultLayerSettings();</span>
+<span class="nc" id="L333">    GeoServiceLayerSettings layerSettings = getLayerSettings(layer.getName());</span>
 
-<span class="nc" id="L320">    Long featureSourceId = null;</span>
+<span class="nc" id="L335">    Long featureSourceId = null;</span>
     String featureTypeName;
 
-<span class="nc bnc" id="L323" title="All 4 branches missed.">    if (layerSettings != null &amp;&amp; layerSettings.getFeatureType() != null) {</span>
-<span class="nc" id="L324">      featureTypeName =</span>
-<span class="nc" id="L325">          Optional.ofNullable(layerSettings.getFeatureType().getFeatureTypeName())</span>
-<span class="nc" id="L326">              .orElse(layer.getName());</span>
-<span class="nc" id="L327">      featureSourceId = layerSettings.getFeatureType().getFeatureSourceId();</span>
+<span class="nc bnc" id="L338" title="All 4 branches missed.">    if (layerSettings != null &amp;&amp; layerSettings.getFeatureType() != null) {</span>
+<span class="nc" id="L339">      featureTypeName =</span>
+<span class="nc" id="L340">          Optional.ofNullable(layerSettings.getFeatureType().getFeatureTypeName())</span>
+<span class="nc" id="L341">              .orElse(layer.getName());</span>
+<span class="nc" id="L342">      featureSourceId = layerSettings.getFeatureType().getFeatureSourceId();</span>
     } else {
-<span class="nc" id="L329">      featureTypeName = layer.getName();</span>
+<span class="nc" id="L344">      featureTypeName = layer.getName();</span>
     }
 
-<span class="nc bnc" id="L332" title="All 4 branches missed.">    if (featureSourceId == null</span>
+<span class="nc bnc" id="L347" title="All 4 branches missed.">    if (featureSourceId == null</span>
         &amp;&amp; defaultLayerSettings != null
-<span class="nc bnc" id="L334" title="All 2 branches missed.">        &amp;&amp; defaultLayerSettings.getFeatureType() != null) {</span>
-<span class="nc" id="L335">      featureSourceId = defaultLayerSettings.getFeatureType().getFeatureSourceId();</span>
+<span class="nc bnc" id="L349" title="All 2 branches missed.">        &amp;&amp; defaultLayerSettings.getFeatureType() != null) {</span>
+<span class="nc" id="L350">      featureSourceId = defaultLayerSettings.getFeatureType().getFeatureSourceId();</span>
     }
 
-<span class="nc bnc" id="L338" title="All 2 branches missed.">    if (featureTypeName == null) {</span>
-<span class="nc" id="L339">      return null;</span>
+<span class="nc bnc" id="L353" title="All 2 branches missed.">    if (featureTypeName == null) {</span>
+<span class="nc" id="L354">      return null;</span>
     }
 
-<span class="nc" id="L342">    TMFeatureSource tmfs = null;</span>
-<span class="nc" id="L343">    TMFeatureType tmft = null;</span>
+<span class="nc" id="L357">    TMFeatureSource tmfs = null;</span>
+<span class="nc" id="L358">    TMFeatureType tmft = null;</span>
 
-<span class="nc bnc" id="L345" title="All 2 branches missed.">    if (featureSourceId == null) {</span>
-<span class="nc" id="L346">      List&lt;TMFeatureSource&gt; linkedSources = featureSourceRepository.findByLinkedServiceId(getId());</span>
-<span class="nc bnc" id="L347" title="All 2 branches missed.">      for (TMFeatureSource linkedFs : linkedSources) {</span>
-<span class="nc" id="L348">        tmft = linkedFs.findFeatureTypeByName(featureTypeName);</span>
-<span class="nc bnc" id="L349" title="All 2 branches missed.">        if (tmft != null) {</span>
-<span class="nc" id="L350">          tmfs = linkedFs;</span>
-<span class="nc" id="L351">          break;</span>
+<span class="nc bnc" id="L360" title="All 2 branches missed.">    if (featureSourceId == null) {</span>
+<span class="nc" id="L361">      List&lt;TMFeatureSource&gt; linkedSources = featureSourceRepository.findByLinkedServiceId(getId());</span>
+<span class="nc bnc" id="L362" title="All 2 branches missed.">      for (TMFeatureSource linkedFs : linkedSources) {</span>
+<span class="nc" id="L363">        tmft = linkedFs.findFeatureTypeByName(featureTypeName);</span>
+<span class="nc bnc" id="L364" title="All 2 branches missed.">        if (tmft != null) {</span>
+<span class="nc" id="L365">          tmfs = linkedFs;</span>
+<span class="nc" id="L366">          break;</span>
         }
-<span class="nc" id="L353">      }</span>
-<span class="nc" id="L354">    } else {</span>
-<span class="nc" id="L355">      tmfs = featureSourceRepository.findById(featureSourceId).orElse(null);</span>
-<span class="nc bnc" id="L356" title="All 2 branches missed.">      if (tmfs != null) {</span>
-<span class="nc" id="L357">        tmft = tmfs.findFeatureTypeByName(featureTypeName);</span>
+<span class="nc" id="L368">      }</span>
+<span class="nc" id="L369">    } else {</span>
+<span class="nc" id="L370">      tmfs = featureSourceRepository.findById(featureSourceId).orElse(null);</span>
+<span class="nc bnc" id="L371" title="All 2 branches missed.">      if (tmfs != null) {</span>
+<span class="nc" id="L372">        tmft = tmfs.findFeatureTypeByName(featureTypeName);</span>
       }
     }
 
-<span class="nc bnc" id="L361" title="All 2 branches missed.">    if (tmfs == null) {</span>
-<span class="nc" id="L362">      return null;</span>
+<span class="nc bnc" id="L376" title="All 2 branches missed.">    if (tmfs == null) {</span>
+<span class="nc" id="L377">      return null;</span>
     }
 
-<span class="nc bnc" id="L365" title="All 2 branches missed.">    if (tmft == null) {</span>
-<span class="nc" id="L366">      String[] split = featureTypeName.split(&quot;:&quot;, 2);</span>
-<span class="nc bnc" id="L367" title="All 2 branches missed.">      if (split.length == 2) {</span>
-<span class="nc" id="L368">        String shortFeatureTypeName = split[1];</span>
-<span class="nc" id="L369">        tmft = tmfs.findFeatureTypeByName(shortFeatureTypeName);</span>
-<span class="nc bnc" id="L370" title="All 2 branches missed.">        if (tmft != null) {</span>
-<span class="nc" id="L371">          logger.debug(</span>
+<span class="nc bnc" id="L380" title="All 2 branches missed.">    if (tmft == null) {</span>
+<span class="nc" id="L381">      String[] split = featureTypeName.split(&quot;:&quot;, 2);</span>
+<span class="nc bnc" id="L382" title="All 2 branches missed.">      if (split.length == 2) {</span>
+<span class="nc" id="L383">        String shortFeatureTypeName = split[1];</span>
+<span class="nc" id="L384">        tmft = tmfs.findFeatureTypeByName(shortFeatureTypeName);</span>
+<span class="nc bnc" id="L385" title="All 2 branches missed.">        if (tmft != null) {</span>
+<span class="nc" id="L386">          logger.debug(</span>
               &quot;Did not find feature type with full name \&quot;{}\&quot;, using \&quot;{}\&quot; of feature source {}&quot;,
               featureTypeName,
               shortFeatureTypeName,
@@ -376,7 +391,7 @@ import org.slf4j.LoggerFactory;
         }
       }
     }
-<span class="nc" id="L379">    return tmft;</span>
+<span class="nc" id="L394">    return tmft;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
