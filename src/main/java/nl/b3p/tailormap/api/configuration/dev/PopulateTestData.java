@@ -146,9 +146,8 @@ public class PopulateTestData {
   }
 
   public void createTestUsers() throws NoSuchElementException {
-    // User with access to any app which requires authentication
+    // Normal user
     User u = new User().setUsername("user").setPassword("{noop}user").setEmail("user@example.com");
-    u.getGroups().add(groupRepository.findById(Group.APP_AUTHENTICATED).orElseThrow());
     userRepository.save(u);
 
     // Superuser with all access
@@ -175,7 +174,7 @@ public class PopulateTestData {
     List<AuthorizationRule> ruleLoggedIn =
         List.of(
             new AuthorizationRule()
-                .groupName(Group.APP_AUTHENTICATED)
+                .groupName(Group.AUTHENTICATED)
                 .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)));
 
     Collection<GeoService> services =

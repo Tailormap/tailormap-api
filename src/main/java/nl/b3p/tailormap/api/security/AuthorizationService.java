@@ -39,7 +39,7 @@ public class AuthorizationService {
     } else {
       groups = new HashSet<>();
       groups.add(Group.ANONYMOUS);
-      groups.add(Group.APP_AUTHENTICATED);
+      groups.add(Group.AUTHENTICATED);
 
       for (GrantedAuthority authority : auth.getAuthorities()) {
         groups.add(authority.getAuthority());

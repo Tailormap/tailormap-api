@@ -19,13 +19,12 @@ import nl.b3p.tailormap.api.util.Constants;
 @Entity
 @Table(name = "groups")
 public class Group {
-  // May access app for which authentication is required. Role to be assigned by default to any
-  // users created manually. Exists to give the account with the "actuator" role only access to
-  // /api/actuator/ and not apps for which authentication is required.
-  public static final String APP_AUTHENTICATED = "app-authenticated";
+  // Group to make authorization rules for anonymous users
+  public static final String ANONYMOUS = "anonymous";
+  // Group to make authorization rules for authenticated users
+  public static final String AUTHENTICATED = "authenticated";
   public static final String ADMIN = "admin";
   public static final String ACTUATOR = "actuator";
-  public static final String ANONYMOUS = "anonymous";
 
   @Id
   @Pattern(regexp = Constants.NAME_REGEX, message = "Group " + Constants.NAME_REGEX_INVALID_MESSAGE)
