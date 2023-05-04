@@ -192,9 +192,13 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
     final String path =
         apiBasePath
             + "/app/secured/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wms";
-    return mockMvc
-        .perform(get(path).param("REQUEST", "GetCapabilities").param("VERSION", "1.1.1").with(requestPostProcessor(path)));
+    return mockMvc.perform(
+        get(path)
+            .param("REQUEST", "GetCapabilities")
+            .param("VERSION", "1.1.1")
+            .with(requestPostProcessor(path)));
   }
+
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_wms_secured_app_denied() throws Exception {

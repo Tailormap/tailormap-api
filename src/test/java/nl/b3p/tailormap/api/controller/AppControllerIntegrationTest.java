@@ -14,7 +14,6 @@ import javax.persistence.EntityManager;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

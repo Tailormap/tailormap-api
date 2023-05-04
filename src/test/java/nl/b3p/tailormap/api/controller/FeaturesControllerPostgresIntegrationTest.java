@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.stream.Stream;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.viewer.model.Service;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -28,7 +27,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.DefaultTimeZone;
-import org.junitpioneer.jupiter.Issue;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
@@ -1292,7 +1290,8 @@ class FeaturesControllerPostgresIntegrationTest {
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_send_403_when_access_denied() throws Exception {
     final String url =
-        apiBasePath + "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/features";
+        apiBasePath
+            + "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/features";
     mockMvc
         .perform(
             get(url)

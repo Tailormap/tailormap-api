@@ -215,7 +215,11 @@ public class PopulateTestData {
                 .setAuthorizationRules(rule)
                 // The service actually doesn't require authentication, but also doesn't mind it
                 // Just for testing
-                .setAuthentication(new ServiceAuthentication().method(ServiceAuthentication.MethodEnum.PASSWORD).username("test").password("test"))
+                .setAuthentication(
+                    new ServiceAuthentication()
+                        .method(ServiceAuthentication.MethodEnum.PASSWORD)
+                        .username("test")
+                        .password("test"))
                 .setSettings(
                     new GeoServiceSettings()
                         .useProxy(true)
