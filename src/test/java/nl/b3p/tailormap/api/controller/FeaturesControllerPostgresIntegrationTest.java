@@ -1286,7 +1286,6 @@ class FeaturesControllerPostgresIntegrationTest {
   }
 
   @Test
-  @Order(Integer.MAX_VALUE)
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_send_403_when_access_denied() throws Exception {
     final String url =
@@ -1298,9 +1297,9 @@ class FeaturesControllerPostgresIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .with(requestPostProcessor(url))
                 .param("page", "1"))
-        .andExpect(status().isForbidden())
+        .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.code").value(403))
-        .andExpect(jsonPath("$.message").value("Access denied"));
+        .andExpect(jsonPath("$.code").value(401))
+        .andExpect(jsonPath("$.url").value("/login"));
   }
 }
