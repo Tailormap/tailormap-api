@@ -98,7 +98,7 @@ public class GeoServiceProxyController {
     if (service.getAuthentication() != null) {
       if (!authorizationService.allowProxyAccess(application, service)) {
         logger.warn(
-            "App {} (\"{}\") is using layer \"{}\" from proxied secured service URL {} (username {}), but app is publicly accessible. Denying proxy, even if user is authenticated.",
+            "App {} (\"{}\") is using layer \"{}\" from proxied secured service URL {} (username \"{}\"), but app is publicly accessible. Denying proxy, even if user is authenticated.",
             application.getId(),
             application.getName(),
             layer.getName(),

@@ -213,6 +213,9 @@ public class PopulateTestData {
                 .setTitle("Openbasiskaart (proxied)")
                 .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
                 .setAuthorizationRules(rule)
+                // The service actually doesn't require authentication, but also doesn't mind it
+                // Just for testing
+                .setAuthentication(new ServiceAuthentication().method(ServiceAuthentication.MethodEnum.PASSWORD).username("test").password("test"))
                 .setSettings(
                     new GeoServiceSettings()
                         .useProxy(true)
@@ -507,6 +510,8 @@ public class PopulateTestData {
                             .title("Openbasiskaart (proxied)")
                             .addChildrenIdsItem("lyr:openbasiskaart-proxied:osm"))
                     .addBaseLayerNodesItem(
+                        // This layer from a secured proxied service should not be proxyable in a
+                        // public app, see test_wms_secured_proxy_not_in_public_app() testcase
                         new AppTreeLayerNode()
                             .objectType("AppTreeLayerNode")
                             .id("lyr:openbasiskaart-proxied:osm")

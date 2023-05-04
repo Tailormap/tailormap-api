@@ -21,17 +21,16 @@ import java.util.Locale;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junitpioneer.jupiter.Issue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 @PostgresIntegrationTest
@@ -41,11 +40,9 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
   private final String begroeidterreindeelUrl =
       "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wms";
 
-  private final String obkUrl = "/app/default/layer/lyr:openbasiskaart-proxied:osm/proxy/wmts";
+  private final String obkUrl = "/app/secured/layer/lyr:openbasiskaart-proxied:osm/proxy/wmts";
   private final String pdokWmsGemeentegebiedUrl =
       "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/proxy/wms";
-  private final String pdokWmsProvinciegebiedUrl =
-      "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/proxy/wms";
 
   @Autowired private MockMvc mockMvc;
 
@@ -176,29 +173,32 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
   }
 
   @Test
-  @Disabled("Authentication-required is not working")
-  // TODO: fix this test
-  @Issue("https://b3partners.atlassian.net/browse/HTM-705")
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_wms_secured_proxy_not_in_public_app() throws Exception {
-    final String path = apiBasePath + pdokWmsProvinciegebiedUrl;
-    mockMvc
-        .perform(get(path).param("REQUEST", "GetCapabilities").param("VERSION", "1.0.0"))
-        .andExpect(status().isForbidden())
-        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.message").value("Access denied"));
-  }
-
-  @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @WithMockUser(username = "noproxyuser")
-  @Disabled("Authentication-required is not working")
-  // TODO: fix this test
-  @Issue("https://b3partners.atlassian.net/browse/HTM-705")
-  void test_wms_secured_app_denied() throws Exception {
+    final String path =
+        apiBasePath + "/app/default/layer/lyr:openbasiskaart-proxied:osm/proxy/wmts";
     mockMvc
         .perform(
-            get("/app/6/layer/19/proxy/wms?Service=WMTS&Request=GetCapabilities&Version=1.0.0"))
+            get(path)
+                .param("REQUEST", "GetCapabilities")
+                .param("VERSION", "1.1.1")
+                .with(requestPostProcessor(path)))
+        .andExpect(status().isForbidden())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Forbidden"));
+  }
+
+  private ResultActions performLoggedInRequiredAppLayerProxyRequest() throws Exception {
+    final String path =
+        apiBasePath
+            + "/app/secured/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wms";
+    return mockMvc
+        .perform(get(path).param("REQUEST", "GetCapabilities").param("VERSION", "1.1.1").with(requestPostProcessor(path)));
+  }
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void test_wms_secured_app_denied() throws Exception {
+    performLoggedInRequiredAppLayerProxyRequest()
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))
@@ -207,24 +207,16 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @WithMockUser(
-      username = "proxyuser",
-      authorities = {"ProxyGroup"})
-  @Disabled("Authentication-required is not working")
-  // TODO: fix this test
-  @Issue("https://b3partners.atlassian.net/browse/HTM-705")
+  @WithMockUser(username = "user")
   void test_wms_secured_app_granted() throws Exception {
-    mockMvc
-        .perform(get("/app/6/layer/19/proxy/wms?Service=WMS&Request=GetCapabilities&Version=1.0.0"))
+    performLoggedInRequiredAppLayerProxyRequest()
         .andExpect(status().isOk())
-        .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_XML))
-        .andExpect(
-            content()
-                .string(
-                    startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<WMS_Capabilities")));
+        .andExpect(content().contentTypeCompatibleWith("application/vnd.ogc.wms_xml"))
+        .andExpect(content().string(containsString("<WMT_MS_Capabilities version=\"1.1.1\"")));
   }
 
   @Test
+  @WithMockUser(username = "user")
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_obk_wmts_GetCapabilities() throws Exception {
     final String path = apiBasePath + obkUrl;
@@ -241,6 +233,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
   }
 
   @Test
+  @WithMockUser(username = "user")
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_obk_wmts_GetTile() throws Exception {
     final String path = apiBasePath + obkUrl;
@@ -265,6 +258,7 @@ class GeoServiceProxyControllerPostgresIntegrationTest {
   }
 
   @Test
+  @WithMockUser(username = "user")
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_obk_wmts_GetTile_Conditional() throws Exception {
     final String path = apiBasePath + obkUrl;
