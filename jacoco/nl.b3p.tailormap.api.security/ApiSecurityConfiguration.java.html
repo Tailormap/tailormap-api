@@ -57,13 +57,14 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
             authorize -&gt;
 <span class="nc" id="L58">                authorize.requestMatchers(adminApiBasePath + &quot;/**&quot;).hasAuthority(Group.ADMIN))</span>
 <span class="nc" id="L59">        .formLogin()</span>
-<span class="nc" id="L60">        .loginProcessingUrl(apiBasePath + &quot;/login&quot;)</span>
-<span class="nc" id="L61">        .and()</span>
-<span class="nc" id="L62">        .logout()</span>
-<span class="nc" id="L63">        .logoutUrl(apiBasePath + &quot;/logout&quot;)</span>
-<span class="nc" id="L64">        .logoutSuccessHandler(</span>
-<span class="nc" id="L65">            (request, response, authentication) -&gt; response.sendError(HttpStatus.OK.value(), &quot;OK&quot;));</span>
-<span class="nc" id="L66">    return http.build();</span>
+<span class="nc" id="L60">        .loginPage(apiBasePath + &quot;/unauthorized&quot;)</span>
+<span class="nc" id="L61">        .loginProcessingUrl(apiBasePath + &quot;/login&quot;)</span>
+<span class="nc" id="L62">        .and()</span>
+<span class="nc" id="L63">        .logout()</span>
+<span class="nc" id="L64">        .logoutUrl(apiBasePath + &quot;/logout&quot;)</span>
+<span class="nc" id="L65">        .logoutSuccessHandler(</span>
+<span class="nc" id="L66">            (request, response, authentication) -&gt; response.sendError(HttpStatus.OK.value(), &quot;OK&quot;));</span>
+<span class="nc" id="L67">    return http.build();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
