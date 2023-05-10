@@ -198,6 +198,7 @@ public class GeoServiceHelper {
     for (Layer l : layers) {
       GeoServiceLayer geoServiceLayer =
           new GeoServiceLayer()
+              .id(String.valueOf(layers.indexOf(l)))
               .name(l.getName())
               .root(l.getParent() == null)
               .title(l.getTitle())
@@ -238,7 +239,10 @@ public class GeoServiceHelper {
               .attribution(l.getAttribution() == null ? null : l.getAttribution().toString())
               .abstractText(l.get_abstract())
               .children(
-                  l.getLayerChildren().stream().map(Layer::getName).collect(Collectors.toList()));
+                  l.getLayerChildren().stream()
+                      .map(layers::indexOf)
+                      .map(String::valueOf)
+                      .collect(Collectors.toList()));
 
       if (consumer != null) {
         consumer.accept(l, geoServiceLayer);

@@ -358,9 +358,12 @@ components:
 
     GeoServiceLayer:
       description: Layer of a service which can be an OGC WMS/WMTS service or from XYZ/ArcGIS REST.
-      required: [name, root, virtual, children]
+      required: [id, name, root, virtual, children]
       properties:
-        # TODO: heeft een WMS virtual grouplayer wel een naam?
+        id:
+          type: string
+          description: Unique id assigned by TM, not from the capabilities. Assigned to make a tree with virtual layers.
+            When referring to a non-virtual layer the name should always be used.
         name:
           type: string
         root:
@@ -369,6 +372,8 @@ components:
           type: string
         virtual:
           type: boolean
+          description: A virtual layer has no name and can't be used in GetMap requests and is only used for tree 
+            structure.
         maxScale:
           type: number
           format: double
