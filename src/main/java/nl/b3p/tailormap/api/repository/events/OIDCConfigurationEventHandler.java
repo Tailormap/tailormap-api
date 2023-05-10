@@ -26,12 +26,11 @@ public class OIDCConfigurationEventHandler {
   @HandleBeforeCreate
   @HandleBeforeSave
   public void handleBeforeCreateOrSave(OIDCConfiguration configuration) throws Exception {
-    // If the user provided a "full" OIDC discovery URL, strip it; Spring does not handle it.
+    // If the user provided a "full" OIDC discovery URL, strip it.
     if (configuration.getIssuerUrl().endsWith("/.well-known/openid-configuration")) {
       String issuerUrl = configuration.getIssuerUrl();
-      // Keep the trailing slash we'd have. Not for any good reason. Just feels "right".
       issuerUrl =
-          issuerUrl.substring(0, issuerUrl.lastIndexOf("/.well-known/openid-configuration") + 1);
+          issuerUrl.substring(0, issuerUrl.lastIndexOf("/.well-known/openid-configuration"));
       configuration.setIssuerUrl(issuerUrl);
     }
   }

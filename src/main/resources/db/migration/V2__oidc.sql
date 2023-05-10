@@ -5,4 +5,5 @@ create table oidcconfiguration (
   client_id text not null,
   client_secret text,
   issuer_url text not null,
+  user_name_attribute text not null,
 );

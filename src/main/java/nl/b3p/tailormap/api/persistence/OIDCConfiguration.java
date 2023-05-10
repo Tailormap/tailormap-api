@@ -28,6 +28,8 @@ public class OIDCConfiguration {
 
   @NotNull private String issuerUrl;
 
+  @NotNull private String userNameAttribute;
+
   public Long getId() {
     return id;
   }
@@ -79,6 +81,15 @@ public class OIDCConfiguration {
 
   public OIDCConfiguration setIssuerUrl(String issuerUrl) {
     this.issuerUrl = issuerUrl;
+    return this;
+  }
+
+  public String getUserNameAttribute() {
+    return userNameAttribute;
+  }
+
+  public OIDCConfiguration setUserNameAttribute(String userNameAttribute) {
+    this.userNameAttribute = userNameAttribute;
     return this;
   }
 }

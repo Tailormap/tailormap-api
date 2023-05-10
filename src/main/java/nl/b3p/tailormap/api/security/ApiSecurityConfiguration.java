@@ -5,7 +5,12 @@
  */
 package nl.b3p.tailormap.api.security;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import nl.b3p.tailormap.api.persistence.Group;
+import nl.b3p.tailormap.api.repository.GroupRepository;
+import nl.b3p.tailormap.api.repository.OIDCConfigurationRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +18,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
@@ -60,10 +71,62 @@ public class ApiSecurityConfiguration {
         .loginPage(apiBasePath + "/unauthorized")
         .loginProcessingUrl(apiBasePath + "/login")
         .and()
+        .oauth2Login(
+            login ->
+                login
+                    .authorizationEndpoint(
+                        endpoint -> endpoint.baseUri(apiBasePath + "/oauth2/authorization"))
+                    .redirectionEndpoint(
+                        endpoint -> endpoint.baseUri(apiBasePath + "/oauth2/callback")))
         .logout()
         .logoutUrl(apiBasePath + "/logout")
         .logoutSuccessHandler(
             (request, response, authentication) -> response.sendError(HttpStatus.OK.value(), "OK"));
+
     return http.build();
+  }
+
+  @Bean
+  public ClientRegistrationRepository clientRegistrationRepository(
+      OIDCConfigurationRepository repository) {
+    return new OIDCRepository(repository);
+  }
+
+  @Bean
+  public GrantedAuthoritiesMapper userAuthoritiesMapper(GroupRepository repository) {
+    return (authorities) -> {
+      Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
+      Set<String> wantedGroups = new HashSet<>();
+
+      try {
+        authorities.forEach(
+            authority -> {
+              mappedAuthorities.add(authority);
+              if (authority instanceof OidcUserAuthority) {
+                OidcUserAuthority oidcUserAuthority = (OidcUserAuthority) authority;
+                OidcIdToken idToken = oidcUserAuthority.getIdToken();
+
+                List<String> roles = idToken.getClaimAsStringList("roles");
+                if (roles != null) {
+                  wantedGroups.addAll(roles);
+                }
+              }
+            });
+
+        for (String groupName : wantedGroups) {
+          if (repository.findById(groupName).isEmpty()) {
+            Group group = new Group();
+            group.setName(groupName);
+            group.setDescription("<imported from SSO>");
+            repository.save(group);
+          }
+
+          mappedAuthorities.add(new SimpleGrantedAuthority(groupName));
+        }
+      } catch (Exception e) {
+      }
+
+      return mappedAuthorities;
+    };
   }
 }
