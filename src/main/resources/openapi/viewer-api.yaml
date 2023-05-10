@@ -38,13 +38,28 @@ components:
 
   schemas:
     UnauthorizedResponse:
-      description: 'Returned when calling an API for which you are required to be authorized (logged in). TODO: In the 
-        future add information about configured SSO IdPs to show in the login form.'
+      description: 'Returned when calling an API for which you are required to be authorized (logged in).'
       type: object
       properties:
-        formLogin:
-          description: Whether to show a login form or only show SSO options.
+        unauthorized:
           type: boolean
+
+    LoginConfiguration:
+      type: object
+      properties:
+        hideLoginForm:
+          description: 'If set, should hide the login form for any user-facing applications.'
+          type: boolean
+        ssoLinks:
+          description: 'Lists alternative SSO links.'
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              url:
+                type: string
 
     UserResponse:
       description: 'Information about authentication status and user information'
@@ -282,6 +297,17 @@ paths:
                 example: JSESSIONID=abcde12345; Path=/; HttpOnly
         '403':
           description: 'Authentication failed'
+  /login/configuration:
+    get:
+      operationId: getLoginConfiguration
+      summary: 'Request the login screen configuration.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginConfiguration'
 
   /user:
     summary: 'get user information, such as login'
