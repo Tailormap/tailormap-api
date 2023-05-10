@@ -37,6 +37,14 @@ components:
       name: JSESSIONID
 
   schemas:
+    UnauthorizedResponse:
+      description: 'Returned when calling an API for which you are required to be authorized (logged in). TODO: In the 
+        future add information about configured SSO IdPs to show in the login form.'
+      type: object
+      properties:
+        formLogin:
+          description: Whether to show a login form or only show SSO options.
+          type: boolean
 
     UserResponse:
       description: 'Information about authentication status and user information'
@@ -227,8 +235,19 @@ components:
         values: [ "value 1", "value 2" ]
 
 paths:
+  /unauthorized:
+    get:
+      operationId: 'unauthorized'
+      summary: 'Redirect target for API''s which require authentication.'
+      security: []
+      responses:
+        '401':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
   /login:
-    summary: 'form login url'
     post:
       operationId: 'login'
       summary: 'Logs in and returns the authentication cookie'
