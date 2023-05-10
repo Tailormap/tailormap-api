@@ -97,6 +97,14 @@ jobs:
       - name: Test PostgreSQL with Maven
         run: mvn -B -fae -e -DskipQA=true -Pqa-skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true
 
+      - name: 'Publish test results'
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: target/failsafe-reports/TEST-*.xml
+          check_name: "Unit Test Results"
+          comment_title: "Unit Test Results"
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
