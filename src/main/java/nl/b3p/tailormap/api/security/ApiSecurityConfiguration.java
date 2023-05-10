@@ -57,6 +57,7 @@ public class ApiSecurityConfiguration {
             authorize ->
                 authorize.requestMatchers(adminApiBasePath + "/**").hasAuthority(Group.ADMIN))
         .formLogin()
+        .loginPage(apiBasePath + "/unauthorized")
         .loginProcessingUrl(apiBasePath + "/login")
         .and()
         .logout()
