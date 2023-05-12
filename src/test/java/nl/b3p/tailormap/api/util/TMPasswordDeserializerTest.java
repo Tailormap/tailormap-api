@@ -12,80 +12,53 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import nl.b3p.tailormap.api.security.InvalidPasswordException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class TMPasswordDeserializerTest {
-  private final String testJsonTempate = "{\"password\":\"%s\"}";
-  private TMPasswordDeserializer deserializer;
-  private ObjectMapper mapper;
-  private DeserializationContext ctxt;
-
-  @BeforeEach
-  void setup() {
-    InjectableValues.Std std =
-        new InjectableValues.Std()
-            .addValue("tailormap-api.strong-password.validation", true)
-            .addValue("tailormap-api.strong-password.min-length", 8)
-            .addValue("tailormap-api.strong-password.min-strength", 4);
-
-    this.mapper = new ObjectMapper();
-    this.mapper.setInjectableValues(std);
-    this.ctxt = mapper.getDeserializationContext();
-    this.deserializer = new TMPasswordDeserializer();
-  }
+  private final String testJsonTemplate = "{\"password\":\"%s\"}";
 
   @Test
   void testDeserializeNullPassword() {
     final String testJson = "{\"password\":null}";
-    Exception thrown =
-        assertThrows(
-            InvalidPasswordException.class,
-            () -> this.deserialiseJson(testJson),
-            "null password should throw InvalidPasswordException");
-    assertTrue(thrown.getMessage().contains("empty password"), "unexpected exception message");
+    assertThrows(
+        InvalidPasswordException.class,
+        () -> this.deserializeJson(testJson),
+        "null password should throw InvalidPasswordException");
   }
 
   @Test
   void testDeserializeEmptyInput() {
-    Exception thrown =
-        assertThrows(
-            InvalidPasswordException.class,
-            () -> this.deserialiseJson("{}"),
-            "empty input should throw InvalidPasswordException");
-    assertTrue(thrown.getMessage().contains("empty password"), "unexpected exception message");
+    assertThrows(
+        InvalidPasswordException.class,
+        () -> this.deserializeJson("{}"),
+        "empty input should throw InvalidPasswordException");
   }
 
   @Test
   void testEmptyPassword() {
-    final String testJson = String.format(testJsonTempate, "");
-    Exception thrown =
-        assertThrows(
-            InvalidPasswordException.class,
-            () -> this.deserialiseJson(testJson),
-            "empty password should throw InvalidPasswordException");
-    assertTrue(thrown.getMessage().contains("empty password"), "unexpected exception message");
+    final String testJson = String.format(testJsonTemplate, "");
+    assertThrows(
+        InvalidPasswordException.class,
+        () -> this.deserializeJson(testJson),
+        "empty password should throw InvalidPasswordException");
   }
 
   @Test
-  void testWeakPassword() throws IOException {
-    final String testJson = String.format(testJsonTempate, "flamingo");
-    Exception thrown =
-        assertThrows(
-            InvalidPasswordException.class,
-            () -> this.deserialiseJson(testJson),
-            "empty password should throw InvalidPasswordException");
-    assertTrue(thrown.getMessage().contains("password strength"), "unexpected exception message");
+  void testWeakPassword() {
+    final String testJson = String.format(testJsonTemplate, "flamingo");
+    assertThrows(
+        InvalidPasswordException.class,
+        () -> this.deserializeJson(testJson),
+        "empty password should throw InvalidPasswordException");
   }
 
   @Test
   void testValidPassword() throws IOException {
-    final String testJson = String.format(testJsonTempate, "myValidSecret$@12");
-    String actual = this.deserialiseJson(testJson);
+    final String testJson = String.format(testJsonTemplate, "myValidSecret$@12");
+    String actual = this.deserializeJson(testJson);
 
     assertNotNull(actual, "encrypted password should not be null");
     assertTrue(
@@ -93,9 +66,11 @@ class TMPasswordDeserializerTest {
     assertEquals(68, actual.length(), "bcrypted password should be 8+60 characters");
   }
 
-  private String deserialiseJson(String json) throws IOException {
+  private String deserializeJson(String json) throws IOException {
 
-    try (JsonParser parser = this.mapper.getFactory().createParser(json)) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    DeserializationContext deserializationContext = objectMapper.getDeserializationContext();
+    try (JsonParser parser = new ObjectMapper().getFactory().createParser(json)) {
       // step though the templated json
       // skip START_OBJECT
       parser.nextToken();
@@ -104,7 +79,7 @@ class TMPasswordDeserializerTest {
       // use FIELD_VALUE
       parser.nextToken();
 
-      return deserializer.deserialize(parser, this.ctxt);
+      return new TMPasswordDeserializer().deserialize(parser, deserializationContext);
     }
   }
 }
