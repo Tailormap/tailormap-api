@@ -14,7 +14,6 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.controller,GeoServiceProxyControlle
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerExportController.WFSSearchResult,43,0,4,0,13,0,9,0,7,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller.admin,RestExceptionHandler,54,0,4,0,16,0,5,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller.admin,TestAdminController,12,0,0,0,2,0,2,0,2,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.controller.admin,PasswordValidationController,21,0,0,0,6,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.wfs,SimpleWFSHelper,417,0,36,0,91,0,32,0,14,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.wfs,WFSProxy,29,0,0,0,7,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.wfs,SimpleWFSLayerDescription,20,0,0,0,7,0,4,0,4,0
@@ -25,9 +24,9 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.base,FrontController,
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.processing,GeometryProcessor,16,132,5,13,6,33,5,9,0,5
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,JPAConfiguration,16,0,0,0,5,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,TailormapConfig,11,0,0,0,4,0,3,0,3,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,ObjectMapperConfiguration,61,0,0,0,13,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,FilteringConfig,36,0,0,0,7,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,TailormapDatabaseMigration,59,0,6,0,17,0,7,0,4,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,TailormapPasswordStrengthConfig,12,13,0,0,7,6,4,4,4,4
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,GeoToolsEPSGAliasesConfiguration,124,0,4,0,17,0,5,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,MonitoringConfiguration,8,0,0,0,2,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,RestConfiguration,25,0,0,0,9,0,3,0,3,0
@@ -56,7 +55,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.security,AuthorizationService,143,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,ApiSecurityConfiguration,89,0,2,0,19,0,7,0,6,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,TailormapUserDetailsService,39,0,2,0,10,0,4,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.util,HttpProxyUtil,111,0,14,0,30,0,12,0,5,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.util,TMPasswordDeserializer,0,85,1,11,0,23,1,9,0,4
+Aggregate Test Coverage,nl.b3p.tailormap.api.util,TMPasswordDeserializer,37,164,9,13,6,44,7,8,0,4
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.featuresources,FeatureSourceFactoryHelper,41,0,3,0,8,0,6,0,4,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.featuresources,JDBCFeatureSourceHelper,156,0,8,0,28,0,7,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.featuresources,FeatureSourceHelper,289,0,16,0,72,0,16,0,8,0
