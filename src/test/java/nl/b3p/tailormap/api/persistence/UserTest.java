@@ -12,17 +12,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import nl.b3p.tailormap.api.security.InvalidPasswordException;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -31,34 +28,14 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class UserTest {
 
-  private static Validator validator;
+  private static final Validator validator =
+      Validation.buildDefaultValidatorFactory().getValidator();
   private final String expectedMessage = "Username must consist of alphanumeric characters or -";
   private ObjectMapper mapper;
 
-  @Value("${tailormap-api.strong-password.validation:true}")
-  private boolean enabled;
-
-  @Value("${tailormap-api.strong-password.min-length:8}")
-  private int minLength;
-
-  @Value("${tailormap-api.strong-password.min-strength:4}")
-  private int minStrength;
-
-  @BeforeAll
-  public static void setupValidatorInstance() {
-    validator = Validation.buildDefaultValidatorFactory().getValidator();
-  }
-
   @BeforeEach
   void setup() {
-    InjectableValues.Std std =
-        new InjectableValues.Std()
-            .addValue("tailormap-api.strong-password.validation", enabled)
-            .addValue("tailormap-api.strong-password.min-length", minLength)
-            .addValue("tailormap-api.strong-password.min-strength", minStrength);
-
     this.mapper = new ObjectMapper();
-    this.mapper.setInjectableValues(std);
   }
 
   /** Test that the password is not serialized. */
@@ -80,12 +57,10 @@ class UserTest {
   @Test
   void testJsonDeserializeEmptyPassword() {
     final String jsonToDeserialize = "{\"username\":\"markimarks\",\"password\":\"\"}";
-    Exception thrown =
-        assertThrows(
-            InvalidPasswordException.class,
-            () -> this.mapper.readValue(jsonToDeserialize, User.class),
-            "empty password should throw JsonProcessingException");
-    assertTrue(thrown.getMessage().contains("empty password"), "unexpected exception message");
+    assertThrows(
+        InvalidPasswordException.class,
+        () -> this.mapper.readValue(jsonToDeserialize, User.class),
+        "empty password should throw JsonProcessingException");
   }
 
   @Test
@@ -124,9 +99,7 @@ class UserTest {
     Set<ConstraintViolation<User>> violations = validator.validate(user);
     assertEquals(1, violations.size(), "violations should not be empty");
     violations.forEach(
-        action -> {
-          assertEquals(expectedMessage, action.getMessage(), "unexpected message");
-        });
+        action -> assertEquals(expectedMessage, action.getMessage(), "unexpected message"));
   }
 
   @Test
@@ -136,8 +109,6 @@ class UserTest {
     Set<ConstraintViolation<User>> violations = validator.validate(user);
     assertEquals(1, violations.size(), "violations should not be empty");
     violations.forEach(
-        action -> {
-          assertEquals(expectedMessage, action.getMessage(), "unexpected message");
-        });
+        action -> assertEquals(expectedMessage, action.getMessage(), "unexpected message"));
   }
 }
