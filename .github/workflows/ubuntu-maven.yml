@@ -97,19 +97,30 @@ jobs:
       - name: Test PostgreSQL with Maven
         run: mvn -B -fae -e -DskipQA=true -Pqa-skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true
 
-      - name: 'Publish test results'
-        uses: EnricoMi/publish-unit-test-result-action@v2
+      - name: 'Upload test results'
+        uses: actions/upload-artifact@v3
         if: always()
         with:
-          junit_files: target/failsafe-reports/TEST-*.xml
-          check_name: "Unit Test Results"
-          comment_title: "Unit Test Results"
+          name: Test Results
+          path: |
+            target/failsafe-reports/TEST-*.xml       
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           verbose: true
 
+  # Upload event file so test results can be processed for the PR
+  # https://github.com/EnricoMi/publish-unit-test-result-action#support-fork-repositories-and-dependabot-branches
+  event_file:
+    name: "Event File"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: Event File
+          path: ${{ github.event_path }}
 
   site-deploy:
     name: Publish gh-pages
