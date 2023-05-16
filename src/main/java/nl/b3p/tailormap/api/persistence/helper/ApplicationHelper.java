@@ -314,6 +314,10 @@ public class ApplicationHelper {
         return Triple.of(null, null, null);
       }
 
+      if (!authorizationService.mayUserRead(service, serviceLayer)) {
+        return Triple.of(null, null, null);
+      }
+
       serviceLayerServiceIds.put(serviceLayer, service.getId());
 
       if (mr.getServices().stream()

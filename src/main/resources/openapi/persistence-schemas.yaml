@@ -318,6 +318,10 @@ components:
           default: false
         featureType:
           $ref: FeatureTypeRef
+        authorizationRules:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthorizationRule'
 
     FeatureTypeRef:
       required: [featureSourceId, featureTypeName]
