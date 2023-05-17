@@ -19,11 +19,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import nl.b3p.tailormap.api.annotation.AppRestController;
@@ -142,7 +138,7 @@ public class GeoServiceProxyController {
     final List<String> ogcParams = List.of(new String[] {"SERVICE", "REQUEST", "VERSION"});
     for (Map.Entry<String, List<String>> serviceParam : originalServiceParams.entrySet()) {
       if (!params.containsKey(serviceParam.getKey())
-          && !ogcParams.contains(serviceParam.getKey().toUpperCase())) {
+          && !ogcParams.contains(serviceParam.getKey().toUpperCase(Locale.ROOT))) {
         params.put(serviceParam.getKey(), serviceParam.getValue());
       }
     }
