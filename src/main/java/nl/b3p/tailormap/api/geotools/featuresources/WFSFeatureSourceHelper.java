@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api.geotools.featuresources;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
@@ -34,7 +35,7 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
       wfsUrl += wfsUrl.contains("?") ? "&" : "?";
     }
     wfsUrl = wfsUrl + "REQUEST=GetCapabilities&SERVICE=WFS";
-    if (!wfsUrl.toUpperCase().contains("VERSION")) {
+    if (!wfsUrl.toUpperCase(Locale.ROOT).contains("VERSION")) {
       wfsUrl += "&VERSION=1.1.0";
     }
 

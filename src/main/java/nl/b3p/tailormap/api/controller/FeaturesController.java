@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
@@ -220,7 +221,7 @@ public class FeaturesController implements Constants {
       SortOrder _sortOrder = SortOrder.ASCENDING;
       if (null != sortOrder
           && (sortOrder.equalsIgnoreCase("desc") || sortOrder.equalsIgnoreCase("asc"))) {
-        _sortOrder = SortOrder.valueOf(sortOrder.toUpperCase());
+        _sortOrder = SortOrder.valueOf(sortOrder.toUpperCase(Locale.ROOT));
       }
 
       // setup query, attributes and filter
