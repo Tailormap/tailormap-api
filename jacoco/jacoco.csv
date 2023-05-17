@@ -10,7 +10,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.controller,AppRestControllerAdvice,
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,UniqueValuesController,217,0,14,0,52,0,12,0,5,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,ViewerController,57,0,4,0,15,0,6,0,4,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,FeaturesController,667,0,76,0,168,0,47,0,9,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.controller,GeoServiceProxyController,228,61,16,6,56,10,14,5,6,2
+Aggregate Test Coverage,nl.b3p.tailormap.api.controller,GeoServiceProxyController,228,62,16,6,56,10,14,5,6,2
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerExportController.WFSSearchResult,43,0,4,0,13,0,9,0,7,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller.admin,RestExceptionHandler,54,0,4,0,16,0,5,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller.admin,TestAdminController,12,0,0,0,2,0,2,0,2,0
