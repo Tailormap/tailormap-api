@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api.geotools.featuresources;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
@@ -20,52 +21,52 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.data.wfs.internal.FeatureTypeInfo;
 
-<span class="nc" id="L23">public class WFSFeatureSourceHelper extends FeatureSourceHelper {</span>
+<span class="nc" id="L24">public class WFSFeatureSourceHelper extends FeatureSourceHelper {</span>
   @Override
   public DataStore createDataStore(TMFeatureSource tmfs, Integer timeout) throws IOException {
-<span class="nc" id="L26">    Map&lt;String, Object&gt; params = new HashMap&lt;&gt;();</span>
-<span class="nc bnc" id="L27" title="All 2 branches missed.">    if (timeout != null) {</span>
-<span class="nc" id="L28">      params.put(WFSDataStoreFactory.TIMEOUT.key, timeout);</span>
+<span class="nc" id="L27">    Map&lt;String, Object&gt; params = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">    if (timeout != null) {</span>
+<span class="nc" id="L29">      params.put(WFSDataStoreFactory.TIMEOUT.key, timeout);</span>
     }
 
     // Params which can not be overridden below
-<span class="nc" id="L32">    String wfsUrl = tmfs.getUrl();</span>
-<span class="nc bnc" id="L33" title="All 4 branches missed.">    if (!wfsUrl.endsWith(&quot;&amp;&quot;) &amp;&amp; !wfsUrl.endsWith(&quot;?&quot;)) {</span>
-<span class="nc bnc" id="L34" title="All 2 branches missed.">      wfsUrl += wfsUrl.contains(&quot;?&quot;) ? &quot;&amp;&quot; : &quot;?&quot;;</span>
+<span class="nc" id="L33">    String wfsUrl = tmfs.getUrl();</span>
+<span class="nc bnc" id="L34" title="All 4 branches missed.">    if (!wfsUrl.endsWith(&quot;&amp;&quot;) &amp;&amp; !wfsUrl.endsWith(&quot;?&quot;)) {</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">      wfsUrl += wfsUrl.contains(&quot;?&quot;) ? &quot;&amp;&quot; : &quot;?&quot;;</span>
     }
-<span class="nc" id="L36">    wfsUrl = wfsUrl + &quot;REQUEST=GetCapabilities&amp;SERVICE=WFS&quot;;</span>
-<span class="nc bnc" id="L37" title="All 2 branches missed.">    if (!wfsUrl.toUpperCase().contains(&quot;VERSION&quot;)) {</span>
-<span class="nc" id="L38">      wfsUrl += &quot;&amp;VERSION=1.1.0&quot;;</span>
+<span class="nc" id="L37">    wfsUrl = wfsUrl + &quot;REQUEST=GetCapabilities&amp;SERVICE=WFS&quot;;</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">    if (!wfsUrl.toUpperCase(Locale.ROOT).contains(&quot;VERSION&quot;)) {</span>
+<span class="nc" id="L39">      wfsUrl += &quot;&amp;VERSION=1.1.0&quot;;</span>
     }
 
-<span class="nc" id="L41">    params.put(WFSDataStoreFactory.URL.key, wfsUrl);</span>
+<span class="nc" id="L42">    params.put(WFSDataStoreFactory.URL.key, wfsUrl);</span>
 
-<span class="nc" id="L43">    ServiceAuthentication authentication = tmfs.getAuthentication();</span>
-<span class="nc bnc" id="L44" title="All 2 branches missed.">    if (authentication != null) {</span>
-<span class="nc bnc" id="L45" title="All 2 branches missed.">      if (authentication.getMethod() != ServiceAuthentication.MethodEnum.PASSWORD) {</span>
-<span class="nc" id="L46">        throw new IllegalArgumentException(authentication.getMethod().getValue());</span>
+<span class="nc" id="L44">    ServiceAuthentication authentication = tmfs.getAuthentication();</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">    if (authentication != null) {</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">      if (authentication.getMethod() != ServiceAuthentication.MethodEnum.PASSWORD) {</span>
+<span class="nc" id="L47">        throw new IllegalArgumentException(authentication.getMethod().getValue());</span>
       }
-<span class="nc" id="L48">      params.put(WFSDataStoreFactory.USERNAME.key, authentication.getUsername());</span>
-<span class="nc" id="L49">      params.put(WFSDataStoreFactory.PASSWORD.key, authentication.getPassword());</span>
+<span class="nc" id="L49">      params.put(WFSDataStoreFactory.USERNAME.key, authentication.getUsername());</span>
+<span class="nc" id="L50">      params.put(WFSDataStoreFactory.PASSWORD.key, authentication.getPassword());</span>
     }
-<span class="nc" id="L51">    return openDatastore(params, WFSDataStoreFactory.PASSWORD.key);</span>
+<span class="nc" id="L52">    return openDatastore(params, WFSDataStoreFactory.PASSWORD.key);</span>
   }
 
   @Override
   protected TMFeatureTypeInfo getFeatureTypeInfo(
       TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
-<span class="nc" id="L57">    TMFeatureTypeInfo tmInfo = super.getFeatureTypeInfo(pft, info, gtFs);</span>
-<span class="nc bnc" id="L58" title="All 2 branches missed.">    if (info instanceof FeatureTypeInfo) {</span>
-<span class="nc" id="L59">      FeatureTypeInfo ftInfo = (FeatureTypeInfo) info;</span>
-<span class="nc" id="L60">      tmInfo</span>
-<span class="nc" id="L61">          .schema(info.getSchema())</span>
-<span class="nc" id="L62">          .wgs84BoundingBox(GeoToolsHelper.fromEnvelope(ftInfo.getWGS84BoundingBox()))</span>
-<span class="nc" id="L63">          .defaultSrs(ftInfo.getDefaultSRS())</span>
-<span class="nc" id="L64">          .otherSrs(Set.copyOf(ftInfo.getOtherSRS()))</span>
-<span class="nc" id="L65">          .outputFormats(ftInfo.getOutputFormats())</span>
-<span class="nc" id="L66">          .abstractText(ftInfo.getAbstract());</span>
+<span class="nc" id="L58">    TMFeatureTypeInfo tmInfo = super.getFeatureTypeInfo(pft, info, gtFs);</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">    if (info instanceof FeatureTypeInfo) {</span>
+<span class="nc" id="L60">      FeatureTypeInfo ftInfo = (FeatureTypeInfo) info;</span>
+<span class="nc" id="L61">      tmInfo</span>
+<span class="nc" id="L62">          .schema(info.getSchema())</span>
+<span class="nc" id="L63">          .wgs84BoundingBox(GeoToolsHelper.fromEnvelope(ftInfo.getWGS84BoundingBox()))</span>
+<span class="nc" id="L64">          .defaultSrs(ftInfo.getDefaultSRS())</span>
+<span class="nc" id="L65">          .otherSrs(Set.copyOf(ftInfo.getOtherSRS()))</span>
+<span class="nc" id="L66">          .outputFormats(ftInfo.getOutputFormats())</span>
+<span class="nc" id="L67">          .abstractText(ftInfo.getAbstract());</span>
     }
-<span class="nc" id="L68">    return tmInfo;</span>
+<span class="nc" id="L69">    return tmInfo;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

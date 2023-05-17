@@ -9,7 +9,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerDescriptionControll
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,AppRestControllerAdvice,262,0,42,0,67,0,31,0,10,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,UniqueValuesController,217,0,14,0,52,0,12,0,5,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,ViewerController,57,0,4,0,15,0,6,0,4,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.controller,FeaturesController,667,0,76,0,168,0,47,0,9,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.controller,FeaturesController,668,0,76,0,168,0,47,0,9,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,GeoServiceProxyController,228,62,16,6,56,10,14,5,6,2
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerExportController.WFSSearchResult,43,0,4,0,13,0,9,0,7,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller.admin,RestExceptionHandler,54,0,4,0,16,0,5,0,3,0
@@ -60,7 +60,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.util,TMPasswordDeserializer,0,85,1,
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.featuresources,FeatureSourceFactoryHelper,41,0,3,0,8,0,6,0,4,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.featuresources,JDBCFeatureSourceHelper,156,0,8,0,28,0,7,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.featuresources,FeatureSourceHelper,289,0,16,0,72,0,16,0,8,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.featuresources,WFSFeatureSourceHelper,125,0,16,0,29,0,11,0,3,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.featuresources,WFSFeatureSourceHelper,126,0,16,0,29,0,11,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,ExitAfterCreatingDDL,32,0,0,0,10,0,4,0,4,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,FlywayCleanSchema,5,0,0,0,2,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,FlywayStartWithNewSchema,18,0,0,0,7,0,3,0,3,0
