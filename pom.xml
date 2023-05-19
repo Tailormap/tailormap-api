@@ -113,7 +113,7 @@ SPDX-License-Identifier: MIT
             mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates
         to check
         -->
-        <jackson-bom.version>2.14.2</jackson-bom.version>
+        <jackson-bom.version>2.15.1</jackson-bom.version>
         <micrometer.version>1.11.0</micrometer.version>
         <hibernate.version>5.6.15.Final</hibernate.version>
         <junit-jupiter.version>5.9.3</junit-jupiter.version>
