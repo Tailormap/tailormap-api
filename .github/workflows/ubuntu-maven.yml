@@ -155,7 +155,6 @@ jobs:
       packages: write
       contents: read
     env:
-      BUILDX_NO_DEFAULT_ATTESTATIONS: 1
     if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
     steps:
       - uses: actions/checkout@v3
