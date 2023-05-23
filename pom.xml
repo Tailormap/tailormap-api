@@ -100,7 +100,7 @@ SPDX-License-Identifier: MIT
         <project.build.outputTimestamp>2023-01-20T18:37:45Z</project.build.outputTimestamp>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <geotools.version>29.0</geotools.version>
+        <geotools.version>29.1</geotools.version>
         <jts.version>1.19.0</jts.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <!--
