@@ -9,7 +9,6 @@ import nl.b3p.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
 import nl.b3p.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
-import org.springframework.data.rest.core.annotation.HandleBeforeSave;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +19,7 @@ public class FeatureSourceEventHandler {
   public FeatureSourceEventHandler() {}
 
   @HandleBeforeCreate
-  @HandleBeforeSave
-  public void handleBeforeCreateOrSave(TMFeatureSource featureSource) throws Exception {
+  public void loadCapabilities(TMFeatureSource featureSource) throws Exception {
     if (featureSource.getProtocol().equals(TMFeatureSource.Protocol.WFS)) {
       new WFSFeatureSourceHelper().loadCapabilities(featureSource);
     } else if (featureSource.getProtocol().equals(TMFeatureSource.Protocol.JDBC)) {
