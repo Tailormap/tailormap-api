@@ -33,7 +33,7 @@ public class GeoServiceAdminController {
   }
 
   @PostMapping(path = "${tailormap-api.admin.base-path}/geo-services/{id}/refresh-capabilities")
-  public ResponseEntity<GeoService> updateCapabilities(@PathVariable String id) throws Exception {
+  public ResponseEntity<GeoService> refreshCapabilities(@PathVariable String id) throws Exception {
 
     GeoService geoService = geoServiceRepository.findById(id).orElse(null);
 
