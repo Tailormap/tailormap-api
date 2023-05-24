@@ -39,7 +39,7 @@ public class GeoServiceEventHandler {
   }
 
   @HandleBeforeCreate
-  public void handleBeforeCreateOrSave(GeoService geoService) throws Exception {
+  public void loadCapabilitiesBeforeCreate(GeoService geoService) throws Exception {
     logger.info(
         "Loading capabilities before creating geo service from URL: \"{}\"", geoService.getUrl());
     geoServiceHelper.loadServiceCapabilities(geoService);
