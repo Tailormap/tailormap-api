@@ -9,9 +9,7 @@ import static nl.b3p.tailormap.api.persistence.helper.GeoToolsHelper.crsToString
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.helper.GeoToolsHelper;
@@ -90,20 +88,39 @@ public abstract class FeatureSourceHelper {
                       .schema(si.getSchema())
                       .source(si.getSource())));
 
-      String[] typeNames = ds.getTypeNames();
+      List<String> typeNames = Arrays.asList(ds.getTypeNames());
       logger.info(
           "Type names for {} {}: {}",
           tmfs.getProtocol().getValue(),
-          tmfs.getUrl(),
-          Arrays.toString(typeNames));
+          tmfs.getProtocol() == TMFeatureSource.Protocol.WFS
+              ? tmfs.getUrl()
+              : tmfs.getJdbcConnection(),
+          typeNames);
+
+      tmfs.getFeatureTypes()
+          .removeIf(
+              tmft -> {
+                if (!typeNames.contains(tmft.getName())) {
+                  logger.info("Feature type removed: {}", tmft.getName());
+                  return true;
+                } else {
+                  return false;
+                }
+              });
 
       for (String typeName : typeNames) {
         TMFeatureType pft =
-            new TMFeatureType()
-                .setName(typeName)
-                .setFeatureSource(tmfs)
-                .setWriteable(true); // TODO set writeable meaningfully
-        tmfs.getFeatureTypes().add(pft);
+            tmfs.getFeatureTypes().stream()
+                .filter(ft -> ft.getName().equals(typeName))
+                .findFirst()
+                .orElseGet(() ->
+                    new TMFeatureType()
+                        .setName(typeName)
+                        .setFeatureSource(tmfs)
+                        .setWriteable(true)); // TODO set writeable meaningfully
+        if (!tmfs.getFeatureTypes().contains(pft)) {
+          tmfs.getFeatureTypes().add(pft);
+        }
         try {
           logger.debug("Get feature source from GeoTools datastore for type \"{}\"", typeName);
           SimpleFeatureSource gtFs = ds.getFeatureSource(typeName);
@@ -132,6 +149,16 @@ public abstract class FeatureSourceHelper {
           logger.error("Exception reading feature type \"{}\"", typeName, e);
         }
       }
+      //
+      //      // New feature types may have been added at the end. Sort based on original index to
+      // keep order of original
+      //      // feature source
+      //      tmfs.getFeatureTypes().sort((lhs, rhs) -> {
+      //        int lhsIndex = typeNames.indexOf(lhs.getName());
+      //        int rhsIndex = typeNames.indexOf(rhs.getName());
+      //        return Integer.compare(lhsIndex, rhsIndex);
+      //      });
+
     } finally {
       ds.dispose();
     }

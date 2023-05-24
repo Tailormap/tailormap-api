@@ -55,9 +55,7 @@
 
     create table feature_source_feature_types (
        feature_source int8 not null,
-       list_index int4 not null,
-       feature_type int8 not null,
-       primary key (feature_source, list_index)
+       feature_type int8 not null
     );
 
     create table feature_type (
@@ -108,8 +106,8 @@
 
     create table user_groups (
        username varchar(255) not null,
-       group_name varchar(255) not null,
-       primary key (username, group_name)
+        group_name varchar(255) not null,
+        primary key (username, group_name)
     );
 
     create table users (
