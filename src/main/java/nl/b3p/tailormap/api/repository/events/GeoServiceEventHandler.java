@@ -39,9 +39,11 @@ public class GeoServiceEventHandler {
   }
 
   @HandleBeforeCreate
-  public void loadCapabilitiesBeforeCreate(GeoService geoService) throws Exception {
+  public void loadCapabilities(GeoService geoService) throws Exception {
     logger.info(
-        "Loading capabilities before creating geo service from URL: \"{}\"", geoService.getUrl());
+        "Loading capabilities of geo service \"{}\" from URL: \"{}\"",
+        geoService.getId(),
+        geoService.getUrl());
     geoServiceHelper.loadServiceCapabilities(geoService);
   }
 }
