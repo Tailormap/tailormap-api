@@ -9,7 +9,10 @@ import static nl.b3p.tailormap.api.persistence.helper.GeoToolsHelper.crsToString
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.helper.GeoToolsHelper;
@@ -113,11 +116,12 @@ public abstract class FeatureSourceHelper {
             tmfs.getFeatureTypes().stream()
                 .filter(ft -> ft.getName().equals(typeName))
                 .findFirst()
-                .orElseGet(() ->
-                    new TMFeatureType()
-                        .setName(typeName)
-                        .setFeatureSource(tmfs)
-                        .setWriteable(true)); // TODO set writeable meaningfully
+                .orElseGet(
+                    () ->
+                        new TMFeatureType()
+                            .setName(typeName)
+                            .setFeatureSource(tmfs)
+                            .setWriteable(true)); // TODO set writeable meaningfully
         if (!tmfs.getFeatureTypes().contains(pft)) {
           tmfs.getFeatureTypes().add(pft);
         }
