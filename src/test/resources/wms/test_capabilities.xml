@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?><!DOCTYPE WMT_MS_Capabilities SYSTEM
+        "http://schemas.opengis.net/wms/1.1.0/capabilities_1_1_0.dtd"[ <!ELEMENT VendorSpecificCapabilities EMPTY>]>
+<WMT_MS_Capabilities version="1.1.1">
+    <Service>
+        <Name>Test WMS</Name>
+        <Title>Test</Title>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+                        xlink:href="https://example.com/test-wms/?"></OnlineResource>
+    </Service>
+    <Capability>
+        <Request>
+            <GetCapabilities>
+                <Format>application/vnd.ogc.wms_xml</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            xlink:href="https://example.com/test-wms/?"></OnlineResource>
+                        </Get>
+                    </HTTP>
+                </DCPType>
+            </GetCapabilities>
+            <GetMap>
+                <Format>image/png</Format>
+                <Format>image/jpeg</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            xlink:href="https://example.com/test-wms/?"></OnlineResource>
+                        </Get>
+                    </HTTP>
+                </DCPType>
+            </GetMap>
+        </Request>
+        <Exception>
+            <Format>text/plain</Format>
+        </Exception>
+        <Layer>
+            <Title>Test Layer 1</Title>
+            <SRS>EPSG:28992</SRS>
+            <SRS>EPSG:3857</SRS>
+            <SRS>EPSG:4326</SRS>
+            <SRS>EPSG:900913</SRS>
+            <Layer cascaded="1" queryable="0">
+                <Name>Layer2</Name>
+                <Title>Test Layer 2</Title>
+                <BoundingBox SRS="EPSG:28992" minx="-285401.920000" miny="22598.080000" maxx="595401.920000"
+                             maxy="903401.920000"></BoundingBox>
+                <SRS>EPSG:28992</SRS>
+            </Layer>
+        </Layer>
+    </Capability>
+</WMT_MS_Capabilities>

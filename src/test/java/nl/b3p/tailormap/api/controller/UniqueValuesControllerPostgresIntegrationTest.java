@@ -16,10 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.jayway.jsonpath.JsonPath;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
@@ -129,7 +126,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
     String cqlFilter = "bronhouder='G0344'";
     if (url.contains("BRONHOUDER")) {
       // uppercase oracle cql filter
-      cqlFilter = cqlFilter.toUpperCase();
+      cqlFilter = cqlFilter.toUpperCase(Locale.ROOT);
     }
 
     MvcResult result =
@@ -163,7 +160,7 @@ class UniqueValuesControllerPostgresIntegrationTest {
     String cqlFilter = "inonderzoek=TRUE";
     if (url.contains("BRONHOUDER")) {
       // uppercase oracle cql filter
-      cqlFilter = cqlFilter.toUpperCase();
+      cqlFilter = cqlFilter.toUpperCase(Locale.ROOT);
     }
 
     mockMvc

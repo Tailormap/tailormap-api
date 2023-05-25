@@ -6,7 +6,10 @@
 package nl.b3p.tailormap.api;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
+import org.springframework.core.io.Resource;
+import org.springframework.util.StreamUtils;
 
 /**
  * setup testdata from property file.
@@ -26,5 +29,9 @@ public class StaticTestData {
 
   public static String get(String key) {
     return testData.getProperty(key);
+  }
+
+  public static String getResourceString(Resource resource) throws IOException {
+    return StreamUtils.copyToString(resource.getInputStream(), StandardCharsets.UTF_8);
   }
 }
