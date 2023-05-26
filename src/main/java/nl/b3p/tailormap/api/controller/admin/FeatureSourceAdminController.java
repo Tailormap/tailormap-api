@@ -44,11 +44,10 @@ public class FeatureSourceAdminController {
   public ResponseEntity<?> refreshCapabilities(
       @PathVariable Long id, HttpServletResponse httpServletResponse) throws Exception {
 
-    TMFeatureSource featureSource = featureSourceRepository.findById(id).orElse(null);
-
-    if (featureSource == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-    }
+    TMFeatureSource featureSource =
+        featureSourceRepository
+            .findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
     // Authorization check not needed: only admins are allowed on the admin base path, and admins
     // have all access
