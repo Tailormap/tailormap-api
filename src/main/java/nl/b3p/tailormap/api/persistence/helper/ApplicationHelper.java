@@ -206,7 +206,7 @@ public class ApplicationHelper {
         addAppLayerItem(appTreeLayerNode);
         // This name is not displayed in the frontend, the title from the appLayer node is used
         layerTreeNode.setName(appTreeLayerNode.getLayerName());
-
+        layerTreeNode.setDescription(appTreeLayerNode.getDescription());
       } else if ("AppTreeLevelNode".equals(node.getObjectType())) {
         AppTreeLevelNode appTreeLevelNode = (AppTreeLevelNode) node;
         layerTreeNode.setId(appTreeLevelNode.getId());
@@ -214,6 +214,7 @@ public class ApplicationHelper {
         layerTreeNode.setRoot(Boolean.TRUE.equals(appTreeLevelNode.getRoot()));
         // The name for a level node does show in the frontend
         layerTreeNode.setName(appTreeLevelNode.getTitle());
+        layerTreeNode.setDescription(appTreeLevelNode.getDescription());
       }
       layerTreeNodeList.add(layerTreeNode);
     }
