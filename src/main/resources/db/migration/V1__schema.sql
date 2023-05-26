@@ -106,8 +106,8 @@
 
     create table user_groups (
        username varchar(255) not null,
-        group_name varchar(255) not null,
-        primary key (username, group_name)
+       group_name varchar(255) not null,
+       primary key (username, group_name)
     );
 
     create table users (
