@@ -153,16 +153,6 @@ public abstract class FeatureSourceHelper {
           logger.error("Exception reading feature type \"{}\"", typeName, e);
         }
       }
-      //
-      //      // New feature types may have been added at the end. Sort based on original index to
-      // keep order of original
-      //      // feature source
-      //      tmfs.getFeatureTypes().sort((lhs, rhs) -> {
-      //        int lhsIndex = typeNames.indexOf(lhs.getName());
-      //        int rhsIndex = typeNames.indexOf(rhs.getName());
-      //        return Integer.compare(lhsIndex, rhsIndex);
-      //      });
-
     } finally {
       ds.dispose();
     }
