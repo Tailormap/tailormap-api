@@ -42,11 +42,10 @@ public class GeoServiceAdminController {
   public ResponseEntity<GeoService> refreshCapabilities(
       @PathVariable String id, HttpServletResponse httpServletResponse) throws Exception {
 
-    GeoService geoService = geoServiceRepository.findById(id).orElse(null);
-
-    if (geoService == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-    }
+    GeoService geoService =
+        geoServiceRepository
+            .findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
     // Authorization check not needed: only admins are allowed on the admin base path, and admins
     // have all access
