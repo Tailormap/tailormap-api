@@ -122,7 +122,7 @@ public class PopulateTestData {
     try {
       // Used in conjunction with tailormap-api.database.clean=true so the database has been cleaned
       // and the latest schema re-created
-      createTestUsers();
+      createTestUsersAndGroups();
       createTestConfiguration();
     } finally {
       InternalAdminAuthentication.clearSecurityContextAuthentication();
@@ -145,9 +145,19 @@ public class PopulateTestData {
     }
   }
 
-  public void createTestUsers() throws NoSuchElementException {
+  public void createTestUsersAndGroups() throws NoSuchElementException {
+    Group groupFoo = new Group().setName("test-foo").setDescription("Used for integration tests.");
+    groupRepository.save(groupFoo);
+
+    Group groupBar = new Group().setName("test-bar").setDescription("Used for integration tests.");
+    groupRepository.save(groupBar);
+
+    Group groupBaz = new Group().setName("test-baz").setDescription("Used for integration tests.");
+    groupRepository.save(groupBaz);
+
     // Normal user
     User u = new User().setUsername("user").setPassword("{noop}user").setEmail("user@example.com");
+    u.getGroups().addAll(List.of(groupFoo, groupBar, groupBaz));
     userRepository.save(u);
 
     // Superuser with all access
@@ -185,6 +195,40 @@ public class PopulateTestData {
                 .setTitle("Test GeoServer")
                 .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
                 .setAuthorizationRules(rule)
+                .setPublished(true),
+            new GeoService()
+                .setId("filtered-snapshot-geoserver")
+                .setProtocol(WMS)
+                .setTitle("Test GeoServer (with authorization rules)")
+                .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
+                .setAuthorizationRules(
+                    List.of(
+                        new AuthorizationRule()
+                            .groupName("test-foo")
+                            .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)),
+                        new AuthorizationRule()
+                            .groupName("test-baz")
+                            .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW))))
+                .setSettings(
+                    new GeoServiceSettings()
+                        .layerSettings(
+                            Map.of(
+                                "BGT",
+                                new GeoServiceLayerSettings()
+                                    .addAuthorizationRulesItem(
+                                        new AuthorizationRule()
+                                            .groupName("test-foo")
+                                            .decisions(
+                                                Map.of(
+                                                    ACCESS_TYPE_READ,
+                                                    AuthorizationRuleDecision.DENY)))
+                                    .addAuthorizationRulesItem(
+                                        new AuthorizationRule()
+                                            .groupName("test-baz")
+                                            .decisions(
+                                                Map.of(
+                                                    ACCESS_TYPE_READ,
+                                                    AuthorizationRuleDecision.ALLOW))))))
                 .setPublished(true),
             new GeoService()
                 .setId("snapshot-geoserver-proxied")
@@ -697,6 +741,67 @@ public class PopulateTestData {
                             .visible(false)));
 
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
+    applicationRepository.save(app);
+
+    app =
+        new Application()
+            .setName("secured-auth")
+            .setTitle("secured (with authorizations)")
+            .setCrs("EPSG:28992")
+            .setAuthorizationRules(
+                List.of(
+                    new AuthorizationRule()
+                        .groupName("test-foo")
+                        .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)),
+                    new AuthorizationRule()
+                        .groupName("test-bar")
+                        .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW))))
+            .setContentRoot(
+                new AppContent()
+                    .addLayerNodesItem(
+                        new AppTreeLevelNode()
+                            .objectType("AppTreeLevelNode")
+                            .id("root")
+                            .root(true)
+                            .title("Layers")
+                            .childrenIds(List.of("lyr:needs-auth", "lyr:public")))
+                    .addLayerNodesItem(
+                        new AppTreeLevelNode()
+                            .objectType("AppTreeLevelNode")
+                            .id("lvl:public")
+                            .title("Public")
+                            .childrenIds(List.of("lyr:snapshot-geoserver:BGT")))
+                    .addLayerNodesItem(
+                        new AppTreeLevelNode()
+                            .objectType("AppTreeLevelNode")
+                            .id("lvl:needs-auth")
+                            .title("Needs auth")
+                            .childrenIds(
+                                List.of(
+                                    "lyr:filtered-snapshot-geoserver:BGT",
+                                    "lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel")))
+                    .addLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:filtered-snapshot-geoserver:BGT")
+                            .serviceId("filtered-snapshot-geoserver")
+                            .layerName("BGT")
+                            .visible(true))
+                    .addLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel")
+                            .serviceId("filtered-snapshot-geoserver")
+                            .layerName("postgis:begroeidterreindeel")
+                            .visible(true))
+                    .addLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:snapshot-geoserver:BGT")
+                            .serviceId("snapshot-geoserver")
+                            .layerName("BGT")
+                            .visible(true)));
+
     applicationRepository.save(app);
 
     app =
