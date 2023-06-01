@@ -14,6 +14,8 @@ import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRuleDecision;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -98,6 +100,35 @@ public class AuthorizationService {
   public boolean mayUserRead(GeoService geoService) {
     return isAuthorizedByRules(geoService.getAuthorizationRules(), ACCESS_TYPE_READ)
         .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
+  }
+
+  /**
+   * Verifies that this user may read the Layer in context of the GeoService.
+   *
+   * @param geoService the GeoService to check
+   * @param layer the GeoServiceLayer to check
+   * @return the results from the access control checks.
+   */
+  public boolean mayUserRead(GeoService geoService, GeoServiceLayer layer) {
+    Optional<AuthorizationRuleDecision> geoserviceDecision =
+        isAuthorizedByRules(geoService.getAuthorizationRules(), ACCESS_TYPE_READ);
+
+    if (geoserviceDecision.equals(Optional.of(AuthorizationRuleDecision.DENY))) {
+      return false;
+    }
+
+    GeoServiceLayerSettings settings =
+        geoService.getSettings().getLayerSettings().get(layer.getName());
+    if (settings != null && settings.getAuthorizationRules() != null) {
+      Optional<AuthorizationRuleDecision> decision =
+          isAuthorizedByRules(settings.getAuthorizationRules(), ACCESS_TYPE_READ);
+      // If no authorization rules are present, fall back to GeoService authorization.
+      if (decision.isPresent() || settings.getAuthorizationRules().size() > 0) {
+        return decision.equals(Optional.of(AuthorizationRuleDecision.ALLOW));
+      }
+    }
+
+    return geoserviceDecision.equals(Optional.of(AuthorizationRuleDecision.ALLOW));
   }
 
   /**

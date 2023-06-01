@@ -203,7 +203,9 @@ public class ApplicationHelper {
         AppTreeLayerNode appTreeLayerNode = (AppTreeLayerNode) node;
         layerTreeNode.setId(appTreeLayerNode.getId());
         layerTreeNode.setAppLayerId(appTreeLayerNode.getId());
-        addAppLayerItem(appTreeLayerNode);
+        if (!addAppLayerItem(appTreeLayerNode)) {
+          return;
+        }
         // This name is not displayed in the frontend, the title from the appLayer node is used
         layerTreeNode.setName(appTreeLayerNode.getLayerName());
         layerTreeNode.setDescription(appTreeLayerNode.getDescription());
@@ -219,14 +221,14 @@ public class ApplicationHelper {
       layerTreeNodeList.add(layerTreeNode);
     }
 
-    private void addAppLayerItem(AppTreeLayerNode layerRef) {
+    private boolean addAppLayerItem(AppTreeLayerNode layerRef) {
       Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> serviceWithLayer =
           findServiceLayer(layerRef);
       GeoService service = serviceWithLayer.getLeft();
       GeoServiceLayer serviceLayer = serviceWithLayer.getMiddle();
 
       if (service == null || serviceLayer == null) {
-        return;
+        return false;
       }
       GeoServiceDefaultLayerSettings defaultLayerSettings =
           Optional.ofNullable(service.getSettings().getDefaultLayerSettings())
@@ -285,6 +287,8 @@ public class ApplicationHelper {
               .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
               .opacity(appLayerSettings.getOpacity())
               .visible(layerRef.getVisible()));
+
+      return true;
     }
 
     private Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> findServiceLayer(
@@ -311,6 +315,10 @@ public class ApplicationHelper {
             app.getId(),
             layerRef.getLayerName(),
             service.getId());
+        return Triple.of(null, null, null);
+      }
+
+      if (!authorizationService.mayUserRead(service, serviceLayer)) {
         return Triple.of(null, null, null);
       }
 
