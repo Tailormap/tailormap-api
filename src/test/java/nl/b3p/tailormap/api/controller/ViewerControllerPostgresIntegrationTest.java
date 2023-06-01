@@ -213,6 +213,7 @@ class ViewerControllerPostgresIntegrationTest {
   }
 
   @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_deny_showing_secured_application() throws Exception {
     final String path = apiBasePath + "/app/secured/map";
     mockMvc
@@ -221,6 +222,7 @@ class ViewerControllerPostgresIntegrationTest {
   }
 
   @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {})
@@ -232,6 +234,7 @@ class ViewerControllerPostgresIntegrationTest {
   }
 
   @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo"})
@@ -243,6 +246,7 @@ class ViewerControllerPostgresIntegrationTest {
   }
 
   @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-baz"})
@@ -254,6 +258,7 @@ class ViewerControllerPostgresIntegrationTest {
   }
 
   @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo"})
@@ -275,6 +280,7 @@ class ViewerControllerPostgresIntegrationTest {
   }
 
   @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo", "test-baz"})
@@ -295,6 +301,7 @@ class ViewerControllerPostgresIntegrationTest {
   }
 
   @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"admin"})
@@ -314,6 +321,7 @@ class ViewerControllerPostgresIntegrationTest {
   }
 
   @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-bar"})
