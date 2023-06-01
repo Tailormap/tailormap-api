@@ -236,89 +236,88 @@ public class GeoServiceHelper {
                           })
 <span class="nc" id="L237">                      .collect(Collectors.toList()))</span>
 <span class="nc" id="L238">              .queryable(l.isQueryable())</span>
-<span class="nc bnc" id="L239" title="All 2 branches missed.">              .attribution(l.getAttribution() == null ? null : l.getAttribution().toString())</span>
-<span class="nc" id="L240">              .abstractText(l.get_abstract())</span>
-<span class="nc" id="L241">              .children(</span>
-<span class="nc" id="L242">                  l.getLayerChildren().stream()</span>
-<span class="nc" id="L243">                      .map(layers::indexOf)</span>
-<span class="nc" id="L244">                      .map(String::valueOf)</span>
-<span class="nc" id="L245">                      .collect(Collectors.toList()));</span>
+<span class="nc" id="L239">              .abstractText(l.get_abstract())</span>
+<span class="nc" id="L240">              .children(</span>
+<span class="nc" id="L241">                  l.getLayerChildren().stream()</span>
+<span class="nc" id="L242">                      .map(layers::indexOf)</span>
+<span class="nc" id="L243">                      .map(String::valueOf)</span>
+<span class="nc" id="L244">                      .collect(Collectors.toList()));</span>
 
-<span class="nc bnc" id="L247" title="All 2 branches missed.">      if (consumer != null) {</span>
-<span class="nc" id="L248">        consumer.accept(l, geoServiceLayer);</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">      if (consumer != null) {</span>
+<span class="nc" id="L247">        consumer.accept(l, geoServiceLayer);</span>
       }
-<span class="nc" id="L250">      geoService.getLayers().add(geoServiceLayer);</span>
-<span class="nc" id="L251">    }</span>
-<span class="nc" id="L252">  }</span>
+<span class="nc" id="L249">      geoService.getLayers().add(geoServiceLayer);</span>
+<span class="nc" id="L250">    }</span>
+<span class="nc" id="L251">  }</span>
 
   void loadWMSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client)
       throws Exception {
-<span class="nc" id="L256">    WebMapServer wms = new WebMapServer(new URL(geoService.getUrl()), client);</span>
+<span class="nc" id="L255">    WebMapServer wms = new WebMapServer(new URL(geoService.getUrl()), client);</span>
 
-<span class="nc" id="L258">    OperationType getMap = wms.getCapabilities().getRequest().getGetMap();</span>
-<span class="nc" id="L259">    OperationType getFeatureInfo = wms.getCapabilities().getRequest().getGetFeatureInfo();</span>
+<span class="nc" id="L257">    OperationType getMap = wms.getCapabilities().getRequest().getGetMap();</span>
+<span class="nc" id="L258">    OperationType getFeatureInfo = wms.getCapabilities().getRequest().getGetFeatureInfo();</span>
 
-<span class="nc bnc" id="L261" title="All 2 branches missed.">    if (getMap == null) {</span>
-<span class="nc" id="L262">      throw new Exception(&quot;Service does not support GetMap&quot;);</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">    if (getMap == null) {</span>
+<span class="nc" id="L261">      throw new Exception(&quot;Service does not support GetMap&quot;);</span>
     }
 
-<span class="nc" id="L265">    setServiceInfo(geoService, client, wms);</span>
+<span class="nc" id="L264">    setServiceInfo(geoService, client, wms);</span>
 
-<span class="nc" id="L267">    WMSCapabilities wmsCapabilities = wms.getCapabilities();</span>
+<span class="nc" id="L266">    WMSCapabilities wmsCapabilities = wms.getCapabilities();</span>
 
     // TODO Jackson annotations op GeoTools classes of iets anders slims?
 
-<span class="nc" id="L271">    geoService</span>
-<span class="nc" id="L272">        .getServiceCapabilities()</span>
-<span class="nc" id="L273">        .capabilities(</span>
+<span class="nc" id="L270">    geoService</span>
+<span class="nc" id="L271">        .getServiceCapabilities()</span>
+<span class="nc" id="L272">        .capabilities(</span>
             new TMServiceCapsCapabilities()
-<span class="nc" id="L275">                .version(wmsCapabilities.getVersion())</span>
-<span class="nc" id="L276">                .updateSequence(wmsCapabilities.getUpdateSequence())</span>
-<span class="nc" id="L277">                .abstractText(wmsCapabilities.getService().get_abstract())</span>
-<span class="nc" id="L278">                .request(</span>
+<span class="nc" id="L274">                .version(wmsCapabilities.getVersion())</span>
+<span class="nc" id="L275">                .updateSequence(wmsCapabilities.getUpdateSequence())</span>
+<span class="nc" id="L276">                .abstractText(wmsCapabilities.getService().get_abstract())</span>
+<span class="nc" id="L277">                .request(</span>
                     new TMServiceCapabilitiesRequest()
-<span class="nc" id="L280">                        .getMap(</span>
+<span class="nc" id="L279">                        .getMap(</span>
                             new TMServiceCapabilitiesRequestGetMap()
-<span class="nc" id="L282">                                .formats(Set.copyOf(getMap.getFormats())))</span>
-<span class="nc" id="L283">                        .getFeatureInfo(</span>
-<span class="nc bnc" id="L284" title="All 2 branches missed.">                            getFeatureInfo == null</span>
-<span class="nc" id="L285">                                ? null</span>
+<span class="nc" id="L281">                                .formats(Set.copyOf(getMap.getFormats())))</span>
+<span class="nc" id="L282">                        .getFeatureInfo(</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">                            getFeatureInfo == null</span>
+<span class="nc" id="L284">                                ? null</span>
                                 : new TMServiceCapabilitiesRequestGetFeatureInfo()
-<span class="nc" id="L287">                                    .formats(Set.copyOf(getFeatureInfo.getFormats())))</span>
-<span class="nc" id="L288">                        .describeLayer(</span>
-<span class="nc bnc" id="L289" title="All 2 branches missed.">                            wms.getCapabilities().getRequest().getDescribeLayer() != null)));</span>
+<span class="nc" id="L286">                                    .formats(Set.copyOf(getFeatureInfo.getFormats())))</span>
+<span class="nc" id="L287">                        .describeLayer(</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">                            wms.getCapabilities().getRequest().getDescribeLayer() != null)));</span>
 
-<span class="nc bnc" id="L291" title="All 2 branches missed.">    if (logger.isDebugEnabled()) {</span>
-<span class="nc" id="L292">      logger.debug(</span>
-<span class="nc" id="L293">          &quot;Loaded capabilities, service capabilities: {}&quot;, geoService.getServiceCapabilities());</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">    if (logger.isDebugEnabled()) {</span>
+<span class="nc" id="L291">      logger.debug(</span>
+<span class="nc" id="L292">          &quot;Loaded capabilities, service capabilities: {}&quot;, geoService.getServiceCapabilities());</span>
     } else {
-<span class="nc" id="L295">      logger.info(</span>
+<span class="nc" id="L294">      logger.info(</span>
           &quot;Loaded capabilities from \&quot;{}\&quot;, title: \&quot;{}\&quot;&quot;,
-<span class="nc" id="L297">          geoService.getUrl(),</span>
-<span class="nc bnc" id="L298" title="All 2 branches missed.">          geoService.getServiceCapabilities() != null</span>
-<span class="nc bnc" id="L299" title="All 2 branches missed.">                  &amp;&amp; geoService.getServiceCapabilities().getServiceInfo() != null</span>
-<span class="nc" id="L300">              ? geoService.getServiceCapabilities().getServiceInfo().getTitle()</span>
-<span class="nc" id="L301">              : &quot;(none)&quot;);</span>
+<span class="nc" id="L296">          geoService.getUrl(),</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">          geoService.getServiceCapabilities() != null</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">                  &amp;&amp; geoService.getServiceCapabilities().getServiceInfo() != null</span>
+<span class="nc" id="L299">              ? geoService.getServiceCapabilities().getServiceInfo().getTitle()</span>
+<span class="nc" id="L300">              : &quot;(none)&quot;);</span>
     }
 
-<span class="nc" id="L304">    setLayerList(geoService, wms.getCapabilities().getLayerList());</span>
-<span class="nc" id="L305">  }</span>
+<span class="nc" id="L303">    setLayerList(geoService, wms.getCapabilities().getLayerList());</span>
+<span class="nc" id="L304">  }</span>
 
   void loadWMTSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client)
       throws Exception {
-<span class="nc" id="L309">    WebMapTileServer wmts = new WebMapTileServer(new URL(geoService.getUrl()), client);</span>
-<span class="nc" id="L310">    setServiceInfo(geoService, client, wmts);</span>
+<span class="nc" id="L308">    WebMapTileServer wmts = new WebMapTileServer(new URL(geoService.getUrl()), client);</span>
+<span class="nc" id="L309">    setServiceInfo(geoService, client, wmts);</span>
 
     // TODO set capabilities if we need something from it
 
-<span class="nc" id="L314">    setLayerList(geoService, wmts.getCapabilities().getLayerList());</span>
-<span class="nc" id="L315">  }</span>
+<span class="nc" id="L313">    setLayerList(geoService, wmts.getCapabilities().getLayerList());</span>
+<span class="nc" id="L314">  }</span>
 
   public Map&lt;String, SimpleWFSLayerDescription&gt; findRelatedWFS(GeoService geoService) {
     // TODO: report back progress
 
-<span class="nc bnc" id="L320" title="All 2 branches missed.">    if (CollectionUtils.isEmpty(geoService.getLayers())) {</span>
-<span class="nc" id="L321">      return Collections.emptyMap();</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">    if (CollectionUtils.isEmpty(geoService.getLayers())) {</span>
+<span class="nc" id="L320">      return Collections.emptyMap();</span>
     }
 
     // Do one DescribeLayer request for all layers in a WMS. This is faster than one request per
@@ -327,85 +326,85 @@ public class GeoServiceHelper {
     // For now at least ignore layers with space in the name because GeoServer chokes out invalid
     // XML for those.
 
-<span class="nc" id="L330">    List&lt;String&gt; layers =</span>
-<span class="nc" id="L331">        geoService.getLayers().stream()</span>
-<span class="nc bnc" id="L332" title="All 2 branches missed.">            .filter(l -&gt; !l.getVirtual())</span>
-<span class="nc" id="L333">            .map(GeoServiceLayer::getName)</span>
-<span class="nc" id="L334">            .filter(</span>
+<span class="nc" id="L329">    List&lt;String&gt; layers =</span>
+<span class="nc" id="L330">        geoService.getLayers().stream()</span>
+<span class="nc bnc" id="L331" title="All 2 branches missed.">            .filter(l -&gt; !l.getVirtual())</span>
+<span class="nc" id="L332">            .map(GeoServiceLayer::getName)</span>
+<span class="nc" id="L333">            .filter(</span>
                 n -&gt; {
                   // filter out white-space (non-greedy regex)
-<span class="nc bnc" id="L337" title="All 2 branches missed.">                  boolean noWhitespace = !n.contains(&quot;(.*?)\\s(.*?)&quot;);</span>
-<span class="nc bnc" id="L338" title="All 2 branches missed.">                  if (!noWhitespace) {</span>
-<span class="nc" id="L339">                    logger.warn(</span>
-<span class="nc" id="L340">                        String.format(</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">                  boolean noWhitespace = !n.contains(&quot;(.*?)\\s(.*?)&quot;);</span>
+<span class="nc bnc" id="L337" title="All 2 branches missed.">                  if (!noWhitespace) {</span>
+<span class="nc" id="L338">                    logger.warn(</span>
+<span class="nc" id="L339">                        String.format(</span>
                             &quot;Not doing WFS DescribeLayer request for layer name with space: \&quot;%s\&quot; of WMS %s&quot;,
-<span class="nc" id="L342">                            n, geoService.getUrl()));</span>
+<span class="nc" id="L341">                            n, geoService.getUrl()));</span>
                   }
-<span class="nc" id="L344">                  return noWhitespace;</span>
+<span class="nc" id="L343">                  return noWhitespace;</span>
                 })
-<span class="nc" id="L346">            .collect(Collectors.toList());</span>
+<span class="nc" id="L345">            .collect(Collectors.toList());</span>
 
     // TODO: add authentication
-<span class="nc" id="L349">    Map&lt;String, SimpleWFSLayerDescription&gt; descriptions =</span>
-<span class="nc" id="L350">        SimpleWFSHelper.describeWMSLayers(geoService.getUrl(), null, null, layers);</span>
+<span class="nc" id="L348">    Map&lt;String, SimpleWFSLayerDescription&gt; descriptions =</span>
+<span class="nc" id="L349">        SimpleWFSHelper.describeWMSLayers(geoService.getUrl(), null, null, layers);</span>
 
-<span class="nc bnc" id="L352" title="All 2 branches missed.">    for (Map.Entry&lt;String, SimpleWFSLayerDescription&gt; entry : descriptions.entrySet()) {</span>
-<span class="nc" id="L353">      String layerName = entry.getKey();</span>
-<span class="nc" id="L354">      SimpleWFSLayerDescription description = entry.getValue();</span>
-<span class="nc bnc" id="L355" title="All 2 branches missed.">      if (description.getTypeNames().length == 1</span>
-<span class="nc bnc" id="L356" title="All 2 branches missed.">          &amp;&amp; layerName.equals(description.getFirstTypeName())) {</span>
-<span class="nc" id="L357">        logger.info(</span>
-<span class="nc" id="L358">            String.format(</span>
+<span class="nc bnc" id="L351" title="All 2 branches missed.">    for (Map.Entry&lt;String, SimpleWFSLayerDescription&gt; entry : descriptions.entrySet()) {</span>
+<span class="nc" id="L352">      String layerName = entry.getKey();</span>
+<span class="nc" id="L353">      SimpleWFSLayerDescription description = entry.getValue();</span>
+<span class="nc bnc" id="L354" title="All 2 branches missed.">      if (description.getTypeNames().length == 1</span>
+<span class="nc bnc" id="L355" title="All 2 branches missed.">          &amp;&amp; layerName.equals(description.getFirstTypeName())) {</span>
+<span class="nc" id="L356">        logger.info(</span>
+<span class="nc" id="L357">            String.format(</span>
                 &quot;layer \&quot;%s\&quot; linked to feature type with same name of WFS %s&quot;,
-<span class="nc" id="L360">                layerName, description.getWfsUrl()));</span>
+<span class="nc" id="L359">                layerName, description.getWfsUrl()));</span>
       } else {
-<span class="nc" id="L362">        logger.info(</span>
-<span class="nc" id="L363">            String.format(</span>
+<span class="nc" id="L361">        logger.info(</span>
+<span class="nc" id="L362">            String.format(</span>
                 &quot;layer \&quot;%s\&quot; -&gt; feature type(s) %s of WFS %s&quot;,
-<span class="nc" id="L365">                layerName, Arrays.toString(description.getTypeNames()), description.getWfsUrl()));</span>
+<span class="nc" id="L364">                layerName, Arrays.toString(description.getTypeNames()), description.getWfsUrl()));</span>
       }
-<span class="nc" id="L367">    }</span>
-<span class="nc" id="L368">    return descriptions;</span>
+<span class="nc" id="L366">    }</span>
+<span class="nc" id="L367">    return descriptions;</span>
   }
 
   public void findAndSaveRelatedWFS(GeoService geoService) {
-<span class="nc bnc" id="L372" title="All 2 branches missed.">    if (geoService.getProtocol() != WMS) {</span>
-<span class="nc" id="L373">      throw new IllegalArgumentException();</span>
+<span class="nc bnc" id="L371" title="All 2 branches missed.">    if (geoService.getProtocol() != WMS) {</span>
+<span class="nc" id="L372">      throw new IllegalArgumentException();</span>
     }
 
     // TODO: report back progress
 
-<span class="nc" id="L378">    Map&lt;String, SimpleWFSLayerDescription&gt; wfsByLayer = this.findRelatedWFS(geoService);</span>
+<span class="nc" id="L377">    Map&lt;String, SimpleWFSLayerDescription&gt; wfsByLayer = this.findRelatedWFS(geoService);</span>
 
-<span class="nc" id="L380">    wfsByLayer.values().stream()</span>
-<span class="nc" id="L381">        .map(SimpleWFSLayerDescription::getWfsUrl)</span>
-<span class="nc" id="L382">        .distinct()</span>
-<span class="nc" id="L383">        .forEach(</span>
+<span class="nc" id="L379">    wfsByLayer.values().stream()</span>
+<span class="nc" id="L380">        .map(SimpleWFSLayerDescription::getWfsUrl)</span>
+<span class="nc" id="L381">        .distinct()</span>
+<span class="nc" id="L382">        .forEach(</span>
             url -&gt; {
-<span class="nc" id="L385">              TMFeatureSource fs = featureSourceRepository.findByUrl(url);</span>
-<span class="nc bnc" id="L386" title="All 2 branches missed.">              if (fs == null) {</span>
-<span class="nc" id="L387">                fs =</span>
+<span class="nc" id="L384">              TMFeatureSource fs = featureSourceRepository.findByUrl(url);</span>
+<span class="nc bnc" id="L385" title="All 2 branches missed.">              if (fs == null) {</span>
+<span class="nc" id="L386">                fs =</span>
                     new TMFeatureSource()
-<span class="nc" id="L389">                        .setProtocol(WFS)</span>
-<span class="nc" id="L390">                        .setUrl(url)</span>
-<span class="nc" id="L391">                        .setTitle(&quot;WFS for &quot; + geoService.getTitle())</span>
-<span class="nc" id="L392">                        .setLinkedService(geoService);</span>
+<span class="nc" id="L388">                        .setProtocol(WFS)</span>
+<span class="nc" id="L389">                        .setUrl(url)</span>
+<span class="nc" id="L390">                        .setTitle(&quot;WFS for &quot; + geoService.getTitle())</span>
+<span class="nc" id="L391">                        .setLinkedService(geoService);</span>
                 try {
-<span class="nc" id="L394">                  new WFSFeatureSourceHelper().loadCapabilities(fs, tailormapConfig.getTimeout());</span>
-<span class="nc" id="L395">                } catch (IOException e) {</span>
-<span class="nc" id="L396">                  String msg =</span>
-<span class="nc" id="L397">                      String.format(</span>
+<span class="nc" id="L393">                  new WFSFeatureSourceHelper().loadCapabilities(fs, tailormapConfig.getTimeout());</span>
+<span class="nc" id="L394">                } catch (IOException e) {</span>
+<span class="nc" id="L395">                  String msg =</span>
+<span class="nc" id="L396">                      String.format(</span>
                           &quot;Error loading WFS from URL %s: %s: %s&quot;,
-<span class="nc" id="L399">                          url, e.getClass(), e.getMessage());</span>
-<span class="nc bnc" id="L400" title="All 2 branches missed.">                  if (logger.isTraceEnabled()) {</span>
-<span class="nc" id="L401">                    logger.error(msg, e);</span>
+<span class="nc" id="L398">                          url, e.getClass(), e.getMessage());</span>
+<span class="nc bnc" id="L399" title="All 2 branches missed.">                  if (logger.isTraceEnabled()) {</span>
+<span class="nc" id="L400">                    logger.error(msg, e);</span>
                   } else {
-<span class="nc" id="L403">                    logger.error(msg);</span>
+<span class="nc" id="L402">                    logger.error(msg);</span>
                   }
-<span class="nc" id="L405">                }</span>
-<span class="nc" id="L406">                featureSourceRepository.save(fs);</span>
+<span class="nc" id="L404">                }</span>
+<span class="nc" id="L405">                featureSourceRepository.save(fs);</span>
               }
-<span class="nc" id="L408">            });</span>
-<span class="nc" id="L409">  }</span>
+<span class="nc" id="L407">            });</span>
+<span class="nc" id="L408">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

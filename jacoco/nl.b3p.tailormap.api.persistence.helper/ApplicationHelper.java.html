@@ -244,95 +244,103 @@ public class ApplicationHelper {
 <span class="nc" id="L244">              appLayerSettings.getTitle(),</span>
 <span class="nc" id="L245">              service.getTitleWithSettingsOverrides(layerRef.getLayerName()));</span>
 
-<span class="nc" id="L247">      boolean tilingDisabled =</span>
+<span class="nc" id="L247">      String attribution = appLayerSettings.getAttribution();</span>
+<span class="nc bnc" id="L248" title="All 4 branches missed.">      if (null == attribution &amp;&amp; null != service.getLayerSettings(layerRef.getLayerName())) {</span>
+<span class="nc" id="L249">        attribution = service.getLayerSettings(layerRef.getLayerName()).getAttribution();</span>
+      }
+<span class="nc bnc" id="L251" title="All 4 branches missed.">      if (null == attribution &amp;&amp; null != service.getSettings().getDefaultLayerSettings()) {</span>
+<span class="nc" id="L252">        attribution = service.getSettings().getDefaultLayerSettings().getAttribution();</span>
+      }
+
+<span class="nc" id="L255">      boolean tilingDisabled =</span>
           serviceLayerSettings
-<span class="nc" id="L249">              .map(GeoServiceLayerSettings::getTilingDisabled)</span>
-<span class="nc" id="L250">              .orElse(Optional.ofNullable(defaultLayerSettings.getTilingDisabled()).orElse(false));</span>
-<span class="nc" id="L251">      Integer tilingGutter =</span>
-          serviceLayerSettings
-<span class="nc" id="L253">              .map(GeoServiceLayerSettings::getTilingGutter)</span>
-<span class="nc" id="L254">              .orElse(defaultLayerSettings.getTilingGutter());</span>
-<span class="nc" id="L255">      boolean hiDpiDisabled =</span>
-          serviceLayerSettings
-<span class="nc" id="L257">              .map(GeoServiceLayerSettings::getHiDpiDisabled)</span>
+<span class="nc" id="L257">              .map(GeoServiceLayerSettings::getTilingDisabled)</span>
 <span class="nc" id="L258">              .orElse(Optional.ofNullable(defaultLayerSettings.getTilingDisabled()).orElse(false));</span>
-<span class="nc" id="L259">      TileLayerHiDpiMode hiDpiMode =</span>
+<span class="nc" id="L259">      Integer tilingGutter =</span>
           serviceLayerSettings
-<span class="nc" id="L261">              .map(GeoServiceLayerSettings::getHiDpiMode)</span>
-<span class="nc" id="L262">              .orElse(defaultLayerSettings.getHiDpiMode());</span>
+<span class="nc" id="L261">              .map(GeoServiceLayerSettings::getTilingGutter)</span>
+<span class="nc" id="L262">              .orElse(defaultLayerSettings.getTilingGutter());</span>
+<span class="nc" id="L263">      boolean hiDpiDisabled =</span>
+          serviceLayerSettings
+<span class="nc" id="L265">              .map(GeoServiceLayerSettings::getHiDpiDisabled)</span>
+<span class="nc" id="L266">              .orElse(Optional.ofNullable(defaultLayerSettings.getTilingDisabled()).orElse(false));</span>
+<span class="nc" id="L267">      TileLayerHiDpiMode hiDpiMode =</span>
+          serviceLayerSettings
+<span class="nc" id="L269">              .map(GeoServiceLayerSettings::getHiDpiMode)</span>
+<span class="nc" id="L270">              .orElse(defaultLayerSettings.getHiDpiMode());</span>
       // Do not get from defaultLayerSettings
-<span class="nc" id="L264">      String hiDpiSubstituteLayer =</span>
-<span class="nc" id="L265">          serviceLayerSettings.map(GeoServiceLayerSettings::getHiDpiSubstituteLayer).orElse(null);</span>
+<span class="nc" id="L272">      String hiDpiSubstituteLayer =</span>
+<span class="nc" id="L273">          serviceLayerSettings.map(GeoServiceLayerSettings::getHiDpiSubstituteLayer).orElse(null);</span>
 
-<span class="nc" id="L267">      TMFeatureType tmft = service.findFeatureTypeForLayer(serviceLayer, featureSourceRepository);</span>
+<span class="nc" id="L275">      TMFeatureType tmft = service.findFeatureTypeForLayer(serviceLayer, featureSourceRepository);</span>
 
-<span class="nc" id="L269">      boolean proxied = service.getSettings().getUseProxy();</span>
+<span class="nc" id="L277">      boolean proxied = service.getSettings().getUseProxy();</span>
 
-<span class="nc" id="L271">      mr.addAppLayersItem(</span>
+<span class="nc" id="L279">      mr.addAppLayersItem(</span>
           new AppLayer()
-<span class="nc" id="L273">              .id(layerRef.getId())</span>
-<span class="nc" id="L274">              .serviceId(serviceLayerServiceIds.get(serviceLayer))</span>
-<span class="nc bnc" id="L275" title="All 2 branches missed.">              .layerName(layerRef.getLayerName())</span>
-<span class="nc" id="L276">              .hasAttributes(tmft != null)</span>
-<span class="nc bnc" id="L277" title="All 2 branches missed.">              .url(proxied ? getProxyUrl(service, app, layerRef) : null)</span>
+<span class="nc" id="L281">              .id(layerRef.getId())</span>
+<span class="nc" id="L282">              .serviceId(serviceLayerServiceIds.get(serviceLayer))</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">              .layerName(layerRef.getLayerName())</span>
+<span class="nc" id="L284">              .hasAttributes(tmft != null)</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">              .url(proxied ? getProxyUrl(service, app, layerRef) : null)</span>
               // Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools
               // gt-wms Layer class?
-<span class="nc" id="L280">              .maxScale(serviceLayer.getMaxScale())</span>
-<span class="nc" id="L281">              .minScale(serviceLayer.getMinScale())</span>
-<span class="nc" id="L282">              .title(title)</span>
-<span class="nc" id="L283">              .tilingDisabled(tilingDisabled)</span>
-<span class="nc" id="L284">              .tilingGutter(tilingGutter)</span>
-<span class="nc" id="L285">              .hiDpiDisabled(hiDpiDisabled)</span>
-<span class="nc" id="L286">              .hiDpiMode(hiDpiMode)</span>
-<span class="nc" id="L287">              .hiDpiSubstituteLayer(hiDpiSubstituteLayer)</span>
-<span class="nc" id="L288">              .opacity(appLayerSettings.getOpacity())</span>
-<span class="nc" id="L289">              .visible(layerRef.getVisible()));</span>
-
-<span class="nc" id="L291">      return true;</span>
+<span class="nc" id="L288">              .maxScale(serviceLayer.getMaxScale())</span>
+<span class="nc" id="L289">              .minScale(serviceLayer.getMinScale())</span>
+<span class="nc" id="L290">              .title(title)</span>
+<span class="nc" id="L291">              .tilingDisabled(tilingDisabled)</span>
+<span class="nc" id="L292">              .tilingGutter(tilingGutter)</span>
+<span class="nc" id="L293">              .hiDpiDisabled(hiDpiDisabled)</span>
+<span class="nc" id="L294">              .hiDpiMode(hiDpiMode)</span>
+<span class="nc" id="L295">              .hiDpiSubstituteLayer(hiDpiSubstituteLayer)</span>
+<span class="nc" id="L296">              .opacity(appLayerSettings.getOpacity())</span>
+<span class="nc" id="L297">              .visible(layerRef.getVisible())</span>
+<span class="nc" id="L298">              .attribution(attribution));</span>
+<span class="nc" id="L299">      return true;</span>
     }
 
     private Triple&lt;GeoService, GeoServiceLayer, GeoServiceLayerSettings&gt; findServiceLayer(
         AppTreeLayerNode layerRef) {
-<span class="nc" id="L296">      GeoService service = geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);</span>
-<span class="nc bnc" id="L297" title="All 2 branches missed.">      if (service == null) {</span>
-<span class="nc" id="L298">        logger.warn(</span>
+<span class="nc" id="L304">      GeoService service = geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">      if (service == null) {</span>
+<span class="nc" id="L306">        logger.warn(</span>
             &quot;App {} references layer \&quot;{}\&quot; of missing service {}&quot;,
-<span class="nc" id="L300">            app.getId(),</span>
-<span class="nc" id="L301">            layerRef.getLayerName(),</span>
-<span class="nc" id="L302">            layerRef.getServiceId());</span>
-<span class="nc" id="L303">        return Triple.of(null, null, null);</span>
+<span class="nc" id="L308">            app.getId(),</span>
+<span class="nc" id="L309">            layerRef.getLayerName(),</span>
+<span class="nc" id="L310">            layerRef.getServiceId());</span>
+<span class="nc" id="L311">        return Triple.of(null, null, null);</span>
       }
 
-<span class="nc bnc" id="L306" title="All 2 branches missed.">      if (!authorizationService.mayUserRead(service)) {</span>
-<span class="nc" id="L307">        return Triple.of(null, null, null);</span>
+<span class="nc bnc" id="L314" title="All 2 branches missed.">      if (!authorizationService.mayUserRead(service)) {</span>
+<span class="nc" id="L315">        return Triple.of(null, null, null);</span>
       }
 
-<span class="nc" id="L310">      GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());</span>
+<span class="nc" id="L318">      GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());</span>
 
-<span class="nc bnc" id="L312" title="All 2 branches missed.">      if (serviceLayer == null) {</span>
-<span class="nc" id="L313">        logger.warn(</span>
+<span class="nc bnc" id="L320" title="All 2 branches missed.">      if (serviceLayer == null) {</span>
+<span class="nc" id="L321">        logger.warn(</span>
             &quot;App {} references layer \&quot;{}\&quot; not found in capabilities of service {}&quot;,
-<span class="nc" id="L315">            app.getId(),</span>
-<span class="nc" id="L316">            layerRef.getLayerName(),</span>
-<span class="nc" id="L317">            service.getId());</span>
-<span class="nc" id="L318">        return Triple.of(null, null, null);</span>
+<span class="nc" id="L323">            app.getId(),</span>
+<span class="nc" id="L324">            layerRef.getLayerName(),</span>
+<span class="nc" id="L325">            service.getId());</span>
+<span class="nc" id="L326">        return Triple.of(null, null, null);</span>
       }
 
-<span class="nc bnc" id="L321" title="All 2 branches missed.">      if (!authorizationService.mayUserRead(service, serviceLayer)) {</span>
-<span class="nc" id="L322">        return Triple.of(null, null, null);</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">      if (!authorizationService.mayUserRead(service, serviceLayer)) {</span>
+<span class="nc" id="L330">        return Triple.of(null, null, null);</span>
       }
 
-<span class="nc" id="L325">      serviceLayerServiceIds.put(serviceLayer, service.getId());</span>
+<span class="nc" id="L333">      serviceLayerServiceIds.put(serviceLayer, service.getId());</span>
 
-<span class="nc" id="L327">      if (mr.getServices().stream()</span>
-<span class="nc" id="L328">          .filter(s -&gt; s.getId().equals(service.getId()))</span>
-<span class="nc" id="L329">          .findAny()</span>
-<span class="nc bnc" id="L330" title="All 2 branches missed.">          .isEmpty()) {</span>
-<span class="nc" id="L331">        mr.addServicesItem(service.toJsonPojo(geoServiceHelper));</span>
+<span class="nc" id="L335">      if (mr.getServices().stream()</span>
+<span class="nc" id="L336">          .filter(s -&gt; s.getId().equals(service.getId()))</span>
+<span class="nc" id="L337">          .findAny()</span>
+<span class="nc bnc" id="L338" title="All 2 branches missed.">          .isEmpty()) {</span>
+<span class="nc" id="L339">        mr.addServicesItem(service.toJsonPojo(geoServiceHelper));</span>
       }
 
-<span class="nc" id="L334">      GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());</span>
-<span class="nc" id="L335">      return Triple.of(service, serviceLayer, layerSettings);</span>
+<span class="nc" id="L342">      GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());</span>
+<span class="nc" id="L343">      return Triple.of(service, serviceLayer, layerSettings);</span>
     }
   }
 }
