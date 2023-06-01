@@ -236,7 +236,6 @@ public class GeoServiceHelper {
                           })
                       .collect(Collectors.toList()))
               .queryable(l.isQueryable())
-              .attribution(l.getAttribution() == null ? null : l.getAttribution().toString())
               .abstractText(l.get_abstract())
               .children(
                   l.getLayerChildren().stream()

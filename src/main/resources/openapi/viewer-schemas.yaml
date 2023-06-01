@@ -122,6 +122,9 @@ components:
         hasAttributes:
           description: 'Whether this layer has attributes that can be accessed eg. for feature info or attribute list'
           type: boolean
+        attribution:
+          description: 'Attribution text to show for this layer.'
+          type: string
 
     LayerTreeNode:
       description: Grouping of layers in a tree structure.
