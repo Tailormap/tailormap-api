@@ -244,6 +244,14 @@ public class ApplicationHelper {
               appLayerSettings.getTitle(),
               service.getTitleWithSettingsOverrides(layerRef.getLayerName()));
 
+      String attribution = appLayerSettings.getAttribution();
+      if (null == attribution && null != service.getLayerSettings(layerRef.getLayerName())) {
+        attribution = service.getLayerSettings(layerRef.getLayerName()).getAttribution();
+      }
+      if (null == attribution && null != service.getSettings().getDefaultLayerSettings()) {
+        attribution = service.getSettings().getDefaultLayerSettings().getAttribution();
+      }
+
       boolean tilingDisabled =
           serviceLayerSettings
               .map(GeoServiceLayerSettings::getTilingDisabled)
@@ -286,8 +294,8 @@ public class ApplicationHelper {
               .hiDpiMode(hiDpiMode)
               .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
               .opacity(appLayerSettings.getOpacity())
-              .visible(layerRef.getVisible()));
-
+              .visible(layerRef.getVisible())
+              .attribution(attribution));
       return true;
     }
 
