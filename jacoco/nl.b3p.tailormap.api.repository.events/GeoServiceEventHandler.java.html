@@ -6,46 +6,35 @@
 package nl.b3p.tailormap.api.repository.events;
 
 import io.hypersistence.tsid.TSID;
-import java.lang.invoke.MethodHandles;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
-import org.springframework.data.rest.core.annotation.HandleBeforeSave;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.stereotype.Component;
 
 @RepositoryEventHandler
 @Component
 public class GeoServiceEventHandler {
-<span class="nc" id="L23">  private static final Logger logger =</span>
-<span class="nc" id="L24">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
-
   private final GeoServiceHelper geoServiceHelper;
 
-<span class="nc" id="L28">  public GeoServiceEventHandler(GeoServiceHelper geoServiceHelper) {</span>
-<span class="nc" id="L29">    this.geoServiceHelper = geoServiceHelper;</span>
-<span class="nc" id="L30">  }</span>
+<span class="nc" id="L21">  public GeoServiceEventHandler(GeoServiceHelper geoServiceHelper) {</span>
+<span class="nc" id="L22">    this.geoServiceHelper = geoServiceHelper;</span>
+<span class="nc" id="L23">  }</span>
 
   @HandleBeforeCreate
-  public void assignId(GeoService geoService) throws Exception {
-<span class="nc bnc" id="L34" title="All 2 branches missed.">    if (StringUtils.isBlank(geoService.getId())) {</span>
+  public void assignId(GeoService geoService) {
+<span class="nc bnc" id="L27" title="All 2 branches missed.">    if (StringUtils.isBlank(geoService.getId())) {</span>
       // We kind of misuse TSIDs here, because we store it as a string. This is because the id
       // string can also be manually assigned. There won't be huge numbers of GeoServices, so it's
       // more of a convenient way to generate an ID that isn't a huge UUID string.
-<span class="nc" id="L38">      geoService.setId(TSID.fast().toString());</span>
+<span class="nc" id="L31">      geoService.setId(TSID.fast().toString());</span>
     }
-<span class="nc" id="L40">  }</span>
+<span class="nc" id="L33">  }</span>
 
   @HandleBeforeCreate
-  @HandleBeforeSave
-  public void handleBeforeCreateOrSave(GeoService geoService) throws Exception {
-<span class="nc" id="L45">    logger.info(</span>
-        &quot;Loading capabilities before creating/saving geo service from URL: \&quot;{}\&quot;&quot;,
-<span class="nc" id="L47">        geoService.getUrl());</span>
-<span class="nc" id="L48">    geoServiceHelper.loadServiceCapabilities(geoService);</span>
-<span class="nc" id="L49">  }</span>
+  public void loadCapabilities(GeoService geoService) throws Exception {
+<span class="nc" id="L37">    geoServiceHelper.loadServiceCapabilities(geoService);</span>
+<span class="nc" id="L38">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
