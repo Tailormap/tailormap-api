@@ -113,15 +113,14 @@ SPDX-License-Identifier: MIT
             mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates
         to check
         -->
-        <jackson-bom.version>2.15.1</jackson-bom.version>
+        <jackson-bom.version>2.15.2</jackson-bom.version>
         <micrometer.version>1.11.0</micrometer.version>
         <hibernate.version>5.6.15.Final</hibernate.version>
         <junit-jupiter.version>5.9.3</junit-jupiter.version>
-        <flyway.version>9.18.0</flyway.version>
+        <flyway.version>9.19.1</flyway.version>
         <mssql-jdbc.version>12.2.0.jre11</mssql-jdbc.version>
         <oracle-database.version>23.2.0.0</oracle-database.version>
         <postgresql.version>42.6.0</postgresql.version>
-        <hsqldb.version>2.7.1</hsqldb.version>
         <snakeyaml.version>2.0</snakeyaml.version>
         <spring-security.version>5.8.3</spring-security.version>
         <spring-hateoas.version>1.5.4</spring-hateoas.version>
@@ -150,7 +149,7 @@ SPDX-License-Identifier: MIT
         <pmd.version>6.55.0</pmd.version>
         <maven-fluido-skin.version>2.0.0-M6</maven-fluido-skin.version>
         <swagger-ui.version>4.18.2</swagger-ui.version>
-        <sentry.version>6.19.1</sentry.version>
+        <sentry.version>6.21.0</sentry.version>
         <errorProne.version>2.19.1</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
@@ -180,12 +179,6 @@ SPDX-License-Identifier: MIT
                 <groupId>org.gaul</groupId>
                 <artifactId>modernizer-maven-annotations</artifactId>
                 <version>${modernizer-maven-plugin.version}</version>
-            </dependency>
-            <dependency>
-                <!-- override the version that comes with GeoTools and Spring boot -->
-                <groupId>org.hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>${hsqldb.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -233,7 +226,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.hypersistence</groupId>
             <artifactId>hypersistence-utils-hibernate-55</artifactId>
-            <version>3.3.2</version>
+            <version>3.4.2</version>
         </dependency>
         <dependency>
             <groupId>io.hypersistence</groupId>
@@ -1249,7 +1242,7 @@ SPDX-License-Identifier: MIT
             </plugin>
             <plugin>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>3.4.3</version>
+                <version>3.4.4</version>
                 <reportSets>
                     <reportSet>
                         <reports>
