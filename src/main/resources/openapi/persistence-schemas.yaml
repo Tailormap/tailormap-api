@@ -322,6 +322,10 @@ components:
           description: 'Attribution to show for this layer.'
           nullable: true
           type: string
+        authorizationRules:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthorizationRule'
 
     FeatureTypeRef:
       required: [featureSourceId, featureTypeName]
