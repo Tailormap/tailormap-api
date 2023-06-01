@@ -6,12 +6,9 @@
 package nl.b3p.tailormap.api.repository.events;
 
 import io.hypersistence.tsid.TSID;
-import java.lang.invoke.MethodHandles;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.stereotype.Component;
@@ -19,9 +16,6 @@ import org.springframework.stereotype.Component;
 @RepositoryEventHandler
 @Component
 public class GeoServiceEventHandler {
-  private static final Logger logger =
-      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
   private final GeoServiceHelper geoServiceHelper;
 
   public GeoServiceEventHandler(GeoServiceHelper geoServiceHelper) {
@@ -29,7 +23,7 @@ public class GeoServiceEventHandler {
   }
 
   @HandleBeforeCreate
-  public void assignId(GeoService geoService) throws Exception {
+  public void assignId(GeoService geoService) {
     if (StringUtils.isBlank(geoService.getId())) {
       // We kind of misuse TSIDs here, because we store it as a string. This is because the id
       // string can also be manually assigned. There won't be huge numbers of GeoServices, so it's
@@ -40,10 +34,6 @@ public class GeoServiceEventHandler {
 
   @HandleBeforeCreate
   public void loadCapabilities(GeoService geoService) throws Exception {
-    logger.info(
-        "Loading capabilities of geo service \"{}\" from URL: \"{}\"",
-        geoService.getId(),
-        geoService.getUrl());
     geoServiceHelper.loadServiceCapabilities(geoService);
   }
 }
