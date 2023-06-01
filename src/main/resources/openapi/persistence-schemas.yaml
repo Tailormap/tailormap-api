@@ -318,6 +318,14 @@ components:
           default: false
         featureType:
           $ref: FeatureTypeRef
+        attribution:
+          description: 'Attribution to show for this layer.'
+          nullable: true
+          type: string
+        authorizationRules:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthorizationRule'
 
     FeatureTypeRef:
       required: [featureSourceId, featureTypeName]
@@ -394,8 +402,6 @@ components:
             $ref: './common-schemas.yaml#/components/schemas/WMSStyle'
         queryable:
           type: boolean
-        attribution:
-          type: string
         abstractText:
           type: string
         children:
@@ -427,6 +433,9 @@ components:
         title:
           description: Display title of this tree node.
           type: string
+        description:
+          description: Description for this node entered by application admin.
+          type: string
         root:
           description: Only a single node in a tree will have this set to true.
           type: boolean
@@ -453,6 +462,9 @@ components:
         layerName:
           type: string
           nullable: false
+        description:
+          description: Description for this node entered by application admin.
+          type: string
         visible:
           type: boolean
           description: Whether this layer should be shown on the map on startup.
@@ -492,4 +504,8 @@ components:
           type: integer
           nullable: false
           default: 100
+        attribution:
+          description: 'Attribution to show for this layer.'
+          nullable: true
+          type: string
         # TODO add properties for selected WMS style, feature info popup template, etc.

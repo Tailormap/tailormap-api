@@ -93,6 +93,68 @@ class LayerDescriptionControllerPostgresIntegrationTest {
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "foo",
+      authorities = {"test-foo"})
+  void test_authorization_service_allow_but_layer_deny() throws Exception {
+    final String bgtPath =
+        apiBasePath + "/app/secured-auth/layer/lyr:filtered-snapshot-geoserver:BGT/describe";
+
+    mockMvc
+        .perform(get(bgtPath).accept(MediaType.APPLICATION_JSON).with(setServletPath(bgtPath)))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "foo",
+      authorities = {"test-foo"})
+  void test_authorization_service_allow_and_layer_allow() throws Exception {
+
+    final String begroeidterreindeelPath =
+        apiBasePath
+            + "/app/secured-auth/layer/lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel/describe";
+
+    mockMvc
+        .perform(
+            get(begroeidterreindeelPath)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(begroeidterreindeelPath)))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "foo",
+      authorities = {"test-foo", "test-baz"})
+  void test_authorization_application_layer_authorization_conflicting_allow_deny()
+      throws Exception {
+    final String bgtPath =
+        apiBasePath + "/app/secured-auth/layer/lyr:filtered-snapshot-geoserver:BGT/describe";
+
+    mockMvc
+        .perform(get(bgtPath).accept(MediaType.APPLICATION_JSON).with(setServletPath(bgtPath)))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "foo",
+      authorities = {"test-bar"})
+  void test_authorization_access_to_layer_but_not_application() throws Exception {
+    final String bgtPath =
+        apiBasePath + "/app/secured-auth/layer/lyr:filtered-snapshot-geoserver:BGT/describe";
+
+    mockMvc
+        .perform(get(bgtPath).accept(MediaType.APPLICATION_JSON).with(setServletPath(bgtPath)))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @Disabled("TODO: test app was removed from integration dataset, restore later")
   // TODO: fix this test
   void handles_unknown_attribute_type() throws Exception {

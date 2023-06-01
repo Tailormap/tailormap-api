@@ -11,9 +11,6 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -21,16 +18,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.jayway.jsonpath.JsonPath;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.viewer.model.Service;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -219,172 +212,129 @@ class ViewerControllerPostgresIntegrationTest {
         .andExpect(jsonPath("$.crs.code").value("EPSG:28992"));
   }
 
-  @Disabled("Authorization is not yet implemented")
-  @Issue("https://b3partners.atlassian.net/browse/HTM-704")
-  // TODO fix this test
   @Test
-  @WithMockUser(
-      username = "admin",
-      authorities = {"Admin"})
-  void should_show_filtered_layer_tree() throws Exception {
-    final String path = apiBasePath + "/app/default/map";
-    MvcResult result =
-        mockMvc
-            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andReturn();
-
-    Map<String, JSONObject> treeNodeMap = new HashMap<>();
-    String body = result.getResponse().getContentAsString();
-    JSONObject rootNode = null;
-
-    JSONArray baseLayerTreeNodes = new JSONObject(body).getJSONArray("layerTreeNodes");
-    for (int i = 0; i < baseLayerTreeNodes.length(); i++) {
-      JSONObject node = (JSONObject) baseLayerTreeNodes.get(i);
-
-      String id = node.getString("id");
-      assertFalse(treeNodeMap.containsKey(id), String.format("node %s appears multiple times", id));
-      treeNodeMap.put(id, node);
-
-      if (node.getBoolean("root")) {
-        assertNull(rootNode, "Root node already exists");
-        rootNode = node;
-      }
-    }
-
-    assertNotNull(rootNode, "no root node found");
-    assertEquals(
-        2, rootNode.getJSONArray("childrenIds").length(), "root node had wrong amount of children");
-
-    JSONObject groenNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(0));
-    assertNotNull(groenNode, "first child of root is not valid");
-    assertEquals(
-        3,
-        groenNode.getJSONArray("childrenIds").length(),
-        "first node of root had wrong amount of children");
-    assertEquals(
-        2,
-        treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(0)).getInt("appLayerId"),
-        "incorrect appLayerId for first child");
-    assertEquals(
-        3,
-        treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(1)).getInt("appLayerId"),
-        "incorrect appLayerId for second child");
-    assertEquals(
-        4,
-        treeNodeMap.get(groenNode.getJSONArray("childrenIds").get(2)).getInt("appLayerId"),
-        "incorrect appLayerId for third child");
-
-    JSONObject woonplaatsenNode =
-        treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(1));
-    assertNotNull(woonplaatsenNode, "second child of root is not valid");
-    assertEquals(
-        1,
-        woonplaatsenNode.getJSONArray("childrenIds").length(),
-        "second node of root had wrong amount of children");
-    assertEquals(
-        5,
-        treeNodeMap.get(woonplaatsenNode.getJSONArray("childrenIds").get(0)).getInt("appLayerId"),
-        "incorrect appLayerId for first child (of second child)");
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void should_deny_showing_secured_application() throws Exception {
+    final String path = apiBasePath + "/app/secured/map";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isUnauthorized());
   }
 
-  @Disabled("Authorization is not yet implemented")
-  @Issue("https://b3partners.atlassian.net/browse/HTM-704")
-  // TODO fix this test
   @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
-      username = "admin",
-      authorities = {"NotAdmin"})
-  void should_show_filtered_layer_tree_unauthorized() throws Exception {
-    final String path = apiBasePath + "/app/default/map";
-    MvcResult result =
-        mockMvc
-            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andReturn();
-
-    Map<String, JSONObject> treeNodeMap = new HashMap<>();
-    String body = result.getResponse().getContentAsString();
-    JSONObject rootNode = null;
-    JSONArray baseLayerTreeNodes = new JSONObject(body).getJSONArray("layerTreeNodes");
-    for (int i = 0; i < baseLayerTreeNodes.length(); i++) {
-      JSONObject node = (JSONObject) baseLayerTreeNodes.get(i);
-      String id = node.getString("id");
-      assertFalse(treeNodeMap.containsKey(id), String.format("node %s appears multiple times", id));
-      treeNodeMap.put(id, node);
-
-      if (node.getBoolean("root")) {
-        assertNull(rootNode, "Root node already exists");
-        rootNode = node;
-      }
-    }
-
-    assertNotNull(rootNode, "no root node found");
-    assertEquals(
-        2, rootNode.getJSONArray("childrenIds").length(), "root node had wrong amount of children");
-
-    JSONObject groenNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(0));
-    assertNotNull(groenNode, "first child of root is not valid");
-    assertEquals(
-        0,
-        groenNode.getJSONArray("childrenIds").length(),
-        "first node of root had wrong amount of children");
-
-    JSONObject woonplaatsenNode =
-        treeNodeMap.get(rootNode.getJSONArray("childrenIds").getString(1));
-    assertNotNull(woonplaatsenNode, "second child of root is not valid");
-    assertEquals(
-        1,
-        woonplaatsenNode.getJSONArray("childrenIds").length(),
-        "second node of root had wrong amount of children");
+      username = "foo",
+      authorities = {})
+  void should_allow_showing_secured_application_authenticated() throws Exception {
+    final String path = apiBasePath + "/app/secured/map";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk());
   }
 
-  @Disabled("Authorization is not yet implemented")
-  @Issue("https://b3partners.atlassian.net/browse/HTM-705")
-  // TODO fix this test
   @Test
-  void should_show_filtered_base_layer_tree() throws Exception {
-    final String path = apiBasePath + "/app/default/map";
-    MvcResult result =
-        mockMvc
-            .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andReturn();
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "foo",
+      authorities = {"test-foo"})
+  void should_allow_showing_filtered_application_authenticated() throws Exception {
+    final String path = apiBasePath + "/app/secured-auth/map";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk());
+  }
 
-    Map<String, JSONObject> treeNodeMap = new HashMap<>();
-    String body = result.getResponse().getContentAsString();
-    JSONObject rootNode = null;
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "foo",
+      authorities = {"test-baz"})
+  void should_deny_showing_filtered_application_with_wrong_group() throws Exception {
+    final String path = apiBasePath + "/app/secured-auth/map";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isUnauthorized());
+  }
 
-    JSONArray baseLayerTreeNodes = new JSONObject(body).getJSONArray("baseLayerTreeNodes");
-    for (int i = 0; i < baseLayerTreeNodes.length(); i++) {
-      JSONObject node = (JSONObject) baseLayerTreeNodes.get(i);
-      String id = node.getString("id");
-      assertFalse(treeNodeMap.containsKey(id), String.format("node %s appears multiple times", id));
-      treeNodeMap.put(id, node);
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "foo",
+      authorities = {"test-foo"})
+  void should_filter_layers() throws Exception {
+    final String path = apiBasePath + "/app/secured-auth/map";
+    // the group "test-foo" has READ permissions to the Application and the GeoService, and is
+    // denied access to the filtered "BGT" layer.
+    // (postgis:begroeidterreindeel has no explicit rule, so it is allowed.)
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.services.length()").value(2))
+        .andExpect(jsonPath("$.appLayers.length()").value(2))
+        .andExpect(
+            jsonPath("$.appLayers[0].id")
+                .value("lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel"))
+        .andExpect(jsonPath("$.appLayers[1].id").value("lyr:snapshot-geoserver:BGT"));
+  }
 
-      if (node.getBoolean("root")) {
-        assertNull(rootNode, "Root node already exists");
-        rootNode = node;
-      }
-    }
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "foo",
+      authorities = {"test-foo", "test-baz"})
+  void should_not_filter_layers_in_correct_group() throws Exception {
+    // the group "test-baz" has READ permissions to the GeoService and the filtered "BGT" layer.
+    final String path = apiBasePath + "/app/secured-auth/map";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.services.length()").value(2))
+        .andExpect(jsonPath("$.appLayers.length()").value(3))
+        .andExpect(jsonPath("$.appLayers[0].id").value("lyr:filtered-snapshot-geoserver:BGT"))
+        .andExpect(
+            jsonPath("$.appLayers[1].id")
+                .value("lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel"))
+        .andExpect(jsonPath("$.appLayers[2].id").value("lyr:snapshot-geoserver:BGT"));
+  }
 
-    assertNotNull(rootNode, "no root node found");
-    assertEquals(
-        1, rootNode.getJSONArray("childrenIds").length(), "root node had wrong amount of children");
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "foo",
+      authorities = {"admin"})
+  void admin_can_see_anything() throws Exception {
+    final String path = apiBasePath + "/app/secured-auth/map";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.services.length()").value(2))
+        .andExpect(jsonPath("$.appLayers.length()").value(3))
+        .andExpect(jsonPath("$.appLayers[0].id").value("lyr:filtered-snapshot-geoserver:BGT"))
+        .andExpect(
+            jsonPath("$.appLayers[1].id")
+                .value("lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel"))
+        .andExpect(jsonPath("$.appLayers[2].id").value("lyr:snapshot-geoserver:BGT"));
+  }
 
-    JSONObject osmNode = treeNodeMap.get(rootNode.getJSONArray("childrenIds").get(0));
-    assertNotNull(osmNode, "first child of root is not valid");
-    assertEquals(
-        1,
-        osmNode.getJSONArray("childrenIds").length(),
-        "first node of root had wrong amount of children");
-    assertEquals(
-        1,
-        treeNodeMap.get(osmNode.getJSONArray("childrenIds").get(0)).getInt("appLayerId"),
-        "incorrect appLayerId for first child");
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "foo",
+      authorities = {"test-bar"})
+  void should_filter_services() throws Exception {
+    // the group "test-bar" has READ permissions to the Application, but not the GeoService.
+    final String path = apiBasePath + "/app/secured-auth/map";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.services.length()").value(1))
+        .andExpect(jsonPath("$.appLayers.length()").value(1))
+        .andExpect(jsonPath("$.appLayers[0].id").value("lyr:snapshot-geoserver:BGT"));
   }
 
   @Test

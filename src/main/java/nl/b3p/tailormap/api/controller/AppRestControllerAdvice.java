@@ -177,9 +177,16 @@ public class AppRestControllerAdvice {
       // No binding
       return null;
     }
-    return service.getLayers().stream()
-        .filter(l -> appTreeLayerNode.getLayerName().equals(l.getName()))
-        .findFirst()
-        .orElse(null);
+    GeoServiceLayer layer =
+        service.getLayers().stream()
+            .filter(l -> appTreeLayerNode.getLayerName().equals(l.getName()))
+            .findFirst()
+            .orElse(null);
+
+    if (layer != null && !authorizationService.mayUserRead(service, layer)) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    }
+
+    return layer;
   }
 }

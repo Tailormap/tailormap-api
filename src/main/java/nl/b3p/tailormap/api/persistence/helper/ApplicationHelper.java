@@ -203,10 +203,12 @@ public class ApplicationHelper {
         AppTreeLayerNode appTreeLayerNode = (AppTreeLayerNode) node;
         layerTreeNode.setId(appTreeLayerNode.getId());
         layerTreeNode.setAppLayerId(appTreeLayerNode.getId());
-        addAppLayerItem(appTreeLayerNode);
+        if (!addAppLayerItem(appTreeLayerNode)) {
+          return;
+        }
         // This name is not displayed in the frontend, the title from the appLayer node is used
         layerTreeNode.setName(appTreeLayerNode.getLayerName());
-
+        layerTreeNode.setDescription(appTreeLayerNode.getDescription());
       } else if ("AppTreeLevelNode".equals(node.getObjectType())) {
         AppTreeLevelNode appTreeLevelNode = (AppTreeLevelNode) node;
         layerTreeNode.setId(appTreeLevelNode.getId());
@@ -214,18 +216,19 @@ public class ApplicationHelper {
         layerTreeNode.setRoot(Boolean.TRUE.equals(appTreeLevelNode.getRoot()));
         // The name for a level node does show in the frontend
         layerTreeNode.setName(appTreeLevelNode.getTitle());
+        layerTreeNode.setDescription(appTreeLevelNode.getDescription());
       }
       layerTreeNodeList.add(layerTreeNode);
     }
 
-    private void addAppLayerItem(AppTreeLayerNode layerRef) {
+    private boolean addAppLayerItem(AppTreeLayerNode layerRef) {
       Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> serviceWithLayer =
           findServiceLayer(layerRef);
       GeoService service = serviceWithLayer.getLeft();
       GeoServiceLayer serviceLayer = serviceWithLayer.getMiddle();
 
       if (service == null || serviceLayer == null) {
-        return;
+        return false;
       }
       GeoServiceDefaultLayerSettings defaultLayerSettings =
           Optional.ofNullable(service.getSettings().getDefaultLayerSettings())
@@ -240,6 +243,14 @@ public class ApplicationHelper {
           Objects.requireNonNullElse(
               appLayerSettings.getTitle(),
               service.getTitleWithSettingsOverrides(layerRef.getLayerName()));
+
+      String attribution = appLayerSettings.getAttribution();
+      if (null == attribution && null != service.getLayerSettings(layerRef.getLayerName())) {
+        attribution = service.getLayerSettings(layerRef.getLayerName()).getAttribution();
+      }
+      if (null == attribution && null != service.getSettings().getDefaultLayerSettings()) {
+        attribution = service.getSettings().getDefaultLayerSettings().getAttribution();
+      }
 
       boolean tilingDisabled =
           serviceLayerSettings
@@ -283,7 +294,9 @@ public class ApplicationHelper {
               .hiDpiMode(hiDpiMode)
               .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
               .opacity(appLayerSettings.getOpacity())
-              .visible(layerRef.getVisible()));
+              .visible(layerRef.getVisible())
+              .attribution(attribution));
+      return true;
     }
 
     private Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> findServiceLayer(
@@ -310,6 +323,10 @@ public class ApplicationHelper {
             app.getId(),
             layerRef.getLayerName(),
             service.getId());
+        return Triple.of(null, null, null);
+      }
+
+      if (!authorizationService.mayUserRead(service, serviceLayer)) {
         return Triple.of(null, null, null);
       }
 
