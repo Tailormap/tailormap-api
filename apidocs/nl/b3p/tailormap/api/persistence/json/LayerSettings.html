@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -187,67 +187,89 @@ implements <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#equals(java.lang.Object)">equals</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>&nbsp;o)</code></th>
+<td class="colFirst"><code><a href="LayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">LayerSettings</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addAuthorizationRulesItem(nl.b3p.tailormap.api.persistence.json.AuthorizationRule)">addAuthorizationRulesItem</a></span>&#8203;(<a href="AuthorizationRule.html" title="class in nl.b3p.tailormap.api.persistence.json">AuthorizationRule</a>&nbsp;authorizationRulesItem)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="LayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">LayerSettings</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#featureType(nl.b3p.tailormap.api.persistence.json.FeatureTypeRef)">featureType</a></span>&#8203;(<a href="FeatureTypeRef.html" title="class in nl.b3p.tailormap.api.persistence.json">FeatureTypeRef</a>&nbsp;featureType)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#authorizationRules(java.util.List)">authorizationRules</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="AuthorizationRule.html" title="class in nl.b3p.tailormap.api.persistence.json">AuthorizationRule</a>&gt;&nbsp;authorizationRules)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#equals(java.lang.Object)">equals</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>&nbsp;o)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="LayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">LayerSettings</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#featureType(nl.b3p.tailormap.api.persistence.json.FeatureTypeRef)">featureType</a></span>&#8203;(<a href="FeatureTypeRef.html" title="class in nl.b3p.tailormap.api.persistence.json">FeatureTypeRef</a>&nbsp;featureType)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="AuthorizationRule.html" title="class in nl.b3p.tailormap.api.persistence.json">AuthorizationRule</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAuthorizationRules()">getAuthorizationRules</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Get authorizationRules</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>@Valid <a href="FeatureTypeRef.html" title="class in nl.b3p.tailormap.api.persistence.json">FeatureTypeRef</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFeatureType()">getFeatureType</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get featureType</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHiDpiDisabled()">getHiDpiDisabled</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get hiDpiDisabled</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTitle()">getTitle</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Override default title, null if not overridden.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hashCode()">hashCode</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="LayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">LayerSettings</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hiDpiDisabled(java.lang.Boolean)">hiDpiDisabled</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;hiDpiDisabled)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAuthorizationRules(java.util.List)">setAuthorizationRules</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="AuthorizationRule.html" title="class in nl.b3p.tailormap.api.persistence.json">AuthorizationRule</a>&gt;&nbsp;authorizationRules)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setFeatureType(nl.b3p.tailormap.api.persistence.json.FeatureTypeRef)">setFeatureType</a></span>&#8203;(<a href="FeatureTypeRef.html" title="class in nl.b3p.tailormap.api.persistence.json">FeatureTypeRef</a>&nbsp;featureType)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setHiDpiDisabled(java.lang.Boolean)">setHiDpiDisabled</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;hiDpiDisabled)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setTitle(java.lang.String)">setTitle</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;title)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="LayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">LayerSettings</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#title(java.lang.String)">title</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;title)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -390,6 +412,48 @@ public&nbsp;@Valid <a href="FeatureTypeRef.html" title="class in nl.b3p.tailorma
 <li class="blockList">
 <h4>setFeatureType</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setFeatureType&#8203;(<a href="FeatureTypeRef.html" title="class in nl.b3p.tailormap.api.persistence.json">FeatureTypeRef</a>&nbsp;featureType)</pre>
+</li>
+</ul>
+<a id="authorizationRules(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>authorizationRules</h4>
+<pre class="methodSignature">public&nbsp;<a href="LayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">LayerSettings</a>&nbsp;authorizationRules&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="AuthorizationRule.html" title="class in nl.b3p.tailormap.api.persistence.json">AuthorizationRule</a>&gt;&nbsp;authorizationRules)</pre>
+</li>
+</ul>
+<a id="addAuthorizationRulesItem(nl.b3p.tailormap.api.persistence.json.AuthorizationRule)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addAuthorizationRulesItem</h4>
+<pre class="methodSignature">public&nbsp;<a href="LayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">LayerSettings</a>&nbsp;addAuthorizationRulesItem&#8203;(<a href="AuthorizationRule.html" title="class in nl.b3p.tailormap.api.persistence.json">AuthorizationRule</a>&nbsp;authorizationRulesItem)</pre>
+</li>
+</ul>
+<a id="getAuthorizationRules()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAuthorizationRules</h4>
+<pre class="methodSignature">@Valid
+public&nbsp;@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="AuthorizationRule.html" title="class in nl.b3p.tailormap.api.persistence.json">AuthorizationRule</a>&gt;&nbsp;getAuthorizationRules()</pre>
+<div class="block">Get authorizationRules</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>authorizationRules</dd>
+</dl>
+</li>
+</ul>
+<a id="setAuthorizationRules(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setAuthorizationRules</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setAuthorizationRules&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="AuthorizationRule.html" title="class in nl.b3p.tailormap.api.persistence.json">AuthorizationRule</a>&gt;&nbsp;authorizationRules)</pre>
 </li>
 </ul>
 <a id="equals(java.lang.Object)">

@@ -177,10 +177,17 @@ public class AppRestControllerAdvice {
       // No binding
 <span class="nc" id="L178">      return null;</span>
     }
-<span class="nc" id="L180">    return service.getLayers().stream()</span>
-<span class="nc" id="L181">        .filter(l -&gt; appTreeLayerNode.getLayerName().equals(l.getName()))</span>
-<span class="nc" id="L182">        .findFirst()</span>
-<span class="nc" id="L183">        .orElse(null);</span>
+<span class="nc" id="L180">    GeoServiceLayer layer =</span>
+<span class="nc" id="L181">        service.getLayers().stream()</span>
+<span class="nc" id="L182">            .filter(l -&gt; appTreeLayerNode.getLayerName().equals(l.getName()))</span>
+<span class="nc" id="L183">            .findFirst()</span>
+<span class="nc" id="L184">            .orElse(null);</span>
+
+<span class="nc bnc" id="L186" title="All 4 branches missed.">    if (layer != null &amp;&amp; !authorizationService.mayUserRead(service, layer)) {</span>
+<span class="nc" id="L187">      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);</span>
+    }
+
+<span class="nc" id="L190">    return layer;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

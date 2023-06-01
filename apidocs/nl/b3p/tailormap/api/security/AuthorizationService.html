@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -225,6 +225,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Verifies that this user may read this GeoService.</div>
 </td>
 </tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mayUserRead(nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer)">mayUserRead</a></span>&#8203;(<a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;geoService,
+           <a href="../persistence/json/GeoServiceLayer.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer)</code></th>
+<td class="colLast">
+<div class="block">Verifies that this user may read the Layer in context of the GeoService.</div>
+</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -318,6 +326,24 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>geoService</code> - the GeoService to check</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the results from the access control checks.</dd>
+</dl>
+</li>
+</ul>
+<a id="mayUserRead(nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>mayUserRead</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;mayUserRead&#8203;(<a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;geoService,
+                           <a href="../persistence/json/GeoServiceLayer.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer)</pre>
+<div class="block">Verifies that this user may read the Layer in context of the GeoService.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>geoService</code> - the GeoService to check</dd>
+<dd><code>layer</code> - the GeoServiceLayer to check</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the results from the access control checks.</dd>
 </dl>
