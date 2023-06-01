@@ -242,9 +242,12 @@ public class ApplicationHelper {
               appLayerSettings.getTitle(),
               service.getTitleWithSettingsOverrides(layerRef.getLayerName()));
 
-      String attribution = serviceLayer.getAttribution();
-      if (null == attribution) {
-        attribution = appLayerSettings.getAttribution();
+      String attribution = appLayerSettings.getAttribution();
+      if (null == attribution && null != service.getLayerSettings(layerRef.getLayerName())) {
+        attribution = service.getLayerSettings(layerRef.getLayerName()).getAttribution();
+      }
+      if (null == attribution && null != service.getSettings().getDefaultLayerSettings()) {
+        attribution = service.getSettings().getDefaultLayerSettings().getAttribution();
       }
 
       boolean tilingDisabled =

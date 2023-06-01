@@ -318,6 +318,10 @@ components:
           default: false
         featureType:
           $ref: FeatureTypeRef
+        attribution:
+          description: 'Attribution to show for this layer.'
+          nullable: true
+          type: string
 
     FeatureTypeRef:
       required: [featureSourceId, featureTypeName]
@@ -394,8 +398,6 @@ components:
             $ref: './common-schemas.yaml#/components/schemas/WMSStyle'
         queryable:
           type: boolean
-        attribution:
-          type: string
         abstractText:
           type: string
         children:
