@@ -242,6 +242,11 @@ public class ApplicationHelper {
               appLayerSettings.getTitle(),
               service.getTitleWithSettingsOverrides(layerRef.getLayerName()));
 
+      String attribution = serviceLayer.getAttribution();
+      if (null == attribution) {
+        attribution = appLayerSettings.getAttribution();
+      }
+
       boolean tilingDisabled =
           serviceLayerSettings
               .map(GeoServiceLayerSettings::getTilingDisabled)
@@ -284,7 +289,8 @@ public class ApplicationHelper {
               .hiDpiMode(hiDpiMode)
               .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
               .opacity(appLayerSettings.getOpacity())
-              .visible(layerRef.getVisible()));
+              .visible(layerRef.getVisible())
+              .attribution(attribution));
     }
 
     private Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> findServiceLayer(

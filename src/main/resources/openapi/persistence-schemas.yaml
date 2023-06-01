@@ -498,4 +498,8 @@ components:
           type: integer
           nullable: false
           default: 100
+        attribution:
+          description: 'Attribution to show for this layer.'
+          nullable: true
+          type: string
         # TODO add properties for selected WMS style, feature info popup template, etc.
