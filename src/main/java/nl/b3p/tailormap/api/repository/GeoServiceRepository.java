@@ -38,4 +38,18 @@ public interface GeoServiceRepository extends JpaRepository<GeoService, String> 
   @PreAuthorize("permitAll()")
   @Query("from GeoService s where id in :ids")
   List<GeoService> findByIds(@Param("ids") List<String> ids);
+
+  /**
+   * Find multiple geo-services except some. Example URL:
+   * /api/admin/geo-services/search/getAllExcludingIds?ids=openbasiskaart&amp;ids=at-basemap
+   *
+   * <p>No geo services are returned if ids is an empty list.
+   *
+   * @param ids The ids not to include
+   * @return All geo services except those matching the ids
+   */
+  @NonNull
+  @PreAuthorize("permitAll()")
+  @Query("from GeoService s where id not in :ids")
+  List<GeoService> getAllExcludingIds(@Param("ids") List<String> ids);
 }
