@@ -22,7 +22,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
@@ -99,12 +99,12 @@ import org.hibernate.annotations.Type;
   @Column(columnDefinition = &quot;jsonb&quot;)
   private TMServiceCaps serviceCapabilities;
 
-<span class="nc" id="L102">  @OneToMany(cascade = CascadeType.ALL)</span>
+<span class="nc" id="L102">  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)</span>
   @JoinTable(
       name = &quot;feature_source_feature_types&quot;,
       inverseJoinColumns = @JoinColumn(name = &quot;feature_type&quot;),
       joinColumns = @JoinColumn(name = &quot;feature_source&quot;, referencedColumnName = &quot;id&quot;))
-  @OrderColumn(name = &quot;list_index&quot;)
+  @OrderBy(&quot;name asc&quot;)
   private List&lt;TMFeatureType&gt; featureTypes = new ArrayList&lt;&gt;();
 
   @Override

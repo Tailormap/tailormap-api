@@ -30,7 +30,7 @@
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> javax.persistence.JoinTable;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> javax.persistence.ManyToOne;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> javax.persistence.OneToMany;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> javax.persistence.OrderColumn;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> javax.persistence.OrderBy;
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> javax.persistence.Table;
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> javax.persistence.Version;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> javax.validation.constraints.NotNull;
@@ -107,12 +107,12 @@
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>    @Column(columnDefinition = <span class="jxr_string">"jsonb"</span>)
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>   <strong class="jxr_keyword">private</strong> TMServiceCaps serviceCapabilities;
 <a class="jxr_linenumber" name="L101" href="#L101">101</a> 
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>   @OneToMany(cascade = CascadeType.ALL)
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = <strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>   @JoinTable(
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>       name = <span class="jxr_string">"feature_source_feature_types"</span>,
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>       inverseJoinColumns = @JoinColumn(name = <span class="jxr_string">"feature_type"</span>),
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>       joinColumns = @JoinColumn(name = <span class="jxr_string">"feature_source"</span>, referencedColumnName = <span class="jxr_string">"id"</span>))
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>   @OrderColumn(name = <span class="jxr_string">"list_index"</span>)
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>   @OrderBy(<span class="jxr_string">"name asc"</span>)
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>   <strong class="jxr_keyword">private</strong> List&lt;TMFeatureType&gt; featureTypes = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L109" href="#L109">109</a> 
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>   @Override
