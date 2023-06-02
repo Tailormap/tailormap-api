@@ -494,6 +494,8 @@ public class PopulateTestData {
                                               .featureTypeName("begroeidterreindeel")),
                               "sqlserver:wegdeel",
                                   new GeoServiceLayerSettings()
+                                      .attribution(
+                                          "CC BY 4.0 <a href=\"https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\">BGT/Kadaster</a>")
                                       .featureType(
                                           new FeatureTypeRef()
                                               .featureSourceId(
@@ -642,7 +644,11 @@ public class PopulateTestData {
                 new AppSettings()
                     .putLayerSettingsItem(
                         "lyr:snapshot-geoserver:oracle:WATERDEEL",
-                        new AppLayerSettings().opacity(50).title("Waterdeel andere titel")));
+                        new AppLayerSettings()
+                            .opacity(50)
+                            .title("Waterdeel andere titel")
+                            .attribution(
+                                "CC BY 4.0 <a href=\"https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\">BGT/Kadaster</a>")));
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     app.setInitialExtent(new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));
     app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));
