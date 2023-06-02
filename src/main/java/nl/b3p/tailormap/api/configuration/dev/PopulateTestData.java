@@ -187,6 +187,9 @@ public class PopulateTestData {
                 .groupName(Group.AUTHENTICATED)
                 .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)));
 
+    String osmAttribution =
+        "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors";
+
     Collection<GeoService> services =
         List.of(
             new GeoService()
@@ -245,6 +248,8 @@ public class PopulateTestData {
                 .setAuthorizationRules(rule)
                 .setSettings(
                     new GeoServiceSettings()
+                        .defaultLayerSettings(
+                            new GeoServiceDefaultLayerSettings().attribution(osmAttribution))
                         .layerSettings(
                             Map.of(
                                 "osm",
@@ -267,6 +272,8 @@ public class PopulateTestData {
                 .setSettings(
                     new GeoServiceSettings()
                         .useProxy(true)
+                        .defaultLayerSettings(
+                            new GeoServiceDefaultLayerSettings().attribution(osmAttribution))
                         .layerSettings(
                             Map.of(
                                 "osm",
@@ -283,7 +290,10 @@ public class PopulateTestData {
                 .setSettings(
                     new GeoServiceSettings()
                         .defaultLayerSettings(
-                            new GeoServiceDefaultLayerSettings().hiDpiDisabled(false))),
+                            new GeoServiceDefaultLayerSettings()
+                                .attribution(
+                                    "&copy; <a href=\"https://beeldmateriaal.nl/\">Beeldmateriaal.nl</a>")
+                                .hiDpiDisabled(false))),
             new GeoService()
                 .setId("at-basemap")
                 .setProtocol(WMTS)
@@ -294,7 +304,10 @@ public class PopulateTestData {
                 .setSettings(
                     new GeoServiceSettings()
                         .defaultLayerSettings(
-                            new GeoServiceDefaultLayerSettings().hiDpiDisabled(true))
+                            new GeoServiceDefaultLayerSettings()
+                                .attribution(
+                                    "&copy; <a href=\"https://basemap.at/\">basemap.at</a>")
+                                .hiDpiDisabled(true))
                         .layerSettings(
                             Map.of(
                                 "geolandbasemap",
@@ -312,6 +325,7 @@ public class PopulateTestData {
                 .setAuthorizationRules(rule)
                 .setSettings(
                     new GeoServiceSettings()
+                        // No attribution required: service is CC0
                         .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)
                         .useProxy(true))
                 .setPublished(true)
