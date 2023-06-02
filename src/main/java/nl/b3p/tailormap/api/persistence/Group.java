@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.Pattern;
@@ -94,5 +95,13 @@ public class Group {
   public Group setMembers(Set<User> members) {
     this.members = members;
     return this;
+  }
+
+  @PreRemove
+  @SuppressWarnings("PMD.UnusedPrivateMethod")
+  private void removeMembers() {
+    for (User user : this.members) {
+      user.getGroups().remove(this);
+    }
   }
 }
