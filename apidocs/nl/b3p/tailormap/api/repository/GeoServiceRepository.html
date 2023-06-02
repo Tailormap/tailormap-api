@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6};
+var data = {"i0":6,"i1":6,"i2":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -162,6 +162,13 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../per
 <div class="block">Find multiple geo-services.</div>
 </td>
 </tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAllExcludingIds(java.util.List)">getAllExcludingIds</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;ids)</code></th>
+<td class="colLast">
+<div class="block">Find multiple geo-services except some.</div>
+</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.org.springframework.data.repository.CrudRepository">
@@ -226,7 +233,7 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../per
 <a id="findByIds(java.util.List)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>findByIds</h4>
 <pre class="methodSignature">@NonNull
@@ -241,6 +248,29 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../per
 <dd><code>ids</code> - The ids to search for</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The geo services matching the ids</dd>
+</dl>
+</li>
+</ul>
+<a id="getAllExcludingIds(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getAllExcludingIds</h4>
+<pre class="methodSignature">@NonNull
+@PreAuthorize("permitAll()")
+@Query("from GeoService s where id not in :ids")
+<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&gt;&nbsp;getAllExcludingIds&#8203;(@Param("ids")
+                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;ids)</pre>
+<div class="block">Find multiple geo-services except some. Example URL:
+ /api/admin/geo-services/search/getAllExcludingIds?ids=openbasiskaart&amp;ids=at-basemap
+
+ <p>No geo services are returned if ids is an empty list.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>ids</code> - The ids not to include</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>All geo services except those matching the ids</dd>
 </dl>
 </li>
 </ul>
