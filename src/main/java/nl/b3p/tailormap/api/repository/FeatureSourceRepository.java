@@ -37,4 +37,18 @@ public interface FeatureSourceRepository extends JpaRepository<TMFeatureSource, 
   @PreAuthorize("permitAll()")
   @Query("from TMFeatureSource fs where id in :ids")
   List<TMFeatureSource> findByIds(@Param("ids") List<Long> ids);
+
+  /**
+   * Find multiple feature-sources except some. Example URL:
+   * /api/admin/feature-sources/search/getAllExcludingIds?ids=1,2,3
+   *
+   * <p>No feature sources are returned if ids is an empty list.
+   *
+   * @param ids The ids not to include
+   * @return All feature sources except those matching the ids
+   */
+  @NonNull
+  @PreAuthorize("permitAll()")
+  @Query("from TMFeatureSource fs where id not in :ids")
+  List<TMFeatureSource> getAllExcludingIds(@Param("ids") List<Long> ids);
 }
