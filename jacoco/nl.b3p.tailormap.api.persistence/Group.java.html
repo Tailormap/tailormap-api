@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.Pattern;
@@ -18,7 +19,7 @@ import nl.b3p.tailormap.api.util.Constants;
 
 @Entity
 @Table(name = &quot;groups&quot;)
-<span class="fc" id="L21">public class Group {</span>
+<span class="fc" id="L22">public class Group {</span>
   // Group to make authorization rules for anonymous users
   public static final String ANONYMOUS = &quot;anonymous&quot;;
   // Group to make authorization rules for authenticated users
@@ -39,61 +40,69 @@ import nl.b3p.tailormap.api.util.Constants;
   @Column(columnDefinition = &quot;text&quot;)
   private String notes;
 
-<span class="fc" id="L42">  @ManyToMany(mappedBy = &quot;groups&quot;)</span>
+<span class="fc" id="L43">  @ManyToMany(mappedBy = &quot;groups&quot;)</span>
   private Set&lt;User&gt; members = new HashSet&lt;&gt;();
 
   public String getName() {
-<span class="nc" id="L46">    return name;</span>
+<span class="nc" id="L47">    return name;</span>
   }
 
   public Group setName(String name) {
-<span class="fc" id="L50">    this.name = name;</span>
-<span class="fc" id="L51">    return this;</span>
+<span class="fc" id="L51">    this.name = name;</span>
+<span class="fc" id="L52">    return this;</span>
   }
 
   public Long getVersion() {
-<span class="nc" id="L55">    return version;</span>
+<span class="nc" id="L56">    return version;</span>
   }
 
   public Group setVersion(Long version) {
-<span class="nc" id="L59">    this.version = version;</span>
-<span class="nc" id="L60">    return this;</span>
+<span class="nc" id="L60">    this.version = version;</span>
+<span class="nc" id="L61">    return this;</span>
   }
 
   public boolean isSystemGroup() {
-<span class="nc" id="L64">    return systemGroup;</span>
+<span class="nc" id="L65">    return systemGroup;</span>
   }
 
   public Group setSystemGroup(boolean systemGroup) {
-<span class="nc" id="L68">    this.systemGroup = systemGroup;</span>
-<span class="nc" id="L69">    return this;</span>
+<span class="nc" id="L69">    this.systemGroup = systemGroup;</span>
+<span class="nc" id="L70">    return this;</span>
   }
 
   public String getDescription() {
-<span class="nc" id="L73">    return description;</span>
+<span class="nc" id="L74">    return description;</span>
   }
 
   public Group setDescription(String title) {
-<span class="nc" id="L77">    this.description = title;</span>
-<span class="nc" id="L78">    return this;</span>
+<span class="nc" id="L78">    this.description = title;</span>
+<span class="nc" id="L79">    return this;</span>
   }
 
   public String getNotes() {
-<span class="nc" id="L82">    return notes;</span>
+<span class="nc" id="L83">    return notes;</span>
   }
 
   public Group setNotes(String notes) {
-<span class="nc" id="L86">    this.notes = notes;</span>
-<span class="nc" id="L87">    return this;</span>
+<span class="nc" id="L87">    this.notes = notes;</span>
+<span class="nc" id="L88">    return this;</span>
   }
 
   public Set&lt;User&gt; getMembers() {
-<span class="nc" id="L91">    return members;</span>
+<span class="nc" id="L92">    return members;</span>
   }
 
   public Group setMembers(Set&lt;User&gt; members) {
-<span class="nc" id="L95">    this.members = members;</span>
-<span class="nc" id="L96">    return this;</span>
+<span class="nc" id="L96">    this.members = members;</span>
+<span class="nc" id="L97">    return this;</span>
   }
+
+  @PreRemove
+  @SuppressWarnings(&quot;PMD.UnusedPrivateMethod&quot;)
+  private void removeMembers() {
+<span class="nc bnc" id="L103" title="All 2 branches missed.">    for (User user : this.members) {</span>
+<span class="nc" id="L104">      user.getGroups().remove(this);</span>
+<span class="nc" id="L105">    }</span>
+<span class="nc" id="L106">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
