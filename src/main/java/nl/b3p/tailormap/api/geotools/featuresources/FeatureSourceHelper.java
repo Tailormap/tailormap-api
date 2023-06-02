@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
@@ -90,20 +91,40 @@ public abstract class FeatureSourceHelper {
                       .schema(si.getSchema())
                       .source(si.getSource())));
 
-      String[] typeNames = ds.getTypeNames();
+      List<String> typeNames = Arrays.asList(ds.getTypeNames());
       logger.info(
           "Type names for {} {}: {}",
           tmfs.getProtocol().getValue(),
-          tmfs.getUrl(),
-          Arrays.toString(typeNames));
+          tmfs.getProtocol() == TMFeatureSource.Protocol.WFS
+              ? tmfs.getUrl()
+              : tmfs.getJdbcConnection(),
+          typeNames);
+
+      tmfs.getFeatureTypes()
+          .removeIf(
+              tmft -> {
+                if (!typeNames.contains(tmft.getName())) {
+                  logger.info("Feature type removed: {}", tmft.getName());
+                  return true;
+                } else {
+                  return false;
+                }
+              });
 
       for (String typeName : typeNames) {
         TMFeatureType pft =
-            new TMFeatureType()
-                .setName(typeName)
-                .setFeatureSource(tmfs)
-                .setWriteable(true); // TODO set writeable meaningfully
-        tmfs.getFeatureTypes().add(pft);
+            tmfs.getFeatureTypes().stream()
+                .filter(ft -> ft.getName().equals(typeName))
+                .findFirst()
+                .orElseGet(
+                    () ->
+                        new TMFeatureType()
+                            .setName(typeName)
+                            .setFeatureSource(tmfs)
+                            .setWriteable(true)); // TODO set writeable meaningfully
+        if (!tmfs.getFeatureTypes().contains(pft)) {
+          tmfs.getFeatureTypes().add(pft);
+        }
         try {
           logger.debug("Get feature source from GeoTools datastore for type \"{}\"", typeName);
           SimpleFeatureSource gtFs = ds.getFeatureSource(typeName);

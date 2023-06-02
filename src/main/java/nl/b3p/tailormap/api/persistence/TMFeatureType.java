@@ -8,7 +8,6 @@ package nl.b3p.tailormap.api.persistence;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,7 +38,7 @@ public class TMFeatureType {
 
   @NotNull private String name;
 
-  @ManyToOne(cascade = CascadeType.PERSIST, optional = false)
+  @ManyToOne(optional = false)
   @JoinColumn(name = "feature_source")
   private TMFeatureSource featureSource;
 
