@@ -317,9 +317,13 @@ components:
           type: boolean
           default: false
         featureType:
-          $ref: FeatureTypeRef
+          $ref: '#/components/schemas/FeatureTypeRef'
         attribution:
           description: 'Attribution to show for this layer.'
+          nullable: true
+          type: string
+        description:
+          description: 'Description to show for this layer.'
           nullable: true
           type: string
         authorizationRules:
@@ -506,6 +510,10 @@ components:
           default: 100
         attribution:
           description: 'Attribution to show for this layer.'
+          nullable: true
+          type: string
+        description:
+          description: 'Description to show for this layer.'
           nullable: true
           type: string
         # TODO add properties for selected WMS style, feature info popup template, etc.

@@ -252,6 +252,9 @@ public class ApplicationHelper {
         attribution = service.getSettings().getDefaultLayerSettings().getAttribution();
       }
 
+      String description = appLayerSettings.getDescription();
+      layerRef.setDescription(description);
+
       boolean tilingDisabled =
           serviceLayerSettings
               .map(GeoServiceLayerSettings::getTilingDisabled)
