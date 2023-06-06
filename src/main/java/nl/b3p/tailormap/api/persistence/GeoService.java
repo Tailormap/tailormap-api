@@ -11,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -35,11 +37,16 @@ import nl.b3p.tailormap.api.viewer.model.Service;
 import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Entity
 public class GeoService {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  private static final List<String> REMOVE_PARAMS = List.of("REQUEST");
 
   @Id private String id;
 
@@ -166,8 +173,9 @@ public class GeoService {
     return url;
   }
 
+  /** Sets the url after sanitising (removing unwanted parameters). */
   public GeoService setUrl(String url) {
-    this.url = url;
+    this.url = sanitiseUrl(url);
     return this;
   }
 
@@ -392,5 +400,30 @@ public class GeoService {
       }
     }
     return tmft;
+  }
+
+  /**
+   * Remove all parameters from the URL that are listed in {@link #REMOVE_PARAMS}.
+   *
+   * @param url URL to sanitise
+   * @return sanitised URL
+   */
+  private String sanitiseUrl(String url) {
+    if (url != null && url.contains("?")) {
+      MultiValueMap<String, String> sanitisedParams = new LinkedMultiValueMap<>();
+      UriComponentsBuilder uri = UriComponentsBuilder.fromUriString(url);
+      MultiValueMap<String, String> /* unmodifiable */ requestParams = uri.build().getQueryParams();
+      for (Map.Entry<String, List<String>> param : requestParams.entrySet()) {
+        if (!REMOVE_PARAMS.contains(param.getKey().toUpperCase(Locale.ROOT))) {
+          sanitisedParams.put(param.getKey(), param.getValue());
+        }
+      }
+
+      url = uri.replaceQueryParams(sanitisedParams).build().toUriString();
+      if (url.endsWith("?")) {
+        url = url.substring(0, url.length() - 1);
+      }
+    }
+    return url;
   }
 }
