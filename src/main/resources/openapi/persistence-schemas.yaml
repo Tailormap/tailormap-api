@@ -308,7 +308,7 @@ components:
               hiDpiDisabled: true
 
     LayerSettings:
-      description: Settings applying to any kind of layer.
+      description: Settings applying to any kind of layer of a GeoService.
       properties:
         title:
           description: Override default title, null if not overridden.

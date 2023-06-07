@@ -39,6 +39,7 @@ import nl.b3p.tailormap.api.viewer.model.AppLayer;
 import nl.b3p.tailormap.api.viewer.model.LayerTreeNode;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
 import nl.b3p.tailormap.api.viewer.model.TMCoordinateReferenceSystem;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.geotools.referencing.util.CRSUtilities;
 import org.geotools.referencing.wkt.Formattable;
@@ -244,21 +245,22 @@ public class ApplicationHelper {
               appLayerSettings.getTitle(),
               service.getTitleWithSettingsOverrides(layerRef.getLayerName()));
 
-      String attribution = appLayerSettings.getAttribution();
-      if (null == attribution && null != service.getLayerSettings(layerRef.getLayerName())) {
-        attribution = service.getLayerSettings(layerRef.getLayerName()).getAttribution();
-      }
-      if (null == attribution && null != service.getSettings().getDefaultLayerSettings()) {
-        attribution = service.getSettings().getDefaultLayerSettings().getAttribution();
-      }
+      String description =
+          ObjectUtils.getFirstNonNull(
+              appLayerSettings::getDescription,
+              () -> serviceLayerSettings.map(GeoServiceLayerSettings::getDescription).orElse(null),
+              defaultLayerSettings::getDescription);
 
-      String description = appLayerSettings.getDescription();
-      layerRef.setDescription(description);
+      String attribution =
+          ObjectUtils.getFirstNonNull(
+              appLayerSettings::getAttribution,
+              () -> serviceLayerSettings.map(GeoServiceLayerSettings::getAttribution).orElse(null),
+              defaultLayerSettings::getAttribution);
 
       boolean tilingDisabled =
           serviceLayerSettings
               .map(GeoServiceLayerSettings::getTilingDisabled)
-              .orElse(Optional.ofNullable(defaultLayerSettings.getTilingDisabled()).orElse(false));
+              .orElse(defaultLayerSettings.getTilingDisabled());
       Integer tilingGutter =
           serviceLayerSettings
               .map(GeoServiceLayerSettings::getTilingGutter)
@@ -266,7 +268,7 @@ public class ApplicationHelper {
       boolean hiDpiDisabled =
           serviceLayerSettings
               .map(GeoServiceLayerSettings::getHiDpiDisabled)
-              .orElse(Optional.ofNullable(defaultLayerSettings.getTilingDisabled()).orElse(false));
+              .orElse(defaultLayerSettings.getHiDpiDisabled());
       TileLayerHiDpiMode hiDpiMode =
           serviceLayerSettings
               .map(GeoServiceLayerSettings::getHiDpiMode)
@@ -298,7 +300,8 @@ public class ApplicationHelper {
               .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
               .opacity(appLayerSettings.getOpacity())
               .visible(layerRef.getVisible())
-              .attribution(attribution));
+              .attribution(attribution)
+              .description(description));
       return true;
     }
 

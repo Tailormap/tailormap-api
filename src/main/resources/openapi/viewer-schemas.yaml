@@ -125,6 +125,9 @@ components:
         attribution:
           description: 'Attribution text to show for this layer.'
           type: string
+        description:
+          description: 'Description text to show for this layer, may contain some links and images (see htmlify pipe)'
+          type: string
 
     LayerTreeNode:
       description: Grouping of layers in a tree structure.

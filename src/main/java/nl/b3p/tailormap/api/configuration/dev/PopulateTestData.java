@@ -192,6 +192,7 @@ public class PopulateTestData {
 
     Collection<GeoService> services =
         List.of(
+            // Layer settings configured later, using the same settings for this one and proxied one
             new GeoService()
                 .setId("snapshot-geoserver")
                 .setProtocol(WMS)
@@ -325,6 +326,9 @@ public class PopulateTestData {
                 .setAuthorizationRules(rule)
                 .setSettings(
                     new GeoServiceSettings()
+                        .defaultLayerSettings(
+                            new GeoServiceDefaultLayerSettings()
+                                .description("This layer shows an administrative boundary."))
                         // No attribution required: service is CC0
                         .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)
                         .useProxy(true))
@@ -451,6 +455,8 @@ public class PopulateTestData {
                       Map.of(
                           "Provinciegebied",
                           new GeoServiceLayerSettings()
+                              .description(
+                                  "The administrative boundary of Dutch Provinces, connected to a WFS.")
                               .featureType(
                                   new FeatureTypeRef()
                                       .featureSourceId(
@@ -493,6 +499,8 @@ public class PopulateTestData {
               });
 
       services.stream()
+          // Set layer settings for both the proxied and non-proxied one, but don't overwrite the
+          // authorization rules for the "filtered-snapshot-geoserver" service
           .filter(s -> s.getId().startsWith("snapshot-geoserver"))
           .forEach(
               s ->
@@ -501,6 +509,10 @@ public class PopulateTestData {
                           Map.of(
                               "postgis:begroeidterreindeel",
                                   new GeoServiceLayerSettings()
+                                      .description(
+                                          "This layer shows data from http://www.postgis.net/"
+                                              + "\n\n"
+                                              + "https://postgis.net/logos/postgis-logo.png")
                                       .featureType(
                                           new FeatureTypeRef()
                                               .featureSourceId(
@@ -510,6 +522,10 @@ public class PopulateTestData {
                                   new GeoServiceLayerSettings()
                                       .attribution(
                                           "CC BY 4.0 <a href=\"https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\">BGT/Kadaster</a>")
+                                      .description(
+                                          "This layer shows data from [MS SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/spatial/spatial-data-sql-server)."
+                                              + "\n\n"
+                                              + "https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communityserver-components-imagefileviewer/communityserver-wikis-components-files-00-00-00-00-05/1884.SQL_5F00_h_5F00_rgb.png_2D00_550x0.png")
                                       .featureType(
                                           new FeatureTypeRef()
                                               .featureSourceId(
@@ -517,6 +533,7 @@ public class PopulateTestData {
                                               .featureTypeName("wegdeel")),
                               "oracle:WATERDEEL",
                                   new GeoServiceLayerSettings()
+                                      .attribution("This layer shows data from Oracle Spatial.")
                                       .featureType(
                                           new FeatureTypeRef()
                                               .featureSourceId(featureSources.get("oracle").getId())
@@ -660,7 +677,8 @@ public class PopulateTestData {
                         "lyr:snapshot-geoserver:oracle:WATERDEEL",
                         new AppLayerSettings()
                             .opacity(50)
-                            .title("Waterdeel andere titel")
+                            .title("Waterdeel overridden title")
+                            .description("This is the layer description from the app layer setting.")
                             .attribution(
                                 "CC BY 4.0 <a href=\"https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\">BGT/Kadaster</a>")));
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
@@ -892,19 +910,6 @@ public class PopulateTestData {
                             .visible(false)));
 
     applicationRepository.save(app);
-
-    // WMS doesn't work, issue with WMS 1.1.1 vs 1.3.0?
-    //    app =
-    //        new Application()
-    //            .setName("norway")
-    //            .setCrs("EPSG:27397")
-    //            .setTitle("Norway")
-    //            .setContentRoot(
-    //                new AppContent()
-    //                    .addLayersItem(
-    //                        new
-    // AppLayerRef().serviceId(5L).layerName("adm_enheter_historisk_WMS")));
-    //    applicationRepository.save(app);
 
     Configuration config = new Configuration();
     config.setKey(Configuration.DEFAULT_APP);
