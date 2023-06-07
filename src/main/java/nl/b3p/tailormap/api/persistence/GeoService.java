@@ -35,6 +35,7 @@ import nl.b3p.tailormap.api.viewer.model.Service;
 import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 
 @Entity
 public class GeoService {
@@ -304,6 +305,7 @@ public class GeoService {
     return getSettings().getLayerSettings().get(layerName);
   }
 
+  @NonNull
   public String getTitleWithSettingsOverrides(String layerName) {
     // First use title in layer settings
     String title =
