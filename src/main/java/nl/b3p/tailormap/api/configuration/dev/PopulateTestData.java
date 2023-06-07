@@ -678,7 +678,8 @@ public class PopulateTestData {
                         new AppLayerSettings()
                             .opacity(50)
                             .title("Waterdeel overridden title")
-                            .description("This is the layer description from the app layer setting.")
+                            .description(
+                                "This is the layer description from the app layer setting.")
                             .attribution(
                                 "CC BY 4.0 <a href=\"https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\">BGT/Kadaster</a>")));
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);

@@ -312,10 +312,11 @@ components:
       properties:
         title:
           description: Override default title, null if not overridden.
+          nullable: true
           type: string
         hiDpiDisabled:
+          nullable: true
           type: boolean
-          default: false
         featureType:
           $ref: '#/components/schemas/FeatureTypeRef'
         attribution:
@@ -350,9 +351,11 @@ components:
           required: [tilingDisabled, tilingGutter]
           properties:
             tilingDisabled:
+              nullable: true
               type: boolean
               default: false
             tilingGutter:
+              nullable: true
               type: integer
               # TODO: set global default here or in frontend?
 
@@ -365,6 +368,7 @@ components:
             hiDpiMode:
               $ref: './common-schemas.yaml#/components/schemas/TileLayerHiDpiMode'
             hiDpiSubstituteLayer:
+              nullable: true
               description: Layer name of this service to substitute when rendering at high dpi.
               type: string
 
@@ -503,6 +507,7 @@ components:
     AppLayerSettings:
       properties:
         title:
+          nullable: true
           type: string
         opacity:
           type: integer

@@ -31,6 +31,7 @@ import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
+import nl.b3p.tailormap.api.util.TMStringUtils;
 import nl.b3p.tailormap.api.viewer.model.Service;
 import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
@@ -311,14 +312,19 @@ public class GeoService {
     String title =
         Optional.ofNullable(getLayerSettings(layerName))
             .map(GeoServiceLayerSettings::getTitle)
+            .map(TMStringUtils::nullIfEmpty)
             .orElse(null);
 
     // If not set, title from capabilities
     if (title == null) {
-      title = Optional.ofNullable(findLayer(layerName)).map(GeoServiceLayer::getTitle).orElse(null);
+      title =
+          Optional.ofNullable(findLayer(layerName))
+              .map(GeoServiceLayer::getTitle)
+              .map(TMStringUtils::nullIfEmpty)
+              .orElse(null);
     }
 
-    // Do not get title from default layer settings (a default wouldn't make sense)
+    // Do not get title from default layer settings (a default title wouldn't make sense)
 
     // If still not set, use layer name as title
     if (title == null) {

@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.persistence.helper;
 
+import static nl.b3p.tailormap.api.util.TMStringUtils.nullIfEmpty;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.lang.invoke.MethodHandles;
@@ -231,51 +232,72 @@ public class ApplicationHelper {
       if (service == null || serviceLayer == null) {
         return false;
       }
+
+      // Some settings can be set on the app layer level, layer level or service level (default
+      // layer settings). These settings should be used in-order: from app layer if set, otherwise
+      // from layer level, from default layer setting or the default.
+
+      // An empty (blank) string means it is not set. To explicitly clear a layer level string
+      // setting for an app, an admin should set the app layer setting to a spaces.
+
+      // The JSON wrapper classes have "null" values as defaults which means not-set. The defaults
+      // (such as tilingDisabled being false) are applied below although the frontend would also
+      // treat null as non-truthy.
+
+      // When default layer settings or settings for a specific layer are missing, construct new
+      // settings objects so no null check is needed. All properties are initialized to null
+      // (not-set) by default.
       GeoServiceDefaultLayerSettings defaultLayerSettings =
           Optional.ofNullable(service.getSettings().getDefaultLayerSettings())
               .orElseGet(GeoServiceDefaultLayerSettings::new);
-      Optional<GeoServiceLayerSettings> serviceLayerSettings =
-          Optional.ofNullable(serviceWithLayer.getRight());
+      GeoServiceLayerSettings serviceLayerSettings =
+          Optional.ofNullable(serviceWithLayer.getRight()).orElseGet(GeoServiceLayerSettings::new);
 
       AppLayerSettings appLayerSettings =
           Objects.requireNonNullElse(app.getAppLayerSettings(layerRef), new AppLayerSettings());
 
       String title =
           Objects.requireNonNullElse(
-              appLayerSettings.getTitle(),
+              nullIfEmpty(appLayerSettings.getTitle()),
+              // Get title from layer settings, title from capabilities or the layer name -- never
+              // null
               service.getTitleWithSettingsOverrides(layerRef.getLayerName()));
 
+      // These settings can be overridden per appLayer
+
       String description =
-          ObjectUtils.getFirstNonNull(
-              appLayerSettings::getDescription,
-              () -> serviceLayerSettings.map(GeoServiceLayerSettings::getDescription).orElse(null),
-              defaultLayerSettings::getDescription);
+          ObjectUtils.firstNonNull(
+              nullIfEmpty(appLayerSettings.getDescription()),
+              nullIfEmpty(serviceLayerSettings.getDescription()),
+              nullIfEmpty(defaultLayerSettings.getDescription()));
 
       String attribution =
-          ObjectUtils.getFirstNonNull(
-              appLayerSettings::getAttribution,
-              () -> serviceLayerSettings.map(GeoServiceLayerSettings::getAttribution).orElse(null),
-              defaultLayerSettings::getAttribution);
+          ObjectUtils.firstNonNull(
+              nullIfEmpty(appLayerSettings.getAttribution()),
+              nullIfEmpty(serviceLayerSettings.getAttribution()),
+              nullIfEmpty(defaultLayerSettings.getAttribution()));
+
+      // These settings can't be overridden per appLayer but can be set on a per-layer and
+      // service-level default basis
 
       boolean tilingDisabled =
-          serviceLayerSettings
-              .map(GeoServiceLayerSettings::getTilingDisabled)
-              .orElse(defaultLayerSettings.getTilingDisabled());
+          ObjectUtils.firstNonNull(
+              serviceLayerSettings.getTilingDisabled(),
+              defaultLayerSettings.getTilingDisabled(),
+              false);
       Integer tilingGutter =
-          serviceLayerSettings
-              .map(GeoServiceLayerSettings::getTilingGutter)
-              .orElse(defaultLayerSettings.getTilingGutter());
+          ObjectUtils.firstNonNull(
+              serviceLayerSettings.getTilingGutter(), defaultLayerSettings.getTilingGutter(), 0);
       boolean hiDpiDisabled =
-          serviceLayerSettings
-              .map(GeoServiceLayerSettings::getHiDpiDisabled)
-              .orElse(defaultLayerSettings.getHiDpiDisabled());
+          ObjectUtils.firstNonNull(
+              serviceLayerSettings.getHiDpiDisabled(),
+              defaultLayerSettings.getHiDpiDisabled(),
+              false);
       TileLayerHiDpiMode hiDpiMode =
-          serviceLayerSettings
-              .map(GeoServiceLayerSettings::getHiDpiMode)
-              .orElse(defaultLayerSettings.getHiDpiMode());
-      // Do not get from defaultLayerSettings
-      String hiDpiSubstituteLayer =
-          serviceLayerSettings.map(GeoServiceLayerSettings::getHiDpiSubstituteLayer).orElse(null);
+          ObjectUtils.firstNonNull(
+              serviceLayerSettings.getHiDpiMode(), defaultLayerSettings.getHiDpiMode(), null);
+      // Do not get from defaultLayerSettings because a default wouldn't make sense
+      String hiDpiSubstituteLayer = serviceLayerSettings.getHiDpiSubstituteLayer();
 
       TMFeatureType tmft = service.findFeatureTypeForLayer(serviceLayer, featureSourceRepository);
 
