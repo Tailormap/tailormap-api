@@ -308,18 +308,23 @@ components:
               hiDpiDisabled: true
 
     LayerSettings:
-      description: Settings applying to any kind of layer.
+      description: Settings applying to any kind of layer of a GeoService.
       properties:
         title:
           description: Override default title, null if not overridden.
+          nullable: true
           type: string
         hiDpiDisabled:
+          nullable: true
           type: boolean
-          default: false
         featureType:
-          $ref: FeatureTypeRef
+          $ref: '#/components/schemas/FeatureTypeRef'
         attribution:
           description: 'Attribution to show for this layer.'
+          nullable: true
+          type: string
+        description:
+          description: 'Description to show for this layer.'
           nullable: true
           type: string
         authorizationRules:
@@ -346,9 +351,11 @@ components:
           required: [tilingDisabled, tilingGutter]
           properties:
             tilingDisabled:
+              nullable: true
               type: boolean
               default: false
             tilingGutter:
+              nullable: true
               type: integer
               # TODO: set global default here or in frontend?
 
@@ -361,6 +368,7 @@ components:
             hiDpiMode:
               $ref: './common-schemas.yaml#/components/schemas/TileLayerHiDpiMode'
             hiDpiSubstituteLayer:
+              nullable: true
               description: Layer name of this service to substitute when rendering at high dpi.
               type: string
 
@@ -499,6 +507,7 @@ components:
     AppLayerSettings:
       properties:
         title:
+          nullable: true
           type: string
         opacity:
           type: integer
@@ -506,6 +515,10 @@ components:
           default: 100
         attribution:
           description: 'Attribution to show for this layer.'
+          nullable: true
+          type: string
+        description:
+          description: 'Description to show for this layer.'
           nullable: true
           type: string
         # TODO add properties for selected WMS style, feature info popup template, etc.
