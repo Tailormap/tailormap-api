@@ -33,29 +33,6 @@ components:
           type: string
         id:
           type: string
-
-    EntityCreatedEvent:
-      description: 'Entity created'
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/EntityEvent'
-        - type: object
-          properties:
-            object:
-              type: object
-
-    EntityDeletedEvent:
-      description: 'Entity deleted'
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/EntityEvent'
-
-    EntityUpdatedEvent:
-      description: 'Entity created'
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/EntityEvent'
-        - type: object
-          properties:
-            object:
-              type: object
+        object:
+          description: 'The entity in JSON, only included in created and updated events.'
+          type: object

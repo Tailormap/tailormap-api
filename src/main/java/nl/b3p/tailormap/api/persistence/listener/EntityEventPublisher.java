@@ -19,12 +19,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PostPersist;
 import javax.persistence.PostRemove;
 import javax.persistence.PostUpdate;
-import nl.b3p.tailormap.api.admin.model.EntityCreatedEvent;
+import nl.b3p.tailormap.api.admin.model.EntityEvent;
 import nl.b3p.tailormap.api.admin.model.ServerSentEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -38,19 +39,21 @@ public class EntityEventPublisher {
 
   @Autowired @Lazy private SseEventBus eventBus;
 
+  @Autowired @Lazy private RepositoryRestMvcConfiguration repositoryRestMvcConfiguration;
+
   public EntityEventPublisher() {}
 
-  private void sendEvent(ServerSentEvent.EventTypeEnum eventTypeEnum, Object entity) {
+  private void sendEvent(
+      ServerSentEvent.EventTypeEnum eventTypeEnum, Object entity, boolean serializeEntity) {
     Object id = null;
     try {
       id = entityManagerFactory.getPersistenceUnitUtil().getIdentifier(entity);
-      ServerSentEvent event =
-          new ServerSentEvent()
-              .eventType(eventTypeEnum)
-              .details(
-                  new EntityCreatedEvent()
-                      .entityName(entity.getClass().getSimpleName())
-                      .id(String.valueOf(id)));
+      EntityEvent entityEvent =
+          new EntityEvent().entityName(entity.getClass().getSimpleName()).id(String.valueOf(id));
+      if (serializeEntity) {
+        entityEvent.setObject(repositoryRestMvcConfiguration.objectMapper().valueToTree(entity));
+      }
+      ServerSentEvent event = new ServerSentEvent().eventType(eventTypeEnum).details(entityEvent);
       this.eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(event)));
     } catch (Exception e) {
       logger.error(
@@ -64,16 +67,16 @@ public class EntityEventPublisher {
 
   @PostPersist
   public void postPersist(Object entity) {
-    sendEvent(ENTITY_CREATED, entity);
+    sendEvent(ENTITY_CREATED, entity, true);
   }
 
   @PostRemove
   public void postRemove(Object entity) {
-    sendEvent(ENTITY_DELETED, entity);
+    sendEvent(ENTITY_DELETED, entity, false);
   }
 
   @PostUpdate
   public void postUpdate(Object entity) {
-    sendEvent(ENTITY_UPDATED, entity);
+    sendEvent(ENTITY_UPDATED, entity, true);
   }
 }
