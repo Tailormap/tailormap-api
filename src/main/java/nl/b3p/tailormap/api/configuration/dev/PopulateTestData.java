@@ -533,7 +533,7 @@ public class PopulateTestData {
                                               .featureTypeName("wegdeel")),
                               "oracle:WATERDEEL",
                                   new GeoServiceLayerSettings()
-                                      .attribution("This layer shows data from Oracle Spatial.")
+                                      .description("This layer shows data from Oracle Spatial.")
                                       .featureType(
                                           new FeatureTypeRef()
                                               .featureSourceId(featureSources.get("oracle").getId())
