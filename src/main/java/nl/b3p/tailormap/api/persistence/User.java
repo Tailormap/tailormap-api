@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -23,12 +24,14 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
 import nl.b3p.tailormap.api.util.Constants;
 import nl.b3p.tailormap.api.util.TMPasswordDeserializer;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "users")
+@EntityListeners(EntityEventPublisher.class)
 public class User {
 
   @Id
