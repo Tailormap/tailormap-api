@@ -466,6 +466,11 @@ SPDX-License-Identifier: MIT
             <artifactId>nbvcxz</artifactId>
             <version>1.5.1</version>
         </dependency>
+        <dependency>
+            <groupId>ch.rasc</groupId>
+            <artifactId>sse-eventbus</artifactId>
+            <version>1.1.9</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
@@ -745,7 +750,14 @@ SPDX-License-Identifier: MIT
                         <arg>-XDcompilePolicy=simple</arg>
                         <arg>-Xplugin:ErrorProne -XepExcludedPaths:${errorProneExcludePaths} ${errorProneFlags}</arg>
                         <arg>-Xlint:${compiler.lint}</arg>
-                        <arg>-Werror</arg>
+                        <!--
+                          Disabled because of this warning after adding sse-eventbus dependency:
+                          java: unknown enum constant org.immutables.value.Value.Style.ImplementationVisibility.PACKAGE
+                            reason: class file for org.immutables.value.Value$Style$ImplementationVisibility not found
+                          Maybe add this dependency? https://stackoverflow.com/questions/64433666/java-immutable-builder-classes-not-detected-by-intellij
+                          Only a problem when running from IntelliJ, not using spring-boot:run
+                        -->
+                        <!--<arg>-Werror</arg>-->
                         <arg>-Xmaxwarns</arg>
                         <arg>1000</arg>
                     </compilerArgs>
@@ -786,6 +798,33 @@ SPDX-License-Identifier: MIT
                             </configOptions>
                             <!--              <instantiationTypes>array=ArrayList,map=HashMap,object=Map</instantiationTypes>-->
                             <!--              <typeMappings>array=List,map=Map,object=Map</typeMappings>-->
+                            <generateApis>false</generateApis>
+                            <generateModels>true</generateModels>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <generateModelTests>false</generateModelTests>
+                            <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-admin-models</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/admin-schemas.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <modelPackage>nl.b3p.tailormap.api.admin.model</modelPackage>
+                            <library>spring-boot</library>
+                            <configOptions>
+                                <dateLibrary>java8</dateLibrary>
+                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                <openApiNullable>false</openApiNullable>
+                                <serializableModel>true</serializableModel>
+                                <useOptional>true</useOptional>
+                                <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
+                                <developerOrganization>${project.organization.name}</developerOrganization>
+                                <developerOrganizationUrl>${project.organization.url}</developerOrganizationUrl>
+                            </configOptions>
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>
                             <generateSupportingFiles>false</generateSupportingFiles>
@@ -1100,6 +1139,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>com.squareup.okhttp3:*</exclude>
                                         <!-- lots of Jackson dependencies -->
                                         <exclude>org.flywaydb:flyway-core</exclude>
+                                        <exclude>ch.rasc:sse-eventbus</exclude>
                                     </excludes>
                                 </banTransitiveDependencies>
                             </rules>

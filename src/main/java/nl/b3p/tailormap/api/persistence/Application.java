@@ -15,6 +15,7 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,6 +27,7 @@ import nl.b3p.tailormap.api.persistence.json.AppSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
+import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
 import nl.b3p.tailormap.api.viewer.model.AppStyling;
 import nl.b3p.tailormap.api.viewer.model.Component;
 import nl.b3p.tailormap.api.viewer.model.ViewerResponse;
@@ -37,6 +39,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 @Entity
+@EntityListeners(EntityEventPublisher.class)
 public class Application {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

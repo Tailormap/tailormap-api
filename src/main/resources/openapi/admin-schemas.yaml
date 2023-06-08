@@ -1,0 +1,61 @@
+#
+# Copyright (C) 2021 B3Partners B.V.
+#
+# SPDX-License-Identifier: MIT
+#
+openapi: 3.0.3
+info:
+  title: 'admin-models'
+  description: 'Tailormap admin API models'
+  version: '1.0'
+
+# no servers or paths, just the models in this document
+servers: [ ]
+paths: { }
+
+components:
+  schemas:
+    ServerSentEvent:
+      description: 'Server sent event'
+      type: object
+      properties:
+        eventType:
+          type: string
+          description: 'Type of event'
+          enum: ['keep-alive', 'entity-created', 'entity-deleted', 'entity-updated']
+        details:
+          type: object
+
+    EntityEvent:
+      type: object
+      properties:
+        entityName:
+          type: string
+        id:
+          type: string
+
+    EntityCreatedEvent:
+      description: 'Entity created'
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/EntityEvent'
+        - type: object
+          properties:
+            object:
+              type: object
+
+    EntityDeletedEvent:
+      description: 'Entity deleted'
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/EntityEvent'
+
+    EntityUpdatedEvent:
+      description: 'Entity created'
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/EntityEvent'
+        - type: object
+          properties:
+            object:
+              type: object
