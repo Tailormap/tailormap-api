@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,12 +24,10 @@ import nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper;
 import nl.b3p.tailormap.api.persistence.json.FeatureTypeSettings;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.json.TMFeatureTypeInfo;
-import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "feature_type")
-@EntityListeners(EntityEventPublisher.class)
 public class TMFeatureType {
 
   @Id
