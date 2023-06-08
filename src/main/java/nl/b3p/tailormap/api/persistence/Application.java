@@ -234,6 +234,7 @@ public class Application {
 
   // </editor-fold>
 
+  @JsonIgnore
   public Stream<AppTreeLayerNode> getAllAppTreeLayerNode() {
     if (this.getContentRoot() == null) {
       return Stream.empty();
