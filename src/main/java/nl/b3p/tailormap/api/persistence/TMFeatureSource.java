@@ -13,6 +13,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -29,10 +30,12 @@ import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
+import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "feature_source")
+@EntityListeners(EntityEventPublisher.class)
 public class TMFeatureSource {
 
   public enum Protocol {

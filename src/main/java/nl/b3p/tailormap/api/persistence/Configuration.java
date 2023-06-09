@@ -8,11 +8,14 @@ package nl.b3p.tailormap.api.persistence;
 import com.fasterxml.jackson.databind.JsonNode;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.Version;
+import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.hibernate.annotations.Type;
 
 @Entity
+@EntityListeners(EntityEventPublisher.class)
 public class Configuration {
   public static final String DEFAULT_APP = "default-app";
 
