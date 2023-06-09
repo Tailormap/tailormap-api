@@ -5,23 +5,27 @@
  */
 package nl.b3p.tailormap.api.configuration;
 
+import ch.rasc.sse.eventbus.config.EnableSseEventBus;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = &quot;tailormap-api&quot;)
-<span class="nc" id="L15">public class TailormapConfig {</span>
+@EnableSseEventBus
+@EnableScheduling
+<span class="nc" id="L19">public class TailormapConfig {</span>
   private int timeout;
 
   public int getTimeout() {
-<span class="nc" id="L19">    return timeout;</span>
+<span class="nc" id="L23">    return timeout;</span>
   }
 
   public TailormapConfig setTimeout(int timeout) {
-<span class="nc" id="L23">    this.timeout = timeout;</span>
-<span class="nc" id="L24">    return this;</span>
+<span class="nc" id="L27">    this.timeout = timeout;</span>
+<span class="nc" id="L28">    return this;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

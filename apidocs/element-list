@@ -1,4 +1,5 @@
 nl.b3p.tailormap.api
+nl.b3p.tailormap.api.admin.model
 nl.b3p.tailormap.api.annotation
 nl.b3p.tailormap.api.configuration
 nl.b3p.tailormap.api.configuration.base
@@ -13,6 +14,7 @@ nl.b3p.tailormap.api.geotools.wfs
 nl.b3p.tailormap.api.persistence
 nl.b3p.tailormap.api.persistence.helper
 nl.b3p.tailormap.api.persistence.json
+nl.b3p.tailormap.api.persistence.listener
 nl.b3p.tailormap.api.persistence.projections
 nl.b3p.tailormap.api.repository
 nl.b3p.tailormap.api.repository.events
