@@ -24,7 +24,7 @@ jobs:
         run: mvn -U package -DskipTests -DskipITs -Dmaven.javadoc.skip=true
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.11.0
+        uses: aquasecurity/trivy-action@0.11.2
         # docker run --rm -v trivy_cache:/root/.cache/ aquasec/trivy image ghcr.io/b3partners/tailormap-api:snapshot
         with:
           image-ref: 'ghcr.io/b3partners/tailormap-api:snapshot'
@@ -34,7 +34,7 @@ jobs:
           limit-severities-for-sarif: true
 
           #      - name: Run Trivy vulnerability scanner in repo mode
-          #        uses: aquasecurity/trivy-action@0.11.0
+          #        uses: aquasecurity/trivy-action@0.11.2
           #        with:
           #          scan-type: 'fs'
           #          ignore-unfixed: true
