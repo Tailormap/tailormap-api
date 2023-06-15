@@ -12,5 +12,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @PreAuthorizeAdmin
-@RepositoryRestResource(excerptProjection = GroupName.class)
+@RepositoryRestResource()
 public interface GroupRepository extends JpaRepository<Group, String> {}

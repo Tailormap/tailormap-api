@@ -17,7 +17,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 @PreAuthorizeAdmin
-@RepositoryRestResource(excerptProjection = UserGroups.class)
+@RepositoryRestResource()
 public interface UserRepository extends JpaRepository<User, String> {
   @Override
   @PreAuthorize("permitAll()")
