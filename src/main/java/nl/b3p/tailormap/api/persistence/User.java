@@ -143,6 +143,10 @@ public class User {
     return this;
   }
 
+  public Set<String> getGroupNames() {
+    return groups.stream().map(Group::getName).collect(java.util.stream.Collectors.toSet());
+  }
+
   public ZonedDateTime getValidUntil() {
     return validUntil;
   }
