@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeoServiceEventHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.repository.events</a> &gt; <span class="el_source">GeoServiceEventHandler.java</span></div><h1>GeoServiceEventHandler.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.repository.events;
+
+import io.hypersistence.tsid.TSID;
+import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
+import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
+import org.springframework.stereotype.Component;
+
+@RepositoryEventHandler
+@Component
+public class GeoServiceEventHandler {
+  private final GeoServiceHelper geoServiceHelper;
+
+<span class="nc" id="L21">  public GeoServiceEventHandler(GeoServiceHelper geoServiceHelper) {</span>
+<span class="nc" id="L22">    this.geoServiceHelper = geoServiceHelper;</span>
+<span class="nc" id="L23">  }</span>
+
+  @HandleBeforeCreate
+  public void assignId(GeoService geoService) {
+<span class="nc bnc" id="L27" title="All 2 branches missed.">    if (StringUtils.isBlank(geoService.getId())) {</span>
+      // We kind of misuse TSIDs here, because we store it as a string. This is because the id
+      // string can also be manually assigned. There won't be huge numbers of GeoServices, so it's
+      // more of a convenient way to generate an ID that isn't a huge UUID string.
+<span class="nc" id="L31">      geoService.setId(TSID.fast().toString());</span>
+    }
+<span class="nc" id="L33">  }</span>
+
+  @HandleBeforeCreate
+  public void loadCapabilities(GeoService geoService) throws Exception {
+<span class="nc" id="L37">    geoServiceHelper.loadServiceCapabilities(geoService);</span>
+<span class="nc" id="L38">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
