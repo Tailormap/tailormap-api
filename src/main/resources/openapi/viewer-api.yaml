@@ -998,3 +998,137 @@ paths:
             text/plain:
               schema:
                 type: string
+
+
+  /{viewerKind}/{name}/layer/{appLayerId}/feature/{fid}:
+    summary: 'Operations on a single feature.'
+    description: 'Operations on a single feature referenced by its FID. The FID is a unique identifier for a feature within a layer.
+      It is assigned by the datasource (primary key) and is stable between requests. The FID is required for PATCH and
+      DELETE requests, and should generally be omitted for POST requests as the datasource will assign the primary key.'
+    parameters:
+      - in: path
+        name: viewerKind
+        required: true
+        schema:
+          type: string
+          enum:
+            - app
+            - service
+      - in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: appLayerId
+        required: true
+        schema:
+          type: string
+      - in: path
+        description: '
+        The Feature ID. This *must* be given for PATCH and DELETE requests and
+         in general *should* be omitted for POST requests as the underlying datasource will assign it (YMMV).'
+        name: fid
+        required: false
+        schema:
+          type: string
+    post:
+      operationId: 'createFeature'
+      description: 'Create a new feature. The fid parameter can be omitted.'
+      security:
+        - formAuth: [ ]
+      requestBody:
+        description: 'The feature to create.'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './viewer-schemas.yaml#/components/schemas/Feature'
+      responses:
+        201:
+          description: 'The created feature is returned.'
+          content:
+            application/json:
+              schema:
+                $ref: './viewer-schemas.yaml#/components/schemas/Feature'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters or content that can not be processed or are incomplete.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+    patch:
+      operationId: 'updateFeature'
+      description: 'Update an existing feature with only the given fields. The FID must be given, the payload only has updated fields.'
+      security:
+        - formAuth: [ ]
+      requestBody:
+        description: 'The feature to update. This feature can be "incomplete", only the given fields will be updated.'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './viewer-schemas.yaml#/components/schemas/Feature'
+      responses:
+        200:
+          description: 'Feature patched.'
+          content:
+            application/json:
+              schema:
+                $ref: './viewer-schemas.yaml#/components/schemas/Feature'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+    delete:
+      operationId: 'deleteFeature'
+      description: 'Delete an existing feature. The FID *must* be given.'
+      security:
+        - formAuth: [ ]
+      responses:
+        204:
+          description: 'Feature deleted.'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
