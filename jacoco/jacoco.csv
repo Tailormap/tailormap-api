@@ -27,8 +27,8 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.dev,PopulateTestData,
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.base,TailormapApiConfiguration,3,0,0,0,1,0,1,0,1,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.base,FrontController,9,0,0,0,4,0,4,0,4,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.processing,GeometryProcessor,16,132,5,13,6,33,5,9,0,5
-Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,TailormapConfig,11,0,0,0,4,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,JPAConfiguration,16,0,0,0,5,0,3,0,3,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,TailormapConfig,11,0,0,0,4,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,FilteringConfig,36,0,0,0,7,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,TailormapDatabaseMigration,59,0,6,0,17,0,7,0,4,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,TailormapPasswordStrengthConfig,12,13,0,0,7,6,4,4,4,4
@@ -72,6 +72,6 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.featuresources,WFSFeatureS
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,ExitAfterCreatingDDL,32,0,0,0,10,0,4,0,4,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,FlywayCleanSchema,5,0,0,0,2,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,FlywayStartWithNewSchema,18,0,0,0,7,0,3,0,3,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,FlywayDefaultStrategy,15,0,0,0,4,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,DeleteDDLScriptBeforeCreating,60,0,6,0,18,0,10,0,7,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,FlywayDefaultStrategy,15,0,0,0,4,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,FlywayMigrationResult,10,0,0,0,4,0,3,0,3,0
