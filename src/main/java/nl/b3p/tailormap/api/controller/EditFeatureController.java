@@ -9,20 +9,31 @@ import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.util.Constants;
+import nl.b3p.tailormap.api.viewer.model.Feature;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.util.factory.GeoTools;
+import org.locationtech.jts.geom.Geometry;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.slf4j.Logger;
@@ -40,14 +51,18 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 @AppRestController
 @Validated
 @RequestMapping(
-    path =
-        "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/edit/feature/{fid}",
+    path = {
+      "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/edit/feature/{fid}",
+      // only for POST
+      "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/edit/feature"
+    },
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class EditFeatureController implements Constants {
   private static final Logger logger =
@@ -65,18 +80,77 @@ public class EditFeatureController implements Constants {
     this.featureSourceRepository = featureSourceRepository;
   }
 
-  @PostMapping
+  @Transactional
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   @Timed(value = "create_feature", description = "time spent to process create feature call")
-  public ResponseEntity<Serializable> createFeature() {
+  public ResponseEntity<Serializable> createFeature(
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
+      @RequestBody Feature completeFeature) {
     checkAuthentication();
+
     throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Not implemented");
   }
 
-  @PatchMapping
+  @Transactional
+  @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   @Timed(value = "update_feature", description = "time spent to process patch feature call")
-  public ResponseEntity<Serializable> patchFeature() {
+  public ResponseEntity<Serializable> patchFeature(
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
+      @PathVariable String fid,
+      @RequestBody Feature partialFeature) {
+
     checkAuthentication();
-    throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Not implemented");
+
+    TMFeatureType tmFeatureType = getFeatureType(appTreeLayerNode, service, layer);
+
+    List<String> attributes =
+        tmFeatureType.getAttributes().stream()
+            .map(TMAttributeDescriptor::getName)
+            .filter(partialFeature.getAttributes()::containsKey)
+            .distinct()
+            .collect(Collectors.toList());
+    List<Object> values = new ArrayList<>(partialFeature.getAttributes().values());
+
+    // check for attributes that are not available on the feature type
+    // TODO quick-and-dirty check, should be done comparing names
+    if (partialFeature.getAttributes().size() != attributes.size()) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Feature cannot be edited, one or more requested attributes are not available on the feature type");
+    }
+
+    Feature patchedFeature;
+    SimpleFeatureSource fs = null;
+    try (Transaction transaction = new DefaultTransaction("edit")) {
+      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
+      // find feature to update
+      final Filter filter = ff.id(ff.featureId(fid));
+      if (!fs.getFeatures(filter).isEmpty() && fs instanceof SimpleFeatureStore) {
+        // NOTE geotools does not report back that the feature was updated, no error === success
+        ((SimpleFeatureStore) fs).setTransaction(transaction);
+        ((SimpleFeatureStore) fs)
+            .modifyFeatures(attributes.toArray(new String[] {}), values.toArray(), filter);
+        transaction.commit();
+        // find the updated feature to return
+        patchedFeature = getFeature(fs, filter);
+      } else {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Feature cannot be edited, it does not exist or is not editable");
+      }
+    } catch (RuntimeException | IOException e) {
+      // either opening datastore, modify or transaction failed
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+    } finally {
+      if (fs != null) {
+        fs.getDataStore().dispose();
+      }
+    }
+    return new ResponseEntity<>(patchedFeature, HttpStatus.OK);
   }
 
   @Transactional
@@ -98,8 +172,7 @@ public class EditFeatureController implements Constants {
       Filter filter = ff.id(ff.featureId(fid));
       if (fs instanceof FeatureStore) {
         // NOTE geotools does not report back that the feature does not exist, nor the number of
-        // deleted features
-        // no error === success
+        // deleted features, no error === success
         ((FeatureStore<?, ?>) fs).setTransaction(transaction);
         ((FeatureStore<?, ?>) fs).removeFeatures(filter);
         transaction.commit();
@@ -139,5 +212,28 @@ public class EditFeatureController implements Constants {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Layer does not have feature type");
     }
     return tmft;
+  }
+
+  private Feature getFeature(SimpleFeatureSource fs, Filter filter) throws IOException {
+    Feature modelFeature = null;
+    try (SimpleFeatureIterator feats = fs.getFeatures(filter).features()) {
+      if (feats.hasNext()) {
+        SimpleFeature simpleFeature = feats.next();
+        modelFeature =
+            new Feature()
+                .geometry(
+                    GeometryProcessor.processGeometry(
+                        (simpleFeature.getDefaultGeometry()), false, null))
+                .fid(simpleFeature.getID());
+        for (AttributeDescriptor att : simpleFeature.getFeatureType().getAttributeDescriptors()) {
+          Object value = simpleFeature.getAttribute(att.getName());
+          if (value instanceof Geometry) {
+            value = GeometryProcessor.geometryToJson((Geometry) value);
+          }
+          modelFeature.putAttributesItem(att.getLocalName(), value);
+        }
+      }
+    }
+    return modelFeature;
   }
 }
