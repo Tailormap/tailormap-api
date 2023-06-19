@@ -1000,10 +1000,10 @@ paths:
                 type: string
 
 
-  /{viewerKind}/{name}/layer/{appLayerId}/feature/{fid}:
-    summary: 'Operations on a single feature.'
+  /{viewerKind}/{name}/layer/{appLayerId}/edit/feature/{fid}:
+    summary: 'Edit operations on a single feature.'
     description: 'Operations on a single feature referenced by its FID. The FID is a unique identifier for a feature within a layer.
-      It is assigned by the datasource (primary key) and is stable between requests. The FID is required for PATCH and
+      It is assigned by the datasource (using the primary key) and is stable between requests. The FID is required for PATCH and
       DELETE requests, and should generally be omitted for POST requests as the datasource will assign the primary key.'
     parameters:
       - in: path
