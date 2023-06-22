@@ -9,14 +9,15 @@ import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
@@ -107,21 +108,29 @@ public class EditFeatureController implements Constants {
 
     TMFeatureType tmFeatureType = getFeatureType(appTreeLayerNode, service, layer);
 
-    List<String> attributes =
+    Map<String, Object> attributesMap = partialFeature.getAttributes();
+    Set<String> attributeNames =
         tmFeatureType.getAttributes().stream()
             .map(TMAttributeDescriptor::getName)
-            .filter(partialFeature.getAttributes()::containsKey)
-            .distinct()
-            .collect(Collectors.toList());
-    List<Object> values = new ArrayList<>(partialFeature.getAttributes().values());
+            .collect(Collectors.toSet());
 
-    // check for attributes that are not available on the feature type
-    // TODO quick-and-dirty check, should be done comparing names
-    if (partialFeature.getAttributes().size() != attributes.size()) {
+    if (!attributeNames.containsAll(partialFeature.getAttributes().keySet())) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST,
           "Feature cannot be edited, one or more requested attributes are not available on the feature type");
     }
+
+    // handle any geometry attributes
+    tmFeatureType.getAttributes().stream()
+        .filter(attr -> TMAttributeTypeHelper.isGeometry(attr.getType()))
+        .filter(attr -> partialFeature.getAttributes().containsKey(attr.getName()))
+        .forEach(
+            attr -> {
+              Geometry geometry =
+                  GeometryProcessor.wktToGeometry(
+                      (String) partialFeature.getAttributes().get(attr.getName()));
+              attributesMap.put(attr.getName(), geometry);
+            });
 
     Feature patchedFeature;
     SimpleFeatureSource fs = null;
@@ -133,7 +142,10 @@ public class EditFeatureController implements Constants {
         // NOTE geotools does not report back that the feature was updated, no error === success
         ((SimpleFeatureStore) fs).setTransaction(transaction);
         ((SimpleFeatureStore) fs)
-            .modifyFeatures(attributes.toArray(new String[] {}), values.toArray(), filter);
+            .modifyFeatures(
+                attributesMap.keySet().toArray(new String[] {}),
+                attributesMap.values().toArray(),
+                filter);
         transaction.commit();
         // find the updated feature to return
         patchedFeature = getFeature(fs, filter);
@@ -228,7 +240,7 @@ public class EditFeatureController implements Constants {
         for (AttributeDescriptor att : simpleFeature.getFeatureType().getAttributeDescriptors()) {
           Object value = simpleFeature.getAttribute(att.getName());
           if (value instanceof Geometry) {
-            value = GeometryProcessor.geometryToJson((Geometry) value);
+            value = GeometryProcessor.geometryToWKT((Geometry) value);
           }
           modelFeature.putAttributesItem(att.getLocalName(), value);
         }

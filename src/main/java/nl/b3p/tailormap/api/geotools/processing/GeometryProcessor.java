@@ -10,8 +10,11 @@ import java.nio.charset.StandardCharsets;
 import javax.validation.constraints.NotNull;
 import org.geotools.data.geojson.GeoJSONWriter;
 import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.WKTReader2;
+import org.geotools.geometry.jts.WKTWriter2;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTConstants;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.precision.GeometryPrecisionReducer;
@@ -117,5 +120,22 @@ public final class GeometryProcessor {
 
   public static String geometryToJson(Geometry geom) {
     return GeoJSONWriter.toGeoJSON(geom);
+  }
+
+  public static String geometryToWKT(@NotNull Geometry geom) {
+    WKTWriter2 writer = new WKTWriter2();
+    return writer.write(geom);
+  }
+
+  public static Geometry wktToGeometry(@NotNull String wkt) {
+    if (wkt.length() > 1) {
+      WKTReader2 reader = new WKTReader2();
+      try {
+        return reader.read(wkt);
+      } catch (ParseException e) {
+        return null;
+      }
+    }
+    return null;
   }
 }

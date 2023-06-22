@@ -168,12 +168,21 @@ class EditFeatureControllerIntegrationTest {
                 .with(setServletPath(url))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
-                    "{\"attributes\":{\"inonderzoek\":true, \"class\": \"weggemaaid grasland\"}}"))
+                    "{\"__fid\": \""
+                        + StaticTestData.get("begroeidterreindeel__fid_edit")
+                        + "\",\"attributes\" : { \"inonderzoek\":true, \"class\": \"weggemaaid grasland\", \"geom\" : \""
+                        + StaticTestData.get("begroeidterreindeel__geom_edit")
+                        + "\"}}"))
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.__fid").value(StaticTestData.get("begroeidterreindeel__fid_edit")))
-        .andExpect(jsonPath("$.geometry").isNotEmpty())
+        .andExpect(
+            jsonPath("$.geometry").value(StaticTestData.get("begroeidterreindeel__geom_edit")))
         .andExpect(jsonPath("$.attributes.inonderzoek").value(true))
+        .andExpect(
+            jsonPath("$.attributes.geom")
+                .value(StaticTestData.get("begroeidterreindeel__geom_edit")))
+        .andExpect(jsonPath("$.attributes.geom_kruinlijn").isEmpty())
         .andExpect(jsonPath("$.attributes.class").value("weggemaaid grasland"));
   }
 
@@ -190,11 +199,15 @@ class EditFeatureControllerIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .with(setServletPath(url))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"attributes\":{\"INONDERZOEK\":true, \"CLASS\": \"woeste bergbeek\"}}"))
+                .content(
+                    "{\"attributes\":{\"INONDERZOEK\":true,\"CLASS\":\"woeste bergbeek\",\"GEOM\":\""
+                        + StaticTestData.get("waterdeel__edit_geom")
+                        + "\"}}"))
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.__fid").value(StaticTestData.get("waterdeel__fid_edit")))
         .andExpect(jsonPath("$.geometry").isNotEmpty())
+        .andExpect(jsonPath("$.attributes.GEOM").value(StaticTestData.get("waterdeel__edit_geom")))
         .andExpect(jsonPath("$.attributes.INONDERZOEK").value("true"))
         .andExpect(jsonPath("$.attributes.CLASS").value("woeste bergbeek"));
   }
@@ -213,11 +226,14 @@ class EditFeatureControllerIntegrationTest {
                 .with(setServletPath(url))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
-                    "{\"attributes\":{\"inonderzoek\":true, \"surfacematerial\": \"weggemaaid grasland\"}}"))
+                    "{\"attributes\":{\"inonderzoek\":true,\"surfacematerial\":\"weggemaaid grasland\",\"geom\":\""
+                        + StaticTestData.get("wegdeel__geom_edit")
+                        + "\"}}"))
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.__fid").value(StaticTestData.get("wegdeel__fid_edit")))
-        .andExpect(jsonPath("$.geometry").isNotEmpty())
+        .andExpect(jsonPath("$.geometry").value(StaticTestData.get("wegdeel__geom_edit")))
+        .andExpect(jsonPath("$.attributes.geom").value(StaticTestData.get("wegdeel__geom_edit")))
         .andExpect(jsonPath("$.attributes.inonderzoek").value(true))
         .andExpect(jsonPath("$.attributes.surfacematerial").value("weggemaaid grasland"));
   }
