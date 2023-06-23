@@ -86,7 +86,7 @@ public class FeaturesController implements Constants {
   @Value("${tailormap-api.features.wfs_count_exact:false}")
   private boolean exactWfsCounts;
 
-  @Value("${tailormap-api.features.skip_geometry_output:true}")
+  @Value("${tailormap-api.features.skip_geometry_output:false}")
   private boolean skipGeometryOutput;
 
   private final FilterFactory2 ff =
@@ -456,7 +456,7 @@ public class FeaturesController implements Constants {
               if (skipGeometryOutput) {
                 value = null;
               } else {
-                value = GeometryProcessor.geometryToJson((Geometry) value);
+                value = GeometryProcessor.geometryToWKT((Geometry) value);
               }
             }
             newFeat.putAttributesItem(att.getLocalName(), value);

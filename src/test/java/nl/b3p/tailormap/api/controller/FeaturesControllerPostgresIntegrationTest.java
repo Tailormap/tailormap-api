@@ -18,8 +18,10 @@ import com.jayway.jsonpath.JsonPath;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.stream.Stream;
+import nl.b3p.tailormap.api.StaticTestData;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.viewer.model.Service;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -45,6 +47,7 @@ import org.springframework.test.web.servlet.MvcResult;
 @PostgresIntegrationTest
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
+@Order(1)
 class FeaturesControllerPostgresIntegrationTest {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -755,7 +758,7 @@ class FeaturesControllerPostgresIntegrationTest {
     // you can get the fid by clicking on the Utrecht feature in the map.
     // alternatively this test could be written to use the wfs service to first get Utrecht
     // feature by naam and then do the fid test.
-    final String utrecht__fid = "Provinciegebied.209e5db1-05cc-4201-9ff6-02f60c51b880";
+    final String utrecht__fid = StaticTestData.get("utrecht__fid");
     final String url = apiBasePath + provinciesWFS;
 
     mockMvc

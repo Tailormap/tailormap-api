@@ -134,4 +134,13 @@ class GeometryProcessorTest extends StaticTestData {
     p = null;
     assertEquals("null", GeometryProcessor.geometryToJson(p), "json output should match");
   }
+
+  @Test
+  void testWKTInputOutput() {
+
+    assertEquals(
+        testData.getProperty("RDpointWkt"),
+        GeometryProcessor.geometryToWKT(
+            GeometryProcessor.wktToGeometry(testData.getProperty("RDpointWkt"))));
+  }
 }

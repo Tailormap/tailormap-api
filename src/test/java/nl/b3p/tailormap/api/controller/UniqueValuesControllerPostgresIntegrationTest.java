@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -45,6 +46,7 @@ import org.springframework.test.web.servlet.MvcResult;
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
+@Order(1)
 class UniqueValuesControllerPostgresIntegrationTest {
   private static final String provinciesWFSUrl =
       "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/unique/naam";

@@ -784,7 +784,6 @@ SPDX-License-Identifier: MIT
                             <generatorName>spring</generatorName>
                             <modelPackage>nl.b3p.tailormap.api.persistence.json</modelPackage>
                             <library>spring-boot</library>
-                            <!--              <generateAliasAsModel>false</generateAliasAsModel>-->
                             <configOptions>
                                 <!-- see https://openapi-generator.tech/docs/generators/spring/ -->
                                 <dateLibrary>java8</dateLibrary>
@@ -796,8 +795,6 @@ SPDX-License-Identifier: MIT
                                 <developerOrganization>${project.organization.name}</developerOrganization>
                                 <developerOrganizationUrl>${project.organization.url}</developerOrganizationUrl>
                             </configOptions>
-                            <!--              <instantiationTypes>array=ArrayList,map=HashMap,object=Map</instantiationTypes>-->
-                            <!--              <typeMappings>array=List,map=Map,object=Map</typeMappings>-->
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>
                             <generateSupportingFiles>false</generateSupportingFiles>
@@ -842,9 +839,7 @@ SPDX-License-Identifier: MIT
                             <inputSpec>${project.basedir}/src/main/resources/openapi/viewer-api.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <modelPackage>nl.b3p.tailormap.api.viewer.model</modelPackage>
-                            <!--<invokerPackage>nl.b3p.tailormap.api.invoker</invokerPackage>-->
                             <library>spring-boot</library>
-                            <!--              <generateAliasAsModel>false</generateAliasAsModel>-->
                             <configOptions>
                                 <!-- see https://openapi-generator.tech/docs/generators/spring/ -->
                                 <dateLibrary>java8</dateLibrary>
@@ -863,8 +858,6 @@ SPDX-License-Identifier: MIT
                                 TMGeometryType=nl.b3p.tailormap.api.persistence.json.TMGeometryType,
                                 WMSStyle=nl.b3p.tailormap.api.persistence.json.WMSStyle</importMappings>
                             <ignoreFileOverride>${project.basedir}/src/main/resources/openapi/common-schemas-openapi-ignore</ignoreFileOverride>
-                            <!--              <instantiationTypes>array=ArrayList,map=HashMap,object=Map</instantiationTypes>-->
-                            <!--              <typeMappings>array=List,map=Map,object=Map</typeMappings>-->
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>
                             <generateSupportingFiles>false</generateSupportingFiles>
@@ -1606,9 +1599,9 @@ SPDX-License-Identifier: MIT
                     <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <configuration>
-                            <!-- explicitly run any and all postgresql tests; includes does not work -->
-                            <test>*IntegrationTest</test>
-                            <!-- <includes><include>**/*IntegrationTest.java</include></includes>-->
+                            <includes>
+                                <include>**/*IntegrationTest.java</include>
+                            </includes>
                             <!--suppress UnresolvedMavenProperty -->
                             <argLine>${failsafeArgLine} -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql</argLine>
                             <trimStackTrace>false</trimStackTrace>
