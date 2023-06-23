@@ -156,6 +156,183 @@ class EditFeatureControllerIntegrationTest {
       username = "tm-admin",
       authorities = {ADMIN})
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void testPutPG() throws Exception {
+    final String url = apiBasePath + begroeidterreindeelUrlPostgis;
+    final String gmlid =
+        "aaa"
+            + StaticTestData.get("begroeidterreindeel__fid_edit")
+                .substring(StaticTestData.get("begroeidterreindeel__fid_edit").indexOf('.') + 4);
+    final String fid = "begroeidterreindeel." + gmlid;
+    final String content =
+        "{\"__fid\":\""
+            + fid
+            + "\",\"attributes\":{"
+            + "\"gmlid\":\""
+            + gmlid
+            + "\","
+            + "\"identificatie\":\"B3P."
+            + gmlid
+            + "\","
+            + "\"lv_publicatiedatum\":\"2021-01-15T10:33:08.000+00:00\","
+            + "\"creationdate\":\"2020-12-23\","
+            + "\"tijdstipregistratie\":\"2021-01-15T07:00:12.000+00:00\","
+            + "\"bronhouder\":\"B3P\","
+            + "\"inonderzoek\":true, "
+            + "\"relatievehoogteligging\":0,"
+            + "\"bgt_status\":\"bestaand\","
+            + "\"plus_status\":\"geenWaarde\","
+            + "\"plus_fysiekvoorkomen\":\"waardeOnbekend\","
+            + "\"class\":\"weggemaaid grasland\", "
+            + "\"geom\":\""
+            + StaticTestData.get("begroeidterreindeel__geom_edit")
+            + "\"}}";
+
+    mockMvc
+        .perform(
+            post(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+        .andExpect(status().is2xxSuccessful())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.__fid").value(fid))
+        .andExpect(
+            jsonPath("$.geometry").value(StaticTestData.get("begroeidterreindeel__geom_edit")))
+        .andExpect(jsonPath("$.attributes.inonderzoek").value(true))
+        .andExpect(
+            jsonPath("$.attributes.geom")
+                .value(StaticTestData.get("begroeidterreindeel__geom_edit")))
+        .andExpect(jsonPath("$.attributes.geom_kruinlijn").isEmpty())
+        .andExpect(jsonPath("$.attributes.class").value("weggemaaid grasland"));
+
+    // duplicate PK check
+    mockMvc
+        .perform(
+            post(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+        .andExpect(status().is5xxServerError())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Error inserting features"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void testPutMsSql() throws Exception {
+    final String url = apiBasePath + wegdeelUrlSqlserver;
+    final String gmlid =
+        "b3p"
+            + StaticTestData.get("wegdeel__fid_edit")
+                .substring(StaticTestData.get("wegdeel__fid_edit").indexOf('.') + 4);
+    final String fid = "wegdeel." + gmlid;
+    final String content =
+        "{\"__fid\":\""
+            + fid
+            + "\",\"attributes\":{"
+            + "\"gmlid\":\""
+            + gmlid
+            + "\","
+            + "\"identificatie\":\"B3P."
+            + gmlid
+            + "\","
+            + " \"plus_functiewegdeel\":\"waardeOnbekend\","
+            + " \"creationdate\":\"2016-12-06\","
+            + " \"plus_status\":\"geenWaarde\","
+            + " \"bronhouder\":\"B3P\","
+            + " \"surfacematerial\":\"gesloten verharding\","
+            + " \"plus_fysiekvoorkomenwegdeel\":\"waardeOnbekend\","
+            + " \"geom\":\""
+            + StaticTestData.get("wegdeel__geom_edit")
+            + "\","
+            + " \"geom_kruinlijn\":null,"
+            + " \"bgt_status\":\"bestaand\","
+            + " \"lv_publicatiedatum\":\"2019-11-15T20:18:09.000+00:00\","
+            + " \"relatievehoogteligging\":0,"
+            + " \"function_\":\"rijbaan autosnelweg\","
+            + " \"wegdeeloptalud\":false,"
+            + " \"inonderzoek\":true,"
+            + " \"tijdstipregistratie\": \"2019-11-15T12:52:08.000+00:00\"}}";
+
+    mockMvc
+        .perform(
+            post(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+        .andExpect(status().is2xxSuccessful())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.__fid").value(fid))
+        .andExpect(jsonPath("$.geometry").value(StaticTestData.get("wegdeel__geom_edit")))
+        .andExpect(jsonPath("$.attributes.inonderzoek").value(true))
+        .andExpect(jsonPath("$.attributes.geom").value(StaticTestData.get("wegdeel__geom_edit")))
+        .andExpect(jsonPath("$.attributes.geom_kruinlijn").isEmpty())
+        .andExpect(jsonPath("$.attributes.function_").value("rijbaan autosnelweg"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void testPutOrcl() throws Exception {
+    final String url = apiBasePath + waterdeelUrlOracle;
+    final String gmlid =
+        "b3p"
+            + StaticTestData.get("waterdeel__fid_edit")
+                .substring(StaticTestData.get("waterdeel__fid_edit").indexOf('.') + 4);
+    final String fid = "WATERDEEL." + gmlid;
+    final String content =
+        "{\"__fid\":\""
+            + fid
+            + "\",\"attributes\":{"
+            + "\"GMLID\":\""
+            + gmlid
+            + "\","
+            + "\"IDENTIFICATIE\":\"B3P."
+            + gmlid
+            + "\","
+            + "\"CREATIONDATE\":\"2016-12-06\","
+            + "\"PLUS_STATUS\":\"geenWaarde\","
+            + "\"BRONHOUDER\":\"B3P\","
+            + "\"CLASS\": \"waterloop\","
+            + "\"PLUS_TYPE\":\"waardeOnbekend\","
+            + "\"GEOM\":\""
+            + StaticTestData.get("waterdeel__edit_geom")
+            + "\","
+            + "\"BGT_STATUS\":\"bestaand\","
+            + "\"LV_PUBLICATIEDATUM\":\"2019-11-15T20:18:09.000+00:00\","
+            + "\"RELATIEVEHOOGTELIGGING\":0,"
+            + "\"INONDERZOEK\":true,"
+            + "\"TIJDSTIPREGISTRATIE\": \"2019-11-15T12:52:08.000+00:00\"}}";
+
+    mockMvc
+        .perform(
+            post(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+        .andExpect(status().is2xxSuccessful())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.__fid").value(fid))
+        .andExpect(jsonPath("$.geometry").value(StaticTestData.get("waterdeel__edit_geom")))
+        .andExpect(jsonPath("$.attributes.INONDERZOEK").value("true"))
+        .andExpect(jsonPath("$.attributes.GEOM").value(StaticTestData.get("waterdeel__edit_geom")))
+        .andExpect(jsonPath("$.attributes.CLASS").value("waterloop"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPatchPG() throws Exception {
     final String url =
         apiBasePath

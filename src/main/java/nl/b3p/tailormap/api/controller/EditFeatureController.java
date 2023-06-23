@@ -5,10 +5,12 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.util.Constants;
 import nl.b3p.tailormap.api.viewer.model.Feature;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
@@ -31,12 +34,15 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.util.factory.GeoTools;
+import org.geotools.util.factory.Hints;
 import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.identity.FeatureId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -59,12 +65,7 @@ import org.springframework.web.server.ResponseStatusException;
 @AppRestController
 @Validated
 @RequestMapping(
-    path = {
-      "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/edit/feature/{fid}",
-      // only for POST
-      "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/edit/feature"
-    },
-    produces = MediaType.APPLICATION_JSON_VALUE)
+    path = {"${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/edit/feature"})
 public class EditFeatureController implements Constants {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -82,21 +83,88 @@ public class EditFeatureController implements Constants {
   }
 
   @Transactional
-  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   @Timed(value = "create_feature", description = "time spent to process create feature call")
+  @Counted(value = "create_feature", description = "number of create feature calls")
   public ResponseEntity<Serializable> createFeature(
       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,
       @RequestBody Feature completeFeature) {
+
     checkAuthentication();
 
-    throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Not implemented");
+    TMFeatureType tmFeatureType = getFeatureType(appTreeLayerNode, service, layer);
+
+    Map<String, Object> attributesMap = completeFeature.getAttributes();
+    Set<String> attributeNames =
+        tmFeatureType.getAttributes().stream()
+            .map(TMAttributeDescriptor::getName)
+            .collect(Collectors.toSet());
+
+    if (!attributeNames.containsAll(completeFeature.getAttributes().keySet())) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Feature cannot be edited, one or more requested attributes are not available on the feature type");
+    }
+
+    Feature newFeature;
+    SimpleFeatureSource fs = null;
+
+    try (Transaction transaction = new DefaultTransaction("create")) {
+      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
+
+      SimpleFeature simpleFeature;
+      SimpleFeatureBuilder simpleFeatureBuilder = new SimpleFeatureBuilder(fs.getSchema());
+      if (null != completeFeature.getFid() && !completeFeature.getFid().isEmpty()) {
+        simpleFeature = simpleFeatureBuilder.buildFeature(completeFeature.getFid());
+        simpleFeature.getUserData().put(Hints.USE_PROVIDED_FID, Boolean.TRUE);
+      } else {
+        simpleFeature = simpleFeatureBuilder.buildFeature(null);
+      }
+
+      handleGeometryAttributes(tmFeatureType, completeFeature, attributesMap);
+      for (Map.Entry<String, Object> entry : attributesMap.entrySet()) {
+        simpleFeature.setAttribute(entry.getKey(), entry.getValue());
+      }
+
+      if (fs instanceof SimpleFeatureStore) {
+        ((SimpleFeatureStore) fs).setTransaction(transaction);
+        List<FeatureId> newFids =
+            ((SimpleFeatureStore) fs).addFeatures(DataUtilities.collection(simpleFeature));
+
+        transaction.commit();
+        // find the created feature to return
+        newFeature = getFeature(fs, ff.id(newFids.get(0)));
+      } else {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Feature cannot be added, datasource is not editable");
+      }
+    } catch (RuntimeException | IOException e) {
+      // either opening datastore, modify or transaction failed
+      logger.error("Error creating new feature {}", completeFeature, e);
+      String message = e.getMessage();
+      if (null != e.getCause() && null != e.getCause().getMessage()) {
+        message = e.getCause().getMessage();
+      }
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);
+    } finally {
+      if (fs != null) {
+        fs.getDataStore().dispose();
+      }
+    }
+    return new ResponseEntity<>(newFeature, HttpStatus.OK);
   }
 
   @Transactional
-  @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PatchMapping(
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      path = "/{fid}")
   @Timed(value = "update_feature", description = "time spent to process patch feature call")
+  @Counted(value = "update_feature", description = "number of patch feature calls")
   public ResponseEntity<Serializable> patchFeature(
       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
       @ModelAttribute GeoService service,
@@ -120,17 +188,7 @@ public class EditFeatureController implements Constants {
           "Feature cannot be edited, one or more requested attributes are not available on the feature type");
     }
 
-    // handle any geometry attributes
-    tmFeatureType.getAttributes().stream()
-        .filter(attr -> TMAttributeTypeHelper.isGeometry(attr.getType()))
-        .filter(attr -> partialFeature.getAttributes().containsKey(attr.getName()))
-        .forEach(
-            attr -> {
-              Geometry geometry =
-                  GeometryProcessor.wktToGeometry(
-                      (String) partialFeature.getAttributes().get(attr.getName()));
-              attributesMap.put(attr.getName(), geometry);
-            });
+    handleGeometryAttributes(tmFeatureType, partialFeature, attributesMap);
 
     Feature patchedFeature;
     SimpleFeatureSource fs = null;
@@ -156,7 +214,12 @@ public class EditFeatureController implements Constants {
       }
     } catch (RuntimeException | IOException e) {
       // either opening datastore, modify or transaction failed
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+      logger.error("Error patching feature {}", partialFeature, e);
+      String message = e.getMessage();
+      if (null != e.getCause() && null != e.getCause().getMessage()) {
+        message = e.getCause().getMessage();
+      }
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);
     } finally {
       if (fs != null) {
         fs.getDataStore().dispose();
@@ -166,8 +229,9 @@ public class EditFeatureController implements Constants {
   }
 
   @Transactional
-  @DeleteMapping
+  @DeleteMapping(path = "/{fid}")
   @Timed(value = "delete_feature", description = "time spent to process delete feature call")
+  @Counted(value = "delete_feature", description = "number of delete feature calls")
   public ResponseEntity<Void> deleteFeature(
       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
       @ModelAttribute GeoService service,
@@ -193,6 +257,7 @@ public class EditFeatureController implements Constants {
       }
     } catch (IOException e) {
       // either opening datastore or commit failed
+      logger.error("Error delting feature {}", fid, e);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
     } finally {
       if (fs != null) {
@@ -247,5 +312,20 @@ public class EditFeatureController implements Constants {
       }
     }
     return modelFeature;
+  }
+
+  /** Handle geometry attributes, essentially this is a WKT to Geometry conversion. */
+  private void handleGeometryAttributes(
+      TMFeatureType tmFeatureType, Feature modelFeature, Map<String, Object> attributesMap) {
+    tmFeatureType.getAttributes().stream()
+        .filter(attr -> TMAttributeTypeHelper.isGeometry(attr.getType()))
+        .filter(attr -> modelFeature.getAttributes().containsKey(attr.getName()))
+        .forEach(
+            attr -> {
+              Geometry geometry =
+                  GeometryProcessor.wktToGeometry(
+                      (String) modelFeature.getAttributes().get(attr.getName()));
+              attributesMap.put(attr.getName(), geometry);
+            });
   }
 }

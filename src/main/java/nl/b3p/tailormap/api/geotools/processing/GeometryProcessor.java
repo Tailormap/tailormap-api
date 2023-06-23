@@ -127,8 +127,8 @@ public final class GeometryProcessor {
     return writer.write(geom);
   }
 
-  public static Geometry wktToGeometry(@NotNull String wkt) {
-    if (wkt.length() > 1) {
+  public static Geometry wktToGeometry(String wkt) {
+    if (null != wkt && wkt.length() > 1) {
       WKTReader2 reader = new WKTReader2();
       try {
         return reader.read(wkt);
