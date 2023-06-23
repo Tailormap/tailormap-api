@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 import nl.b3p.tailormap.api.StaticTestData;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.viewer.model.Service;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -46,6 +47,7 @@ import org.springframework.test.web.servlet.MvcResult;
 @PostgresIntegrationTest
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
+@Order(1)
 class FeaturesControllerPostgresIntegrationTest {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

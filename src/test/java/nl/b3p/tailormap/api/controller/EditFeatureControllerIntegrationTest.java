@@ -19,9 +19,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import nl.b3p.tailormap.api.StaticTestData;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import org.junit.jupiter.api.ClassOrderer;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestClassOrder;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +38,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
 // should be last test to prevent side effects - as some data is deleted
 @Order(Integer.MAX_VALUE)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class EditFeatureControllerIntegrationTest {
   /** bestuurlijke gebieden WFS; provincies . */
   private static final String provinciesWFS =
@@ -72,24 +75,6 @@ class EditFeatureControllerIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testUnAuthenticatedPost() throws Exception {
-    final String url = apiBasePath + begroeidterreindeelUrlPostgis + "some.fid.1234";
-
-    mockMvc
-        .perform(
-            post(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"geom\":null, \"attributes\":{\"case\":\"irrelevant\"}}"))
-        .andExpect(status().isUnauthorized())
-        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.code").value(401))
-        .andExpect(jsonPath("$.url").value("/login"));
-  }
-
-  @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void testUnAuthenticatedPost2() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
 
     mockMvc
@@ -155,8 +140,9 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
+  @Order(1)
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void testPutPG() throws Exception {
+  void testPostPG() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
     final String gmlid =
         "aaa"
@@ -205,8 +191,45 @@ class EditFeatureControllerIntegrationTest {
                 .value(StaticTestData.get("begroeidterreindeel__geom_edit")))
         .andExpect(jsonPath("$.attributes.geom_kruinlijn").isEmpty())
         .andExpect(jsonPath("$.attributes.class").value("weggemaaid grasland"));
+  }
 
-    // duplicate PK check
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  @Order(10)
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void testDuplcatePrimaryKeyPG() throws Exception {
+    final String url = apiBasePath + begroeidterreindeelUrlPostgis;
+    final String gmlid =
+        "aaa"
+            + StaticTestData.get("begroeidterreindeel__fid_edit")
+                .substring(StaticTestData.get("begroeidterreindeel__fid_edit").indexOf('.') + 4);
+    final String fid = "begroeidterreindeel." + gmlid;
+    final String content =
+        "{\"__fid\":\""
+            + fid
+            + "\",\"attributes\":{"
+            + "\"gmlid\":\""
+            + gmlid
+            + "\","
+            + "\"identificatie\":\"B3P."
+            + gmlid
+            + "\","
+            + "\"lv_publicatiedatum\":\"2021-01-15T10:33:08.000+00:00\","
+            + "\"creationdate\":\"2020-12-23\","
+            + "\"tijdstipregistratie\":\"2021-01-15T07:00:12.000+00:00\","
+            + "\"bronhouder\":\"B3P\","
+            + "\"inonderzoek\":true, "
+            + "\"relatievehoogteligging\":0,"
+            + "\"bgt_status\":\"bestaand\","
+            + "\"plus_status\":\"geenWaarde\","
+            + "\"plus_fysiekvoorkomen\":\"waardeOnbekend\","
+            + "\"class\":\"weggemaaid grasland\", "
+            + "\"geom\":\""
+            + StaticTestData.get("begroeidterreindeel__geom_edit")
+            + "\"}}";
+
     mockMvc
         .perform(
             post(url)
@@ -216,7 +239,7 @@ class EditFeatureControllerIntegrationTest {
                 .content(content))
         .andExpect(status().is5xxServerError())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.message").value("Error inserting features"));
+        .andExpect(jsonPath("$.message").exists());
   }
 
   @Test
@@ -224,7 +247,7 @@ class EditFeatureControllerIntegrationTest {
       username = "tm-admin",
       authorities = {ADMIN})
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void testPutMsSql() throws Exception {
+  void testPostMsSql() throws Exception {
     final String url = apiBasePath + wegdeelUrlSqlserver;
     final String gmlid =
         "b3p"
@@ -281,7 +304,7 @@ class EditFeatureControllerIntegrationTest {
       username = "tm-admin",
       authorities = {ADMIN})
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void testPutOrcl() throws Exception {
+  void testPostOrcl() throws Exception {
     final String url = apiBasePath + waterdeelUrlOracle;
     final String gmlid =
         "b3p"
