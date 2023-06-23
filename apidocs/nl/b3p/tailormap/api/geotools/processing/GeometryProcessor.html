@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -167,6 +167,11 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#geometryToWKT(org.locationtech.jts.geom.Geometry)">geometryToWKT</a></span>&#8203;(@NotNull org.locationtech.jts.geom.Geometry&nbsp;geom)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static @NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processGeometry(java.lang.Object,java.lang.Boolean,org.opengis.referencing.operation.MathTransform)">processGeometry</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>&nbsp;geometry,
                @NotNull <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;simplifyGeometry,
@@ -174,6 +179,11 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <td class="colLast">
 <div class="block">process the geometry into a (optionally simplified) string representation.</div>
 </td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>static org.locationtech.jts.geom.Geometry</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#wktToGeometry(java.lang.String)">wktToGeometry</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;wkt)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -225,10 +235,29 @@ public static&nbsp;@NotNull <a href="https://docs.oracle.com/en/java/javase/11/d
 <a id="geometryToJson(org.locationtech.jts.geom.Geometry)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>geometryToJson</h4>
 <pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;geometryToJson&#8203;(org.locationtech.jts.geom.Geometry&nbsp;geom)</pre>
+</li>
+</ul>
+<a id="geometryToWKT(org.locationtech.jts.geom.Geometry)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>geometryToWKT</h4>
+<pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;geometryToWKT&#8203;(@NotNull
+                                   @NotNull org.locationtech.jts.geom.Geometry&nbsp;geom)</pre>
+</li>
+</ul>
+<a id="wktToGeometry(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>wktToGeometry</h4>
+<pre class="methodSignature">public static&nbsp;org.locationtech.jts.geom.Geometry&nbsp;wktToGeometry&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;wkt)</pre>
 </li>
 </ul>
 </li>

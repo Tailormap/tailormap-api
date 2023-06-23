@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EditFeatureController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.controller</a> &gt; <span class="el_source">EditFeatureController.java</span></div><h1>EditFeatureController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.controller;
+
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import nl.b3p.tailormap.api.annotation.AppRestController;
+import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
+import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper;
+import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
+import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
+import nl.b3p.tailormap.api.util.Constants;
+import nl.b3p.tailormap.api.viewer.model.Feature;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureStore;
+import org.geotools.data.Transaction;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.data.simple.SimpleFeatureStore;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.util.factory.GeoTools;
+import org.geotools.util.factory.Hints;
+import org.locationtech.jts.geom.Geometry;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.identity.FeatureId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
+
+@AppRestController
+@Validated
+@RequestMapping(
+    path = {&quot;${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/edit/feature&quot;})
+public class EditFeatureController implements Constants {
+<span class="nc" id="L70">  private static final Logger logger =</span>
+<span class="nc" id="L71">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
+<span class="nc" id="L74">  private final FilterFactory2 ff =</span>
+<span class="nc" id="L75">      CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());</span>
+  private final FeatureSourceRepository featureSourceRepository;
+
+  public EditFeatureController(
+      FeatureSourceFactoryHelper featureSourceFactoryHelper,
+<span class="nc" id="L80">      FeatureSourceRepository featureSourceRepository) {</span>
+<span class="nc" id="L81">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
+<span class="nc" id="L82">    this.featureSourceRepository = featureSourceRepository;</span>
+<span class="nc" id="L83">  }</span>
+
+  @Transactional
+  @PostMapping(
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  @Timed(value = &quot;create_feature&quot;, description = &quot;time spent to process create feature call&quot;)
+  @Counted(value = &quot;create_feature&quot;, description = &quot;number of create feature calls&quot;)
+  public ResponseEntity&lt;Serializable&gt; createFeature(
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
+      @RequestBody Feature completeFeature) {
+
+<span class="nc" id="L97">    checkAuthentication();</span>
+
+<span class="nc" id="L99">    TMFeatureType tmFeatureType = getFeatureType(appTreeLayerNode, service, layer);</span>
+
+<span class="nc" id="L101">    Map&lt;String, Object&gt; attributesMap = completeFeature.getAttributes();</span>
+<span class="nc" id="L102">    Set&lt;String&gt; attributeNames =</span>
+<span class="nc" id="L103">        tmFeatureType.getAttributes().stream()</span>
+<span class="nc" id="L104">            .map(TMAttributeDescriptor::getName)</span>
+<span class="nc" id="L105">            .collect(Collectors.toSet());</span>
+
+<span class="nc bnc" id="L107" title="All 2 branches missed.">    if (!attributeNames.containsAll(completeFeature.getAttributes().keySet())) {</span>
+<span class="nc" id="L108">      throw new ResponseStatusException(</span>
+          HttpStatus.BAD_REQUEST,
+          &quot;Feature cannot be edited, one or more requested attributes are not available on the feature type&quot;);
+    }
+
+    Feature newFeature;
+<span class="nc" id="L114">    SimpleFeatureSource fs = null;</span>
+
+<span class="nc" id="L116">    try (Transaction transaction = new DefaultTransaction(&quot;create&quot;)) {</span>
+<span class="nc" id="L117">      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);</span>
+
+      SimpleFeature simpleFeature;
+<span class="nc" id="L120">      SimpleFeatureBuilder simpleFeatureBuilder = new SimpleFeatureBuilder(fs.getSchema());</span>
+<span class="nc bnc" id="L121" title="All 4 branches missed.">      if (null != completeFeature.getFid() &amp;&amp; !completeFeature.getFid().isEmpty()) {</span>
+<span class="nc" id="L122">        simpleFeature = simpleFeatureBuilder.buildFeature(completeFeature.getFid());</span>
+<span class="nc" id="L123">        simpleFeature.getUserData().put(Hints.USE_PROVIDED_FID, Boolean.TRUE);</span>
+      } else {
+<span class="nc" id="L125">        simpleFeature = simpleFeatureBuilder.buildFeature(null);</span>
+      }
+
+<span class="nc" id="L128">      handleGeometryAttributes(tmFeatureType, completeFeature, attributesMap);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">      for (Map.Entry&lt;String, Object&gt; entry : attributesMap.entrySet()) {</span>
+<span class="nc" id="L130">        simpleFeature.setAttribute(entry.getKey(), entry.getValue());</span>
+<span class="nc" id="L131">      }</span>
+
+<span class="nc bnc" id="L133" title="All 2 branches missed.">      if (fs instanceof SimpleFeatureStore) {</span>
+<span class="nc" id="L134">        ((SimpleFeatureStore) fs).setTransaction(transaction);</span>
+<span class="nc" id="L135">        List&lt;FeatureId&gt; newFids =</span>
+<span class="nc" id="L136">            ((SimpleFeatureStore) fs).addFeatures(DataUtilities.collection(simpleFeature));</span>
+
+<span class="nc" id="L138">        transaction.commit();</span>
+        // find the created feature to return
+<span class="nc" id="L140">        newFeature = getFeature(fs, ff.id(newFids.get(0)));</span>
+<span class="nc" id="L141">      } else {</span>
+<span class="nc" id="L142">        throw new ResponseStatusException(</span>
+            HttpStatus.BAD_REQUEST, &quot;Feature cannot be added, datasource is not editable&quot;);
+      }
+<span class="nc" id="L145">    } catch (RuntimeException | IOException e) {</span>
+      // either opening datastore, modify or transaction failed
+<span class="nc" id="L147">      logger.error(&quot;Error creating new feature {}&quot;, completeFeature, e);</span>
+<span class="nc" id="L148">      String message = e.getMessage();</span>
+<span class="nc bnc" id="L149" title="All 4 branches missed.">      if (null != e.getCause() &amp;&amp; null != e.getCause().getMessage()) {</span>
+<span class="nc" id="L150">        message = e.getCause().getMessage();</span>
+      }
+<span class="nc" id="L152">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);</span>
+    } finally {
+<span class="nc bnc" id="L154" title="All 2 branches missed.">      if (fs != null) {</span>
+<span class="nc" id="L155">        fs.getDataStore().dispose();</span>
+      }
+    }
+<span class="nc" id="L158">    return new ResponseEntity&lt;&gt;(newFeature, HttpStatus.OK);</span>
+  }
+
+  @Transactional
+  @PatchMapping(
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      path = &quot;/{fid}&quot;)
+  @Timed(value = &quot;update_feature&quot;, description = &quot;time spent to process patch feature call&quot;)
+  @Counted(value = &quot;update_feature&quot;, description = &quot;number of patch feature calls&quot;)
+  public ResponseEntity&lt;Serializable&gt; patchFeature(
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
+      @PathVariable String fid,
+      @RequestBody Feature partialFeature) {
+
+<span class="nc" id="L175">    checkAuthentication();</span>
+
+<span class="nc" id="L177">    TMFeatureType tmFeatureType = getFeatureType(appTreeLayerNode, service, layer);</span>
+
+<span class="nc" id="L179">    Map&lt;String, Object&gt; attributesMap = partialFeature.getAttributes();</span>
+<span class="nc" id="L180">    Set&lt;String&gt; attributeNames =</span>
+<span class="nc" id="L181">        tmFeatureType.getAttributes().stream()</span>
+<span class="nc" id="L182">            .map(TMAttributeDescriptor::getName)</span>
+<span class="nc" id="L183">            .collect(Collectors.toSet());</span>
+
+<span class="nc bnc" id="L185" title="All 2 branches missed.">    if (!attributeNames.containsAll(partialFeature.getAttributes().keySet())) {</span>
+<span class="nc" id="L186">      throw new ResponseStatusException(</span>
+          HttpStatus.BAD_REQUEST,
+          &quot;Feature cannot be edited, one or more requested attributes are not available on the feature type&quot;);
+    }
+
+<span class="nc" id="L191">    handleGeometryAttributes(tmFeatureType, partialFeature, attributesMap);</span>
+
+    Feature patchedFeature;
+<span class="nc" id="L194">    SimpleFeatureSource fs = null;</span>
+<span class="nc" id="L195">    try (Transaction transaction = new DefaultTransaction(&quot;edit&quot;)) {</span>
+<span class="nc" id="L196">      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);</span>
+      // find feature to update
+<span class="nc" id="L198">      final Filter filter = ff.id(ff.featureId(fid));</span>
+<span class="nc bnc" id="L199" title="All 4 branches missed.">      if (!fs.getFeatures(filter).isEmpty() &amp;&amp; fs instanceof SimpleFeatureStore) {</span>
+        // NOTE geotools does not report back that the feature was updated, no error === success
+<span class="nc" id="L201">        ((SimpleFeatureStore) fs).setTransaction(transaction);</span>
+<span class="nc" id="L202">        ((SimpleFeatureStore) fs)</span>
+<span class="nc" id="L203">            .modifyFeatures(</span>
+<span class="nc" id="L204">                attributesMap.keySet().toArray(new String[] {}),</span>
+<span class="nc" id="L205">                attributesMap.values().toArray(),</span>
+                filter);
+<span class="nc" id="L207">        transaction.commit();</span>
+        // find the updated feature to return
+<span class="nc" id="L209">        patchedFeature = getFeature(fs, filter);</span>
+      } else {
+<span class="nc" id="L211">        throw new ResponseStatusException(</span>
+            HttpStatus.BAD_REQUEST,
+            &quot;Feature cannot be edited, it does not exist or is not editable&quot;);
+      }
+<span class="nc" id="L215">    } catch (RuntimeException | IOException e) {</span>
+      // either opening datastore, modify or transaction failed
+<span class="nc" id="L217">      logger.error(&quot;Error patching feature {}&quot;, partialFeature, e);</span>
+<span class="nc" id="L218">      String message = e.getMessage();</span>
+<span class="nc bnc" id="L219" title="All 4 branches missed.">      if (null != e.getCause() &amp;&amp; null != e.getCause().getMessage()) {</span>
+<span class="nc" id="L220">        message = e.getCause().getMessage();</span>
+      }
+<span class="nc" id="L222">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);</span>
+    } finally {
+<span class="nc bnc" id="L224" title="All 2 branches missed.">      if (fs != null) {</span>
+<span class="nc" id="L225">        fs.getDataStore().dispose();</span>
+      }
+    }
+<span class="nc" id="L228">    return new ResponseEntity&lt;&gt;(patchedFeature, HttpStatus.OK);</span>
+  }
+
+  @Transactional
+  @DeleteMapping(path = &quot;/{fid}&quot;)
+  @Timed(value = &quot;delete_feature&quot;, description = &quot;time spent to process delete feature call&quot;)
+  @Counted(value = &quot;delete_feature&quot;, description = &quot;number of delete feature calls&quot;)
+  public ResponseEntity&lt;Void&gt; deleteFeature(
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
+      @PathVariable String fid) {
+
+<span class="nc" id="L241">    checkAuthentication();</span>
+
+<span class="nc" id="L243">    TMFeatureType tmFeatureType = getFeatureType(appTreeLayerNode, service, layer);</span>
+
+<span class="nc" id="L245">    SimpleFeatureSource fs = null;</span>
+<span class="nc" id="L246">    try (Transaction transaction = new DefaultTransaction(&quot;delete&quot;)) {</span>
+<span class="nc" id="L247">      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);</span>
+<span class="nc" id="L248">      Filter filter = ff.id(ff.featureId(fid));</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">      if (fs instanceof FeatureStore) {</span>
+        // NOTE geotools does not report back that the feature does not exist, nor the number of
+        // deleted features, no error === success
+<span class="nc" id="L252">        ((FeatureStore&lt;?, ?&gt;) fs).setTransaction(transaction);</span>
+<span class="nc" id="L253">        ((FeatureStore&lt;?, ?&gt;) fs).removeFeatures(filter);</span>
+<span class="nc" id="L254">        transaction.commit();</span>
+      } else {
+<span class="nc" id="L256">        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Layer cannot be edited&quot;);</span>
+      }
+<span class="nc" id="L258">    } catch (IOException e) {</span>
+      // either opening datastore or commit failed
+<span class="nc" id="L260">      logger.error(&quot;Error delting feature {}&quot;, fid, e);</span>
+<span class="nc" id="L261">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);</span>
+    } finally {
+<span class="nc bnc" id="L263" title="All 2 branches missed.">      if (fs != null) {</span>
+<span class="nc" id="L264">        fs.getDataStore().dispose();</span>
+      }
+    }
+
+<span class="nc" id="L268">    return new ResponseEntity&lt;&gt;(HttpStatus.NO_CONTENT);</span>
+  }
+
+  private void checkAuthentication() {
+<span class="nc" id="L272">    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="nc bnc" id="L273" title="All 4 branches missed.">    boolean isAuthenticated =</span>
+        authentication != null &amp;&amp; !(authentication instanceof AnonymousAuthenticationToken);
+<span class="nc bnc" id="L275" title="All 2 branches missed.">    if (!isAuthenticated) {</span>
+<span class="nc" id="L276">      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, &quot;Not authenticated&quot;);</span>
+    }
+<span class="nc" id="L278">  }</span>
+
+  private TMFeatureType getFeatureType(
+      AppTreeLayerNode appTreeLayerNode, GeoService service, GeoServiceLayer layer) {
+<span class="nc bnc" id="L282" title="All 2 branches missed.">    if (null == layer) {</span>
+<span class="nc" id="L283">      throw new ResponseStatusException(</span>
+          HttpStatus.NOT_FOUND, &quot;Cannot find layer &quot; + appTreeLayerNode);
+    }
+
+<span class="nc" id="L287">    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">    if (null == tmft) {</span>
+<span class="nc" id="L289">      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;Layer does not have feature type&quot;);</span>
+    }
+<span class="nc" id="L291">    return tmft;</span>
+  }
+
+  private Feature getFeature(SimpleFeatureSource fs, Filter filter) throws IOException {
+<span class="nc" id="L295">    Feature modelFeature = null;</span>
+<span class="nc" id="L296">    try (SimpleFeatureIterator feats = fs.getFeatures(filter).features()) {</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">      if (feats.hasNext()) {</span>
+<span class="nc" id="L298">        SimpleFeature simpleFeature = feats.next();</span>
+<span class="nc" id="L299">        modelFeature =</span>
+            new Feature()
+<span class="nc" id="L301">                .geometry(</span>
+<span class="nc" id="L302">                    GeometryProcessor.processGeometry(</span>
+<span class="nc" id="L303">                        (simpleFeature.getDefaultGeometry()), false, null))</span>
+<span class="nc" id="L304">                .fid(simpleFeature.getID());</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">        for (AttributeDescriptor att : simpleFeature.getFeatureType().getAttributeDescriptors()) {</span>
+<span class="nc" id="L306">          Object value = simpleFeature.getAttribute(att.getName());</span>
+<span class="nc bnc" id="L307" title="All 2 branches missed.">          if (value instanceof Geometry) {</span>
+<span class="nc" id="L308">            value = GeometryProcessor.geometryToWKT((Geometry) value);</span>
+          }
+<span class="nc" id="L310">          modelFeature.putAttributesItem(att.getLocalName(), value);</span>
+<span class="nc" id="L311">        }</span>
+      }
+    }
+<span class="nc" id="L314">    return modelFeature;</span>
+  }
+
+  /** Handle geometry attributes, essentially this is a WKT to Geometry conversion. */
+  private void handleGeometryAttributes(
+      TMFeatureType tmFeatureType, Feature modelFeature, Map&lt;String, Object&gt; attributesMap) {
+<span class="nc" id="L320">    tmFeatureType.getAttributes().stream()</span>
+<span class="nc" id="L321">        .filter(attr -&gt; TMAttributeTypeHelper.isGeometry(attr.getType()))</span>
+<span class="nc" id="L322">        .filter(attr -&gt; modelFeature.getAttributes().containsKey(attr.getName()))</span>
+<span class="nc" id="L323">        .forEach(</span>
+            attr -&gt; {
+<span class="nc" id="L325">              Geometry geometry =</span>
+<span class="nc" id="L326">                  GeometryProcessor.wktToGeometry(</span>
+<span class="nc" id="L327">                      (String) modelFeature.getAttributes().get(attr.getName()));</span>
+<span class="nc" id="L328">              attributesMap.put(attr.getName(), geometry);</span>
+<span class="nc" id="L329">            });</span>
+<span class="nc" id="L330">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

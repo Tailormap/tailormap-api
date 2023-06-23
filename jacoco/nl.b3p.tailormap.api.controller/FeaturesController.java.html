@@ -86,7 +86,7 @@ public class FeaturesController implements Constants {
   @Value(&quot;${tailormap-api.features.wfs_count_exact:false}&quot;)
   private boolean exactWfsCounts;
 
-  @Value(&quot;${tailormap-api.features.skip_geometry_output:true}&quot;)
+  @Value(&quot;${tailormap-api.features.skip_geometry_output:false}&quot;)
   private boolean skipGeometryOutput;
 
 <span class="nc" id="L92">  private final FilterFactory2 ff =</span>
@@ -456,7 +456,7 @@ public class FeaturesController implements Constants {
 <span class="nc bnc" id="L456" title="All 2 branches missed.">              if (skipGeometryOutput) {</span>
 <span class="nc" id="L457">                value = null;</span>
               } else {
-<span class="nc" id="L459">                value = GeometryProcessor.geometryToJson((Geometry) value);</span>
+<span class="nc" id="L459">                value = GeometryProcessor.geometryToWKT((Geometry) value);</span>
               }
             }
 <span class="nc" id="L462">            newFeat.putAttributesItem(att.getLocalName(), value);</span>
