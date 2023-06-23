@@ -130,7 +130,7 @@ SPDX-License-Identifier: MIT
         <logback.version>1.4.1</logback.version>
         <slf4j.version>2.0.2</slf4j.version>
         -->
-        <webjars-locator-core.version>0.52</webjars-locator-core.version>
+        <webjars-locator-core.version>0.53</webjars-locator-core.version>
         <maven.surefire.version>3.0.0</maven.surefire.version>
         <maven-surefire-plugin.version>${maven.surefire.version}</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>${maven.surefire.version}</maven-failsafe-plugin.version>
