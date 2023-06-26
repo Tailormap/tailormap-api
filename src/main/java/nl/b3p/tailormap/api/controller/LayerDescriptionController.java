@@ -66,25 +66,42 @@ public class LayerDescriptionController {
             .serviceId(appTreeLayerNode.getServiceId())
             .featureTypeName(tmft.getName())
             .geometryAttribute(tmft.getDefaultGeometryAttribute())
+            // TODO deduct from tmft.getDefaultGeometryAttribute()
+            .geometryAttributeIndex(null /* TODO */)
             .geometryType(
                 tmft.getDefaultGeometryDescriptor()
                     .map(TMAttributeDescriptor::getType)
                     .map(TMAttributeType::getValue)
                     .map(TMGeometryType::fromValue)
                     .orElse(null))
+            // TODO defaults to true for any TMFeatureType in FeatureSourceHelper#124 and it should
+            // be ROLE dependent
+            .editable(tmft.isWriteable())
+            .metadata(tmft.getComment())
+            .relations(null /* TODO */)
             .attributes(
                 tmft.getAttributes().stream()
                     .map(
                         a ->
                             new Attribute()
-                                .name(a.getName())
+                                .featureType(tmft.getId())
+                                .key(a.getName())
+
                                 // Only return generic 'geometry' type for now, frontend doesn't
                                 // handle different geometry types. For the default geometry
                                 // attribute there is a specific geometry type set
                                 .type(
                                     isGeometry(a.getType())
                                         ? TMAttributeType.GEOMETRY
-                                        : a.getType()))
+                                        : a.getType())
+                                .filterable(true /* TODO */)
+                                .editable(true /* TODO */)
+                                .editAlias(null /* TODO */)
+                                .defaultValue(/*String*/ null /* TODO */)
+                                .nullable(null /* TODO */)
+                                .automaticValue(false /* TODO */)
+                                .valueList(/*String*/ null /* TODO */)
+                                .allowValueListOnly(false /* TODO */))
                     .collect(Collectors.toList()));
     return ResponseEntity.ok(r);
   }

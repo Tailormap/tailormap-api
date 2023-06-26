@@ -231,46 +231,47 @@ components:
           type: integer
           format: int64
           readOnly: true
-        name:
-          type: string
-        alias:
-          type: string
-        longname:
-          description: 'has featuretype name and name combined with a dot.'
-          example: 'v_factsheet_terrein_info.b_minhuur'
-          type: string
-        editAlias:
+        key:
+          description: 'Name of the attribute.'
           type: string
         type:
           $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
-        visible:
-          type: boolean
-        selectable:
-          type: boolean
         filterable:
+          description: 'Whether the attribute can be used in a filter.'
           type: boolean
-        folder_label:
-          type: string
-        # editing: TODO needs work / ook integratie met feature API
         editable:
+          description: 'Whether the attribute can be edited.'
           type: boolean
-        defaultValue:
+        editAlias:
+          description: 'Alias to use in edit mode.'
           type: string
-        disallowNullValue:
-          type: boolean
-        disableUserEdit:
-          type: boolean
-        allowValueListOnly:
+        defaultValue:
+          description: 'Default value for this attribute.'
+          nullable: true
+          oneOf:
+            - type: string
+            - type: number
+            - type: boolean
+            - type: integer
+        nullable:
+          description: 'Whether the attribute can be null.'
           type: boolean
         automaticValue:
           type: boolean
         valueList:
-          type: string
-          example: 'static'
-        editValues:
           type: array
+          description: 'List of possible values for this attribute.'
+          nullable: true
           items:
-            type: string
+            oneOf:
+              - type: string
+              - type: number
+              - type: boolean
+              - type: integer
+        allowValueListOnly:
+          description: 'Whether the attribute can only have values from the valueList.'
+          type: boolean
+          default: true
 
     Feature:
       description: '
@@ -312,6 +313,7 @@ components:
       description: 'presentation metadata for a feature'
       properties:
         key:
+          description: 'Name of the attribute.'
           type: string
         alias:
           type: string

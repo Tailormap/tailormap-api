@@ -468,11 +468,11 @@ public class FeaturesController implements Constants {
       fs.getDataStore().dispose();
     }
     if (addFields) {
-      // TODO: duplicated with LayerDescriptionController...
       for (TMAttributeDescriptor tmAtt : tmft.getAttributes()) {
         featuresResponse.addColumnMetadataItem(
             new ColumnMetadata()
                 .key(tmAtt.getName())
+                .alias(tmAtt.getDescription())
                 .type(isGeometry(tmAtt.getType()) ? TMAttributeType.GEOMETRY : tmAtt.getType()));
       }
     }
