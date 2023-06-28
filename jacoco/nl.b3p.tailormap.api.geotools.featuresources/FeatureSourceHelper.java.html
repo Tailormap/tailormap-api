@@ -132,39 +132,40 @@ import org.slf4j.LoggerFactory;
 <span class="nc bnc" id="L132" title="All 2 branches missed.">          if (info != null) {</span>
 <span class="nc" id="L133">            pft.setTitle(info.getTitle());</span>
 <span class="nc" id="L134">            pft.setInfo(getFeatureTypeInfo(pft, info, gtFs));</span>
+<span class="nc" id="L135">            pft.getAttributes().clear();</span>
 
-<span class="nc" id="L136">            SimpleFeatureType gtFt = gtFs.getSchema();</span>
-<span class="nc bnc" id="L137" title="All 2 branches missed.">            for (AttributeDescriptor gtAttr : gtFt.getAttributeDescriptors()) {</span>
-<span class="nc" id="L138">              AttributeType type = gtAttr.getType();</span>
-<span class="nc" id="L139">              TMAttributeDescriptor tmAttr =</span>
+<span class="nc" id="L137">            SimpleFeatureType gtFt = gtFs.getSchema();</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">            for (AttributeDescriptor gtAttr : gtFt.getAttributeDescriptors()) {</span>
+<span class="nc" id="L139">              AttributeType type = gtAttr.getType();</span>
+<span class="nc" id="L140">              TMAttributeDescriptor tmAttr =</span>
                   new TMAttributeDescriptor()
-<span class="nc" id="L141">                      .name(gtAttr.getLocalName())</span>
-<span class="nc" id="L142">                      .type(GeoToolsHelper.toAttributeType(type))</span>
-<span class="nc" id="L143">                      .nullable(gtAttr.isNillable())</span>
-<span class="nc" id="L144">                      .description(</span>
-<span class="nc bnc" id="L145" title="All 2 branches missed.">                          type.getDescription() == null ? null : type.getDescription().toString());</span>
-<span class="nc bnc" id="L146" title="All 2 branches missed.">              if (tmAttr.getType() == TMAttributeType.OBJECT) {</span>
-<span class="nc" id="L147">                tmAttr.setUnknownTypeClassName(type.getBinding().getName());</span>
+<span class="nc" id="L142">                      .name(gtAttr.getLocalName())</span>
+<span class="nc" id="L143">                      .type(GeoToolsHelper.toAttributeType(type))</span>
+<span class="nc" id="L144">                      .nullable(gtAttr.isNillable())</span>
+<span class="nc" id="L145">                      .description(</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">                          type.getDescription() == null ? null : type.getDescription().toString());</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">              if (tmAttr.getType() == TMAttributeType.OBJECT) {</span>
+<span class="nc" id="L148">                tmAttr.setUnknownTypeClassName(type.getBinding().getName());</span>
               }
-<span class="nc" id="L149">              pft.getAttributes().add(tmAttr);</span>
-<span class="nc" id="L150">            }</span>
+<span class="nc" id="L150">              pft.getAttributes().add(tmAttr);</span>
+<span class="nc" id="L151">            }</span>
           }
-<span class="nc" id="L152">        } catch (Exception e) {</span>
-<span class="nc" id="L153">          logger.error(&quot;Exception reading feature type \&quot;{}\&quot;&quot;, typeName, e);</span>
-<span class="nc" id="L154">        }</span>
-<span class="nc" id="L155">      }</span>
+<span class="nc" id="L153">        } catch (Exception e) {</span>
+<span class="nc" id="L154">          logger.error(&quot;Exception reading feature type \&quot;{}\&quot;&quot;, typeName, e);</span>
+<span class="nc" id="L155">        }</span>
+<span class="nc" id="L156">      }</span>
     } finally {
-<span class="nc" id="L157">      ds.dispose();</span>
+<span class="nc" id="L158">      ds.dispose();</span>
     }
-<span class="nc" id="L159">  }</span>
+<span class="nc" id="L160">  }</span>
 
   protected TMFeatureTypeInfo getFeatureTypeInfo(
       TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
-<span class="nc" id="L163">    return new TMFeatureTypeInfo()</span>
-<span class="nc" id="L164">        .keywords(info.getKeywords())</span>
-<span class="nc" id="L165">        .description(info.getDescription())</span>
-<span class="nc" id="L166">        .bounds(GeoToolsHelper.fromEnvelope(info.getBounds()))</span>
-<span class="nc" id="L167">        .crs(crsToString(info.getCRS()));</span>
+<span class="nc" id="L164">    return new TMFeatureTypeInfo()</span>
+<span class="nc" id="L165">        .keywords(info.getKeywords())</span>
+<span class="nc" id="L166">        .description(info.getDescription())</span>
+<span class="nc" id="L167">        .bounds(GeoToolsHelper.fromEnvelope(info.getBounds()))</span>
+<span class="nc" id="L168">        .crs(crsToString(info.getCRS()));</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
