@@ -132,6 +132,7 @@ public abstract class FeatureSourceHelper {
           if (info != null) {
             pft.setTitle(info.getTitle());
             pft.setInfo(getFeatureTypeInfo(pft, info, gtFs));
+            pft.getAttributes().clear();
 
             SimpleFeatureType gtFt = gtFs.getSchema();
             for (AttributeDescriptor gtAttr : gtFt.getAttributeDescriptors()) {
