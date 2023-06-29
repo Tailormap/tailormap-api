@@ -122,6 +122,9 @@ components:
         hasAttributes:
           description: 'Whether this layer has attributes that can be accessed eg. for feature info or attribute list'
           type: boolean
+        editable:
+          description: 'Whether this layer can be edited.'
+          type: boolean
         attribution:
           description: 'Attribution text to show for this layer.'
           type: string
@@ -236,9 +239,6 @@ components:
           type: string
         type:
           $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
-        filterable:
-          description: 'Whether the attribute can be used in a filter.'
-          type: boolean
         editable:
           description: 'Whether the attribute can be edited.'
           type: boolean
@@ -246,28 +246,18 @@ components:
           description: 'Alias to use in edit mode.'
           type: string
         defaultValue:
-          description: 'Default value for this attribute.'
+          description: 'Default value for this attribute. The value may need to be coerced to the correct type.'
           nullable: true
-          oneOf:
-            - type: string
-            - type: number
-            - type: boolean
-            - type: integer
+          type: string
         nullable:
           description: 'Whether the attribute can be null.'
           type: boolean
-        automaticValue:
-          type: boolean
         valueList:
           type: array
-          description: 'List of possible values for this attribute.'
+          description: 'List of possible values for this attribute. The value may need to be coerced to the correct type.'
           nullable: true
           items:
-            oneOf:
-              - type: string
-              - type: number
-              - type: boolean
-              - type: integer
+            type: string
         allowValueListOnly:
           description: 'Whether the attribute can only have values from the valueList.'
           type: boolean

@@ -142,6 +142,10 @@ public abstract class FeatureSourceHelper {
                       .name(gtAttr.getLocalName())
                       .type(GeoToolsHelper.toAttributeType(type))
                       .nullable(gtAttr.isNillable())
+                      .defaultValue(
+                          gtAttr.getDefaultValue() == null
+                              ? null
+                              : gtAttr.getDefaultValue().toString())
                       .description(
                           type.getDescription() == null ? null : type.getDescription().toString());
               if (tmAttr.getType() == TMAttributeType.OBJECT) {
