@@ -178,9 +178,9 @@ public class GeoService {
     return url;
   }
 
-  /** Sets the url after sanitising (removing unwanted parameters). */
+  /** Sets the url after sanitizing (removing unwanted parameters). */
   public GeoService setUrl(String url) {
-    this.url = sanitiseUrl(url);
+    this.url = sanitizeUrl(url);
     return this;
   }
 
@@ -416,21 +416,21 @@ public class GeoService {
   /**
    * Remove all parameters from the URL that are listed in {@link #REMOVE_PARAMS}.
    *
-   * @param url URL to sanitise
-   * @return sanitised URL
+   * @param url URL to sanitize
+   * @return sanitized URL
    */
-  private String sanitiseUrl(String url) {
+  private String sanitizeUrl(String url) {
     if (url != null && url.contains("?")) {
-      MultiValueMap<String, String> sanitisedParams = new LinkedMultiValueMap<>();
+      MultiValueMap<String, String> sanitizedParams = new LinkedMultiValueMap<>();
       UriComponentsBuilder uri = UriComponentsBuilder.fromUriString(url);
       MultiValueMap<String, String> /* unmodifiable */ requestParams = uri.build().getQueryParams();
       for (Map.Entry<String, List<String>> param : requestParams.entrySet()) {
         if (!REMOVE_PARAMS.contains(param.getKey().toUpperCase(Locale.ROOT))) {
-          sanitisedParams.put(param.getKey(), param.getValue());
+          sanitizedParams.put(param.getKey(), param.getValue());
         }
       }
 
-      url = uri.replaceQueryParams(sanitisedParams).build().toUriString();
+      url = uri.replaceQueryParams(sanitizedParams).build().toUriString();
       if (url.endsWith("?")) {
         url = url.substring(0, url.length() - 1);
       }
