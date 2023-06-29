@@ -58,7 +58,7 @@ public class ServerSentEventsAdminController {
       /*@RequestParam(required = false) String[] events,*/ @PathVariable("clientId")
           String clientId) {
     logger.debug("New SSE client: {}, all clients: {}", clientId, this.eventBus.getAllClientIds());
-    return this.eventBus.createSseEmitter(clientId, DEFAULT_EVENT);
+    return this.eventBus.createSseEmitter(clientId, 3600_000L, DEFAULT_EVENT);
   }
 
   @Scheduled(fixedRate = 60_000)

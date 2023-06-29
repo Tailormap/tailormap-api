@@ -679,6 +679,13 @@ paths:
         schema:
           type: boolean
           default: false
+      - description: Geometry output as part of the attributes, will be ignored if onlyGeometries is true
+        in: query
+        name: geometryInAttributes
+        required: false
+        schema:
+          type: boolean
+          default: false
     get:
       operationId: 'getFeatures'
       description: 'retrieve features that fulfill the requested conditions (parameters).'
