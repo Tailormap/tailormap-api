@@ -22,6 +22,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
@@ -74,6 +75,9 @@ public class GeoService {
   @NotNull
   @Column(length = 2048)
   private String url;
+
+  @Transient
+  private boolean refreshCapabilities;
 
   /**
    * Non-null when authentication is required for this service. Currently, the only authentication
@@ -182,6 +186,14 @@ public class GeoService {
   public GeoService setUrl(String url) {
     this.url = sanitizeUrl(url);
     return this;
+  }
+
+  public boolean isRefreshCapabilities() {
+    return refreshCapabilities;
+  }
+
+  public void setRefreshCapabilities(boolean refreshCapabilities) {
+    this.refreshCapabilities = refreshCapabilities;
   }
 
   public ServiceAuthentication getAuthentication() {

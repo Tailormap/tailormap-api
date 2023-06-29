@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.repository.events.GeoServiceEventHandler;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.rest.core.event.BeforeSaveEvent;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +23,17 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class GeoServiceAdminController {
   private final GeoServiceRepository geoServiceRepository;
+
+  private final ApplicationContext applicationContext;
   private final GeoServiceEventHandler geoServiceEventHandler;
   private final RepositoryEntityLinks repositoryEntityLinks;
 
   public GeoServiceAdminController(
-      GeoServiceRepository geoServiceRepository,
-      GeoServiceEventHandler geoServiceEventHandler,
-      RepositoryEntityLinks repositoryEntityLinks) {
+          GeoServiceRepository geoServiceRepository,
+          ApplicationContext applicationContext, GeoServiceEventHandler geoServiceEventHandler,
+          RepositoryEntityLinks repositoryEntityLinks) {
     this.geoServiceRepository = geoServiceRepository;
+    this.applicationContext = applicationContext;
     this.geoServiceEventHandler = geoServiceEventHandler;
     this.repositoryEntityLinks = repositoryEntityLinks;
   }
@@ -45,7 +50,8 @@ public class GeoServiceAdminController {
     // Authorization check not needed: only admins are allowed on the admin base path, and admins
     // have all access
 
-    geoServiceEventHandler.loadCapabilities(geoService);
+    geoService.setRefreshCapabilities(true);
+    applicationContext.publishEvent(new BeforeSaveEvent(geoService));
 
     geoServiceRepository.saveAndFlush(geoService);
 
