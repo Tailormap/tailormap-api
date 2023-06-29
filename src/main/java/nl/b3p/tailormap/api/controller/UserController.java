@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.viewer.model.LoginConfiguration;
 import nl.b3p.tailormap.api.viewer.model.LoginConfigurationSsoLinksInner;
 import nl.b3p.tailormap.api.viewer.model.UserResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 /** Provides user and login information */
 @RestController
 public class UserController {
-  @Autowired private ClientRegistrationRepository clientRegistrationRepository;
+  private final ClientRegistrationRepository clientRegistrationRepository;
 
-  public UserController() {}
+  public UserController(ClientRegistrationRepository clientRegistrationRepository) {
+    this.clientRegistrationRepository = clientRegistrationRepository;
+  }
 
   /**
    * Get user login information.

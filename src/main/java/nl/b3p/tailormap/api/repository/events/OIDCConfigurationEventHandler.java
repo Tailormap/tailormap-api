@@ -7,7 +7,6 @@ package nl.b3p.tailormap.api.repository.events;
 
 import nl.b3p.tailormap.api.persistence.OIDCConfiguration;
 import nl.b3p.tailormap.api.security.OIDCRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.core.annotation.HandleAfterCreate;
 import org.springframework.data.rest.core.annotation.HandleAfterDelete;
 import org.springframework.data.rest.core.annotation.HandleAfterSave;
@@ -19,9 +18,11 @@ import org.springframework.stereotype.Component;
 @RepositoryEventHandler
 @Component
 public class OIDCConfigurationEventHandler {
-  @Autowired OIDCRepository oidcRepository;
+  private final OIDCRepository oidcRepository;
 
-  public OIDCConfigurationEventHandler() {}
+  public OIDCConfigurationEventHandler(OIDCRepository oidcRepository) {
+    this.oidcRepository = oidcRepository;
+  }
 
   @HandleBeforeCreate
   @HandleBeforeSave

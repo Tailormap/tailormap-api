@@ -18,7 +18,6 @@ import nl.b3p.tailormap.api.persistence.OIDCConfiguration;
 import nl.b3p.tailormap.api.repository.OIDCConfigurationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -31,7 +30,7 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
 
   private final Map<String, ClientRegistration> registrations;
 
-  public OIDCRepository(@Autowired OIDCConfigurationRepository repository) {
+  public OIDCRepository(OIDCConfigurationRepository repository) {
     oidcConfigurationRepository = repository;
     registrations = new HashMap<>();
 
