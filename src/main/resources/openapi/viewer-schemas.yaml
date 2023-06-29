@@ -122,6 +122,9 @@ components:
         hasAttributes:
           description: 'Whether this layer has attributes that can be accessed eg. for feature info or attribute list'
           type: boolean
+        editable:
+          description: 'Whether this layer can be edited.'
+          type: boolean
         attribution:
           description: 'Attribution text to show for this layer.'
           type: string
@@ -177,27 +180,6 @@ components:
         editable:
           type: boolean
           default: false
-        metadata:
-          type: string
-          nullable: true
-        relations:
-          title: 'layerDetailsRelations'
-          type: array
-          minLength: 0
-          items:
-            type: object
-            properties:
-              featureType:
-                type: integer
-                format: int64
-              foreignFeatureType:
-                type: integer
-                format: int64
-              type:
-                type: string
-                enum:
-                  - 'relate'
-                  - 'join'
         attributes:
           description: '
           Array with attributes.
@@ -231,46 +213,34 @@ components:
           type: integer
           format: int64
           readOnly: true
-        name:
-          type: string
-        alias:
-          type: string
-        longname:
-          description: 'has featuretype name and name combined with a dot.'
-          example: 'v_factsheet_terrein_info.b_minhuur'
-          type: string
-        editAlias:
+        key:
+          description: 'Name of the attribute.'
           type: string
         type:
           $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
-        visible:
-          type: boolean
-        selectable:
-          type: boolean
-        filterable:
-          type: boolean
-        folder_label:
-          type: string
-        # editing: TODO needs work / ook integratie met feature API
         editable:
+          description: 'Whether the attribute can be edited.'
           type: boolean
-        defaultValue:
+        editAlias:
+          description: 'Alias to use in edit mode.'
           type: string
-        disallowNullValue:
-          type: boolean
-        disableUserEdit:
-          type: boolean
-        allowValueListOnly:
-          type: boolean
-        automaticValue:
+        defaultValue:
+          description: 'Default value for this attribute. The value may need to be coerced to the correct type.'
+          nullable: true
+          type: string
+        nullable:
+          description: 'Whether the attribute can be null.'
           type: boolean
         valueList:
-          type: string
-          example: 'static'
-        editValues:
           type: array
+          description: 'List of possible values for this attribute. The value may need to be coerced to the correct type.'
+          nullable: true
           items:
             type: string
+        allowValueListOnly:
+          description: 'Whether the attribute can only have values from the valueList.'
+          type: boolean
+          default: true
 
     Feature:
       description: '
@@ -312,6 +282,7 @@ components:
       description: 'presentation metadata for a feature'
       properties:
         key:
+          description: 'Name of the attribute.'
           type: string
         alias:
           type: string

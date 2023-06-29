@@ -59,7 +59,7 @@ class LayerDescriptionControllerPostgresIntegrationTest {
         .andExpect(jsonPath("$.serviceId").value("snapshot-geoserver"))
         .andExpect(jsonPath("$.attributes").isArray())
         .andExpect(
-            jsonPath("$.attributes[?(@.name == 'relatievehoogteligging')].type").value("integer"));
+            jsonPath("$.attributes[?(@.key == 'relatievehoogteligging')].type").value("integer"));
   }
 
   @Test

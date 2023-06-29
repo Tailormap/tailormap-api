@@ -181,6 +181,12 @@ components:
           type: boolean
         description:
           type: string
+        defaultValue:
+          description: 'Default value for this attribute. It can be coerced to the type of the
+            attribute using the `type` field.'
+          nullable: true
+          type: string
+
 
     ServiceAuthentication:
       properties:
