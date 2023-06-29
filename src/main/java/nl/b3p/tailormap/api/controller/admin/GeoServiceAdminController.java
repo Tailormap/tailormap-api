@@ -9,7 +9,6 @@ package nl.b3p.tailormap.api.controller.admin;
 import javax.servlet.http.HttpServletResponse;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
-import nl.b3p.tailormap.api.repository.events.GeoServiceEventHandler;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.rest.core.event.BeforeSaveEvent;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
@@ -25,16 +24,14 @@ public class GeoServiceAdminController {
   private final GeoServiceRepository geoServiceRepository;
 
   private final ApplicationContext applicationContext;
-  private final GeoServiceEventHandler geoServiceEventHandler;
   private final RepositoryEntityLinks repositoryEntityLinks;
 
   public GeoServiceAdminController(
-          GeoServiceRepository geoServiceRepository,
-          ApplicationContext applicationContext, GeoServiceEventHandler geoServiceEventHandler,
-          RepositoryEntityLinks repositoryEntityLinks) {
+      GeoServiceRepository geoServiceRepository,
+      ApplicationContext applicationContext,
+      RepositoryEntityLinks repositoryEntityLinks) {
     this.geoServiceRepository = geoServiceRepository;
     this.applicationContext = applicationContext;
-    this.geoServiceEventHandler = geoServiceEventHandler;
     this.repositoryEntityLinks = repositoryEntityLinks;
   }
 

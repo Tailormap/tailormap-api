@@ -76,8 +76,7 @@ public class GeoService {
   @Column(length = 2048)
   private String url;
 
-  @Transient
-  private boolean refreshCapabilities;
+  @Transient private boolean refreshCapabilities;
 
   /**
    * Non-null when authentication is required for this service. Currently, the only authentication

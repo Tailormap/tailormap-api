@@ -13,21 +13,24 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @Configuration
 public class ValidationConfiguration implements RepositoryRestConfigurer {
-    // JSR-303 validator
-    private final LocalValidatorFactoryBean localValidatorFactoryBean;
+  // JSR-303 validator
+  private final LocalValidatorFactoryBean localValidatorFactoryBean;
 
-    private final GeoServiceValidator geoServiceValidator;
+  private final GeoServiceValidator geoServiceValidator;
 
-    public ValidationConfiguration(LocalValidatorFactoryBean localValidatorFactoryBean, GeoServiceValidator geoServiceValidator) {
-        this.localValidatorFactoryBean = localValidatorFactoryBean;
-        this.geoServiceValidator = geoServiceValidator;
-    }
+  public ValidationConfiguration(
+      LocalValidatorFactoryBean localValidatorFactoryBean,
+      GeoServiceValidator geoServiceValidator) {
+    this.localValidatorFactoryBean = localValidatorFactoryBean;
+    this.geoServiceValidator = geoServiceValidator;
+  }
 
-    @Override
-    public void configureValidatingRepositoryEventListener(ValidatingRepositoryEventListener validatingListener) {
-        validatingListener.addValidator("beforeCreate", localValidatorFactoryBean);
-        validatingListener.addValidator("beforeSave", localValidatorFactoryBean);
-        validatingListener.addValidator("beforeCreate", geoServiceValidator);
-        validatingListener.addValidator("beforeSave", geoServiceValidator);
-    }
+  @Override
+  public void configureValidatingRepositoryEventListener(
+      ValidatingRepositoryEventListener validatingListener) {
+    validatingListener.addValidator("beforeCreate", localValidatorFactoryBean);
+    validatingListener.addValidator("beforeSave", localValidatorFactoryBean);
+    validatingListener.addValidator("beforeCreate", geoServiceValidator);
+    validatingListener.addValidator("beforeSave", geoServiceValidator);
+  }
 }
