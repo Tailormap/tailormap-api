@@ -745,7 +745,36 @@ class FeaturesControllerPostgresIntegrationTest {
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andExpect(
             jsonPath("$.features[0].__fid")
-                .value("begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"));
+                .value("begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"))
+        .andExpect(jsonPath("$.features[0].attributes.geom").isEmpty());
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void get_by_fid_from_database_with_geometry() throws Exception {
+    final String url = apiBasePath + begroeidterreindeelUrlPostgis;
+    mockMvc
+        .perform(
+            get(url)
+                .with(setServletPath(url))
+                .param("__fid", "begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457")
+                .param("geometryInAttributes", "true")
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isNotEmpty())
+        .andExpect(jsonPath("$.features[0]").isMap())
+        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andExpect(
+            jsonPath("$.features[0].__fid")
+                .value("begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"))
+        .andExpect(jsonPath("$.features[0].attributes.geom").isNotEmpty());
   }
 
   @Test
@@ -776,9 +805,42 @@ class FeaturesControllerPostgresIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
+        .andExpect(jsonPath("$.features[0].attributes.geom").isEmpty())
         .andExpect(jsonPath("$.features[0].__fid").value(utrecht__fid));
   }
 
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void get_by_fid_from_wfs_with_geomerty() throws Exception {
+    // note that this test may break when pdok decides to opdate the data or the service.
+    // you can get the fid by clicking on the Utrecht feature in the map.
+    // alternatively this test could be written to use the wfs service to first get Utrecht
+    // feature by naam and then do the fid test.
+    final String utrecht__fid = StaticTestData.get("utrecht__fid");
+    final String url = apiBasePath + provinciesWFS;
+
+    mockMvc
+        .perform(
+            get(url)
+                .with(setServletPath(url))
+                .param("__fid", utrecht__fid)
+                .param("geometryInAttributes", "true")
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isNotEmpty())
+        .andExpect(jsonPath("$.features[0]").isMap())
+        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
+        .andExpect(jsonPath("$.features[0].attributes.geom").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].__fid").value(utrecht__fid));
+  }
   /**
    * request 2 pages of data from a database featuretype.
    *
@@ -1170,7 +1232,30 @@ class FeaturesControllerPostgresIntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.page").value(1))
         .andExpect(jsonPath("$.features").isArray())
-        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty());
+        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].attributes").isEmpty());
+  }
+
+  @ParameterizedTest(name = "#{index} should return onlyGeometries for {0}, appLayer: {1}")
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @MethodSource("differentFeatureSourcesProvider")
+  void ignore_skipGeometryOutput_with_onlyGeometries(
+      @SuppressWarnings("unused") String source, String appLayerUrl) throws Exception {
+    appLayerUrl = apiBasePath + appLayerUrl;
+    mockMvc
+        .perform(
+            get(appLayerUrl)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(appLayerUrl))
+                .param("geometryInAttributes", "true")
+                .param("onlyGeometries", "true")
+                .param("page", "1"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.page").value(1))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].attributes").isEmpty());
   }
 
   @Test

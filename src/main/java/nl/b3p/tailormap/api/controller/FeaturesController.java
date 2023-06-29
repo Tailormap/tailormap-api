@@ -86,9 +86,6 @@ public class FeaturesController implements Constants {
   @Value("${tailormap-api.features.wfs_count_exact:false}")
   private boolean exactWfsCounts;
 
-  @Value("${tailormap-api.features.skip_geometry_output:false}")
-  private boolean skipGeometryOutput;
-
   private final FilterFactory2 ff =
       CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
@@ -116,7 +113,8 @@ public class FeaturesController implements Constants {
       @RequestParam(required = false) Integer page,
       @RequestParam(required = false) String sortBy,
       @RequestParam(required = false, defaultValue = "asc") String sortOrder,
-      @RequestParam(defaultValue = "false") boolean onlyGeometries) {
+      @RequestParam(defaultValue = "false") boolean onlyGeometries,
+      @RequestParam(defaultValue = "false") boolean geometryInAttributes) {
 
     if (layer == null) {
       throw new ResponseStatusException(
@@ -128,14 +126,21 @@ public class FeaturesController implements Constants {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Layer does not have feature type");
     }
 
+    if (onlyGeometries) {
+      geometryInAttributes = true;
+    }
+
     FeaturesResponse featuresResponse;
 
     if (null != __fid) {
-      featuresResponse = getFeatureByFID(tmft, __fid, crs);
+      featuresResponse = getFeatureByFID(tmft, __fid, crs, !geometryInAttributes);
     } else if (null != x && null != y) {
-      featuresResponse = getFeaturesByXY(tmft, x, y, crs, distance, simplify);
+      featuresResponse =
+          getFeaturesByXY(tmft, x, y, crs, distance, simplify, !geometryInAttributes);
     } else if (null != page && page > 0) {
-      featuresResponse = getAllFeatures(tmft, crs, page, filter, sortBy, sortOrder, onlyGeometries);
+      featuresResponse =
+          getAllFeatures(
+              tmft, crs, page, filter, sortBy, sortOrder, onlyGeometries, !geometryInAttributes);
     } else {
       // TODO other implementations
       throw new ResponseStatusException(
@@ -153,7 +158,8 @@ public class FeaturesController implements Constants {
       String filterCQL,
       String sortBy,
       String sortOrder,
-      boolean onlyGeometries) {
+      boolean onlyGeometries,
+      boolean skipGeometryOutput) {
     FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);
 
     SimpleFeatureSource fs = null;
@@ -263,7 +269,8 @@ public class FeaturesController implements Constants {
           onlyGeometries,
           fs,
           q,
-          determineProjectToCRS(crs, fs));
+          determineProjectToCRS(crs, fs),
+          skipGeometryOutput);
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data.", e);
     } catch (CQLException e) {
@@ -280,7 +287,7 @@ public class FeaturesController implements Constants {
 
   @NotNull
   private FeaturesResponse getFeatureByFID(
-      @NotNull TMFeatureType tmft, @NotNull String fid, String crs) {
+      @NotNull TMFeatureType tmft, @NotNull String fid, String crs, boolean skipGeometryOutput) {
     FeaturesResponse featuresResponse = new FeaturesResponse();
 
     SimpleFeatureSource fs = null;
@@ -302,7 +309,8 @@ public class FeaturesController implements Constants {
           false,
           fs,
           q,
-          determineProjectToCRS(crs, fs));
+          determineProjectToCRS(crs, fs),
+          skipGeometryOutput);
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data", e);
     } finally {
@@ -349,7 +357,8 @@ public class FeaturesController implements Constants {
       @NotNull Double y,
       String crs,
       @NotNull Double distance,
-      @NotNull Boolean simplifyGeometry) {
+      @NotNull Boolean simplifyGeometry,
+      boolean skipGeometryOutput) {
 
     if (null != distance && 0d >= distance) {
       throw new ResponseStatusException(
@@ -404,7 +413,8 @@ public class FeaturesController implements Constants {
           false,
           fs,
           q,
-          fromCRS);
+          fromCRS,
+          skipGeometryOutput);
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data", e);
     }
@@ -419,7 +429,8 @@ public class FeaturesController implements Constants {
       boolean onlyGeometries,
       @NotNull SimpleFeatureSource fs,
       @NotNull Query q,
-      CoordinateReferenceSystem projectToCRS)
+      CoordinateReferenceSystem projectToCRS,
+      boolean skipGeometryOutput)
       throws IOException {
     boolean addFields = false;
 
