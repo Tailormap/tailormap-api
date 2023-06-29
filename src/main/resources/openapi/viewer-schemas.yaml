@@ -180,27 +180,6 @@ components:
         editable:
           type: boolean
           default: false
-        metadata:
-          type: string
-          nullable: true
-        relations:
-          title: 'layerDetailsRelations'
-          type: array
-          minLength: 0
-          items:
-            type: object
-            properties:
-              featureType:
-                type: integer
-                format: int64
-              foreignFeatureType:
-                type: integer
-                format: int64
-              type:
-                type: string
-                enum:
-                  - 'relate'
-                  - 'join'
         attributes:
           description: '
           Array with attributes.

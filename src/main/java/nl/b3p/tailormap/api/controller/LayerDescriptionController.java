@@ -77,8 +77,6 @@ public class LayerDescriptionController {
             // TODO defaults to true for any TMFeatureType in FeatureSourceHelper#124 and it should
             // be ROLE dependent as well
             .editable(tmft.isWriteable())
-            .metadata(tmft.getComment())
-            .relations(null /* TODO */)
             .attributes(
                 tmft.getAttributes().stream()
                     .map(
