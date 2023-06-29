@@ -66,27 +66,39 @@ public class LayerDescriptionController {
 <span class="nc" id="L66">            .serviceId(appTreeLayerNode.getServiceId())</span>
 <span class="nc" id="L67">            .featureTypeName(tmft.getName())</span>
 <span class="nc" id="L68">            .geometryAttribute(tmft.getDefaultGeometryAttribute())</span>
-<span class="nc" id="L69">            .geometryType(</span>
-<span class="nc" id="L70">                tmft.getDefaultGeometryDescriptor()</span>
-<span class="nc" id="L71">                    .map(TMAttributeDescriptor::getType)</span>
-<span class="nc" id="L72">                    .map(TMAttributeType::getValue)</span>
-<span class="nc" id="L73">                    .map(TMGeometryType::fromValue)</span>
-<span class="nc" id="L74">                    .orElse(null))</span>
-<span class="nc" id="L75">            .attributes(</span>
-<span class="nc" id="L76">                tmft.getAttributes().stream()</span>
-<span class="nc" id="L77">                    .map(</span>
+            // TODO deduce from tmft.getDefaultGeometryAttribute()
+<span class="nc" id="L70">            .geometryAttributeIndex(null /* TODO */)</span>
+<span class="nc" id="L71">            .geometryType(</span>
+<span class="nc" id="L72">                tmft.getDefaultGeometryDescriptor()</span>
+<span class="nc" id="L73">                    .map(TMAttributeDescriptor::getType)</span>
+<span class="nc" id="L74">                    .map(TMAttributeType::getValue)</span>
+<span class="nc" id="L75">                    .map(TMGeometryType::fromValue)</span>
+<span class="nc" id="L76">                    .orElse(null))</span>
+            // TODO defaults to true for any TMFeatureType in FeatureSourceHelper#124 and it should
+            // be ROLE dependent as well
+<span class="nc" id="L79">            .editable(tmft.isWriteable())</span>
+<span class="nc" id="L80">            .attributes(</span>
+<span class="nc" id="L81">                tmft.getAttributes().stream()</span>
+<span class="nc" id="L82">                    .map(</span>
                         a -&gt;
-<span class="nc" id="L79">                            new Attribute()</span>
-<span class="nc" id="L80">                                .name(a.getName())</span>
+<span class="nc" id="L84">                            new Attribute()</span>
+<span class="nc" id="L85">                                .featureType(tmft.getId())</span>
+<span class="nc" id="L86">                                .key(a.getName())</span>
                                 // Only return generic 'geometry' type for now, frontend doesn't
                                 // handle different geometry types. For the default geometry
                                 // attribute there is a specific geometry type set
-<span class="nc" id="L84">                                .type(</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">                                    isGeometry(a.getType())</span>
-<span class="nc" id="L86">                                        ? TMAttributeType.GEOMETRY</span>
-<span class="nc" id="L87">                                        : a.getType()))</span>
-<span class="nc" id="L88">                    .collect(Collectors.toList()));</span>
-<span class="nc" id="L89">    return ResponseEntity.ok(r);</span>
+<span class="nc" id="L90">                                .type(</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">                                    isGeometry(a.getType())</span>
+<span class="nc" id="L92">                                        ? TMAttributeType.GEOMETRY</span>
+<span class="nc" id="L93">                                        : a.getType())</span>
+<span class="nc" id="L94">                                .editable(true /* TODO */)</span>
+<span class="nc" id="L95">                                .editAlias(null /* TODO */)</span>
+<span class="nc" id="L96">                                .defaultValue(a.getDefaultValue())</span>
+<span class="nc" id="L97">                                .nullable(null /* TODO */)</span>
+<span class="nc" id="L98">                                .valueList(/*String[]*/ null /* TODO */)</span>
+<span class="nc" id="L99">                                .allowValueListOnly(false /* TODO */))</span>
+<span class="nc" id="L100">                    .collect(Collectors.toList()));</span>
+<span class="nc" id="L101">    return ResponseEntity.ok(r);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -468,11 +468,11 @@ public class FeaturesController implements Constants {
 <span class="nc" id="L468">      fs.getDataStore().dispose();</span>
     }
 <span class="nc bnc" id="L470" title="All 2 branches missed.">    if (addFields) {</span>
-      // TODO: duplicated with LayerDescriptionController...
-<span class="nc bnc" id="L472" title="All 2 branches missed.">      for (TMAttributeDescriptor tmAtt : tmft.getAttributes()) {</span>
-<span class="nc" id="L473">        featuresResponse.addColumnMetadataItem(</span>
+<span class="nc bnc" id="L471" title="All 2 branches missed.">      for (TMAttributeDescriptor tmAtt : tmft.getAttributes()) {</span>
+<span class="nc" id="L472">        featuresResponse.addColumnMetadataItem(</span>
             new ColumnMetadata()
-<span class="nc" id="L475">                .key(tmAtt.getName())</span>
+<span class="nc" id="L474">                .key(tmAtt.getName())</span>
+<span class="nc" id="L475">                .alias(tmAtt.getDescription())</span>
 <span class="nc bnc" id="L476" title="All 2 branches missed.">                .type(isGeometry(tmAtt.getType()) ? TMAttributeType.GEOMETRY : tmAtt.getType()));</span>
 <span class="nc" id="L477">      }</span>
     }
