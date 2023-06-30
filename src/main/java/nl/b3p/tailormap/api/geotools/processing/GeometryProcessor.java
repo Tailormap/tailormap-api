@@ -47,25 +47,38 @@ public final class GeometryProcessor {
    */
   @NotNull
   public static String processGeometry(
-      Object geometry, @NotNull final Boolean simplifyGeometry, MathTransform transform) {
+      Object geometry,
+      @NotNull final Boolean simplifyGeometry,
+      @NotNull Boolean linearizeGeomToWKT,
+      MathTransform transform) {
     if (null == geometry) {
       return null;
     }
     if (Geometry.class.isAssignableFrom(geometry.getClass())) {
       if (null != transform) {
-        try {
-          geometry = JTS.transform((Geometry) geometry, transform);
-        } catch (TransformException e) {
-          logger.error("Failed to transform geometry", e);
-        }
+        geometry = transformGeometry((Geometry) geometry, transform);
       }
       if (simplifyGeometry) {
         return simplify((Geometry) geometry);
       }
-      return linearizeGeomToWKT((Geometry) geometry);
+      if (linearizeGeomToWKT) {
+        return linearizeGeomToWKT((Geometry) geometry);
+      }
     }
     // cannot cast to JTS geom
     return geometry.toString();
+  }
+
+  public static Geometry transformGeometry(@NotNull Geometry geometry, MathTransform transform) {
+    if (null == transform) {
+      return geometry;
+    }
+    try {
+      return JTS.transform(geometry, transform);
+    } catch (TransformException e) {
+      logger.error("Failed to transform geometry", e);
+    }
+    return geometry;
   }
 
   private static String linearizeGeomToWKT(Geometry geometry) {
@@ -123,7 +136,8 @@ public final class GeometryProcessor {
   }
 
   public static String geometryToWKT(@NotNull Geometry geom) {
-    WKTWriter2 writer = new WKTWriter2();
+    final int dimension = (geom.getDimension() > 1 ? geom.getDimension() : 2);
+    WKTWriter2 writer = new WKTWriter2(dimension);
     return writer.write(geom);
   }
 
