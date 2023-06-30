@@ -5,9 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
@@ -24,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -121,5 +120,55 @@ class GeoServiceAdminControllerIntegrationTest {
 
       server.shutdown();
     }
+  }
+
+
+  /**
+   * Tests whether {@link AdminRepositoryRestExceptionHandler} is applied and converting validation exceptions to JSON.
+   */
+  @Test
+  @WithMockUser(
+          username = "admin",
+          authorities = {Group.ADMIN})
+  void refreshCapabilitiesSendsJsonValidationErrors() throws Exception {
+
+    MockMvc mockMvc =
+            MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+
+    // Create a GeoService without loading capabilities, with a valid URL but which points to an invalid host
+    // In the normal admin a user can change the URL of a service and the frontend won't send refreshCapabilities
+    // but will ask to explicitly refresh the capabilities after saving.
+
+    String geoServicePOSTBody =
+            new ObjectMapper()
+                    .createObjectNode()
+                    .put("protocol", "wms")
+                    .put("title", "test")
+                    .put("refreshCapabilities", false)
+                    .put("url", "http://offline.invalid/")
+                    .toPrettyString();
+
+    MvcResult result =
+        mockMvc
+            .perform(
+                post(adminBasePath + "/geo-services")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(geoServicePOSTBody))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").isNotEmpty())
+            .andExpect(jsonPath("$.layers").isEmpty())
+            .andReturn();
+      String serviceId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
+
+    mockMvc
+        .perform(
+            post(adminBasePath + String.format("/geo-services/%s/refresh-capabilities", serviceId)))
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isBadRequest())
+        .andExpect(
+            content()
+                .json(
+                    "{\"errors\":[{\"entity\":\"GeoService\",\"property\":\"url\",\"invalidValue\":\"http://offline.invalid/\",\"message\":\"Unknown host: \\\"offline.invalid\\\"\"}]}"));
   }
 }
