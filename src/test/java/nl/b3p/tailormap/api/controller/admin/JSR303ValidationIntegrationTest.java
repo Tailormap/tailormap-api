@@ -6,6 +6,10 @@
 
 package nl.b3p.tailormap.api.controller.admin;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.persistence.Group;
@@ -18,12 +22,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @PostgresIntegrationTest
-public class JSR303ValidationIntegrationTest {
+class JSR303ValidationIntegrationTest {
   @Autowired private WebApplicationContext context;
 
   @Value("${tailormap-api.admin.base-path}")
@@ -33,6 +33,7 @@ public class JSR303ValidationIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testUrlRequired() throws Exception {
     MockMvc mockMvc =
         MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
