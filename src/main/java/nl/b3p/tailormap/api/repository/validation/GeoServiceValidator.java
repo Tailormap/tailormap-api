@@ -45,6 +45,10 @@ public class GeoServiceValidator implements Validator {
         service.isRefreshCapabilities(),
         service.getUrl());
 
+    if (errors.getFieldError("url") != null) {
+      return;
+    }
+
     URI uri;
     try {
       uri = new URL(service.getUrl()).toURI();
