@@ -32,8 +32,10 @@ public class FrontController {
         "/admin/login",
         "/admin/catalog",
         "/admin/catalog/**", // Extra line needed in order to match slashes. Regexps won't match.
-        "/admin/user**",
-        "/admin/group**",
+        "/admin/users",
+        "/admin/users/user/**",
+        "/admin/groups",
+        "/admin/groups/group/**",
         "/admin/applications",
         "/admin/applications/**"
       })
