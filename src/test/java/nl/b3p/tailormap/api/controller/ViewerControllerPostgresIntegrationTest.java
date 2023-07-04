@@ -160,26 +160,18 @@ class ViewerControllerPostgresIntegrationTest {
   }
 
   @Test
-  @Disabled("This test fails, AppTreeLayerNode does not have a description property")
-  @Issue("https://b3partners.atlassian.net/browse/HTM-744")
-  // TODO fix this test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_contain_description() throws Exception {
-    // GET https://snapshot.tailormap.nl/api/app/default/map
     final String path = apiBasePath + "/app/default/map";
     mockMvc
         .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(
-            // Level description
-            jsonPath("$.layerTreeNodes[?(@.name === 'gebieden')].description")
-                .value("Enkele externe lagen van PDOK met WFS koppeling."))
-        .andExpect(
             // Application layer description
-            jsonPath("$.layerTreeNodes[?(@.name === 'begroeidterreindeel')].description")
-                .value(
-                    contains(startsWith("Deze laag toont gegevens uit http://www.postgis.net/"))))
+            jsonPath(
+                    "$.appLayers[?(@.id === 'lyr:snapshot-geoserver:postgis:begroeidterreindeel')].description")
+                .value(contains(startsWith("This layer shows data from http://www.postgis.net"))))
         .andReturn();
   }
 
