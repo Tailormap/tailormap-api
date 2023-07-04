@@ -13,6 +13,7 @@ import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.configuration.TailormapConfig;
 import nl.b3p.tailormap.api.geotools.ResponseTeeingHTTPClient;
+import nl.b3p.tailormap.api.geotools.WMSServiceExceptionUtil;
 import nl.b3p.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSLayerDescription;
@@ -252,7 +254,29 @@ public class GeoServiceHelper {
 
   void loadWMSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client)
       throws Exception {
-    WebMapServer wms = new WebMapServer(new URL(geoService.getUrl()), client);
+    WebMapServer wms = null;
+    try {
+      wms = new WebMapServer(new URL(geoService.getUrl()), client);
+    } catch(ClassCastException | IllegalStateException e) {
+      // The gt-wms module tries to cast the XML unmarshalling result expecting capabilities, but a
+      // WMS 1.0.0/1.1.0 ServiceException may have been unmarshalled which leads to a ClassCastException.
+
+      // A WMS 1.3.0 ServiceExceptionReport leads to an IllegalStateException because of a call to Throwable.initCause() on a SAXException that already has a cause.
+
+      // In these cases, try to extract a message from the HTTP response
+
+      String contentType = client.getResponse().getContentType();
+      if (contentType != null && contentType.contains("text/xml")) {
+        String wmsException =
+            WMSServiceExceptionUtil.tryGetServiceExceptionMessage(client.getResponseCopy());
+        throw new Exception(
+            "Error loading WMS capabilities: " + wmsException != null
+                ? wmsException
+                : new String(client.getResponseCopy(), StandardCharsets.UTF_8));
+      } else {
+        throw e;
+      }
+    }
 
     OperationType getMap = wms.getCapabilities().getRequest().getGetMap();
     OperationType getFeatureInfo = wms.getCapabilities().getRequest().getGetFeatureInfo();

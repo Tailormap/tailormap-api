@@ -44,6 +44,12 @@ class GeoServiceAdminControllerIntegrationTest {
   @Value("classpath:/wms/test_capabilities_updated.xml")
   private Resource wmsTestCapabilitiesUpdated;
 
+  @Value("classpath:/wms/service_exception_1_0_0.xml")
+  private Resource wmsServiceException1_0_0;
+
+  @Value("classpath:/wms/service_exception_1_3_0.xml")
+  private Resource wmsServiceException1_3_0;
+
   @Test
   @WithMockUser(
       username = "admin",
@@ -170,5 +176,58 @@ class GeoServiceAdminControllerIntegrationTest {
             content()
                 .json(
                     "{\"errors\":[{\"entity\":\"GeoService\",\"property\":\"url\",\"invalidValue\":\"http://offline.invalid/\",\"message\":\"Unknown host: \\\"offline.invalid\\\"\"}]}"));
+  }
+
+  @Test
+  @WithMockUser(
+          username = "admin",
+          authorities = {Group.ADMIN})
+  void loadServiceWithServiceException() throws Exception {
+
+    MockMvc mockMvc =
+            MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+    try (MockWebServer server = new MockWebServer()) {
+      server.enqueue(new MockResponse()
+              .setHeaders(new Headers(new String[] {"Content-Type", "text/xml"}))
+              .setBody(getResourceString(wmsServiceException1_0_0)));
+      server.start();
+
+      String url = server.url("/test-wms").toString();
+
+      String geoServicePOSTBody =
+              new ObjectMapper()
+                      .createObjectNode()
+                      .put("protocol", "wms")
+                      .put("title", "test")
+                      .put("refreshCapabilities", true)
+                      .put("url", url)
+                      .toPrettyString();
+
+      mockMvc
+              .perform(
+                      post(adminBasePath + "/geo-services")
+                              .contentType(MediaType.APPLICATION_JSON)
+                              .content(geoServicePOSTBody))
+              .andDo(MockMvcResultHandlers.print())
+              .andExpect(status().isBadRequest())
+              .andExpect(jsonPath("$.errors[0].message").value("Error loading capabilities from URL \"" + url + "\": Exception: code: InvalidParameterValue: locator: service: Example error message"));
+
+      server.enqueue(new MockResponse()
+              .setHeaders(new Headers(new String[] {"Content-Type", "text/xml"}))
+              .setBody(getResourceString(wmsServiceException1_3_0)));
+
+
+      mockMvc
+              .perform(
+                      post(adminBasePath + "/geo-services")
+                              .contentType(MediaType.APPLICATION_JSON)
+                              .content(geoServicePOSTBody))
+              .andDo(MockMvcResultHandlers.print())
+              .andExpect(status().isBadRequest())
+              .andExpect(jsonPath("$.errors[0].message").value("Error loading capabilities from URL \"" + url + "\": Exception: code: SomeCode: locator: somewhere: An example error text."));
+
+      server.shutdown();
+    }
   }
 }

@@ -19,6 +19,8 @@ public class ResponseTeeingHTTPClient implements HTTPClient {
     private final HTTPResponse wrapped;
     private final ByteArrayOutputStream copy = new ByteArrayOutputStream();
 
+    private String contentType;
+
     public TeeHTTPResponseWrapper(HTTPResponse wrapped) {
       this.wrapped = wrapped;
     }
@@ -35,7 +37,10 @@ public class ResponseTeeingHTTPClient implements HTTPClient {
 
     @Override
     public String getContentType() {
-      return wrapped.getContentType();
+      if (contentType == null) {
+        contentType = wrapped.getContentType();
+      }
+      return contentType;
     }
 
     @Override
