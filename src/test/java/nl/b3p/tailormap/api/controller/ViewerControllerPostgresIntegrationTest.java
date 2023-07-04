@@ -191,7 +191,7 @@ class ViewerControllerPostgresIntegrationTest {
         .andExpect(jsonPath("$.services").isArray())
         .andExpect(jsonPath("$.appLayers").isArray())
         .andExpect(jsonPath("$.appLayers[0]").isMap())
-        .andExpect(jsonPath("$.appLayers.length()").value(10))
+        .andExpect(jsonPath("$.appLayers.length()").value(11))
         .andExpect(jsonPath("$.appLayers[0].hasAttributes").value(false))
         .andExpect(jsonPath("$.appLayers[1].hasAttributes").value(false))
         .andExpect(jsonPath("$.appLayers[2].legendImageUrl").isEmpty())
