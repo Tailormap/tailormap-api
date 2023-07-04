@@ -6,13 +6,16 @@
 package nl.b3p.tailormap.api.persistence;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
 
 @Entity
+@EntityListeners(EntityEventPublisher.class)
 public class OIDCConfiguration {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +32,8 @@ public class OIDCConfiguration {
   @NotNull private String issuerUrl;
 
   @NotNull private String userNameAttribute;
+
+  private String status;
 
   public Long getId() {
     return id;
@@ -90,6 +95,15 @@ public class OIDCConfiguration {
 
   public OIDCConfiguration setUserNameAttribute(String userNameAttribute) {
     this.userNameAttribute = userNameAttribute;
+    return this;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public OIDCConfiguration setStatus(String status) {
+    this.status = status;
     return this;
   }
 }

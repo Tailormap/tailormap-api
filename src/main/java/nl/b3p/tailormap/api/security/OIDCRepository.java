@@ -53,6 +53,7 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
     final HttpClient httpClient =
         HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).build();
     for (OIDCConfiguration configuration : oidcConfigurationRepository.findAll()) {
+      String id = String.format("%d", configuration.getId());
       try {
         HttpRequest.Builder requestBuilder =
             HttpRequest.newBuilder()
@@ -62,7 +63,6 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
 
         OIDCProviderMetadata metadata = OIDCProviderMetadata.parse(response.body());
 
-        String id = String.format("%d", configuration.getId());
         newMap.put(
             id,
             ClientRegistration.withRegistrationId(id)
@@ -83,8 +83,14 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
                 .userNameAttributeName(configuration.getUserNameAttribute())
                 .redirectUri("{baseUrl}/api/oauth2/callback")
                 .build());
+        if (configuration.getStatus() != null) {
+          configuration.setStatus(null);
+          oidcConfigurationRepository.save(configuration);
+        }
       } catch (Exception e) {
-        logger.error("Failed to create OIDC client registration", e);
+        logger.error("Failed to create OIDC client registration for ID " + id, e);
+        configuration.setStatus(e.toString());
+        oidcConfigurationRepository.save(configuration);
       }
     }
 
