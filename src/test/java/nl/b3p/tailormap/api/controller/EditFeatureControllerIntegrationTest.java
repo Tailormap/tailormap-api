@@ -435,6 +435,46 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
+  void testPostForeignCRSPG() throws Exception {
+    final String __fid = StaticTestData.get("osm_polygon__fid_edit") + "1234";
+    final String osm_id = __fid.replace("osm_polygon.", "");
+    final String url = apiBasePath + osm_polygonUrlPostgis;
+    final MvcResult result =
+        mockMvc
+            .perform(
+                post(url)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(setServletPath(url))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        "{\"__fid\": \""
+                            + __fid
+                            + "\",\"attributes\" : { \"osm_id\":"
+                            + osm_id
+                            + ",\"building\":\"abandoned industrial complex\", \"way\" : \""
+                            + StaticTestData.get("osm_polygon__geom_edit_28992")
+                            + "\"}}"))
+            .andExpect(status().is2xxSuccessful())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.__fid").value(__fid))
+            .andExpect(jsonPath("$.attributes.building").value("abandoned industrial complex"))
+            .andExpect(jsonPath("$.attributes.z_order").isEmpty())
+            .andReturn();
+
+    // check geometry equality
+    final String body = result.getResponse().getContentAsString();
+    final Geometry inputGeometry =
+        GeometryProcessor.wktToGeometry(StaticTestData.get("osm_polygon__geom_edit_28992"));
+    final Geometry geometry = GeometryProcessor.wktToGeometry(JsonPath.read(body, "$.geometry"));
+    assertTrue(geometry.equalsExact(inputGeometry, 1.0), "Geometry is not equal");
+    final Geometry way = GeometryProcessor.wktToGeometry(JsonPath.read(body, "$.attributes.way"));
+    assertTrue(way.equalsExact(inputGeometry, 1.0), "Geometry is not equal");
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPatchOrcl() throws Exception {
     final String url = apiBasePath + waterdeelUrlOracle + StaticTestData.get("waterdeel__fid_edit");
