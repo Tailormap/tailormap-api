@@ -420,7 +420,7 @@ class EditFeatureControllerIntegrationTest {
             .andExpect(jsonPath("$.attributes.building").value("abandoned industrial complex"))
             .andExpect(jsonPath("$.attributes.z_order").value(0))
             .andReturn();
-    
+
     // check geometry equality
     final String body = result.getResponse().getContentAsString();
     final Geometry inputGeometry =

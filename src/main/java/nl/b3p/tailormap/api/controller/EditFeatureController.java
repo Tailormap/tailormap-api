@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.annotation.AppRestController;
+import nl.b3p.tailormap.api.geotools.TransformationUtil;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
 import nl.b3p.tailormap.api.persistence.Application;
@@ -36,7 +37,6 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.referencing.CRS;
 import org.geotools.util.factory.GeoTools;
 import org.geotools.util.factory.Hints;
 import org.locationtech.jts.geom.Geometry;
@@ -46,7 +46,6 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -202,7 +201,8 @@ public class EditFeatureController implements Constants {
       // find feature to update
       final Filter filter = ff.id(ff.featureId(fid));
       if (!fs.getFeatures(filter).isEmpty() && fs instanceof SimpleFeatureStore) {
-        handleGeometryAttributesInput(tmFeatureType, partialFeature, attributesMap, application, fs);
+        handleGeometryAttributesInput(
+            tmFeatureType, partialFeature, attributesMap, application, fs);
         // NOTE geotools does not report back that the feature was updated, no error === success
         ((SimpleFeatureStore) fs).setTransaction(transaction);
         ((SimpleFeatureStore) fs)
@@ -297,7 +297,7 @@ public class EditFeatureController implements Constants {
     return tmft;
   }
 
-  private Feature getFeature(SimpleFeatureSource fs, Filter filter, Application application)
+  private static Feature getFeature(SimpleFeatureSource fs, Filter filter, Application application)
       throws IOException, FactoryException {
     Feature modelFeature = null;
     try (SimpleFeatureIterator feats = fs.getFeatures(filter).features()) {
@@ -310,14 +310,15 @@ public class EditFeatureController implements Constants {
                         (simpleFeature.getDefaultGeometry()),
                         false,
                         true,
-                        getTransformationToApplication(application, fs)))
+                        TransformationUtil.getTransformationToApplication(application, fs)))
                 .fid(simpleFeature.getID());
         for (AttributeDescriptor att : simpleFeature.getFeatureType().getAttributeDescriptors()) {
           Object value = simpleFeature.getAttribute(att.getName());
           if (value instanceof Geometry) {
             value =
                 GeometryProcessor.transformGeometry(
-                    (Geometry) value, getTransformationToApplication(application, fs));
+                    (Geometry) value,
+                    TransformationUtil.getTransformationToApplication(application, fs));
             value = GeometryProcessor.geometryToWKT((Geometry) value);
           }
           modelFeature.putAttributesItem(att.getLocalName(), value);
@@ -328,7 +329,7 @@ public class EditFeatureController implements Constants {
   }
 
   /** Handle geometry attributes, essentially this is a WKT to Geometry conversion. */
-  private void handleGeometryAttributesInput(
+  private static void handleGeometryAttributesInput(
       TMFeatureType tmFeatureType,
       Feature modelFeature,
       Map<String, Object> attributesMap,
@@ -336,7 +337,8 @@ public class EditFeatureController implements Constants {
       SimpleFeatureSource fs)
       throws FactoryException {
 
-    final MathTransform transform = getTransformationToDataSource(application, fs);
+    final MathTransform transform =
+        TransformationUtil.getTransformationToDataSource(application, fs);
     tmFeatureType.getAttributes().stream()
         .filter(attr -> TMAttributeTypeHelper.isGeometry(attr.getType()))
         .filter(attr -> modelFeature.getAttributes().containsKey(attr.getName()))
@@ -357,42 +359,5 @@ public class EditFeatureController implements Constants {
               }
               attributesMap.put(attr.getName(), geometry);
             });
-  }
-
-  /**
-   * Determine whether we need to transform geometry to the application CRS.
-   *
-   * @param application the application
-   * @param fs the feature source
-   * @return @{code null} when no transform is required and a valid transform otherwise
-   */
-  private MathTransform getTransformationToApplication(
-      Application application, SimpleFeatureSource fs) throws FactoryException {
-    MathTransform transform = null;
-    // this is the CRS of the "default geometry" attribute
-    final CoordinateReferenceSystem dataSourceCRS = fs.getSchema().getCoordinateReferenceSystem();
-    final CoordinateReferenceSystem appCRS = CRS.decode(application.getCrs());
-    if (!CRS.equalsIgnoreMetadata(dataSourceCRS, appCRS)) {
-      transform = CRS.findMathTransform(dataSourceCRS, appCRS);
-    }
-    return transform;
-  }
-  /**
-   * Determine whether we need to transform geometry to data source crs.
-   *
-   * @param application the application
-   * @param fs the feature source
-   * @return @{code null} when no transform is required and a valid transform otherwise
-   */
-  private MathTransform getTransformationToDataSource(
-      Application application, SimpleFeatureSource fs) throws FactoryException {
-    MathTransform transform = null;
-    // this is the CRS of the "default geometry" attribute
-    final CoordinateReferenceSystem dataSourceCRS = fs.getSchema().getCoordinateReferenceSystem();
-    final CoordinateReferenceSystem appCRS = CRS.decode(application.getCrs());
-    if (!CRS.equalsIgnoreMetadata(dataSourceCRS, appCRS)) {
-      transform = CRS.findMathTransform(appCRS, dataSourceCRS);
-    }
-    return transform;
   }
 }
