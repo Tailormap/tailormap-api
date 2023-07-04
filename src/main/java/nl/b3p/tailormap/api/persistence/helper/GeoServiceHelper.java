@@ -254,14 +254,16 @@ public class GeoServiceHelper {
 
   void loadWMSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client)
       throws Exception {
-    WebMapServer wms = null;
+    WebMapServer wms;
     try {
       wms = new WebMapServer(new URL(geoService.getUrl()), client);
-    } catch(ClassCastException | IllegalStateException e) {
+    } catch (ClassCastException | IllegalStateException e) {
       // The gt-wms module tries to cast the XML unmarshalling result expecting capabilities, but a
-      // WMS 1.0.0/1.1.0 ServiceException may have been unmarshalled which leads to a ClassCastException.
+      // WMS 1.0.0/1.1.0 ServiceException may have been unmarshalled which leads to a
+      // ClassCastException.
 
-      // A WMS 1.3.0 ServiceExceptionReport leads to an IllegalStateException because of a call to Throwable.initCause() on a SAXException that already has a cause.
+      // A WMS 1.3.0 ServiceExceptionReport leads to an IllegalStateException because of a call to
+      // Throwable.initCause() on a SAXException that already has a cause.
 
       // In these cases, try to extract a message from the HTTP response
 

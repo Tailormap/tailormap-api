@@ -6,24 +6,22 @@
 
 package nl.b3p.tailormap.api.geotools;
 
+import java.io.ByteArrayInputStream;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 public class WMSServiceExceptionUtil {
 
   /**
-   * Tries to parse a WMS service exception XML response of any WMS version and extract an error message.
+   * Tries to parse a WMS service exception XML response of any WMS version and extract an error
+   * message.
+   *
    * @param body The response body from a text/xml WMS response
    * @return A service exception message or null if it can't be extracted
    */
@@ -46,7 +44,7 @@ public class WMSServiceExceptionUtil {
 
         NodeList exceptions = doc.getDocumentElement().getElementsByTagName("ServiceException");
         if (exceptions.getLength() > 0) {
-          Element exception = (Element)exceptions.item(0);
+          Element exception = (Element) exceptions.item(0);
           code = exception.getAttribute("code");
           locator = exception.getAttribute("locator");
           text = exception.getTextContent().trim();
@@ -56,9 +54,9 @@ public class WMSServiceExceptionUtil {
 
         NodeList children = doc.getDocumentElement().getChildNodes();
         Element exception = null;
-        for(int i = 0; i < children.getLength(); i++) {
+        for (int i = 0; i < children.getLength(); i++) {
           if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
-            exception = (Element)children.item(i);
+            exception = (Element) children.item(i);
             break;
           }
         }
@@ -66,9 +64,9 @@ public class WMSServiceExceptionUtil {
           code = exception.getAttribute("exceptionCode");
           locator = exception.getAttribute("locator");
           children = exception.getChildNodes();
-          for(int i = 0; i < children.getLength(); i++) {
+          for (int i = 0; i < children.getLength(); i++) {
             if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
-              text = ((Element)children.item(i)).getTextContent().trim();
+              text = children.item(i).getTextContent().trim();
               break;
             }
           }
