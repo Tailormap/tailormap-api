@@ -131,8 +131,7 @@ public class EditFeatureController implements Constants {
         simpleFeature = simpleFeatureBuilder.buildFeature(null);
       }
 
-      handleGeometryAttributes(
-          tmFeatureType, completeFeature, attributesMap, getTransformation(application, fs));
+      handleGeometryAttributesInput(tmFeatureType, completeFeature, attributesMap, application, fs);
       for (Map.Entry<String, Object> entry : attributesMap.entrySet()) {
         simpleFeature.setAttribute(entry.getKey(), entry.getValue());
       }
@@ -203,8 +202,7 @@ public class EditFeatureController implements Constants {
       // find feature to update
       final Filter filter = ff.id(ff.featureId(fid));
       if (!fs.getFeatures(filter).isEmpty() && fs instanceof SimpleFeatureStore) {
-        handleGeometryAttributes(
-            tmFeatureType, partialFeature, attributesMap, getTransformation(application, fs));
+        handleGeometryAttributesInput(tmFeatureType, partialFeature, attributesMap, application, fs);
         // NOTE geotools does not report back that the feature was updated, no error === success
         ((SimpleFeatureStore) fs).setTransaction(transaction);
         ((SimpleFeatureStore) fs)
@@ -312,14 +310,14 @@ public class EditFeatureController implements Constants {
                         (simpleFeature.getDefaultGeometry()),
                         false,
                         true,
-                        getTransformation(application, fs)))
+                        getTransformationToApplication(application, fs)))
                 .fid(simpleFeature.getID());
         for (AttributeDescriptor att : simpleFeature.getFeatureType().getAttributeDescriptors()) {
           Object value = simpleFeature.getAttribute(att.getName());
           if (value instanceof Geometry) {
             value =
                 GeometryProcessor.transformGeometry(
-                    (Geometry) value, getTransformation(application, fs));
+                    (Geometry) value, getTransformationToApplication(application, fs));
             value = GeometryProcessor.geometryToWKT((Geometry) value);
           }
           modelFeature.putAttributesItem(att.getLocalName(), value);
@@ -330,11 +328,15 @@ public class EditFeatureController implements Constants {
   }
 
   /** Handle geometry attributes, essentially this is a WKT to Geometry conversion. */
-  private void handleGeometryAttributes(
+  private void handleGeometryAttributesInput(
       TMFeatureType tmFeatureType,
       Feature modelFeature,
       Map<String, Object> attributesMap,
-      MathTransform transform) {
+      Application application,
+      SimpleFeatureSource fs)
+      throws FactoryException {
+
+    final MathTransform transform = getTransformationToDataSource(application, fs);
     tmFeatureType.getAttributes().stream()
         .filter(attr -> TMAttributeTypeHelper.isGeometry(attr.getType()))
         .filter(attr -> modelFeature.getAttributes().containsKey(attr.getName()))
@@ -344,21 +346,52 @@ public class EditFeatureController implements Constants {
                   GeometryProcessor.wktToGeometry(
                       (String) modelFeature.getAttributes().get(attr.getName()));
               if (transform != null && geometry != null) {
+                geometry.setSRID(
+                    Integer.parseInt(application.getCrs().substring("EPSG:".length())));
+                logger.trace(
+                    "Transforming geometry {} from {} to {}",
+                    geometry.toText(),
+                    geometry.getSRID(),
+                    fs.getSchema().getCoordinateReferenceSystem().getIdentifiers());
                 geometry = GeometryProcessor.transformGeometry(geometry, transform);
               }
               attributesMap.put(attr.getName(), geometry);
             });
   }
 
-  /** Determine whether we need to transform geometry. */
-  private MathTransform getTransformation(Application application, SimpleFeatureSource fs)
-      throws FactoryException {
+  /**
+   * Determine whether we need to transform geometry to the application CRS.
+   *
+   * @param application the application
+   * @param fs the feature source
+   * @return @{code null} when no transform is required and a valid transform otherwise
+   */
+  private MathTransform getTransformationToApplication(
+      Application application, SimpleFeatureSource fs) throws FactoryException {
     MathTransform transform = null;
     // this is the CRS of the "default geometry" attribute
     final CoordinateReferenceSystem dataSourceCRS = fs.getSchema().getCoordinateReferenceSystem();
     final CoordinateReferenceSystem appCRS = CRS.decode(application.getCrs());
     if (!CRS.equalsIgnoreMetadata(dataSourceCRS, appCRS)) {
       transform = CRS.findMathTransform(dataSourceCRS, appCRS);
+    }
+    return transform;
+  }
+  /**
+   * Determine whether we need to transform geometry to data source crs.
+   *
+   * @param application the application
+   * @param fs the feature source
+   * @return @{code null} when no transform is required and a valid transform otherwise
+   */
+  private MathTransform getTransformationToDataSource(
+      Application application, SimpleFeatureSource fs) throws FactoryException {
+    MathTransform transform = null;
+    // this is the CRS of the "default geometry" attribute
+    final CoordinateReferenceSystem dataSourceCRS = fs.getSchema().getCoordinateReferenceSystem();
+    final CoordinateReferenceSystem appCRS = CRS.decode(application.getCrs());
+    if (!CRS.equalsIgnoreMetadata(dataSourceCRS, appCRS)) {
+      transform = CRS.findMathTransform(appCRS, dataSourceCRS);
     }
     return transform;
   }

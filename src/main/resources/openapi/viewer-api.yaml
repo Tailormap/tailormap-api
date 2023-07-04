@@ -1011,7 +1011,8 @@ paths:
     summary: 'Edit operations on a single feature.'
     description: 'Operations on a single feature referenced by its FID. The FID is a unique identifier for a feature within a layer.
       It is assigned by the datasource (using the primary key) and is stable between requests. The FID is required for PATCH and
-      DELETE requests, and should generally be omitted for POST requests as the datasource will assign the primary key.'
+      DELETE requests, and should generally be omitted for POST requests as the datasource will assign the primary key.
+      Any geometry attributes are expected to be given in the application CRS; the API will handle projection to the datasource CRS.'
     parameters:
       - in: path
         name: viewerKind
