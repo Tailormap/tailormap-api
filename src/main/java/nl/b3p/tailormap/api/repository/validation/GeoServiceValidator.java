@@ -71,6 +71,9 @@ public class GeoServiceValidator implements Validator {
             String.format(
                 "Error loading capabilities from URL \"%s\": %s",
                 service.getUrl(), ExceptionUtils.getMessage(e));
+        String loggerMsg =
+            " -- This may not be an application error but a problem with an external service or user-entered data.";
+        logger.info(msg + loggerMsg, e);
         errors.rejectValue("url", "loading-capabilities-failed", msg);
       }
     }
