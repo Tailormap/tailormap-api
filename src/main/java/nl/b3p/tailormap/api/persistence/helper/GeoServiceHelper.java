@@ -278,6 +278,13 @@ public class GeoServiceHelper {
       } else {
         throw e;
       }
+    } catch(IOException e) {
+      // This tries to match a HttpURLConnection (which the default GeoTools SimpleHTTPClient uses) exception message. In a container environment the JVM is always in English so never localized.
+      if (e.getMessage().contains("Server returned HTTP response code: 401 for URL:")) {
+        throw new Exception("Error loading WMS, got 401 unauthorized response (credentials may be required or invalid)");
+      } else {
+        throw e;
+      }
     }
 
     OperationType getMap = wms.getCapabilities().getRequest().getGetMap();
