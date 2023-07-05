@@ -266,4 +266,36 @@ class GeoServiceAdminControllerIntegrationTest {
       server.shutdown();
     }
   }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "admin",
+      authorities = {Group.ADMIN})
+  void checkCorsHeaderIsSaved() throws Exception {
+
+    MockMvc mockMvc =
+        MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+    try (MockWebServer server = new MockWebServer()) {
+      server.enqueue(
+          new MockResponse()
+              .setBody(getResourceString(wmsTestCapabilities))
+              .setHeader("Content-Type", "application/vnd.ogc.wms_xml")
+              .setHeader("Access-Control-Allow-Origin", "https://my-origin"));
+      server.start();
+
+      String url = server.url("/test-wms").toString();
+      String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
+
+      mockMvc
+          .perform(
+              post(adminBasePath + "/geo-services")
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(geoServicePOSTBody))
+          .andExpect(status().isCreated())
+          .andExpect(jsonPath("$.serviceCapabilities.corsAllowOrigin").value("https://my-origin"));
+      server.shutdown();
+    }
+  }
 }

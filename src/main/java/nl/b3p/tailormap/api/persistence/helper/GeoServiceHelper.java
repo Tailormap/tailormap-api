@@ -95,7 +95,9 @@ public class GeoServiceHelper {
   }
 
   public void loadServiceCapabilities(GeoService geoService) throws Exception {
-    ResponseTeeingHTTPClient client = new ResponseTeeingHTTPClient(HTTPClientFinder.createClient());
+    ResponseTeeingHTTPClient client =
+        new ResponseTeeingHTTPClient(
+            HTTPClientFinder.createClient(), null, Set.of("Access-Control-Allow-Origin"));
 
     ServiceAuthentication auth = geoService.getAuthentication();
     if (auth != null && auth.getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
@@ -151,7 +153,7 @@ public class GeoServiceHelper {
       GeoService geoService,
       ResponseTeeingHTTPClient client,
       AbstractOpenWebService<? extends Capabilities, Layer> ows) {
-    geoService.setCapabilities(client.getResponseCopy());
+    geoService.setCapabilities(client.getLatestResponseCopy());
     geoService.setCapabilitiesContentType(MediaType.APPLICATION_XML_VALUE);
     // geoService.setCapabilitiesContentType(client.getResponse().getContentType());
     geoService.setCapabilitiesFetched(Instant.now());
@@ -160,6 +162,9 @@ public class GeoServiceHelper {
 
     TMServiceCaps caps = new TMServiceCaps();
     geoService.setServiceCapabilities(caps);
+
+    caps.setCorsAllowOrigin(
+        client.getLatestResponse().getResponseHeader("Access-Control-Allow-Origin"));
 
     if (info != null) {
       if (StringUtils.isBlank(geoService.getTitle())) {
@@ -267,21 +272,24 @@ public class GeoServiceHelper {
 
       // In these cases, try to extract a message from the HTTP response
 
-      String contentType = client.getResponse().getContentType();
+      String contentType = client.getLatestResponse().getContentType();
       if (contentType != null && contentType.contains("text/xml")) {
         String wmsException =
-            WMSServiceExceptionUtil.tryGetServiceExceptionMessage(client.getResponseCopy());
+            WMSServiceExceptionUtil.tryGetServiceExceptionMessage(client.getLatestResponseCopy());
         throw new Exception(
             "Error loading WMS capabilities: " + wmsException != null
                 ? wmsException
-                : new String(client.getResponseCopy(), StandardCharsets.UTF_8));
+                : new String(client.getLatestResponseCopy(), StandardCharsets.UTF_8));
       } else {
         throw e;
       }
-    } catch(IOException e) {
-      // This tries to match a HttpURLConnection (which the default GeoTools SimpleHTTPClient uses) exception message. In a container environment the JVM is always in English so never localized.
+    } catch (IOException e) {
+      // This tries to match a HttpURLConnection (which the default GeoTools SimpleHTTPClient uses)
+      // exception message. In a container environment the JVM is always in English so never
+      // localized.
       if (e.getMessage().contains("Server returned HTTP response code: 401 for URL:")) {
-        throw new Exception("Error loading WMS, got 401 unauthorized response (credentials may be required or invalid)");
+        throw new Exception(
+            "Error loading WMS, got 401 unauthorized response (credentials may be required or invalid)");
       } else {
         throw e;
       }
