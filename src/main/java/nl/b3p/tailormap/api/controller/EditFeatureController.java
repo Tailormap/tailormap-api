@@ -356,7 +356,7 @@ public class EditFeatureController implements Constants {
                       geometry.toText(),
                       geometry.getSRID(),
                       fs.getSchema().getCoordinateReferenceSystem().getIdentifiers());
-                }                      
+                }
                 geometry = GeometryProcessor.transformGeometry(geometry, transform);
               }
               attributesMap.put(attr.getName(), geometry);
