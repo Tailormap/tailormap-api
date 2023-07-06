@@ -1,0 +1,14 @@
+{
+  "projectName": "tailormap-api",
+  "projectOwner": "B3Partners",
+  "files": [
+    "CONTRIBUTING.md"
+  ],
+  "commit": true,
+  "contributors": [
+    "mprins",
+    "geertplaisier",
+    "matthijsln",
+    "puckipedia"
+  ]
+}
