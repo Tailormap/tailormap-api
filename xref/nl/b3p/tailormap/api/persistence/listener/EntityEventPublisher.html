@@ -35,59 +35,66 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.annotation.Lazy;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.springframework.data.<strong class="jxr_keyword">rest</strong>.webmvc.config.RepositoryRestMvcConfiguration;
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.springframework.stereotype.Component;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  @Component
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="EntityEventPublisher" href="../../../../../../nl/b3p/tailormap/api/persistence/listener/EntityEventPublisher.html#EntityEventPublisher">EntityEventPublisher</a> {
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>    @Autowired @Lazy <strong class="jxr_keyword">private</strong> EntityManagerFactory entityManagerFactory;
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>    @Autowired @Lazy <strong class="jxr_keyword">private</strong> ObjectMapper objectMapper;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>    @Autowired @Lazy <strong class="jxr_keyword">private</strong> SseEventBus eventBus;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>    @Autowired @Lazy <strong class="jxr_keyword">private</strong> RepositoryRestMvcConfiguration repositoryRestMvcConfiguration;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>    <strong class="jxr_keyword">public</strong> <a name="EntityEventPublisher" href="../../../../../../nl/b3p/tailormap/api/persistence/listener/EntityEventPublisher.html#EntityEventPublisher">EntityEventPublisher</a>() {}
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> sendEvent(
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>        ServerSentEvent.EventTypeEnum eventTypeEnum, Object entity, <strong class="jxr_keyword">boolean</strong> serializeEntity) {
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>      Object id = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>      <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>        id = entityManagerFactory.getPersistenceUnitUtil().getIdentifier(entity);
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>        EntityEvent entityEvent =
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>            <strong class="jxr_keyword">new</strong> EntityEvent().entityName(entity.getClass().getSimpleName()).id(String.valueOf(id));
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>        <strong class="jxr_keyword">if</strong> (serializeEntity) {
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          entityEvent.setObject(repositoryRestMvcConfiguration.objectMapper().valueToTree(entity));
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>        }
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>        ServerSentEvent event = <strong class="jxr_keyword">new</strong> ServerSentEvent().eventType(eventTypeEnum).details(entityEvent);
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>        <strong class="jxr_keyword">this</strong>.eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(event)));
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>      } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>        logger.error(
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>            <span class="jxr_string">"Error sending SSE for event type {}, entity {}, id {}"</span>,
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>            eventTypeEnum,
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>            entity != <strong class="jxr_keyword">null</strong> ? entity.getClass().getSimpleName() : <strong class="jxr_keyword">null</strong>,
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>            id,
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>            e);
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>      }
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>    }
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>    @PostPersist
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> postPersist(Object entity) {
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      sendEvent(ENTITY_CREATED, entity, <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>    }
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>  
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>    @PostRemove
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> postRemove(Object entity) {
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>      sendEvent(ENTITY_DELETED, entity, false);
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>    }
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>  
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>    @PostUpdate
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> postUpdate(Object entity) {
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>      sendEvent(ENTITY_UPDATED, entity, <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>    }
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>  }
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.context.request.RequestContextHolder;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  @Component
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="EntityEventPublisher" href="../../../../../../nl/b3p/tailormap/api/persistence/listener/EntityEventPublisher.html#EntityEventPublisher">EntityEventPublisher</a> {
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>    @Autowired @Lazy <strong class="jxr_keyword">private</strong> EntityManagerFactory entityManagerFactory;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>    @Autowired @Lazy <strong class="jxr_keyword">private</strong> ObjectMapper objectMapper;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>    @Autowired @Lazy <strong class="jxr_keyword">private</strong> SseEventBus eventBus;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>    @Autowired @Lazy <strong class="jxr_keyword">private</strong> RepositoryRestMvcConfiguration repositoryRestMvcConfiguration;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    <strong class="jxr_keyword">public</strong> <a name="EntityEventPublisher" href="../../../../../../nl/b3p/tailormap/api/persistence/listener/EntityEventPublisher.html#EntityEventPublisher">EntityEventPublisher</a>() {}
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> sendEvent(
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>        ServerSentEvent.EventTypeEnum eventTypeEnum, Object entity, <strong class="jxr_keyword">boolean</strong> serializeEntity) {
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      Object id = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">if</strong> (RequestContextHolder.getRequestAttributes() == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>        <em class="jxr_comment">// No current request -- do not send events / serialize entities during app startup</em>
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>        <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      }
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>        id = entityManagerFactory.getPersistenceUnitUtil().getIdentifier(entity);
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>        EntityEvent entityEvent =
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>            <strong class="jxr_keyword">new</strong> EntityEvent().entityName(entity.getClass().getSimpleName()).id(String.valueOf(id));
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>        <strong class="jxr_keyword">if</strong> (serializeEntity) {
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          entityEvent.setObject(repositoryRestMvcConfiguration.objectMapper().valueToTree(entity));
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>        }
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>        ServerSentEvent event = <strong class="jxr_keyword">new</strong> ServerSentEvent().eventType(eventTypeEnum).details(entityEvent);
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>        <strong class="jxr_keyword">this</strong>.eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(event)));
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>        logger.error(
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>            <span class="jxr_string">"Error sending SSE for event type {}, entity {}, id {}"</span>,
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>            eventTypeEnum,
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>            entity != <strong class="jxr_keyword">null</strong> ? entity.getClass().getSimpleName() : <strong class="jxr_keyword">null</strong>,
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>            id,
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>            e);
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      }
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>    }
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>    @PostPersist
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> postPersist(Object entity) {
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      sendEvent(ENTITY_CREATED, entity, <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>    }
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>  
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>    @PostRemove
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> postRemove(Object entity) {
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>      sendEvent(ENTITY_DELETED, entity, false);
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>    }
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>    @PostUpdate
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> postUpdate(Object entity) {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      sendEvent(ENTITY_UPDATED, entity, <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>    }
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2023 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>
