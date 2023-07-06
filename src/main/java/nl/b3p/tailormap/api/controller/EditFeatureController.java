@@ -350,11 +350,13 @@ public class EditFeatureController implements Constants {
               if (transform != null && geometry != null) {
                 geometry.setSRID(
                     Integer.parseInt(application.getCrs().substring("EPSG:".length())));
-                logger.trace(
-                    "Transforming geometry {} from {} to {}",
-                    geometry.toText(),
-                    geometry.getSRID(),
-                    fs.getSchema().getCoordinateReferenceSystem().getIdentifiers());
+                if (logger.isTraceEnabled()) {
+                  logger.trace(
+                      "Transforming geometry {} from {} to {}",
+                      geometry.toText(),
+                      geometry.getSRID(),
+                      fs.getSchema().getCoordinateReferenceSystem().getIdentifiers());
+                }                      
                 geometry = GeometryProcessor.transformGeometry(geometry, transform);
               }
               attributesMap.put(attr.getName(), geometry);
