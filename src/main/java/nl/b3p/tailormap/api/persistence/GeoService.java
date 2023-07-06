@@ -441,7 +441,7 @@ public class GeoService {
    * Remove all parameters from the URL that are listed in {@link #REMOVE_PARAMS}.
    *
    * @param url URL to sanitise
-   * @return sanitized URL
+   * @return sanitised URL
    */
   private String sanitizeUrl(String url) {
     if (url != null && url.contains("?")) {
