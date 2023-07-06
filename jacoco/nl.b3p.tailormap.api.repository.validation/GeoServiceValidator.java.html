@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeoServiceValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.repository.validation</a> &gt; <span class="el_source">GeoServiceValidator.java</span></div><h1>GeoServiceValidator.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+package nl.b3p.tailormap.api.repository.validation;
+
+import java.lang.invoke.MethodHandles;
+import java.net.URI;
+import java.net.URL;
+import java.net.UnknownHostException;
+import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+
+@Component
+public class GeoServiceValidator implements Validator {
+<span class="nc" id="L25">  private static final Logger logger =</span>
+<span class="nc" id="L26">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  private final GeoServiceHelper geoServiceHelper;
+
+<span class="nc" id="L30">  public GeoServiceValidator(GeoServiceHelper geoServiceHelper) {</span>
+<span class="nc" id="L31">    this.geoServiceHelper = geoServiceHelper;</span>
+<span class="nc" id="L32">  }</span>
+
+  @Override
+  public boolean supports(@NonNull Class&lt;?&gt; clazz) {
+<span class="nc" id="L36">    return GeoService.class.isAssignableFrom(clazz);</span>
+  }
+
+  @Override
+  public void validate(@NonNull Object target, @NonNull Errors errors) {
+<span class="nc" id="L41">    GeoService service = (GeoService) target;</span>
+<span class="nc" id="L42">    logger.debug(</span>
+        &quot;Validate service {}, refresh capabilities {}, url {}&quot;,
+<span class="nc" id="L44">        service.getId(),</span>
+<span class="nc" id="L45">        service.isRefreshCapabilities(),</span>
+<span class="nc" id="L46">        service.getUrl());</span>
+
+<span class="nc bnc" id="L48" title="All 2 branches missed.">    if (errors.getFieldError(&quot;url&quot;) != null) {</span>
+<span class="nc" id="L49">      return;</span>
+    }
+
+    URI uri;
+    try {
+<span class="nc" id="L54">      uri = new URL(service.getUrl()).toURI();</span>
+<span class="nc" id="L55">    } catch (Exception e) {</span>
+<span class="nc" id="L56">      errors.rejectValue(&quot;url&quot;, &quot;invalid&quot;, &quot;Invalid URI&quot;);</span>
+<span class="nc" id="L57">      return;</span>
+<span class="nc" id="L58">    }</span>
+<span class="nc bnc" id="L59" title="All 4 branches missed.">    if (!&quot;https&quot;.equals(uri.getScheme()) &amp;&amp; !&quot;http&quot;.equals(uri.getScheme())) {</span>
+<span class="nc" id="L60">      errors.rejectValue(&quot;url&quot;, &quot;invalid-scheme&quot;, &quot;Invalid URI scheme&quot;);</span>
+<span class="nc" id="L61">      return;</span>
+    }
+
+<span class="nc bnc" id="L64" title="All 2 branches missed.">    if (service.isRefreshCapabilities()) {</span>
+      try {
+<span class="nc" id="L66">        geoServiceHelper.loadServiceCapabilities(service);</span>
+<span class="nc" id="L67">      } catch (UnknownHostException e) {</span>
+<span class="nc" id="L68">        errors.rejectValue(&quot;url&quot;, &quot;unknown-host&quot;, &quot;Unknown host: \&quot;&quot; + uri.getHost() + &quot;\&quot;&quot;);</span>
+<span class="nc" id="L69">      } catch (Exception e) {</span>
+<span class="nc" id="L70">        String msg =</span>
+<span class="nc" id="L71">            String.format(</span>
+                &quot;Error loading capabilities from URL \&quot;%s\&quot;: %s&quot;,
+<span class="nc" id="L73">                service.getUrl(), ExceptionUtils.getMessage(e));</span>
+<span class="nc" id="L74">        String loggerMsg =</span>
+            &quot; -- This may not be an application error but a problem with an external service or user-entered data.&quot;;
+<span class="nc" id="L76">        logger.info(msg + loggerMsg, e);</span>
+<span class="nc" id="L77">        errors.rejectValue(&quot;url&quot;, &quot;loading-capabilities-failed&quot;, msg);</span>
+<span class="nc" id="L78">      }</span>
+    }
+<span class="nc" id="L80">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

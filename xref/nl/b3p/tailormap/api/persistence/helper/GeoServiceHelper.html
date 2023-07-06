@@ -21,400 +21,441 @@
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> java.net.URI;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> java.net.URISyntaxException;
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> java.net.URL;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> java.time.Instant;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.util.Arrays;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.util.Collections;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.List;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.util.Optional;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> java.util.function.BiConsumer;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> java.util.function.Predicate;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Collectors;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.configuration.TailormapConfig;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.geotools.ResponseTeeingHTTPClient;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.geotools.wfs.SimpleWFSLayerDescription;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.GeoService;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.TMFeatureSource;
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequest;
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetFeatureInfo;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetMap;
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.TMServiceCapsCapabilities;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.TMServiceInfo;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.WMSStyle;
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.repository.FeatureSourceRepository;
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.StringUtils;
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.ServiceInfo;
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.ows.AbstractOpenWebService;
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.ows.Capabilities;
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.ows.OperationType;
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">import</strong> org.geotools.http.HTTPClientFinder;
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <strong class="jxr_keyword">import</strong> org.geotools.ows.wms.Layer;
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  <strong class="jxr_keyword">import</strong> org.geotools.ows.wms.WMSCapabilities;
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">import</strong> org.geotools.ows.wms.WebMapServer;
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <strong class="jxr_keyword">import</strong> org.geotools.ows.wmts.WebMapTileServer;
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.MediaType;
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <strong class="jxr_keyword">import</strong> org.springframework.stereotype.Service;
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <strong class="jxr_keyword">import</strong> org.springframework.util.CollectionUtils;
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>  @Service
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="GeoServiceHelper" href="../../../../../../nl/b3p/tailormap/api/persistence/helper/GeoServiceHelper.html#GeoServiceHelper">GeoServiceHelper</a> {
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>  
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="TailormapConfig" href="../../../../../../nl/b3p/tailormap/api/configuration/TailormapConfig.html#TailormapConfig">TailormapConfig</a> tailormapConfig;
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="FeatureSourceRepository" href="../../../../../../nl/b3p/tailormap/api/repository/FeatureSourceRepository.html#FeatureSourceRepository">FeatureSourceRepository</a> featureSourceRepository;
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>  
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>    @Autowired
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>    <strong class="jxr_keyword">public</strong> <a name="GeoServiceHelper" href="../../../../../../nl/b3p/tailormap/api/persistence/helper/GeoServiceHelper.html#GeoServiceHelper">GeoServiceHelper</a>(
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>        <a name="TailormapConfig" href="../../../../../../nl/b3p/tailormap/api/configuration/TailormapConfig.html#TailormapConfig">TailormapConfig</a> tailormapConfig, <a name="FeatureSourceRepository" href="../../../../../../nl/b3p/tailormap/api/repository/FeatureSourceRepository.html#FeatureSourceRepository">FeatureSourceRepository</a> featureSourceRepository) {
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>      <strong class="jxr_keyword">this</strong>.tailormapConfig = tailormapConfig;
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>      <strong class="jxr_keyword">this</strong>.featureSourceRepository = featureSourceRepository;
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>    }
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>  
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>    <strong class="jxr_keyword">public</strong> nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum guessServerTypeFromUrl(
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>        String url) {
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>  
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">if</strong> (StringUtils.isBlank(url)) {
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>        <strong class="jxr_keyword">return</strong> nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>      }
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>      <strong class="jxr_keyword">if</strong> (url.contains(<span class="jxr_string">"/arcgis/"</span>)) {
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>        <strong class="jxr_keyword">return</strong> nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>      }
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">if</strong> (url.contains(<span class="jxr_string">"/geoserver/"</span>)) {
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>        <strong class="jxr_keyword">return</strong> nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.GEOSERVER;
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>      }
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>      <strong class="jxr_keyword">if</strong> (url.contains(<span class="jxr_string">"/mapserv"</span>)) { <em class="jxr_comment">// /cgi-bin/mapserv, /cgi-bin/mapserv.cgi, /cgi-bin/mapserv.fcgi</em>
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>        <strong class="jxr_keyword">return</strong> nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.MAPSERVER;
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>      }
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">return</strong> nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>    }
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>  
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> loadServiceCapabilities(<a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>      <a name="ResponseTeeingHTTPClient" href="../../../../../../nl/b3p/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a> client = <strong class="jxr_keyword">new</strong> <a name="ResponseTeeingHTTPClient" href="../../../../../../nl/b3p/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a>(HTTPClientFinder.createClient());
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>  
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>      ServiceAuthentication auth = geoService.getAuthentication();
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>      <strong class="jxr_keyword">if</strong> (auth != <strong class="jxr_keyword">null</strong> &amp;&amp; auth.getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>       client.setUser(auth.getUsername());
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>       client.setPassword(auth.getPassword());
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>     }
-<a class="jxr_linenumber" name="L103" href="#L103">103</a> 
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>     client.setReadTimeout(<strong class="jxr_keyword">this</strong>.tailormapConfig.getTimeout());
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>     client.setConnectTimeout(<strong class="jxr_keyword">this</strong>.tailormapConfig.getTimeout());
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>     client.setTryGzip(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> java.nio.charset.StandardCharsets;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.time.Instant;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.util.Arrays;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.Collections;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> java.util.Optional;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> java.util.function.BiConsumer;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> java.util.function.Predicate;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Collectors;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.configuration.TailormapConfig;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.geotools.ResponseTeeingHTTPClient;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.geotools.WMSServiceExceptionUtil;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.geotools.wfs.SimpleWFSLayerDescription;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.GeoService;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.TMFeatureSource;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequest;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetFeatureInfo;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequestGetMap;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.TMServiceCapsCapabilities;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.TMServiceInfo;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.WMSStyle;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.repository.FeatureSourceRepository;
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.StringUtils;
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.ServiceInfo;
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.ows.AbstractOpenWebService;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.ows.Capabilities;
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.ows.OperationType;
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  <strong class="jxr_keyword">import</strong> org.geotools.http.HTTPClientFinder;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">import</strong> org.geotools.ows.wms.Layer;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <strong class="jxr_keyword">import</strong> org.geotools.ows.wms.WMSCapabilities;
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <strong class="jxr_keyword">import</strong> org.geotools.ows.wms.WebMapServer;
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <strong class="jxr_keyword">import</strong> org.geotools.ows.wmts.WebMapTileServer;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.MediaType;
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <strong class="jxr_keyword">import</strong> org.springframework.stereotype.Service;
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <strong class="jxr_keyword">import</strong> org.springframework.util.CollectionUtils;
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  @Service
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="GeoServiceHelper" href="../../../../../../nl/b3p/tailormap/api/persistence/helper/GeoServiceHelper.html#GeoServiceHelper">GeoServiceHelper</a> {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="TailormapConfig" href="../../../../../../nl/b3p/tailormap/api/configuration/TailormapConfig.html#TailormapConfig">TailormapConfig</a> tailormapConfig;
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="FeatureSourceRepository" href="../../../../../../nl/b3p/tailormap/api/repository/FeatureSourceRepository.html#FeatureSourceRepository">FeatureSourceRepository</a> featureSourceRepository;
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>    @Autowired
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>    <strong class="jxr_keyword">public</strong> <a name="GeoServiceHelper" href="../../../../../../nl/b3p/tailormap/api/persistence/helper/GeoServiceHelper.html#GeoServiceHelper">GeoServiceHelper</a>(
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>        <a name="TailormapConfig" href="../../../../../../nl/b3p/tailormap/api/configuration/TailormapConfig.html#TailormapConfig">TailormapConfig</a> tailormapConfig, <a name="FeatureSourceRepository" href="../../../../../../nl/b3p/tailormap/api/repository/FeatureSourceRepository.html#FeatureSourceRepository">FeatureSourceRepository</a> featureSourceRepository) {
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>      <strong class="jxr_keyword">this</strong>.tailormapConfig = tailormapConfig;
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>      <strong class="jxr_keyword">this</strong>.featureSourceRepository = featureSourceRepository;
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>    }
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>    <strong class="jxr_keyword">public</strong> nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum guessServerTypeFromUrl(
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>        String url) {
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>  
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>      <strong class="jxr_keyword">if</strong> (StringUtils.isBlank(url)) {
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>        <strong class="jxr_keyword">return</strong> nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      }
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      <strong class="jxr_keyword">if</strong> (url.contains(<span class="jxr_string">"/arcgis/"</span>)) {
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>        <strong class="jxr_keyword">return</strong> nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      }
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>      <strong class="jxr_keyword">if</strong> (url.contains(<span class="jxr_string">"/geoserver/"</span>)) {
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>        <strong class="jxr_keyword">return</strong> nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.GEOSERVER;
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      }
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      <strong class="jxr_keyword">if</strong> (url.contains(<span class="jxr_string">"/mapserv"</span>)) { <em class="jxr_comment">// /cgi-bin/mapserv, /cgi-bin/mapserv.cgi, /cgi-bin/mapserv.fcgi</em>
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>        <strong class="jxr_keyword">return</strong> nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.MAPSERVER;
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      }
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>      <strong class="jxr_keyword">return</strong> nl.b3p.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>    }
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> loadServiceCapabilities(<a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>      <a name="ResponseTeeingHTTPClient" href="../../../../../../nl/b3p/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a> client =
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>          <strong class="jxr_keyword">new</strong> <a name="ResponseTeeingHTTPClient" href="../../../../../../nl/b3p/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a>(
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>             HTTPClientFinder.createClient(), <strong class="jxr_keyword">null</strong>, Set.of(<span class="jxr_string">"Access-Control-Allow-Origin"</span>));
+<a class="jxr_linenumber" name="L101" href="#L101">101</a> 
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     ServiceAuthentication auth = geoService.getAuthentication();
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>     <strong class="jxr_keyword">if</strong> (auth != <strong class="jxr_keyword">null</strong> &amp;&amp; auth.getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>       client.setUser(auth.getUsername());
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>       client.setPassword(auth.getPassword());
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>     }
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> 
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>     logger.info(
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>         <span class="jxr_string">"Get capabilities for {} {} from URL {}"</span>,
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>         geoService.getProtocol(),
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>         geoService.getId() == <strong class="jxr_keyword">null</strong> ? <span class="jxr_string">"(new)"</span> : <span class="jxr_string">"id "</span> + geoService.getId(),
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>         geoService.getUrl());
-<a class="jxr_linenumber" name="L113" href="#L113">113</a> 
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>     <em class="jxr_comment">// TODO: micrometer met tags voor URL/id van service</em>
-<a class="jxr_linenumber" name="L115" href="#L115">115</a> 
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>     <strong class="jxr_keyword">switch</strong> (geoService.getProtocol()) {
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>       <strong class="jxr_keyword">case</strong> WMS:
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>         loadWMSCapabilities(geoService, client);
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>         <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>       <strong class="jxr_keyword">case</strong> WMTS:
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>         loadWMTSCapabilities(geoService, client);
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>         <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>       <strong class="jxr_keyword">default</strong>:
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> UnsupportedOperationException(
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>             <span class="jxr_string">"Unsupported geo service protocol: "</span> + geoService.getProtocol());
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>     }
-<a class="jxr_linenumber" name="L127" href="#L127">127</a> 
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>     <strong class="jxr_keyword">if</strong> (geoService.getTitle() == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>       geoService.setTitle(
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>           Optional.ofNullable(geoService.getServiceCapabilities())
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>               .map(TMServiceCaps::getServiceInfo)
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>               .map(TMServiceInfo::getTitle)
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>               .orElse(<strong class="jxr_keyword">null</strong>));
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>     }
-<a class="jxr_linenumber" name="L135" href="#L135">135</a> 
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>     <strong class="jxr_keyword">if</strong> (logger.isDebugEnabled()) {
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>       logger.debug(<span class="jxr_string">"Loaded service layers: {}"</span>, geoService.getLayers());
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>     } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>       logger.info(
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>           <span class="jxr_string">"Loaded service layers: {}"</span>,
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>           geoService.getLayers().stream()
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>               .filter(Predicate.not(GeoServiceLayer::getVirtual))
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>               .map(GeoServiceLayer::getName)
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>               .collect(Collectors.toList()));
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>     }
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>   }
-<a class="jxr_linenumber" name="L147" href="#L147">147</a> 
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> setServiceInfo(
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>       <a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService,
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>       <a name="ResponseTeeingHTTPClient" href="../../../../../../nl/b3p/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a> client,
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>       AbstractOpenWebService&lt;? <strong class="jxr_keyword">extends</strong> Capabilities, Layer&gt; ows) {
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>     geoService.setCapabilities(client.getResponseCopy());
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>     geoService.setCapabilitiesContentType(MediaType.APPLICATION_XML_VALUE);
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>     <em class="jxr_comment">// geoService.setCapabilitiesContentType(client.getResponse().getContentType());</em>
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>     geoService.setCapabilitiesFetched(Instant.now());
-<a class="jxr_linenumber" name="L156" href="#L156">156</a> 
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>     ServiceInfo info = ows.getInfo();
-<a class="jxr_linenumber" name="L158" href="#L158">158</a> 
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>     TMServiceCaps caps = <strong class="jxr_keyword">new</strong> TMServiceCaps();
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>     geoService.setServiceCapabilities(caps);
-<a class="jxr_linenumber" name="L161" href="#L161">161</a> 
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>     <strong class="jxr_keyword">if</strong> (info != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>       <strong class="jxr_keyword">if</strong> (StringUtils.isBlank(geoService.getTitle())) {
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>         geoService.setTitle(info.getTitle());
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>       }
-<a class="jxr_linenumber" name="L166" href="#L166">166</a> 
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>       caps.serviceInfo(
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>           <strong class="jxr_keyword">new</strong> TMServiceInfo()
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>               .keywords(info.getKeywords())
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>               .description(info.getDescription())
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>               .title(info.getTitle())
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>               .publisher(info.getPublisher())
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>               .schema(info.getSchema())
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>               .source(info.getSource()));
-<a class="jxr_linenumber" name="L175" href="#L175">175</a> 
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>       geoService.setAdvertisedUrl(info.getSource().toString());
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (ows.getCapabilities() != <strong class="jxr_keyword">null</strong> &amp;&amp; ows.getCapabilities().getService() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>       org.geotools.data.ows.Service service = ows.getCapabilities().getService();
-<a class="jxr_linenumber" name="L179" href="#L179">179</a> 
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>       <strong class="jxr_keyword">if</strong> (StringUtils.isBlank(geoService.getTitle())) {
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>         geoService.setTitle(service.getTitle());
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>       }
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>       caps.setServiceInfo(
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>           <strong class="jxr_keyword">new</strong> TMServiceInfo().keywords(Set.copyOf(List.of(service.getKeywordList()))));
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>     }
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>   }
-<a class="jxr_linenumber" name="L187" href="#L187">187</a> 
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> setLayerList(<a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService, List&lt;? <strong class="jxr_keyword">extends</strong> Layer&gt; layers) {
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>     setLayerList(geoService, layers, (l, gsl) -&gt; {});
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>   }
-<a class="jxr_linenumber" name="L191" href="#L191">191</a> 
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> setLayerList(
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>       <a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService,
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>       List&lt;? <strong class="jxr_keyword">extends</strong> Layer&gt; layers,
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>       BiConsumer&lt;Layer, GeoServiceLayer&gt; consumer) {
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>     geoService.setLayers(<strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;());
-<a class="jxr_linenumber" name="L197" href="#L197">197</a> 
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>     <strong class="jxr_keyword">for</strong> (Layer l : layers) {
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>       GeoServiceLayer geoServiceLayer =
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>           <strong class="jxr_keyword">new</strong> GeoServiceLayer()
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>               .id(String.valueOf(layers.indexOf(l)))
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>               .name(l.getName())
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>               .root(l.getParent() == <strong class="jxr_keyword">null</strong>)
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>               .title(l.getTitle())
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>               .maxScale(
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>                   Double.isNaN(l.getScaleDenominatorMax()) ? <strong class="jxr_keyword">null</strong> : l.getScaleDenominatorMax())
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>               .minScale(
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>                   Double.isNaN(l.getScaleDenominatorMin()) ? <strong class="jxr_keyword">null</strong> : l.getScaleDenominatorMin())
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>               .virtual(l.getName() == <strong class="jxr_keyword">null</strong>)
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>               .crs(l.getSrs())
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>               .latLonBoundingBox(GeoToolsHelper.boundsFromCRSEnvelope(l.getLatLonBoundingBox()))
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>               .styles(
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>                   l.getStyles().stream()
-<a class="jxr_linenumber" name="L214" href="#L214">214</a>                       .map(
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>                           gtStyle -&gt; {
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>                             WMSStyle style =
-<a class="jxr_linenumber" name="L217" href="#L217">217</a>                                 <strong class="jxr_keyword">new</strong> WMSStyle()
-<a class="jxr_linenumber" name="L218" href="#L218">218</a>                                     .name(gtStyle.getName())
-<a class="jxr_linenumber" name="L219" href="#L219">219</a>                                     .title(
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>                                         Optional.ofNullable(gtStyle.getTitle())
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>                                             .map(Objects::toString)
-<a class="jxr_linenumber" name="L222" href="#L222">222</a>                                             .orElse(<strong class="jxr_keyword">null</strong>))
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>                                     .abstractText(
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>                                         Optional.ofNullable(gtStyle.getAbstract())
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>                                             .map(Objects::toString)
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>                                             .orElse(<strong class="jxr_keyword">null</strong>));
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>                             <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>                               List legendURLs = gtStyle.getLegendURLs();
-<a class="jxr_linenumber" name="L229" href="#L229">229</a>                               <strong class="jxr_keyword">if</strong> (legendURLs != <strong class="jxr_keyword">null</strong> &amp;&amp; !legendURLs.isEmpty()) {
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>                                 style.legendURL(<strong class="jxr_keyword">new</strong> URI((String) legendURLs.get(0)));
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>                               }
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>                             } <strong class="jxr_keyword">catch</strong> (URISyntaxException ignored) {
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>                               <em class="jxr_comment">// Don't care</em>
-<a class="jxr_linenumber" name="L234" href="#L234">234</a>                             }
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>                             <strong class="jxr_keyword">return</strong> style;
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>                           })
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>                       .collect(Collectors.toList()))
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>               .queryable(l.isQueryable())
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>               .abstractText(l.get_<strong class="jxr_keyword">abstract</strong>())
-<a class="jxr_linenumber" name="L240" href="#L240">240</a>               .children(
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>                   l.getLayerChildren().stream()
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>                       .map(layers::indexOf)
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>                       .map(String::valueOf)
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>                       .collect(Collectors.toList()));
-<a class="jxr_linenumber" name="L245" href="#L245">245</a> 
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>       <strong class="jxr_keyword">if</strong> (consumer != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>         consumer.accept(l, geoServiceLayer);
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>       }
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>       geoService.getLayers().add(geoServiceLayer);
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>     }
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>   }
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>     client.setReadTimeout(<strong class="jxr_keyword">this</strong>.tailormapConfig.getTimeout());
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>     client.setConnectTimeout(<strong class="jxr_keyword">this</strong>.tailormapConfig.getTimeout());
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>     client.setTryGzip(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L111" href="#L111">111</a> 
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>     logger.info(
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>         <span class="jxr_string">"Get capabilities for {} {} from URL {}"</span>,
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>         geoService.getProtocol(),
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>         geoService.getId() == <strong class="jxr_keyword">null</strong> ? <span class="jxr_string">"(new)"</span> : <span class="jxr_string">"id "</span> + geoService.getId(),
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>         geoService.getUrl());
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> 
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>     <em class="jxr_comment">// TODO: micrometer met tags voor URL/id van service</em>
+<a class="jxr_linenumber" name="L119" href="#L119">119</a> 
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">switch</strong> (geoService.getProtocol()) {
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>       <strong class="jxr_keyword">case</strong> WMS:
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>         loadWMSCapabilities(geoService, client);
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>         <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>       <strong class="jxr_keyword">case</strong> WMTS:
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>         loadWMTSCapabilities(geoService, client);
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>         <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>       <strong class="jxr_keyword">default</strong>:
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> UnsupportedOperationException(
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>             <span class="jxr_string">"Unsupported geo service protocol: "</span> + geoService.getProtocol());
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>     }
+<a class="jxr_linenumber" name="L131" href="#L131">131</a> 
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>     <strong class="jxr_keyword">if</strong> (geoService.getTitle() == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>       geoService.setTitle(
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>           Optional.ofNullable(geoService.getServiceCapabilities())
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>               .map(TMServiceCaps::getServiceInfo)
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>               .map(TMServiceInfo::getTitle)
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>               .orElse(<strong class="jxr_keyword">null</strong>));
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>     }
+<a class="jxr_linenumber" name="L139" href="#L139">139</a> 
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>     <strong class="jxr_keyword">if</strong> (logger.isDebugEnabled()) {
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>       logger.debug(<span class="jxr_string">"Loaded service layers: {}"</span>, geoService.getLayers());
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>     } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>       logger.info(
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>           <span class="jxr_string">"Loaded service layers: {}"</span>,
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>           geoService.getLayers().stream()
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>               .filter(Predicate.not(GeoServiceLayer::getVirtual))
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>               .map(GeoServiceLayer::getName)
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>               .collect(Collectors.toList()));
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>     }
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>   }
+<a class="jxr_linenumber" name="L151" href="#L151">151</a> 
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> setServiceInfo(
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>       <a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService,
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>       <a name="ResponseTeeingHTTPClient" href="../../../../../../nl/b3p/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a> client,
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>       AbstractOpenWebService&lt;? <strong class="jxr_keyword">extends</strong> Capabilities, Layer&gt; ows) {
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>     geoService.setCapabilities(client.getLatestResponseCopy());
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>     geoService.setCapabilitiesContentType(MediaType.APPLICATION_XML_VALUE);
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>     <em class="jxr_comment">// geoService.setCapabilitiesContentType(client.getResponse().getContentType());</em>
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>     geoService.setCapabilitiesFetched(Instant.now());
+<a class="jxr_linenumber" name="L160" href="#L160">160</a> 
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>     ServiceInfo info = ows.getInfo();
+<a class="jxr_linenumber" name="L162" href="#L162">162</a> 
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>     TMServiceCaps caps = <strong class="jxr_keyword">new</strong> TMServiceCaps();
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>     geoService.setServiceCapabilities(caps);
+<a class="jxr_linenumber" name="L165" href="#L165">165</a> 
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>     caps.setCorsAllowOrigin(
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>         client.getLatestResponse().getResponseHeader(<span class="jxr_string">"Access-Control-Allow-Origin"</span>));
+<a class="jxr_linenumber" name="L168" href="#L168">168</a> 
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>     <strong class="jxr_keyword">if</strong> (info != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>       <strong class="jxr_keyword">if</strong> (StringUtils.isBlank(geoService.getTitle())) {
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>         geoService.setTitle(info.getTitle());
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>       }
+<a class="jxr_linenumber" name="L173" href="#L173">173</a> 
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>       caps.serviceInfo(
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>           <strong class="jxr_keyword">new</strong> TMServiceInfo()
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>               .keywords(info.getKeywords())
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>               .description(info.getDescription())
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>               .title(info.getTitle())
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>               .publisher(info.getPublisher())
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>               .schema(info.getSchema())
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>               .source(info.getSource()));
+<a class="jxr_linenumber" name="L182" href="#L182">182</a> 
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>       geoService.setAdvertisedUrl(info.getSource().toString());
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (ows.getCapabilities() != <strong class="jxr_keyword">null</strong> &amp;&amp; ows.getCapabilities().getService() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>       org.geotools.data.ows.Service service = ows.getCapabilities().getService();
+<a class="jxr_linenumber" name="L186" href="#L186">186</a> 
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>       <strong class="jxr_keyword">if</strong> (StringUtils.isBlank(geoService.getTitle())) {
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>         geoService.setTitle(service.getTitle());
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>       }
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>       caps.setServiceInfo(
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>           <strong class="jxr_keyword">new</strong> TMServiceInfo().keywords(Set.copyOf(List.of(service.getKeywordList()))));
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>     }
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>   }
+<a class="jxr_linenumber" name="L194" href="#L194">194</a> 
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> setLayerList(<a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService, List&lt;? <strong class="jxr_keyword">extends</strong> Layer&gt; layers) {
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>     setLayerList(geoService, layers, (l, gsl) -&gt; {});
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>   }
+<a class="jxr_linenumber" name="L198" href="#L198">198</a> 
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> setLayerList(
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>       <a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService,
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>       List&lt;? <strong class="jxr_keyword">extends</strong> Layer&gt; layers,
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>       BiConsumer&lt;Layer, GeoServiceLayer&gt; consumer) {
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>     geoService.setLayers(<strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;());
+<a class="jxr_linenumber" name="L204" href="#L204">204</a> 
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>     <strong class="jxr_keyword">for</strong> (Layer l : layers) {
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>       GeoServiceLayer geoServiceLayer =
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>           <strong class="jxr_keyword">new</strong> GeoServiceLayer()
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>               .id(String.valueOf(layers.indexOf(l)))
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>               .name(l.getName())
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>               .root(l.getParent() == <strong class="jxr_keyword">null</strong>)
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>               .title(l.getTitle())
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>               .maxScale(
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>                   Double.isNaN(l.getScaleDenominatorMax()) ? <strong class="jxr_keyword">null</strong> : l.getScaleDenominatorMax())
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>               .minScale(
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>                   Double.isNaN(l.getScaleDenominatorMin()) ? <strong class="jxr_keyword">null</strong> : l.getScaleDenominatorMin())
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>               .virtual(l.getName() == <strong class="jxr_keyword">null</strong>)
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>               .crs(l.getSrs())
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>               .latLonBoundingBox(GeoToolsHelper.boundsFromCRSEnvelope(l.getLatLonBoundingBox()))
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>               .styles(
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>                   l.getStyles().stream()
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>                       .map(
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>                           gtStyle -&gt; {
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>                             WMSStyle style =
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>                                 <strong class="jxr_keyword">new</strong> WMSStyle()
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>                                     .name(gtStyle.getName())
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>                                     .title(
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>                                         Optional.ofNullable(gtStyle.getTitle())
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>                                             .map(Objects::toString)
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>                                             .orElse(<strong class="jxr_keyword">null</strong>))
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>                                     .abstractText(
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>                                         Optional.ofNullable(gtStyle.getAbstract())
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>                                             .map(Objects::toString)
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>                                             .orElse(<strong class="jxr_keyword">null</strong>));
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>                             <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>                               List legendURLs = gtStyle.getLegendURLs();
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>                               <strong class="jxr_keyword">if</strong> (legendURLs != <strong class="jxr_keyword">null</strong> &amp;&amp; !legendURLs.isEmpty()) {
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>                                 style.legendURL(<strong class="jxr_keyword">new</strong> URI((String) legendURLs.get(0)));
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>                               }
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>                             } <strong class="jxr_keyword">catch</strong> (URISyntaxException ignored) {
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>                               <em class="jxr_comment">// Don't care</em>
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>                             }
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>                             <strong class="jxr_keyword">return</strong> style;
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>                           })
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>                       .collect(Collectors.toList()))
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>               .queryable(l.isQueryable())
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>               .abstractText(l.get_<strong class="jxr_keyword">abstract</strong>())
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>               .children(
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>                   l.getLayerChildren().stream()
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>                       .map(layers::indexOf)
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>                       .map(String::valueOf)
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>                       .collect(Collectors.toList()));
 <a class="jxr_linenumber" name="L252" href="#L252">252</a> 
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>   <strong class="jxr_keyword">void</strong> loadWMSCapabilities(<a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService, <a name="ResponseTeeingHTTPClient" href="../../../../../../nl/b3p/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a> client)
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>       <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>     WebMapServer wms = <strong class="jxr_keyword">new</strong> WebMapServer(<strong class="jxr_keyword">new</strong> URL(geoService.getUrl()), client);
-<a class="jxr_linenumber" name="L256" href="#L256">256</a> 
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>     OperationType getMap = wms.getCapabilities().getRequest().getGetMap();
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>     OperationType getFeatureInfo = wms.getCapabilities().getRequest().getGetFeatureInfo();
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>       <strong class="jxr_keyword">if</strong> (consumer != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>         consumer.accept(l, geoServiceLayer);
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>       }
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>       geoService.getLayers().add(geoServiceLayer);
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>     }
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>   }
 <a class="jxr_linenumber" name="L259" href="#L259">259</a> 
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>     <strong class="jxr_keyword">if</strong> (getMap == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Exception(<span class="jxr_string">"Service does not support GetMap"</span>);
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>     }
-<a class="jxr_linenumber" name="L263" href="#L263">263</a> 
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>     setServiceInfo(geoService, client, wms);
-<a class="jxr_linenumber" name="L265" href="#L265">265</a> 
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>     WMSCapabilities wmsCapabilities = wms.getCapabilities();
-<a class="jxr_linenumber" name="L267" href="#L267">267</a> 
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>     <em class="jxr_comment">// TODO Jackson annotations op GeoTools classes of iets anders slims?</em>
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>   <strong class="jxr_keyword">void</strong> loadWMSCapabilities(<a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService, <a name="ResponseTeeingHTTPClient" href="../../../../../../nl/b3p/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a> client)
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>       <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>     WebMapServer wms;
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>       wms = <strong class="jxr_keyword">new</strong> WebMapServer(<strong class="jxr_keyword">new</strong> URL(geoService.getUrl()), client);
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>     } <strong class="jxr_keyword">catch</strong> (ClassCastException | IllegalStateException e) {
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>       <em class="jxr_comment">// The gt-wms module tries to cast the XML unmarshalling result expecting capabilities, but a</em>
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>       <em class="jxr_comment">// WMS 1.0.0/1.1.0 ServiceException may have been unmarshalled which leads to a</em>
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>       <em class="jxr_comment">// ClassCastException.</em>
 <a class="jxr_linenumber" name="L269" href="#L269">269</a> 
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>     geoService
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>         .getServiceCapabilities()
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>         .capabilities(
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>             <strong class="jxr_keyword">new</strong> TMServiceCapsCapabilities()
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>                 .version(wmsCapabilities.getVersion())
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>                 .updateSequence(wmsCapabilities.getUpdateSequence())
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>                 .abstractText(wmsCapabilities.getService().get_<strong class="jxr_keyword">abstract</strong>())
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>                 .request(
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>                     <strong class="jxr_keyword">new</strong> TMServiceCapabilitiesRequest()
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>                         .getMap(
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>                             <strong class="jxr_keyword">new</strong> TMServiceCapabilitiesRequestGetMap()
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>                                 .formats(Set.copyOf(getMap.getFormats())))
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>                         .getFeatureInfo(
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>                             getFeatureInfo == <strong class="jxr_keyword">null</strong>
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>                                 ? <strong class="jxr_keyword">null</strong>
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>                                 : <strong class="jxr_keyword">new</strong> TMServiceCapabilitiesRequestGetFeatureInfo()
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>                                     .formats(Set.copyOf(getFeatureInfo.getFormats())))
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>                         .describeLayer(
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>                             wms.getCapabilities().getRequest().getDescribeLayer() != <strong class="jxr_keyword">null</strong>)));
-<a class="jxr_linenumber" name="L289" href="#L289">289</a> 
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>     <strong class="jxr_keyword">if</strong> (logger.isDebugEnabled()) {
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>       logger.debug(
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>           <span class="jxr_string">"Loaded capabilities, service capabilities: {}"</span>, geoService.getServiceCapabilities());
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>     } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>       logger.info(
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>           <span class="jxr_string">"Loaded capabilities from \&quot;{}\&quot;, title: \&quot;{}\&quot;"</span>,
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>           geoService.getUrl(),
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>           geoService.getServiceCapabilities() != <strong class="jxr_keyword">null</strong>
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>                   &amp;&amp; geoService.getServiceCapabilities().getServiceInfo() != <strong class="jxr_keyword">null</strong>
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>               ? geoService.getServiceCapabilities().getServiceInfo().getTitle()
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>               : <span class="jxr_string">"(none)"</span>);
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>     }
-<a class="jxr_linenumber" name="L302" href="#L302">302</a> 
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>     setLayerList(geoService, wms.getCapabilities().getLayerList());
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>   }
-<a class="jxr_linenumber" name="L305" href="#L305">305</a> 
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>   <strong class="jxr_keyword">void</strong> loadWMTSCapabilities(<a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService, <a name="ResponseTeeingHTTPClient" href="../../../../../../nl/b3p/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a> client)
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>       <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>     WebMapTileServer wmts = <strong class="jxr_keyword">new</strong> WebMapTileServer(<strong class="jxr_keyword">new</strong> URL(geoService.getUrl()), client);
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>     setServiceInfo(geoService, client, wmts);
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>       <em class="jxr_comment">// A WMS 1.3.0 ServiceExceptionReport leads to an IllegalStateException because of a call to</em>
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>       <em class="jxr_comment">// Throwable.initCause() on a SAXException that already has a cause.</em>
+<a class="jxr_linenumber" name="L272" href="#L272">272</a> 
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>       <em class="jxr_comment">// In these cases, try to extract a message from the HTTP response</em>
+<a class="jxr_linenumber" name="L274" href="#L274">274</a> 
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>       String contentType = client.getLatestResponse().getContentType();
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>       <strong class="jxr_keyword">if</strong> (contentType != <strong class="jxr_keyword">null</strong> &amp;&amp; contentType.contains(<span class="jxr_string">"text/xml"</span>)) {
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>         String wmsException =
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>             WMSServiceExceptionUtil.tryGetServiceExceptionMessage(client.getLatestResponseCopy());
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Exception(
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>             <span class="jxr_string">"Error loading WMS capabilities: "</span> + wmsException != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>                 ? wmsException
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>                 : <strong class="jxr_keyword">new</strong> String(client.getLatestResponseCopy(), StandardCharsets.UTF_8));
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>       } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>         <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>       }
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>     } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>       <em class="jxr_comment">// This tries to match a HttpURLConnection (which the default GeoTools SimpleHTTPClient uses)</em>
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>       <em class="jxr_comment">// exception message. In a container environment the JVM is always in English so never</em>
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>       <em class="jxr_comment">// localized.</em>
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>       <strong class="jxr_keyword">if</strong> (e.getMessage().contains(<span class="jxr_string">"Server returned HTTP response code: 401 for URL:"</span>)) {
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Exception(
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>             <span class="jxr_string">"Error loading WMS, got 401 unauthorized response (credentials may be required or invalid)"</span>);
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>       } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>         <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>       }
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>     }
+<a class="jxr_linenumber" name="L297" href="#L297">297</a> 
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>     OperationType getMap = wms.getCapabilities().getRequest().getGetMap();
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>     OperationType getFeatureInfo = wms.getCapabilities().getRequest().getGetFeatureInfo();
+<a class="jxr_linenumber" name="L300" href="#L300">300</a> 
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>     <strong class="jxr_keyword">if</strong> (getMap == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> Exception(<span class="jxr_string">"Service does not support GetMap"</span>);
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>     }
+<a class="jxr_linenumber" name="L304" href="#L304">304</a> 
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>     setServiceInfo(geoService, client, wms);
+<a class="jxr_linenumber" name="L306" href="#L306">306</a> 
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>     WMSCapabilities wmsCapabilities = wms.getCapabilities();
+<a class="jxr_linenumber" name="L308" href="#L308">308</a> 
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>     <em class="jxr_comment">// TODO Jackson annotations op GeoTools classes of iets anders slims?</em>
 <a class="jxr_linenumber" name="L310" href="#L310">310</a> 
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>     <em class="jxr_comment">// TODO set capabilities if we need something from it</em>
-<a class="jxr_linenumber" name="L312" href="#L312">312</a> 
-<a class="jxr_linenumber" name="L313" href="#L313">313</a>     setLayerList(geoService, wmts.getCapabilities().getLayerList());
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>   }
-<a class="jxr_linenumber" name="L315" href="#L315">315</a> 
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>   <strong class="jxr_keyword">public</strong> Map&lt;String, SimpleWFSLayerDescription&gt; findRelatedWFS(<a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>     <em class="jxr_comment">// TODO: report back progress</em>
-<a class="jxr_linenumber" name="L318" href="#L318">318</a> 
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>     <strong class="jxr_keyword">if</strong> (CollectionUtils.isEmpty(geoService.getLayers())) {
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>       <strong class="jxr_keyword">return</strong> Collections.emptyMap();
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>     }
-<a class="jxr_linenumber" name="L322" href="#L322">322</a> 
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>     <em class="jxr_comment">// Do one DescribeLayer request for all layers in a WMS. This is faster than one request per</em>
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>     <em class="jxr_comment">// layer, but when one layer has an error this prevents describing valid layers. But that's a</em>
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>     <em class="jxr_comment">// problem with the WMS / GeoServer.</em>
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>     <em class="jxr_comment">// For now at least ignore layers with space in the name because GeoServer chokes out invalid</em>
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>     <em class="jxr_comment">// XML for those.</em>
-<a class="jxr_linenumber" name="L328" href="#L328">328</a> 
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>     List&lt;String&gt; layers =
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>         geoService.getLayers().stream()
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>             .filter(l -&gt; !l.getVirtual())
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>             .map(GeoServiceLayer::getName)
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>             .filter(
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>                 n -&gt; {
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>                   <em class="jxr_comment">// filter out white-space (non-greedy regex)</em>
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>                   <strong class="jxr_keyword">boolean</strong> noWhitespace = !n.contains(<span class="jxr_string">"(.*?)&#92;&#92;s(.*?)"</span>);
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>                   <strong class="jxr_keyword">if</strong> (!noWhitespace) {
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>                     logger.warn(
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>                         String.format(
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>                             <span class="jxr_string">"Not doing WFS DescribeLayer request for layer name with space: \&quot;%s\&quot; of WMS %s"</span>,
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>                             n, geoService.getUrl()));
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>                   }
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>                   <strong class="jxr_keyword">return</strong> noWhitespace;
-<a class="jxr_linenumber" name="L344" href="#L344">344</a>                 })
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>             .collect(Collectors.toList());
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>     geoService
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>         .getServiceCapabilities()
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>         .capabilities(
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>             <strong class="jxr_keyword">new</strong> TMServiceCapsCapabilities()
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>                 .version(wmsCapabilities.getVersion())
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>                 .updateSequence(wmsCapabilities.getUpdateSequence())
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>                 .abstractText(wmsCapabilities.getService().get_<strong class="jxr_keyword">abstract</strong>())
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>                 .request(
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>                     <strong class="jxr_keyword">new</strong> TMServiceCapabilitiesRequest()
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>                         .getMap(
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>                             <strong class="jxr_keyword">new</strong> TMServiceCapabilitiesRequestGetMap()
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>                                 .formats(Set.copyOf(getMap.getFormats())))
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>                         .getFeatureInfo(
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>                             getFeatureInfo == <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>                                 ? <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>                                 : <strong class="jxr_keyword">new</strong> TMServiceCapabilitiesRequestGetFeatureInfo()
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>                                     .formats(Set.copyOf(getFeatureInfo.getFormats())))
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>                         .describeLayer(
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>                             wms.getCapabilities().getRequest().getDescribeLayer() != <strong class="jxr_keyword">null</strong>)));
+<a class="jxr_linenumber" name="L330" href="#L330">330</a> 
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>     <strong class="jxr_keyword">if</strong> (logger.isDebugEnabled()) {
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>       logger.debug(
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>           <span class="jxr_string">"Loaded capabilities, service capabilities: {}"</span>, geoService.getServiceCapabilities());
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>     } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>       logger.info(
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>           <span class="jxr_string">"Loaded capabilities from \&quot;{}\&quot;, title: \&quot;{}\&quot;"</span>,
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>           geoService.getUrl(),
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>           geoService.getServiceCapabilities() != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>                   &amp;&amp; geoService.getServiceCapabilities().getServiceInfo() != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>               ? geoService.getServiceCapabilities().getServiceInfo().getTitle()
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>               : <span class="jxr_string">"(none)"</span>);
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>     }
+<a class="jxr_linenumber" name="L343" href="#L343">343</a> 
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>     setLayerList(geoService, wms.getCapabilities().getLayerList());
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>   }
 <a class="jxr_linenumber" name="L346" href="#L346">346</a> 
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>     <em class="jxr_comment">// TODO: add authentication</em>
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>     Map&lt;String, SimpleWFSLayerDescription&gt; descriptions =
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>         SimpleWFSHelper.describeWMSLayers(geoService.getUrl(), <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, layers);
-<a class="jxr_linenumber" name="L350" href="#L350">350</a> 
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>     <strong class="jxr_keyword">for</strong> (Map.Entry&lt;String, SimpleWFSLayerDescription&gt; entry : descriptions.entrySet()) {
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>       String layerName = entry.getKey();
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>       <a name="SimpleWFSLayerDescription" href="../../../../../../nl/b3p/tailormap/api/geotools/wfs/SimpleWFSLayerDescription.html#SimpleWFSLayerDescription">SimpleWFSLayerDescription</a> description = entry.getValue();
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>       <strong class="jxr_keyword">if</strong> (description.getTypeNames().length == 1
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>           &amp;&amp; layerName.equals(description.getFirstTypeName())) {
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>         logger.info(
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>             String.format(
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>                 <span class="jxr_string">"layer \&quot;%s\&quot; linked to feature type with same name of WFS %s"</span>,
-<a class="jxr_linenumber" name="L359" href="#L359">359</a>                 layerName, description.getWfsUrl()));
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>       } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>         logger.info(
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>             String.format(
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>                 <span class="jxr_string">"layer \&quot;%s\&quot; -&gt; feature type(s) %s of WFS %s"</span>,
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>                 layerName, Arrays.toString(description.getTypeNames()), description.getWfsUrl()));
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>       }
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>     }
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>     <strong class="jxr_keyword">return</strong> descriptions;
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>   }
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>   <strong class="jxr_keyword">void</strong> loadWMTSCapabilities(<a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService, <a name="ResponseTeeingHTTPClient" href="../../../../../../nl/b3p/tailormap/api/geotools/ResponseTeeingHTTPClient.html#ResponseTeeingHTTPClient">ResponseTeeingHTTPClient</a> client)
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>       <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>     WebMapTileServer wmts = <strong class="jxr_keyword">new</strong> WebMapTileServer(<strong class="jxr_keyword">new</strong> URL(geoService.getUrl()), client);
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>     setServiceInfo(geoService, client, wmts);
+<a class="jxr_linenumber" name="L351" href="#L351">351</a> 
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>     <em class="jxr_comment">// TODO set capabilities if we need something from it</em>
+<a class="jxr_linenumber" name="L353" href="#L353">353</a> 
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>     setLayerList(geoService, wmts.getCapabilities().getLayerList());
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>   }
+<a class="jxr_linenumber" name="L356" href="#L356">356</a> 
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>   <strong class="jxr_keyword">public</strong> Map&lt;String, SimpleWFSLayerDescription&gt; findRelatedWFS(<a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>     <em class="jxr_comment">// TODO: report back progress</em>
+<a class="jxr_linenumber" name="L359" href="#L359">359</a> 
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>     <strong class="jxr_keyword">if</strong> (CollectionUtils.isEmpty(geoService.getLayers())) {
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>       <strong class="jxr_keyword">return</strong> Collections.emptyMap();
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>     }
+<a class="jxr_linenumber" name="L363" href="#L363">363</a> 
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>     <em class="jxr_comment">// Do one DescribeLayer request for all layers in a WMS. This is faster than one request per</em>
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>     <em class="jxr_comment">// layer, but when one layer has an error this prevents describing valid layers. But that's a</em>
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>     <em class="jxr_comment">// problem with the WMS / GeoServer.</em>
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>     <em class="jxr_comment">// For now at least ignore layers with space in the name because GeoServer chokes out invalid</em>
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>     <em class="jxr_comment">// XML for those.</em>
 <a class="jxr_linenumber" name="L369" href="#L369">369</a> 
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> findAndSaveRelatedWFS(<a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>     <strong class="jxr_keyword">if</strong> (geoService.getProtocol() != WMS) {
-<a class="jxr_linenumber" name="L372" href="#L372">372</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException();
-<a class="jxr_linenumber" name="L373" href="#L373">373</a>     }
-<a class="jxr_linenumber" name="L374" href="#L374">374</a> 
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>     <em class="jxr_comment">// TODO: report back progress</em>
-<a class="jxr_linenumber" name="L376" href="#L376">376</a> 
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>     Map&lt;String, SimpleWFSLayerDescription&gt; wfsByLayer = <strong class="jxr_keyword">this</strong>.findRelatedWFS(geoService);
-<a class="jxr_linenumber" name="L378" href="#L378">378</a> 
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>     wfsByLayer.values().stream()
-<a class="jxr_linenumber" name="L380" href="#L380">380</a>         .map(SimpleWFSLayerDescription::getWfsUrl)
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>         .distinct()
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>         .forEach(
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>             url -&gt; {
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>               <a name="TMFeatureSource" href="../../../../../../nl/b3p/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> fs = featureSourceRepository.findByUrl(url);
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>               <strong class="jxr_keyword">if</strong> (fs == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L386" href="#L386">386</a>                 fs =
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>                     <strong class="jxr_keyword">new</strong> <a name="TMFeatureSource" href="../../../../../../nl/b3p/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a>()
-<a class="jxr_linenumber" name="L388" href="#L388">388</a>                         .setProtocol(WFS)
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>                         .setUrl(url)
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>                         .setTitle(<span class="jxr_string">"WFS for "</span> + geoService.getTitle())
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>                         .setLinkedService(geoService);
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>                 <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>                   <strong class="jxr_keyword">new</strong> <a name="WFSFeatureSourceHelper" href="../../../../../../nl/b3p/tailormap/api/geotools/featuresources/WFSFeatureSourceHelper.html#WFSFeatureSourceHelper">WFSFeatureSourceHelper</a>().loadCapabilities(fs, tailormapConfig.getTimeout());
-<a class="jxr_linenumber" name="L394" href="#L394">394</a>                 } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>                   String msg =
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>                       String.format(
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>                           <span class="jxr_string">"Error loading WFS from URL %s: %s: %s"</span>,
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>                           url, e.getClass(), e.getMessage());
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>                   <strong class="jxr_keyword">if</strong> (logger.isTraceEnabled()) {
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>                     logger.error(msg, e);
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>                   } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>                     logger.error(msg);
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>                   }
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>                 }
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>                 featureSourceRepository.save(fs);
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>               }
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>             });
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>   }
-<a class="jxr_linenumber" name="L409" href="#L409">409</a> }
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>     List&lt;String&gt; layers =
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>         geoService.getLayers().stream()
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>             .filter(l -&gt; !l.getVirtual())
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>             .map(GeoServiceLayer::getName)
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>             .filter(
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>                 n -&gt; {
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>                   <em class="jxr_comment">// filter out white-space (non-greedy regex)</em>
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>                   <strong class="jxr_keyword">boolean</strong> noWhitespace = !n.contains(<span class="jxr_string">"(.*?)&#92;&#92;s(.*?)"</span>);
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>                   <strong class="jxr_keyword">if</strong> (!noWhitespace) {
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>                     logger.warn(
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>                         String.format(
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>                             <span class="jxr_string">"Not doing WFS DescribeLayer request for layer name with space: \&quot;%s\&quot; of WMS %s"</span>,
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>                             n, geoService.getUrl()));
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>                   }
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>                   <strong class="jxr_keyword">return</strong> noWhitespace;
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>                 })
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>             .collect(Collectors.toList());
+<a class="jxr_linenumber" name="L387" href="#L387">387</a> 
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>     <em class="jxr_comment">// TODO: add authentication</em>
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>     Map&lt;String, SimpleWFSLayerDescription&gt; descriptions =
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>         SimpleWFSHelper.describeWMSLayers(geoService.getUrl(), <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, layers);
+<a class="jxr_linenumber" name="L391" href="#L391">391</a> 
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>     <strong class="jxr_keyword">for</strong> (Map.Entry&lt;String, SimpleWFSLayerDescription&gt; entry : descriptions.entrySet()) {
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>       String layerName = entry.getKey();
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>       <a name="SimpleWFSLayerDescription" href="../../../../../../nl/b3p/tailormap/api/geotools/wfs/SimpleWFSLayerDescription.html#SimpleWFSLayerDescription">SimpleWFSLayerDescription</a> description = entry.getValue();
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>       <strong class="jxr_keyword">if</strong> (description.getTypeNames().length == 1
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>           &amp;&amp; layerName.equals(description.getFirstTypeName())) {
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>         logger.info(
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>             String.format(
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>                 <span class="jxr_string">"layer \&quot;%s\&quot; linked to feature type with same name of WFS %s"</span>,
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>                 layerName, description.getWfsUrl()));
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>       } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>         logger.info(
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>             String.format(
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>                 <span class="jxr_string">"layer \&quot;%s\&quot; -&gt; feature type(s) %s of WFS %s"</span>,
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>                 layerName, Arrays.toString(description.getTypeNames()), description.getWfsUrl()));
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>       }
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>     }
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>     <strong class="jxr_keyword">return</strong> descriptions;
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>   }
+<a class="jxr_linenumber" name="L410" href="#L410">410</a> 
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> findAndSaveRelatedWFS(<a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>     <strong class="jxr_keyword">if</strong> (geoService.getProtocol() != WMS) {
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException();
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>     }
+<a class="jxr_linenumber" name="L415" href="#L415">415</a> 
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>     <em class="jxr_comment">// TODO: report back progress</em>
+<a class="jxr_linenumber" name="L417" href="#L417">417</a> 
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>     Map&lt;String, SimpleWFSLayerDescription&gt; wfsByLayer = <strong class="jxr_keyword">this</strong>.findRelatedWFS(geoService);
+<a class="jxr_linenumber" name="L419" href="#L419">419</a> 
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>     wfsByLayer.values().stream()
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>         .map(SimpleWFSLayerDescription::getWfsUrl)
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>         .distinct()
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>         .forEach(
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>             url -&gt; {
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>               <a name="TMFeatureSource" href="../../../../../../nl/b3p/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> fs = featureSourceRepository.findByUrl(url);
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>               <strong class="jxr_keyword">if</strong> (fs == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>                 fs =
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>                     <strong class="jxr_keyword">new</strong> <a name="TMFeatureSource" href="../../../../../../nl/b3p/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a>()
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>                         .setProtocol(WFS)
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>                         .setUrl(url)
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>                         .setTitle(<span class="jxr_string">"WFS for "</span> + geoService.getTitle())
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>                         .setLinkedService(geoService);
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>                 <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>                   <strong class="jxr_keyword">new</strong> <a name="WFSFeatureSourceHelper" href="../../../../../../nl/b3p/tailormap/api/geotools/featuresources/WFSFeatureSourceHelper.html#WFSFeatureSourceHelper">WFSFeatureSourceHelper</a>().loadCapabilities(fs, tailormapConfig.getTimeout());
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>                 } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>                   String msg =
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>                       String.format(
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>                           <span class="jxr_string">"Error loading WFS from URL %s: %s: %s"</span>,
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>                           url, e.getClass(), e.getMessage());
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>                   <strong class="jxr_keyword">if</strong> (logger.isTraceEnabled()) {
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>                     logger.error(msg, e);
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>                   } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>                     logger.error(msg);
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>                   }
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>                 }
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>                 featureSourceRepository.save(fs);
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>               }
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>             });
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>   }
+<a class="jxr_linenumber" name="L450" href="#L450">450</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2023 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

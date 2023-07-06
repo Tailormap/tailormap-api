@@ -9,7 +9,8 @@ package nl.b3p.tailormap.api.controller.admin;
 import javax.servlet.http.HttpServletResponse;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
-import nl.b3p.tailormap.api.repository.events.GeoServiceEventHandler;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.rest.core.event.BeforeSaveEvent;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,37 +22,39 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class GeoServiceAdminController {
   private final GeoServiceRepository geoServiceRepository;
-  private final GeoServiceEventHandler geoServiceEventHandler;
+
+  private final ApplicationContext applicationContext;
   private final RepositoryEntityLinks repositoryEntityLinks;
 
   public GeoServiceAdminController(
       GeoServiceRepository geoServiceRepository,
-      GeoServiceEventHandler geoServiceEventHandler,
-<span class="nc" id="L30">      RepositoryEntityLinks repositoryEntityLinks) {</span>
-<span class="nc" id="L31">    this.geoServiceRepository = geoServiceRepository;</span>
-<span class="nc" id="L32">    this.geoServiceEventHandler = geoServiceEventHandler;</span>
-<span class="nc" id="L33">    this.repositoryEntityLinks = repositoryEntityLinks;</span>
-<span class="nc" id="L34">  }</span>
+      ApplicationContext applicationContext,
+<span class="nc" id="L32">      RepositoryEntityLinks repositoryEntityLinks) {</span>
+<span class="nc" id="L33">    this.geoServiceRepository = geoServiceRepository;</span>
+<span class="nc" id="L34">    this.applicationContext = applicationContext;</span>
+<span class="nc" id="L35">    this.repositoryEntityLinks = repositoryEntityLinks;</span>
+<span class="nc" id="L36">  }</span>
 
   @PostMapping(path = &quot;${tailormap-api.admin.base-path}/geo-services/{id}/refresh-capabilities&quot;)
   public ResponseEntity&lt;GeoService&gt; refreshCapabilities(
       @PathVariable String id, HttpServletResponse httpServletResponse) throws Exception {
 
-<span class="nc" id="L40">    GeoService geoService =</span>
+<span class="nc" id="L42">    GeoService geoService =</span>
         geoServiceRepository
-<span class="nc" id="L42">            .findById(id)</span>
-<span class="nc" id="L43">            .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND));</span>
+<span class="nc" id="L44">            .findById(id)</span>
+<span class="nc" id="L45">            .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND));</span>
 
     // Authorization check not needed: only admins are allowed on the admin base path, and admins
     // have all access
 
-<span class="nc" id="L48">    geoServiceEventHandler.loadCapabilities(geoService);</span>
+<span class="nc" id="L50">    geoService.setRefreshCapabilities(true);</span>
+<span class="nc" id="L51">    applicationContext.publishEvent(new BeforeSaveEvent(geoService));</span>
 
-<span class="nc" id="L50">    geoServiceRepository.saveAndFlush(geoService);</span>
+<span class="nc" id="L53">    geoServiceRepository.saveAndFlush(geoService);</span>
 
-<span class="nc" id="L52">    httpServletResponse.sendRedirect(</span>
-<span class="nc" id="L53">        String.valueOf(repositoryEntityLinks.linkToItemResource(GeoService.class, id).toUri()));</span>
-<span class="nc" id="L54">    return null;</span>
+<span class="nc" id="L55">    httpServletResponse.sendRedirect(</span>
+<span class="nc" id="L56">        String.valueOf(repositoryEntityLinks.linkToItemResource(GeoService.class, id).toUri()));</span>
+<span class="nc" id="L57">    return null;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

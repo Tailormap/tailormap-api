@@ -18,6 +18,7 @@ nl.b3p.tailormap.api.persistence.listener
 nl.b3p.tailormap.api.persistence.projections
 nl.b3p.tailormap.api.repository
 nl.b3p.tailormap.api.repository.events
+nl.b3p.tailormap.api.repository.validation
 nl.b3p.tailormap.api.security
 nl.b3p.tailormap.api.security.annotation
 nl.b3p.tailormap.api.util

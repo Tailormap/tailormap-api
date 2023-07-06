@@ -9,48 +9,85 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
 import org.geotools.http.HTTPClient;
 import org.geotools.http.HTTPResponse;
 
+/**
+ * Wrapper for a GeoTools HTTPClient that allows access to the response headers and body after the
+ * original response has been consumed and disposed of by other code. The response body for the
+ * latest request is kept in memory, a consumer can be specified to get responses of earlier
+ * requests. Response headers of an unwrapped HTTPClient can only be retrieved when the response
+ * isn't disposed, this wrapper allows response headers to be cached for retrieval even after
+ * disposal.
+ */
 public class ResponseTeeingHTTPClient implements HTTPClient {
 
-  public static class TeeHTTPResponseWrapper implements HTTPResponse {
+  public class TeeHTTPResponseWrapper implements HTTPResponse {
     private final HTTPResponse wrapped;
-<span class="nc" id="L20">    private final ByteArrayOutputStream copy = new ByteArrayOutputStream();</span>
 
-<span class="nc" id="L22">    public TeeHTTPResponseWrapper(HTTPResponse wrapped) {</span>
-<span class="nc" id="L23">      this.wrapped = wrapped;</span>
-<span class="nc" id="L24">    }</span>
+<span class="nc" id="L33">    private boolean disposed = false;</span>
+<span class="nc" id="L34">    private final ByteArrayOutputStream copy = new ByteArrayOutputStream();</span>
+
+    private String contentType;
+<span class="nc" id="L37">    private final Map&lt;String, String&gt; cachedResponseHeaders = new HashMap&lt;&gt;();</span>
+
+<span class="nc" id="L39">    public TeeHTTPResponseWrapper(HTTPResponse wrapped) {</span>
+<span class="nc" id="L40">      this.wrapped = wrapped;</span>
+<span class="nc" id="L41">    }</span>
 
     public byte[] getCopy() {
-<span class="nc" id="L27">      return copy.toByteArray();</span>
+<span class="nc" id="L44">      return copy.toByteArray();</span>
     }
 
     // &lt;editor-fold desc=&quot;methods directly delegated to wrapped object&quot;&gt;
     @Override
     public void dispose() {
-<span class="nc" id="L33">      wrapped.dispose();</span>
-<span class="nc" id="L34">    }</span>
+<span class="nc" id="L50">      disposed = true;</span>
+<span class="nc" id="L51">      wrapped.dispose();</span>
+<span class="nc" id="L52">    }</span>
 
-    @Override
-    public String getContentType() {
-<span class="nc" id="L38">      return wrapped.getContentType();</span>
+    public boolean isDisposed() {
+<span class="nc" id="L55">      return disposed;</span>
     }
 
     @Override
-    public String getResponseHeader(String s) {
-<span class="nc" id="L43">      return wrapped.getResponseHeader(s);</span>
+    public String getContentType() {
+<span class="nc bnc" id="L60" title="All 2 branches missed.">      if (contentType == null) {</span>
+<span class="nc" id="L61">        contentType = wrapped.getContentType();</span>
+      }
+<span class="nc" id="L63">      return contentType;</span>
+    }
+
+    @Override
+    public String getResponseHeader(String header) {
+<span class="nc bnc" id="L68" title="All 2 branches missed.">      if (cachedResponseHeaders.containsKey(header)) {</span>
+<span class="nc" id="L69">        return cachedResponseHeaders.get(header);</span>
+      }
+      // When disposed, the wrapped client will probably throw a NPE when trying to get a response
+      // header
+<span class="nc bnc" id="L73" title="All 2 branches missed.">      if (isDisposed()) {</span>
+<span class="nc" id="L74">        return null;</span>
+      }
+<span class="nc" id="L76">      return wrapped.getResponseHeader(header);</span>
     }
 
     @Override
     public InputStream getResponseStream() throws IOException {
-<span class="nc" id="L48">      return new org.apache.commons.io.input.TeeInputStream(wrapped.getResponseStream(), copy);</span>
+      // Cache response headers now, when the internal connection is still available
+<span class="nc bnc" id="L82" title="All 2 branches missed.">      for (String header : responseHeadersToCache) {</span>
+<span class="nc" id="L83">        cachedResponseHeaders.put(header, wrapped.getResponseHeader(header));</span>
+<span class="nc" id="L84">      }</span>
+<span class="nc" id="L85">      return new org.apache.commons.io.input.TeeInputStream(wrapped.getResponseStream(), copy);</span>
     }
 
     @Override
     public String getResponseCharset() {
-<span class="nc" id="L53">      return wrapped.getResponseCharset();</span>
+<span class="nc" id="L90">      return wrapped.getResponseCharset();</span>
     }
     // &lt;/editor-fold&gt;
   }
@@ -59,85 +96,122 @@ public class ResponseTeeingHTTPClient implements HTTPClient {
 
   private final HTTPClient wrapped;
 
-<span class="nc" id="L62">  public ResponseTeeingHTTPClient(HTTPClient wrapped) {</span>
-<span class="nc" id="L63">    this.wrapped = wrapped;</span>
-<span class="nc" id="L64">  }</span>
+  private final BiConsumer&lt;URL, TeeHTTPResponseWrapper&gt; requestConsumer;
+
+  private final Set&lt;String&gt; responseHeadersToCache;
+
+  /**
+   * Wrap a GeoTools HTTPClient allowing access to the latest response body after it has been
+   * consumed by handing the client to a GeoTools module. Note that getting the response headers
+   * after the original response has been consumed will return null without explicitly calling the
+   * other constructor with the responseHeadersToCache parameter.
+   *
+   * @param wrapped The GeoTools HTTPClient to wrap
+   */
+  public ResponseTeeingHTTPClient(HTTPClient wrapped) {
+<span class="nc" id="L112">    this(wrapped, null, null);</span>
+<span class="nc" id="L113">  }</span>
+
+  /**
+   * Wrap a GeoTools HTTPClient allowing access to the all responses after they have been consumed
+   * by handing the client to a GeoTools module by passing a consumer for each request URL and
+   * wrapped response. The responseHeadersToCache parameter allows access to response headers after
+   * the original wrapped response has been disposed (only cached when getResponseStream() is
+   * requested).
+   *
+   * @param wrapped The GeoTools HTTPClient to wrap
+   * @param requestConsumer Consumer for each request so not only the latest response can be
+   *     accessed, may be null
+   * @param responseHeadersToCache Which response headers to cache, may be null
+   */
+  public ResponseTeeingHTTPClient(
+      HTTPClient wrapped,
+      BiConsumer&lt;URL, TeeHTTPResponseWrapper&gt; requestConsumer,
+<span class="nc" id="L130">      Set&lt;String&gt; responseHeadersToCache) {</span>
+<span class="nc" id="L131">    this.wrapped = wrapped;</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">    this.requestConsumer = requestConsumer == null ? (url, response) -&gt; {} : requestConsumer;</span>
+<span class="nc" id="L133">    this.responseHeadersToCache =</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">        responseHeadersToCache == null ? Collections.emptySet() : responseHeadersToCache;</span>
+<span class="nc" id="L135">  }</span>
 
   @Override
   public HTTPResponse get(URL url, Map&lt;String, String&gt; headers) throws IOException {
-<span class="nc" id="L68">    this.responseWrapper = new TeeHTTPResponseWrapper(wrapped.get(url, headers));</span>
-<span class="nc" id="L69">    return responseWrapper;</span>
+<span class="nc" id="L139">    this.responseWrapper = new TeeHTTPResponseWrapper(wrapped.get(url, headers));</span>
+<span class="nc" id="L140">    requestConsumer.accept(url, this.responseWrapper);</span>
+<span class="nc" id="L141">    return responseWrapper;</span>
   }
 
   @Override
   public HTTPResponse post(URL url, InputStream inputStream, String s) throws IOException {
-<span class="nc" id="L74">    this.responseWrapper = new TeeHTTPResponseWrapper(wrapped.post(url, inputStream, s));</span>
-<span class="nc" id="L75">    return responseWrapper;</span>
+<span class="nc" id="L146">    this.responseWrapper = new TeeHTTPResponseWrapper(wrapped.post(url, inputStream, s));</span>
+<span class="nc" id="L147">    requestConsumer.accept(url, this.responseWrapper);</span>
+<span class="nc" id="L148">    return responseWrapper;</span>
   }
 
   @Override
   public HTTPResponse get(URL url) throws IOException {
-<span class="nc" id="L80">    this.responseWrapper = new TeeHTTPResponseWrapper(wrapped.get(url));</span>
-<span class="nc" id="L81">    return responseWrapper;</span>
+<span class="nc" id="L153">    this.responseWrapper = new TeeHTTPResponseWrapper(wrapped.get(url));</span>
+<span class="nc" id="L154">    requestConsumer.accept(url, this.responseWrapper);</span>
+<span class="nc" id="L155">    return responseWrapper;</span>
   }
 
-  public HTTPResponse getResponse() {
-<span class="nc" id="L85">    return responseWrapper;</span>
+  public HTTPResponse getLatestResponse() {
+<span class="nc" id="L159">    return responseWrapper;</span>
   }
 
-  public byte[] getResponseCopy() {
-<span class="nc bnc" id="L89" title="All 2 branches missed.">    return responseWrapper == null ? null : responseWrapper.getCopy();</span>
+  public byte[] getLatestResponseCopy() {
+<span class="nc bnc" id="L163" title="All 2 branches missed.">    return responseWrapper == null ? null : responseWrapper.getCopy();</span>
   }
 
   // &lt;editor-fold desc=&quot;methods directly delegated to wrapped object&quot;&gt;
   @Override
   public String getUser() {
-<span class="nc" id="L95">    return wrapped.getUser();</span>
+<span class="nc" id="L169">    return wrapped.getUser();</span>
   }
 
   @Override
   public void setUser(String user) {
-<span class="nc" id="L100">    wrapped.setUser(user);</span>
-<span class="nc" id="L101">  }</span>
+<span class="nc" id="L174">    wrapped.setUser(user);</span>
+<span class="nc" id="L175">  }</span>
 
   @Override
   public String getPassword() {
-<span class="nc" id="L105">    return wrapped.getPassword();</span>
+<span class="nc" id="L179">    return wrapped.getPassword();</span>
   }
 
   @Override
   public void setPassword(String password) {
-<span class="nc" id="L110">    wrapped.setPassword(password);</span>
-<span class="nc" id="L111">  }</span>
+<span class="nc" id="L184">    wrapped.setPassword(password);</span>
+<span class="nc" id="L185">  }</span>
 
   @Override
   public int getConnectTimeout() {
-<span class="nc" id="L115">    return wrapped.getConnectTimeout();</span>
+<span class="nc" id="L189">    return wrapped.getConnectTimeout();</span>
   }
 
   @Override
   public void setConnectTimeout(int connectTimeout) {
-<span class="nc" id="L120">    wrapped.setConnectTimeout(connectTimeout);</span>
-<span class="nc" id="L121">  }</span>
+<span class="nc" id="L194">    wrapped.setConnectTimeout(connectTimeout);</span>
+<span class="nc" id="L195">  }</span>
 
   @Override
   public int getReadTimeout() {
-<span class="nc" id="L125">    return wrapped.getReadTimeout();</span>
+<span class="nc" id="L199">    return wrapped.getReadTimeout();</span>
   }
 
   @Override
   public void setReadTimeout(int readTimeout) {
-<span class="nc" id="L130">    wrapped.setReadTimeout(readTimeout);</span>
-<span class="nc" id="L131">  }</span>
+<span class="nc" id="L204">    wrapped.setReadTimeout(readTimeout);</span>
+<span class="nc" id="L205">  }</span>
 
   @Override
   public void setTryGzip(boolean tryGZIP) {
-<span class="nc" id="L135">    wrapped.setTryGzip(tryGZIP);</span>
-<span class="nc" id="L136">  }</span>
+<span class="nc" id="L209">    wrapped.setTryGzip(tryGZIP);</span>
+<span class="nc" id="L210">  }</span>
 
   @Override
   public boolean isTryGzip() {
-<span class="nc" id="L140">    return wrapped.isTryGzip();</span>
+<span class="nc" id="L214">    return wrapped.isTryGzip();</span>
   }
   // &lt;/editor-fold&gt;
 }

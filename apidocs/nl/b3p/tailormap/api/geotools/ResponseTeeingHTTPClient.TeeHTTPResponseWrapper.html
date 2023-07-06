@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -140,7 +140,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd><a href="ResponseTeeingHTTPClient.html" title="class in nl.b3p.tailormap.api.geotools">ResponseTeeingHTTPClient</a></dd>
 </dl>
 <hr>
-<pre>public static class <span class="typeNameLabel">ResponseTeeingHTTPClient.TeeHTTPResponseWrapper</span>
+<pre>public class <span class="typeNameLabel">ResponseTeeingHTTPClient.TeeHTTPResponseWrapper</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>
 implements org.geotools.http.HTTPResponse</pre>
 </li>
@@ -206,12 +206,17 @@ implements org.geotools.http.HTTPResponse</pre>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getResponseHeader(java.lang.String)">getResponseHeader</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;s)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getResponseHeader(java.lang.String)">getResponseHeader</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;header)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/InputStream.html?is-external=true" title="class or interface in java.io" class="externalLink">InputStream</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getResponseStream()">getResponseStream</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isDisposed()">isDisposed</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -279,6 +284,15 @@ implements org.geotools.http.HTTPResponse</pre>
 </dl>
 </li>
 </ul>
+<a id="isDisposed()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isDisposed</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isDisposed()</pre>
+</li>
+</ul>
 <a id="getContentType()">
 <!--   -->
 </a>
@@ -298,7 +312,7 @@ implements org.geotools.http.HTTPResponse</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getResponseHeader</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getResponseHeader&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;s)</pre>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getResponseHeader&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;header)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code>getResponseHeader</code>&nbsp;in interface&nbsp;<code>org.geotools.http.HTTPResponse</code></dd>
