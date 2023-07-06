@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
 
 @Component
 public class EntityEventPublisher {
@@ -46,6 +47,12 @@ public class EntityEventPublisher {
   private void sendEvent(
       ServerSentEvent.EventTypeEnum eventTypeEnum, Object entity, boolean serializeEntity) {
     Object id = null;
+
+    if (RequestContextHolder.getRequestAttributes() == null) {
+      // No current request -- do not send events / serialize entities during app startup
+      return;
+    }
+
     try {
       id = entityManagerFactory.getPersistenceUnitUtil().getIdentifier(entity);
       EntityEvent entityEvent =
