@@ -450,7 +450,7 @@ public class GeoService {
       MultiValueMap<String, String> /* unmodifiable */ requestParams = uri.build().getQueryParams();
       for (Map.Entry<String, List<String>> param : requestParams.entrySet()) {
         if (!REMOVE_PARAMS.contains(param.getKey().toUpperCase(Locale.ROOT))) {
-          sanitizedParams.put(param.getKey(), param.getValue());
+          sanitisedParams.put(param.getKey(), param.getValue());
         }
       }
 
