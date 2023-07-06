@@ -3,7 +3,7 @@
   "projectOwner": "B3Partners",
   "imageSize": 100,
   "repoType": "github",
-  "commit": false,
+  "commit": true,
   "contributorsPerLine": 6,
   "linkToUsage": true,
   "files": [
