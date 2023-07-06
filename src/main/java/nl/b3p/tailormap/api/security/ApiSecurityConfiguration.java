@@ -88,6 +88,7 @@ public class ApiSecurityConfiguration {
     // back.
     AuthenticationSuccessHandler authenticationSuccessHandler =
         new AuthenticationSuccessHandler() {
+          @Override
           public void onAuthenticationSuccess(
               HttpServletRequest request,
               HttpServletResponse response,
