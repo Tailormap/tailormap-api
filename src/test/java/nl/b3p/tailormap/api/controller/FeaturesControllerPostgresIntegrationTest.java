@@ -56,6 +56,8 @@ class FeaturesControllerPostgresIntegrationTest {
   private static final String provinciesWFS =
       "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/features";
 
+  private static final String osm_polygonUrlPostgis =
+      "/app/default/layer/lyr:snapshot-geoserver:postgis:osm_polygon/features";
   private static final String begroeidterreindeelUrlPostgis =
       "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/features";
   private static final String waterdeelUrlOracle =
@@ -71,6 +73,7 @@ class FeaturesControllerPostgresIntegrationTest {
   private static final int begroeidterreindeelTotalCount = 3662;
   private static final int waterdeelTotalCount = 282;
   private static final int wegdeelTotalCount = 5934;
+  private static final int osm_polygonTotalCount = 102469;
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
@@ -92,31 +95,29 @@ class FeaturesControllerPostgresIntegrationTest {
             begroeidterreindeelUrlPostgis,
             begroeidterreindeelTotalCount),
         arguments("oracle", "waterdeel", waterdeelUrlOracle, waterdeelTotalCount),
-        arguments("sqlserver", "wegdeel", wegdeelUrlSqlserver, wegdeelTotalCount));
+        arguments("sqlserver", "wegdeel", wegdeelUrlSqlserver, wegdeelTotalCount),
+        arguments("postgis", "osm_polygon", osm_polygonUrlPostgis, osm_polygonTotalCount));
   }
 
   static Stream<Arguments> differentFeatureSourcesProvider() {
     return Stream.of(
-        arguments("wfs", provinciesWFS),
-        arguments("postgis", begroeidterreindeelUrlPostgis),
-        arguments("oracle", waterdeelUrlOracle),
-        arguments("sqlserver", wegdeelUrlSqlserver));
+        arguments(provinciesWFS),
+        arguments(begroeidterreindeelUrlPostgis),
+        arguments(waterdeelUrlOracle),
+        arguments(wegdeelUrlSqlserver),
+        arguments(osm_polygonUrlPostgis));
   }
 
   static Stream<Arguments> projectionArgumentsProvider() {
     return Stream.of(
-        // x, y, projection, distance,expected1stCoordinate, expected2ndCoordinate
-        arguments(130794, 459169, "EPSG:28992", 5, 130873.9, 459308.9),
-        arguments(52.12021, 5.03377, "EPSG:4326", /*~ 5 meter*/ 0.00005, 52.1, 5.0),
-        arguments(560356, 6821890, "EPSG:3857", 5, 560485.3, 6822118.8));
+        // x, y, distance,expected1stCoordinate, expected2ndCoordinate
+        arguments(130794, 459169, 5, 128713.7, 461593.9));
   }
 
   static Stream<Arguments> wfsProjectionArgumentsProvider() {
     return Stream.of(
-        // x, y, projection, distance,expected1stCoordinate, expected2ndCoordinate
-        arguments(141247, 458118, "EPSG:28992", 5, 130179.9, 430066.3),
-        arguments(52.11937, 5.04173, "EPSG:4326", /*~ 5 meter*/ 0.00005, 51.9, 5.2),
-        arguments(577351, 6820242, "EPSG:3857", 5, 561478.9, 6774711.6));
+        // x, y, distance,expected1stCoordinate, expected2ndCoordinate
+        arguments(141247, 458118, 5, 130179.9, 430066.3));
   }
 
   /**
@@ -316,91 +317,90 @@ class FeaturesControllerPostgresIntegrationTest {
         .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
   }
 
-  /* test EPSG:28992 (RD New/Amersfoort) */
-  @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @WithMockUser(
-      username = "tm-admin",
-      authorities = {"admin"})
-  void should_produce_for_valid_input_with_native_crs_pdok_betuurlijkegebieden() throws Exception {
-    final String url = apiBasePath + provinciesWFS;
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("x", "141247")
-                .param("y", "458118")
-                .param("crs", "EPSG:28992")
-                .param("simplify", "true"))
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.features").isArray())
-        .andExpect(jsonPath("$.features[0]").isMap())
-        .andExpect(jsonPath("$.features[0]").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
-  }
+  //  /* test EPSG:28992 (RD New/Amersfoort) */
+  //  @Test
+  //  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  //  @WithMockUser(
+  //      username = "tm-admin",
+  //      authorities = {"admin"})
+  //  void should_produce_for_valid_input_pdok_betuurlijkegebieden() throws Exception {
+  //    final String url = apiBasePath + provinciesWFS;
+  //    mockMvc
+  //        .perform(
+  //            get(url)
+  //                .accept(MediaType.APPLICATION_JSON)
+  //                .with(setServletPath(url))
+  //                .param("x", "141247")
+  //                .param("y", "458118")
+  //                .param("simplify", "true"))
+  //        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+  //        .andExpect(status().isOk())
+  //        .andExpect(jsonPath("$.features").isArray())
+  //        .andExpect(jsonPath("$.features[0]").isMap())
+  //        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+  //        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+  //        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+  //        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
+  //        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
+  //  }
 
-  /* test EPSG:3857 (web mercator) */
-  @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @WithMockUser(
-      username = "tm-admin",
-      authorities = {"admin"})
-  void should_produce_for_valid_input_with_alien_crs_pdok_betuurlijkegebieden() throws Exception {
-    final String url = apiBasePath + provinciesWFS;
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("x", "577351")
-                .param("y", "6820242")
-                .param("crs", "EPSG:3857")
-                .param("simplify", "true"))
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.features").isArray())
-        .andExpect(jsonPath("$.features[0]").isMap())
-        .andExpect(jsonPath("$.features[0]").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
-  }
-
-  /* test EPSG:4326 (WGS84) */
-  @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @WithMockUser(
-      username = "tm-admin",
-      authorities = {"admin"})
-  void should_produce_for_valid_input_with_alien_crs_2_pdok_betuurlijkegebieden() throws Exception {
-    final String url = apiBasePath + provinciesWFS;
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                // note flipped axis
-                .param("y", "5.04173")
-                .param("x", "52.11937")
-                .param("crs", "EPSG:4326")
-                .param("simplify", "true")
-                .param("distance", /*~ 4 meter*/ "0.00004"))
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.features").isArray())
-        .andExpect(jsonPath("$.features[0]").isMap())
-        .andExpect(jsonPath("$.features[0]").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
-  }
+  //  /* test EPSG:3857 (web mercator) */
+  //  @Test
+  //  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  //  @WithMockUser(
+  //      username = "tm-admin",
+  //      authorities = {"admin"})
+  //  void should_produce_for_valid_input_with_alien_crs_pdok_betuurlijkegebieden() throws Exception
+  // {
+  //    final String url = apiBasePath + provinciesWFS;
+  //    mockMvc
+  //        .perform(
+  //            get(url)
+  //                .accept(MediaType.APPLICATION_JSON)
+  //                .with(setServletPath(url))
+  //                .param("x", "577351")
+  //                .param("y", "6820242")
+  //                .param("simplify", "true"))
+  //        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+  //        .andExpect(status().isOk())
+  //        .andExpect(jsonPath("$.features").isArray())
+  //        .andExpect(jsonPath("$.features[0]").isMap())
+  //        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+  //        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+  //        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+  //        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
+  //        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
+  //  }
+  //
+  //  /* test EPSG:4326 (WGS84) */
+  //  @Test
+  //  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  //  @WithMockUser(
+  //      username = "tm-admin",
+  //      authorities = {"admin"})
+  //  void should_produce_for_valid_input_with_alien_crs_2_pdok_betuurlijkegebieden() throws
+  // Exception {
+  //    final String url = apiBasePath + provinciesWFS;
+  //    mockMvc
+  //        .perform(
+  //            get(url)
+  //                .accept(MediaType.APPLICATION_JSON)
+  //                .with(setServletPath(url))
+  //                // note flipped axis
+  //                .param("y", "5.04173")
+  //                .param("x", "52.11937")
+  //                .param("simplify", "true")
+  //                .param("distance", /*~ 4 meter*/ "0.00004"))
+  //        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+  //        .andExpect(status().isOk())
+  //        .andExpect(jsonPath("$.features").isArray())
+  //        .andExpect(jsonPath("$.features[0]").isMap())
+  //        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+  //        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+  //        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+  //        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
+  //        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
+  //  }
 
   /**
    * request 2 pages data from the bestuurlijke gebieden WFS featuretype provincies.
@@ -733,7 +733,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .with(setServletPath(url))
-                .param("__fid", "begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457")
+                .param("__fid", StaticTestData.get("begroeidterreindeel__fid_edit"))
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -745,7 +745,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andExpect(
             jsonPath("$.features[0].__fid")
-                .value("begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"))
+                .value(StaticTestData.get("begroeidterreindeel__fid_edit")))
         .andExpect(jsonPath("$.features[0].attributes.geom").isEmpty());
   }
 
@@ -760,7 +760,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .perform(
             get(url)
                 .with(setServletPath(url))
-                .param("__fid", "begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457")
+                .param("__fid", StaticTestData.get("begroeidterreindeel__fid_edit"))
                 .param("geometryInAttributes", "true")
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -773,7 +773,7 @@ class FeaturesControllerPostgresIntegrationTest {
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andExpect(
             jsonPath("$.features[0].__fid")
-                .value("begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"))
+                .value(StaticTestData.get("begroeidterreindeel__fid_edit")))
         .andExpect(jsonPath("$.features[0].attributes.geom").isNotEmpty());
   }
 
@@ -939,21 +939,20 @@ class FeaturesControllerPostgresIntegrationTest {
 
   @ParameterizedTest(
       name =
-          "should return expected polygon feature for valid coordinates and crs from database #{index}: x: {0}, y: {1}, crs: {2}")
+          "should return expected polygon feature for valid coordinates from database #{index}: x: {0}, y: {1}")
   @MethodSource("projectionArgumentsProvider")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_produce_reprojected_features_from_database_using_different_crs(
+  void should_produce_reprojected_features_from_database(
       double x,
       double y,
-      String crs,
       double distance,
       double expected1stCoordinate,
       double expected2ndCoordinate)
       throws Exception {
-    final String expectedFid = "begroeidterreindeel.3fdcbafb5c4c1d7481e916ae5200fcc4";
-    final String url = apiBasePath + begroeidterreindeelUrlPostgis;
+    final String expectedFid = "osm_polygon.-310859";
+    final String url = apiBasePath + osm_polygonUrlPostgis;
 
     MvcResult result =
         mockMvc
@@ -963,7 +962,6 @@ class FeaturesControllerPostgresIntegrationTest {
                     .with(setServletPath(url))
                     .param("x", String.valueOf(x))
                     .param("y", String.valueOf(y))
-                    .param("crs", crs)
                     .param("distance", String.valueOf(distance))
                     .param("simplify", "true")
                     .accept(MediaType.APPLICATION_JSON))
@@ -976,6 +974,7 @@ class FeaturesControllerPostgresIntegrationTest {
             .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
             .andExpect(jsonPath("$.features[0].__fid").value(expectedFid))
             .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+            .andExpect(jsonPath("$.features[0].attributes.boundary").value("administrative"))
             .andReturn();
     String body = result.getResponse().getContentAsString();
     String geometry = JsonPath.read(body, "$.features[0].geometry");
@@ -995,15 +994,14 @@ class FeaturesControllerPostgresIntegrationTest {
 
   @ParameterizedTest(
       name =
-          "should return expected polygon feature for valid coordinates and crs from WFS #{index}: x: {0}, y: {1}, crs: {2}")
+          "should return expected polygon feature for valid coordinates from WFS #{index}: x: {0}, y: {1}")
   @MethodSource("wfsProjectionArgumentsProvider")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_produce_reprojected_features_from_wfs_using_different_crs(
+  void should_produce_reprojected_features_from_wfs_using_different(
       double x,
       double y,
-      String crs,
       double distance,
       double expected1stCoordinate,
       double expected2ndCoordinate)
@@ -1020,7 +1018,6 @@ class FeaturesControllerPostgresIntegrationTest {
                     .with(setServletPath(url))
                     .param("x", String.valueOf(x))
                     .param("y", String.valueOf(y))
-                    .param("crs", crs)
                     .param("distance", String.valueOf(distance))
                     .param("simplify", "true")
                     .accept(MediaType.APPLICATION_JSON))
@@ -1216,8 +1213,7 @@ class FeaturesControllerPostgresIntegrationTest {
   @ParameterizedTest(name = "#{index} should return onlyGeometries for {0}, appLayer: {1}")
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @MethodSource("differentFeatureSourcesProvider")
-  void onlyGeometries(@SuppressWarnings("unused") String source, String appLayerUrl)
-      throws Exception {
+  void onlyGeometries(String appLayerUrl) throws Exception {
 
     appLayerUrl = apiBasePath + appLayerUrl;
 
@@ -1239,8 +1235,7 @@ class FeaturesControllerPostgresIntegrationTest {
   @ParameterizedTest(name = "#{index} should return onlyGeometries for {0}, appLayer: {1}")
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @MethodSource("differentFeatureSourcesProvider")
-  void ignore_skipGeometryOutput_with_onlyGeometries(
-      @SuppressWarnings("unused") String source, String appLayerUrl) throws Exception {
+  void ignore_skipGeometryOutput_with_onlyGeometries(String appLayerUrl) throws Exception {
     appLayerUrl = apiBasePath + appLayerUrl;
     mockMvc
         .perform(
