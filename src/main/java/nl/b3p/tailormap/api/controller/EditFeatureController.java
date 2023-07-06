@@ -15,8 +15,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.annotation.AppRestController;
+import nl.b3p.tailormap.api.geotools.TransformationUtil;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
+import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper;
@@ -43,6 +45,8 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.identity.FeatureId;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.MathTransform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -92,6 +96,7 @@ public class EditFeatureController implements Constants {
       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,
+      @ModelAttribute Application application,
       @RequestBody Feature completeFeature) {
 
     checkAuthentication();
@@ -125,7 +130,7 @@ public class EditFeatureController implements Constants {
         simpleFeature = simpleFeatureBuilder.buildFeature(null);
       }
 
-      handleGeometryAttributes(tmFeatureType, completeFeature, attributesMap);
+      handleGeometryAttributesInput(tmFeatureType, completeFeature, attributesMap, application, fs);
       for (Map.Entry<String, Object> entry : attributesMap.entrySet()) {
         simpleFeature.setAttribute(entry.getKey(), entry.getValue());
       }
@@ -137,12 +142,12 @@ public class EditFeatureController implements Constants {
 
         transaction.commit();
         // find the created feature to return
-        newFeature = getFeature(fs, ff.id(newFids.get(0)));
+        newFeature = getFeature(fs, ff.id(newFids.get(0)), application);
       } else {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "Feature cannot be added, datasource is not editable");
       }
-    } catch (RuntimeException | IOException e) {
+    } catch (RuntimeException | IOException | FactoryException e) {
       // either opening datastore, modify or transaction failed
       logger.error("Error creating new feature {}", completeFeature, e);
       String message = e.getMessage();
@@ -169,6 +174,7 @@ public class EditFeatureController implements Constants {
       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,
+      @ModelAttribute Application application,
       @PathVariable String fid,
       @RequestBody Feature partialFeature) {
 
@@ -188,8 +194,6 @@ public class EditFeatureController implements Constants {
           "Feature cannot be edited, one or more requested attributes are not available on the feature type");
     }
 
-    handleGeometryAttributes(tmFeatureType, partialFeature, attributesMap);
-
     Feature patchedFeature;
     SimpleFeatureSource fs = null;
     try (Transaction transaction = new DefaultTransaction("edit")) {
@@ -197,6 +201,8 @@ public class EditFeatureController implements Constants {
       // find feature to update
       final Filter filter = ff.id(ff.featureId(fid));
       if (!fs.getFeatures(filter).isEmpty() && fs instanceof SimpleFeatureStore) {
+        handleGeometryAttributesInput(
+            tmFeatureType, partialFeature, attributesMap, application, fs);
         // NOTE geotools does not report back that the feature was updated, no error === success
         ((SimpleFeatureStore) fs).setTransaction(transaction);
         ((SimpleFeatureStore) fs)
@@ -206,13 +212,13 @@ public class EditFeatureController implements Constants {
                 filter);
         transaction.commit();
         // find the updated feature to return
-        patchedFeature = getFeature(fs, filter);
+        patchedFeature = getFeature(fs, filter, application);
       } else {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST,
             "Feature cannot be edited, it does not exist or is not editable");
       }
-    } catch (RuntimeException | IOException e) {
+    } catch (RuntimeException | IOException | FactoryException e) {
       // either opening datastore, modify or transaction failed
       logger.error("Error patching feature {}", partialFeature, e);
       String message = e.getMessage();
@@ -291,7 +297,8 @@ public class EditFeatureController implements Constants {
     return tmft;
   }
 
-  private Feature getFeature(SimpleFeatureSource fs, Filter filter) throws IOException {
+  private static Feature getFeature(SimpleFeatureSource fs, Filter filter, Application application)
+      throws IOException, FactoryException {
     Feature modelFeature = null;
     try (SimpleFeatureIterator feats = fs.getFeatures(filter).features()) {
       if (feats.hasNext()) {
@@ -300,11 +307,18 @@ public class EditFeatureController implements Constants {
             new Feature()
                 .geometry(
                     GeometryProcessor.processGeometry(
-                        (simpleFeature.getDefaultGeometry()), false, null))
+                        (simpleFeature.getDefaultGeometry()),
+                        false,
+                        true,
+                        TransformationUtil.getTransformationToApplication(application, fs)))
                 .fid(simpleFeature.getID());
         for (AttributeDescriptor att : simpleFeature.getFeatureType().getAttributeDescriptors()) {
           Object value = simpleFeature.getAttribute(att.getName());
           if (value instanceof Geometry) {
+            value =
+                GeometryProcessor.transformGeometry(
+                    (Geometry) value,
+                    TransformationUtil.getTransformationToApplication(application, fs));
             value = GeometryProcessor.geometryToWKT((Geometry) value);
           }
           modelFeature.putAttributesItem(att.getLocalName(), value);
@@ -315,8 +329,16 @@ public class EditFeatureController implements Constants {
   }
 
   /** Handle geometry attributes, essentially this is a WKT to Geometry conversion. */
-  private void handleGeometryAttributes(
-      TMFeatureType tmFeatureType, Feature modelFeature, Map<String, Object> attributesMap) {
+  private static void handleGeometryAttributesInput(
+      TMFeatureType tmFeatureType,
+      Feature modelFeature,
+      Map<String, Object> attributesMap,
+      Application application,
+      SimpleFeatureSource fs)
+      throws FactoryException {
+
+    final MathTransform transform =
+        TransformationUtil.getTransformationToDataSource(application, fs);
     tmFeatureType.getAttributes().stream()
         .filter(attr -> TMAttributeTypeHelper.isGeometry(attr.getType()))
         .filter(attr -> modelFeature.getAttributes().containsKey(attr.getName()))
@@ -325,6 +347,18 @@ public class EditFeatureController implements Constants {
               Geometry geometry =
                   GeometryProcessor.wktToGeometry(
                       (String) modelFeature.getAttributes().get(attr.getName()));
+              if (transform != null && geometry != null) {
+                geometry.setSRID(
+                    Integer.parseInt(application.getCrs().substring("EPSG:".length())));
+                if (logger.isTraceEnabled()) {
+                  logger.trace(
+                      "Transforming geometry {} from {} to {}",
+                      geometry.toText(),
+                      geometry.getSRID(),
+                      fs.getSchema().getCoordinateReferenceSystem().getIdentifiers());
+                }
+                geometry = GeometryProcessor.transformGeometry(geometry, transform);
+              }
               attributesMap.put(attr.getName(), geometry);
             });
   }

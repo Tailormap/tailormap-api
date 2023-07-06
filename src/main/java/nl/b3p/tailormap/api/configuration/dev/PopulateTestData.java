@@ -508,36 +508,42 @@ public class PopulateTestData {
                       .layerSettings(
                           Map.of(
                               "postgis:begroeidterreindeel",
-                                  new GeoServiceLayerSettings()
-                                      .description(
-                                          "This layer shows data from http://www.postgis.net/"
-                                              + "\n\n"
-                                              + "https://postgis.net/logos/postgis-logo.png")
-                                      .featureType(
-                                          new FeatureTypeRef()
-                                              .featureSourceId(
-                                                  featureSources.get("postgis").getId())
-                                              .featureTypeName("begroeidterreindeel")),
+                              new GeoServiceLayerSettings()
+                                  .description(
+                                      "This layer shows data from http://www.postgis.net/"
+                                          + "\n\n"
+                                          + "https://postgis.net/logos/postgis-logo.png")
+                                  .featureType(
+                                      new FeatureTypeRef()
+                                          .featureSourceId(featureSources.get("postgis").getId())
+                                          .featureTypeName("begroeidterreindeel")),
                               "sqlserver:wegdeel",
-                                  new GeoServiceLayerSettings()
-                                      .attribution(
-                                          "CC BY 4.0 <a href=\"https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\">BGT/Kadaster</a>")
-                                      .description(
-                                          "This layer shows data from [MS SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/spatial/spatial-data-sql-server)."
-                                              + "\n\n"
-                                              + "https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communityserver-components-imagefileviewer/communityserver-wikis-components-files-00-00-00-00-05/1884.SQL_5F00_h_5F00_rgb.png_2D00_550x0.png")
-                                      .featureType(
-                                          new FeatureTypeRef()
-                                              .featureSourceId(
-                                                  featureSources.get("sqlserver").getId())
-                                              .featureTypeName("wegdeel")),
+                              new GeoServiceLayerSettings()
+                                  .attribution(
+                                      "CC BY 4.0 <a href=\"https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\">BGT/Kadaster</a>")
+                                  .description(
+                                      "This layer shows data from [MS SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/spatial/spatial-data-sql-server)."
+                                          + "\n\n"
+                                          + "https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communityserver-components-imagefileviewer/communityserver-wikis-components-files-00-00-00-00-05/1884.SQL_5F00_h_5F00_rgb.png_2D00_550x0.png")
+                                  .featureType(
+                                      new FeatureTypeRef()
+                                          .featureSourceId(featureSources.get("sqlserver").getId())
+                                          .featureTypeName("wegdeel")),
                               "oracle:WATERDEEL",
-                                  new GeoServiceLayerSettings()
-                                      .description("This layer shows data from Oracle Spatial.")
-                                      .featureType(
-                                          new FeatureTypeRef()
-                                              .featureSourceId(featureSources.get("oracle").getId())
-                                              .featureTypeName("WATERDEEL")))));
+                              new GeoServiceLayerSettings()
+                                  .description("This layer shows data from Oracle Spatial.")
+                                  .featureType(
+                                      new FeatureTypeRef()
+                                          .featureSourceId(featureSources.get("oracle").getId())
+                                          .featureTypeName("WATERDEEL")),
+                              "postgis:osm_polygon",
+                              new GeoServiceLayerSettings()
+                                  .description("This layer shows OSM data from postgis.")
+                                  .featureType(
+                                      new FeatureTypeRef()
+                                          .featureSourceId(
+                                              featureSources.get("postgis_osm").getId())
+                                          .featureTypeName("osm_polygon")))));
     }
 
     List<AppTreeNode> baseNodes =
@@ -613,7 +619,8 @@ public class PopulateTestData {
                                     "lyr:snapshot-geoserver:sqlserver:wegdeel",
                                     "lyr:snapshot-geoserver:oracle:WATERDEEL",
                                     "lyr:snapshot-geoserver:BGT",
-                                    "lvl:proxied")))
+                                    "lvl:proxied",
+                                    "lvl:osm")))
                     .addLayerNodesItem(
                         new AppTreeLayerNode()
                             .objectType("AppTreeLayerNode")
@@ -670,6 +677,19 @@ public class PopulateTestData {
                             .id("lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel")
                             .serviceId("snapshot-geoserver-proxied")
                             .layerName("postgis:begroeidterreindeel")
+                            .visible(false))
+                    .addLayerNodesItem(
+                        new AppTreeLevelNode()
+                            .objectType("AppTreeLevelNode")
+                            .id("lvl:osm")
+                            .title("OSM")
+                            .childrenIds(List.of("lyr:snapshot-geoserver:postgis:osm_polygon")))
+                    .addLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:snapshot-geoserver:postgis:osm_polygon")
+                            .serviceId("snapshot-geoserver")
+                            .layerName("postgis:osm_polygon")
                             .visible(false)))
             .setSettings(
                 new AppSettings()
@@ -681,7 +701,15 @@ public class PopulateTestData {
                             .description(
                                 "This is the layer description from the app layer setting.")
                             .attribution(
-                                "CC BY 4.0 <a href=\"https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\">BGT/Kadaster</a>")));
+                                "CC BY 4.0 <a href=\"https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\">BGT/Kadaster</a>"))
+                    .putLayerSettingsItem(
+                        "lyr:snapshot-geoserver:postgis:osm_polygon",
+                        new AppLayerSettings()
+                            .description("OpenStreetMap polygon data in EPSG:3857")
+                            .opacity(60)
+                            .title("OSM Polygon (EPSG:3857)")
+                            .attribution(
+                                "© <a href=\"https://www.openstreetmap.org/copyright/\">OpenStreetMap</a> contributors")));
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     app.setInitialExtent(new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));
     app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));

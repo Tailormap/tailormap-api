@@ -456,6 +456,7 @@ public class FeaturesController implements Constants {
             GeometryProcessor.processGeometry(
                 feature.getAttribute(tmft.getDefaultGeometryAttribute()),
                 simplifyGeometry,
+                true,
                 transform);
         Feature newFeat =
             new Feature().fid(feature.getIdentifier().getID()).geometry(processedGeometry);

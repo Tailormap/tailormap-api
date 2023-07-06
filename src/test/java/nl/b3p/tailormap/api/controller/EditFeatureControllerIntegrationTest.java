@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api.controller;
 
 import static nl.b3p.tailormap.api.TestRequestProcessor.setServletPath;
 import static nl.b3p.tailormap.api.persistence.Group.ADMIN;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -16,8 +17,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.jayway.jsonpath.JsonPath;
 import nl.b3p.tailormap.api.StaticTestData;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
+import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
 import org.junit.jupiter.api.ClassOrderer;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -25,12 +28,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestClassOrder;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junitpioneer.jupiter.Stopwatch;
+import org.locationtech.jts.geom.Geometry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -47,6 +52,9 @@ class EditFeatureControllerIntegrationTest {
 
   private static final String begroeidterreindeelUrlPostgis =
       "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/edit/feature/";
+  private static final String osm_polygonUrlPostgis =
+      "/app/default/layer/lyr:snapshot-geoserver:postgis:osm_polygon/edit/feature/";
+
   private static final String waterdeelUrlOracle =
       "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/edit/feature/";
   private static final String wegdeelUrlSqlserver =
@@ -384,6 +392,83 @@ class EditFeatureControllerIntegrationTest {
                 .value(StaticTestData.get("begroeidterreindeel__geom_edit")))
         .andExpect(jsonPath("$.attributes.geom_kruinlijn").isEmpty())
         .andExpect(jsonPath("$.attributes.class").value("weggemaaid grasland"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void testPatchForeignCRSPG() throws Exception {
+    final String url =
+        apiBasePath + osm_polygonUrlPostgis + StaticTestData.get("osm_polygon__fid_edit");
+    final MvcResult result =
+        mockMvc
+            .perform(
+                patch(url)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(setServletPath(url))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        "{\"__fid\": \""
+                            + StaticTestData.get("osm_polygon__fid_edit")
+                            + "\",\"attributes\" : { \"building\":\"abandoned industrial complex\", \"way\" : \""
+                            + StaticTestData.get("osm_polygon__geom_edit_28992")
+                            + "\"}}"))
+            .andExpect(status().is2xxSuccessful())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.__fid").value(StaticTestData.get("osm_polygon__fid_edit")))
+            .andExpect(jsonPath("$.attributes.building").value("abandoned industrial complex"))
+            .andExpect(jsonPath("$.attributes.z_order").value(0))
+            .andReturn();
+
+    // check geometry equality
+    final String body = result.getResponse().getContentAsString();
+    final Geometry inputGeometry =
+        GeometryProcessor.wktToGeometry(StaticTestData.get("osm_polygon__geom_edit_28992"));
+    final Geometry geometry = GeometryProcessor.wktToGeometry(JsonPath.read(body, "$.geometry"));
+    assertTrue(geometry.equalsExact(inputGeometry, 1.0), "Geometry is not equal");
+    final Geometry way = GeometryProcessor.wktToGeometry(JsonPath.read(body, "$.attributes.way"));
+    assertTrue(way.equalsExact(inputGeometry, 1.0), "Geometry is not equal");
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void testPostForeignCRSPG() throws Exception {
+    final String __fid = StaticTestData.get("osm_polygon__fid_edit") + "1234";
+    final String osm_id = __fid.replace("osm_polygon.", "");
+    final String url = apiBasePath + osm_polygonUrlPostgis;
+    final MvcResult result =
+        mockMvc
+            .perform(
+                post(url)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(setServletPath(url))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        "{\"__fid\": \""
+                            + __fid
+                            + "\",\"attributes\" : { \"osm_id\":"
+                            + osm_id
+                            + ",\"building\":\"abandoned industrial complex\", \"way\" : \""
+                            + StaticTestData.get("osm_polygon__geom_edit_28992")
+                            + "\"}}"))
+            .andExpect(status().is2xxSuccessful())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.__fid").value(__fid))
+            .andExpect(jsonPath("$.attributes.building").value("abandoned industrial complex"))
+            .andExpect(jsonPath("$.attributes.z_order").isEmpty())
+            .andReturn();
+
+    // check geometry equality
+    final String body = result.getResponse().getContentAsString();
+    final Geometry inputGeometry =
+        GeometryProcessor.wktToGeometry(StaticTestData.get("osm_polygon__geom_edit_28992"));
+    final Geometry geometry = GeometryProcessor.wktToGeometry(JsonPath.read(body, "$.geometry"));
+    assertTrue(geometry.equalsExact(inputGeometry, 1.0), "Geometry is not equal");
+    final Geometry way = GeometryProcessor.wktToGeometry(JsonPath.read(body, "$.attributes.way"));
+    assertTrue(way.equalsExact(inputGeometry, 1.0), "Geometry is not equal");
   }
 
   @Test
