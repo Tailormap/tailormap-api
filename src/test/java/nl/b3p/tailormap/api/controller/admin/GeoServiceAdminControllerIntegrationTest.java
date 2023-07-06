@@ -5,11 +5,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.JsonPath;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -45,6 +48,21 @@ class GeoServiceAdminControllerIntegrationTest {
   @Value("classpath:/wms/test_capabilities_updated.xml")
   private Resource wmsTestCapabilitiesUpdated;
 
+  @Value("classpath:/wms/service_exception_1_0_0.xml")
+  private Resource wmsServiceException1_0_0;
+
+  @Value("classpath:/wms/service_exception_1_3_0.xml")
+  private Resource wmsServiceException1_3_0;
+
+  private static ObjectNode getGeoServicePOSTBody(String url) {
+    return new ObjectMapper()
+        .createObjectNode()
+        .put("protocol", "wms")
+        .put("title", "test")
+        .put("refreshCapabilities", true)
+        .put("url", url);
+  }
+
   @Test
   @WithMockUser(
       username = "admin",
@@ -62,13 +80,7 @@ class GeoServiceAdminControllerIntegrationTest {
       server.start();
 
       String url = server.url("/test-wms").toString();
-
-      String geoServicePOSTBody =
-          new ObjectMapper()
-              .createObjectNode()
-              .put("protocol", "wms")
-              .put("url", url)
-              .toPrettyString();
+      String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
 
       MvcResult result =
           mockMvc
@@ -117,6 +129,172 @@ class GeoServiceAdminControllerIntegrationTest {
           .andExpect(jsonPath("$.layers[1].name").value("Layer2"))
           .andExpect(jsonPath("$.layers[2].name").value("Layer3"));
 
+      server.shutdown();
+    }
+  }
+
+  /**
+   * Tests whether {@link AdminRepositoryRestExceptionHandler} is applied and converting validation
+   * exceptions to JSON.
+   */
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "admin",
+      authorities = {Group.ADMIN})
+  void refreshCapabilitiesSendsJsonValidationErrors() throws Exception {
+
+    MockMvc mockMvc =
+        MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+    // Create a GeoService without loading capabilities, with a valid URL but which points to an
+    // invalid host. In the normal admin a user can change the URL of a service and the frontend
+    // won't send refreshCapabilities but will ask to explicitly refresh the capabilities after
+    // saving.
+
+    String geoServicePOSTBody =
+        getGeoServicePOSTBody("http://offline.invalid/")
+            .put("refreshCapabilities", false)
+            .toPrettyString();
+
+    MvcResult result =
+        mockMvc
+            .perform(
+                post(adminBasePath + "/geo-services")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(geoServicePOSTBody))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").isNotEmpty())
+            .andExpect(jsonPath("$.layers").isEmpty())
+            .andReturn();
+    String serviceId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
+
+    mockMvc
+        .perform(
+            post(adminBasePath + String.format("/geo-services/%s/refresh-capabilities", serviceId)))
+        .andExpect(status().isBadRequest())
+        .andExpect(
+            content()
+                .json(
+                    "{\"errors\":[{\"entity\":\"GeoService\",\"property\":\"url\",\"invalidValue\":\"http://offline.invalid/\",\"message\":\"Unknown host: \\\"offline.invalid\\\"\"}]}"));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "admin",
+      authorities = {Group.ADMIN})
+  void loadServiceWithServiceException() throws Exception {
+
+    MockMvc mockMvc =
+        MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+    try (MockWebServer server = new MockWebServer()) {
+      server.enqueue(
+          new MockResponse()
+              .setHeaders(new Headers(new String[] {"Content-Type", "text/xml"}))
+              .setBody(getResourceString(wmsServiceException1_0_0)));
+      server.start();
+
+      String url = server.url("/test-wms").toString();
+      String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
+
+      mockMvc
+          .perform(
+              post(adminBasePath + "/geo-services")
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(geoServicePOSTBody))
+          .andExpect(status().isBadRequest())
+          .andExpect(
+              jsonPath("$.errors[0].message")
+                  .value(
+                      "Error loading capabilities from URL \""
+                          + url
+                          + "\": Exception: code: InvalidParameterValue: locator: service: Example error message"));
+
+      server.enqueue(
+          new MockResponse()
+              .setHeaders(new Headers(new String[] {"Content-Type", "text/xml"}))
+              .setBody(getResourceString(wmsServiceException1_3_0)));
+
+      mockMvc
+          .perform(
+              post(adminBasePath + "/geo-services")
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(geoServicePOSTBody))
+          .andExpect(status().isBadRequest())
+          .andExpect(
+              jsonPath("$.errors[0].message")
+                  .value(
+                      "Error loading capabilities from URL \""
+                          + url
+                          + "\": Exception: code: SomeCode: locator: somewhere: An example error text."));
+
+      server.shutdown();
+    }
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "admin",
+      authorities = {Group.ADMIN})
+  void loadServiceWithWrongCredentials() throws Exception {
+
+    MockMvc mockMvc =
+        MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+    try (MockWebServer server = new MockWebServer()) {
+      server.enqueue(new MockResponse().setResponseCode(HttpStatus.UNAUTHORIZED.value()));
+      server.start();
+
+      String url = server.url("/test-wms").toString();
+      String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
+
+      mockMvc
+          .perform(
+              post(adminBasePath + "/geo-services")
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(geoServicePOSTBody))
+          .andExpect(status().isBadRequest())
+          .andExpect(
+              jsonPath("$.errors[0].message")
+                  .value(
+                      "Error loading capabilities from URL \""
+                          + url
+                          + "\": Exception: Error loading WMS, got 401 unauthorized response (credentials may be required or invalid)"));
+      server.shutdown();
+    }
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @WithMockUser(
+      username = "admin",
+      authorities = {Group.ADMIN})
+  void checkCorsHeaderIsSaved() throws Exception {
+
+    MockMvc mockMvc =
+        MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+
+    try (MockWebServer server = new MockWebServer()) {
+      server.enqueue(
+          new MockResponse()
+              .setBody(getResourceString(wmsTestCapabilities))
+              .setHeader("Content-Type", "application/vnd.ogc.wms_xml")
+              .setHeader("Access-Control-Allow-Origin", "https://my-origin"));
+      server.start();
+
+      String url = server.url("/test-wms").toString();
+      String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
+
+      mockMvc
+          .perform(
+              post(adminBasePath + "/geo-services")
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(geoServicePOSTBody))
+          .andExpect(status().isCreated())
+          .andExpect(jsonPath("$.serviceCapabilities.corsAllowOrigin").value("https://my-origin"));
       server.shutdown();
     }
   }

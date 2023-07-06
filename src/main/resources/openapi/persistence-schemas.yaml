@@ -64,6 +64,11 @@ components:
     TMServiceCaps:
       type: object
       properties:
+        corsAllowOrigin:
+          description: Value of the 'Access-Control-Allow-Origin' header from the GetCapabilities request. This may be
+            null when it wasn't returned (no CORS support), '*' when CORS is enabled for all origins, or contain a 
+            specific origin (usually when credentials are used).
+          type: string
         serviceInfo:
           title: TMServiceInfo
           type: object

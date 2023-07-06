@@ -6,6 +6,7 @@
 package nl.b3p.tailormap.api.persistence;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.hypersistence.tsid.TSID;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -22,6 +23,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
@@ -37,6 +40,7 @@ import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.util.TMStringUtils;
 import nl.b3p.tailormap.api.viewer.model.Service;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,6 +78,8 @@ public class GeoService {
   @NotNull
   @Column(length = 2048)
   private String url;
+
+  @Transient private boolean refreshCapabilities;
 
   /**
    * Non-null when authentication is required for this service. Currently, the only authentication
@@ -184,6 +190,14 @@ public class GeoService {
     return this;
   }
 
+  public boolean isRefreshCapabilities() {
+    return refreshCapabilities;
+  }
+
+  public void setRefreshCapabilities(boolean refreshCapabilities) {
+    this.refreshCapabilities = refreshCapabilities;
+  }
+
   public ServiceAuthentication getAuthentication() {
     return authentication;
   }
@@ -283,6 +297,16 @@ public class GeoService {
     return this;
   }
   // </editor-fold>
+
+  @PrePersist
+  public void assignId() {
+    if (StringUtils.isBlank(getId())) {
+      // We kind of misuse TSIDs here, because we store it as a string. This is because the id
+      // string can also be manually assigned. There won't be huge numbers of GeoServices, so it's
+      // more of a convenient way to generate an ID that isn't a huge UUID string.
+      setId(TSID.fast().toString());
+    }
+  }
 
   public Service toJsonPojo(GeoServiceHelper geoServiceHelper) {
     Service.ServerTypeEnum serverTypeEnum;

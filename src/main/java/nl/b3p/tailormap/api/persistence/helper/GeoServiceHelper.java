@@ -13,6 +13,7 @@ import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.configuration.TailormapConfig;
 import nl.b3p.tailormap.api.geotools.ResponseTeeingHTTPClient;
+import nl.b3p.tailormap.api.geotools.WMSServiceExceptionUtil;
 import nl.b3p.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSLayerDescription;
@@ -93,7 +95,9 @@ public class GeoServiceHelper {
   }
 
   public void loadServiceCapabilities(GeoService geoService) throws Exception {
-    ResponseTeeingHTTPClient client = new ResponseTeeingHTTPClient(HTTPClientFinder.createClient());
+    ResponseTeeingHTTPClient client =
+        new ResponseTeeingHTTPClient(
+            HTTPClientFinder.createClient(), null, Set.of("Access-Control-Allow-Origin"));
 
     ServiceAuthentication auth = geoService.getAuthentication();
     if (auth != null && auth.getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
@@ -149,7 +153,7 @@ public class GeoServiceHelper {
       GeoService geoService,
       ResponseTeeingHTTPClient client,
       AbstractOpenWebService<? extends Capabilities, Layer> ows) {
-    geoService.setCapabilities(client.getResponseCopy());
+    geoService.setCapabilities(client.getLatestResponseCopy());
     geoService.setCapabilitiesContentType(MediaType.APPLICATION_XML_VALUE);
     // geoService.setCapabilitiesContentType(client.getResponse().getContentType());
     geoService.setCapabilitiesFetched(Instant.now());
@@ -158,6 +162,9 @@ public class GeoServiceHelper {
 
     TMServiceCaps caps = new TMServiceCaps();
     geoService.setServiceCapabilities(caps);
+
+    caps.setCorsAllowOrigin(
+        client.getLatestResponse().getResponseHeader("Access-Control-Allow-Origin"));
 
     if (info != null) {
       if (StringUtils.isBlank(geoService.getTitle())) {
@@ -252,7 +259,41 @@ public class GeoServiceHelper {
 
   void loadWMSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client)
       throws Exception {
-    WebMapServer wms = new WebMapServer(new URL(geoService.getUrl()), client);
+    WebMapServer wms;
+    try {
+      wms = new WebMapServer(new URL(geoService.getUrl()), client);
+    } catch (ClassCastException | IllegalStateException e) {
+      // The gt-wms module tries to cast the XML unmarshalling result expecting capabilities, but a
+      // WMS 1.0.0/1.1.0 ServiceException may have been unmarshalled which leads to a
+      // ClassCastException.
+
+      // A WMS 1.3.0 ServiceExceptionReport leads to an IllegalStateException because of a call to
+      // Throwable.initCause() on a SAXException that already has a cause.
+
+      // In these cases, try to extract a message from the HTTP response
+
+      String contentType = client.getLatestResponse().getContentType();
+      if (contentType != null && contentType.contains("text/xml")) {
+        String wmsException =
+            WMSServiceExceptionUtil.tryGetServiceExceptionMessage(client.getLatestResponseCopy());
+        throw new Exception(
+            "Error loading WMS capabilities: " + wmsException != null
+                ? wmsException
+                : new String(client.getLatestResponseCopy(), StandardCharsets.UTF_8));
+      } else {
+        throw e;
+      }
+    } catch (IOException e) {
+      // This tries to match a HttpURLConnection (which the default GeoTools SimpleHTTPClient uses)
+      // exception message. In a container environment the JVM is always in English so never
+      // localized.
+      if (e.getMessage().contains("Server returned HTTP response code: 401 for URL:")) {
+        throw new Exception(
+            "Error loading WMS, got 401 unauthorized response (credentials may be required or invalid)");
+      } else {
+        throw e;
+      }
+    }
 
     OperationType getMap = wms.getCapabilities().getRequest().getGetMap();
     OperationType getFeatureInfo = wms.getCapabilities().getRequest().getGetFeatureInfo();
