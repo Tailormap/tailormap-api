@@ -443,7 +443,7 @@ public class GeoService {
    * @param url URL to sanitise
    * @return sanitised URL
    */
-  private String sanitizeUrl(String url) {
+  private String sanitiseUrl(String url) {
     if (url != null && url.contains("?")) {
       MultiValueMap<String, String> sanitizedParams = new LinkedMultiValueMap<>();
       UriComponentsBuilder uri = UriComponentsBuilder.fromUriString(url);
