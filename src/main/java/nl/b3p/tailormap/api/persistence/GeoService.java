@@ -454,7 +454,7 @@ public class GeoService {
         }
       }
 
-      url = uri.replaceQueryParams(sanitizedParams).build().toUriString();
+      url = uri.replaceQueryParams(sanitisedParams).build().toUriString();
       if (url.endsWith("?")) {
         url = url.substring(0, url.length() - 1);
       }
