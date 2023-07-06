@@ -184,7 +184,7 @@ public class GeoService {
     return url;
   }
 
-  /** Sets the url after sanitizing (removing unwanted parameters). */
+  /** Sets the url after sanitising (removing unwanted parameters). */
   public GeoService setUrl(String url) {
     this.url = sanitizeUrl(url);
     return this;
