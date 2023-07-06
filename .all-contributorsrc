@@ -1,14 +1,66 @@
 {
   "projectName": "tailormap-api",
   "projectOwner": "B3Partners",
+  "imageSize": 100,
+  "repoType": "github",
+  "commit": false,
+  "contributorsPerLine": 6,
+  "linkToUsage": true,
   "files": [
     "CONTRIBUTORS.md"
   ],
-  "commit": true,
+  "repoHost": "https://github.com",
+  "commitConvention": "angular",
   "contributors": [
-    "mprins",
-    "geertplaisier",
-    "matthijsln",
-    "puckipedia"
-  ]
+    {
+      "login": "mprins",
+      "name": "Mark Prins",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1165786?v=4",
+      "profile": "https://www.b3partners.nl/",
+      "contributions": [
+        "code",
+        "infra",
+        "review",
+        "bug",
+        "data",
+        "doc",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "geertplaisier",
+      "name": "Geert Plaisier",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4118121?v=4",
+      "profile": "http://www.gnamic.nl/",
+      "contributions": [
+        "code",
+        "infra",
+        "review",
+        "bug"
+      ]
+    },
+    {
+      "login": "matthijsln",
+      "name": "Matthijs",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1926261?v=4",
+      "profile": "https://github.com/matthijsln",
+      "contributions": [
+        "code",
+        "infra",
+        "review",
+        "bug",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "puckipedia",
+      "name": "puckipedia",
+      "avatar_url": "https://avatars.githubusercontent.com/u/488734?v=4",
+      "profile": "https://github.com/puckipedia",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "skipCi": true
 }
