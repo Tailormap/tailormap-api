@@ -445,7 +445,7 @@ public class GeoService {
    */
   private String sanitiseUrl(String url) {
     if (url != null && url.contains("?")) {
-      MultiValueMap<String, String> sanitizedParams = new LinkedMultiValueMap<>();
+      MultiValueMap<String, String> sanitisedParams = new LinkedMultiValueMap<>();
       UriComponentsBuilder uri = UriComponentsBuilder.fromUriString(url);
       MultiValueMap<String, String> /* unmodifiable */ requestParams = uri.build().getQueryParams();
       for (Map.Entry<String, List<String>> param : requestParams.entrySet()) {
