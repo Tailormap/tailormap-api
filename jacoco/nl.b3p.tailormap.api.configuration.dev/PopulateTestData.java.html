@@ -508,420 +508,448 @@ public class PopulateTestData {
 <span class="nc" id="L508">                      .layerSettings(</span>
 <span class="nc" id="L509">                          Map.of(</span>
                               &quot;postgis:begroeidterreindeel&quot;,
-                                  new GeoServiceLayerSettings()
-<span class="nc" id="L512">                                      .description(</span>
-                                          &quot;This layer shows data from http://www.postgis.net/&quot;
-                                              + &quot;\n\n&quot;
-                                              + &quot;https://postgis.net/logos/postgis-logo.png&quot;)
-<span class="nc" id="L516">                                      .featureType(</span>
-                                          new FeatureTypeRef()
-<span class="nc" id="L518">                                              .featureSourceId(</span>
-<span class="nc" id="L519">                                                  featureSources.get(&quot;postgis&quot;).getId())</span>
-<span class="nc" id="L520">                                              .featureTypeName(&quot;begroeidterreindeel&quot;)),</span>
+                              new GeoServiceLayerSettings()
+<span class="nc" id="L512">                                  .description(</span>
+                                      &quot;This layer shows data from http://www.postgis.net/&quot;
+                                          + &quot;\n\n&quot;
+                                          + &quot;https://postgis.net/logos/postgis-logo.png&quot;)
+<span class="nc" id="L516">                                  .featureType(</span>
+                                      new FeatureTypeRef()
+<span class="nc" id="L518">                                          .featureSourceId(featureSources.get(&quot;postgis&quot;).getId())</span>
+<span class="nc" id="L519">                                          .featureTypeName(&quot;begroeidterreindeel&quot;)),</span>
                               &quot;sqlserver:wegdeel&quot;,
-                                  new GeoServiceLayerSettings()
-<span class="nc" id="L523">                                      .attribution(</span>
-                                          &quot;CC BY 4.0 &lt;a href=\&quot;https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\&quot;&gt;BGT/Kadaster&lt;/a&gt;&quot;)
-<span class="nc" id="L525">                                      .description(</span>
-                                          &quot;This layer shows data from [MS SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/spatial/spatial-data-sql-server).&quot;
-                                              + &quot;\n\n&quot;
-                                              + &quot;https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communityserver-components-imagefileviewer/communityserver-wikis-components-files-00-00-00-00-05/1884.SQL_5F00_h_5F00_rgb.png_2D00_550x0.png&quot;)
-<span class="nc" id="L529">                                      .featureType(</span>
-                                          new FeatureTypeRef()
-<span class="nc" id="L531">                                              .featureSourceId(</span>
-<span class="nc" id="L532">                                                  featureSources.get(&quot;sqlserver&quot;).getId())</span>
-<span class="nc" id="L533">                                              .featureTypeName(&quot;wegdeel&quot;)),</span>
+                              new GeoServiceLayerSettings()
+<span class="nc" id="L522">                                  .attribution(</span>
+                                      &quot;CC BY 4.0 &lt;a href=\&quot;https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\&quot;&gt;BGT/Kadaster&lt;/a&gt;&quot;)
+<span class="nc" id="L524">                                  .description(</span>
+                                      &quot;This layer shows data from [MS SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/spatial/spatial-data-sql-server).&quot;
+                                          + &quot;\n\n&quot;
+                                          + &quot;https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communityserver-components-imagefileviewer/communityserver-wikis-components-files-00-00-00-00-05/1884.SQL_5F00_h_5F00_rgb.png_2D00_550x0.png&quot;)
+<span class="nc" id="L528">                                  .featureType(</span>
+                                      new FeatureTypeRef()
+<span class="nc" id="L530">                                          .featureSourceId(featureSources.get(&quot;sqlserver&quot;).getId())</span>
+<span class="nc" id="L531">                                          .featureTypeName(&quot;wegdeel&quot;)),</span>
                               &quot;oracle:WATERDEEL&quot;,
-                                  new GeoServiceLayerSettings()
-<span class="nc" id="L536">                                      .description(&quot;This layer shows data from Oracle Spatial.&quot;)</span>
-<span class="nc" id="L537">                                      .featureType(</span>
-                                          new FeatureTypeRef()
-<span class="nc" id="L539">                                              .featureSourceId(featureSources.get(&quot;oracle&quot;).getId())</span>
-<span class="nc" id="L540">                                              .featureTypeName(&quot;WATERDEEL&quot;)))));</span>
+                              new GeoServiceLayerSettings()
+<span class="nc" id="L534">                                  .description(&quot;This layer shows data from Oracle Spatial.&quot;)</span>
+<span class="nc" id="L535">                                  .featureType(</span>
+                                      new FeatureTypeRef()
+<span class="nc" id="L537">                                          .featureSourceId(featureSources.get(&quot;oracle&quot;).getId())</span>
+<span class="nc" id="L538">                                          .featureTypeName(&quot;WATERDEEL&quot;)),</span>
+                              &quot;postgis:osm_polygon&quot;,
+                              new GeoServiceLayerSettings()
+<span class="nc" id="L541">                                  .description(&quot;This layer shows OSM data from postgis.&quot;)</span>
+<span class="nc" id="L542">                                  .featureType(</span>
+                                      new FeatureTypeRef()
+<span class="nc" id="L544">                                          .featureSourceId(</span>
+<span class="nc" id="L545">                                              featureSources.get(&quot;postgis_osm&quot;).getId())</span>
+<span class="nc" id="L546">                                          .featureTypeName(&quot;osm_polygon&quot;)))));</span>
     }
 
-<span class="nc" id="L543">    List&lt;AppTreeNode&gt; baseNodes =</span>
-<span class="nc" id="L544">        List.of(</span>
+<span class="nc" id="L549">    List&lt;AppTreeNode&gt; baseNodes =</span>
+<span class="nc" id="L550">        List.of(</span>
             new AppTreeLevelNode()
-<span class="nc" id="L546">                .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L547">                .id(&quot;lvl:openbasiskaart&quot;)</span>
-<span class="nc" id="L548">                .title(&quot;Openbasiskaart&quot;)</span>
-<span class="nc" id="L549">                .addChildrenIdsItem(&quot;lyr:openbasiskaart:osm&quot;),</span>
+<span class="nc" id="L552">                .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L553">                .id(&quot;lvl:openbasiskaart&quot;)</span>
+<span class="nc" id="L554">                .title(&quot;Openbasiskaart&quot;)</span>
+<span class="nc" id="L555">                .addChildrenIdsItem(&quot;lyr:openbasiskaart:osm&quot;),</span>
             new AppTreeLayerNode()
-<span class="nc" id="L551">                .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L552">                .id(&quot;lyr:openbasiskaart:osm&quot;)</span>
-<span class="nc" id="L553">                .serviceId(&quot;openbasiskaart&quot;)</span>
-<span class="nc" id="L554">                .layerName(&quot;osm&quot;)</span>
-<span class="nc" id="L555">                .visible(true),</span>
+<span class="nc" id="L557">                .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L558">                .id(&quot;lyr:openbasiskaart:osm&quot;)</span>
+<span class="nc" id="L559">                .serviceId(&quot;openbasiskaart&quot;)</span>
+<span class="nc" id="L560">                .layerName(&quot;osm&quot;)</span>
+<span class="nc" id="L561">                .visible(true),</span>
             new AppTreeLevelNode()
-<span class="nc" id="L557">                .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L558">                .id(&quot;lvl:pdok-hwh-luchtfotorgb&quot;)</span>
-<span class="nc" id="L559">                .title(&quot;Luchtfoto&quot;)</span>
-<span class="nc" id="L560">                .addChildrenIdsItem(&quot;lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR&quot;),</span>
+<span class="nc" id="L563">                .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L564">                .id(&quot;lvl:pdok-hwh-luchtfotorgb&quot;)</span>
+<span class="nc" id="L565">                .title(&quot;Luchtfoto&quot;)</span>
+<span class="nc" id="L566">                .addChildrenIdsItem(&quot;lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR&quot;),</span>
             new AppTreeLayerNode()
-<span class="nc" id="L562">                .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L563">                .id(&quot;lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR&quot;)</span>
-<span class="nc" id="L564">                .serviceId(&quot;pdok-hwh-luchtfotorgb&quot;)</span>
-<span class="nc" id="L565">                .layerName(&quot;Actueel_orthoHR&quot;)</span>
-<span class="nc" id="L566">                .visible(false));</span>
+<span class="nc" id="L568">                .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L569">                .id(&quot;lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR&quot;)</span>
+<span class="nc" id="L570">                .serviceId(&quot;pdok-hwh-luchtfotorgb&quot;)</span>
+<span class="nc" id="L571">                .layerName(&quot;Actueel_orthoHR&quot;)</span>
+<span class="nc" id="L572">                .visible(false));</span>
 
-<span class="nc" id="L568">    Application app =</span>
+<span class="nc" id="L574">    Application app =</span>
         new Application()
-<span class="nc" id="L570">            .setName(&quot;default&quot;)</span>
-<span class="nc" id="L571">            .setTitle(&quot;Tailormap demo&quot;)</span>
-<span class="nc" id="L572">            .setCrs(&quot;EPSG:28992&quot;)</span>
-<span class="nc" id="L573">            .setAuthorizationRules(rule)</span>
-<span class="nc" id="L574">            .setContentRoot(</span>
+<span class="nc" id="L576">            .setName(&quot;default&quot;)</span>
+<span class="nc" id="L577">            .setTitle(&quot;Tailormap demo&quot;)</span>
+<span class="nc" id="L578">            .setCrs(&quot;EPSG:28992&quot;)</span>
+<span class="nc" id="L579">            .setAuthorizationRules(rule)</span>
+<span class="nc" id="L580">            .setContentRoot(</span>
                 new AppContent()
-<span class="nc" id="L576">                    .addBaseLayerNodesItem(</span>
+<span class="nc" id="L582">                    .addBaseLayerNodesItem(</span>
                         new AppTreeLevelNode()
-<span class="nc" id="L578">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L579">                            .id(&quot;root-base-layers&quot;)</span>
-<span class="nc" id="L580">                            .root(true)</span>
-<span class="nc" id="L581">                            .title(&quot;Base layers&quot;)</span>
-<span class="nc" id="L582">                            .childrenIds(</span>
-<span class="nc" id="L583">                                List.of(</span>
+<span class="nc" id="L584">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L585">                            .id(&quot;root-base-layers&quot;)</span>
+<span class="nc" id="L586">                            .root(true)</span>
+<span class="nc" id="L587">                            .title(&quot;Base layers&quot;)</span>
+<span class="nc" id="L588">                            .childrenIds(</span>
+<span class="nc" id="L589">                                List.of(</span>
                                     &quot;lvl:openbasiskaart&quot;,
                                     &quot;lvl:pdok-hwh-luchtfotorgb&quot;,
                                     &quot;lvl:openbasiskaart-proxied&quot;)))
-<span class="nc" id="L587">                    .addBaseLayerNodesItem(</span>
-                        new AppTreeLevelNode()
-<span class="nc" id="L589">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L590">                            .id(&quot;lvl:openbasiskaart-proxied&quot;)</span>
-<span class="nc" id="L591">                            .title(&quot;Openbasiskaart (proxied)&quot;)</span>
-<span class="nc" id="L592">                            .addChildrenIdsItem(&quot;lyr:openbasiskaart-proxied:osm&quot;))</span>
 <span class="nc" id="L593">                    .addBaseLayerNodesItem(</span>
+                        new AppTreeLevelNode()
+<span class="nc" id="L595">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L596">                            .id(&quot;lvl:openbasiskaart-proxied&quot;)</span>
+<span class="nc" id="L597">                            .title(&quot;Openbasiskaart (proxied)&quot;)</span>
+<span class="nc" id="L598">                            .addChildrenIdsItem(&quot;lyr:openbasiskaart-proxied:osm&quot;))</span>
+<span class="nc" id="L599">                    .addBaseLayerNodesItem(</span>
                         // This layer from a secured proxied service should not be proxyable in a
                         // public app, see test_wms_secured_proxy_not_in_public_app() testcase
                         new AppTreeLayerNode()
-<span class="nc" id="L597">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L598">                            .id(&quot;lyr:openbasiskaart-proxied:osm&quot;)</span>
-<span class="nc" id="L599">                            .serviceId(&quot;openbasiskaart-proxied&quot;)</span>
-<span class="nc" id="L600">                            .layerName(&quot;osm&quot;)</span>
-<span class="nc" id="L601">                            .visible(false))</span>
-<span class="nc" id="L602">                    .addLayerNodesItem(</span>
+<span class="nc" id="L603">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L604">                            .id(&quot;lyr:openbasiskaart-proxied:osm&quot;)</span>
+<span class="nc" id="L605">                            .serviceId(&quot;openbasiskaart-proxied&quot;)</span>
+<span class="nc" id="L606">                            .layerName(&quot;osm&quot;)</span>
+<span class="nc" id="L607">                            .visible(false))</span>
+<span class="nc" id="L608">                    .addLayerNodesItem(</span>
                         new AppTreeLevelNode()
-<span class="nc" id="L604">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L605">                            .id(&quot;root&quot;)</span>
-<span class="nc" id="L606">                            .root(true)</span>
-<span class="nc" id="L607">                            .title(&quot;Layers&quot;)</span>
-<span class="nc" id="L608">                            .childrenIds(</span>
-<span class="nc" id="L609">                                List.of(</span>
+<span class="nc" id="L610">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L611">                            .id(&quot;root&quot;)</span>
+<span class="nc" id="L612">                            .root(true)</span>
+<span class="nc" id="L613">                            .title(&quot;Layers&quot;)</span>
+<span class="nc" id="L614">                            .childrenIds(</span>
+<span class="nc" id="L615">                                List.of(</span>
                                     &quot;lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied&quot;,
                                     &quot;lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied&quot;,
                                     &quot;lyr:snapshot-geoserver:postgis:begroeidterreindeel&quot;,
                                     &quot;lyr:snapshot-geoserver:sqlserver:wegdeel&quot;,
                                     &quot;lyr:snapshot-geoserver:oracle:WATERDEEL&quot;,
                                     &quot;lyr:snapshot-geoserver:BGT&quot;,
-                                    &quot;lvl:proxied&quot;)))
-<span class="nc" id="L617">                    .addLayerNodesItem(</span>
-                        new AppTreeLayerNode()
-<span class="nc" id="L619">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L620">                            .id(&quot;lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied&quot;)</span>
-<span class="nc" id="L621">                            .serviceId(&quot;pdok-kadaster-bestuurlijkegebieden&quot;)</span>
-<span class="nc" id="L622">                            .layerName(&quot;Provinciegebied&quot;)</span>
-<span class="nc" id="L623">                            .visible(true))</span>
+                                    &quot;lvl:proxied&quot;,
+                                    &quot;lvl:osm&quot;)))
 <span class="nc" id="L624">                    .addLayerNodesItem(</span>
                         new AppTreeLayerNode()
 <span class="nc" id="L626">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L627">                            .id(&quot;lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied&quot;)</span>
+<span class="nc" id="L627">                            .id(&quot;lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied&quot;)</span>
 <span class="nc" id="L628">                            .serviceId(&quot;pdok-kadaster-bestuurlijkegebieden&quot;)</span>
-<span class="nc" id="L629">                            .layerName(&quot;Gemeentegebied&quot;)</span>
+<span class="nc" id="L629">                            .layerName(&quot;Provinciegebied&quot;)</span>
 <span class="nc" id="L630">                            .visible(true))</span>
 <span class="nc" id="L631">                    .addLayerNodesItem(</span>
                         new AppTreeLayerNode()
 <span class="nc" id="L633">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L634">                            .id(&quot;lyr:snapshot-geoserver:postgis:begroeidterreindeel&quot;)</span>
-<span class="nc" id="L635">                            .serviceId(&quot;snapshot-geoserver&quot;)</span>
-<span class="nc" id="L636">                            .layerName(&quot;postgis:begroeidterreindeel&quot;)</span>
+<span class="nc" id="L634">                            .id(&quot;lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied&quot;)</span>
+<span class="nc" id="L635">                            .serviceId(&quot;pdok-kadaster-bestuurlijkegebieden&quot;)</span>
+<span class="nc" id="L636">                            .layerName(&quot;Gemeentegebied&quot;)</span>
 <span class="nc" id="L637">                            .visible(true))</span>
 <span class="nc" id="L638">                    .addLayerNodesItem(</span>
                         new AppTreeLayerNode()
 <span class="nc" id="L640">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L641">                            .id(&quot;lyr:snapshot-geoserver:sqlserver:wegdeel&quot;)</span>
+<span class="nc" id="L641">                            .id(&quot;lyr:snapshot-geoserver:postgis:begroeidterreindeel&quot;)</span>
 <span class="nc" id="L642">                            .serviceId(&quot;snapshot-geoserver&quot;)</span>
-<span class="nc" id="L643">                            .layerName(&quot;sqlserver:wegdeel&quot;)</span>
+<span class="nc" id="L643">                            .layerName(&quot;postgis:begroeidterreindeel&quot;)</span>
 <span class="nc" id="L644">                            .visible(true))</span>
 <span class="nc" id="L645">                    .addLayerNodesItem(</span>
                         new AppTreeLayerNode()
 <span class="nc" id="L647">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L648">                            .id(&quot;lyr:snapshot-geoserver:oracle:WATERDEEL&quot;)</span>
+<span class="nc" id="L648">                            .id(&quot;lyr:snapshot-geoserver:sqlserver:wegdeel&quot;)</span>
 <span class="nc" id="L649">                            .serviceId(&quot;snapshot-geoserver&quot;)</span>
-<span class="nc" id="L650">                            .layerName(&quot;oracle:WATERDEEL&quot;)</span>
+<span class="nc" id="L650">                            .layerName(&quot;sqlserver:wegdeel&quot;)</span>
 <span class="nc" id="L651">                            .visible(true))</span>
 <span class="nc" id="L652">                    .addLayerNodesItem(</span>
                         new AppTreeLayerNode()
 <span class="nc" id="L654">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L655">                            .id(&quot;lyr:snapshot-geoserver:BGT&quot;)</span>
+<span class="nc" id="L655">                            .id(&quot;lyr:snapshot-geoserver:oracle:WATERDEEL&quot;)</span>
 <span class="nc" id="L656">                            .serviceId(&quot;snapshot-geoserver&quot;)</span>
-<span class="nc" id="L657">                            .layerName(&quot;BGT&quot;)</span>
-<span class="nc" id="L658">                            .visible(false))</span>
+<span class="nc" id="L657">                            .layerName(&quot;oracle:WATERDEEL&quot;)</span>
+<span class="nc" id="L658">                            .visible(true))</span>
 <span class="nc" id="L659">                    .addLayerNodesItem(</span>
-                        new AppTreeLevelNode()
-<span class="nc" id="L661">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L662">                            .id(&quot;lvl:proxied&quot;)</span>
-<span class="nc" id="L663">                            .title(&quot;Proxied&quot;)</span>
-<span class="nc" id="L664">                            .childrenIds(</span>
-<span class="nc" id="L665">                                List.of(</span>
-                                    &quot;lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel&quot;)))
-<span class="nc" id="L667">                    .addLayerNodesItem(</span>
                         new AppTreeLayerNode()
-<span class="nc" id="L669">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L670">                            .id(&quot;lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel&quot;)</span>
-<span class="nc" id="L671">                            .serviceId(&quot;snapshot-geoserver-proxied&quot;)</span>
-<span class="nc" id="L672">                            .layerName(&quot;postgis:begroeidterreindeel&quot;)</span>
-<span class="nc" id="L673">                            .visible(false)))</span>
-<span class="nc" id="L674">            .setSettings(</span>
+<span class="nc" id="L661">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L662">                            .id(&quot;lyr:snapshot-geoserver:BGT&quot;)</span>
+<span class="nc" id="L663">                            .serviceId(&quot;snapshot-geoserver&quot;)</span>
+<span class="nc" id="L664">                            .layerName(&quot;BGT&quot;)</span>
+<span class="nc" id="L665">                            .visible(false))</span>
+<span class="nc" id="L666">                    .addLayerNodesItem(</span>
+                        new AppTreeLevelNode()
+<span class="nc" id="L668">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L669">                            .id(&quot;lvl:proxied&quot;)</span>
+<span class="nc" id="L670">                            .title(&quot;Proxied&quot;)</span>
+<span class="nc" id="L671">                            .childrenIds(</span>
+<span class="nc" id="L672">                                List.of(</span>
+                                    &quot;lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel&quot;)))
+<span class="nc" id="L674">                    .addLayerNodesItem(</span>
+                        new AppTreeLayerNode()
+<span class="nc" id="L676">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L677">                            .id(&quot;lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel&quot;)</span>
+<span class="nc" id="L678">                            .serviceId(&quot;snapshot-geoserver-proxied&quot;)</span>
+<span class="nc" id="L679">                            .layerName(&quot;postgis:begroeidterreindeel&quot;)</span>
+<span class="nc" id="L680">                            .visible(false))</span>
+<span class="nc" id="L681">                    .addLayerNodesItem(</span>
+                        new AppTreeLevelNode()
+<span class="nc" id="L683">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L684">                            .id(&quot;lvl:osm&quot;)</span>
+<span class="nc" id="L685">                            .title(&quot;OSM&quot;)</span>
+<span class="nc" id="L686">                            .childrenIds(List.of(&quot;lyr:snapshot-geoserver:postgis:osm_polygon&quot;)))</span>
+<span class="nc" id="L687">                    .addLayerNodesItem(</span>
+                        new AppTreeLayerNode()
+<span class="nc" id="L689">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L690">                            .id(&quot;lyr:snapshot-geoserver:postgis:osm_polygon&quot;)</span>
+<span class="nc" id="L691">                            .serviceId(&quot;snapshot-geoserver&quot;)</span>
+<span class="nc" id="L692">                            .layerName(&quot;postgis:osm_polygon&quot;)</span>
+<span class="nc" id="L693">                            .visible(false)))</span>
+<span class="nc" id="L694">            .setSettings(</span>
                 new AppSettings()
-<span class="nc" id="L676">                    .putLayerSettingsItem(</span>
+<span class="nc" id="L696">                    .putLayerSettingsItem(</span>
                         &quot;lyr:snapshot-geoserver:oracle:WATERDEEL&quot;,
                         new AppLayerSettings()
-<span class="nc" id="L679">                            .opacity(50)</span>
-<span class="nc" id="L680">                            .title(&quot;Waterdeel overridden title&quot;)</span>
-<span class="nc" id="L681">                            .description(</span>
+<span class="nc" id="L699">                            .opacity(50)</span>
+<span class="nc" id="L700">                            .title(&quot;Waterdeel overridden title&quot;)</span>
+<span class="nc" id="L701">                            .description(</span>
                                 &quot;This is the layer description from the app layer setting.&quot;)
-<span class="nc" id="L683">                            .attribution(</span>
-                                &quot;CC BY 4.0 &lt;a href=\&quot;https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\&quot;&gt;BGT/Kadaster&lt;/a&gt;&quot;)));
-<span class="nc" id="L685">    app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);</span>
-<span class="nc" id="L686">    app.setInitialExtent(new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));</span>
-<span class="nc" id="L687">    app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));</span>
-<span class="nc" id="L688">    applicationRepository.save(app);</span>
+<span class="nc" id="L703">                            .attribution(</span>
+                                &quot;CC BY 4.0 &lt;a href=\&quot;https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\&quot;&gt;BGT/Kadaster&lt;/a&gt;&quot;))
+<span class="nc" id="L705">                    .putLayerSettingsItem(</span>
+                        &quot;lyr:snapshot-geoserver:postgis:osm_polygon&quot;,
+                        new AppLayerSettings()
+<span class="nc" id="L708">                            .description(&quot;OpenStreetMap polygon data in EPSG:3857&quot;)</span>
+<span class="nc" id="L709">                            .opacity(60)</span>
+<span class="nc" id="L710">                            .title(&quot;OSM Polygon (EPSG:3857)&quot;)</span>
+<span class="nc" id="L711">                            .attribution(</span>
+                                &quot;© &lt;a href=\&quot;https://www.openstreetmap.org/copyright/\&quot;&gt;OpenStreetMap&lt;/a&gt; contributors&quot;)));
+<span class="nc" id="L713">    app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);</span>
+<span class="nc" id="L714">    app.setInitialExtent(new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));</span>
+<span class="nc" id="L715">    app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));</span>
+<span class="nc" id="L716">    applicationRepository.save(app);</span>
 
-<span class="nc" id="L690">    app =</span>
+<span class="nc" id="L718">    app =</span>
         new Application()
-<span class="nc" id="L692">            .setName(&quot;base&quot;)</span>
-<span class="nc" id="L693">            .setTitle(&quot;Service base app&quot;)</span>
-<span class="nc" id="L694">            .setCrs(&quot;EPSG:28992&quot;)</span>
-<span class="nc" id="L695">            .setAuthorizationRules(rule)</span>
-<span class="nc" id="L696">            .setContentRoot(</span>
+<span class="nc" id="L720">            .setName(&quot;base&quot;)</span>
+<span class="nc" id="L721">            .setTitle(&quot;Service base app&quot;)</span>
+<span class="nc" id="L722">            .setCrs(&quot;EPSG:28992&quot;)</span>
+<span class="nc" id="L723">            .setAuthorizationRules(rule)</span>
+<span class="nc" id="L724">            .setContentRoot(</span>
                 new AppContent()
-<span class="nc" id="L698">                    .addBaseLayerNodesItem(</span>
+<span class="nc" id="L726">                    .addBaseLayerNodesItem(</span>
                         new AppTreeLevelNode()
-<span class="nc" id="L700">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L701">                            .id(&quot;root-base-layers&quot;)</span>
-<span class="nc" id="L702">                            .root(true)</span>
-<span class="nc" id="L703">                            .title(&quot;Base layers&quot;)</span>
-<span class="nc" id="L704">                            .childrenIds(</span>
-<span class="nc" id="L705">                                List.of(&quot;lvl:openbasiskaart&quot;, &quot;lvl:pdok-hwh-luchtfotorgb&quot;))));</span>
-<span class="nc" id="L706">    app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);</span>
-<span class="nc" id="L707">    applicationRepository.save(app);</span>
+<span class="nc" id="L728">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L729">                            .id(&quot;root-base-layers&quot;)</span>
+<span class="nc" id="L730">                            .root(true)</span>
+<span class="nc" id="L731">                            .title(&quot;Base layers&quot;)</span>
+<span class="nc" id="L732">                            .childrenIds(</span>
+<span class="nc" id="L733">                                List.of(&quot;lvl:openbasiskaart&quot;, &quot;lvl:pdok-hwh-luchtfotorgb&quot;))));</span>
+<span class="nc" id="L734">    app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);</span>
+<span class="nc" id="L735">    applicationRepository.save(app);</span>
 
-<span class="nc" id="L709">    app =</span>
+<span class="nc" id="L737">    app =</span>
         new Application()
-<span class="nc" id="L711">            .setName(&quot;secured&quot;)</span>
-<span class="nc" id="L712">            .setTitle(&quot;secured app&quot;)</span>
-<span class="nc" id="L713">            .setCrs(&quot;EPSG:28992&quot;)</span>
-<span class="nc" id="L714">            .setAuthorizationRules(ruleLoggedIn)</span>
-<span class="nc" id="L715">            .setContentRoot(</span>
+<span class="nc" id="L739">            .setName(&quot;secured&quot;)</span>
+<span class="nc" id="L740">            .setTitle(&quot;secured app&quot;)</span>
+<span class="nc" id="L741">            .setCrs(&quot;EPSG:28992&quot;)</span>
+<span class="nc" id="L742">            .setAuthorizationRules(ruleLoggedIn)</span>
+<span class="nc" id="L743">            .setContentRoot(</span>
                 new AppContent()
-<span class="nc" id="L717">                    .addBaseLayerNodesItem(</span>
+<span class="nc" id="L745">                    .addBaseLayerNodesItem(</span>
                         new AppTreeLevelNode()
-<span class="nc" id="L719">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L720">                            .id(&quot;root-base-layers&quot;)</span>
-<span class="nc" id="L721">                            .root(true)</span>
-<span class="nc" id="L722">                            .title(&quot;Base layers&quot;)</span>
-<span class="nc" id="L723">                            .childrenIds(</span>
-<span class="nc" id="L724">                                List.of(</span>
+<span class="nc" id="L747">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L748">                            .id(&quot;root-base-layers&quot;)</span>
+<span class="nc" id="L749">                            .root(true)</span>
+<span class="nc" id="L750">                            .title(&quot;Base layers&quot;)</span>
+<span class="nc" id="L751">                            .childrenIds(</span>
+<span class="nc" id="L752">                                List.of(</span>
                                     &quot;lvl:openbasiskaart&quot;,
                                     &quot;lvl:pdok-hwh-luchtfotorgb&quot;,
                                     &quot;lvl:openbasiskaart-proxied&quot;)))
-<span class="nc" id="L728">                    .addBaseLayerNodesItem(</span>
+<span class="nc" id="L756">                    .addBaseLayerNodesItem(</span>
                         new AppTreeLevelNode()
-<span class="nc" id="L730">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L731">                            .id(&quot;lvl:openbasiskaart-proxied&quot;)</span>
-<span class="nc" id="L732">                            .title(&quot;Openbasiskaart (proxied)&quot;)</span>
-<span class="nc" id="L733">                            .addChildrenIdsItem(&quot;lyr:openbasiskaart-proxied:osm&quot;))</span>
-<span class="nc" id="L734">                    .addBaseLayerNodesItem(</span>
+<span class="nc" id="L758">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L759">                            .id(&quot;lvl:openbasiskaart-proxied&quot;)</span>
+<span class="nc" id="L760">                            .title(&quot;Openbasiskaart (proxied)&quot;)</span>
+<span class="nc" id="L761">                            .addChildrenIdsItem(&quot;lyr:openbasiskaart-proxied:osm&quot;))</span>
+<span class="nc" id="L762">                    .addBaseLayerNodesItem(</span>
                         new AppTreeLayerNode()
-<span class="nc" id="L736">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L737">                            .id(&quot;lyr:openbasiskaart-proxied:osm&quot;)</span>
-<span class="nc" id="L738">                            .serviceId(&quot;openbasiskaart-proxied&quot;)</span>
-<span class="nc" id="L739">                            .layerName(&quot;osm&quot;)</span>
-<span class="nc" id="L740">                            .visible(false))</span>
-<span class="nc" id="L741">                    .addLayerNodesItem(</span>
+<span class="nc" id="L764">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L765">                            .id(&quot;lyr:openbasiskaart-proxied:osm&quot;)</span>
+<span class="nc" id="L766">                            .serviceId(&quot;openbasiskaart-proxied&quot;)</span>
+<span class="nc" id="L767">                            .layerName(&quot;osm&quot;)</span>
+<span class="nc" id="L768">                            .visible(false))</span>
+<span class="nc" id="L769">                    .addLayerNodesItem(</span>
                         new AppTreeLevelNode()
-<span class="nc" id="L743">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L744">                            .id(&quot;root&quot;)</span>
-<span class="nc" id="L745">                            .root(true)</span>
-<span class="nc" id="L746">                            .title(&quot;Layers&quot;)</span>
-<span class="nc" id="L747">                            .childrenIds(</span>
-<span class="nc" id="L748">                                List.of(</span>
+<span class="nc" id="L771">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L772">                            .id(&quot;root&quot;)</span>
+<span class="nc" id="L773">                            .root(true)</span>
+<span class="nc" id="L774">                            .title(&quot;Layers&quot;)</span>
+<span class="nc" id="L775">                            .childrenIds(</span>
+<span class="nc" id="L776">                                List.of(</span>
                                     &quot;lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied&quot;,
                                     &quot;lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied&quot;,
                                     &quot;lvl:proxied&quot;)))
-<span class="nc" id="L752">                    .addLayerNodesItem(</span>
+<span class="nc" id="L780">                    .addLayerNodesItem(</span>
                         new AppTreeLayerNode()
-<span class="nc" id="L754">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L755">                            .id(&quot;lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied&quot;)</span>
-<span class="nc" id="L756">                            .serviceId(&quot;pdok-kadaster-bestuurlijkegebieden&quot;)</span>
-<span class="nc" id="L757">                            .layerName(&quot;Gemeentegebied&quot;)</span>
-<span class="nc" id="L758">                            .visible(true))</span>
-<span class="nc" id="L759">                    .addLayerNodesItem(</span>
+<span class="nc" id="L782">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L783">                            .id(&quot;lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied&quot;)</span>
+<span class="nc" id="L784">                            .serviceId(&quot;pdok-kadaster-bestuurlijkegebieden&quot;)</span>
+<span class="nc" id="L785">                            .layerName(&quot;Gemeentegebied&quot;)</span>
+<span class="nc" id="L786">                            .visible(true))</span>
+<span class="nc" id="L787">                    .addLayerNodesItem(</span>
                         new AppTreeLayerNode()
-<span class="nc" id="L761">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L762">                            .id(&quot;lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied&quot;)</span>
-<span class="nc" id="L763">                            .serviceId(&quot;pdok-kadaster-bestuurlijkegebieden&quot;)</span>
-<span class="nc" id="L764">                            .layerName(&quot;Provinciegebied&quot;)</span>
-<span class="nc" id="L765">                            .visible(false))</span>
-<span class="nc" id="L766">                    .addLayerNodesItem(</span>
+<span class="nc" id="L789">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L790">                            .id(&quot;lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied&quot;)</span>
+<span class="nc" id="L791">                            .serviceId(&quot;pdok-kadaster-bestuurlijkegebieden&quot;)</span>
+<span class="nc" id="L792">                            .layerName(&quot;Provinciegebied&quot;)</span>
+<span class="nc" id="L793">                            .visible(false))</span>
+<span class="nc" id="L794">                    .addLayerNodesItem(</span>
                         new AppTreeLevelNode()
-<span class="nc" id="L768">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L769">                            .id(&quot;lvl:proxied&quot;)</span>
-<span class="nc" id="L770">                            .title(&quot;Proxied&quot;)</span>
-<span class="nc" id="L771">                            .childrenIds(</span>
-<span class="nc" id="L772">                                List.of(</span>
+<span class="nc" id="L796">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L797">                            .id(&quot;lvl:proxied&quot;)</span>
+<span class="nc" id="L798">                            .title(&quot;Proxied&quot;)</span>
+<span class="nc" id="L799">                            .childrenIds(</span>
+<span class="nc" id="L800">                                List.of(</span>
                                     &quot;lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel&quot;)))
-<span class="nc" id="L774">                    .addLayerNodesItem(</span>
+<span class="nc" id="L802">                    .addLayerNodesItem(</span>
                         new AppTreeLayerNode()
-<span class="nc" id="L776">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L777">                            .id(&quot;lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel&quot;)</span>
-<span class="nc" id="L778">                            .serviceId(&quot;snapshot-geoserver-proxied&quot;)</span>
-<span class="nc" id="L779">                            .layerName(&quot;postgis:begroeidterreindeel&quot;)</span>
-<span class="nc" id="L780">                            .visible(false)));</span>
+<span class="nc" id="L804">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L805">                            .id(&quot;lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel&quot;)</span>
+<span class="nc" id="L806">                            .serviceId(&quot;snapshot-geoserver-proxied&quot;)</span>
+<span class="nc" id="L807">                            .layerName(&quot;postgis:begroeidterreindeel&quot;)</span>
+<span class="nc" id="L808">                            .visible(false)));</span>
 
-<span class="nc" id="L782">    app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);</span>
-<span class="nc" id="L783">    applicationRepository.save(app);</span>
+<span class="nc" id="L810">    app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);</span>
+<span class="nc" id="L811">    applicationRepository.save(app);</span>
 
-<span class="nc" id="L785">    app =</span>
+<span class="nc" id="L813">    app =</span>
         new Application()
-<span class="nc" id="L787">            .setName(&quot;secured-auth&quot;)</span>
-<span class="nc" id="L788">            .setTitle(&quot;secured (with authorizations)&quot;)</span>
-<span class="nc" id="L789">            .setCrs(&quot;EPSG:28992&quot;)</span>
-<span class="nc" id="L790">            .setAuthorizationRules(</span>
-<span class="nc" id="L791">                List.of(</span>
+<span class="nc" id="L815">            .setName(&quot;secured-auth&quot;)</span>
+<span class="nc" id="L816">            .setTitle(&quot;secured (with authorizations)&quot;)</span>
+<span class="nc" id="L817">            .setCrs(&quot;EPSG:28992&quot;)</span>
+<span class="nc" id="L818">            .setAuthorizationRules(</span>
+<span class="nc" id="L819">                List.of(</span>
                     new AuthorizationRule()
-<span class="nc" id="L793">                        .groupName(&quot;test-foo&quot;)</span>
-<span class="nc" id="L794">                        .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)),</span>
+<span class="nc" id="L821">                        .groupName(&quot;test-foo&quot;)</span>
+<span class="nc" id="L822">                        .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)),</span>
                     new AuthorizationRule()
-<span class="nc" id="L796">                        .groupName(&quot;test-bar&quot;)</span>
-<span class="nc" id="L797">                        .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW))))</span>
-<span class="nc" id="L798">            .setContentRoot(</span>
+<span class="nc" id="L824">                        .groupName(&quot;test-bar&quot;)</span>
+<span class="nc" id="L825">                        .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW))))</span>
+<span class="nc" id="L826">            .setContentRoot(</span>
                 new AppContent()
-<span class="nc" id="L800">                    .addLayerNodesItem(</span>
+<span class="nc" id="L828">                    .addLayerNodesItem(</span>
                         new AppTreeLevelNode()
-<span class="nc" id="L802">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L803">                            .id(&quot;root&quot;)</span>
-<span class="nc" id="L804">                            .root(true)</span>
-<span class="nc" id="L805">                            .title(&quot;Layers&quot;)</span>
-<span class="nc" id="L806">                            .childrenIds(List.of(&quot;lyr:needs-auth&quot;, &quot;lyr:public&quot;)))</span>
-<span class="nc" id="L807">                    .addLayerNodesItem(</span>
+<span class="nc" id="L830">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L831">                            .id(&quot;root&quot;)</span>
+<span class="nc" id="L832">                            .root(true)</span>
+<span class="nc" id="L833">                            .title(&quot;Layers&quot;)</span>
+<span class="nc" id="L834">                            .childrenIds(List.of(&quot;lyr:needs-auth&quot;, &quot;lyr:public&quot;)))</span>
+<span class="nc" id="L835">                    .addLayerNodesItem(</span>
                         new AppTreeLevelNode()
-<span class="nc" id="L809">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L810">                            .id(&quot;lvl:public&quot;)</span>
-<span class="nc" id="L811">                            .title(&quot;Public&quot;)</span>
-<span class="nc" id="L812">                            .childrenIds(List.of(&quot;lyr:snapshot-geoserver:BGT&quot;)))</span>
-<span class="nc" id="L813">                    .addLayerNodesItem(</span>
+<span class="nc" id="L837">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L838">                            .id(&quot;lvl:public&quot;)</span>
+<span class="nc" id="L839">                            .title(&quot;Public&quot;)</span>
+<span class="nc" id="L840">                            .childrenIds(List.of(&quot;lyr:snapshot-geoserver:BGT&quot;)))</span>
+<span class="nc" id="L841">                    .addLayerNodesItem(</span>
                         new AppTreeLevelNode()
-<span class="nc" id="L815">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L816">                            .id(&quot;lvl:needs-auth&quot;)</span>
-<span class="nc" id="L817">                            .title(&quot;Needs auth&quot;)</span>
-<span class="nc" id="L818">                            .childrenIds(</span>
-<span class="nc" id="L819">                                List.of(</span>
+<span class="nc" id="L843">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L844">                            .id(&quot;lvl:needs-auth&quot;)</span>
+<span class="nc" id="L845">                            .title(&quot;Needs auth&quot;)</span>
+<span class="nc" id="L846">                            .childrenIds(</span>
+<span class="nc" id="L847">                                List.of(</span>
                                     &quot;lyr:filtered-snapshot-geoserver:BGT&quot;,
                                     &quot;lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel&quot;)))
-<span class="nc" id="L822">                    .addLayerNodesItem(</span>
+<span class="nc" id="L850">                    .addLayerNodesItem(</span>
                         new AppTreeLayerNode()
-<span class="nc" id="L824">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L825">                            .id(&quot;lyr:filtered-snapshot-geoserver:BGT&quot;)</span>
-<span class="nc" id="L826">                            .serviceId(&quot;filtered-snapshot-geoserver&quot;)</span>
-<span class="nc" id="L827">                            .layerName(&quot;BGT&quot;)</span>
-<span class="nc" id="L828">                            .visible(true))</span>
-<span class="nc" id="L829">                    .addLayerNodesItem(</span>
+<span class="nc" id="L852">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L853">                            .id(&quot;lyr:filtered-snapshot-geoserver:BGT&quot;)</span>
+<span class="nc" id="L854">                            .serviceId(&quot;filtered-snapshot-geoserver&quot;)</span>
+<span class="nc" id="L855">                            .layerName(&quot;BGT&quot;)</span>
+<span class="nc" id="L856">                            .visible(true))</span>
+<span class="nc" id="L857">                    .addLayerNodesItem(</span>
                         new AppTreeLayerNode()
-<span class="nc" id="L831">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L832">                            .id(&quot;lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel&quot;)</span>
-<span class="nc" id="L833">                            .serviceId(&quot;filtered-snapshot-geoserver&quot;)</span>
-<span class="nc" id="L834">                            .layerName(&quot;postgis:begroeidterreindeel&quot;)</span>
-<span class="nc" id="L835">                            .visible(true))</span>
-<span class="nc" id="L836">                    .addLayerNodesItem(</span>
+<span class="nc" id="L859">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L860">                            .id(&quot;lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel&quot;)</span>
+<span class="nc" id="L861">                            .serviceId(&quot;filtered-snapshot-geoserver&quot;)</span>
+<span class="nc" id="L862">                            .layerName(&quot;postgis:begroeidterreindeel&quot;)</span>
+<span class="nc" id="L863">                            .visible(true))</span>
+<span class="nc" id="L864">                    .addLayerNodesItem(</span>
                         new AppTreeLayerNode()
-<span class="nc" id="L838">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L839">                            .id(&quot;lyr:snapshot-geoserver:BGT&quot;)</span>
-<span class="nc" id="L840">                            .serviceId(&quot;snapshot-geoserver&quot;)</span>
-<span class="nc" id="L841">                            .layerName(&quot;BGT&quot;)</span>
-<span class="nc" id="L842">                            .visible(true)));</span>
+<span class="nc" id="L866">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L867">                            .id(&quot;lyr:snapshot-geoserver:BGT&quot;)</span>
+<span class="nc" id="L868">                            .serviceId(&quot;snapshot-geoserver&quot;)</span>
+<span class="nc" id="L869">                            .layerName(&quot;BGT&quot;)</span>
+<span class="nc" id="L870">                            .visible(true)));</span>
 
-<span class="nc" id="L844">    applicationRepository.save(app);</span>
+<span class="nc" id="L872">    applicationRepository.save(app);</span>
 
-<span class="nc" id="L846">    app =</span>
+<span class="nc" id="L874">    app =</span>
         new Application()
-<span class="nc" id="L848">            .setName(&quot;austria&quot;)</span>
-<span class="nc" id="L849">            .setCrs(&quot;EPSG:3857&quot;)</span>
-<span class="nc" id="L850">            .setAuthorizationRules(rule)</span>
-<span class="nc" id="L851">            .setTitle(&quot;Austria&quot;)</span>
-<span class="nc" id="L852">            .setInitialExtent(</span>
-<span class="nc" id="L853">                new Bounds().minx(987982d).miny(5799551d).maxx(1963423d).maxy(6320708d))</span>
-<span class="nc" id="L854">            .setContentRoot(</span>
+<span class="nc" id="L876">            .setName(&quot;austria&quot;)</span>
+<span class="nc" id="L877">            .setCrs(&quot;EPSG:3857&quot;)</span>
+<span class="nc" id="L878">            .setAuthorizationRules(rule)</span>
+<span class="nc" id="L879">            .setTitle(&quot;Austria&quot;)</span>
+<span class="nc" id="L880">            .setInitialExtent(</span>
+<span class="nc" id="L881">                new Bounds().minx(987982d).miny(5799551d).maxx(1963423d).maxy(6320708d))</span>
+<span class="nc" id="L882">            .setContentRoot(</span>
                 new AppContent()
-<span class="nc" id="L856">                    .addBaseLayerNodesItem(</span>
+<span class="nc" id="L884">                    .addBaseLayerNodesItem(</span>
                         new AppTreeLevelNode()
-<span class="nc" id="L858">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L859">                            .id(&quot;root-base-layers&quot;)</span>
-<span class="nc" id="L860">                            .root(true)</span>
-<span class="nc" id="L861">                            .title(&quot;Base layers&quot;)</span>
-<span class="nc" id="L862">                            .childrenIds(</span>
-<span class="nc" id="L863">                                List.of(&quot;lvl:basemap&quot;, &quot;lvl:orthofoto&quot;, &quot;lvl:orthofoto-labels&quot;)))</span>
-<span class="nc" id="L864">                    .addBaseLayerNodesItem(</span>
+<span class="nc" id="L886">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L887">                            .id(&quot;root-base-layers&quot;)</span>
+<span class="nc" id="L888">                            .root(true)</span>
+<span class="nc" id="L889">                            .title(&quot;Base layers&quot;)</span>
+<span class="nc" id="L890">                            .childrenIds(</span>
+<span class="nc" id="L891">                                List.of(&quot;lvl:basemap&quot;, &quot;lvl:orthofoto&quot;, &quot;lvl:orthofoto-labels&quot;)))</span>
+<span class="nc" id="L892">                    .addBaseLayerNodesItem(</span>
                         new AppTreeLevelNode()
-<span class="nc" id="L866">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L867">                            .id(&quot;lvl:basemap&quot;)</span>
-<span class="nc" id="L868">                            .title(&quot;Basemap&quot;)</span>
-<span class="nc" id="L869">                            .addChildrenIdsItem(&quot;lyr:at-basemap:geolandbasemap&quot;))</span>
-<span class="nc" id="L870">                    .addBaseLayerNodesItem(</span>
-                        new AppTreeLayerNode()
-<span class="nc" id="L872">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L873">                            .id(&quot;lyr:at-basemap:geolandbasemap&quot;)</span>
-<span class="nc" id="L874">                            .serviceId(&quot;at-basemap&quot;)</span>
-<span class="nc" id="L875">                            .layerName(&quot;geolandbasemap&quot;)</span>
-<span class="nc" id="L876">                            .visible(true))</span>
-<span class="nc" id="L877">                    .addBaseLayerNodesItem(</span>
-                        new AppTreeLevelNode()
-<span class="nc" id="L879">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L880">                            .id(&quot;lvl:orthofoto&quot;)</span>
-<span class="nc" id="L881">                            .title(&quot;Orthofoto&quot;)</span>
-<span class="nc" id="L882">                            .addChildrenIdsItem(&quot;lyr:at-basemap:orthofoto&quot;))</span>
-<span class="nc" id="L883">                    .addBaseLayerNodesItem(</span>
-                        new AppTreeLayerNode()
-<span class="nc" id="L885">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L886">                            .id(&quot;lyr:at-basemap:orthofoto&quot;)</span>
-<span class="nc" id="L887">                            .serviceId(&quot;at-basemap&quot;)</span>
-<span class="nc" id="L888">                            .layerName(&quot;bmaporthofoto30cm&quot;)</span>
-<span class="nc" id="L889">                            .visible(false))</span>
-<span class="nc" id="L890">                    .addBaseLayerNodesItem(</span>
-                        new AppTreeLevelNode()
-<span class="nc" id="L892">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
-<span class="nc" id="L893">                            .id(&quot;lvl:orthofoto-labels&quot;)</span>
-<span class="nc" id="L894">                            .title(&quot;Orthofoto with labels&quot;)</span>
-<span class="nc" id="L895">                            .childrenIds(</span>
-<span class="nc" id="L896">                                List.of(</span>
-                                    &quot;lyr:at-basemap:bmapoverlay&quot;, &quot;lyr:at-basemap:orthofoto_2&quot;)))
+<span class="nc" id="L894">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L895">                            .id(&quot;lvl:basemap&quot;)</span>
+<span class="nc" id="L896">                            .title(&quot;Basemap&quot;)</span>
+<span class="nc" id="L897">                            .addChildrenIdsItem(&quot;lyr:at-basemap:geolandbasemap&quot;))</span>
 <span class="nc" id="L898">                    .addBaseLayerNodesItem(</span>
                         new AppTreeLayerNode()
 <span class="nc" id="L900">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L901">                            .id(&quot;lyr:at-basemap:bmapoverlay&quot;)</span>
+<span class="nc" id="L901">                            .id(&quot;lyr:at-basemap:geolandbasemap&quot;)</span>
 <span class="nc" id="L902">                            .serviceId(&quot;at-basemap&quot;)</span>
-<span class="nc" id="L903">                            .layerName(&quot;bmapoverlay&quot;)</span>
-<span class="nc" id="L904">                            .visible(false))</span>
+<span class="nc" id="L903">                            .layerName(&quot;geolandbasemap&quot;)</span>
+<span class="nc" id="L904">                            .visible(true))</span>
 <span class="nc" id="L905">                    .addBaseLayerNodesItem(</span>
+                        new AppTreeLevelNode()
+<span class="nc" id="L907">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L908">                            .id(&quot;lvl:orthofoto&quot;)</span>
+<span class="nc" id="L909">                            .title(&quot;Orthofoto&quot;)</span>
+<span class="nc" id="L910">                            .addChildrenIdsItem(&quot;lyr:at-basemap:orthofoto&quot;))</span>
+<span class="nc" id="L911">                    .addBaseLayerNodesItem(</span>
                         new AppTreeLayerNode()
-<span class="nc" id="L907">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
-<span class="nc" id="L908">                            .id(&quot;lyr:at-basemap:orthofoto_2&quot;)</span>
-<span class="nc" id="L909">                            .serviceId(&quot;at-basemap&quot;)</span>
-<span class="nc" id="L910">                            .layerName(&quot;bmaporthofoto30cm&quot;)</span>
-<span class="nc" id="L911">                            .visible(false)));</span>
+<span class="nc" id="L913">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L914">                            .id(&quot;lyr:at-basemap:orthofoto&quot;)</span>
+<span class="nc" id="L915">                            .serviceId(&quot;at-basemap&quot;)</span>
+<span class="nc" id="L916">                            .layerName(&quot;bmaporthofoto30cm&quot;)</span>
+<span class="nc" id="L917">                            .visible(false))</span>
+<span class="nc" id="L918">                    .addBaseLayerNodesItem(</span>
+                        new AppTreeLevelNode()
+<span class="nc" id="L920">                            .objectType(&quot;AppTreeLevelNode&quot;)</span>
+<span class="nc" id="L921">                            .id(&quot;lvl:orthofoto-labels&quot;)</span>
+<span class="nc" id="L922">                            .title(&quot;Orthofoto with labels&quot;)</span>
+<span class="nc" id="L923">                            .childrenIds(</span>
+<span class="nc" id="L924">                                List.of(</span>
+                                    &quot;lyr:at-basemap:bmapoverlay&quot;, &quot;lyr:at-basemap:orthofoto_2&quot;)))
+<span class="nc" id="L926">                    .addBaseLayerNodesItem(</span>
+                        new AppTreeLayerNode()
+<span class="nc" id="L928">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L929">                            .id(&quot;lyr:at-basemap:bmapoverlay&quot;)</span>
+<span class="nc" id="L930">                            .serviceId(&quot;at-basemap&quot;)</span>
+<span class="nc" id="L931">                            .layerName(&quot;bmapoverlay&quot;)</span>
+<span class="nc" id="L932">                            .visible(false))</span>
+<span class="nc" id="L933">                    .addBaseLayerNodesItem(</span>
+                        new AppTreeLayerNode()
+<span class="nc" id="L935">                            .objectType(&quot;AppTreeLayerNode&quot;)</span>
+<span class="nc" id="L936">                            .id(&quot;lyr:at-basemap:orthofoto_2&quot;)</span>
+<span class="nc" id="L937">                            .serviceId(&quot;at-basemap&quot;)</span>
+<span class="nc" id="L938">                            .layerName(&quot;bmaporthofoto30cm&quot;)</span>
+<span class="nc" id="L939">                            .visible(false)));</span>
 
-<span class="nc" id="L913">    applicationRepository.save(app);</span>
+<span class="nc" id="L941">    applicationRepository.save(app);</span>
 
-<span class="nc" id="L915">    Configuration config = new Configuration();</span>
-<span class="nc" id="L916">    config.setKey(Configuration.DEFAULT_APP);</span>
-<span class="nc" id="L917">    config.setValue(&quot;default&quot;);</span>
-<span class="nc" id="L918">    configurationRepository.save(config);</span>
-<span class="nc" id="L919">    config = new Configuration();</span>
-<span class="nc" id="L920">    config.setKey(Configuration.DEFAULT_BASE_APP);</span>
-<span class="nc" id="L921">    config.setValue(&quot;base&quot;);</span>
-<span class="nc" id="L922">    configurationRepository.save(config);</span>
+<span class="nc" id="L943">    Configuration config = new Configuration();</span>
+<span class="nc" id="L944">    config.setKey(Configuration.DEFAULT_APP);</span>
+<span class="nc" id="L945">    config.setValue(&quot;default&quot;);</span>
+<span class="nc" id="L946">    configurationRepository.save(config);</span>
+<span class="nc" id="L947">    config = new Configuration();</span>
+<span class="nc" id="L948">    config.setKey(Configuration.DEFAULT_BASE_APP);</span>
+<span class="nc" id="L949">    config.setValue(&quot;base&quot;);</span>
+<span class="nc" id="L950">    configurationRepository.save(config);</span>
 
-<span class="nc" id="L924">    logger.info(&quot;Test entities created&quot;);</span>
-<span class="nc" id="L925">  }</span>
+<span class="nc" id="L952">    logger.info(&quot;Test entities created&quot;);</span>
+<span class="nc" id="L953">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

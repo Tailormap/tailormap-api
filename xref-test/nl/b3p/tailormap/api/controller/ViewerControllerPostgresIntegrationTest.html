@@ -199,7 +199,7 @@
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>         .andExpect(jsonPath(<span class="jxr_string">"$.services"</span>).isArray())
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>         .andExpect(jsonPath(<span class="jxr_string">"$.appLayers"</span>).isArray())
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>         .andExpect(jsonPath(<span class="jxr_string">"$.appLayers[0]"</span>).isMap())
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>         .andExpect(jsonPath(<span class="jxr_string">"$.appLayers.length()"</span>).value(10))
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>         .andExpect(jsonPath(<span class="jxr_string">"$.appLayers.length()"</span>).value(11))
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>         .andExpect(jsonPath(<span class="jxr_string">"$.appLayers[0].hasAttributes"</span>).value(false))
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>         .andExpect(jsonPath(<span class="jxr_string">"$.appLayers[1].hasAttributes"</span>).value(false))
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>         .andExpect(jsonPath(<span class="jxr_string">"$.appLayers[2].legendImageUrl"</span>).isEmpty())

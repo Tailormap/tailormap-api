@@ -490,7 +490,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/geotools/featuresources/WFSFeatureSourceHelper.html#createDataStore(nl.b3p.tailormap.api.persistence.TMFeatureSource,java.lang.Integer)">createDataStore(TMFeatureSource, Integer)</a></span> - Method in class nl.b3p.tailormap.api.geotools.featuresources.<a href="nl/b3p/tailormap/api/geotools/featuresources/WFSFeatureSourceHelper.html" title="class in nl.b3p.tailormap.api.geotools.featuresources">WFSFeatureSourceHelper</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/EditFeatureController.html#createFeature(nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,nl.b3p.tailormap.api.viewer.model.Feature)">createFeature(AppTreeLayerNode, GeoService, GeoServiceLayer, Feature)</a></span> - Method in class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/EditFeatureController.html" title="class in nl.b3p.tailormap.api.controller">EditFeatureController</a></dt>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/EditFeatureController.html#createFeature(nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,nl.b3p.tailormap.api.persistence.Application,nl.b3p.tailormap.api.viewer.model.Feature)">createFeature(AppTreeLayerNode, GeoService, GeoServiceLayer, Application, Feature)</a></span> - Method in class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/EditFeatureController.html" title="class in nl.b3p.tailormap.api.controller">EditFeatureController</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/configuration/dev/PopulateTestData.html#createTestConfiguration()">createTestConfiguration()</a></span> - Method in class nl.b3p.tailormap.api.configuration.dev.<a href="nl/b3p/tailormap/api/configuration/dev/PopulateTestData.html" title="class in nl.b3p.tailormap.api.configuration.dev">PopulateTestData</a></dt>
 <dd>&nbsp;</dd>
@@ -2261,6 +2261,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">the total number of available features, can be an estimated value.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/geotools/TransformationUtil.html#getTransformationToApplication(nl.b3p.tailormap.api.persistence.Application,org.geotools.data.simple.SimpleFeatureSource)">getTransformationToApplication(Application, SimpleFeatureSource)</a></span> - Static method in class nl.b3p.tailormap.api.geotools.<a href="nl/b3p/tailormap/api/geotools/TransformationUtil.html" title="class in nl.b3p.tailormap.api.geotools">TransformationUtil</a></dt>
+<dd>
+<div class="block">Determine whether we need to transform geometries to the application CRS.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/geotools/TransformationUtil.html#getTransformationToDataSource(nl.b3p.tailormap.api.persistence.Application,org.geotools.data.simple.SimpleFeatureSource)">getTransformationToDataSource(Application, SimpleFeatureSource)</a></span> - Static method in class nl.b3p.tailormap.api.geotools.<a href="nl/b3p/tailormap/api/geotools/TransformationUtil.html" title="class in nl.b3p.tailormap.api.geotools">TransformationUtil</a></dt>
+<dd>
+<div class="block">Determine whether we need to transform geometry to data source crs.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/persistence/json/TMAttributeDescriptor.html#getType()">getType()</a></span> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/TMAttributeDescriptor.html" title="class in nl.b3p.tailormap.api.persistence.json">TMAttributeDescriptor</a></dt>
 <dd>
 <div class="block">Get type</div>
@@ -3003,7 +3011,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/admin/PasswordValidationController.html#%3Cinit%3E()">PasswordValidationController()</a></span> - Constructor for class nl.b3p.tailormap.api.controller.admin.<a href="nl/b3p/tailormap/api/controller/admin/PasswordValidationController.html" title="class in nl.b3p.tailormap.api.controller.admin">PasswordValidationController</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/EditFeatureController.html#patchFeature(nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,java.lang.String,nl.b3p.tailormap.api.viewer.model.Feature)">patchFeature(AppTreeLayerNode, GeoService, GeoServiceLayer, String, Feature)</a></span> - Method in class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/EditFeatureController.html" title="class in nl.b3p.tailormap.api.controller">EditFeatureController</a></dt>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/EditFeatureController.html#patchFeature(nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,nl.b3p.tailormap.api.persistence.Application,java.lang.String,nl.b3p.tailormap.api.viewer.model.Feature)">patchFeature(AppTreeLayerNode, GeoService, GeoServiceLayer, Application, String, Feature)</a></span> - Method in class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/EditFeatureController.html" title="class in nl.b3p.tailormap.api.controller">EditFeatureController</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/persistence/json/TMAttributeType.html#POINT">POINT</a></span> - nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/TMAttributeType.html" title="enum in nl.b3p.tailormap.api.persistence.json">TMAttributeType</a></dt>
 <dd>&nbsp;</dd>
@@ -3052,7 +3060,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/persistence/json/JDBCConnectionProperties.html#primaryKeyMetadataTable(java.lang.String)">primaryKeyMetadataTable(String)</a></span> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/JDBCConnectionProperties.html" title="class in nl.b3p.tailormap.api.persistence.json">JDBCConnectionProperties</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/geotools/processing/GeometryProcessor.html#processGeometry(java.lang.Object,java.lang.Boolean,org.opengis.referencing.operation.MathTransform)">processGeometry(Object, Boolean, MathTransform)</a></span> - Static method in class nl.b3p.tailormap.api.geotools.processing.<a href="nl/b3p/tailormap/api/geotools/processing/GeometryProcessor.html" title="class in nl.b3p.tailormap.api.geotools.processing">GeometryProcessor</a></dt>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/geotools/processing/GeometryProcessor.html#processGeometry(java.lang.Object,java.lang.Boolean,java.lang.Boolean,org.opengis.referencing.operation.MathTransform)">processGeometry(Object, Boolean, Boolean, MathTransform)</a></span> - Static method in class nl.b3p.tailormap.api.geotools.processing.<a href="nl/b3p/tailormap/api/geotools/processing/GeometryProcessor.html" title="class in nl.b3p.tailormap.api.geotools.processing">GeometryProcessor</a></dt>
 <dd>
 <div class="block">process the geometry into a (optionally simplified) string representation.</div>
 </dd>
@@ -4311,6 +4319,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/viewer/model/ViewerResponse.html#toString()">toString()</a></span> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/ViewerResponse.html" title="class in nl.b3p.tailormap.api.viewer.model">ViewerResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/viewer/model/FeaturesResponse.html#total(java.lang.Integer)">total(Integer)</a></span> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/FeaturesResponse.html" title="class in nl.b3p.tailormap.api.viewer.model">FeaturesResponse</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="nl/b3p/tailormap/api/geotools/TransformationUtil.html" title="class in nl.b3p.tailormap.api.geotools"><span class="typeNameLink">TransformationUtil</span></a> - Class in <a href="nl/b3p/tailormap/api/geotools/package-summary.html">nl.b3p.tailormap.api.geotools</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/geotools/processing/GeometryProcessor.html#transformGeometry(org.locationtech.jts.geom.Geometry,org.opengis.referencing.operation.MathTransform)">transformGeometry(Geometry, MathTransform)</a></span> - Static method in class nl.b3p.tailormap.api.geotools.processing.<a href="nl/b3p/tailormap/api/geotools/processing/GeometryProcessor.html" title="class in nl.b3p.tailormap.api.geotools.processing">GeometryProcessor</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/geotools/WMSServiceExceptionUtil.html#tryGetServiceExceptionMessage(byte%5B%5D)">tryGetServiceExceptionMessage(byte[])</a></span> - Static method in class nl.b3p.tailormap.api.geotools.<a href="nl/b3p/tailormap/api/geotools/WMSServiceExceptionUtil.html" title="class in nl.b3p.tailormap.api.geotools">WMSServiceExceptionUtil</a></dt>
 <dd>

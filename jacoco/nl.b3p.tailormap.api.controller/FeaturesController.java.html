@@ -456,37 +456,38 @@ public class FeaturesController implements Constants {
 <span class="nc" id="L456">            GeometryProcessor.processGeometry(</span>
 <span class="nc" id="L457">                feature.getAttribute(tmft.getDefaultGeometryAttribute()),</span>
 <span class="nc" id="L458">                simplifyGeometry,</span>
+<span class="nc" id="L459">                true,</span>
                 transform);
-<span class="nc" id="L460">        Feature newFeat =</span>
-<span class="nc" id="L461">            new Feature().fid(feature.getIdentifier().getID()).geometry(processedGeometry);</span>
+<span class="nc" id="L461">        Feature newFeat =</span>
+<span class="nc" id="L462">            new Feature().fid(feature.getIdentifier().getID()).geometry(processedGeometry);</span>
 
-<span class="nc bnc" id="L463" title="All 2 branches missed.">        if (!onlyGeometries) {</span>
-<span class="nc bnc" id="L464" title="All 2 branches missed.">          for (AttributeDescriptor att : feature.getFeatureType().getAttributeDescriptors()) {</span>
-<span class="nc" id="L465">            Object value = feature.getAttribute(att.getName());</span>
-<span class="nc bnc" id="L466" title="All 2 branches missed.">            if (value instanceof Geometry) {</span>
-<span class="nc bnc" id="L467" title="All 2 branches missed.">              if (skipGeometryOutput) {</span>
-<span class="nc" id="L468">                value = null;</span>
+<span class="nc bnc" id="L464" title="All 2 branches missed.">        if (!onlyGeometries) {</span>
+<span class="nc bnc" id="L465" title="All 2 branches missed.">          for (AttributeDescriptor att : feature.getFeatureType().getAttributeDescriptors()) {</span>
+<span class="nc" id="L466">            Object value = feature.getAttribute(att.getName());</span>
+<span class="nc bnc" id="L467" title="All 2 branches missed.">            if (value instanceof Geometry) {</span>
+<span class="nc bnc" id="L468" title="All 2 branches missed.">              if (skipGeometryOutput) {</span>
+<span class="nc" id="L469">                value = null;</span>
               } else {
-<span class="nc" id="L470">                value = GeometryProcessor.geometryToWKT((Geometry) value);</span>
+<span class="nc" id="L471">                value = GeometryProcessor.geometryToWKT((Geometry) value);</span>
               }
             }
-<span class="nc" id="L473">            newFeat.putAttributesItem(att.getLocalName(), value);</span>
-<span class="nc" id="L474">          }</span>
+<span class="nc" id="L474">            newFeat.putAttributesItem(att.getLocalName(), value);</span>
+<span class="nc" id="L475">          }</span>
         }
-<span class="nc" id="L476">        featuresResponse.addFeaturesItem(newFeat);</span>
-<span class="nc" id="L477">      }</span>
+<span class="nc" id="L477">        featuresResponse.addFeaturesItem(newFeat);</span>
+<span class="nc" id="L478">      }</span>
     } finally {
-<span class="nc" id="L479">      fs.getDataStore().dispose();</span>
+<span class="nc" id="L480">      fs.getDataStore().dispose();</span>
     }
-<span class="nc bnc" id="L481" title="All 2 branches missed.">    if (addFields) {</span>
-<span class="nc bnc" id="L482" title="All 2 branches missed.">      for (TMAttributeDescriptor tmAtt : tmft.getAttributes()) {</span>
-<span class="nc" id="L483">        featuresResponse.addColumnMetadataItem(</span>
+<span class="nc bnc" id="L482" title="All 2 branches missed.">    if (addFields) {</span>
+<span class="nc bnc" id="L483" title="All 2 branches missed.">      for (TMAttributeDescriptor tmAtt : tmft.getAttributes()) {</span>
+<span class="nc" id="L484">        featuresResponse.addColumnMetadataItem(</span>
             new ColumnMetadata()
-<span class="nc" id="L485">                .key(tmAtt.getName())</span>
-<span class="nc" id="L486">                .alias(tmAtt.getDescription())</span>
-<span class="nc bnc" id="L487" title="All 2 branches missed.">                .type(isGeometry(tmAtt.getType()) ? TMAttributeType.GEOMETRY : tmAtt.getType()));</span>
-<span class="nc" id="L488">      }</span>
+<span class="nc" id="L486">                .key(tmAtt.getName())</span>
+<span class="nc" id="L487">                .alias(tmAtt.getDescription())</span>
+<span class="nc bnc" id="L488" title="All 2 branches missed.">                .type(isGeometry(tmAtt.getType()) ? TMAttributeType.GEOMETRY : tmAtt.getType()));</span>
+<span class="nc" id="L489">      }</span>
     }
-<span class="nc" id="L490">  }</span>
+<span class="nc" id="L491">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
