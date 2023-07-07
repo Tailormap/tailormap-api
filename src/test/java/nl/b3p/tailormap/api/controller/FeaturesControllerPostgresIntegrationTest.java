@@ -87,17 +87,13 @@ class FeaturesControllerPostgresIntegrationTest {
   @Value("${tailormap-api.pageSize}")
   private int pageSize;
 
-  static Stream<Arguments> argumentsProvider() {
+  static Stream<Arguments> databaseArgumentsProvider() {
     return Stream.of(
         // docker host,table,url, feature count
-        arguments(
-            "postgis",
-            "begroeidterreindeel",
-            begroeidterreindeelUrlPostgis,
-            begroeidterreindeelTotalCount),
-        arguments("oracle", "waterdeel", waterdeelUrlOracle, waterdeelTotalCount),
-        arguments("sqlserver", "wegdeel", wegdeelUrlSqlserver, wegdeelTotalCount),
-        arguments("postgis", "osm_polygon", osm_polygonUrlPostgis, osm_polygonTotalCount));
+        arguments(begroeidterreindeelUrlPostgis, begroeidterreindeelTotalCount),
+        arguments(waterdeelUrlOracle, waterdeelTotalCount),
+        arguments(wegdeelUrlSqlserver, wegdeelTotalCount),
+        arguments(osm_polygonUrlPostgis, osm_polygonTotalCount));
   }
 
   static Stream<Arguments> differentFeatureSourcesProvider() {
@@ -211,10 +207,8 @@ class FeaturesControllerPostgresIntegrationTest {
         // or w/ 3 expressions
         arguments(
             begroeidterreindeelUrlPostgis,
-            // creationdate > '2016-04-18T00:00:00Z' or lv_publicatiedatum <
-            // '2019-11-20T17:09:52Z' or lv_publicatiedatum > '2022-01-27T13:50:39Z'
             "creationdate after 2016-04-18T00:00:00Z or lv_publicatiedatum before 2019-11-20T17:09:52Z or lv_publicatiedatum after 2022-01-27T13:50:39Z",
-            // Depends on timezone, this is for Europe/Amsterdam. For UTC 3522.
+            // value depends on timezone, this is for Europe/Amsterdam. For UTC it is 3522.
             3518),
         arguments(
             waterdeelUrlOracle,
@@ -227,10 +221,8 @@ class FeaturesControllerPostgresIntegrationTest {
         // and w/ 2 expressions
         arguments(
             begroeidterreindeelUrlPostgis,
-            // creationdate > '2016-04-18T00:00:00Z' and lv_publicatiedatum <
-            // '2019-11-20T17:09:52Z'
             "creationdate after 2016-04-18T00:00:00Z and lv_publicatiedatum before 2019-11-20T17:09:52Z",
-            // Depends on timezone, this is for Europe/Amsterdam. For UTC 1264.
+            // value depends on timezone, this is for Europe/Amsterdam. For UTC it is 1264.
             1271),
         arguments(
             waterdeelUrlOracle,
@@ -238,10 +230,8 @@ class FeaturesControllerPostgresIntegrationTest {
             77),
         arguments(
             wegdeelUrlSqlserver,
-            // creationdate > '2016-04-18T00:00:00Z' and lv_publicatiedatum <
-            // '2019-11-20T17:09:52Z'
             "creationdate after 2016-04-18T00:00:00Z and lv_publicatiedatum before 2019-11-20T17:09:52Z",
-            // Depends on timezone, this is for Europe/Amsterdam. For UTC 1933.
+            // value depends on timezone, this is for Europe/Amsterdam. For UTC it is 1933.
             1963),
         // (not) like / ilike
         arguments(begroeidterreindeelUrlPostgis, "class like 'grasland%'", 85),
@@ -788,13 +778,12 @@ class FeaturesControllerPostgresIntegrationTest {
   @ParameterizedTest(
       name =
           "#{index}: should return non-empty featurecollections for valid page from database: {0}, featuretype: {1}")
-  @MethodSource("argumentsProvider")
+  @MethodSource("databaseArgumentsProvider")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
   void should_return_non_empty_featurecollections_for_valid_pages_from_database(
-      String ignoredDatabase, String ignoredTableName, String applayerUrl, int totalCcount)
-      throws Exception {
+      String applayerUrl, int totalCcount) throws Exception {
     applayerUrl = apiBasePath + applayerUrl;
     // page 1
     MvcResult result =
@@ -995,13 +984,12 @@ class FeaturesControllerPostgresIntegrationTest {
   @ParameterizedTest(
       name =
           "#{index}: should return same featurecollection for same page from database: {0}, featuretype: {1}")
-  @MethodSource("argumentsProvider")
+  @MethodSource("databaseArgumentsProvider")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
   void should_return_same_featurecollection_for_same_page_database(
-      String ignoredDatabase, String ignoredTableName, String applayerUrl, int totalCcount)
-      throws Exception {
+      String applayerUrl, int totalCcount) throws Exception {
     applayerUrl = apiBasePath + applayerUrl;
 
     // page 1
@@ -1073,14 +1061,13 @@ class FeaturesControllerPostgresIntegrationTest {
    */
   @ParameterizedTest(
       name =
-          "#{index}: should return empty featurecollection for out of range page from database: {0}, featuretype: {1}")
-  @MethodSource("argumentsProvider")
+          "#{index}: should return empty featurecollection for out of range page from database for layer: {0}")
+  @MethodSource("databaseArgumentsProvider")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
   void should_return_empty_featurecollection_for_out_of_range_page_database(
-      String ignoredDatabase, String ignoredTableName, String applayerUrl, int totalCcount)
-      throws Exception {
+      String applayerUrl, int totalCcount) throws Exception {
     applayerUrl = apiBasePath + applayerUrl;
     // request page ...
     int page = (totalCcount / pageSize) + 5;
