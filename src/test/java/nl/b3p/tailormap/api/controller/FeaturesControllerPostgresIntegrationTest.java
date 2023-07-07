@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 import nl.b3p.tailormap.api.StaticTestData;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.viewer.model.Service;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -106,18 +107,6 @@ class FeaturesControllerPostgresIntegrationTest {
         arguments(waterdeelUrlOracle),
         arguments(wegdeelUrlSqlserver),
         arguments(osm_polygonUrlPostgis));
-  }
-
-  static Stream<Arguments> projectionArgumentsProvider() {
-    return Stream.of(
-        // x, y, distance,expected1stCoordinate, expected2ndCoordinate
-        arguments(130794, 459169, 5, 128713.7, 461593.9));
-  }
-
-  static Stream<Arguments> wfsProjectionArgumentsProvider() {
-    return Stream.of(
-        // x, y, distance,expected1stCoordinate, expected2ndCoordinate
-        arguments(141247, 458118, 5, 130179.9, 430066.3));
   }
 
   /**
@@ -937,20 +926,20 @@ class FeaturesControllerPostgresIntegrationTest {
         "there should be no duplicates in 2 sequential pages");
   }
 
-  @ParameterizedTest(
-      name =
-          "should return expected polygon feature for valid coordinates from database #{index}: x: {0}, y: {1}")
-  @MethodSource("projectionArgumentsProvider")
+  @Test
+  @DisplayName(
+      "should return expected reprojected polygon feature for valid coordinates from database")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_produce_reprojected_features_from_database(
-      double x,
-      double y,
-      double distance,
-      double expected1stCoordinate,
-      double expected2ndCoordinate)
-      throws Exception {
+  void should_produce_reprojected_features_from_database() throws Exception {
+
+    final double x = 130794;
+    final double y = 459169;
+    final double distance = 5;
+    final double expected1stCoordinate = 128713.7;
+    final double expected2ndCoordinate = 461593.9;
+
     final String expectedFid = "osm_polygon.-310859";
     final String url = apiBasePath + osm_polygonUrlPostgis;
 
@@ -992,21 +981,19 @@ class FeaturesControllerPostgresIntegrationTest {
         "y coordinate should be " + expected2ndCoordinate);
   }
 
-  @ParameterizedTest(
-      name =
-          "should return expected polygon feature for valid coordinates from WFS #{index}: x: {0}, y: {1}")
-  @MethodSource("wfsProjectionArgumentsProvider")
+  @Test
+  @DisplayName("should return expected polygon feature for valid coordinates from WFS")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_produce_reprojected_features_from_wfs_using_different(
-      double x,
-      double y,
-      double distance,
-      double expected1stCoordinate,
-      double expected2ndCoordinate)
-      throws Exception {
-
+  void should_produce_feature_from_wfs() throws Exception {
+    final double x = 141247;
+    final double y = 458118;
+    final double distance = 5;
+    final double expected1stCoordinate = 130179.9;
+    final double expected2ndCoordinate = 430066.3;
+    final String expectedNaam = "Utrecht";
+    final String expectedLand = "Nederland";
     final String expectedFid = "Provinciegebied.209e5db1-05cc-4201-9ff6-02f60c51b880";
     final String url = apiBasePath + provinciesWFS;
 
@@ -1030,8 +1017,8 @@ class FeaturesControllerPostgresIntegrationTest {
             .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
             .andExpect(jsonPath("$.features[0].__fid").value(expectedFid))
             .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-            .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+            .andExpect(jsonPath("$.features[0].attributes.naam").value(expectedNaam))
+            .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value(expectedLand))
             .andReturn();
 
     String body = result.getResponse().getContentAsString();
