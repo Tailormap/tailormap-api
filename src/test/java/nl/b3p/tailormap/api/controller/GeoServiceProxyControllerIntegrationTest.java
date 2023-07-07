@@ -36,7 +36,7 @@ import org.springframework.test.web.servlet.ResultActions;
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
-class GeoServiceProxyControllerPostgresIntegrationTest {
+class GeoServiceProxyControllerIntegrationTest {
   private final String begroeidterreindeelUrl =
       "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wms";
 

@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
-class LayerDescriptionControllerPostgresIntegrationTest {
+class LayerDescriptionControllerIntegrationTest {
   @Autowired private MockMvc mockMvc;
 
   @Value("${tailormap-api.base-path}")

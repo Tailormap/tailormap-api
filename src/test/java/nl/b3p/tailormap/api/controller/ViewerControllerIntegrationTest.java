@@ -42,7 +42,7 @@ import org.springframework.test.web.servlet.MvcResult;
 @AutoConfigureMockMvc
 @Stopwatch
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ViewerControllerPostgresIntegrationTest {
+class ViewerControllerIntegrationTest {
   @Autowired ApplicationRepository applicationRepository;
   @Autowired private MockMvc mockMvc;
 

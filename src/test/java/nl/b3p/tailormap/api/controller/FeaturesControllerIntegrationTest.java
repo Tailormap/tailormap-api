@@ -74,7 +74,7 @@ class FeaturesControllerIntegrationTest {
   private static final int begroeidterreindeelTotalCount = 3662;
   private static final int waterdeelTotalCount = 282;
   private static final int wegdeelTotalCount = 5934;
-  private static final int osm_polygonTotalCount = 102469;
+  private static final int osm_polygonTotalCount = 102467;
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
