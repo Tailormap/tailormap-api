@@ -157,7 +157,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static org.opengis.referencing.operation.MathTransform</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTransformationToApplication(nl.b3p.tailormap.api.persistence.Application,org.geotools.data.simple.SimpleFeatureSource)">getTransformationToApplication</a></span>&#8203;(@NotNull <a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
-                              @NotNull org.geotools.data.simple.SimpleFeatureSource&nbsp;fs)</code></th>
+                              @NotNull org.geotools.data.simple.SimpleFeatureSource&nbsp;simpleFeatureSource)</code></th>
 <td class="colLast">
 <div class="block">Determine whether we need to transform geometries to the application CRS.</div>
 </td>
@@ -165,7 +165,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static org.opengis.referencing.operation.MathTransform</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTransformationToDataSource(nl.b3p.tailormap.api.persistence.Application,org.geotools.data.simple.SimpleFeatureSource)">getTransformationToDataSource</a></span>&#8203;(@NotNull <a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
-                             @NotNull org.geotools.data.simple.SimpleFeatureSource&nbsp;fs)</code></th>
+                             @NotNull org.geotools.data.simple.SimpleFeatureSource&nbsp;simpleFeatureSource)</code></th>
 <td class="colLast">
 <div class="block">Determine whether we need to transform geometry to data source crs.</div>
 </td>
@@ -203,7 +203,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public static&nbsp;org.opengis.referencing.operation.MathTransform&nbsp;getTransformationToApplication&#8203;(@NotNull
                                                                                              @NotNull <a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
                                                                                              @NotNull
-                                                                                             @NotNull org.geotools.data.simple.SimpleFeatureSource&nbsp;fs)
+                                                                                             @NotNull org.geotools.data.simple.SimpleFeatureSource&nbsp;simpleFeatureSource)
                                                                                       throws org.opengis.referencing.FactoryException</pre>
 <div class="block">Determine whether we need to transform geometries to the application CRS. Note that this uses
  the "default geometry" attribute of the feature source, in cases where a feature source has
@@ -212,7 +212,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>application</code> - the referenced application</dd>
-<dd><code>fs</code> - the feature source used in the application</dd>
+<dd><code>simpleFeatureSource</code> - the feature source used in the application</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd><code>null</code> when no transform is required and a valid transform otherwise</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -229,7 +229,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public static&nbsp;org.opengis.referencing.operation.MathTransform&nbsp;getTransformationToDataSource&#8203;(@NotNull
                                                                                             @NotNull <a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
                                                                                             @NotNull
-                                                                                            @NotNull org.geotools.data.simple.SimpleFeatureSource&nbsp;fs)
+                                                                                            @NotNull org.geotools.data.simple.SimpleFeatureSource&nbsp;simpleFeatureSource)
                                                                                      throws org.opengis.referencing.FactoryException</pre>
 <div class="block">Determine whether we need to transform geometry to data source crs. Note that this uses the
  "default geometry" attribute of the feature source, in cases where a feature source has
@@ -238,7 +238,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>application</code> - the referenced application</dd>
-<dd><code>fs</code> - the feature source used in the application</dd>
+<dd><code>simpleFeatureSource</code> - the feature source used in the application</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd><code>null</code> when no transform is required and a valid transform otherwise</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
