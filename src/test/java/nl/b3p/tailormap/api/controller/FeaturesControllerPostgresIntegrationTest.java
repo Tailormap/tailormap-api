@@ -306,90 +306,40 @@ class FeaturesControllerPostgresIntegrationTest {
         .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
   }
 
-  //  /* test EPSG:28992 (RD New/Amersfoort) */
-  //  @Test
-  //  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  //  @WithMockUser(
-  //      username = "tm-admin",
-  //      authorities = {"admin"})
-  //  void should_produce_for_valid_input_pdok_betuurlijkegebieden() throws Exception {
-  //    final String url = apiBasePath + provinciesWFS;
-  //    mockMvc
-  //        .perform(
-  //            get(url)
-  //                .accept(MediaType.APPLICATION_JSON)
-  //                .with(setServletPath(url))
-  //                .param("x", "141247")
-  //                .param("y", "458118")
-  //                .param("simplify", "true"))
-  //        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-  //        .andExpect(status().isOk())
-  //        .andExpect(jsonPath("$.features").isArray())
-  //        .andExpect(jsonPath("$.features[0]").isMap())
-  //        .andExpect(jsonPath("$.features[0]").isNotEmpty())
-  //        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-  //        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
-  //        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-  //        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
-  //  }
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void should_produce_for_valid_input_pdok_betuurlijkegebieden_without_simplifying()
+      throws Exception {
+    final String url = apiBasePath + provinciesWFS;
+    MvcResult result =
+        mockMvc
+            .perform(
+                get(url)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(setServletPath(url))
+                    .param("x", "141247")
+                    .param("y", "458118")
+                    .param("simplify", "false")
+                    .param("geometryInAttributes", "true"))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.features").isArray())
+            .andExpect(jsonPath("$.features[0]").isMap())
+            .andExpect(jsonPath("$.features[0]").isNotEmpty())
+            .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+            .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+            .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
+            .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+            .andReturn();
 
-  //  /* test EPSG:3857 (web mercator) */
-  //  @Test
-  //  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  //  @WithMockUser(
-  //      username = "tm-admin",
-  //      authorities = {"admin"})
-  //  void should_produce_for_valid_input_with_alien_crs_pdok_betuurlijkegebieden() throws Exception
-  // {
-  //    final String url = apiBasePath + provinciesWFS;
-  //    mockMvc
-  //        .perform(
-  //            get(url)
-  //                .accept(MediaType.APPLICATION_JSON)
-  //                .with(setServletPath(url))
-  //                .param("x", "577351")
-  //                .param("y", "6820242")
-  //                .param("simplify", "true"))
-  //        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-  //        .andExpect(status().isOk())
-  //        .andExpect(jsonPath("$.features").isArray())
-  //        .andExpect(jsonPath("$.features[0]").isMap())
-  //        .andExpect(jsonPath("$.features[0]").isNotEmpty())
-  //        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-  //        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
-  //        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-  //        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
-  //  }
-  //
-  //  /* test EPSG:4326 (WGS84) */
-  //  @Test
-  //  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  //  @WithMockUser(
-  //      username = "tm-admin",
-  //      authorities = {"admin"})
-  //  void should_produce_for_valid_input_with_alien_crs_2_pdok_betuurlijkegebieden() throws
-  // Exception {
-  //    final String url = apiBasePath + provinciesWFS;
-  //    mockMvc
-  //        .perform(
-  //            get(url)
-  //                .accept(MediaType.APPLICATION_JSON)
-  //                .with(setServletPath(url))
-  //                // note flipped axis
-  //                .param("y", "5.04173")
-  //                .param("x", "52.11937")
-  //                .param("simplify", "true")
-  //                .param("distance", /*~ 4 meter*/ "0.00004"))
-  //        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-  //        .andExpect(status().isOk())
-  //        .andExpect(jsonPath("$.features").isArray())
-  //        .andExpect(jsonPath("$.features[0]").isMap())
-  //        .andExpect(jsonPath("$.features[0]").isNotEmpty())
-  //        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-  //        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
-  //        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-  //        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
-  //  }
+    String body = result.getResponse().getContentAsString();
+    String geometry = JsonPath.parse(body).read("$.features[0].geometry").toString();
+    String geomAttribute = JsonPath.parse(body).read("$.features[0].attributes.geom").toString();
+    assertEquals(
+        geometry, geomAttribute, "geometry and geom attribute should be equal when not simplified");
+  }
 
   /**
    * request 2 pages data from the bestuurlijke gebieden WFS featuretype provincies.
