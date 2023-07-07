@@ -592,24 +592,15 @@ paths:
         required: true
         schema:
           type: string
-      - description: 'x-coordinate, assumed in the coordinate reference system of the attribute source if crs is omitted'
+      - description: 'x-coordinate, assumed in the coordinate reference system of the attribute source'
         in: query
         name: x
         required: false
         schema:
           type: number
-      - description: 'y-coordinate, assumed in the coordinate reference system of the attribute source if crs is omitted'
+      - description: 'y-coordinate, assumed in the coordinate reference system of the attribute source'
         in: query
         name: y
-        required: false
-        schema:
-          type: number
-      - description: '
-          EPSG code for the given x- and y-coodinates, the backend will transform to attribute source if required. 
-          Also the CRS to be used to reproject the hightlight gemometry if not in the same CRS as the attribute source.
-          '
-        in: query
-        name: crs
         required: false
         schema:
           type: number
