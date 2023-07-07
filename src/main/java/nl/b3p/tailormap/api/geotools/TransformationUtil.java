@@ -25,15 +25,17 @@ public class TransformationUtil {
    * single geometry attribute this may not be accurate.
    *
    * @param application the referenced application
-   * @param fs the feature source used in the application
+   * @param simpleFeatureSource the feature source used in the application
    * @return {@code null} when no transform is required and a valid transform otherwise
    * @throws FactoryException when the CRS cannot be decoded
    */
   public static MathTransform getTransformationToApplication(
-      @NotNull Application application, @NotNull SimpleFeatureSource fs) throws FactoryException {
+      @NotNull Application application, @NotNull SimpleFeatureSource simpleFeatureSource)
+      throws FactoryException {
     MathTransform transform = null;
     // this is the CRS of the "default geometry" attribute
-    final CoordinateReferenceSystem dataSourceCRS = fs.getSchema().getCoordinateReferenceSystem();
+    final CoordinateReferenceSystem dataSourceCRS =
+        simpleFeatureSource.getSchema().getCoordinateReferenceSystem();
     final CoordinateReferenceSystem appCRS = CRS.decode(application.getCrs());
     if (!CRS.equalsIgnoreMetadata(dataSourceCRS, appCRS)) {
       transform = CRS.findMathTransform(dataSourceCRS, appCRS);
@@ -48,15 +50,17 @@ public class TransformationUtil {
    * single geometry attribute this may not be accurate.
    *
    * @param application the referenced application
-   * @param fs the feature source used in the application
+   * @param simpleFeatureSource the feature source used in the application
    * @return {@code null} when no transform is required and a valid transform otherwise
    * @throws FactoryException when the CRS cannot be decoded
    */
   public static MathTransform getTransformationToDataSource(
-      @NotNull Application application, @NotNull SimpleFeatureSource fs) throws FactoryException {
+      @NotNull Application application, @NotNull SimpleFeatureSource simpleFeatureSource)
+      throws FactoryException {
     MathTransform transform = null;
     // this is the CRS of the "default geometry" attribute
-    final CoordinateReferenceSystem dataSourceCRS = fs.getSchema().getCoordinateReferenceSystem();
+    final CoordinateReferenceSystem dataSourceCRS =
+        simpleFeatureSource.getSchema().getCoordinateReferenceSystem();
     final CoordinateReferenceSystem appCRS = CRS.decode(application.getCrs());
     if (!CRS.equalsIgnoreMetadata(dataSourceCRS, appCRS)) {
       transform = CRS.findMathTransform(appCRS, dataSourceCRS);

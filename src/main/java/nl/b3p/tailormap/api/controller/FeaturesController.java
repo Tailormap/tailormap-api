@@ -78,15 +78,14 @@ public class FeaturesController implements Constants {
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
 
   private final FeatureSourceRepository featureSourceRepository;
+  private final FilterFactory2 ff =
+      CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
   @Value("${tailormap-api.pageSize:100}")
   private int pageSize;
 
   @Value("${tailormap-api.features.wfs_count_exact:false}")
   private boolean exactWfsCounts;
-
-  private final FilterFactory2 ff =
-      CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
   public FeaturesController(
       FeatureSourceFactoryHelper featureSourceFactoryHelper,
@@ -148,7 +147,6 @@ public class FeaturesController implements Constants {
               onlyGeometries,
               !geometryInAttributes);
     } else {
-      // TODO other implementations
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Unsupported combination of request parameters");
     }
@@ -181,46 +179,21 @@ public class FeaturesController implements Constants {
               .collect(Collectors.toList());
 
       String sortAttrName;
-
       if (onlyGeometries) {
         propNames = List.of(tmft.getDefaultGeometryAttribute());
-        sortAttrName = null; // do not try to sort by geometry
+        // do not try to sort by geometry
+        sortAttrName = null;
       } else {
-
         if (propNames.isEmpty()) {
           return featuresResponse;
         }
-
         sortAttrName = null;
-        /*
-               // determine sorting attribute, default to first attribute or primary key
-               sortAttrName = propNames.get(0);
-               if (sft.getPrimaryKeyAttribute() != null
-                   && propNames.contains(sft.getPrimaryKeyAttribute())) {
-                 // there is a primary key and it is known, use that for sorting
-                 sortAttrName = sft.getPrimaryKeyAttribute();
-                 logger.trace("Sorting by primary key");
-               } else {
-                 // there is no primary key we know of
-                 // pick the first one from sft that is not geometry and is in the list of configured
-                 // attributes
-                 // note that propNames does not have the default geometry attribute (see above)
-                 for (AttributeDescriptor attrDesc : sft.getAttributes()) {
-                   if (propNames.contains(attrDesc.getName())) {
-                     sortAttrName = attrDesc.getName();
-                     break;
-                   }
-                 }
-               }
-        */
       }
 
       if (null != sortBy) {
         // validate sortBy attribute is in the list of configured attributes
         // and not a geometry type
-
         Optional<TMAttributeDescriptor> sortByAttribute = tmft.getAttributeByName(sortBy);
-
         if (sortByAttribute.isPresent() && !isGeometry(sortByAttribute.orElseThrow().getType())) {
           sortAttrName = sortBy;
         } else {
@@ -268,15 +241,7 @@ public class FeaturesController implements Constants {
       logger.debug("Attribute query: {}", q);
 
       executeQueryOnFeatureSourceAndClose(
-          false,
-          featuresResponse,
-          tmft,
-          //          configuredAttributes,
-          onlyGeometries,
-          fs,
-          q,
-          application,
-          skipGeometryOutput);
+          false, featuresResponse, tmft, onlyGeometries, fs, q, application, skipGeometryOutput);
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data.", e);
     } catch (CQLException e) {
@@ -293,7 +258,7 @@ public class FeaturesController implements Constants {
 
   @NotNull
   private FeaturesResponse getFeatureByFID(
-      @NotNull TMFeatureType tmft,
+      @NotNull TMFeatureType tmFeatureType,
       @NotNull String fid,
       @NotNull Application application,
       boolean skipGeometryOutput) {
@@ -301,24 +266,14 @@ public class FeaturesController implements Constants {
 
     SimpleFeatureSource fs = null;
     try {
-      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
-
-      // setup page query
+      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
       Query q = new Query(fs.getName().toString());
       q.setFilter(ff.id(ff.featureId(fid)));
       q.setMaxFeatures(1);
       logger.debug("FID query: {}", q);
 
       executeQueryOnFeatureSourceAndClose(
-          false,
-          featuresResponse,
-          tmft,
-          //          configuredAttributes,
-          false,
-          fs,
-          q,
-          application,
-          skipGeometryOutput);
+          false, featuresResponse, tmFeatureType, false, fs, q, application, skipGeometryOutput);
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data", e);
     } finally {
@@ -332,7 +287,7 @@ public class FeaturesController implements Constants {
 
   @NotNull
   private FeaturesResponse getFeaturesByXY(
-      @NotNull TMFeatureType tmft,
+      @NotNull TMFeatureType tmFeatureType,
       @NotNull Double x,
       @NotNull Double y,
       @NotNull Application application,
@@ -358,7 +313,7 @@ public class FeaturesController implements Constants {
       logger.debug("created geometry: {}", p);
 
       MathTransform transform = null;
-      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);
+      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
       try {
         transform = TransformationUtil.getTransformationToDataSource(application, fs);
       } catch (FactoryException e) {
@@ -375,7 +330,7 @@ public class FeaturesController implements Constants {
       }
       logger.debug("using selection geometry: {}", p);
       Filter spatialFilter =
-          ff.intersects(ff.property(tmft.getDefaultGeometryAttribute()), ff.literal(p));
+          ff.intersects(ff.property(tmFeatureType.getDefaultGeometryAttribute()), ff.literal(p));
 
       // TODO flamingo does some fancy stuff to combine with existing filters using
       //      TailormapCQL and some filter visitors
@@ -386,7 +341,7 @@ public class FeaturesController implements Constants {
       executeQueryOnFeatureSourceAndClose(
           simplifyGeometry,
           featuresResponse,
-          tmft /*, configuredAttributes*/,
+          tmFeatureType,
           false,
           fs,
           q,
@@ -401,33 +356,32 @@ public class FeaturesController implements Constants {
   private void executeQueryOnFeatureSourceAndClose(
       boolean simplifyGeometry,
       @NotNull FeaturesResponse featuresResponse,
-      @NotNull TMFeatureType tmft,
+      @NotNull TMFeatureType tmFeatureType,
       boolean onlyGeometries,
-      @NotNull SimpleFeatureSource fs,
-      @NotNull Query q,
+      @NotNull SimpleFeatureSource featureSource,
+      @NotNull Query selectQuery,
       @NotNull Application application,
       boolean skipGeometryOutput)
       throws IOException {
     boolean addFields = false;
 
     MathTransform transform = null;
-
     try {
-      transform = TransformationUtil.getTransformationToApplication(application, fs);
+      transform = TransformationUtil.getTransformationToApplication(application, featureSource);
     } catch (FactoryException e) {
       logger.error("Can not transform geometry to desired CRS", e);
     }
 
     // send request to attribute source
-    try (SimpleFeatureIterator feats = fs.getFeatures(q).features()) {
+    try (SimpleFeatureIterator feats = featureSource.getFeatures(selectQuery).features()) {
       while (feats.hasNext()) {
         addFields = true;
-        // reformat found features to list of Feature, filtering on configuredAttributes
+        // transform found simplefeatures to list of Feature
         SimpleFeature feature = feats.next();
         // processedGeometry can be null
         String processedGeometry =
             GeometryProcessor.processGeometry(
-                feature.getAttribute(tmft.getDefaultGeometryAttribute()),
+                feature.getAttribute(tmFeatureType.getDefaultGeometryAttribute()),
                 simplifyGeometry,
                 true,
                 transform);
@@ -450,10 +404,10 @@ public class FeaturesController implements Constants {
         featuresResponse.addFeaturesItem(newFeat);
       }
     } finally {
-      fs.getDataStore().dispose();
+      featureSource.getDataStore().dispose();
     }
     if (addFields) {
-      for (TMAttributeDescriptor tmAtt : tmft.getAttributes()) {
+      for (TMAttributeDescriptor tmAtt : tmFeatureType.getAttributes()) {
         featuresResponse.addColumnMetadataItem(
             new ColumnMetadata()
                 .key(tmAtt.getName())

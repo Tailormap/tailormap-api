@@ -49,7 +49,7 @@ import org.springframework.test.web.servlet.MvcResult;
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
 @Order(1)
-class FeaturesControllerPostgresIntegrationTest {
+class FeaturesControllerIntegrationTest {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
