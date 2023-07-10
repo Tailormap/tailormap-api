@@ -7,7 +7,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.repository,ConfigurationRepository,
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,UnauthorizedController,10,0,0,0,2,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerExportController,422,0,48,0,107,0,31,0,7,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,UserController,44,0,6,0,11,0,5,0,2,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerDescriptionController,110,0,6,0,39,0,6,0,3,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerDescriptionController,111,0,6,0,39,0,6,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,AppRestControllerAdvice,277,0,46,0,71,0,33,0,10,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,UniqueValuesController,217,0,14,0,52,0,12,0,5,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,ViewerController,57,0,4,0,15,0,6,0,4,0
