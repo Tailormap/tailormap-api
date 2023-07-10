@@ -135,41 +135,51 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L135">            pft.getAttributes().clear();</span>
 
 <span class="nc" id="L137">            SimpleFeatureType gtFt = gtFs.getSchema();</span>
-<span class="nc bnc" id="L138" title="All 2 branches missed.">            for (AttributeDescriptor gtAttr : gtFt.getAttributeDescriptors()) {</span>
-<span class="nc" id="L139">              AttributeType type = gtAttr.getType();</span>
-<span class="nc" id="L140">              TMAttributeDescriptor tmAttr =</span>
-                  new TMAttributeDescriptor()
-<span class="nc" id="L142">                      .name(gtAttr.getLocalName())</span>
-<span class="nc" id="L143">                      .type(GeoToolsHelper.toAttributeType(type))</span>
-<span class="nc" id="L144">                      .nullable(gtAttr.isNillable())</span>
-<span class="nc" id="L145">                      .defaultValue(</span>
-<span class="nc bnc" id="L146" title="All 2 branches missed.">                          gtAttr.getDefaultValue() == null</span>
-<span class="nc" id="L147">                              ? null</span>
-<span class="nc" id="L148">                              : gtAttr.getDefaultValue().toString())</span>
-<span class="nc" id="L149">                      .description(</span>
-<span class="nc bnc" id="L150" title="All 2 branches missed.">                          type.getDescription() == null ? null : type.getDescription().toString());</span>
-<span class="nc bnc" id="L151" title="All 2 branches missed.">              if (tmAttr.getType() == TMAttributeType.OBJECT) {</span>
-<span class="nc" id="L152">                tmAttr.setUnknownTypeClassName(type.getBinding().getName());</span>
+<span class="nc" id="L138">            String primaryKeyName = null;</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">            for (AttributeDescriptor gtAttr : gtFt.getAttributeDescriptors()) {</span>
+<span class="nc" id="L140">              AttributeType type = gtAttr.getType();</span>
+<span class="nc" id="L141">              Boolean isPk = (Boolean) gtAttr.getUserData().get(&quot;org.geotools.jdbc.pk.column&quot;);</span>
+<span class="nc bnc" id="L142" title="All 4 branches missed.">              if (null != isPk &amp;&amp; isPk) {</span>
+<span class="nc" id="L143">                logger.debug(</span>
+                    &quot;Found primary key attribute \&quot;{}\&quot; for type \&quot;{}\&quot;&quot;,
+<span class="nc" id="L145">                    gtAttr.getLocalName(),</span>
+                    typeName);
+<span class="nc" id="L147">                primaryKeyName = gtAttr.getLocalName();</span>
               }
-<span class="nc" id="L154">              pft.getAttributes().add(tmAttr);</span>
-<span class="nc" id="L155">            }</span>
+<span class="nc" id="L149">              TMAttributeDescriptor tmAttr =</span>
+                  new TMAttributeDescriptor()
+<span class="nc" id="L151">                      .name(gtAttr.getLocalName())</span>
+<span class="nc" id="L152">                      .type(GeoToolsHelper.toAttributeType(type))</span>
+<span class="nc" id="L153">                      .nullable(gtAttr.isNillable())</span>
+<span class="nc" id="L154">                      .defaultValue(</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">                          gtAttr.getDefaultValue() == null</span>
+<span class="nc" id="L156">                              ? null</span>
+<span class="nc" id="L157">                              : gtAttr.getDefaultValue().toString())</span>
+<span class="nc" id="L158">                      .description(</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">                          type.getDescription() == null ? null : type.getDescription().toString());</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">              if (tmAttr.getType() == TMAttributeType.OBJECT) {</span>
+<span class="nc" id="L161">                tmAttr.setUnknownTypeClassName(type.getBinding().getName());</span>
+              }
+<span class="nc" id="L163">              pft.getAttributes().add(tmAttr);</span>
+<span class="nc" id="L164">            }</span>
+<span class="nc" id="L165">            pft.setPrimaryKeyAttribute(primaryKeyName);</span>
           }
-<span class="nc" id="L157">        } catch (Exception e) {</span>
-<span class="nc" id="L158">          logger.error(&quot;Exception reading feature type \&quot;{}\&quot;&quot;, typeName, e);</span>
-<span class="nc" id="L159">        }</span>
-<span class="nc" id="L160">      }</span>
+<span class="nc" id="L167">        } catch (Exception e) {</span>
+<span class="nc" id="L168">          logger.error(&quot;Exception reading feature type \&quot;{}\&quot;&quot;, typeName, e);</span>
+<span class="nc" id="L169">        }</span>
+<span class="nc" id="L170">      }</span>
     } finally {
-<span class="nc" id="L162">      ds.dispose();</span>
+<span class="nc" id="L172">      ds.dispose();</span>
     }
-<span class="nc" id="L164">  }</span>
+<span class="nc" id="L174">  }</span>
 
   protected TMFeatureTypeInfo getFeatureTypeInfo(
       TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
-<span class="nc" id="L168">    return new TMFeatureTypeInfo()</span>
-<span class="nc" id="L169">        .keywords(info.getKeywords())</span>
-<span class="nc" id="L170">        .description(info.getDescription())</span>
-<span class="nc" id="L171">        .bounds(GeoToolsHelper.fromEnvelope(info.getBounds()))</span>
-<span class="nc" id="L172">        .crs(crsToString(info.getCRS()));</span>
+<span class="nc" id="L178">    return new TMFeatureTypeInfo()</span>
+<span class="nc" id="L179">        .keywords(info.getKeywords())</span>
+<span class="nc" id="L180">        .description(info.getDescription())</span>
+<span class="nc" id="L181">        .bounds(GeoToolsHelper.fromEnvelope(info.getBounds()))</span>
+<span class="nc" id="L182">        .crs(crsToString(info.getCRS()));</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

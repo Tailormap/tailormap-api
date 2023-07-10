@@ -91,14 +91,15 @@ public class LayerDescriptionController {
 <span class="nc bnc" id="L91" title="All 2 branches missed.">                                    isGeometry(a.getType())</span>
 <span class="nc" id="L92">                                        ? TMAttributeType.GEOMETRY</span>
 <span class="nc" id="L93">                                        : a.getType())</span>
-<span class="nc" id="L94">                                .editable(true /* TODO */)</span>
-<span class="nc" id="L95">                                .editAlias(null /* TODO */)</span>
-<span class="nc" id="L96">                                .defaultValue(a.getDefaultValue())</span>
-<span class="nc" id="L97">                                .nullable(a.getNullable())</span>
-<span class="nc" id="L98">                                .valueList(/*String[]*/ null /* TODO */)</span>
-<span class="nc" id="L99">                                .allowValueListOnly(false /* TODO */))</span>
-<span class="nc" id="L100">                    .collect(Collectors.toList()));</span>
-<span class="nc" id="L101">    return ResponseEntity.ok(r);</span>
+                                // primary key can never be edited
+<span class="nc bnc" id="L95" title="All 2 branches missed.">                                .editable(!a.getName().equals(tmft.getPrimaryKeyAttribute()))</span>
+<span class="nc" id="L96">                                .editAlias(null /* TODO */)</span>
+<span class="nc" id="L97">                                .defaultValue(a.getDefaultValue())</span>
+<span class="nc" id="L98">                                .nullable(a.getNullable())</span>
+<span class="nc" id="L99">                                .valueList(/*String[]*/ null /* TODO */)</span>
+<span class="nc" id="L100">                                .allowValueListOnly(false /* TODO */))</span>
+<span class="nc" id="L101">                    .collect(Collectors.toList()));</span>
+<span class="nc" id="L102">    return ResponseEntity.ok(r);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
