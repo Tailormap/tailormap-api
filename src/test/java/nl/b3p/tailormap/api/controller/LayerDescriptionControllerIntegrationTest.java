@@ -59,7 +59,8 @@ class LayerDescriptionControllerIntegrationTest {
         .andExpect(jsonPath("$.serviceId").value("snapshot-geoserver"))
         .andExpect(jsonPath("$.attributes").isArray())
         .andExpect(
-            jsonPath("$.attributes[?(@.key == 'relatievehoogteligging')].type").value("integer"));
+            jsonPath("$.attributes[?(@.key == 'relatievehoogteligging')].type").value("integer"))
+        .andExpect(jsonPath("$.attributes[?(@.key == 'gmlid')].nullable").value(false));
   }
 
   @Test

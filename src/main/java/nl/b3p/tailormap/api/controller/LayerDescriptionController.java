@@ -94,7 +94,7 @@ public class LayerDescriptionController {
                                 .editable(true /* TODO */)
                                 .editAlias(null /* TODO */)
                                 .defaultValue(a.getDefaultValue())
-                                .nullable(null /* TODO */)
+                                .nullable(a.getNullable())
                                 .valueList(/*String[]*/ null /* TODO */)
                                 .allowValueListOnly(false /* TODO */))
                     .collect(Collectors.toList()));
