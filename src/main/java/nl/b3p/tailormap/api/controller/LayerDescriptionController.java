@@ -91,7 +91,8 @@ public class LayerDescriptionController {
                                     isGeometry(a.getType())
                                         ? TMAttributeType.GEOMETRY
                                         : a.getType())
-                                .editable(true /* TODO */)
+                                // primary key can never be edited
+                                .editable(!a.getName().equals(tmft.getPrimaryKeyAttribute()))
                                 .editAlias(null /* TODO */)
                                 .defaultValue(a.getDefaultValue())
                                 .nullable(a.getNullable())

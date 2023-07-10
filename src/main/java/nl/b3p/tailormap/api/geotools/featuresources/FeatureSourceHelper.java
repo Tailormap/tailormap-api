@@ -135,8 +135,17 @@ public abstract class FeatureSourceHelper {
             pft.getAttributes().clear();
 
             SimpleFeatureType gtFt = gtFs.getSchema();
+            String primaryKeyName = null;
             for (AttributeDescriptor gtAttr : gtFt.getAttributeDescriptors()) {
               AttributeType type = gtAttr.getType();
+              Boolean isPk = (Boolean) gtAttr.getUserData().get("org.geotools.jdbc.pk.column");
+              if (null != isPk && isPk) {
+                logger.debug(
+                    "Found primary key attribute \"{}\" for type \"{}\"",
+                    gtAttr.getLocalName(),
+                    typeName);
+                primaryKeyName = gtAttr.getLocalName();
+              }
               TMAttributeDescriptor tmAttr =
                   new TMAttributeDescriptor()
                       .name(gtAttr.getLocalName())
@@ -153,6 +162,7 @@ public abstract class FeatureSourceHelper {
               }
               pft.getAttributes().add(tmAttr);
             }
+            pft.setPrimaryKeyAttribute(primaryKeyName);
           }
         } catch (Exception e) {
           logger.error("Exception reading feature type \"{}\"", typeName, e);
