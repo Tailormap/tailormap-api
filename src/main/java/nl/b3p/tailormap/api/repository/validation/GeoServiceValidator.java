@@ -6,13 +6,14 @@
 
 package nl.b3p.tailormap.api.repository.validation;
 
+import static nl.b3p.tailormap.api.util.TMExceptionUtils.joinAllThrowableMessages;
+
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -70,10 +71,10 @@ public class GeoServiceValidator implements Validator {
         String msg =
             String.format(
                 "Error loading capabilities from URL \"%s\": %s",
-                service.getUrl(), ExceptionUtils.getMessage(e));
+                service.getUrl(), joinAllThrowableMessages(e));
         String loggerMsg =
-            " -- This may not be an application error but a problem with an external service or user-entered data.";
-        logger.info(msg + loggerMsg, e);
+            "The following exception may not be an application error but could be a problem with an external service or user-entered data: ";
+        logger.info(loggerMsg + msg, e);
         errors.rejectValue("url", "loading-capabilities-failed", msg);
       }
     }
