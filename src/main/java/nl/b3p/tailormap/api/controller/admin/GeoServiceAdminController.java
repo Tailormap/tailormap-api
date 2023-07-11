@@ -22,7 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class GeoServiceAdminController {
   private final GeoServiceRepository geoServiceRepository;
-
   private final ApplicationContext applicationContext;
   private final RepositoryEntityLinks repositoryEntityLinks;
 

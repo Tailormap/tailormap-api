@@ -18,11 +18,15 @@ public class ValidationConfiguration implements RepositoryRestConfigurer {
 
   private final GeoServiceValidator geoServiceValidator;
 
+  private final FeatureSourceValidator featureSourceValidator;
+
   public ValidationConfiguration(
       LocalValidatorFactoryBean localValidatorFactoryBean,
-      GeoServiceValidator geoServiceValidator) {
+      GeoServiceValidator geoServiceValidator,
+      FeatureSourceValidator featureSourceValidator) {
     this.localValidatorFactoryBean = localValidatorFactoryBean;
     this.geoServiceValidator = geoServiceValidator;
+    this.featureSourceValidator = featureSourceValidator;
   }
 
   @Override
@@ -32,5 +36,7 @@ public class ValidationConfiguration implements RepositoryRestConfigurer {
     validatingListener.addValidator("beforeSave", localValidatorFactoryBean);
     validatingListener.addValidator("beforeCreate", geoServiceValidator);
     validatingListener.addValidator("beforeSave", geoServiceValidator);
+    validatingListener.addValidator("beforeCreate", featureSourceValidator);
+    validatingListener.addValidator("beforeSave", featureSourceValidator);
   }
 }
