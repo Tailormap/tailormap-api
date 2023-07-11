@@ -187,7 +187,24 @@ public class FeaturesController implements Constants {
         if (propNames.isEmpty()) {
           return featuresResponse;
         }
-        sortAttrName = null;
+        // try to determine a sorting attribute, default to first attribute or primary key
+        sortAttrName = propNames.get(0);
+        if (tmft.getPrimaryKeyAttribute() != null
+            && propNames.contains(tmft.getPrimaryKeyAttribute())) {
+          // there is a primary key and it is known, use that for sorting
+          sortAttrName = tmft.getPrimaryKeyAttribute();
+          logger.trace("Sorting by primary key");
+        } else {
+          // there is no primary key we know of pick the first one from sft that is not geometry and
+          // is in the list of configured attributes
+          // note that propNames should not have the default geometry attribute (see above)
+          for (TMAttributeDescriptor attrDesc : tmft.getAttributes()) {
+            if (propNames.contains(attrDesc.getName())) {
+              sortAttrName = attrDesc.getName();
+              break;
+            }
+          }
+        }
       }
 
       if (null != sortBy) {
