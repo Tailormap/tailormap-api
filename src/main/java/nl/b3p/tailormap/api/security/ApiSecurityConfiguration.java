@@ -26,7 +26,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -134,8 +133,7 @@ public class ApiSecurityConfiguration {
   }
 
   @Bean
-  public ClientRegistrationRepository clientRegistrationRepository(
-      OIDCConfigurationRepository repository) {
+  public OIDCRepository clientRegistrationRepository(OIDCConfigurationRepository repository) {
     return new OIDCRepository(repository);
   }
 

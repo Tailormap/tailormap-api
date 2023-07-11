@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api.controller;
 
 import java.io.Serializable;
 import java.util.stream.Collectors;
+import nl.b3p.tailormap.api.security.OIDCRepository;
 import nl.b3p.tailormap.api.viewer.model.LoginConfiguration;
 import nl.b3p.tailormap.api.viewer.model.LoginConfigurationSsoLinksInner;
 import nl.b3p.tailormap.api.viewer.model.UserResponse;
@@ -18,17 +19,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /** Provides user and login information */
 @RestController
 public class UserController {
-  private final ClientRegistrationRepository clientRegistrationRepository;
+  private final OIDCRepository oidcRepository;
 
-  public UserController(ClientRegistrationRepository clientRegistrationRepository) {
-    this.clientRegistrationRepository = clientRegistrationRepository;
+  public UserController(OIDCRepository oidcRepository) {
+    this.oidcRepository = oidcRepository;
   }
 
   /**
@@ -60,13 +60,14 @@ public class UserController {
   public ResponseEntity<LoginConfiguration> getSSOEndpoints() {
     LoginConfiguration result = new LoginConfiguration();
 
-    if (clientRegistrationRepository instanceof Iterable<?>) {
-      for (ClientRegistration reg : (Iterable<ClientRegistration>) clientRegistrationRepository) {
-        result.addSsoLinksItem(
-            new LoginConfigurationSsoLinksInner()
-                .name(reg.getClientName())
-                .url("/api/oauth2/authorization/" + reg.getRegistrationId()));
-      }
+    for (ClientRegistration reg : oidcRepository) {
+      OIDCRepository.OIDCRegistrationMetadata metadata =
+          oidcRepository.getMetadataForRegistrationId(reg.getRegistrationId());
+      result.addSsoLinksItem(
+          new LoginConfigurationSsoLinksInner()
+              .name(reg.getClientName())
+              .url("/api/oauth2/authorization/" + reg.getRegistrationId())
+              .showForViewer(metadata.getShowForViewer()));
     }
 
     return ResponseEntity.status(HttpStatus.OK).body(result);

@@ -14,27 +14,53 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.OIDCConfiguration;
 import nl.b3p.tailormap.api.repository.OIDCConfigurationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 
 public class OIDCRepository implements ClientRegistrationRepository, Iterable<ClientRegistration> {
+  public static class OIDCRegistrationMetadata {
+    private boolean showForViewer;
+
+    public boolean getShowForViewer() {
+      return showForViewer;
+    }
+  }
+
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final OIDCConfigurationRepository oidcConfigurationRepository;
+
+  @Value("${tailormap-api.oidc.name}")
+  private String oidcName;
+
+  @Value("${tailormap-api.oidc.issuer-uri}")
+  private String oidcIssuerUri;
+
+  @Value("${tailormap-api.oidc.client-id}")
+  private String oidcClientId;
+
+  @Value("${tailormap-api.oidc.client-secret}")
+  private String oidcClientSecret;
+
+  @Value("${tailormap-api.oidc.user-name-attribute-name}")
+  private String oidcUserNameAttributeName;
+
+  @Value("${tailormap-api.oidc.show-for-viewer}")
+  private boolean oidcShowForViewer;
 
   private final Map<String, ClientRegistration> registrations;
 
   public OIDCRepository(OIDCConfigurationRepository repository) {
     oidcConfigurationRepository = repository;
     registrations = new HashMap<>();
-
-    synchronize();
   }
 
   @Override
@@ -47,6 +73,18 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
     return registrations.values().iterator();
   }
 
+  public OIDCRegistrationMetadata getMetadataForRegistrationId(String id) {
+    OIDCRegistrationMetadata metadata = new OIDCRegistrationMetadata();
+    if ("static".equals(id)) {
+      metadata.showForViewer = oidcShowForViewer;
+    } else {
+      metadata.showForViewer = true;
+    }
+
+    return metadata;
+  }
+
+  @PostConstruct
   public void synchronize() {
     Map<String, ClientRegistration> newMap = new HashMap<>();
 
@@ -91,6 +129,42 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
         logger.error("Failed to create OIDC client registration for ID " + id, e);
         configuration.setStatus(e.toString());
         oidcConfigurationRepository.save(configuration);
+      }
+    }
+
+    if (oidcName != null && oidcIssuerUri != null && oidcClientId != null) {
+      try {
+        HttpRequest.Builder requestBuilder =
+            HttpRequest.newBuilder()
+                .uri(new URI(oidcIssuerUri + "/.well-known/openid-configuration"));
+        HttpResponse<String> response =
+            httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
+
+        OIDCProviderMetadata metadata = OIDCProviderMetadata.parse(response.body());
+        String id = "static";
+
+        newMap.put(
+            id,
+            ClientRegistration.withRegistrationId(id)
+                .clientId(oidcClientId)
+                .clientSecret(oidcClientSecret)
+                .clientName(oidcName)
+                .scope("openid")
+                .issuerUri(metadata.getIssuer().toString())
+                .clientAuthenticationMethod(
+                    ClientAuthenticationMethod
+                        .CLIENT_SECRET_BASIC) // TODO: fetch from OIDC metadata
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationUri(metadata.getAuthorizationEndpointURI().toASCIIString())
+                .tokenUri(metadata.getTokenEndpointURI().toASCIIString())
+                .userInfoUri(metadata.getUserInfoEndpointURI().toASCIIString())
+                .providerConfigurationMetadata(metadata.toJSONObject())
+                .jwkSetUri(metadata.getJWKSetURI().toASCIIString())
+                .userNameAttributeName(oidcUserNameAttributeName)
+                .redirectUri("{baseUrl}/api/oauth2/callback")
+                .build());
+      } catch (Exception e) {
+        logger.error("Failed to create static OIDC client registration", e);
       }
     }
 
