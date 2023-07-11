@@ -78,7 +78,10 @@ public class ApiSecurityConfiguration {
           public void sendRedirect(
               HttpServletRequest request, HttpServletResponse response, String url)
               throws IOException {
-            request.getSession().setAttribute("redirectUrl", request.getParameter("redirectUrl"));
+            String redirectUrl = request.getParameter("redirectUrl");
+            if (redirectUrl != null && redirectUrl.startsWith("/")) {
+              request.getSession().setAttribute("redirectUrl", redirectUrl);
+            }
             super.sendRedirect(request, response, url);
           }
         };
