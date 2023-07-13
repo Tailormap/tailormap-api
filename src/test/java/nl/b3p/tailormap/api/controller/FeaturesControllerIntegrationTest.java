@@ -362,7 +362,7 @@ class FeaturesControllerIntegrationTest {
             .andExpect(jsonPath("$.features[0]").isNotEmpty())
             .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
             .andExpect(jsonPath("$.features[0].geometry").isEmpty())
-            .andExpect(jsonPath("$.features[0].attributes.naam").value("Zuid-Holland"))
+            .andExpect(jsonPath("$.features[0].attributes.naam").value("Groningen"))
             .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
             .andExpect(jsonPath("$.columnMetadata").isArray())
             .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
