@@ -10,9 +10,10 @@ import java.lang.invoke.MethodHandles;
 import javax.servlet.http.HttpServletResponse;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
-import nl.b3p.tailormap.api.repository.events.FeatureSourceEventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.rest.core.event.BeforeSaveEvent;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,15 +28,15 @@ public class FeatureSourceAdminController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final FeatureSourceRepository featureSourceRepository;
-  private final FeatureSourceEventHandler featureSourceEventHandler;
+  private final ApplicationContext applicationContext;
   private final RepositoryEntityLinks repositoryEntityLinks;
 
   public FeatureSourceAdminController(
       FeatureSourceRepository featureSourceRepository,
-      FeatureSourceEventHandler featureSourceEventHandler,
+      ApplicationContext applicationContext,
       RepositoryEntityLinks repositoryEntityLinks) {
     this.featureSourceRepository = featureSourceRepository;
-    this.featureSourceEventHandler = featureSourceEventHandler;
+    this.applicationContext = applicationContext;
     this.repositoryEntityLinks = repositoryEntityLinks;
   }
 
@@ -53,7 +54,8 @@ public class FeatureSourceAdminController {
     // have all access
 
     logger.info("Loading capabilities for feature source {}", featureSource);
-    featureSourceEventHandler.loadCapabilities(featureSource);
+    featureSource.setRefreshCapabilities(true);
+    applicationContext.publishEvent(new BeforeSaveEvent(featureSource));
 
     httpServletResponse.sendRedirect(
         String.valueOf(

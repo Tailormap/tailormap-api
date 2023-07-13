@@ -25,6 +25,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties;
@@ -73,6 +74,8 @@ public class TMFeatureSource {
   private Long id;
 
   @Version private Long version;
+
+  @Transient private boolean refreshCapabilities;
 
   @Column(columnDefinition = "text")
   private String notes;
@@ -149,6 +152,14 @@ public class TMFeatureSource {
   public TMFeatureSource setVersion(Long version) {
     this.version = version;
     return this;
+  }
+
+  public boolean isRefreshCapabilities() {
+    return refreshCapabilities;
+  }
+
+  public void setRefreshCapabilities(boolean refreshCapabilities) {
+    this.refreshCapabilities = refreshCapabilities;
   }
 
   public String getNotes() {

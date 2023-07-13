@@ -63,6 +63,7 @@ class FeatureSourceAdminControllerIntegrationTest {
                 + "  \"title\": \"My Test Source\",\n"
                 + "  \"protocol\": \"JDBC\",\n"
                 + "  \"url\": \"\",\n"
+                + "  \"refreshCapabilities\": true,\n"
                 + "  \"jdbcConnection\": {\n"
                 + "    \"dbtype\": \"postgis\",\n"
                 + "    \"port\": %s,\n"
