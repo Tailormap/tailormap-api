@@ -258,6 +258,10 @@ SPDX-License-Identifier: MIT
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.hateoas</groupId>
             <artifactId>spring-hateoas</artifactId>
         </dependency>
@@ -1115,6 +1119,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.springframework.boot:spring-boot-starter-test</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-validation</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-security</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-oauth2-client</exclude>
                                         <exclude>org.springframework.security:spring-security-test</exclude>
                                         <exclude>org.webjars:webjars-locator-core</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
