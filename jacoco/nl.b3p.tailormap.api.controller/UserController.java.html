@@ -7,6 +7,9 @@ package nl.b3p.tailormap.api.controller;
 
 import java.io.Serializable;
 import java.util.stream.Collectors;
+import nl.b3p.tailormap.api.security.OIDCRepository;
+import nl.b3p.tailormap.api.viewer.model.LoginConfiguration;
+import nl.b3p.tailormap.api.viewer.model.LoginConfigurationSsoLinksInner;
 import nl.b3p.tailormap.api.viewer.model.UserResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,14 +18,18 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /** Provides user and login information */
 @RestController
 public class UserController {
+  private final OIDCRepository oidcRepository;
 
-<span class="nc" id="L25">  public UserController() {}</span>
+<span class="nc" id="L30">  public UserController(OIDCRepository oidcRepository) {</span>
+<span class="nc" id="L31">    this.oidcRepository = oidcRepository;</span>
+<span class="nc" id="L32">  }</span>
 
   /**
    * Get user login information.
@@ -31,19 +38,39 @@ public class UserController {
    */
   @GetMapping(path = &quot;${tailormap-api.base-path}/user&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity&lt;Serializable&gt; getUser() {
-<span class="nc" id="L34">    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
-<span class="nc bnc" id="L35" title="All 4 branches missed.">    boolean isAuthenticated =</span>
+<span class="nc" id="L41">    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="nc bnc" id="L42" title="All 4 branches missed.">    boolean isAuthenticated =</span>
         authentication != null &amp;&amp; !(authentication instanceof AnonymousAuthenticationToken);
 
-<span class="nc" id="L38">    UserResponse userResponse = new UserResponse().isAuthenticated(isAuthenticated);</span>
-<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (isAuthenticated) {</span>
-<span class="nc" id="L40">      userResponse.username(authentication.getName());</span>
-<span class="nc" id="L41">      userResponse.setRoles(</span>
-<span class="nc" id="L42">          authentication.getAuthorities().stream()</span>
-<span class="nc" id="L43">              .map(GrantedAuthority::getAuthority)</span>
-<span class="nc" id="L44">              .collect(Collectors.toSet()));</span>
+<span class="nc" id="L45">    UserResponse userResponse = new UserResponse().isAuthenticated(isAuthenticated);</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">    if (isAuthenticated) {</span>
+<span class="nc" id="L47">      userResponse.username(authentication.getName());</span>
+<span class="nc" id="L48">      userResponse.setRoles(</span>
+<span class="nc" id="L49">          authentication.getAuthorities().stream()</span>
+<span class="nc" id="L50">              .map(GrantedAuthority::getAuthority)</span>
+<span class="nc" id="L51">              .collect(Collectors.toSet()));</span>
     }
-<span class="nc" id="L46">    return ResponseEntity.status(HttpStatus.OK).body(userResponse);</span>
+<span class="nc" id="L53">    return ResponseEntity.status(HttpStatus.OK).body(userResponse);</span>
+  }
+
+  @GetMapping(
+      path = &quot;${tailormap-api.base-path}/login/configuration&quot;,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  @SuppressWarnings(&quot;unchecked&quot;)
+  public ResponseEntity&lt;LoginConfiguration&gt; getSSOEndpoints() {
+<span class="nc" id="L61">    LoginConfiguration result = new LoginConfiguration();</span>
+
+<span class="nc bnc" id="L63" title="All 2 branches missed.">    for (ClientRegistration reg : oidcRepository) {</span>
+<span class="nc" id="L64">      OIDCRepository.OIDCRegistrationMetadata metadata =</span>
+<span class="nc" id="L65">          oidcRepository.getMetadataForRegistrationId(reg.getRegistrationId());</span>
+<span class="nc" id="L66">      result.addSsoLinksItem(</span>
+          new LoginConfigurationSsoLinksInner()
+<span class="nc" id="L68">              .name(reg.getClientName())</span>
+<span class="nc" id="L69">              .url(&quot;/api/oauth2/authorization/&quot; + reg.getRegistrationId())</span>
+<span class="nc" id="L70">              .showForViewer(metadata.getShowForViewer()));</span>
+<span class="nc" id="L71">    }</span>
+
+<span class="nc" id="L73">    return ResponseEntity.status(HttpStatus.OK).body(result);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

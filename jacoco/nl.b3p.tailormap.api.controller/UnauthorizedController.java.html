@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
   @GetMapping(&quot;/api/unauthorized&quot;)
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public UnauthorizedResponse unauthorized() {
-<span class="nc" id="L20">    return new UnauthorizedResponse().formLogin(true);</span>
+<span class="nc" id="L20">    return new UnauthorizedResponse().unauthorized(true);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

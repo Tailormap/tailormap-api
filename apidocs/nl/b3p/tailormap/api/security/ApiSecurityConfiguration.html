@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -185,8 +185,18 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code><a href="OIDCRepository.html" title="class in nl.b3p.tailormap.api.security">OIDCRepository</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clientRegistrationRepository(nl.b3p.tailormap.api.repository.OIDCConfigurationRepository)">clientRegistrationRepository</a></span>&#8203;(<a href="../repository/OIDCConfigurationRepository.html" title="interface in nl.b3p.tailormap.api.repository">OIDCConfigurationRepository</a>&nbsp;repository)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>org.springframework.security.web.csrf.CookieCsrfTokenRepository</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#csrfTokenRepository()">csrfTokenRepository</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#userAuthoritiesMapper(nl.b3p.tailormap.api.repository.GroupRepository)">userAuthoritiesMapper</a></span>&#8203;(<a href="../repository/GroupRepository.html" title="interface in nl.b3p.tailormap.api.repository">GroupRepository</a>&nbsp;repository)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -245,7 +255,7 @@ public&nbsp;org.springframework.security.web.csrf.CookieCsrfTokenRepository&nbsp
 <a id="apiFilterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity,org.springframework.security.web.csrf.CookieCsrfTokenRepository)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>apiFilterChain</h4>
 <pre class="methodSignature">@Bean
@@ -256,6 +266,26 @@ public&nbsp;org.springframework.security.web.SecurityFilterChain&nbsp;apiFilterC
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Exception.html?is-external=true" title="class or interface in java.lang" class="externalLink">Exception</a></code></dd>
 </dl>
+</li>
+</ul>
+<a id="clientRegistrationRepository(nl.b3p.tailormap.api.repository.OIDCConfigurationRepository)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>clientRegistrationRepository</h4>
+<pre class="methodSignature">@Bean
+public&nbsp;<a href="OIDCRepository.html" title="class in nl.b3p.tailormap.api.security">OIDCRepository</a>&nbsp;clientRegistrationRepository&#8203;(<a href="../repository/OIDCConfigurationRepository.html" title="interface in nl.b3p.tailormap.api.repository">OIDCConfigurationRepository</a>&nbsp;repository)</pre>
+</li>
+</ul>
+<a id="userAuthoritiesMapper(nl.b3p.tailormap.api.repository.GroupRepository)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>userAuthoritiesMapper</h4>
+<pre class="methodSignature">@Bean
+public&nbsp;org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper&nbsp;userAuthoritiesMapper&#8203;(<a href="../repository/GroupRepository.html" title="interface in nl.b3p.tailormap.api.repository">GroupRepository</a>&nbsp;repository)</pre>
 </li>
 </ul>
 </li>

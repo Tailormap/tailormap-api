@@ -37,15 +37,17 @@ import org.springframework.web.bind.annotation.GetMapping;
         &quot;/admin/groups&quot;,
         &quot;/admin/groups/group/**&quot;,
         &quot;/admin/applications&quot;,
-        &quot;/admin/applications/**&quot;
+        &quot;/admin/applications/**&quot;,
+        &quot;/admin/oidc-configurations&quot;,
+        &quot;/admin/oidc-configurations/**&quot;
       })
   public String adminIndex() {
-<span class="nc" id="L43">    return &quot;forward:/admin/index.html&quot;;</span>
+<span class="nc" id="L45">    return &quot;forward:/admin/index.html&quot;;</span>
   }
 
   @GetMapping(value = {&quot;/swagger-ui&quot;, &quot;/swagger-ui/&quot;})
   public String swaggerUiWelcomePage() {
-<span class="nc" id="L48">    return &quot;redirect:/swagger-ui/index.html&quot;;</span>
+<span class="nc" id="L50">    return &quot;redirect:/swagger-ui/index.html&quot;;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
