@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FeatureSourceHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.geotools.featuresources</a> &gt; <span class="el_source">FeatureSourceHelper.java</span></div><h1>FeatureSourceHelper.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2022 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.geotools.featuresources;
+
+import static nl.b3p.tailormap.api.persistence.helper.GeoToolsHelper.crsToString;
+
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import nl.b3p.tailormap.api.persistence.TMFeatureSource;
+import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.helper.GeoToolsHelper;
+import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
+import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
+import nl.b3p.tailormap.api.persistence.json.TMFeatureTypeInfo;
+import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
+import nl.b3p.tailormap.api.persistence.json.TMServiceInfo;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.data.ResourceInfo;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.AttributeType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+<span class="nc" id="L34">public abstract class FeatureSourceHelper {</span>
+<span class="nc" id="L35">  private static final Logger logger =</span>
+<span class="nc" id="L36">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  public DataStore createDataStore(TMFeatureSource tmfs) throws IOException {
+<span class="nc" id="L39">    return createDataStore(tmfs, null);</span>
+  }
+
+  public abstract DataStore createDataStore(TMFeatureSource tmfs, Integer timeout)
+      throws IOException;
+
+  public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType tmft, Integer timeout)
+      throws IOException {
+<span class="nc" id="L47">    DataStore ds = createDataStore(tmft.getFeatureSource(), timeout);</span>
+<span class="nc" id="L48">    return ds.getFeatureSource(tmft.getName());</span>
+  }
+
+  public void loadCapabilities(TMFeatureSource tmfs) throws IOException {
+<span class="nc" id="L52">    loadCapabilities(tmfs, null);</span>
+<span class="nc" id="L53">  }</span>
+
+  public DataStore openDatastore(Map&lt;String, Object&gt; params, String passwordKey)
+      throws IOException {
+<span class="nc" id="L57">    Map&lt;String, Object&gt; logParams = new HashMap&lt;&gt;(params);</span>
+<span class="nc" id="L58">    String passwd = (String) params.get(passwordKey);</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">    if (passwd != null) {</span>
+<span class="nc" id="L60">      logParams.put(passwordKey, String.valueOf(new char[passwd.length()]).replace(&quot;\0&quot;, &quot;*&quot;));</span>
+    }
+<span class="nc" id="L62">    logger.debug(&quot;Opening datastore using parameters: {}&quot;, logParams);</span>
+    DataStore ds;
+    try {
+<span class="nc" id="L65">      ds = DataStoreFinder.getDataStore(params);</span>
+<span class="nc" id="L66">    } catch (Exception e) {</span>
+<span class="nc" id="L67">      throw new IOException(&quot;Cannot open datastore using parameters: &quot; + logParams, e);</span>
+<span class="nc" id="L68">    }</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">    if (ds == null) {</span>
+<span class="nc" id="L70">      throw new IOException(&quot;No datastore found using parameters &quot; + logParams);</span>
+    }
+<span class="nc" id="L72">    return ds;</span>
+  }
+
+  public void loadCapabilities(TMFeatureSource tmfs, Integer timeout) throws IOException {
+<span class="nc" id="L76">    DataStore ds = createDataStore(tmfs, timeout);</span>
+    try {
+<span class="nc bnc" id="L78" title="All 2 branches missed.">      if (ds.getInfo().getTitle() != null) {</span>
+<span class="nc" id="L79">        tmfs.setTitle(ds.getInfo().getTitle());</span>
+      }
+
+<span class="nc" id="L82">      org.geotools.data.ServiceInfo si = ds.getInfo();</span>
+<span class="nc" id="L83">      tmfs.setServiceCapabilities(</span>
+          new TMServiceCaps()
+<span class="nc" id="L85">              .serviceInfo(</span>
+                  new TMServiceInfo()
+<span class="nc" id="L87">                      .title(si.getTitle())</span>
+<span class="nc" id="L88">                      .keywords(si.getKeywords())</span>
+<span class="nc" id="L89">                      .description(si.getDescription())</span>
+<span class="nc" id="L90">                      .publisher(si.getPublisher())</span>
+<span class="nc" id="L91">                      .schema(si.getSchema())</span>
+<span class="nc" id="L92">                      .source(si.getSource())));</span>
+
+<span class="nc" id="L94">      List&lt;String&gt; typeNames = Arrays.asList(ds.getTypeNames());</span>
+<span class="nc" id="L95">      logger.info(</span>
+          &quot;Type names for {} {}: {}&quot;,
+<span class="nc" id="L97">          tmfs.getProtocol().getValue(),</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">          tmfs.getProtocol() == TMFeatureSource.Protocol.WFS</span>
+<span class="nc" id="L99">              ? tmfs.getUrl()</span>
+<span class="nc" id="L100">              : tmfs.getJdbcConnection(),</span>
+          typeNames);
+
+<span class="nc" id="L103">      tmfs.getFeatureTypes()</span>
+<span class="nc" id="L104">          .removeIf(</span>
+              tmft -&gt; {
+<span class="nc bnc" id="L106" title="All 2 branches missed.">                if (!typeNames.contains(tmft.getName())) {</span>
+<span class="nc" id="L107">                  logger.info(&quot;Feature type removed: {}&quot;, tmft.getName());</span>
+<span class="nc" id="L108">                  return true;</span>
+                } else {
+<span class="nc" id="L110">                  return false;</span>
+                }
+              });
+
+<span class="nc bnc" id="L114" title="All 2 branches missed.">      for (String typeName : typeNames) {</span>
+<span class="nc" id="L115">        TMFeatureType pft =</span>
+<span class="nc" id="L116">            tmfs.getFeatureTypes().stream()</span>
+<span class="nc" id="L117">                .filter(ft -&gt; ft.getName().equals(typeName))</span>
+<span class="nc" id="L118">                .findFirst()</span>
+<span class="nc" id="L119">                .orElseGet(</span>
+                    () -&gt;
+<span class="nc" id="L121">                        new TMFeatureType()</span>
+<span class="nc" id="L122">                            .setName(typeName)</span>
+<span class="nc" id="L123">                            .setFeatureSource(tmfs)</span>
+<span class="nc" id="L124">                            .setWriteable(true)); // TODO set writeable meaningfully</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (!tmfs.getFeatureTypes().contains(pft)) {</span>
+<span class="nc" id="L126">          tmfs.getFeatureTypes().add(pft);</span>
+        }
+        try {
+<span class="nc" id="L129">          logger.debug(&quot;Get feature source from GeoTools datastore for type \&quot;{}\&quot;&quot;, typeName);</span>
+<span class="nc" id="L130">          SimpleFeatureSource gtFs = ds.getFeatureSource(typeName);</span>
+<span class="nc" id="L131">          ResourceInfo info = gtFs.getInfo();</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">          if (info != null) {</span>
+<span class="nc" id="L133">            pft.setTitle(info.getTitle());</span>
+<span class="nc" id="L134">            pft.setInfo(getFeatureTypeInfo(pft, info, gtFs));</span>
+<span class="nc" id="L135">            pft.getAttributes().clear();</span>
+
+<span class="nc" id="L137">            SimpleFeatureType gtFt = gtFs.getSchema();</span>
+<span class="nc" id="L138">            String primaryKeyName = null;</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">            for (AttributeDescriptor gtAttr : gtFt.getAttributeDescriptors()) {</span>
+<span class="nc" id="L140">              AttributeType type = gtAttr.getType();</span>
+<span class="nc" id="L141">              Boolean isPk = (Boolean) gtAttr.getUserData().get(&quot;org.geotools.jdbc.pk.column&quot;);</span>
+<span class="nc bnc" id="L142" title="All 4 branches missed.">              if (null != isPk &amp;&amp; isPk) {</span>
+<span class="nc" id="L143">                logger.debug(</span>
+                    &quot;Found primary key attribute \&quot;{}\&quot; for type \&quot;{}\&quot;&quot;,
+<span class="nc" id="L145">                    gtAttr.getLocalName(),</span>
+                    typeName);
+<span class="nc" id="L147">                primaryKeyName = gtAttr.getLocalName();</span>
+              }
+<span class="nc" id="L149">              TMAttributeDescriptor tmAttr =</span>
+                  new TMAttributeDescriptor()
+<span class="nc" id="L151">                      .name(gtAttr.getLocalName())</span>
+<span class="nc" id="L152">                      .type(GeoToolsHelper.toAttributeType(type))</span>
+<span class="nc" id="L153">                      .nullable(gtAttr.isNillable())</span>
+<span class="nc" id="L154">                      .defaultValue(</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">                          gtAttr.getDefaultValue() == null</span>
+<span class="nc" id="L156">                              ? null</span>
+<span class="nc" id="L157">                              : gtAttr.getDefaultValue().toString())</span>
+<span class="nc" id="L158">                      .description(</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">                          type.getDescription() == null ? null : type.getDescription().toString());</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">              if (tmAttr.getType() == TMAttributeType.OBJECT) {</span>
+<span class="nc" id="L161">                tmAttr.setUnknownTypeClassName(type.getBinding().getName());</span>
+              }
+<span class="nc" id="L163">              pft.getAttributes().add(tmAttr);</span>
+<span class="nc" id="L164">            }</span>
+<span class="nc" id="L165">            pft.setPrimaryKeyAttribute(primaryKeyName);</span>
+          }
+<span class="nc" id="L167">        } catch (Exception e) {</span>
+<span class="nc" id="L168">          logger.error(&quot;Exception reading feature type \&quot;{}\&quot;&quot;, typeName, e);</span>
+<span class="nc" id="L169">        }</span>
+<span class="nc" id="L170">      }</span>
+    } finally {
+<span class="nc" id="L172">      ds.dispose();</span>
+    }
+<span class="nc" id="L174">  }</span>
+
+  protected TMFeatureTypeInfo getFeatureTypeInfo(
+      TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
+<span class="nc" id="L178">    return new TMFeatureTypeInfo()</span>
+<span class="nc" id="L179">        .keywords(info.getKeywords())</span>
+<span class="nc" id="L180">        .description(info.getDescription())</span>
+<span class="nc" id="L181">        .bounds(GeoToolsHelper.fromEnvelope(info.getBounds()))</span>
+<span class="nc" id="L182">        .crs(crsToString(info.getCRS()));</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
