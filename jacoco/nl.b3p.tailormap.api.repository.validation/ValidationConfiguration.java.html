@@ -18,20 +18,26 @@ public class ValidationConfiguration implements RepositoryRestConfigurer {
 
   private final GeoServiceValidator geoServiceValidator;
 
+  private final FeatureSourceValidator featureSourceValidator;
+
   public ValidationConfiguration(
       LocalValidatorFactoryBean localValidatorFactoryBean,
-<span class="nc" id="L23">      GeoServiceValidator geoServiceValidator) {</span>
-<span class="nc" id="L24">    this.localValidatorFactoryBean = localValidatorFactoryBean;</span>
-<span class="nc" id="L25">    this.geoServiceValidator = geoServiceValidator;</span>
-<span class="nc" id="L26">  }</span>
+      GeoServiceValidator geoServiceValidator,
+<span class="nc" id="L26">      FeatureSourceValidator featureSourceValidator) {</span>
+<span class="nc" id="L27">    this.localValidatorFactoryBean = localValidatorFactoryBean;</span>
+<span class="nc" id="L28">    this.geoServiceValidator = geoServiceValidator;</span>
+<span class="nc" id="L29">    this.featureSourceValidator = featureSourceValidator;</span>
+<span class="nc" id="L30">  }</span>
 
   @Override
   public void configureValidatingRepositoryEventListener(
       ValidatingRepositoryEventListener validatingListener) {
-<span class="nc" id="L31">    validatingListener.addValidator(&quot;beforeCreate&quot;, localValidatorFactoryBean);</span>
-<span class="nc" id="L32">    validatingListener.addValidator(&quot;beforeSave&quot;, localValidatorFactoryBean);</span>
-<span class="nc" id="L33">    validatingListener.addValidator(&quot;beforeCreate&quot;, geoServiceValidator);</span>
-<span class="nc" id="L34">    validatingListener.addValidator(&quot;beforeSave&quot;, geoServiceValidator);</span>
-<span class="nc" id="L35">  }</span>
+<span class="nc" id="L35">    validatingListener.addValidator(&quot;beforeCreate&quot;, localValidatorFactoryBean);</span>
+<span class="nc" id="L36">    validatingListener.addValidator(&quot;beforeSave&quot;, localValidatorFactoryBean);</span>
+<span class="nc" id="L37">    validatingListener.addValidator(&quot;beforeCreate&quot;, geoServiceValidator);</span>
+<span class="nc" id="L38">    validatingListener.addValidator(&quot;beforeSave&quot;, geoServiceValidator);</span>
+<span class="nc" id="L39">    validatingListener.addValidator(&quot;beforeCreate&quot;, featureSourceValidator);</span>
+<span class="nc" id="L40">    validatingListener.addValidator(&quot;beforeSave&quot;, featureSourceValidator);</span>
+<span class="nc" id="L41">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

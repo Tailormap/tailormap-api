@@ -22,39 +22,38 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class GeoServiceAdminController {
   private final GeoServiceRepository geoServiceRepository;
-
   private final ApplicationContext applicationContext;
   private final RepositoryEntityLinks repositoryEntityLinks;
 
   public GeoServiceAdminController(
       GeoServiceRepository geoServiceRepository,
       ApplicationContext applicationContext,
-<span class="nc" id="L32">      RepositoryEntityLinks repositoryEntityLinks) {</span>
-<span class="nc" id="L33">    this.geoServiceRepository = geoServiceRepository;</span>
-<span class="nc" id="L34">    this.applicationContext = applicationContext;</span>
-<span class="nc" id="L35">    this.repositoryEntityLinks = repositoryEntityLinks;</span>
-<span class="nc" id="L36">  }</span>
+<span class="nc" id="L31">      RepositoryEntityLinks repositoryEntityLinks) {</span>
+<span class="nc" id="L32">    this.geoServiceRepository = geoServiceRepository;</span>
+<span class="nc" id="L33">    this.applicationContext = applicationContext;</span>
+<span class="nc" id="L34">    this.repositoryEntityLinks = repositoryEntityLinks;</span>
+<span class="nc" id="L35">  }</span>
 
   @PostMapping(path = &quot;${tailormap-api.admin.base-path}/geo-services/{id}/refresh-capabilities&quot;)
   public ResponseEntity&lt;GeoService&gt; refreshCapabilities(
       @PathVariable String id, HttpServletResponse httpServletResponse) throws Exception {
 
-<span class="nc" id="L42">    GeoService geoService =</span>
+<span class="nc" id="L41">    GeoService geoService =</span>
         geoServiceRepository
-<span class="nc" id="L44">            .findById(id)</span>
-<span class="nc" id="L45">            .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND));</span>
+<span class="nc" id="L43">            .findById(id)</span>
+<span class="nc" id="L44">            .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND));</span>
 
     // Authorization check not needed: only admins are allowed on the admin base path, and admins
     // have all access
 
-<span class="nc" id="L50">    geoService.setRefreshCapabilities(true);</span>
-<span class="nc" id="L51">    applicationContext.publishEvent(new BeforeSaveEvent(geoService));</span>
+<span class="nc" id="L49">    geoService.setRefreshCapabilities(true);</span>
+<span class="nc" id="L50">    applicationContext.publishEvent(new BeforeSaveEvent(geoService));</span>
 
-<span class="nc" id="L53">    geoServiceRepository.saveAndFlush(geoService);</span>
+<span class="nc" id="L52">    geoServiceRepository.saveAndFlush(geoService);</span>
 
-<span class="nc" id="L55">    httpServletResponse.sendRedirect(</span>
-<span class="nc" id="L56">        String.valueOf(repositoryEntityLinks.linkToItemResource(GeoService.class, id).toUri()));</span>
-<span class="nc" id="L57">    return null;</span>
+<span class="nc" id="L54">    httpServletResponse.sendRedirect(</span>
+<span class="nc" id="L55">        String.valueOf(repositoryEntityLinks.linkToItemResource(GeoService.class, id).toUri()));</span>
+<span class="nc" id="L56">    return null;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

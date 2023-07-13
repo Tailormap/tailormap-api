@@ -10,9 +10,10 @@ import java.lang.invoke.MethodHandles;
 import javax.servlet.http.HttpServletResponse;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
-import nl.b3p.tailormap.api.repository.events.FeatureSourceEventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.rest.core.event.BeforeSaveEvent;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,41 +25,42 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 public class FeatureSourceAdminController {
-<span class="nc" id="L27">  private static final Logger logger =</span>
-<span class="nc" id="L28">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L28">  private static final Logger logger =</span>
+<span class="nc" id="L29">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
   private final FeatureSourceRepository featureSourceRepository;
-  private final FeatureSourceEventHandler featureSourceEventHandler;
+  private final ApplicationContext applicationContext;
   private final RepositoryEntityLinks repositoryEntityLinks;
 
   public FeatureSourceAdminController(
       FeatureSourceRepository featureSourceRepository,
-      FeatureSourceEventHandler featureSourceEventHandler,
-<span class="nc" id="L36">      RepositoryEntityLinks repositoryEntityLinks) {</span>
-<span class="nc" id="L37">    this.featureSourceRepository = featureSourceRepository;</span>
-<span class="nc" id="L38">    this.featureSourceEventHandler = featureSourceEventHandler;</span>
-<span class="nc" id="L39">    this.repositoryEntityLinks = repositoryEntityLinks;</span>
-<span class="nc" id="L40">  }</span>
+      ApplicationContext applicationContext,
+<span class="nc" id="L37">      RepositoryEntityLinks repositoryEntityLinks) {</span>
+<span class="nc" id="L38">    this.featureSourceRepository = featureSourceRepository;</span>
+<span class="nc" id="L39">    this.applicationContext = applicationContext;</span>
+<span class="nc" id="L40">    this.repositoryEntityLinks = repositoryEntityLinks;</span>
+<span class="nc" id="L41">  }</span>
 
   @PostMapping(path = &quot;${tailormap-api.admin.base-path}/feature-sources/{id}/refresh-capabilities&quot;)
   @Transactional
   public ResponseEntity&lt;?&gt; refreshCapabilities(
       @PathVariable Long id, HttpServletResponse httpServletResponse) throws Exception {
 
-<span class="nc" id="L47">    TMFeatureSource featureSource =</span>
+<span class="nc" id="L48">    TMFeatureSource featureSource =</span>
         featureSourceRepository
-<span class="nc" id="L49">            .findById(id)</span>
-<span class="nc" id="L50">            .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND));</span>
+<span class="nc" id="L50">            .findById(id)</span>
+<span class="nc" id="L51">            .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND));</span>
 
     // Authorization check not needed: only admins are allowed on the admin base path, and admins
     // have all access
 
-<span class="nc" id="L55">    logger.info(&quot;Loading capabilities for feature source {}&quot;, featureSource);</span>
-<span class="nc" id="L56">    featureSourceEventHandler.loadCapabilities(featureSource);</span>
+<span class="nc" id="L56">    logger.info(&quot;Loading capabilities for feature source {}&quot;, featureSource);</span>
+<span class="nc" id="L57">    featureSource.setRefreshCapabilities(true);</span>
+<span class="nc" id="L58">    applicationContext.publishEvent(new BeforeSaveEvent(featureSource));</span>
 
-<span class="nc" id="L58">    httpServletResponse.sendRedirect(</span>
-<span class="nc" id="L59">        String.valueOf(</span>
-<span class="nc" id="L60">            repositoryEntityLinks.linkToItemResource(TMFeatureSource.class, id).toUri()));</span>
-<span class="nc" id="L61">    return null;</span>
+<span class="nc" id="L60">    httpServletResponse.sendRedirect(</span>
+<span class="nc" id="L61">        String.valueOf(</span>
+<span class="nc" id="L62">            repositoryEntityLinks.linkToItemResource(TMFeatureSource.class, id).toUri()));</span>
+<span class="nc" id="L63">    return null;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

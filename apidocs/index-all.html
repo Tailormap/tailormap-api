@@ -806,11 +806,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/controller/admin/FeatureSourceAdminController.html" title="class in nl.b3p.tailormap.api.controller.admin"><span class="typeNameLink">FeatureSourceAdminController</span></a> - Class in <a href="nl/b3p/tailormap/api/controller/admin/package-summary.html">nl.b3p.tailormap.api.controller.admin</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/admin/FeatureSourceAdminController.html#%3Cinit%3E(nl.b3p.tailormap.api.repository.FeatureSourceRepository,nl.b3p.tailormap.api.repository.events.FeatureSourceEventHandler,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks)">FeatureSourceAdminController(FeatureSourceRepository, FeatureSourceEventHandler, RepositoryEntityLinks)</a></span> - Constructor for class nl.b3p.tailormap.api.controller.admin.<a href="nl/b3p/tailormap/api/controller/admin/FeatureSourceAdminController.html" title="class in nl.b3p.tailormap.api.controller.admin">FeatureSourceAdminController</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/repository/events/FeatureSourceEventHandler.html" title="class in nl.b3p.tailormap.api.repository.events"><span class="typeNameLink">FeatureSourceEventHandler</span></a> - Class in <a href="nl/b3p/tailormap/api/repository/events/package-summary.html">nl.b3p.tailormap.api.repository.events</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/repository/events/FeatureSourceEventHandler.html#%3Cinit%3E()">FeatureSourceEventHandler()</a></span> - Constructor for class nl.b3p.tailormap.api.repository.events.<a href="nl/b3p/tailormap/api/repository/events/FeatureSourceEventHandler.html" title="class in nl.b3p.tailormap.api.repository.events">FeatureSourceEventHandler</a></dt>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/controller/admin/FeatureSourceAdminController.html#%3Cinit%3E(nl.b3p.tailormap.api.repository.FeatureSourceRepository,org.springframework.context.ApplicationContext,org.springframework.data.rest.webmvc.support.RepositoryEntityLinks)">FeatureSourceAdminController(FeatureSourceRepository, ApplicationContext, RepositoryEntityLinks)</a></span> - Constructor for class nl.b3p.tailormap.api.controller.admin.<a href="nl/b3p/tailormap/api/controller/admin/FeatureSourceAdminController.html" title="class in nl.b3p.tailormap.api.controller.admin">FeatureSourceAdminController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in nl.b3p.tailormap.api.geotools.featuresources"><span class="typeNameLink">FeatureSourceFactoryHelper</span></a> - Class in <a href="nl/b3p/tailormap/api/geotools/featuresources/package-summary.html">nl.b3p.tailormap.api.geotools.featuresources</a></dt>
 <dd>&nbsp;</dd>
@@ -823,6 +819,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/persistence/json/FeatureTypeRef.html#featureSourceId(java.lang.Long)">featureSourceId(Long)</a></span> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/FeatureTypeRef.html" title="class in nl.b3p.tailormap.api.persistence.json">FeatureTypeRef</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/repository/FeatureSourceRepository.html" title="interface in nl.b3p.tailormap.api.repository"><span class="typeNameLink">FeatureSourceRepository</span></a> - Interface in <a href="nl/b3p/tailormap/api/repository/package-summary.html">nl.b3p.tailormap.api.repository</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="nl/b3p/tailormap/api/repository/validation/FeatureSourceValidator.html" title="class in nl.b3p.tailormap.api.repository.validation"><span class="typeNameLink">FeatureSourceValidator</span></a> - Class in <a href="nl/b3p/tailormap/api/repository/validation/package-summary.html">nl.b3p.tailormap.api.repository.validation</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/repository/validation/FeatureSourceValidator.html#%3Cinit%3E()">FeatureSourceValidator()</a></span> - Constructor for class nl.b3p.tailormap.api.repository.validation.<a href="nl/b3p/tailormap/api/repository/validation/FeatureSourceValidator.html" title="class in nl.b3p.tailormap.api.repository.validation">FeatureSourceValidator</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/FeaturesResponse.html" title="class in nl.b3p.tailormap.api.viewer.model"><span class="typeNameLink">FeaturesResponse</span></a> - Class in <a href="nl/b3p/tailormap/api/viewer/model/package-summary.html">nl.b3p.tailormap.api.viewer.model</a></dt>
 <dd>
@@ -2737,6 +2737,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/persistence/GeoService.html#isRefreshCapabilities()">isRefreshCapabilities()</a></span> - Method in class nl.b3p.tailormap.api.persistence.<a href="nl/b3p/tailormap/api/persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/persistence/TMFeatureSource.html#isRefreshCapabilities()">isRefreshCapabilities()</a></span> - Method in class nl.b3p.tailormap.api.persistence.<a href="nl/b3p/tailormap/api/persistence/TMFeatureSource.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureSource</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/persistence/Group.html#isSystemGroup()">isSystemGroup()</a></span> - Method in class nl.b3p.tailormap.api.persistence.<a href="nl/b3p/tailormap/api/persistence/Group.html" title="class in nl.b3p.tailormap.api.persistence">Group</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/geotools/ResponseTeeingHTTPClient.html#isTryGzip()">isTryGzip()</a></span> - Method in class nl.b3p.tailormap.api.geotools.<a href="nl/b3p/tailormap/api/geotools/ResponseTeeingHTTPClient.html" title="class in nl.b3p.tailormap.api.geotools">ResponseTeeingHTTPClient</a></dt>
@@ -2768,6 +2770,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="nl/b3p/tailormap/api/geotools/featuresources/JDBCFeatureSourceHelper.html" title="class in nl.b3p.tailormap.api.geotools.featuresources"><span class="typeNameLink">JDBCFeatureSourceHelper</span></a> - Class in <a href="nl/b3p/tailormap/api/geotools/featuresources/package-summary.html">nl.b3p.tailormap.api.geotools.featuresources</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/geotools/featuresources/JDBCFeatureSourceHelper.html#%3Cinit%3E()">JDBCFeatureSourceHelper()</a></span> - Constructor for class nl.b3p.tailormap.api.geotools.featuresources.<a href="nl/b3p/tailormap/api/geotools/featuresources/JDBCFeatureSourceHelper.html" title="class in nl.b3p.tailormap.api.geotools.featuresources">JDBCFeatureSourceHelper</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/util/TMExceptionUtils.html#joinAllThrowableMessages(java.lang.Throwable)">joinAllThrowableMessages(Throwable)</a></span> - Static method in class nl.b3p.tailormap.api.util.<a href="nl/b3p/tailormap/api/util/TMExceptionUtils.html" title="class in nl.b3p.tailormap.api.util">TMExceptionUtils</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/util/TMExceptionUtils.html#joinAllThrowableMessages(java.lang.Throwable,java.lang.String)">joinAllThrowableMessages(Throwable, String)</a></span> - Static method in class nl.b3p.tailormap.api.util.<a href="nl/b3p/tailormap/api/util/TMExceptionUtils.html" title="class in nl.b3p.tailormap.api.util">TMExceptionUtils</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/configuration/JPAConfiguration.html" title="class in nl.b3p.tailormap.api.configuration"><span class="typeNameLink">JPAConfiguration</span></a> - Class in <a href="nl/b3p/tailormap/api/configuration/package-summary.html">nl.b3p.tailormap.api.configuration</a></dt>
 <dd>
@@ -2860,8 +2866,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/persistence/json/TMGeometryType.html#LINESTRING">LINESTRING</a></span> - nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/TMGeometryType.html" title="enum in nl.b3p.tailormap.api.persistence.json">TMGeometryType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/geotools/featuresources/FeatureSourceHelper.html#loadCapabilities(nl.b3p.tailormap.api.persistence.TMFeatureSource)">loadCapabilities(TMFeatureSource)</a></span> - Method in class nl.b3p.tailormap.api.geotools.featuresources.<a href="nl/b3p/tailormap/api/geotools/featuresources/FeatureSourceHelper.html" title="class in nl.b3p.tailormap.api.geotools.featuresources">FeatureSourceHelper</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/repository/events/FeatureSourceEventHandler.html#loadCapabilities(nl.b3p.tailormap.api.persistence.TMFeatureSource)">loadCapabilities(TMFeatureSource)</a></span> - Method in class nl.b3p.tailormap.api.repository.events.<a href="nl/b3p/tailormap/api/repository/events/FeatureSourceEventHandler.html" title="class in nl.b3p.tailormap.api.repository.events">FeatureSourceEventHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/geotools/featuresources/FeatureSourceHelper.html#loadCapabilities(nl.b3p.tailormap.api.persistence.TMFeatureSource,java.lang.Integer)">loadCapabilities(TMFeatureSource, Integer)</a></span> - Method in class nl.b3p.tailormap.api.geotools.featuresources.<a href="nl/b3p/tailormap/api/geotools/featuresources/FeatureSourceHelper.html" title="class in nl.b3p.tailormap.api.geotools.featuresources">FeatureSourceHelper</a></dt>
 <dd>&nbsp;</dd>
@@ -3845,6 +3849,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/persistence/GeoService.html#setRefreshCapabilities(boolean)">setRefreshCapabilities(boolean)</a></span> - Method in class nl.b3p.tailormap.api.persistence.<a href="nl/b3p/tailormap/api/persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/persistence/TMFeatureSource.html#setRefreshCapabilities(boolean)">setRefreshCapabilities(boolean)</a></span> - Method in class nl.b3p.tailormap.api.persistence.<a href="nl/b3p/tailormap/api/persistence/TMFeatureSource.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureSource</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/persistence/json/TMServiceCapsCapabilities.html#setRequest(nl.b3p.tailormap.api.persistence.json.TMServiceCapabilitiesRequest)">setRequest(TMServiceCapabilitiesRequest)</a></span> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/TMServiceCapsCapabilities.html" title="class in nl.b3p.tailormap.api.persistence.json">TMServiceCapsCapabilities</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/viewer/model/UserResponse.html#setRoles(java.util.Set)">setRoles(Set&lt;String&gt;)</a></span> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/UserResponse.html" title="class in nl.b3p.tailormap.api.viewer.model">UserResponse</a></dt>
@@ -4089,6 +4095,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/persistence/json/TileLayerHiDpiMode.html#SUBSTITUTELAYERTILEPIXELRATIOONLY">SUBSTITUTELAYERTILEPIXELRATIOONLY</a></span> - nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/TileLayerHiDpiMode.html" title="enum in nl.b3p.tailormap.api.persistence.json">TileLayerHiDpiMode</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/repository/validation/FeatureSourceValidator.html#supports(java.lang.Class)">supports(Class&lt;?&gt;)</a></span> - Method in class nl.b3p.tailormap.api.repository.validation.<a href="nl/b3p/tailormap/api/repository/validation/FeatureSourceValidator.html" title="class in nl.b3p.tailormap.api.repository.validation">FeatureSourceValidator</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/repository/validation/GeoServiceValidator.html#supports(java.lang.Class)">supports(Class&lt;?&gt;)</a></span> - Method in class nl.b3p.tailormap.api.repository.validation.<a href="nl/b3p/tailormap/api/repository/validation/GeoServiceValidator.html" title="class in nl.b3p.tailormap.api.repository.validation">GeoServiceValidator</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/configuration/base/FrontController.html#swaggerUiWelcomePage()">swaggerUiWelcomePage()</a></span> - Method in class nl.b3p.tailormap.api.configuration.base.<a href="nl/b3p/tailormap/api/configuration/base/FrontController.html" title="class in nl.b3p.tailormap.api.configuration.base">FrontController</a></dt>
@@ -4235,6 +4243,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">CRS information</div>
 </dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/viewer/model/TMCoordinateReferenceSystem.html#%3Cinit%3E()">TMCoordinateReferenceSystem()</a></span> - Constructor for class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/TMCoordinateReferenceSystem.html" title="class in nl.b3p.tailormap.api.viewer.model">TMCoordinateReferenceSystem</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="nl/b3p/tailormap/api/util/TMExceptionUtils.html" title="class in nl.b3p.tailormap.api.util"><span class="typeNameLink">TMExceptionUtils</span></a> - Class in <a href="nl/b3p/tailormap/api/util/package-summary.html">nl.b3p.tailormap.api.util</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/util/TMExceptionUtils.html#%3Cinit%3E()">TMExceptionUtils()</a></span> - Constructor for class nl.b3p.tailormap.api.util.<a href="nl/b3p/tailormap/api/util/TMExceptionUtils.html" title="class in nl.b3p.tailormap.api.util">TMExceptionUtils</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/TMFeatureSource.html" title="class in nl.b3p.tailormap.api.persistence"><span class="typeNameLink">TMFeatureSource</span></a> - Class in <a href="nl/b3p/tailormap/api/persistence/package-summary.html">nl.b3p.tailormap.api.persistence</a></dt>
 <dd>&nbsp;</dd>
@@ -4547,13 +4559,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h2 class="title">V</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/repository/validation/FeatureSourceValidator.html#validate(java.lang.Object,org.springframework.validation.Errors)">validate(Object, Errors)</a></span> - Method in class nl.b3p.tailormap.api.repository.validation.<a href="nl/b3p/tailormap/api/repository/validation/FeatureSourceValidator.html" title="class in nl.b3p.tailormap.api.repository.validation">FeatureSourceValidator</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/repository/validation/GeoServiceValidator.html#validate(java.lang.Object,org.springframework.validation.Errors)">validate(Object, Errors)</a></span> - Method in class nl.b3p.tailormap.api.repository.validation.<a href="nl/b3p/tailormap/api/repository/validation/GeoServiceValidator.html" title="class in nl.b3p.tailormap.api.repository.validation">GeoServiceValidator</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/util/TMPasswordDeserializer.html#validatePasswordStrength(java.lang.String,int,int)">validatePasswordStrength(String, int, int)</a></span> - Static method in class nl.b3p.tailormap.api.util.<a href="nl/b3p/tailormap/api/util/TMPasswordDeserializer.html" title="class in nl.b3p.tailormap.api.util">TMPasswordDeserializer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/repository/validation/ValidationConfiguration.html" title="class in nl.b3p.tailormap.api.repository.validation"><span class="typeNameLink">ValidationConfiguration</span></a> - Class in <a href="nl/b3p/tailormap/api/repository/validation/package-summary.html">nl.b3p.tailormap.api.repository.validation</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/repository/validation/ValidationConfiguration.html#%3Cinit%3E(org.springframework.validation.beanvalidation.LocalValidatorFactoryBean,nl.b3p.tailormap.api.repository.validation.GeoServiceValidator)">ValidationConfiguration(LocalValidatorFactoryBean, GeoServiceValidator)</a></span> - Constructor for class nl.b3p.tailormap.api.repository.validation.<a href="nl/b3p/tailormap/api/repository/validation/ValidationConfiguration.html" title="class in nl.b3p.tailormap.api.repository.validation">ValidationConfiguration</a></dt>
+<dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/repository/validation/ValidationConfiguration.html#%3Cinit%3E(org.springframework.validation.beanvalidation.LocalValidatorFactoryBean,nl.b3p.tailormap.api.repository.validation.GeoServiceValidator,nl.b3p.tailormap.api.repository.validation.FeatureSourceValidator)">ValidationConfiguration(LocalValidatorFactoryBean, GeoServiceValidator, FeatureSourceValidator)</a></span> - Constructor for class nl.b3p.tailormap.api.repository.validation.<a href="nl/b3p/tailormap/api/repository/validation/ValidationConfiguration.html" title="class in nl.b3p.tailormap.api.repository.validation">ValidationConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="nl/b3p/tailormap/api/viewer/model/Attribute.html#valueList(java.util.List)">valueList(List&lt;String&gt;)</a></span> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/Attribute.html" title="class in nl.b3p.tailormap.api.viewer.model">Attribute</a></dt>
 <dd>&nbsp;</dd>
