@@ -5,7 +5,16 @@
  */
 package nl.b3p.tailormap.api.security;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import nl.b3p.tailormap.api.persistence.Group;
+import nl.b3p.tailormap.api.repository.GroupRepository;
+import nl.b3p.tailormap.api.repository.OIDCConfigurationRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +22,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
@@ -52,6 +70,44 @@ public class ApiSecurityConfiguration {
       http = http.csrf().csrfTokenRepository(csrfTokenRepository).and();
     }
 
+    // Before redirecting the user to the OAuth2 authorization endpoint, store the requested
+    // redirect URL.
+    RedirectStrategy redirectStrategy =
+        new DefaultRedirectStrategy() {
+          @Override
+          public void sendRedirect(
+              HttpServletRequest request, HttpServletResponse response, String url)
+              throws IOException {
+            String redirectUrl = request.getParameter("redirectUrl");
+            if (redirectUrl != null && redirectUrl.startsWith("/")) {
+              request.getSession().setAttribute("redirectUrl", redirectUrl);
+            }
+            super.sendRedirect(request, response, url);
+          }
+        };
+
+    // When OAuth2 authentication succeeds, use the redirect URL stored in the session to send them
+    // back.
+    AuthenticationSuccessHandler authenticationSuccessHandler =
+        new AuthenticationSuccessHandler() {
+          @Override
+          public void onAuthenticationSuccess(
+              HttpServletRequest request,
+              HttpServletResponse response,
+              Authentication authentication)
+              throws IOException {
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+              String redirectUrl = (String) session.getAttribute("redirectUrl");
+              if (redirectUrl != null) {
+                response.sendRedirect(redirectUrl);
+                return;
+              }
+            }
+            response.sendRedirect("/");
+          }
+        };
+
     http.securityMatchers(matchers -> matchers.requestMatchers(apiBasePath + "/**"))
         .authorizeHttpRequests(
             authorize ->
@@ -60,10 +116,65 @@ public class ApiSecurityConfiguration {
         .loginPage(apiBasePath + "/unauthorized")
         .loginProcessingUrl(apiBasePath + "/login")
         .and()
+        .oauth2Login(
+            login ->
+                login
+                    .authorizationEndpoint(
+                        endpoint ->
+                            endpoint
+                                .baseUri(apiBasePath + "/oauth2/authorization")
+                                .authorizationRedirectStrategy(redirectStrategy))
+                    .redirectionEndpoint(
+                        endpoint -> endpoint.baseUri(apiBasePath + "/oauth2/callback"))
+                    .successHandler(authenticationSuccessHandler))
         .logout()
         .logoutUrl(apiBasePath + "/logout")
         .logoutSuccessHandler(
             (request, response, authentication) -> response.sendError(HttpStatus.OK.value(), "OK"));
+
     return http.build();
+  }
+
+  @Bean
+  public OIDCRepository clientRegistrationRepository(OIDCConfigurationRepository repository) {
+    return new OIDCRepository(repository);
+  }
+
+  @Bean
+  public GrantedAuthoritiesMapper userAuthoritiesMapper(GroupRepository repository) {
+    return (authorities) -> {
+      Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
+      Set<String> wantedGroups = new HashSet<>();
+
+      try {
+        authorities.forEach(
+            authority -> {
+              mappedAuthorities.add(authority);
+              if (authority instanceof OidcUserAuthority) {
+                OidcUserAuthority oidcUserAuthority = (OidcUserAuthority) authority;
+                OidcIdToken idToken = oidcUserAuthority.getIdToken();
+
+                List<String> roles = idToken.getClaimAsStringList("roles");
+                if (roles != null) {
+                  wantedGroups.addAll(roles);
+                }
+              }
+            });
+
+        for (String groupName : wantedGroups) {
+          if (repository.findById(groupName).isEmpty()) {
+            Group group = new Group();
+            group.setName(groupName);
+            group.setDescription("<imported from SSO>");
+            repository.save(group);
+          }
+
+          mappedAuthorities.add(new SimpleGrantedAuthority(groupName));
+        }
+      } catch (Exception e) {
+      }
+
+      return mappedAuthorities;
+    };
   }
 }

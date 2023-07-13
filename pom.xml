@@ -151,7 +151,7 @@ SPDX-License-Identifier: MIT
         <pmd.version>6.55.0</pmd.version>
         <maven-fluido-skin.version>2.0.0-M6</maven-fluido-skin.version>
         <swagger-ui.version>5.1.0</swagger-ui.version>
-        <sentry.version>6.25.0</sentry.version>
+        <sentry.version>6.25.1</sentry.version>
         <errorProne.version>2.20.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
@@ -256,6 +256,10 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.hateoas</groupId>
@@ -1115,6 +1119,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.springframework.boot:spring-boot-starter-test</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-validation</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-security</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-oauth2-client</exclude>
                                         <exclude>org.springframework.security:spring-security-test</exclude>
                                         <exclude>org.webjars:webjars-locator-core</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>

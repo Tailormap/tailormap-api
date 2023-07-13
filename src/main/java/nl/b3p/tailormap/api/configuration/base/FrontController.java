@@ -37,7 +37,9 @@ public class FrontController {
         "/admin/groups",
         "/admin/groups/group/**",
         "/admin/applications",
-        "/admin/applications/**"
+        "/admin/applications/**",
+        "/admin/oidc-configurations",
+        "/admin/oidc-configurations/**"
       })
   public String adminIndex() {
     return "forward:/admin/index.html";

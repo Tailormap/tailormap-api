@@ -17,6 +17,6 @@ public class UnauthorizedController {
   @GetMapping("/api/unauthorized")
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public UnauthorizedResponse unauthorized() {
-    return new UnauthorizedResponse().formLogin(true);
+    return new UnauthorizedResponse().unauthorized(true);
   }
 }
