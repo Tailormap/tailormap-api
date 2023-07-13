@@ -38,22 +38,22 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final OIDCConfigurationRepository oidcConfigurationRepository;
 
-  @Value("${tailormap-api.oidc.name}")
+  @Value("${tailormap-api.oidc.name:#{null}}")
   private String oidcName;
 
-  @Value("${tailormap-api.oidc.issuer-uri}")
+  @Value("${tailormap-api.oidc.issuer-uri:#{null}}")
   private String oidcIssuerUri;
 
-  @Value("${tailormap-api.oidc.client-id}")
+  @Value("${tailormap-api.oidc.client-id:#{null}}")
   private String oidcClientId;
 
-  @Value("${tailormap-api.oidc.client-secret}")
+  @Value("${tailormap-api.oidc.client-secret:#{null}}")
   private String oidcClientSecret;
 
-  @Value("${tailormap-api.oidc.user-name-attribute-name}")
+  @Value("${tailormap-api.oidc.user-name-attribute-name:#{null}}")
   private String oidcUserNameAttributeName;
 
-  @Value("${tailormap-api.oidc.show-for-viewer}")
+  @Value("${tailormap-api.oidc.show-for-viewer:false}")
   private boolean oidcShowForViewer;
 
   private final Map<String, ClientRegistration> registrations;
