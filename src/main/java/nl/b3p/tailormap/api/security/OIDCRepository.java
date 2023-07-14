@@ -134,9 +134,13 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
 
     if (oidcName != null && oidcIssuerUri != null && oidcClientId != null) {
       try {
+        // When copying the URI from some IdP control panels into an .env file, this suffix won't be stripped by OIDCConfigurationEventHandler.handleBeforeCreateOrSave() so accept both
+        if (!oidcIssuerUri.endsWith("/.well-known/openid-configuration")) {
+          oidcIssuerUri = oidcIssuerUri + "/.well-known/openid-configuration";
+        }
         HttpRequest.Builder requestBuilder =
             HttpRequest.newBuilder()
-                .uri(new URI(oidcIssuerUri + "/.well-known/openid-configuration"));
+                .uri(new URI(oidcIssuerUri));
         HttpResponse<String> response =
             httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
 
