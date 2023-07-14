@@ -50,8 +50,8 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
   @Value("${tailormap-api.oidc.client-secret:#{null}}")
   private String oidcClientSecret;
 
-  @Value("${tailormap-api.oidc.user-name-attribute-name:#{null}}")
-  private String oidcUserNameAttributeName;
+  @Value("${tailormap-api.oidc.user-name-attribute:#{null}}")
+  private String oidcUserNameAttribute;
 
   @Value("${tailormap-api.oidc.show-for-viewer:false}")
   private boolean oidcShowForViewer;
@@ -164,7 +164,7 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
                 .userInfoUri(metadata.getUserInfoEndpointURI().toASCIIString())
                 .providerConfigurationMetadata(metadata.toJSONObject())
                 .jwkSetUri(metadata.getJWKSetURI().toASCIIString())
-                .userNameAttributeName(oidcUserNameAttributeName)
+                .userNameAttributeName(oidcUserNameAttribute)
                 .redirectUri("{baseUrl}/api/oauth2/callback")
                 .build());
       } catch (Exception e) {
