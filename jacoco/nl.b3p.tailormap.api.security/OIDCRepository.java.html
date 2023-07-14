@@ -50,8 +50,8 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable&lt
   @Value(&quot;${tailormap-api.oidc.client-secret:#{null}}&quot;)
   private String oidcClientSecret;
 
-  @Value(&quot;${tailormap-api.oidc.user-name-attribute-name:#{null}}&quot;)
-  private String oidcUserNameAttributeName;
+  @Value(&quot;${tailormap-api.oidc.user-name-attribute:#{null}}&quot;)
+  private String oidcUserNameAttribute;
 
   @Value(&quot;${tailormap-api.oidc.show-for-viewer:false}&quot;)
   private boolean oidcShowForViewer;
@@ -134,42 +134,45 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable&lt
 
 <span class="nc bnc" id="L135" title="All 6 branches missed.">    if (oidcName != null &amp;&amp; oidcIssuerUri != null &amp;&amp; oidcClientId != null) {</span>
       try {
-        HttpRequest.Builder requestBuilder =
-<span class="nc" id="L138">            HttpRequest.newBuilder()</span>
-<span class="nc" id="L139">                .uri(new URI(oidcIssuerUri + &quot;/.well-known/openid-configuration&quot;));</span>
-<span class="nc" id="L140">        HttpResponse&lt;String&gt; response =</span>
-<span class="nc" id="L141">            httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());</span>
+        // When copying the URI from some IdP control panels into an .env file, this suffix won't be
+        // stripped by OIDCConfigurationEventHandler.handleBeforeCreateOrSave() so accept both
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        if (!oidcIssuerUri.endsWith(&quot;/.well-known/openid-configuration&quot;)) {</span>
+<span class="nc" id="L140">          oidcIssuerUri = oidcIssuerUri + &quot;/.well-known/openid-configuration&quot;;</span>
+        }
+<span class="nc" id="L142">        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(new URI(oidcIssuerUri));</span>
+<span class="nc" id="L143">        HttpResponse&lt;String&gt; response =</span>
+<span class="nc" id="L144">            httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());</span>
 
-<span class="nc" id="L143">        OIDCProviderMetadata metadata = OIDCProviderMetadata.parse(response.body());</span>
-<span class="nc" id="L144">        String id = &quot;static&quot;;</span>
+<span class="nc" id="L146">        OIDCProviderMetadata metadata = OIDCProviderMetadata.parse(response.body());</span>
+<span class="nc" id="L147">        String id = &quot;static&quot;;</span>
 
-<span class="nc" id="L146">        newMap.put(</span>
+<span class="nc" id="L149">        newMap.put(</span>
             id,
-<span class="nc" id="L148">            ClientRegistration.withRegistrationId(id)</span>
-<span class="nc" id="L149">                .clientId(oidcClientId)</span>
-<span class="nc" id="L150">                .clientSecret(oidcClientSecret)</span>
-<span class="nc" id="L151">                .clientName(oidcName)</span>
-<span class="nc" id="L152">                .scope(&quot;openid&quot;)</span>
-<span class="nc" id="L153">                .issuerUri(metadata.getIssuer().toString())</span>
-<span class="nc" id="L154">                .clientAuthenticationMethod(</span>
+<span class="nc" id="L151">            ClientRegistration.withRegistrationId(id)</span>
+<span class="nc" id="L152">                .clientId(oidcClientId)</span>
+<span class="nc" id="L153">                .clientSecret(oidcClientSecret)</span>
+<span class="nc" id="L154">                .clientName(oidcName)</span>
+<span class="nc" id="L155">                .scope(&quot;openid&quot;)</span>
+<span class="nc" id="L156">                .issuerUri(metadata.getIssuer().toString())</span>
+<span class="nc" id="L157">                .clientAuthenticationMethod(</span>
                     ClientAuthenticationMethod
                         .CLIENT_SECRET_BASIC) // TODO: fetch from OIDC metadata
-<span class="nc" id="L157">                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)</span>
-<span class="nc" id="L158">                .authorizationUri(metadata.getAuthorizationEndpointURI().toASCIIString())</span>
-<span class="nc" id="L159">                .tokenUri(metadata.getTokenEndpointURI().toASCIIString())</span>
-<span class="nc" id="L160">                .userInfoUri(metadata.getUserInfoEndpointURI().toASCIIString())</span>
-<span class="nc" id="L161">                .providerConfigurationMetadata(metadata.toJSONObject())</span>
-<span class="nc" id="L162">                .jwkSetUri(metadata.getJWKSetURI().toASCIIString())</span>
-<span class="nc" id="L163">                .userNameAttributeName(oidcUserNameAttributeName)</span>
-<span class="nc" id="L164">                .redirectUri(&quot;{baseUrl}/api/oauth2/callback&quot;)</span>
-<span class="nc" id="L165">                .build());</span>
-<span class="nc" id="L166">      } catch (Exception e) {</span>
-<span class="nc" id="L167">        logger.error(&quot;Failed to create static OIDC client registration&quot;, e);</span>
-<span class="nc" id="L168">      }</span>
+<span class="nc" id="L160">                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)</span>
+<span class="nc" id="L161">                .authorizationUri(metadata.getAuthorizationEndpointURI().toASCIIString())</span>
+<span class="nc" id="L162">                .tokenUri(metadata.getTokenEndpointURI().toASCIIString())</span>
+<span class="nc" id="L163">                .userInfoUri(metadata.getUserInfoEndpointURI().toASCIIString())</span>
+<span class="nc" id="L164">                .providerConfigurationMetadata(metadata.toJSONObject())</span>
+<span class="nc" id="L165">                .jwkSetUri(metadata.getJWKSetURI().toASCIIString())</span>
+<span class="nc" id="L166">                .userNameAttributeName(oidcUserNameAttribute)</span>
+<span class="nc" id="L167">                .redirectUri(&quot;{baseUrl}/api/oauth2/callback&quot;)</span>
+<span class="nc" id="L168">                .build());</span>
+<span class="nc" id="L169">      } catch (Exception e) {</span>
+<span class="nc" id="L170">        logger.error(&quot;Failed to create static OIDC client registration&quot;, e);</span>
+<span class="nc" id="L171">      }</span>
     }
 
-<span class="nc" id="L171">    registrations.clear();</span>
-<span class="nc" id="L172">    registrations.putAll(newMap);</span>
-<span class="nc" id="L173">  }</span>
+<span class="nc" id="L174">    registrations.clear();</span>
+<span class="nc" id="L175">    registrations.putAll(newMap);</span>
+<span class="nc" id="L176">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
