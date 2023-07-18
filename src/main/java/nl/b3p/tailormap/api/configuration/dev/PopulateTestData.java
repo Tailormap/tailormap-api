@@ -411,8 +411,10 @@ public class PopulateTestData {
                     new JDBCConnectionProperties()
                         .dbtype(JDBCConnectionProperties.DbtypeEnum.ORACLE)
                         .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "oracle")
-                        .database("/XEPDB1?oracle.jdbc.J2EE13Compliant=true")
-                        .schema("GEODATA"))
+                        .database("/XEPDB1")
+                        .schema("GEODATA")
+                        .additionalProperties(
+                            Map.of("connectionOptions", "?oracle.jdbc.J2EE13Compliant=true")))
                 .setAuthentication(
                     new ServiceAuthentication()
                         .method(ServiceAuthentication.MethodEnum.PASSWORD)
@@ -426,8 +428,9 @@ public class PopulateTestData {
                     new JDBCConnectionProperties()
                         .dbtype(JDBCConnectionProperties.DbtypeEnum.SQLSERVER)
                         .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "sqlserver")
-                        .database("geodata;encrypt=false")
-                        .schema("dbo"))
+                        .database("geodata")
+                        .schema("dbo")
+                        .additionalProperties(Map.of("connectionOptions", ";encrypt=false")))
                 .setAuthentication(
                     new ServiceAuthentication()
                         .method(ServiceAuthentication.MethodEnum.PASSWORD)

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
@@ -46,12 +47,14 @@ public class JDBCFeatureSourceHelper extends FeatureSourceHelper {
 
     JDBCConnectionProperties c = tmfs.getJdbcConnection();
     Objects.requireNonNull(c.getDbtype());
+    final String connectionOpts =
+        Optional.ofNullable(c.getAdditionalProperties().get("connectionOptions")).orElse("");
 
     Map<String, Object> params = new HashMap<>();
     params.put(DBTYPE.key, c.getDbtype().getValue());
     params.put(HOST.key, c.getHost());
     params.put(PORT.key, c.getPort() != null ? c.getPort() : defaultPorts.get(c.getDbtype()));
-    params.put(DATABASE.key, c.getDatabase());
+    params.put(DATABASE.key, c.getDatabase() + connectionOpts);
     params.put(SCHEMA.key, c.getSchema());
     params.put(USER.key, tmfs.getAuthentication().getUsername());
     params.put(PASSWD.key, tmfs.getAuthentication().getPassword());
