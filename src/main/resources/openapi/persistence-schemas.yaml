@@ -232,6 +232,8 @@ components:
           type: object
           additionalProperties:
             type: string
+            example:
+              connectionOptions: ';encrypt=false'
 
     FeatureTypeSettings:
       required:
