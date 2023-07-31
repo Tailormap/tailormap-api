@@ -5,6 +5,8 @@
  */
 package nl.b3p.tailormap.api.security;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
@@ -132,7 +134,7 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
       }
     }
 
-    if (oidcName != null && oidcIssuerUri != null && oidcClientId != null) {
+    if (isNotBlank(oidcName) && isNotBlank(oidcIssuerUri) && isNotBlank(oidcClientId)) {
       try {
         // When copying the URI from some IdP control panels into an .env file, this suffix won't be
         // stripped by OIDCConfigurationEventHandler.handleBeforeCreateOrSave() so accept both
