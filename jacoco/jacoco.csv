@@ -85,5 +85,5 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,ExitAfterCreating
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,FlywayCleanSchema,5,0,0,0,2,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,FlywayStartWithNewSchema,18,0,0,0,7,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,FlywayMigrationResult,10,0,0,0,4,0,3,0,3,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,FlywayDefaultStrategy,15,0,0,0,4,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,DeleteDDLScriptBeforeCreating,60,0,6,0,18,0,10,0,7,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.ddl,FlywayDefaultStrategy,15,0,0,0,4,0,3,0,3,0
