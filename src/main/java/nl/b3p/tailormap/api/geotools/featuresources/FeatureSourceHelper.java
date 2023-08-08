@@ -121,7 +121,8 @@ public abstract class FeatureSourceHelper {
                         new TMFeatureType()
                             .setName(typeName)
                             .setFeatureSource(tmfs)
-                            .setWriteable(true)); // TODO set writeable meaningfully
+                            // TODO set writeable meaningfully
+                            .setWriteable(tmfs.getProtocol() == TMFeatureSource.Protocol.JDBC));
         if (!tmfs.getFeatureTypes().contains(pft)) {
           tmfs.getFeatureTypes().add(pft);
         }
