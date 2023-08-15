@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api.persistence.helper;
 
 import static nl.b3p.tailormap.api.persistence.TMFeatureSource.Protocol.WFS;
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
+import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -95,6 +96,12 @@ public class GeoServiceHelper {
   }
 
   public void loadServiceCapabilities(GeoService geoService) throws Exception {
+
+    if (geoService.getProtocol() == XYZ) {
+      setXyzCapabilities(geoService);
+      return;
+    }
+
     ResponseTeeingHTTPClient client =
         new ResponseTeeingHTTPClient(
             HTTPClientFinder.createClient(), null, Set.of("Access-Control-Allow-Origin"));
@@ -147,6 +154,18 @@ public class GeoServiceHelper {
               .map(GeoServiceLayer::getName)
               .collect(Collectors.toList()));
     }
+  }
+
+  private static void setXyzCapabilities(GeoService geoService) {
+    geoService.setLayers(
+        List.of(
+            new GeoServiceLayer()
+                .id("0")
+                .root(true)
+                .name(geoService.getTitle())
+                .title(geoService.getTitle())
+                .virtual(false)
+                .queryable(false)));
   }
 
   private void setServiceInfo(
