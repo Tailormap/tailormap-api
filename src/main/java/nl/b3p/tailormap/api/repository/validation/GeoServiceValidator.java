@@ -55,7 +55,8 @@ public class GeoServiceValidator implements Validator {
     try {
       // For XYZ URL templates, remove replacements
       if (service.getProtocol() == XYZ) {
-        uri = new URL(service.getUrl().replaceAll("\\$\\{[xyz]}", "")).toURI();
+        // Besides {x}, {y}, {z} also allow {-y} (for TMS) and {a-c} for domains
+        uri = new URL(service.getUrl().replaceAll("\\{[a-z\\-]}", "")).toURI();
       } else {
         uri = new URL(service.getUrl()).toURI();
       }
