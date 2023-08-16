@@ -312,6 +312,7 @@ components:
               - $ref: '#/components/schemas/LayerSettings'
               - $ref: '#/components/schemas/WMSLayerSettings'
               - $ref: '#/components/schemas/WMTSLayerSettings'
+              - $ref: '#/components/schemas/XYZLayerSettings'
           example:
             'begroeidterreindeel':
               title: laag 1
@@ -383,6 +384,27 @@ components:
             hiDpiSubstituteLayer:
               nullable: true
               description: Layer name of this service to substitute when rendering at high dpi.
+              type: string
+
+    XYZLayerSettings:
+      description: Settings applying to a XYZ layer.
+      allOf:
+        - $ref: '#/components/schemas/LayerSettings'
+        - type: object
+          properties:
+            minZoom:
+              nullable: true
+              type: integer
+              description: minZoom property of OpenLayers XYZ source
+            maxZoom:
+              nullable: true
+              type: integer
+              description: maxZoom property of OpenLayers XYZ source
+            hiDpiMode:
+              $ref: './common-schemas.yaml#/components/schemas/TileLayerHiDpiMode'
+            hiDpiSubstituteLayer:
+              nullable: true
+              description: Alternate URL template to use when rendering at high dpi (using 'layer' instead of 'url' in the name for ease of use).
               type: string
 
     GeoServiceLayer:
