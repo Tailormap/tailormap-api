@@ -13,4 +13,4 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
     path = "feature-types",
     collectionResourceRel = "feature-types",
     itemResourceRel = "feature-type")
-public interface FeatureTypeRepository extends JpaRepository<TMFeatureType, String> {}
+public interface FeatureTypeRepository extends JpaRepository<TMFeatureType, Long> {}
