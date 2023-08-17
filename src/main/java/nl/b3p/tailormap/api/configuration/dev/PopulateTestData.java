@@ -203,7 +203,7 @@ public class PopulateTestData {
                     new GeoServiceSettings()
                         .layerSettings(
                             Map.of(
-                                "OSM",
+                                "xyz",
                                 new GeoServiceLayerSettings()
                                     .attribution(osmAttribution)
                                     .maxZoom(19)))),
@@ -966,7 +966,7 @@ public class PopulateTestData {
                             .objectType("AppTreeLayerNode")
                             .id("lyr:osm:OSM")
                             .serviceId("osm")
-                            .layerName("OSM")
+                            .layerName("xyz")
                             .visible(false)));
 
     applicationRepository.save(app);
