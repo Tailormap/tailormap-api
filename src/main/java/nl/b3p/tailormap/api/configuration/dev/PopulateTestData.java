@@ -7,6 +7,7 @@ package nl.b3p.tailormap.api.configuration.dev;
 
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
+import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static nl.b3p.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
 
 import java.lang.invoke.MethodHandles;
@@ -192,6 +193,20 @@ public class PopulateTestData {
 
     Collection<GeoService> services =
         List.of(
+            new GeoService()
+                .setId("osm")
+                .setProtocol(XYZ)
+                .setTitle("OSM")
+                .setUrl("https://tile.openstreetmap.org/{z}/{x}/{y}.png")
+                .setAuthorizationRules(rule)
+                .setSettings(
+                    new GeoServiceSettings()
+                        .layerSettings(
+                            Map.of(
+                                "OSM",
+                                new GeoServiceLayerSettings()
+                                    .attribution(osmAttribution)
+                                    .maxZoom(19)))),
             // Layer settings configured later, using the same settings for this one and proxied one
             new GeoService()
                 .setId("snapshot-geoserver")
@@ -891,7 +906,7 @@ public class PopulateTestData {
                             .root(true)
                             .title("Base layers")
                             .childrenIds(
-                                List.of("lvl:basemap", "lvl:orthofoto", "lvl:orthofoto-labels")))
+                                List.of("lvl:basemap", "lvl:orthofoto", "lvl:orthofoto-labels", "lvl:osm")))
                     .addBaseLayerNodesItem(
                         new AppTreeLevelNode()
                             .objectType("AppTreeLevelNode")
@@ -939,6 +954,19 @@ public class PopulateTestData {
                             .id("lyr:at-basemap:orthofoto_2")
                             .serviceId("at-basemap")
                             .layerName("bmaporthofoto30cm")
+                            .visible(false))
+                    .addBaseLayerNodesItem(
+                        new AppTreeLevelNode()
+                            .objectType("AppTreeLevelNode")
+                            .id("lvl:osm")
+                            .title("OSM")
+                            .addChildrenIdsItem("lyr:osm:OSM"))
+                    .addBaseLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:osm:OSM")
+                            .serviceId("osm")
+                            .layerName("OSM")
                             .visible(false)));
 
     applicationRepository.save(app);
