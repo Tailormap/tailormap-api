@@ -328,11 +328,14 @@ public class PopulateTestData {
                             Map.of(
                                 "geolandbasemap",
                                 new GeoServiceLayerSettings()
+                                    .title("Basemap")
                                     .hiDpiDisabled(false)
                                     .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERTILEPIXELRATIOONLY)
                                     .hiDpiSubstituteLayer("bmaphidpi"),
                                 "bmaporthofoto30cm",
-                                new GeoServiceLayerSettings().hiDpiDisabled(false)))),
+                                new GeoServiceLayerSettings()
+                                    .title("Orthophoto")
+                                    .hiDpiDisabled(false)))),
             new GeoService()
                 .setId("pdok-kadaster-bestuurlijkegebieden")
                 .setProtocol(WMS)
@@ -906,13 +909,11 @@ public class PopulateTestData {
                             .root(true)
                             .title("Base layers")
                             .childrenIds(
-                                List.of("lvl:basemap", "lvl:orthofoto", "lvl:orthofoto-labels", "lvl:osm")))
-                    .addBaseLayerNodesItem(
-                        new AppTreeLevelNode()
-                            .objectType("AppTreeLevelNode")
-                            .id("lvl:basemap")
-                            .title("Basemap")
-                            .addChildrenIdsItem("lyr:at-basemap:geolandbasemap"))
+                                List.of(
+                                    "lyr:at-basemap:geolandbasemap",
+                                    "lyr:at-basemap:orthofoto",
+                                    "lvl:orthofoto-labels",
+                                    "lyr:osm:xyz")))
                     .addBaseLayerNodesItem(
                         new AppTreeLayerNode()
                             .objectType("AppTreeLayerNode")
@@ -920,12 +921,6 @@ public class PopulateTestData {
                             .serviceId("at-basemap")
                             .layerName("geolandbasemap")
                             .visible(true))
-                    .addBaseLayerNodesItem(
-                        new AppTreeLevelNode()
-                            .objectType("AppTreeLevelNode")
-                            .id("lvl:orthofoto")
-                            .title("Orthofoto")
-                            .addChildrenIdsItem("lyr:at-basemap:orthofoto"))
                     .addBaseLayerNodesItem(
                         new AppTreeLayerNode()
                             .objectType("AppTreeLayerNode")
@@ -937,7 +932,7 @@ public class PopulateTestData {
                         new AppTreeLevelNode()
                             .objectType("AppTreeLevelNode")
                             .id("lvl:orthofoto-labels")
-                            .title("Orthofoto with labels")
+                            .title("Orthophoto with labels")
                             .childrenIds(
                                 List.of(
                                     "lyr:at-basemap:bmapoverlay", "lyr:at-basemap:orthofoto_2")))
@@ -956,15 +951,9 @@ public class PopulateTestData {
                             .layerName("bmaporthofoto30cm")
                             .visible(false))
                     .addBaseLayerNodesItem(
-                        new AppTreeLevelNode()
-                            .objectType("AppTreeLevelNode")
-                            .id("lvl:osm")
-                            .title("OSM")
-                            .addChildrenIdsItem("lyr:osm:OSM"))
-                    .addBaseLayerNodesItem(
                         new AppTreeLayerNode()
                             .objectType("AppTreeLayerNode")
-                            .id("lyr:osm:OSM")
+                            .id("lyr:osm:xyz")
                             .serviceId("osm")
                             .layerName("xyz")
                             .visible(false)));
