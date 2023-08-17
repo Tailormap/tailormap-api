@@ -11,6 +11,7 @@ import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static nl.b3p.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
 
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,9 @@ public class PopulateTestData {
 
   @Value("${tailormap-api.database.populate-testdata.exit:false}")
   private boolean exit;
+
+  @Value("${MAP5_URL:#{null}}")
+  private String map5url;
 
   private final ApplicationContext appContext;
   private final UserRepository userRepository;
@@ -354,6 +358,38 @@ public class PopulateTestData {
                 .setTitle("PDOK Kadaster bestuurlijke gebieden")
             // TODO MapServer WMS "https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk"
             );
+
+    if (map5url != null) {
+      GeoServiceLayerSettings osmAttr = new GeoServiceLayerSettings().attribution(osmAttribution);
+      services = new ArrayList<>(services);
+      services.add(
+          new GeoService()
+              .setId("map5")
+              .setProtocol(WMTS)
+              .setTitle("Map5")
+              .setUrl(map5url)
+              .setAuthorizationRules(rule)
+              .setSettings(
+                  new GeoServiceSettings()
+                      .defaultLayerSettings(
+                          new GeoServiceDefaultLayerSettings().hiDpiDisabled(true))
+                      .layerSettings(
+                          Map.of(
+                              "openlufo",
+                                  new GeoServiceLayerSettings()
+                                      .attribution(
+                                          "&copy; <a href=\"https://beeldmateriaal.nl/\">Beeldmateriaal.nl</a>, "
+                                              + osmAttribution),
+                              "luforoadslabels", osmAttr,
+                              "map5topo", osmAttr,
+                              "map5topo_gray", osmAttr,
+                              "map5topo_simple", osmAttr,
+                              "map5topo_simple_gray", osmAttr,
+                              "opensimpletopo", osmAttr,
+                              "opensimpletopo_gray", osmAttr,
+                              "opentopo", osmAttr,
+                              "opentopo_gray", osmAttr))));
+    }
 
     for (GeoService geoService : services) {
       geoServiceHelper.loadServiceCapabilities(geoService);
@@ -734,6 +770,50 @@ public class PopulateTestData {
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     app.setInitialExtent(new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));
     app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));
+
+    if (map5url != null) {
+      AppTreeLevelNode root = (AppTreeLevelNode) app.getContentRoot().getBaseLayerNodes().get(0);
+      List<String> childrenIds = new ArrayList<>(root.getChildrenIds());
+      childrenIds.add("lvl:map5topo_simple");
+      childrenIds.add("lvl:luchtfoto-labels");
+      root.setChildrenIds(childrenIds);
+      app.getContentRoot()
+          .addBaseLayerNodesItem(
+              new AppTreeLevelNode()
+                  .objectType("AppTreeLevelNode")
+                  .id("lvl:map5topo_simple")
+                  .title("Map5")
+                  .addChildrenIdsItem("lyr:map5:map5topo_simple"))
+          .addBaseLayerNodesItem(
+              new AppTreeLayerNode()
+                  .objectType("AppTreeLayerNode")
+                  .id("lyr:map5:map5topo_simple")
+                  .serviceId("map5")
+                  .layerName("map5topo_simple")
+                  .visible(false))
+          .addBaseLayerNodesItem(
+              new AppTreeLevelNode()
+                  .objectType("AppTreeLevelNode")
+                  .id("lvl:luchtfoto-labels")
+                  .title("Luchtfoto met labels")
+                  .addChildrenIdsItem("lyr:map5:luforoadslabels")
+                  .addChildrenIdsItem("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR2"))
+          .addBaseLayerNodesItem(
+              new AppTreeLayerNode()
+                  .objectType("AppTreeLayerNode")
+                  .id("lyr:map5:luforoadslabels")
+                  .serviceId("map5")
+                  .layerName("luforoadslabels")
+                  .visible(false))
+          .addBaseLayerNodesItem(
+              new AppTreeLayerNode()
+                  .objectType("AppTreeLayerNode")
+                  .id("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR2")
+                  .serviceId("pdok-hwh-luchtfotorgb")
+                  .layerName("Actueel_orthoHR")
+                  .visible(false));
+    }
+
     applicationRepository.save(app);
 
     app =
