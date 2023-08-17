@@ -343,6 +343,10 @@ public class PopulateTestData {
 
     if (map5url != null) {
       GeoServiceLayerSettings osmAttr = new GeoServiceLayerSettings().attribution(osmAttribution);
+      GeoServiceLayerSettings map5Attr =
+          new GeoServiceLayerSettings()
+              .attribution(
+                  "Kaarten: <a href=\"https://map5.nl\">Map5.nl</a>, data: " + osmAttribution);
       services = new ArrayList<>(services);
       services.add(
           new GeoService()
@@ -363,10 +367,10 @@ public class PopulateTestData {
                                           "&copy; <a href=\"https://beeldmateriaal.nl/\">Beeldmateriaal.nl</a>, "
                                               + osmAttribution),
                               "luforoadslabels", osmAttr,
-                              "map5topo", osmAttr,
-                              "map5topo_gray", osmAttr,
-                              "map5topo_simple", osmAttr,
-                              "map5topo_simple_gray", osmAttr,
+                              "map5topo", map5Attr,
+                              "map5topo_gray", map5Attr,
+                              "map5topo_simple", map5Attr,
+                              "map5topo_simple_gray", map5Attr,
                               "opensimpletopo", osmAttr,
                               "opensimpletopo_gray", osmAttr,
                               "opentopo", osmAttr,
