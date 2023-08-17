@@ -162,7 +162,7 @@ public class GeoServiceHelper {
             new GeoServiceLayer()
                 .id("0")
                 .root(true)
-                .name(geoService.getTitle())
+                .name("xyz")
                 .title(geoService.getTitle())
                 .virtual(false)
                 .queryable(false)));
