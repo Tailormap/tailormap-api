@@ -235,9 +235,10 @@ public class TMFeatureSource {
   }
 
   // Added this extra getter to work around Spring Data Rest
-  // By adding a repository for feature types SDR does not add feature types when fetching a feature source, while the
-  // front-end currently depends on having all feature types for a source available.
-  // In the future we could refactor this to give only a list of names and fetch the type itself when needed.
+  // By adding a repository for feature types SDR does not add feature types when fetching a feature
+  // source, while the front-end currently depends on having all feature types available.
+  // In the future we could refactor this to give only a list of names and fetch the type itself
+  // when needed.
   public List<TMFeatureType> getAllFeatureTypes() {
     return featureTypes;
   }
