@@ -258,7 +258,7 @@ components:
           description: Map of attribute name to its' settings.
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/AppLayerSettings'
+            $ref: '#/components/schemas/AttributeSettings'
 
     AttributeSettings:
       properties:
