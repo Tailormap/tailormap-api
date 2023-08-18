@@ -242,23 +242,32 @@
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>   }
 <a class="jxr_linenumber" name="L236" href="#L236">236</a> 
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>   <strong class="jxr_keyword">public</strong> List&lt;TMFeatureType&gt; getFeatureTypes() {
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>     <strong class="jxr_keyword">return</strong> featureTypes;
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>   }
-<a class="jxr_linenumber" name="L240" href="#L240">240</a> 
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>   <strong class="jxr_keyword">public</strong> <a name="TMFeatureSource" href="../../../../../nl/b3p/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> setFeatureTypes(List&lt;TMFeatureType&gt; featureTypes) {
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>     <strong class="jxr_keyword">this</strong>.featureTypes = featureTypes;
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>   <em class="jxr_comment">// Added this extra getter to work around Spring Data Rest</em>
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>   <em class="jxr_comment">// By adding a repository for feature types SDR does not add feature types when fetching a feature</em>
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>   <em class="jxr_comment">// source, while the front-end currently depends on having all feature types available.</em>
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>   <em class="jxr_comment">// In the future we could refactor this to give only a list of names and fetch the type itself</em>
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>   <em class="jxr_comment">// when needed.</em>
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>   <strong class="jxr_keyword">public</strong> List&lt;TMFeatureType&gt; getAllFeatureTypes() {
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>     <strong class="jxr_keyword">return</strong> featureTypes;
 <a class="jxr_linenumber" name="L244" href="#L244">244</a>   }
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>   <em class="jxr_comment">// &lt;/editor-fold&gt;</em>
-<a class="jxr_linenumber" name="L246" href="#L246">246</a> 
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>   <strong class="jxr_keyword">public</strong> <a name="TMFeatureType" href="../../../../../nl/b3p/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> findFeatureTypeByName(String featureTypeName) {
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>     <strong class="jxr_keyword">return</strong> getFeatureTypes().stream()
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>         .filter(ft -&gt; featureTypeName.equals(ft.getName()))
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>         .findFirst()
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>         .orElse(<strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>   }
-<a class="jxr_linenumber" name="L253" href="#L253">253</a> }
+<a class="jxr_linenumber" name="L245" href="#L245">245</a> 
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>   <strong class="jxr_keyword">public</strong> List&lt;TMFeatureType&gt; getFeatureTypes() {
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>     <strong class="jxr_keyword">return</strong> featureTypes;
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>   }
+<a class="jxr_linenumber" name="L249" href="#L249">249</a> 
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>   <strong class="jxr_keyword">public</strong> <a name="TMFeatureSource" href="../../../../../nl/b3p/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> setFeatureTypes(List&lt;TMFeatureType&gt; featureTypes) {
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>     <strong class="jxr_keyword">this</strong>.featureTypes = featureTypes;
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>   }
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>   <em class="jxr_comment">// &lt;/editor-fold&gt;</em>
+<a class="jxr_linenumber" name="L255" href="#L255">255</a> 
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>   <strong class="jxr_keyword">public</strong> <a name="TMFeatureType" href="../../../../../nl/b3p/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> findFeatureTypeByName(String featureTypeName) {
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>     <strong class="jxr_keyword">return</strong> getFeatureTypes().stream()
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>         .filter(ft -&gt; featureTypeName.equals(ft.getName()))
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>         .findFirst()
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>         .orElse(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>   }
+<a class="jxr_linenumber" name="L262" href="#L262">262</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2023 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

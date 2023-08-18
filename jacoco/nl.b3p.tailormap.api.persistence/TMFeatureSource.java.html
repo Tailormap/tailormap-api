@@ -234,21 +234,30 @@ import org.hibernate.annotations.Type;
 <span class="nc" id="L234">    return this;</span>
   }
 
+  // Added this extra getter to work around Spring Data Rest
+  // By adding a repository for feature types SDR does not add feature types when fetching a feature
+  // source, while the front-end currently depends on having all feature types available.
+  // In the future we could refactor this to give only a list of names and fetch the type itself
+  // when needed.
+  public List&lt;TMFeatureType&gt; getAllFeatureTypes() {
+<span class="nc" id="L243">    return featureTypes;</span>
+  }
+
   public List&lt;TMFeatureType&gt; getFeatureTypes() {
-<span class="nc" id="L238">    return featureTypes;</span>
+<span class="nc" id="L247">    return featureTypes;</span>
   }
 
   public TMFeatureSource setFeatureTypes(List&lt;TMFeatureType&gt; featureTypes) {
-<span class="nc" id="L242">    this.featureTypes = featureTypes;</span>
-<span class="nc" id="L243">    return this;</span>
+<span class="nc" id="L251">    this.featureTypes = featureTypes;</span>
+<span class="nc" id="L252">    return this;</span>
   }
   // &lt;/editor-fold&gt;
 
   public TMFeatureType findFeatureTypeByName(String featureTypeName) {
-<span class="nc" id="L248">    return getFeatureTypes().stream()</span>
-<span class="nc" id="L249">        .filter(ft -&gt; featureTypeName.equals(ft.getName()))</span>
-<span class="nc" id="L250">        .findFirst()</span>
-<span class="nc" id="L251">        .orElse(null);</span>
+<span class="nc" id="L257">    return getFeatureTypes().stream()</span>
+<span class="nc" id="L258">        .filter(ft -&gt; featureTypeName.equals(ft.getName()))</span>
+<span class="nc" id="L259">        .findFirst()</span>
+<span class="nc" id="L260">        .orElse(null);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

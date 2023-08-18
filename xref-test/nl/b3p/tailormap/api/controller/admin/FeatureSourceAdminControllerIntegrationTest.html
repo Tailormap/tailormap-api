@@ -95,8 +95,8 @@
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>                      .content(featureSourcePOSTBody))
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>              .andExpect(status().isCreated())
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>              .andExpect(jsonPath(<span class="jxr_string">"$.id"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>              .andExpect(jsonPath(<span class="jxr_string">"$.featureTypes"</span>).isArray())
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>              .andExpect(jsonPath(<span class="jxr_string">"$.featureTypes.length()"</span>).value(30))
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>              .andExpect(jsonPath(<span class="jxr_string">"$.allFeatureTypes"</span>).isArray())
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>              .andExpect(jsonPath(<span class="jxr_string">"$.allFeatureTypes.length()"</span>).value(30))
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>              .andReturn();
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>      Integer featureSourceId = JsonPath.read(result.getResponse().getContentAsString(), <span class="jxr_string">"$.id"</span>);
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>      String selfLink =
@@ -117,9 +117,9 @@
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>           .perform(get(selfLink).accept(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>           .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>           .andExpect(jsonPath(<span class="jxr_string">"$.id"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>           .andExpect(jsonPath(<span class="jxr_string">"$.featureTypes"</span>).isArray())
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>           .andExpect(jsonPath(<span class="jxr_string">"$.featureTypes.length()"</span>).value(31))
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>           .andExpect(jsonPath(<span class="jxr_string">"$.featureTypes[?(@.name=='test')]"</span>).isNotEmpty());
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>           .andExpect(jsonPath(<span class="jxr_string">"$.allFeatureTypes"</span>).isArray())
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>           .andExpect(jsonPath(<span class="jxr_string">"$.allFeatureTypes.length()"</span>).value(31))
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>           .andExpect(jsonPath(<span class="jxr_string">"$.allFeatureTypes[?(@.name=='test')]"</span>).isNotEmpty());
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>     } <strong class="jxr_keyword">finally</strong> {
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>       <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         <strong class="jxr_keyword">new</strong> JdbcTemplate(dataSource).execute(<span class="jxr_string">"drop table test"</span>);
@@ -139,9 +139,9 @@
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>         .perform(get(selfLink).accept(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>         .andExpect(jsonPath(<span class="jxr_string">"$.id"</span>).isNotEmpty())
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>         .andExpect(jsonPath(<span class="jxr_string">"$.featureTypes"</span>).isArray())
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>         .andExpect(jsonPath(<span class="jxr_string">"$.featureTypes.length()"</span>).value(30))
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>         .andExpect(jsonPath(<span class="jxr_string">"$.featureTypes[?(@.name=='test')]"</span>).isEmpty());
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>         .andExpect(jsonPath(<span class="jxr_string">"$.allFeatureTypes"</span>).isArray())
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>         .andExpect(jsonPath(<span class="jxr_string">"$.allFeatureTypes.length()"</span>).value(30))
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>         .andExpect(jsonPath(<span class="jxr_string">"$.allFeatureTypes[?(@.name=='test')]"</span>).isEmpty());
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>   }
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> }
 </pre>
