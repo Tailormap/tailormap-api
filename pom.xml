@@ -115,7 +115,7 @@ SPDX-License-Identifier: MIT
         -->
         <commons-lang3.version>3.13.0</commons-lang3.version>
         <jackson-bom.version>2.15.2</jackson-bom.version>
-        <micrometer.version>1.11.2</micrometer.version>
+        <micrometer.version>1.11.3</micrometer.version>
         <hibernate.version>5.6.15.Final</hibernate.version>
         <!-- GeoTools up to 29.1 uses hsqldb 2.5.2, which has CVE-2022-41853, 29.2 should provide 2.7.2 -->
         <hsqldb.version>2.7.2</hsqldb.version>
