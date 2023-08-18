@@ -87,8 +87,8 @@ class FeatureSourceAdminControllerIntegrationTest {
                     .content(featureSourcePOSTBody))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").isNotEmpty())
-            .andExpect(jsonPath("$.featureTypes").isArray())
-            .andExpect(jsonPath("$.featureTypes.length()").value(30))
+            .andExpect(jsonPath("$.allFeatureTypes").isArray())
+            .andExpect(jsonPath("$.allFeatureTypes.length()").value(30))
             .andReturn();
     Integer featureSourceId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
     String selfLink =
@@ -109,9 +109,9 @@ class FeatureSourceAdminControllerIntegrationTest {
           .perform(get(selfLink).accept(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.id").isNotEmpty())
-          .andExpect(jsonPath("$.featureTypes").isArray())
-          .andExpect(jsonPath("$.featureTypes.length()").value(31))
-          .andExpect(jsonPath("$.featureTypes[?(@.name=='test')]").isNotEmpty());
+          .andExpect(jsonPath("$.allFeatureTypes").isArray())
+          .andExpect(jsonPath("$.allFeatureTypes.length()").value(31))
+          .andExpect(jsonPath("$.allFeatureTypes[?(@.name=='test')]").isNotEmpty());
     } finally {
       try {
         new JdbcTemplate(dataSource).execute("drop table test");
@@ -131,8 +131,8 @@ class FeatureSourceAdminControllerIntegrationTest {
         .perform(get(selfLink).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").isNotEmpty())
-        .andExpect(jsonPath("$.featureTypes").isArray())
-        .andExpect(jsonPath("$.featureTypes.length()").value(30))
-        .andExpect(jsonPath("$.featureTypes[?(@.name=='test')]").isEmpty());
+        .andExpect(jsonPath("$.allFeatureTypes").isArray())
+        .andExpect(jsonPath("$.allFeatureTypes.length()").value(30))
+        .andExpect(jsonPath("$.allFeatureTypes[?(@.name=='test')]").isEmpty());
   }
 }
