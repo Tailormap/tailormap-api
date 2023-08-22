@@ -759,6 +759,7 @@ public class PopulateTestData {
                         new AppLayerSettings()
                             .opacity(50)
                             .title("Waterdeel overridden title")
+                            .editable(true)
                             .description(
                                 "This is the layer description from the app layer setting.")
                             .attribution(
@@ -768,9 +769,20 @@ public class PopulateTestData {
                         new AppLayerSettings()
                             .description("OpenStreetMap polygon data in EPSG:3857")
                             .opacity(60)
+                            .editable(true)
                             .title("OSM Polygon (EPSG:3857)")
                             .attribution(
-                                "© <a href=\"https://www.openstreetmap.org/copyright/\">OpenStreetMap</a> contributors")));
+                                "© <a href=\"https://www.openstreetmap.org/copyright/\">OpenStreetMap</a> contributors"))
+                    .putLayerSettingsItem(
+                        "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
+                        new AppLayerSettings().editable(true))
+                    .putLayerSettingsItem(
+                        "lyr:snapshot-geoserver:sqlserver:wegdeel",
+                        new AppLayerSettings().editable(true))
+                    .putLayerSettingsItem(
+                        "lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel",
+                        new AppLayerSettings().editable(false)));
+
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     app.setInitialExtent(new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));
     app.setMaxExtent(new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));

@@ -55,6 +55,8 @@ class EditFeatureControllerIntegrationTest {
   private static final String osm_polygonUrlPostgis =
       "/app/default/layer/lyr:snapshot-geoserver:postgis:osm_polygon/edit/feature/";
 
+  private static final String begroeidterreindeelUrlPostgisNonEditable =
+      "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/edit/feature/";
   private static final String waterdeelUrlOracle =
       "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/edit/feature/";
   private static final String wegdeelUrlSqlserver =
@@ -116,6 +118,34 @@ class EditFeatureControllerIntegrationTest {
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))
         .andExpect(jsonPath("$.url").value("/login"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void testNonEditablePatch() throws Exception {
+    final String url =
+        apiBasePath
+            + begroeidterreindeelUrlPostgisNonEditable
+            + StaticTestData.get("begroeidterreindeel__fid_edit");
+    mockMvc
+        .perform(
+            patch(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    "{\"__fid\": \""
+                        + StaticTestData.get("begroeidterreindeel__fid_edit")
+                        + "\",\"attributes\" : { \"inonderzoek\":true, \"class\": \"weggemaaid grasland\", \"geom\" : \""
+                        + StaticTestData.get("begroeidterreindeel__geom_edit")
+                        + "\"}}"))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value("400"))
+        .andExpect(jsonPath("$.message").value("Layer is not editable"));
   }
 
   @Test
@@ -537,7 +567,7 @@ class EditFeatureControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(setServletPath(url)))
-        .andExpect(status().is5xxServerError());
+        .andExpect(status().is4xxClientError());
   }
 
   @Test
