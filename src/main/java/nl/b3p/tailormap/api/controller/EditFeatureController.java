@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.annotation.AppRestController;
@@ -22,6 +23,7 @@ import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper;
+import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
@@ -101,7 +103,8 @@ public class EditFeatureController implements Constants {
 
     checkAuthentication();
 
-    TMFeatureType tmFeatureType = getFeatureType(appTreeLayerNode, service, layer);
+    TMFeatureType tmFeatureType =
+        getEditableFeatureType(application, appTreeLayerNode, service, layer);
 
     Map<String, Object> attributesMap = completeFeature.getAttributes();
     Set<String> attributeNames =
@@ -180,7 +183,8 @@ public class EditFeatureController implements Constants {
 
     checkAuthentication();
 
-    TMFeatureType tmFeatureType = getFeatureType(appTreeLayerNode, service, layer);
+    TMFeatureType tmFeatureType =
+        getEditableFeatureType(application, appTreeLayerNode, service, layer);
 
     Map<String, Object> attributesMap = partialFeature.getAttributes();
     Set<String> attributeNames =
@@ -242,11 +246,13 @@ public class EditFeatureController implements Constants {
       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,
+      @ModelAttribute Application application,
       @PathVariable String fid) {
 
     checkAuthentication();
 
-    TMFeatureType tmFeatureType = getFeatureType(appTreeLayerNode, service, layer);
+    TMFeatureType tmFeatureType =
+        getEditableFeatureType(application, appTreeLayerNode, service, layer);
 
     SimpleFeatureSource fs = null;
     try (Transaction transaction = new DefaultTransaction("delete")) {
@@ -263,7 +269,7 @@ public class EditFeatureController implements Constants {
       }
     } catch (IOException e) {
       // either opening datastore or commit failed
-      logger.error("Error delting feature {}", fid, e);
+      logger.error("Error deleting feature {}", fid, e);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
     } finally {
       if (fs != null) {
@@ -283,17 +289,41 @@ public class EditFeatureController implements Constants {
     }
   }
 
-  private TMFeatureType getFeatureType(
-      AppTreeLayerNode appTreeLayerNode, GeoService service, GeoServiceLayer layer) {
+  /**
+   * Get editable feature type, throws exception if not found or not editable. Will throw a {@link
+   * ResponseStatusException} if the layer does not have an editable featuretype.
+   *
+   * @param application the application that has the editable layer
+   * @param appTreeLayerNode the layer to edit
+   * @param service the service that has the layer
+   * @param layer the layer to edit
+   * @return the editable feature type
+   */
+  private TMFeatureType getEditableFeatureType(
+      Application application,
+      AppTreeLayerNode appTreeLayerNode,
+      GeoService service,
+      GeoServiceLayer layer) {
+
     if (null == layer) {
       throw new ResponseStatusException(
           HttpStatus.NOT_FOUND, "Cannot find layer " + appTreeLayerNode);
+    }
+
+    AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
+    if (null == appLayerSettings
+        || !Optional.ofNullable(appLayerSettings.getEditable()).orElse(false)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Layer is not editable");
     }
 
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
     if (null == tmft) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Layer does not have feature type");
     }
+    if (!tmft.isWriteable()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Feature type is not writeable");
+    }
+
     return tmft;
   }
 
