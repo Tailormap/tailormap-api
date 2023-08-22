@@ -556,4 +556,8 @@ components:
           description: 'Description to show for this layer.'
           nullable: true
           type: string
+        editable:
+          type: boolean
+          nullable: true
+          default: false
         # TODO add properties for selected WMS style, feature info popup template, etc.
