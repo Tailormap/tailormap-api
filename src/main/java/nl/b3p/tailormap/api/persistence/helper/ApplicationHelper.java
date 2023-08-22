@@ -321,6 +321,8 @@ public class ApplicationHelper {
               .hiDpiDisabled(hiDpiDisabled)
               .hiDpiMode(hiDpiMode)
               .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
+              .minZoom(serviceLayerSettings.getMinZoom())
+              .maxZoom(serviceLayerSettings.getMaxZoom())
               .opacity(appLayerSettings.getOpacity())
               .visible(layerRef.getVisible())
               .attribution(attribution)

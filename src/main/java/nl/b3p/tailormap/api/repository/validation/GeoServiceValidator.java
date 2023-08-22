@@ -6,6 +6,7 @@
 
 package nl.b3p.tailormap.api.repository.validation;
 
+import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static nl.b3p.tailormap.api.util.TMExceptionUtils.joinAllThrowableMessages;
 
 import java.lang.invoke.MethodHandles;
@@ -52,7 +53,13 @@ public class GeoServiceValidator implements Validator {
 
     URI uri;
     try {
-      uri = new URL(service.getUrl()).toURI();
+      // For XYZ URL templates, remove replacements
+      if (service.getProtocol() == XYZ) {
+        // Besides {x}, {y}, {z} also allow {-y} (for TMS) and {a-c} for domains
+        uri = new URL(service.getUrl().replaceAll("\\{[a-z\\-]}", "")).toURI();
+      } else {
+        uri = new URL(service.getUrl()).toURI();
+      }
     } catch (Exception e) {
       errors.rejectValue("url", "invalid", "Invalid URI");
       return;

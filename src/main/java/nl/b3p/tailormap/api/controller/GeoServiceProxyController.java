@@ -31,6 +31,7 @@ import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import org.slf4j.Logger;
@@ -84,6 +85,10 @@ public class GeoServiceProxyController {
 
     if (service == null || layer == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    if (GeoServiceProtocol.XYZ.getValue().equals(protocol)) {
+      throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "XYZ proxying not implemented");
     }
 
     if (!service.getProtocol().getValue().equals(protocol)) {
