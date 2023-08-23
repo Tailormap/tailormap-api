@@ -301,6 +301,23 @@ public class PopulateTestData {
                                     .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
                                     .hiDpiSubstituteLayer("osm-hq")))),
             new GeoService()
+                .setId("openbasiskaart-tms")
+                .setProtocol(XYZ)
+                .setTitle("Openbasiskaart (TMS)")
+                .setUrl("https://openbasiskaart.nl/mapcache/tms/1.0.0/osm@rd/{z}/{x}/{-y}.png")
+                .setAuthorizationRules(rule)
+                .setSettings(
+                    new GeoServiceSettings()
+                        .defaultLayerSettings(
+                            new GeoServiceDefaultLayerSettings().attribution(osmAttribution))
+                        .layerSettings(
+                            Map.of(
+                                "xyz",
+                                new GeoServiceLayerSettings()
+                                    .maxZoom(15)
+                                    .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERTILEPIXELRATIOONLY)
+                                    .hiDpiSubstituteLayer("https://openbasiskaart.nl/mapcache/tms/1.0.0/osm-hq@rd-hq/{z}/{x}/{-y}.png")))),
+            new GeoService()
                 .setId("pdok-hwh-luchtfotorgb")
                 .setProtocol(WMTS)
                 .setTitle("PDOK HWH luchtfoto")
@@ -314,6 +331,26 @@ public class PopulateTestData {
                                 .attribution(
                                     "&copy; <a href=\"https://beeldmateriaal.nl/\">Beeldmateriaal.nl</a>")
                                 .hiDpiDisabled(false))),
+            new GeoService()
+                .setId("b3p-mapproxy-luchtfoto")
+                .setProtocol(XYZ)
+                .setTitle("Luchtfoto (TMS)")
+                .setUrl("https://mapproxy.b3p.nl/tms/1.0.0/luchtfoto/EPSG28992/{z}/{x}/{-y}.jpeg")
+                .setAuthorizationRules(rule)
+                .setPublished(true)
+                .setSettings(
+                    new GeoServiceSettings()
+                        .defaultLayerSettings(
+                            new GeoServiceDefaultLayerSettings()
+                                .attribution(
+                                    "&copy; <a href=\"https://beeldmateriaal.nl/\">Beeldmateriaal.nl</a>")
+                                .hiDpiDisabled(false))
+                        .layerSettings(
+                            Map.of(
+                                "xyz",
+                                new GeoServiceLayerSettings()
+                                    .maxZoom(14)
+                                    .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL)))),
             new GeoService()
                 .setId("at-basemap")
                 .setProtocol(WMTS)
@@ -609,22 +646,12 @@ public class PopulateTestData {
 
     List<AppTreeNode> baseNodes =
         List.of(
-            new AppTreeLevelNode()
-                .objectType("AppTreeLevelNode")
-                .id("lvl:openbasiskaart")
-                .title("Openbasiskaart")
-                .addChildrenIdsItem("lyr:openbasiskaart:osm"),
             new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:openbasiskaart:osm")
                 .serviceId("openbasiskaart")
                 .layerName("osm")
                 .visible(true),
-            new AppTreeLevelNode()
-                .objectType("AppTreeLevelNode")
-                .id("lvl:pdok-hwh-luchtfotorgb")
-                .title("Luchtfoto")
-                .addChildrenIdsItem("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"),
             new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR")
@@ -648,15 +675,11 @@ public class PopulateTestData {
                             .title("Base layers")
                             .childrenIds(
                                 List.of(
-                                    "lvl:openbasiskaart",
-                                    "lvl:pdok-hwh-luchtfotorgb",
-                                    "lvl:openbasiskaart-proxied")))
-                    .addBaseLayerNodesItem(
-                        new AppTreeLevelNode()
-                            .objectType("AppTreeLevelNode")
-                            .id("lvl:openbasiskaart-proxied")
-                            .title("Openbasiskaart (proxied)")
-                            .addChildrenIdsItem("lyr:openbasiskaart-proxied:osm"))
+                                    "lyr:openbasiskaart:osm",
+                                    "lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR",
+                                    "lyr:openbasiskaart-proxied:osm",
+                                    "lyr:openbasiskaart-tms:xyz",
+                                    "lyr:b3p-mapproxy-luchtfoto:xyz")))
                     .addBaseLayerNodesItem(
                         // This layer from a secured proxied service should not be proxyable in a
                         // public app, see test_wms_secured_proxy_not_in_public_app() testcase
@@ -665,6 +688,20 @@ public class PopulateTestData {
                             .id("lyr:openbasiskaart-proxied:osm")
                             .serviceId("openbasiskaart-proxied")
                             .layerName("osm")
+                            .visible(false))
+                    .addBaseLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:openbasiskaart-tms:xyz")
+                            .serviceId("openbasiskaart-tms")
+                            .layerName("xyz")
+                            .visible(false))
+                    .addBaseLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:b3p-mapproxy-luchtfoto:xyz")
+                            .serviceId("b3p-mapproxy-luchtfoto")
+                            .layerName("xyz")
                             .visible(false))
                     .addLayerNodesItem(
                         new AppTreeLevelNode()
@@ -754,6 +791,9 @@ public class PopulateTestData {
                             .visible(false)))
             .setSettings(
                 new AppSettings()
+                    .putLayerSettingsItem("lyr:openbasiskaart:osm", new AppLayerSettings().title("Openbasiskaart"))
+                    .putLayerSettingsItem("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR", new AppLayerSettings().title("Luchtfoto"))
+                    .putLayerSettingsItem("lyr:openbasiskaart-proxied:osm", new AppLayerSettings().title("Openbasiskaart (proxied)"))
                     .putLayerSettingsItem(
                         "lyr:snapshot-geoserver:oracle:WATERDEEL",
                         new AppLayerSettings()
@@ -790,16 +830,11 @@ public class PopulateTestData {
     if (map5url != null) {
       AppTreeLevelNode root = (AppTreeLevelNode) app.getContentRoot().getBaseLayerNodes().get(0);
       List<String> childrenIds = new ArrayList<>(root.getChildrenIds());
-      childrenIds.add("lvl:map5topo_simple");
+      childrenIds.add("lyr:map5:map5topo_simple");
       childrenIds.add("lvl:luchtfoto-labels");
       root.setChildrenIds(childrenIds);
+      app.getSettings().putLayerSettingsItem("lyr:map5:map5topo_simple", new AppLayerSettings().title("Map5"));
       app.getContentRoot()
-          .addBaseLayerNodesItem(
-              new AppTreeLevelNode()
-                  .objectType("AppTreeLevelNode")
-                  .id("lvl:map5topo_simple")
-                  .title("Map5")
-                  .addChildrenIdsItem("lyr:map5:map5topo_simple"))
           .addBaseLayerNodesItem(
               new AppTreeLayerNode()
                   .objectType("AppTreeLayerNode")
@@ -847,7 +882,7 @@ public class PopulateTestData {
                             .root(true)
                             .title("Base layers")
                             .childrenIds(
-                                List.of("lvl:openbasiskaart", "lvl:pdok-hwh-luchtfotorgb"))));
+                                List.of("lyr:openbasiskaart:osm", "lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"))));
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     applicationRepository.save(app);
 
@@ -867,15 +902,9 @@ public class PopulateTestData {
                             .title("Base layers")
                             .childrenIds(
                                 List.of(
-                                    "lvl:openbasiskaart",
-                                    "lvl:pdok-hwh-luchtfotorgb",
-                                    "lvl:openbasiskaart-proxied")))
-                    .addBaseLayerNodesItem(
-                        new AppTreeLevelNode()
-                            .objectType("AppTreeLevelNode")
-                            .id("lvl:openbasiskaart-proxied")
-                            .title("Openbasiskaart (proxied)")
-                            .addChildrenIdsItem("lyr:openbasiskaart-proxied:osm"))
+                                    "lyr:openbasiskaart:osm",
+                                    "lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR",
+                                    "lyr:openbasiskaart-proxied:osm")))
                     .addBaseLayerNodesItem(
                         new AppTreeLayerNode()
                             .objectType("AppTreeLayerNode")
