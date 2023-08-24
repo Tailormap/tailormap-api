@@ -274,6 +274,7 @@ public class PopulateTestData {
                             Map.of(
                                 "osm",
                                 new GeoServiceLayerSettings()
+                                    .title("Openbasiskaart")
                                     .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
                                     .hiDpiSubstituteLayer("osm-hq")))),
             new GeoService()
@@ -331,7 +332,9 @@ public class PopulateTestData {
                             new GeoServiceDefaultLayerSettings()
                                 .attribution(
                                     "&copy; <a href=\"https://beeldmateriaal.nl/\">Beeldmateriaal.nl</a>")
-                                .hiDpiDisabled(false))),
+                                .hiDpiDisabled(false))
+                        .putLayerSettingsItem(
+                            "Actueel_orthoHR", new GeoServiceLayerSettings().title("Luchtfoto"))),
             new GeoService()
                 .setId("b3p-mapproxy-luchtfoto")
                 .setProtocol(XYZ)
@@ -960,7 +963,12 @@ public class PopulateTestData {
                             .id("lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel")
                             .serviceId("snapshot-geoserver-proxied")
                             .layerName("postgis:begroeidterreindeel")
-                            .visible(false)));
+                            .visible(false)))
+            .setSettings(
+                new AppSettings()
+                    .putLayerSettingsItem(
+                        "lyr:openbasiskaart-proxied:osm",
+                        new AppLayerSettings().title("Openbasiskaart (proxied)")));
 
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     applicationRepository.save(app);
