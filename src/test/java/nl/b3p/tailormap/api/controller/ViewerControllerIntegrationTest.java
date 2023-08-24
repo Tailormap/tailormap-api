@@ -194,13 +194,13 @@ class ViewerControllerIntegrationTest {
         .andExpect(jsonPath("$.appLayers.length()").value(13))
         .andExpect(jsonPath("$.appLayers[0].hasAttributes").value(false))
         .andExpect(jsonPath("$.appLayers[1].hasAttributes").value(false))
-        .andExpect(jsonPath("$.appLayers[2].legendImageUrl").isEmpty())
-        .andExpect(jsonPath("$.appLayers[2].visible").value(false))
-        .andExpect(jsonPath("$.appLayers[2].minScale").isEmpty())
-        .andExpect(jsonPath("$.appLayers[2].maxScale").isEmpty())
-        .andExpect(jsonPath("$.appLayers[2].id").value("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"))
-        .andExpect(jsonPath("$.appLayers[2].hiDpiMode").isEmpty())
-        .andExpect(jsonPath("$.appLayers[2].hiDpiSubstituteLayer").isEmpty())
+        .andExpect(jsonPath("$.appLayers[4].legendImageUrl").isEmpty())
+        .andExpect(jsonPath("$.appLayers[4].visible").value(false))
+        .andExpect(jsonPath("$.appLayers[4].minScale").isEmpty())
+        .andExpect(jsonPath("$.appLayers[4].maxScale").isEmpty())
+        .andExpect(jsonPath("$.appLayers[4].id").value("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"))
+        .andExpect(jsonPath("$.appLayers[4].hiDpiMode").isEmpty())
+        .andExpect(jsonPath("$.appLayers[4].hiDpiSubstituteLayer").isEmpty())
         .andExpect(jsonPath("$.crs.code").value("EPSG:28992"));
   }
 
