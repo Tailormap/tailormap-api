@@ -316,7 +316,8 @@ public class PopulateTestData {
                                 new GeoServiceLayerSettings()
                                     .maxZoom(15)
                                     .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERTILEPIXELRATIOONLY)
-                                    .hiDpiSubstituteLayer("https://openbasiskaart.nl/mapcache/tms/1.0.0/osm-hq@rd-hq/{z}/{x}/{-y}.png")))),
+                                    .hiDpiSubstituteLayer(
+                                        "https://openbasiskaart.nl/mapcache/tms/1.0.0/osm-hq@rd-hq/{z}/{x}/{-y}.png")))),
             new GeoService()
                 .setId("pdok-hwh-luchtfotorgb")
                 .setProtocol(WMTS)
@@ -791,9 +792,14 @@ public class PopulateTestData {
                             .visible(false)))
             .setSettings(
                 new AppSettings()
-                    .putLayerSettingsItem("lyr:openbasiskaart:osm", new AppLayerSettings().title("Openbasiskaart"))
-                    .putLayerSettingsItem("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR", new AppLayerSettings().title("Luchtfoto"))
-                    .putLayerSettingsItem("lyr:openbasiskaart-proxied:osm", new AppLayerSettings().title("Openbasiskaart (proxied)"))
+                    .putLayerSettingsItem(
+                        "lyr:openbasiskaart:osm", new AppLayerSettings().title("Openbasiskaart"))
+                    .putLayerSettingsItem(
+                        "lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR",
+                        new AppLayerSettings().title("Luchtfoto"))
+                    .putLayerSettingsItem(
+                        "lyr:openbasiskaart-proxied:osm",
+                        new AppLayerSettings().title("Openbasiskaart (proxied)"))
                     .putLayerSettingsItem(
                         "lyr:snapshot-geoserver:oracle:WATERDEEL",
                         new AppLayerSettings()
@@ -833,7 +839,8 @@ public class PopulateTestData {
       childrenIds.add("lyr:map5:map5topo_simple");
       childrenIds.add("lvl:luchtfoto-labels");
       root.setChildrenIds(childrenIds);
-      app.getSettings().putLayerSettingsItem("lyr:map5:map5topo_simple", new AppLayerSettings().title("Map5"));
+      app.getSettings()
+          .putLayerSettingsItem("lyr:map5:map5topo_simple", new AppLayerSettings().title("Map5"));
       app.getContentRoot()
           .addBaseLayerNodesItem(
               new AppTreeLayerNode()
@@ -882,7 +889,9 @@ public class PopulateTestData {
                             .root(true)
                             .title("Base layers")
                             .childrenIds(
-                                List.of("lyr:openbasiskaart:osm", "lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"))));
+                                List.of(
+                                    "lyr:openbasiskaart:osm",
+                                    "lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"))));
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     applicationRepository.save(app);
 
