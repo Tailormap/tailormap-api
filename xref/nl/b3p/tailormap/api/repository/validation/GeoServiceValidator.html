@@ -64,7 +64,7 @@
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>        <em class="jxr_comment">// For XYZ URL templates, remove replacements</em>
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>        <strong class="jxr_keyword">if</strong> (service.getProtocol() == XYZ) {
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>          <em class="jxr_comment">// Besides {x}, {y}, {z} also allow {-y} (for TMS) and {a-c} for domains</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>          uri = <strong class="jxr_keyword">new</strong> URL(service.getUrl().replaceAll(<span class="jxr_string">"&#92;&#92;{[a-z&#92;&#92;-]}"</span>, <span class="jxr_string">""</span>)).toURI();
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          uri = <strong class="jxr_keyword">new</strong> URL(service.getUrl().replaceAll(<span class="jxr_string">"&#92;&#92;{[a-z&#92;&#92;-]+}"</span>, <span class="jxr_string">""</span>)).toURI();
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>        } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>          uri = <strong class="jxr_keyword">new</strong> URL(service.getUrl()).toURI();
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>        }
