@@ -122,6 +122,7 @@ jobs:
           name: Event File
           path: ${{ github.event_path }}
 
+
   site-deploy:
     name: Publish gh-pages
     runs-on: ubuntu-latest
@@ -242,7 +243,6 @@ jobs:
           docker logs tailormap-api
           curl http://localhost:8080/api/actuator/health
           curl http://localhost:8080/api/version
-
 
 
   cleanup:
