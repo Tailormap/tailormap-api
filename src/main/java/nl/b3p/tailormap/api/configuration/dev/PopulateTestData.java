@@ -32,6 +32,7 @@ import nl.b3p.tailormap.api.persistence.json.AppSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLevelNode;
 import nl.b3p.tailormap.api.persistence.json.AppTreeNode;
+import nl.b3p.tailormap.api.persistence.json.AttributeSettings;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRuleDecision;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
@@ -647,6 +648,38 @@ public class PopulateTestData {
                                               featureSources.get("postgis_osm").getId())
                                           .featureTypeName("osm_polygon")))));
     }
+
+    featureSources.get("pdok-kadaster-bestuurlijkegebieden").getFeatureTypes().stream().filter(ft -> ft.getName().equals("bestuurlijkegebieden:Provinciegebied")).findFirst().ifPresent(
+        ft -> {
+          ft.getSettings().addHideAttributesItem("identificatie");
+          ft.getSettings().addHideAttributesItem("geom");
+          ft.getSettings().addHideAttributesItem("ligtInLandCode");
+          ft.getSettings().addHideAttributesItem("ligtInLandNaam");
+          ft.getSettings().addHideAttributesItem("fuuid");
+          ft.getSettings().putAttributeSettingsItem("naam", new AttributeSettings().title("Naam"));
+        }
+    );
+
+    featureSources.get("postgis").getFeatureTypes().stream().filter(ft -> ft.getName().equals("begroeidterreindeel")).findFirst().ifPresent(
+        ft -> {
+          ft.getSettings().addHideAttributesItem("gmlid");
+          ft.getSettings().addHideAttributesItem("lv_publicatiedatum");
+          ft.getSettings().addHideAttributesItem("creationdate");
+          ft.getSettings().addHideAttributesItem("terminationdate");
+          ft.getSettings().addHideAttributesItem("geom");
+          ft.getSettings().addHideAttributesItem("geom_kruinlijn");
+          ft.getSettings().putAttributeSettingsItem("tijdstipregistratie", new AttributeSettings().title("Registratie"));
+          ft.getSettings().putAttributeSettingsItem("eindregistratie", new AttributeSettings().title("Eind registratie"));
+          ft.getSettings().putAttributeSettingsItem("class", new AttributeSettings().title("Klasse"));
+          ft.getSettings().putAttributeSettingsItem("bronhouder", new AttributeSettings().title("Bronhouder"));
+          ft.getSettings().putAttributeSettingsItem("inonderzoek", new AttributeSettings().title("In onderzoek"));
+          ft.getSettings().putAttributeSettingsItem("relatievehoogteligging", new AttributeSettings().title("Relatieve hoogteligging"));
+          ft.getSettings().putAttributeSettingsItem("begroeidterreindeeloptalud", new AttributeSettings().title("Op talud"));
+          ft.getSettings().addAttributeOrderItem("identificatie");
+          ft.getSettings().addAttributeOrderItem("bronhouder");
+          ft.getSettings().addAttributeOrderItem("class");
+        }
+    );
 
     List<AppTreeNode> baseNodes =
         List.of(
