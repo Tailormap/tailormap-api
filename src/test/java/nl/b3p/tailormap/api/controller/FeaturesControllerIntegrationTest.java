@@ -121,7 +121,7 @@ class FeaturesControllerIntegrationTest {
         arguments(waterdeelUrlOracle, "IDENTIFICATIE='W0636.729e31bc9e154f2c9fb72a9c733e7d64'", 1),
         arguments(wegdeelUrlSqlserver, "identificatie='G0344.9cbe9a54d127406087e76c102c6ddc45'", 1),
         arguments(provinciesWFS, "naam='Noord-Holland'", 1),
-        arguments(provinciesWFS, "ligtInLandNaam='Nederland'", 12),
+        arguments(provinciesWFS, "code='26'", 1),
         // greater than
         arguments(begroeidterreindeelUrlPostgis, "relatievehoogteligging > 0", 2),
         arguments(waterdeelUrlOracle, "RELATIEVEHOOGTELIGGING > 0", 0),
@@ -293,7 +293,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
+        .andExpect(jsonPath("$.features[0].attributes.code").value("26"));
   }
 
   @Test
@@ -321,7 +321,7 @@ class FeaturesControllerIntegrationTest {
             .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
             .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
             .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-            .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+            .andExpect(jsonPath("$.features[0].attributes.code").value("26"))
             .andReturn();
 
     String body = result.getResponse().getContentAsString();
@@ -363,7 +363,7 @@ class FeaturesControllerIntegrationTest {
             .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
             .andExpect(jsonPath("$.features[0].geometry").isEmpty())
             .andExpect(jsonPath("$.features[0].attributes.naam").value("Groningen"))
-            .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+            .andExpect(jsonPath("$.features[0].attributes.code").value("20"))
             .andExpect(jsonPath("$.columnMetadata").isArray())
             .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
             .andReturn();
@@ -483,13 +483,13 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
-        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+        .andExpect(jsonPath("$.features[0].attributes.code").value("22"))
         .andExpect(jsonPath("$.features[9]").isMap())
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
         .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[9].attributes.ligtInLandNaam").value("Nederland"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
         .andExpect(jsonPath("$.columnMetadata").isArray())
         .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
 
@@ -514,13 +514,13 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
-        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+        .andExpect(jsonPath("$.features[0].attributes.code").value("22"))
         .andExpect(jsonPath("$.features[9]").isMap())
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
         .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[9].attributes.ligtInLandNaam").value("Nederland"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
         .andExpect(jsonPath("$.columnMetadata").isArray())
         .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
   }
@@ -554,13 +554,13 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
-        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+        .andExpect(jsonPath("$.features[0].attributes.code").value("22"))
         .andExpect(jsonPath("$.features[9]").isMap())
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
         .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[9].attributes.ligtInLandNaam").value("Nederland"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
         .andExpect(jsonPath("$.columnMetadata").isArray())
         .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
 
@@ -585,13 +585,13 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Zuid-Holland"))
-        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+        .andExpect(jsonPath("$.features[0].attributes.code").value("28"))
         .andExpect(jsonPath("$.features[8]").isMap())
         .andExpect(jsonPath("$.features[8]").isNotEmpty())
         .andExpect(jsonPath("$.features[8].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[8].geometry").isEmpty())
         .andExpect(jsonPath("$.features[8].attributes.naam").value("Gelderland"))
-        .andExpect(jsonPath("$.features[8].attributes.ligtInLandNaam").value("Nederland"))
+        .andExpect(jsonPath("$.features[8].attributes.code").value("25"))
         .andExpect(jsonPath("$.columnMetadata").isArray())
         .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
   }
@@ -932,7 +932,7 @@ class FeaturesControllerIntegrationTest {
     final double expected1stCoordinate = 130179.9;
     final double expected2ndCoordinate = 430066.3;
     final String expectedNaam = "Utrecht";
-    final String expectedLand = "Nederland";
+    final String expectedCode = "26";
     final String expectedFid = "Provinciegebied.209e5db1-05cc-4201-9ff6-02f60c51b880";
     final String url = apiBasePath + provinciesWFS;
 
@@ -957,7 +957,7 @@ class FeaturesControllerIntegrationTest {
             .andExpect(jsonPath("$.features[0].__fid").value(expectedFid))
             .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
             .andExpect(jsonPath("$.features[0].attributes.naam").value(expectedNaam))
-            .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value(expectedLand))
+            .andExpect(jsonPath("$.features[0].attributes.code").value(expectedCode))
             .andReturn();
 
     String body = result.getResponse().getContentAsString();
