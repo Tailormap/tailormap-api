@@ -609,6 +609,31 @@ class FeaturesControllerIntegrationTest {
         .andExpectAll(provinciesWFSResultMatchers());
   }
 
+  private static ResultMatcher[] begroeidterreindeelPostgisResultMatchers() {
+    return new ResultMatcher[] {
+      jsonPath("$.columnMetadata[?(@.key == 'gmlid')].alias").value("GML ID"),
+      jsonPath("$.columnMetadata").isArray(),
+      jsonPath("$.columnMetadata.length()").value(13),
+      // Verify attributeOrder
+      jsonPath("$.columnMetadata[0].key").value("identificatie"),
+      jsonPath("$.columnMetadata[1].key").value("bronhouder"),
+      jsonPath("$.columnMetadata[2].key").value("class"),
+      // Verify attributes not hidden but also not in attributeOrder are added after sorted
+      // attributes, in feature type order
+      jsonPath("$.columnMetadata[3].key").value("gmlid"),
+      jsonPath("$.columnMetadata[4].key").value("tijdstipregistratie"),
+      jsonPath("$.columnMetadata[5].key").value("eindregistratie"),
+      jsonPath("$.columnMetadata[6].key").value("inonderzoek"),
+      jsonPath("$.columnMetadata[7].key").value("relatievehoogteligging"),
+      jsonPath("$.columnMetadata[8].key").value("bgt_status"),
+      jsonPath("$.columnMetadata[9].key").value("plus_status"),
+      jsonPath("$.columnMetadata[10].key").value("plus_fysiekvoorkomen"),
+      jsonPath("$.columnMetadata[11].key").value("begroeidterreindeeloptalud"),
+      jsonPath("$.columnMetadata[12].key").value("begroeidterreindeeloptalud"),
+      jsonPath("$.columnMetadata[13].key").value("geom"),
+    };
+  }
+
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
@@ -636,7 +661,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'gmlid')].alias").value("GML ID"))
+        .andExpectAll(begroeidterreindeelPostgisResultMatchers())
         .andExpect(
             jsonPath("$.features[0].__fid")
                 .value("begroeidterreindeel.000f22d5ea3eace21bd39111a7212bd9"));
@@ -1087,20 +1112,20 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   void should_return_empty_featurecollection_for_out_of_range_page_database(
-      String applayerUrl, int totalCcount) throws Exception {
-    applayerUrl = apiBasePath + applayerUrl;
+      String appLayerUrl, int totalCount) throws Exception {
+    appLayerUrl = apiBasePath + appLayerUrl;
     // request page ...
-    int page = (totalCcount / pageSize) + 5;
+    int page = (totalCount / pageSize) + 5;
     MvcResult result =
         mockMvc
             .perform(
-                get(applayerUrl)
+                get(appLayerUrl)
                     .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(applayerUrl))
+                    .with(setServletPath(appLayerUrl))
                     .param("page", String.valueOf(page)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.total").value(totalCcount))
+            .andExpect(jsonPath("$.total").value(totalCount))
             .andExpect(jsonPath("$.page").value(page))
             .andExpect(jsonPath("$.pageSize").value(pageSize))
             .andExpect(jsonPath("$.features").isArray())

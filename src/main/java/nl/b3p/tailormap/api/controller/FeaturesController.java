@@ -13,10 +13,13 @@ import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -435,16 +438,43 @@ public class FeaturesController implements Constants {
     if (addFields) {
       Map<String, AttributeSettings> attributeSettings =
           tmFeatureType.getSettings().getAttributeSettings();
+      // Use a LinkedHashMap so the insertion order is retained
+      Map<String, ColumnMetadata> columnMetadataMap = new LinkedHashMap<>();
       for (TMAttributeDescriptor tmAtt : tmFeatureType.getAttributes()) {
         String name = tmAtt.getName();
         if (!hideAttributes.contains(name)) {
           Optional<AttributeSettings> settings = Optional.ofNullable(attributeSettings.get(name));
-          featuresResponse.addColumnMetadataItem(
+          columnMetadataMap.put(
+              name,
               new ColumnMetadata()
                   .key(name)
                   .alias(settings.map(AttributeSettings::getTitle).orElse(null))
                   .type(isGeometry(tmAtt.getType()) ? TMAttributeType.GEOMETRY : tmAtt.getType()));
         }
+      }
+
+      if (tmFeatureType.getSettings().getAttributeOrder().isEmpty()) {
+        columnMetadataMap.forEach(
+            (name, columnMetadata) -> featuresResponse.addColumnMetadataItem(columnMetadata));
+      } else {
+        List<ColumnMetadata> sorted = new ArrayList<>();
+
+        tmFeatureType.getSettings().getAttributeOrder().stream()
+            .map(columnMetadataMap::get)
+            .filter(Objects::nonNull)
+            .forEach(sorted::add);
+
+        // Add attributes which are not sorted at the end. Because columnMetadataMap is a
+        // LinkedHashMap, iteration order is the same as insertion order which is the original
+        // feature type attribute order.
+        if (sorted.size() != columnMetadataMap.size()) {
+          Set<String> sortedAttributeNames =
+              new HashSet<>(tmFeatureType.getSettings().getAttributeOrder());
+          columnMetadataMap.entrySet().stream()
+              .filter(entry -> !sortedAttributeNames.contains(entry.getKey()))
+              .forEach(entry -> sorted.add(entry.getValue()));
+        }
+        sorted.forEach(featuresResponse::addColumnMetadataItem);
       }
     }
   }
