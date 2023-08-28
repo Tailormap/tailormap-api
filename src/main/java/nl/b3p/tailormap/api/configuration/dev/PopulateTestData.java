@@ -668,12 +668,14 @@ public class PopulateTestData {
         .findFirst()
         .ifPresent(
             ft -> {
-              ft.getSettings().addHideAttributesItem("gmlid");
               ft.getSettings().addHideAttributesItem("lv_publicatiedatum");
               ft.getSettings().addHideAttributesItem("creationdate");
               ft.getSettings().addHideAttributesItem("terminationdate");
               ft.getSettings().addHideAttributesItem("geom");
               ft.getSettings().addHideAttributesItem("geom_kruinlijn");
+              ft.getSettings()
+                  .putAttributeSettingsItem(
+                      "gmlid", new AttributeSettings().title("GML ID"));
               ft.getSettings()
                   .putAttributeSettingsItem(
                       "tijdstipregistratie", new AttributeSettings().title("Registratie"));

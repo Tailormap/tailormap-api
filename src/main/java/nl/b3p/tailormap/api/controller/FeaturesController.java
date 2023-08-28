@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
@@ -26,6 +27,7 @@ import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
+import nl.b3p.tailormap.api.persistence.json.AttributeSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
@@ -424,11 +426,14 @@ public class FeaturesController implements Constants {
       featureSource.getDataStore().dispose();
     }
     if (addFields) {
+       Map<String, AttributeSettings> attributeSettings = tmFeatureType.getSettings().getAttributeSettings();
       for (TMAttributeDescriptor tmAtt : tmFeatureType.getAttributes()) {
+        String name = tmAtt.getName();
+        Optional<AttributeSettings> settings = Optional.ofNullable(attributeSettings.get(name));
         featuresResponse.addColumnMetadataItem(
             new ColumnMetadata()
-                .key(tmAtt.getName())
-                .alias(tmAtt.getDescription())
+                .key(name)
+                .alias(settings.map(AttributeSettings::getTitle).orElse(null))
                 .type(isGeometry(tmAtt.getType()) ? TMAttributeType.GEOMETRY : tmAtt.getType()));
       }
     }

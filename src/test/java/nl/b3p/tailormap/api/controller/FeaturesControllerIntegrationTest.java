@@ -293,7 +293,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[0].attributes.code").value("26"));
+        .andExpect(jsonPath("$.features[0].attributes.code").value("26"))
+        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"));
   }
 
   @Test
@@ -322,6 +323,7 @@ class FeaturesControllerIntegrationTest {
             .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
             .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
             .andExpect(jsonPath("$.features[0].attributes.code").value("26"))
+            .andExpect(jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"))
             .andReturn();
 
     String body = result.getResponse().getContentAsString();
@@ -366,6 +368,7 @@ class FeaturesControllerIntegrationTest {
             .andExpect(jsonPath("$.features[0].attributes.code").value("20"))
             .andExpect(jsonPath("$.columnMetadata").isArray())
             .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
+            .andExpect(jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"))
             .andReturn();
 
     String body = result.getResponse().getContentAsString();
@@ -399,6 +402,7 @@ class FeaturesControllerIntegrationTest {
             .andExpect(jsonPath("$.features").isNotEmpty())
             .andExpect(jsonPath("$.columnMetadata").isArray())
             .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
+            .andExpect(jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"))
             .andReturn();
 
     body = result.getResponse().getContentAsString();
@@ -491,7 +495,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
         .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
         .andExpect(jsonPath("$.columnMetadata").isArray())
-        .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
+        .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
+        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"));
 
     // page 1, sort by naam, invalid direction
     mockMvc
@@ -522,7 +527,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
         .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
         .andExpect(jsonPath("$.columnMetadata").isArray())
-        .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
+        .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
+        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"));
   }
 
   @Test
@@ -562,7 +568,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
         .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
         .andExpect(jsonPath("$.columnMetadata").isArray())
-        .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
+        .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
+        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"));
 
     // page 1, sort descending by naam
     mockMvc
@@ -593,7 +600,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[8].attributes.naam").value("Gelderland"))
         .andExpect(jsonPath("$.features[8].attributes.code").value("25"))
         .andExpect(jsonPath("$.columnMetadata").isArray())
-        .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
+        .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
+        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"));
   }
 
   @Test
@@ -623,6 +631,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'gmlid')].alias").value("GML ID"))
         .andExpect(
             jsonPath("$.features[0].__fid")
                 .value("begroeidterreindeel.000f22d5ea3eace21bd39111a7212bd9"));
@@ -646,6 +655,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'gmlid')].alias").value("GML ID"))
         .andExpect(
             jsonPath("$.features[0].__fid")
                 .value("begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"));
@@ -672,6 +682,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'gmlid')].alias").value("GML ID"))
         .andExpect(
             jsonPath("$.features[0].__fid")
                 .value(StaticTestData.get("begroeidterreindeel__fid_edit")))
@@ -700,6 +711,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'gmlid')].alias").value("GML ID"))
         .andExpect(
             jsonPath("$.features[0].__fid")
                 .value(StaticTestData.get("begroeidterreindeel__fid_edit")))
@@ -735,6 +747,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
         .andExpect(jsonPath("$.features[0].attributes.geom").isEmpty())
+        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"))
         .andExpect(jsonPath("$.features[0].__fid").value(utrecht__fid));
   }
 
@@ -744,7 +757,7 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   void get_by_fid_from_wfs_with_geomerty() throws Exception {
-    // note that this test may break when pdok decides to opdate the data or the service.
+    // note that this test may break when pdok decides to update the data or the service.
     // you can get the fid by clicking on the Utrecht feature in the map.
     // alternatively this test could be written to use the wfs service to first get Utrecht
     // feature by naam and then do the fid test.
@@ -768,6 +781,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
         .andExpect(jsonPath("$.features[0].attributes.geom").isNotEmpty())
+        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"))
         .andExpect(jsonPath("$.features[0].__fid").value(utrecht__fid));
   }
   /**
