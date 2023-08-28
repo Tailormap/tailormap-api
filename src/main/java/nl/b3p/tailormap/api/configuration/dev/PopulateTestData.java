@@ -655,7 +655,6 @@ public class PopulateTestData {
         .ifPresent(
             ft -> {
               ft.getSettings().addHideAttributesItem("identificatie");
-              ft.getSettings().addHideAttributesItem("geom");
               ft.getSettings().addHideAttributesItem("ligtInLandCode");
               ft.getSettings().addHideAttributesItem("ligtInLandNaam");
               ft.getSettings().addHideAttributesItem("fuuid");
@@ -671,11 +670,12 @@ public class PopulateTestData {
               ft.getSettings().addHideAttributesItem("lv_publicatiedatum");
               ft.getSettings().addHideAttributesItem("creationdate");
               ft.getSettings().addHideAttributesItem("terminationdate");
-              ft.getSettings().addHideAttributesItem("geom");
               ft.getSettings().addHideAttributesItem("geom_kruinlijn");
               ft.getSettings()
+                  .putAttributeSettingsItem("gmlid", new AttributeSettings().title("GML ID"));
+              ft.getSettings()
                   .putAttributeSettingsItem(
-                      "gmlid", new AttributeSettings().title("GML ID"));
+                      "identificatie", new AttributeSettings().title("Identificatie"));
               ft.getSettings()
                   .putAttributeSettingsItem(
                       "tijdstipregistratie", new AttributeSettings().title("Registratie"));
@@ -694,6 +694,16 @@ public class PopulateTestData {
                   .putAttributeSettingsItem(
                       "relatievehoogteligging",
                       new AttributeSettings().title("Relatieve hoogteligging"));
+              ft.getSettings()
+                  .putAttributeSettingsItem(
+                      "bgt_status", new AttributeSettings().title("BGT status"));
+              ft.getSettings()
+                  .putAttributeSettingsItem(
+                      "plus_status", new AttributeSettings().title("Plus-status"));
+              ft.getSettings()
+                  .putAttributeSettingsItem(
+                      "plus_fysiekvoorkomen",
+                      new AttributeSettings().title("Plus-fysiek voorkomen"));
               ft.getSettings()
                   .putAttributeSettingsItem(
                       "begroeidterreindeeloptalud", new AttributeSettings().title("Op talud"));

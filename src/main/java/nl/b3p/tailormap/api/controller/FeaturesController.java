@@ -13,10 +13,12 @@ import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.annotation.AppRestController;
@@ -391,6 +393,8 @@ public class FeaturesController implements Constants {
       logger.error("Can not transform geometry to desired CRS", e);
     }
 
+    Set<String> hideAttributes = new HashSet<>(tmFeatureType.getSettings().getHideAttributes());
+
     // send request to attribute source
     try (SimpleFeatureIterator feats = featureSource.getFeatures(selectQuery).features()) {
       while (feats.hasNext()) {
@@ -409,15 +413,18 @@ public class FeaturesController implements Constants {
 
         if (!onlyGeometries) {
           for (AttributeDescriptor att : feature.getFeatureType().getAttributeDescriptors()) {
-            Object value = feature.getAttribute(att.getName());
-            if (value instanceof Geometry) {
-              if (skipGeometryOutput) {
-                value = null;
-              } else {
-                value = GeometryProcessor.geometryToWKT((Geometry) value);
+            String attName = att.getLocalName();
+            if (!hideAttributes.contains(attName)) {
+              Object value = feature.getAttribute(att.getName());
+              if (value instanceof Geometry) {
+                if (skipGeometryOutput) {
+                  value = null;
+                } else {
+                  value = GeometryProcessor.geometryToWKT((Geometry) value);
+                }
               }
+              newFeat.putAttributesItem(attName, value);
             }
-            newFeat.putAttributesItem(att.getLocalName(), value);
           }
         }
         featuresResponse.addFeaturesItem(newFeat);
@@ -426,15 +433,18 @@ public class FeaturesController implements Constants {
       featureSource.getDataStore().dispose();
     }
     if (addFields) {
-       Map<String, AttributeSettings> attributeSettings = tmFeatureType.getSettings().getAttributeSettings();
+      Map<String, AttributeSettings> attributeSettings =
+          tmFeatureType.getSettings().getAttributeSettings();
       for (TMAttributeDescriptor tmAtt : tmFeatureType.getAttributes()) {
         String name = tmAtt.getName();
-        Optional<AttributeSettings> settings = Optional.ofNullable(attributeSettings.get(name));
-        featuresResponse.addColumnMetadataItem(
-            new ColumnMetadata()
-                .key(name)
-                .alias(settings.map(AttributeSettings::getTitle).orElse(null))
-                .type(isGeometry(tmAtt.getType()) ? TMAttributeType.GEOMETRY : tmAtt.getType()));
+        if (!hideAttributes.contains(name)) {
+          Optional<AttributeSettings> settings = Optional.ofNullable(attributeSettings.get(name));
+          featuresResponse.addColumnMetadataItem(
+              new ColumnMetadata()
+                  .key(name)
+                  .alias(settings.map(AttributeSettings::getTitle).orElse(null))
+                  .type(isGeometry(tmAtt.getType()) ? TMAttributeType.GEOMETRY : tmAtt.getType()));
+        }
       }
     }
   }
