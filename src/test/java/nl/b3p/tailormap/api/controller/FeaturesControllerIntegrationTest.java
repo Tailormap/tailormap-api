@@ -629,8 +629,7 @@ class FeaturesControllerIntegrationTest {
       jsonPath("$.columnMetadata[9].key").value("plus_status"),
       jsonPath("$.columnMetadata[10].key").value("plus_fysiekvoorkomen"),
       jsonPath("$.columnMetadata[11].key").value("begroeidterreindeeloptalud"),
-      jsonPath("$.columnMetadata[12].key").value("begroeidterreindeeloptalud"),
-      jsonPath("$.columnMetadata[13].key").value("geom"),
+      jsonPath("$.columnMetadata[12].key").value("geom"),
     };
   }
 
@@ -685,7 +684,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'gmlid')].alias").value("GML ID"))
+        .andExpectAll(begroeidterreindeelPostgisResultMatchers())
         .andExpect(
             jsonPath("$.features[0].__fid")
                 .value("begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"));
@@ -712,7 +711,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
-        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'gmlid')].alias").value("GML ID"))
+        .andExpectAll(begroeidterreindeelPostgisResultMatchers())
         .andExpect(
             jsonPath("$.features[0].__fid")
                 .value(StaticTestData.get("begroeidterreindeel__fid_edit")))
@@ -741,7 +740,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
-        .andExpect(jsonPath("$.columnMetadata[?(@.key == 'gmlid')].alias").value("GML ID"))
+        .andExpectAll(begroeidterreindeelPostgisResultMatchers())
         .andExpect(
             jsonPath("$.features[0].__fid")
                 .value(StaticTestData.get("begroeidterreindeel__fid_edit")))
