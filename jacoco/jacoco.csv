@@ -6,7 +6,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.geotools,ResponseTeeingHTTPClient,1
 Aggregate Test Coverage,nl.b3p.tailormap.api.repository,ConfigurationRepository,14,0,0,0,2,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,UnauthorizedController,10,0,0,0,2,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerExportController,422,0,48,0,107,0,31,0,7,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerDescriptionController,137,0,10,0,44,0,8,0,3,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerDescriptionController,121,0,8,0,39,0,7,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,UniqueValuesController,217,0,14,0,52,0,12,0,5,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,ViewerController,57,0,4,0,15,0,6,0,4,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,GeoServiceProxyController,239,62,18,6,58,10,15,5,6,2
@@ -57,7 +57,8 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.persistence.helper,TMAttributeTypeH
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence.helper,GeoServiceHelper,876,5,89,0,240,2,61,1,16,1
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence.helper,GeoToolsHelper,165,33,43,1,49,6,27,1,5,1
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence.helper,ApplicationHelper,124,79,15,3,31,25,14,3,5,3
-Aggregate Test Coverage,nl.b3p.tailormap.api.persistence.helper,ApplicationHelper.MapResponseLayerBuilder,566,0,38,0,131,0,27,0,8,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.persistence.helper,ApplicationHelper.MapResponseLayerBuilder,563,0,34,0,131,0,25,0,8,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.persistence.helper,TMFeatureTypeHelper,28,0,4,0,9,0,4,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,InvalidPasswordException,17,5,0,0,6,2,3,1,3,1
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,TailormapUserDetails,49,0,4,0,14,0,10,0,8,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,AdminAccountCreator,101,0,2,0,27,0,5,0,4,0

@@ -308,8 +308,8 @@ public class ApplicationHelper {
 <span class="nc" id="L308">              .id(layerRef.getId())</span>
 <span class="nc" id="L309">              .serviceId(serviceLayerServiceIds.get(serviceLayer))</span>
 <span class="nc bnc" id="L310" title="All 2 branches missed.">              .layerName(layerRef.getLayerName())</span>
-<span class="nc bnc" id="L311" title="All 2 branches missed.">              .hasAttributes(tmft != null)</span>
-<span class="nc bnc" id="L312" title="All 2 branches missed.">              .editable(tmft != null &amp;&amp; tmft.isWriteable())</span>
+<span class="nc" id="L311">              .hasAttributes(tmft != null)</span>
+<span class="nc" id="L312">              .editable(TMFeatureTypeHelper.isEditable(app, layerRef, tmft))</span>
 <span class="nc bnc" id="L313" title="All 2 branches missed.">              .url(proxied ? getProxyUrl(service, app, layerRef) : null)</span>
               // Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools
               // gt-wms Layer class?

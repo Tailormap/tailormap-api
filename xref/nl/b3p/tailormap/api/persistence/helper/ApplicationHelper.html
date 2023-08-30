@@ -317,7 +317,7 @@
 <a class="jxr_linenumber" name="L309" href="#L309">309</a>               .serviceId(serviceLayerServiceIds.get(serviceLayer))
 <a class="jxr_linenumber" name="L310" href="#L310">310</a>               .layerName(layerRef.getLayerName())
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>               .hasAttributes(tmft != <strong class="jxr_keyword">null</strong>)
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>               .editable(tmft != <strong class="jxr_keyword">null</strong> &amp;&amp; tmft.isWriteable())
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>               .editable(TMFeatureTypeHelper.isEditable(app, layerRef, tmft))
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>               .url(proxied ? getProxyUrl(service, app, layerRef) : <strong class="jxr_keyword">null</strong>)
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>               <em class="jxr_comment">// Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools</em>
 <a class="jxr_linenumber" name="L315" href="#L315">315</a>               <em class="jxr_comment">// gt-wms Layer class?</em>
