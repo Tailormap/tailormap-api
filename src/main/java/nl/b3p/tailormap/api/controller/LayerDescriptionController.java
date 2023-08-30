@@ -8,11 +8,13 @@ package nl.b3p.tailormap.api.controller;
 import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
 
 import java.io.Serializable;
-import java.util.stream.Collectors;
+import java.util.Optional;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
+import nl.b3p.tailormap.api.persistence.json.AttributeSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
@@ -76,29 +78,30 @@ public class LayerDescriptionController {
                     .orElse(null))
             // TODO defaults to true for any TMFeatureType in FeatureSourceHelper#124 and it should
             // be ROLE dependent as well
-            .editable(tmft.isWriteable())
-            .attributes(
-                tmft.getAttributes().stream()
-                    .map(
-                        a ->
-                            new Attribute()
-                                .featureType(tmft.getId())
-                                .key(a.getName())
-                                // Only return generic 'geometry' type for now, frontend doesn't
-                                // handle different geometry types. For the default geometry
-                                // attribute there is a specific geometry type set
-                                .type(
-                                    isGeometry(a.getType())
-                                        ? TMAttributeType.GEOMETRY
-                                        : a.getType())
-                                // primary key can never be edited
-                                .editable(!a.getName().equals(tmft.getPrimaryKeyAttribute()))
-                                .editAlias(null /* TODO */)
-                                .defaultValue(a.getDefaultValue())
-                                .nullable(a.getNullable())
-                                .valueList(/*String[]*/ null /* TODO */)
-                                .allowValueListOnly(false /* TODO */))
-                    .collect(Collectors.toList()));
+            .editable(tmft.isWriteable());
+
+    TMFeatureTypeHelper.getConfiguredAttributes(tmft).values().stream()
+        .map(
+            pair -> {
+              TMAttributeDescriptor a = pair.getLeft();
+              AttributeSettings settings = pair.getRight();
+              return new Attribute()
+                  .featureType(tmft.getId())
+                  .key(a.getName())
+                  // Only return generic 'geometry' type for now, frontend doesn't
+                  // handle different geometry types. For the default geometry
+                  // attribute there is a specific geometry type set
+                  .type(isGeometry(a.getType()) ? TMAttributeType.GEOMETRY : a.getType())
+                  // primary key can never be edited
+                  .editable(!a.getName().equals(tmft.getPrimaryKeyAttribute()))
+                  .editAlias(Optional.ofNullable(settings.getTitle()).orElse(a.getName()))
+                  .defaultValue(a.getDefaultValue())
+                  .nullable(a.getNullable())
+                  .valueList(/*String[]*/ null /* TODO */)
+                  .allowValueListOnly(false /* TODO */);
+            })
+        .forEach(r::addAttributesItem);
+
     return ResponseEntity.ok(r);
   }
 }
