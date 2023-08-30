@@ -309,7 +309,7 @@ public class ApplicationHelper {
               .serviceId(serviceLayerServiceIds.get(serviceLayer))
               .layerName(layerRef.getLayerName())
               .hasAttributes(tmft != null)
-              .editable(tmft != null && tmft.isWriteable())
+              .editable(TMFeatureTypeHelper.isEditable(app, layerRef, tmft))
               .url(proxied ? getProxyUrl(service, app, layerRef) : null)
               // Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools
               // gt-wms Layer class?
