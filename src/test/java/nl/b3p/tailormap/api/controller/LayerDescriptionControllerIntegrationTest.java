@@ -77,7 +77,8 @@ class LayerDescriptionControllerIntegrationTest {
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.featureTypeName").value("begroeidterreindeel"))
         .andExpect(jsonPath("$.geometryAttribute").value("geom"))
-        .andExpect(jsonPath("$.id").value("lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel"))
+        .andExpect(
+            jsonPath("$.id").value("lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel"))
         .andExpect(jsonPath("$.serviceId").value("snapshot-geoserver-proxied"))
         .andExpect(jsonPath("$.attributes").isArray())
         .andExpect(
