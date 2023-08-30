@@ -61,7 +61,30 @@ class LayerDescriptionControllerIntegrationTest {
         .andExpect(
             jsonPath("$.attributes[?(@.key == 'relatievehoogteligging')].type").value("integer"))
         .andExpect(jsonPath("$.attributes[?(@.key == 'gmlid')].nullable").value(false))
-        .andExpect(jsonPath("$.attributes[?(@.key == 'gmlid')].editable").value(false));
+        .andExpect(jsonPath("$.attributes[?(@.key == 'gmlid')].editable").value(false))
+        .andExpect(jsonPath("$.editable").value(true));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void appLayer_with_feature_type_but_no_editable_setting() throws Exception {
+    final String path =
+        apiBasePath
+            + "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/describe";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.featureTypeName").value("begroeidterreindeel"))
+        .andExpect(jsonPath("$.geometryAttribute").value("geom"))
+        .andExpect(jsonPath("$.id").value("lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel"))
+        .andExpect(jsonPath("$.serviceId").value("snapshot-geoserver-proxied"))
+        .andExpect(jsonPath("$.attributes").isArray())
+        .andExpect(
+            jsonPath("$.attributes[?(@.key == 'relatievehoogteligging')].type").value("integer"))
+        .andExpect(jsonPath("$.attributes[?(@.key == 'gmlid')].nullable").value(false))
+        .andExpect(jsonPath("$.attributes[?(@.key == 'gmlid')].editable").value(false))
+        .andExpect(jsonPath("$.editable").value(false));
   }
 
   @Test
