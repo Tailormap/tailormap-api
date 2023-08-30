@@ -10,6 +10,7 @@ import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGe
 import java.io.Serializable;
 import java.util.Optional;
 import nl.b3p.tailormap.api.annotation.AppRestController;
+import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper;
@@ -48,6 +49,7 @@ public class LayerDescriptionController {
   @Transactional
   @GetMapping
   public ResponseEntity<Serializable> getAppLayerDescription(
+      @ModelAttribute Application application,
       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer) {
@@ -76,9 +78,7 @@ public class LayerDescriptionController {
                     .map(TMAttributeType::getValue)
                     .map(TMGeometryType::fromValue)
                     .orElse(null))
-            // TODO defaults to true for any TMFeatureType in FeatureSourceHelper#124 and it should
-            // be ROLE dependent as well
-            .editable(tmft.isWriteable());
+            .editable(TMFeatureTypeHelper.isEditable(application, appTreeLayerNode, tmft));
 
     TMFeatureTypeHelper.getConfiguredAttributes(tmft).values().stream()
         .map(
