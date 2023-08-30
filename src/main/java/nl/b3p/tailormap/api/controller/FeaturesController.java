@@ -13,15 +13,9 @@ import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.annotation.AppRestController;
@@ -31,6 +25,7 @@ import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.AttributeSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
@@ -41,6 +36,7 @@ import nl.b3p.tailormap.api.util.Constants;
 import nl.b3p.tailormap.api.viewer.model.ColumnMetadata;
 import nl.b3p.tailormap.api.viewer.model.Feature;
 import nl.b3p.tailormap.api.viewer.model.FeaturesResponse;
+import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -53,7 +49,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.util.GeometricShapeFactory;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.sort.SortOrder;
@@ -179,8 +174,11 @@ public class FeaturesController implements Constants {
 
       // TODO evaluate; do we want geometry in this response or not?
       //  if we do the geometry attribute must not be removed from propNames
+
+      // Property names for query: only attributes that aren't hidden
       List<String> propNames =
-          tmft.getAttributes().stream()
+          TMFeatureTypeHelper.getConfiguredAttributes(tmft).values().stream()
+              .map(Pair::getLeft)
               .filter(a -> !isGeometry(a.getType()))
               .map(TMAttributeDescriptor::getName)
               .collect(Collectors.toList());
@@ -194,36 +192,25 @@ public class FeaturesController implements Constants {
         if (propNames.isEmpty()) {
           return featuresResponse;
         }
-        // try to determine a sorting attribute, default to first attribute or primary key
-        sortAttrName = propNames.get(0);
+        // Default sorting attribute if sortBy not specified or not a configured attribute
         if (tmft.getPrimaryKeyAttribute() != null
             && propNames.contains(tmft.getPrimaryKeyAttribute())) {
-          // there is a primary key and it is known, use that for sorting
+          // There is a primary key and it is known, use that for sorting
           sortAttrName = tmft.getPrimaryKeyAttribute();
-          logger.trace("Sorting by primary key");
         } else {
-          // there is no primary key we know of pick the first one from sft that is not geometry and
-          // is in the list of configured attributes
-          // note that propNames should not have the default geometry attribute (see above)
-          for (TMAttributeDescriptor attrDesc : tmft.getAttributes()) {
-            if (propNames.contains(attrDesc.getName())) {
-              sortAttrName = attrDesc.getName();
-              break;
-            }
-          }
+          sortAttrName = propNames.get(0);
         }
-      }
 
-      if (null != sortBy) {
-        // validate sortBy attribute is in the list of configured attributes
-        // and not a geometry type
-        Optional<TMAttributeDescriptor> sortByAttribute = tmft.getAttributeByName(sortBy);
-        if (sortByAttribute.isPresent() && !isGeometry(sortByAttribute.orElseThrow().getType())) {
-          sortAttrName = sortBy;
-        } else {
-          logger.warn(
-              "Requested sortBy attribute {} was not found in configured attributes or is a geometry attribute",
-              sortBy);
+        if (null != sortBy) {
+          // Only use sortBy attribute if it is in the list of configured attributes and not a
+          // geometry type (propNames does not contain geometry attributes, see above)
+          if (propNames.contains(sortBy)) {
+            sortAttrName = sortBy;
+          } else {
+            logger.warn(
+                "Requested sortBy attribute {} was not found in configured attributes or is a geometry attribute",
+                sortBy);
+          }
         }
       }
 
@@ -396,7 +383,8 @@ public class FeaturesController implements Constants {
       logger.error("Can not transform geometry to desired CRS", e);
     }
 
-    Set<String> hideAttributes = new HashSet<>(tmFeatureType.getSettings().getHideAttributes());
+    Map<String, Pair<TMAttributeDescriptor, AttributeSettings>> configuredAttributes =
+        TMFeatureTypeHelper.getConfiguredAttributes(tmFeatureType);
 
     // send request to attribute source
     try (SimpleFeatureIterator feats = featureSource.getFeatures(selectQuery).features()) {
@@ -415,19 +403,16 @@ public class FeaturesController implements Constants {
             new Feature().fid(feature.getIdentifier().getID()).geometry(processedGeometry);
 
         if (!onlyGeometries) {
-          for (AttributeDescriptor att : feature.getFeatureType().getAttributeDescriptors()) {
-            String attName = att.getLocalName();
-            if (!hideAttributes.contains(attName)) {
-              Object value = feature.getAttribute(att.getName());
-              if (value instanceof Geometry) {
-                if (skipGeometryOutput) {
-                  value = null;
-                } else {
-                  value = GeometryProcessor.geometryToWKT((Geometry) value);
-                }
+          for (String attName : configuredAttributes.keySet()) {
+            Object value = feature.getAttribute(attName);
+            if (value instanceof Geometry) {
+              if (skipGeometryOutput) {
+                value = null;
+              } else {
+                value = GeometryProcessor.geometryToWKT((Geometry) value);
               }
-              newFeat.putAttributesItem(attName, value);
             }
+            newFeat.putAttributesItem(attName, value);
           }
         }
         featuresResponse.addFeaturesItem(newFeat);
@@ -436,46 +421,18 @@ public class FeaturesController implements Constants {
       featureSource.getDataStore().dispose();
     }
     if (addFields) {
-      Map<String, AttributeSettings> attributeSettings =
-          tmFeatureType.getSettings().getAttributeSettings();
-      // Use a LinkedHashMap so the insertion order is retained
-      Map<String, ColumnMetadata> columnMetadataMap = new LinkedHashMap<>();
-      for (TMAttributeDescriptor tmAtt : tmFeatureType.getAttributes()) {
-        String name = tmAtt.getName();
-        if (!hideAttributes.contains(name)) {
-          Optional<AttributeSettings> settings = Optional.ofNullable(attributeSettings.get(name));
-          columnMetadataMap.put(
-              name,
-              new ColumnMetadata()
-                  .key(name)
-                  .alias(settings.map(AttributeSettings::getTitle).orElse(null))
-                  .type(isGeometry(tmAtt.getType()) ? TMAttributeType.GEOMETRY : tmAtt.getType()));
-        }
-      }
-
-      if (tmFeatureType.getSettings().getAttributeOrder().isEmpty()) {
-        columnMetadataMap.forEach(
-            (name, columnMetadata) -> featuresResponse.addColumnMetadataItem(columnMetadata));
-      } else {
-        List<ColumnMetadata> sorted = new ArrayList<>();
-
-        tmFeatureType.getSettings().getAttributeOrder().stream()
-            .map(columnMetadataMap::get)
-            .filter(Objects::nonNull)
-            .forEach(sorted::add);
-
-        // Add attributes which are not sorted at the end. Because columnMetadataMap is a
-        // LinkedHashMap, iteration order is the same as insertion order which is the original
-        // feature type attribute order.
-        if (sorted.size() != columnMetadataMap.size()) {
-          Set<String> sortedAttributeNames =
-              new HashSet<>(tmFeatureType.getSettings().getAttributeOrder());
-          columnMetadataMap.entrySet().stream()
-              .filter(entry -> !sortedAttributeNames.contains(entry.getKey()))
-              .forEach(entry -> sorted.add(entry.getValue()));
-        }
-        sorted.forEach(featuresResponse::addColumnMetadataItem);
-      }
+      configuredAttributes.values().stream()
+          .map(
+              pair -> {
+                TMAttributeDescriptor attributeDescriptor = pair.getLeft();
+                TMAttributeType type = attributeDescriptor.getType();
+                AttributeSettings settings = pair.getRight();
+                return new ColumnMetadata()
+                    .key(attributeDescriptor.getName())
+                    .alias(settings.getTitle())
+                    .type(isGeometry(type) ? TMAttributeType.GEOMETRY : type);
+              })
+          .forEach(featuresResponse::addColumnMetadataItem);
     }
   }
 }

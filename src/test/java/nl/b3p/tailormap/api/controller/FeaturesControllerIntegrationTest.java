@@ -381,8 +381,9 @@ class FeaturesControllerIntegrationTest {
             .andExpect(jsonPath("$.features[0]").isNotEmpty())
             .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
             .andExpect(jsonPath("$.features[0].geometry").isEmpty())
-            .andExpect(jsonPath("$.features[0].attributes.naam").value("Groningen"))
-            .andExpect(jsonPath("$.features[0].attributes.code").value("20"))
+            // Features sorted by default by first configured attribute: naam
+            .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
+            .andExpect(jsonPath("$.features[0].attributes.code").value("22"))
             .andExpectAll(provinciesWFSResultMatchers())
             .andReturn();
 
