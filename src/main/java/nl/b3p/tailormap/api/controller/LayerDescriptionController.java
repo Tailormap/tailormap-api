@@ -8,13 +8,12 @@ package nl.b3p.tailormap.api.controller;
 import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
 
 import java.io.Serializable;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
-import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
+import nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
@@ -64,20 +63,6 @@ public class LayerDescriptionController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Layer does not have feature type");
     }
 
-    boolean editable = false;
-    // Currently FeatureSourceHelper#loadCapabilities() sets editable to true when the datastore is
-    // a JDBC DataStore (even when the database account can't write to the table, can't detect this
-    // without trying). Other DataStore types we support (only WFS atm) we don't set as writeable
-
-    // TODO: in the future, check for authorizations on editing. Currently you only need to be
-    // logged in (the viewer frontend already checks this before showing editable layers so we don't
-    // need to check for an authenticated user here).
-    if (tmft.isWriteable()) {
-      AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
-      editable =
-          Optional.ofNullable(appLayerSettings).map(AppLayerSettings::getEditable).orElse(false);
-    }
-
     LayerDetails r =
         new LayerDetails()
             .id(appTreeLayerNode.getId())
@@ -92,7 +77,7 @@ public class LayerDescriptionController {
                     .map(TMAttributeType::getValue)
                     .map(TMGeometryType::fromValue)
                     .orElse(null))
-            .editable(editable)
+            .editable(TMFeatureTypeHelper.isEditable(application, appTreeLayerNode, tmft))
             .attributes(
                 tmft.getAttributes().stream()
                     .map(
