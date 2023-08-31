@@ -14,7 +14,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.controller,EditFeatureController,63
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerExportController.WFSSearchResult,43,0,4,0,13,0,9,0,7,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,UserController,91,0,8,0,23,0,7,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,AppRestControllerAdvice,277,0,46,0,71,0,33,0,10,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.controller,FeaturesController,664,0,78,0,167,0,48,0,9,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.controller,FeaturesController,661,0,78,0,166,0,48,0,9,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller.admin,TestAdminController,12,0,0,0,2,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller.admin,PasswordValidationController,21,0,0,0,6,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller.admin,ServerSentEventsAdminController,47,0,0,0,12,0,4,0,4,0
