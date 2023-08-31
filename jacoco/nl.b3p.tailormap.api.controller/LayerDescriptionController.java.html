@@ -8,13 +8,14 @@ package nl.b3p.tailormap.api.controller;
 import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
 
 import java.io.Serializable;
-import java.util.stream.Collectors;
+import java.util.Optional;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
+import nl.b3p.tailormap.api.persistence.json.AttributeSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
@@ -41,9 +42,9 @@ public class LayerDescriptionController {
 
   private final FeatureSourceRepository featureSourceRepository;
 
-<span class="nc" id="L44">  public LayerDescriptionController(FeatureSourceRepository featureSourceRepository) {</span>
-<span class="nc" id="L45">    this.featureSourceRepository = featureSourceRepository;</span>
-<span class="nc" id="L46">  }</span>
+<span class="nc" id="L45">  public LayerDescriptionController(FeatureSourceRepository featureSourceRepository) {</span>
+<span class="nc" id="L46">    this.featureSourceRepository = featureSourceRepository;</span>
+<span class="nc" id="L47">  }</span>
 
   @Transactional
   @GetMapping
@@ -53,54 +54,55 @@ public class LayerDescriptionController {
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer) {
 
-<span class="nc bnc" id="L56" title="All 2 branches missed.">    if (layer == null) {</span>
-<span class="nc" id="L57">      throw new ResponseStatusException(</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">    if (layer == null) {</span>
+<span class="nc" id="L58">      throw new ResponseStatusException(</span>
           HttpStatus.NOT_FOUND, &quot;Can't find layer &quot; + appTreeLayerNode);
     }
 
-<span class="nc" id="L61">    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);</span>
-<span class="nc bnc" id="L62" title="All 2 branches missed.">    if (tmft == null) {</span>
-<span class="nc" id="L63">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Layer does not have feature type&quot;);</span>
+<span class="nc" id="L62">    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">    if (tmft == null) {</span>
+<span class="nc" id="L64">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Layer does not have feature type&quot;);</span>
     }
 
-<span class="nc" id="L66">    LayerDetails r =</span>
+<span class="nc" id="L67">    LayerDetails r =</span>
         new LayerDetails()
-<span class="nc" id="L68">            .id(appTreeLayerNode.getId())</span>
-<span class="nc" id="L69">            .serviceId(appTreeLayerNode.getServiceId())</span>
-<span class="nc" id="L70">            .featureTypeName(tmft.getName())</span>
-<span class="nc" id="L71">            .geometryAttribute(tmft.getDefaultGeometryAttribute())</span>
+<span class="nc" id="L69">            .id(appTreeLayerNode.getId())</span>
+<span class="nc" id="L70">            .serviceId(appTreeLayerNode.getServiceId())</span>
+<span class="nc" id="L71">            .featureTypeName(tmft.getName())</span>
+<span class="nc" id="L72">            .geometryAttribute(tmft.getDefaultGeometryAttribute())</span>
             // TODO deduce from tmft.getDefaultGeometryAttribute()
-<span class="nc" id="L73">            .geometryAttributeIndex(null /* TODO */)</span>
-<span class="nc" id="L74">            .geometryType(</span>
-<span class="nc" id="L75">                tmft.getDefaultGeometryDescriptor()</span>
-<span class="nc" id="L76">                    .map(TMAttributeDescriptor::getType)</span>
-<span class="nc" id="L77">                    .map(TMAttributeType::getValue)</span>
-<span class="nc" id="L78">                    .map(TMGeometryType::fromValue)</span>
-<span class="nc" id="L79">                    .orElse(null))</span>
-<span class="nc" id="L80">            .editable(TMFeatureTypeHelper.isEditable(application, appTreeLayerNode, tmft))</span>
-<span class="nc" id="L81">            .attributes(</span>
-<span class="nc" id="L82">                tmft.getAttributes().stream()</span>
-<span class="nc" id="L83">                    .map(</span>
-                        a -&gt;
-<span class="nc" id="L85">                            new Attribute()</span>
-<span class="nc" id="L86">                                .featureType(tmft.getId())</span>
-<span class="nc" id="L87">                                .key(a.getName())</span>
-                                // Only return generic 'geometry' type for now, frontend doesn't
-                                // handle different geometry types. For the default geometry
-                                // attribute there is a specific geometry type set
-<span class="nc" id="L91">                                .type(</span>
-<span class="nc bnc" id="L92" title="All 2 branches missed.">                                    isGeometry(a.getType())</span>
-<span class="nc" id="L93">                                        ? TMAttributeType.GEOMETRY</span>
-<span class="nc" id="L94">                                        : a.getType())</span>
-                                // primary key can never be edited
-<span class="nc bnc" id="L96" title="All 2 branches missed.">                                .editable(!a.getName().equals(tmft.getPrimaryKeyAttribute()))</span>
-<span class="nc" id="L97">                                .editAlias(null /* TODO */)</span>
-<span class="nc" id="L98">                                .defaultValue(a.getDefaultValue())</span>
-<span class="nc" id="L99">                                .nullable(a.getNullable())</span>
-<span class="nc" id="L100">                                .valueList(/*String[]*/ null /* TODO */)</span>
-<span class="nc" id="L101">                                .allowValueListOnly(false /* TODO */))</span>
-<span class="nc" id="L102">                    .collect(Collectors.toList()));</span>
-<span class="nc" id="L103">    return ResponseEntity.ok(r);</span>
+<span class="nc" id="L74">            .geometryAttributeIndex(null /* TODO */)</span>
+<span class="nc" id="L75">            .geometryType(</span>
+<span class="nc" id="L76">                tmft.getDefaultGeometryDescriptor()</span>
+<span class="nc" id="L77">                    .map(TMAttributeDescriptor::getType)</span>
+<span class="nc" id="L78">                    .map(TMAttributeType::getValue)</span>
+<span class="nc" id="L79">                    .map(TMGeometryType::fromValue)</span>
+<span class="nc" id="L80">                    .orElse(null))</span>
+<span class="nc" id="L81">            .editable(TMFeatureTypeHelper.isEditable(application, appTreeLayerNode, tmft));</span>
+
+<span class="nc" id="L83">    TMFeatureTypeHelper.getConfiguredAttributes(tmft).values().stream()</span>
+<span class="nc" id="L84">        .map(</span>
+            pair -&gt; {
+<span class="nc" id="L86">              TMAttributeDescriptor a = pair.getLeft();</span>
+<span class="nc" id="L87">              AttributeSettings settings = pair.getRight();</span>
+<span class="nc" id="L88">              return new Attribute()</span>
+<span class="nc" id="L89">                  .featureType(tmft.getId())</span>
+<span class="nc" id="L90">                  .key(a.getName())</span>
+                  // Only return generic 'geometry' type for now, frontend doesn't
+                  // handle different geometry types. For the default geometry
+                  // attribute there is a specific geometry type set
+<span class="nc bnc" id="L94" title="All 2 branches missed.">                  .type(isGeometry(a.getType()) ? TMAttributeType.GEOMETRY : a.getType())</span>
+                  // primary key can never be edited
+<span class="nc bnc" id="L96" title="All 2 branches missed.">                  .editable(!a.getName().equals(tmft.getPrimaryKeyAttribute()))</span>
+<span class="nc" id="L97">                  .editAlias(Optional.ofNullable(settings.getTitle()).orElse(a.getName()))</span>
+<span class="nc" id="L98">                  .defaultValue(a.getDefaultValue())</span>
+<span class="nc" id="L99">                  .nullable(a.getNullable())</span>
+<span class="nc" id="L100">                  .valueList(/*String[]*/ null /* TODO */)</span>
+<span class="nc" id="L101">                  .allowValueListOnly(false /* TODO */);</span>
+            })
+<span class="nc" id="L103">        .forEach(r::addAttributesItem);</span>
+
+<span class="nc" id="L105">    return ResponseEntity.ok(r);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

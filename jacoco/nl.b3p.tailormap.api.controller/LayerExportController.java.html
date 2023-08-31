@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getNonHiddenAttributeNames;
 import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
 
 import io.micrometer.core.annotation.Timed;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -48,14 +50,14 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping(
     path = &quot;${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/export/&quot;)
 public class LayerExportController {
-<span class="nc" id="L51">  private static final Logger logger =</span>
-<span class="nc" id="L52">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L53">  private static final Logger logger =</span>
+<span class="nc" id="L54">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final FeatureSourceRepository featureSourceRepository;
 
-<span class="nc" id="L56">  public LayerExportController(FeatureSourceRepository featureSourceRepository) {</span>
-<span class="nc" id="L57">    this.featureSourceRepository = featureSourceRepository;</span>
-<span class="nc" id="L58">  }</span>
+<span class="nc" id="L58">  public LayerExportController(FeatureSourceRepository featureSourceRepository) {</span>
+<span class="nc" id="L59">    this.featureSourceRepository = featureSourceRepository;</span>
+<span class="nc" id="L60">  }</span>
 
   @Transactional
   @GetMapping(path = &quot;capabilities&quot;)
@@ -63,37 +65,37 @@ public class LayerExportController {
   public ResponseEntity&lt;Serializable&gt; capabilities(
       @ModelAttribute GeoService service, @ModelAttribute GeoServiceLayer layer) throws Exception {
 
-<span class="nc" id="L66">    final LayerExportCapabilities capabilities = new LayerExportCapabilities();</span>
+<span class="nc" id="L68">    final LayerExportCapabilities capabilities = new LayerExportCapabilities();</span>
 
-<span class="nc" id="L68">    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);</span>
-<span class="nc" id="L69">    WFSSearchResult wfsSearchResult = findWFSFeatureType(service, layer, tmft);</span>
+<span class="nc" id="L70">    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);</span>
+<span class="nc" id="L71">    WFSSearchResult wfsSearchResult = findWFSFeatureType(service, layer, tmft);</span>
 
-<span class="nc bnc" id="L71" title="All 2 branches missed.">    if (!wfsSearchResult.found()) {</span>
-<span class="nc" id="L72">      capabilities.setOutputFormats(null);</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">    if (!wfsSearchResult.found()) {</span>
+<span class="nc" id="L74">      capabilities.setOutputFormats(null);</span>
     } else {
       try {
-<span class="nc" id="L75">        List&lt;String&gt; outputFormats =</span>
-<span class="nc" id="L76">            SimpleWFSHelper.getOutputFormats(</span>
-<span class="nc" id="L77">                wfsSearchResult.getWfsUrl(),</span>
-<span class="nc" id="L78">                wfsSearchResult.getTypeName(),</span>
-<span class="nc" id="L79">                wfsSearchResult.getUsername(),</span>
-<span class="nc" id="L80">                wfsSearchResult.getPassword());</span>
-<span class="nc" id="L81">        capabilities.setOutputFormats(outputFormats);</span>
-<span class="nc" id="L82">      } catch (Exception e) {</span>
-<span class="nc" id="L83">        String msg =</span>
-<span class="nc" id="L84">            String.format(&quot;Error getting capabilities for WFS \&quot;%s\&quot;&quot;, wfsSearchResult.getWfsUrl());</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (logger.isTraceEnabled()) {</span>
-<span class="nc" id="L86">          logger.trace(msg, e);</span>
+<span class="nc" id="L77">        List&lt;String&gt; outputFormats =</span>
+<span class="nc" id="L78">            SimpleWFSHelper.getOutputFormats(</span>
+<span class="nc" id="L79">                wfsSearchResult.getWfsUrl(),</span>
+<span class="nc" id="L80">                wfsSearchResult.getTypeName(),</span>
+<span class="nc" id="L81">                wfsSearchResult.getUsername(),</span>
+<span class="nc" id="L82">                wfsSearchResult.getPassword());</span>
+<span class="nc" id="L83">        capabilities.setOutputFormats(outputFormats);</span>
+<span class="nc" id="L84">      } catch (Exception e) {</span>
+<span class="nc" id="L85">        String msg =</span>
+<span class="nc" id="L86">            String.format(&quot;Error getting capabilities for WFS \&quot;%s\&quot;&quot;, wfsSearchResult.getWfsUrl());</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (logger.isTraceEnabled()) {</span>
+<span class="nc" id="L88">          logger.trace(msg, e);</span>
         } else {
-<span class="nc" id="L88">          logger.warn(&quot;{}: {}: {}&quot;, msg, e.getClass(), e.getMessage());</span>
+<span class="nc" id="L90">          logger.warn(&quot;{}: {}: {}&quot;, msg, e.getClass(), e.getMessage());</span>
         }
-<span class="nc" id="L90">        capabilities.setOutputFormats(null);</span>
-<span class="nc" id="L91">      }</span>
+<span class="nc" id="L92">        capabilities.setOutputFormats(null);</span>
+<span class="nc" id="L93">      }</span>
     }
 
-<span class="nc" id="L94">    capabilities.setExportable(</span>
-<span class="nc bnc" id="L95" title="All 4 branches missed.">        capabilities.getOutputFormats() != null &amp;&amp; !capabilities.getOutputFormats().isEmpty());</span>
-<span class="nc" id="L96">    return ResponseEntity.status(HttpStatus.OK).body(capabilities);</span>
+<span class="nc" id="L96">    capabilities.setExportable(</span>
+<span class="nc bnc" id="L97" title="All 4 branches missed.">        capabilities.getOutputFormats() != null &amp;&amp; !capabilities.getOutputFormats().isEmpty());</span>
+<span class="nc" id="L98">    return ResponseEntity.status(HttpStatus.OK).body(capabilities);</span>
   }
 
   @Transactional
@@ -112,14 +114,35 @@ public class LayerExportController {
       HttpServletRequest request)
       throws Exception {
 
-<span class="nc" id="L115">    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);</span>
-<span class="nc" id="L116">    WFSSearchResult wfsSearchResult = findWFSFeatureType(service, layer, tmft);</span>
+<span class="nc" id="L117">    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);</span>
+<span class="nc" id="L118">    WFSSearchResult wfsSearchResult = findWFSFeatureType(service, layer, tmft);</span>
 
-<span class="nc bnc" id="L118" title="All 2 branches missed.">    if (!wfsSearchResult.found()) {</span>
-<span class="nc" id="L119">      throw new ResponseStatusException(</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">    if (!wfsSearchResult.found()) {</span>
+<span class="nc" id="L121">      throw new ResponseStatusException(</span>
           HttpStatus.SERVICE_UNAVAILABLE, &quot;No suitable WFS available for layer export&quot;);
     } else {
-<span class="nc" id="L122">      return downloadFromWFS(</span>
+<span class="nc" id="L124">      Set&lt;String&gt; nonHiddenAttributes = getNonHiddenAttributeNames(tmft);</span>
+
+<span class="nc bnc" id="L126" title="All 2 branches missed.">      if (!attributes.isEmpty()) {</span>
+        // Try to only export non-hidden property names. Note that hiding attributes is not a
+        // security feature. TM does not try to hide the original WMS URL (even when proxying).
+        // Secret attributes should not be exposed by the WFS service discoverable through the WMS
+        // because all property names are exported when we don't know the default geometry property
+        // name. But a user can also do a DescribeLayer request himself on the original WMS and do a
+        // GetFeature request to get all attributes.
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (!nonHiddenAttributes.containsAll(attributes)) {</span>
+<span class="nc" id="L134">          throw new ResponseStatusException(</span>
+              HttpStatus.BAD_REQUEST,
+              &quot;One or more requested attributes are not available on the feature type&quot;);
+        }
+<span class="nc bnc" id="L138" title="All 2 branches missed.">      } else if (!tmft.getSettings().getHideAttributes().isEmpty()) {</span>
+        // Only specify specific propNames if there are hidden attributes. Having no propNames
+        // request parameter to request all propNames is less error-prone than specifiying the ones
+        // we have saved in the feature type
+<span class="nc" id="L142">        attributes = new ArrayList&lt;&gt;(nonHiddenAttributes);</span>
+      }
+
+<span class="nc" id="L145">      return downloadFromWFS(</span>
           wfsSearchResult, outputFormat, attributes, filter, sortBy, sortOrder, crs, request);
     }
   }
@@ -134,38 +157,38 @@ public class LayerExportController {
       String crs,
       HttpServletRequest request) {
 
-<span class="nc" id="L137">    MultiValueMap&lt;String, String&gt; getFeatureParameters = new LinkedMultiValueMap&lt;&gt;();</span>
+<span class="nc" id="L160">    MultiValueMap&lt;String, String&gt; getFeatureParameters = new LinkedMultiValueMap&lt;&gt;();</span>
     // A layer could have more than one featureType as source, currently we assume it's just one
-<span class="nc" id="L139">    getFeatureParameters.add(&quot;typeNames&quot;, wfsSearchResult.getTypeName());</span>
-<span class="nc" id="L140">    getFeatureParameters.add(&quot;outputFormat&quot;, outputFormat);</span>
-<span class="nc bnc" id="L141" title="All 2 branches missed.">    if (filter != null) {</span>
+<span class="nc" id="L162">    getFeatureParameters.add(&quot;typeNames&quot;, wfsSearchResult.getTypeName());</span>
+<span class="nc" id="L163">    getFeatureParameters.add(&quot;outputFormat&quot;, outputFormat);</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">    if (filter != null) {</span>
       // GeoServer vendor-specific
       // https://docs.geoserver.org/latest/en/user/services/wfs/vendor.html#cql-filters
-<span class="nc" id="L144">      getFeatureParameters.add(&quot;cql_filter&quot;, filter);</span>
+<span class="nc" id="L167">      getFeatureParameters.add(&quot;cql_filter&quot;, filter);</span>
     }
-<span class="nc bnc" id="L146" title="All 2 branches missed.">    if (crs != null) {</span>
-<span class="nc" id="L147">      getFeatureParameters.add(&quot;srsName&quot;, crs);</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">    if (crs != null) {</span>
+<span class="nc" id="L170">      getFeatureParameters.add(&quot;srsName&quot;, crs);</span>
     }
-<span class="nc bnc" id="L149" title="All 4 branches missed.">    if (attributes != null &amp;&amp; !attributes.isEmpty()) {</span>
+<span class="nc bnc" id="L172" title="All 4 branches missed.">    if (attributes != null &amp;&amp; !attributes.isEmpty()) {</span>
 
       // If the WFS was discovered by a WMS DescribeLayer, we haven't loaded the entire feature type
       // XML schema (because this can be very slow and error-prone) and we don't know the name of
       // the geometry attribute so do not specify the propertyNames parameter to include all
       // propertyNames. If the geometry attribute is known, add it to the propertyNames otherwise
       // the result won't have geometries.
-<span class="nc bnc" id="L156" title="All 2 branches missed.">      if (wfsSearchResult.getGeometryAttribute() != null) {</span>
-<span class="nc" id="L157">        attributes.add(wfsSearchResult.getGeometryAttribute());</span>
-<span class="nc" id="L158">        getFeatureParameters.add(&quot;propertyName&quot;, String.join(&quot;,&quot;, attributes));</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">      if (wfsSearchResult.getGeometryAttribute() != null) {</span>
+<span class="nc" id="L180">        attributes.add(wfsSearchResult.getGeometryAttribute());</span>
+<span class="nc" id="L181">        getFeatureParameters.add(&quot;propertyName&quot;, String.join(&quot;,&quot;, attributes));</span>
       }
     }
-<span class="nc bnc" id="L161" title="All 2 branches missed.">    if (sortBy != null) {</span>
-<span class="nc bnc" id="L162" title="All 2 branches missed.">      getFeatureParameters.add(&quot;sortBy&quot;, sortBy + (&quot;asc&quot;.equals(sortOrder) ? &quot; A&quot; : &quot; D&quot;));</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">    if (sortBy != null) {</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">      getFeatureParameters.add(&quot;sortBy&quot;, sortBy + (&quot;asc&quot;.equals(sortOrder) ? &quot; A&quot; : &quot; D&quot;));</span>
     }
-<span class="nc" id="L164">    URI wfsGetFeature =</span>
-<span class="nc" id="L165">        SimpleWFSHelper.getWFSRequestURL(</span>
-<span class="nc" id="L166">            wfsSearchResult.getWfsUrl(), &quot;GetFeature&quot;, getFeatureParameters);</span>
+<span class="nc" id="L187">    URI wfsGetFeature =</span>
+<span class="nc" id="L188">        SimpleWFSHelper.getWFSRequestURL(</span>
+<span class="nc" id="L189">            wfsSearchResult.getWfsUrl(), &quot;GetFeature&quot;, getFeatureParameters);</span>
 
-<span class="nc" id="L168">    logger.info(</span>
+<span class="nc" id="L191">    logger.info(</span>
         &quot;Layer download {}, proxying WFS GetFeature request {}&quot;,
         null /*tagsToString(tags)*/,
         wfsGetFeature);
@@ -173,30 +196,30 @@ public class LayerExportController {
     try {
       // TODO: close JPA connection before proxying
 
-<span class="nc" id="L176">      HttpResponse&lt;InputStream&gt; response =</span>
-<span class="nc" id="L177">          WFSProxy.proxyWfsRequest(</span>
-<span class="nc" id="L178">              wfsGetFeature, wfsSearchResult.getUsername(), wfsSearchResult.getPassword(), request);</span>
+<span class="nc" id="L199">      HttpResponse&lt;InputStream&gt; response =</span>
+<span class="nc" id="L200">          WFSProxy.proxyWfsRequest(</span>
+<span class="nc" id="L201">              wfsGetFeature, wfsSearchResult.getUsername(), wfsSearchResult.getPassword(), request);</span>
 
-<span class="nc" id="L180">      logger.info(</span>
+<span class="nc" id="L203">      logger.info(</span>
           &quot;Layer download response code: {}, content type: {}, disposition: {}&quot;,
-<span class="nc" id="L182">          response.statusCode(),</span>
-<span class="nc" id="L183">          response.headers().firstValue(&quot;Content-Type&quot;).map(Object::toString).orElse(&quot;&lt;none&gt;&quot;),</span>
+<span class="nc" id="L205">          response.statusCode(),</span>
+<span class="nc" id="L206">          response.headers().firstValue(&quot;Content-Type&quot;).map(Object::toString).orElse(&quot;&lt;none&gt;&quot;),</span>
           response
-<span class="nc" id="L185">              .headers()</span>
-<span class="nc" id="L186">              .firstValue(&quot;Content-Disposition&quot;)</span>
-<span class="nc" id="L187">              .map(Object::toString)</span>
-<span class="nc" id="L188">              .orElse(&quot;&lt;none&gt;&quot;));</span>
+<span class="nc" id="L208">              .headers()</span>
+<span class="nc" id="L209">              .firstValue(&quot;Content-Disposition&quot;)</span>
+<span class="nc" id="L210">              .map(Object::toString)</span>
+<span class="nc" id="L211">              .orElse(&quot;&lt;none&gt;&quot;));</span>
 
-<span class="nc" id="L190">      InputStreamResource body = new InputStreamResource(response.body());</span>
+<span class="nc" id="L213">      InputStreamResource body = new InputStreamResource(response.body());</span>
 
-<span class="nc" id="L192">      org.springframework.http.HttpHeaders headers =</span>
-<span class="nc" id="L193">          passthroughResponseHeaders(</span>
-<span class="nc" id="L194">              response.headers(), Set.of(&quot;Content-Type&quot;, &quot;Content-Disposition&quot;));</span>
+<span class="nc" id="L215">      org.springframework.http.HttpHeaders headers =</span>
+<span class="nc" id="L216">          passthroughResponseHeaders(</span>
+<span class="nc" id="L217">              response.headers(), Set.of(&quot;Content-Type&quot;, &quot;Content-Disposition&quot;));</span>
 
       // TODO: record response size and time with micrometer
-<span class="nc" id="L197">      return ResponseEntity.status(response.statusCode()).headers(headers).body(body);</span>
-<span class="nc" id="L198">    } catch (Exception e) {</span>
-<span class="nc" id="L199">      return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(&quot;Bad Gateway&quot;);</span>
+<span class="nc" id="L220">      return ResponseEntity.status(response.statusCode()).headers(headers).body(body);</span>
+<span class="nc" id="L221">    } catch (Exception e) {</span>
+<span class="nc" id="L222">      return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(&quot;Bad Gateway&quot;);</span>
     }
   }
 
@@ -212,37 +235,37 @@ public class LayerExportController {
         String typeName,
         String geometryAttribute,
         String username,
-<span class="nc" id="L215">        String password) {</span>
-<span class="nc" id="L216">      this.wfsUrl = wfsUrl;</span>
-<span class="nc" id="L217">      this.typeName = typeName;</span>
-<span class="nc" id="L218">      this.geometryAttribute = geometryAttribute;</span>
-<span class="nc" id="L219">      this.username = username;</span>
-<span class="nc" id="L220">      this.password = password;</span>
-<span class="nc" id="L221">    }</span>
+<span class="nc" id="L238">        String password) {</span>
+<span class="nc" id="L239">      this.wfsUrl = wfsUrl;</span>
+<span class="nc" id="L240">      this.typeName = typeName;</span>
+<span class="nc" id="L241">      this.geometryAttribute = geometryAttribute;</span>
+<span class="nc" id="L242">      this.username = username;</span>
+<span class="nc" id="L243">      this.password = password;</span>
+<span class="nc" id="L244">    }</span>
 
     // &lt;editor-fold desc=&quot;getters&quot;&gt;
     public String getWfsUrl() {
-<span class="nc" id="L225">      return wfsUrl;</span>
+<span class="nc" id="L248">      return wfsUrl;</span>
     }
 
     public String getTypeName() {
-<span class="nc" id="L229">      return typeName;</span>
+<span class="nc" id="L252">      return typeName;</span>
     }
 
     public String getGeometryAttribute() {
-<span class="nc" id="L233">      return geometryAttribute;</span>
+<span class="nc" id="L256">      return geometryAttribute;</span>
     }
 
     public String getUsername() {
-<span class="nc" id="L237">      return username;</span>
+<span class="nc" id="L260">      return username;</span>
     }
 
     public String getPassword() {
-<span class="nc" id="L241">      return password;</span>
+<span class="nc" id="L264">      return password;</span>
     }
 
     public boolean found() {
-<span class="nc bnc" id="L245" title="All 4 branches missed.">      return wfsUrl != null &amp;&amp; typeName != null;</span>
+<span class="nc bnc" id="L268" title="All 4 branches missed.">      return wfsUrl != null &amp;&amp; typeName != null;</span>
     }
     // &lt;/editor-fold&gt;
   }
@@ -250,67 +273,67 @@ public class LayerExportController {
   private WFSSearchResult findWFSFeatureType(
       GeoService service, GeoServiceLayer layer, TMFeatureType tmft) throws Exception {
 
-<span class="nc" id="L253">    String wfsUrl = null;</span>
-<span class="nc" id="L254">    String typeName = null;</span>
-<span class="nc" id="L255">    String username = null;</span>
-<span class="nc" id="L256">    String password = null;</span>
-<span class="nc" id="L257">    String geometryAttribute = null;</span>
-<span class="nc" id="L258">    ServiceAuthentication auth = null;</span>
+<span class="nc" id="L276">    String wfsUrl = null;</span>
+<span class="nc" id="L277">    String typeName = null;</span>
+<span class="nc" id="L278">    String username = null;</span>
+<span class="nc" id="L279">    String password = null;</span>
+<span class="nc" id="L280">    String geometryAttribute = null;</span>
+<span class="nc" id="L281">    ServiceAuthentication auth = null;</span>
 
-<span class="nc bnc" id="L260" title="All 2 branches missed.">    if (tmft != null) {</span>
-<span class="nc" id="L261">      TMFeatureSource featureSource = tmft.getFeatureSource();</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">    if (tmft != null) {</span>
+<span class="nc" id="L284">      TMFeatureSource featureSource = tmft.getFeatureSource();</span>
 
-<span class="nc bnc" id="L263" title="All 2 branches missed.">      if (featureSource.getProtocol() == TMFeatureSource.Protocol.WFS) {</span>
-<span class="nc" id="L264">        wfsUrl = featureSource.getUrl();</span>
-<span class="nc" id="L265">        typeName = tmft.getName();</span>
-<span class="nc" id="L266">        auth = featureSource.getAuthentication();</span>
-<span class="nc" id="L267">        geometryAttribute = tmft.getDefaultGeometryAttribute();</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">      if (featureSource.getProtocol() == TMFeatureSource.Protocol.WFS) {</span>
+<span class="nc" id="L287">        wfsUrl = featureSource.getUrl();</span>
+<span class="nc" id="L288">        typeName = tmft.getName();</span>
+<span class="nc" id="L289">        auth = featureSource.getAuthentication();</span>
+<span class="nc" id="L290">        geometryAttribute = tmft.getDefaultGeometryAttribute();</span>
       }
     }
 
-<span class="nc bnc" id="L271" title="All 6 branches missed.">    if ((wfsUrl == null || typeName == null) &amp;&amp; service.getProtocol() == GeoServiceProtocol.WMS) {</span>
+<span class="nc bnc" id="L294" title="All 6 branches missed.">    if ((wfsUrl == null || typeName == null) &amp;&amp; service.getProtocol() == GeoServiceProtocol.WMS) {</span>
       // Try to find out the WFS by doing a DescribeLayer request (from OGC SLD spec)
-<span class="nc" id="L273">      auth = service.getAuthentication();</span>
+<span class="nc" id="L296">      auth = service.getAuthentication();</span>
 
-<span class="nc" id="L275">      SimpleWFSLayerDescription wfsLayerDescription =</span>
-<span class="nc" id="L276">          getWFSLayerDescriptionForWMS(service, layer.getName() /*, tags*/);</span>
-<span class="nc bnc" id="L277" title="All 2 branches missed.">      if (wfsLayerDescription != null) {</span>
-<span class="nc" id="L278">        wfsUrl = wfsLayerDescription.getWfsUrl();</span>
-<span class="nc" id="L279">        typeName = wfsLayerDescription.getFirstTypeName();</span>
-<span class="nc" id="L280">        auth = service.getAuthentication();</span>
+<span class="nc" id="L298">      SimpleWFSLayerDescription wfsLayerDescription =</span>
+<span class="nc" id="L299">          getWFSLayerDescriptionForWMS(service, layer.getName() /*, tags*/);</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">      if (wfsLayerDescription != null) {</span>
+<span class="nc" id="L301">        wfsUrl = wfsLayerDescription.getWfsUrl();</span>
+<span class="nc" id="L302">        typeName = wfsLayerDescription.getFirstTypeName();</span>
+<span class="nc" id="L303">        auth = service.getAuthentication();</span>
       }
     }
 
-<span class="nc bnc" id="L284" title="All 4 branches missed.">    if (auth != null &amp;&amp; auth.getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {</span>
-<span class="nc" id="L285">      username = auth.getUsername();</span>
-<span class="nc" id="L286">      password = auth.getPassword();</span>
+<span class="nc bnc" id="L307" title="All 4 branches missed.">    if (auth != null &amp;&amp; auth.getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {</span>
+<span class="nc" id="L308">      username = auth.getUsername();</span>
+<span class="nc" id="L309">      password = auth.getPassword();</span>
     }
-<span class="nc" id="L288">    return new WFSSearchResult(wfsUrl, typeName, geometryAttribute, username, password /*, tags*/);</span>
+<span class="nc" id="L311">    return new WFSSearchResult(wfsUrl, typeName, geometryAttribute, username, password /*, tags*/);</span>
   }
 
   private SimpleWFSLayerDescription getWFSLayerDescriptionForWMS(
       GeoService wmsService, String layerName /*, Tags tags*/) throws Exception {
-<span class="nc" id="L293">    String username = null;</span>
-<span class="nc" id="L294">    String password = null;</span>
-<span class="nc bnc" id="L295" title="All 2 branches missed.">    if (wmsService.getAuthentication() != null</span>
-<span class="nc bnc" id="L296" title="All 2 branches missed.">        &amp;&amp; wmsService.getAuthentication().getMethod()</span>
+<span class="nc" id="L316">    String username = null;</span>
+<span class="nc" id="L317">    String password = null;</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">    if (wmsService.getAuthentication() != null</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">        &amp;&amp; wmsService.getAuthentication().getMethod()</span>
             == ServiceAuthentication.MethodEnum.PASSWORD) {
-<span class="nc" id="L298">      username = wmsService.getAuthentication().getUsername();</span>
-<span class="nc" id="L299">      password = wmsService.getAuthentication().getPassword();</span>
+<span class="nc" id="L321">      username = wmsService.getAuthentication().getUsername();</span>
+<span class="nc" id="L322">      password = wmsService.getAuthentication().getPassword();</span>
     }
-<span class="nc" id="L301">    SimpleWFSLayerDescription wfsLayerDescription =</span>
-<span class="nc" id="L302">        SimpleWFSHelper.describeWMSLayer(wmsService.getUrl(), username, password, layerName);</span>
-<span class="nc bnc" id="L303" title="All 4 branches missed.">    if (wfsLayerDescription != null &amp;&amp; wfsLayerDescription.getTypeNames().length &gt; 0) {</span>
-<span class="nc" id="L304">      logger.info(</span>
+<span class="nc" id="L324">    SimpleWFSLayerDescription wfsLayerDescription =</span>
+<span class="nc" id="L325">        SimpleWFSHelper.describeWMSLayer(wmsService.getUrl(), username, password, layerName);</span>
+<span class="nc bnc" id="L326" title="All 4 branches missed.">    if (wfsLayerDescription != null &amp;&amp; wfsLayerDescription.getTypeNames().length &gt; 0) {</span>
+<span class="nc" id="L327">      logger.info(</span>
           &quot;WMS described layer \&quot;{}\&quot; with typeNames \&quot;{}\&quot; of WFS \&quot;{}\&quot; for WMS \&quot;{}\&quot;&quot;,
           layerName,
-<span class="nc" id="L307">          Arrays.toString(wfsLayerDescription.getTypeNames()),</span>
-<span class="nc" id="L308">          wfsLayerDescription.getWfsUrl(),</span>
-<span class="nc" id="L309">          wmsService.getUrl());</span>
+<span class="nc" id="L330">          Arrays.toString(wfsLayerDescription.getTypeNames()),</span>
+<span class="nc" id="L331">          wfsLayerDescription.getWfsUrl(),</span>
+<span class="nc" id="L332">          wmsService.getUrl());</span>
 
-<span class="nc" id="L311">      return wfsLayerDescription;</span>
+<span class="nc" id="L334">      return wfsLayerDescription;</span>
     }
-<span class="nc" id="L313">    return null;</span>
+<span class="nc" id="L336">    return null;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

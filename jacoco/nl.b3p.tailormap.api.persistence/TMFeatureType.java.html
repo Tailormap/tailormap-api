@@ -28,7 +28,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = &quot;feature_type&quot;)
-<span class="nc" id="L31">public class TMFeatureType {</span>
+<span class="fc" id="L31">public class TMFeatureType {</span>
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +44,7 @@ import org.hibernate.annotations.Type;
 
   private String title;
 
-<span class="nc" id="L47">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
+<span class="fc" id="L47">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull
   private TMFeatureTypeInfo info = new TMFeatureTypeInfo();
@@ -63,12 +63,12 @@ import org.hibernate.annotations.Type;
   // XXX: multiple primary keys?
   private String primaryKeyAttribute;
 
-<span class="nc" id="L66">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
+<span class="fc" id="L66">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull
   private List&lt;TMAttributeDescriptor&gt; attributes = new ArrayList&lt;&gt;();
 
-<span class="nc" id="L71">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
+<span class="fc" id="L71">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
   @Column(columnDefinition = &quot;jsonb&quot;)
   @NotNull
   private FeatureTypeSettings settings = new FeatureTypeSettings();
@@ -174,21 +174,21 @@ import org.hibernate.annotations.Type;
   }
 
   public List&lt;TMAttributeDescriptor&gt; getAttributes() {
-<span class="nc" id="L177">    return attributes;</span>
+<span class="fc" id="L177">    return attributes;</span>
   }
 
   public TMFeatureType setAttributes(List&lt;TMAttributeDescriptor&gt; attributes) {
-<span class="nc" id="L181">    this.attributes = attributes;</span>
-<span class="nc" id="L182">    return this;</span>
+<span class="fc" id="L181">    this.attributes = attributes;</span>
+<span class="fc" id="L182">    return this;</span>
   }
 
   public FeatureTypeSettings getSettings() {
-<span class="nc" id="L186">    return settings;</span>
+<span class="fc" id="L186">    return settings;</span>
   }
 
   public TMFeatureType setSettings(FeatureTypeSettings settings) {
-<span class="nc" id="L190">    this.settings = settings;</span>
-<span class="nc" id="L191">    return this;</span>
+<span class="fc" id="L190">    this.settings = settings;</span>
+<span class="fc" id="L191">    return this;</span>
   }
   // &lt;/editor-fold&gt;
 
