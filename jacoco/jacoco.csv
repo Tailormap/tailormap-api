@@ -5,7 +5,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.geotools,WMSServiceExceptionUtil,15
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools,ResponseTeeingHTTPClient,144,0,6,0,34,0,21,0,18,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.repository,ConfigurationRepository,14,0,0,0,2,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,UnauthorizedController,10,0,0,0,2,0,2,0,2,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerExportController,448,0,54,0,113,0,34,0,7,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerExportController,452,0,56,0,115,0,35,0,7,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,LayerDescriptionController,138,0,8,0,37,0,7,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,UniqueValuesController,228,0,16,0,54,0,13,0,5,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller,ViewerController,57,0,4,0,15,0,6,0,4,0
