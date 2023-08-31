@@ -6,10 +6,13 @@
 
 package nl.b3p.tailormap.api.persistence.helper;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
@@ -88,5 +91,19 @@ public class TMFeatureTypeHelper {
       result.put(attribute, Pair.of(attributeDescriptor, settings));
     }
     return result;
+  }
+
+  /**
+   * Get the non-hidden attributes for a feature type, when you don't care about the ordering or the
+   * settings or having a keyed by attribute names.
+   *
+   * @param featureType The feature type
+   * @return Unordered set of attribute descriptors
+   */
+  public static Set<TMAttributeDescriptor> getNonHiddenAttributes(TMFeatureType featureType) {
+    Set<String> hiddenAttributes = new HashSet<>(featureType.getSettings().getHideAttributes());
+    return featureType.getAttributes().stream()
+        .filter(attributeDescriptor -> !hiddenAttributes.contains(attributeDescriptor.getName()))
+        .collect(Collectors.toSet());
   }
 }

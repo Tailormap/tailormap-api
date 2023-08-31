@@ -667,8 +667,6 @@ public class PopulateTestData {
         .findFirst()
         .ifPresent(
             ft -> {
-              ft.getSettings().addHideAttributesItem("lv_publicatiedatum");
-              ft.getSettings().addHideAttributesItem("creationdate");
               ft.getSettings().addHideAttributesItem("terminationdate");
               ft.getSettings().addHideAttributesItem("geom_kruinlijn");
               ft.getSettings()

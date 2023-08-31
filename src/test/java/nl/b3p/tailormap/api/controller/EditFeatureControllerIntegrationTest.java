@@ -17,6 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.JsonPath;
 import nl.b3p.tailormap.api.StaticTestData;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
@@ -178,6 +180,40 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void testPatchHiddenAttribute() throws Exception {
+    final String url =
+        apiBasePath
+            + begroeidterreindeelUrlPostgis
+            + StaticTestData.get("begroeidterreindeel__fid_edit");
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode body = objectMapper.createObjectNode();
+    ObjectNode attributes = objectMapper.createObjectNode();
+    attributes.put("terminationdate", "something");
+    attributes.put("geom_kruinlijn", "LINESTRING(0 0, 1 1)");
+    body.set("attributes", attributes);
+
+    mockMvc
+        .perform(
+            patch(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(body)))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(400))
+        .andExpect(
+            jsonPath("$.message")
+                .value(
+                    "Feature cannot be edited, one or more requested attributes are not available on the feature type"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
   @Order(1)
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPostPG() throws Exception {
@@ -254,8 +290,6 @@ class EditFeatureControllerIntegrationTest {
             + "\"identificatie\":\"B3P."
             + gmlid
             + "\","
-            + "\"lv_publicatiedatum\":\"2021-01-15T10:33:08.000+00:00\","
-            + "\"creationdate\":\"2020-12-23\","
             + "\"tijdstipregistratie\":\"2021-01-15T07:00:12.000+00:00\","
             + "\"bronhouder\":\"B3P\","
             + "\"inonderzoek\":true, "

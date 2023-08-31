@@ -23,6 +23,7 @@ import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper;
+import nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
@@ -88,6 +89,21 @@ public class EditFeatureController implements Constants {
     this.featureSourceRepository = featureSourceRepository;
   }
 
+  private static void checkFeatureHasOnlyValidAttributes(
+      Feature feature, TMFeatureType tmFeatureType) {
+    Set<TMAttributeDescriptor> attributes =
+        TMFeatureTypeHelper.getNonHiddenAttributes(tmFeatureType);
+
+    Set<String> featureAttributeNames =
+        attributes.stream().map(TMAttributeDescriptor::getName).collect(Collectors.toSet());
+
+    if (!featureAttributeNames.containsAll(feature.getAttributes().keySet())) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Feature cannot be edited, one or more requested attributes are not available on the feature type");
+    }
+  }
+
   @Transactional
   @PostMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -105,18 +121,9 @@ public class EditFeatureController implements Constants {
 
     TMFeatureType tmFeatureType =
         getEditableFeatureType(application, appTreeLayerNode, service, layer);
-
     Map<String, Object> attributesMap = completeFeature.getAttributes();
-    Set<String> attributeNames =
-        tmFeatureType.getAttributes().stream()
-            .map(TMAttributeDescriptor::getName)
-            .collect(Collectors.toSet());
 
-    if (!attributeNames.containsAll(completeFeature.getAttributes().keySet())) {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST,
-          "Feature cannot be edited, one or more requested attributes are not available on the feature type");
-    }
+    checkFeatureHasOnlyValidAttributes(completeFeature, tmFeatureType);
 
     Feature newFeature;
     SimpleFeatureSource fs = null;
@@ -187,16 +194,8 @@ public class EditFeatureController implements Constants {
         getEditableFeatureType(application, appTreeLayerNode, service, layer);
 
     Map<String, Object> attributesMap = partialFeature.getAttributes();
-    Set<String> attributeNames =
-        tmFeatureType.getAttributes().stream()
-            .map(TMAttributeDescriptor::getName)
-            .collect(Collectors.toSet());
 
-    if (!attributeNames.containsAll(partialFeature.getAttributes().keySet())) {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST,
-          "Feature cannot be edited, one or more requested attributes are not available on the feature type");
-    }
+    checkFeatureHasOnlyValidAttributes(partialFeature, tmFeatureType);
 
     Feature patchedFeature;
     SimpleFeatureSource fs = null;
@@ -369,7 +368,7 @@ public class EditFeatureController implements Constants {
 
     final MathTransform transform =
         TransformationUtil.getTransformationToDataSource(application, fs);
-    tmFeatureType.getAttributes().stream()
+    TMFeatureTypeHelper.getNonHiddenAttributes(tmFeatureType).stream()
         .filter(attr -> TMAttributeTypeHelper.isGeometry(attr.getType()))
         .filter(attr -> modelFeature.getAttributes().containsKey(attr.getName()))
         .forEach(
