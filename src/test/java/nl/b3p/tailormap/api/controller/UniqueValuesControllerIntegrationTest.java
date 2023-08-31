@@ -98,6 +98,19 @@ class UniqueValuesControllerIntegrationTest {
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void test_hidden_attribute() throws Exception {
+    final String url =
+        apiBasePath
+            + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/unique/ligtInLandCode";
+    mockMvc
+        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Attribute does not exist"));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void layer_without_featuretype() throws Exception {
     final String url =
         apiBasePath

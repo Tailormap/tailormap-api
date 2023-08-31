@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getNonHiddenAttributeNames;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -90,6 +91,9 @@ public class UniqueValuesController {
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
     if (tmft == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Layer does not have feature type");
+    }
+    if (!getNonHiddenAttributeNames(tmft).contains(attributeName)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attribute does not exist");
     }
     UniqueValuesResponse uniqueValuesResponse = getUniqueValues(tmft, attributeName, filter);
     return ResponseEntity.status(HttpStatus.OK).body(uniqueValuesResponse);

@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getNonHiddenAttributeNames;
 import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
 
 import io.micrometer.core.annotation.Timed;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -119,6 +121,27 @@ public class LayerExportController {
       throw new ResponseStatusException(
           HttpStatus.SERVICE_UNAVAILABLE, "No suitable WFS available for layer export");
     } else {
+      Set<String> nonHiddenAttributes = getNonHiddenAttributeNames(tmft);
+
+      if (!attributes.isEmpty()) {
+        // Try to only export non-hidden property names. Note that hiding attributes is not a
+        // security feature. TM does not try to hide the original WMS URL (even when proxying).
+        // Secret attributes should not be exposed by the WFS service discoverable through the WMS
+        // because all property names are exported when we don't know the default geometry property
+        // name. But a user can also do a DescribeLayer request himself on the original WMS and do a
+        // GetFeature request to get all attributes.
+        if (!nonHiddenAttributes.containsAll(attributes)) {
+          throw new ResponseStatusException(
+              HttpStatus.BAD_REQUEST,
+              "One or more requested attributes are not available on the feature type");
+        }
+      } else if (!tmft.getSettings().getHideAttributes().isEmpty()) {
+        // Only specify specific propNames if there are hidden attributes. Having no propNames
+        // request parameter to request all propNames is less error-prone than specifiying the ones
+        // we have saved in the feature type
+        attributes = new ArrayList<>(nonHiddenAttributes);
+      }
+
       return downloadFromWFS(
           wfsSearchResult, outputFormat, attributes, filter, sortBy, sortOrder, crs, request);
     }

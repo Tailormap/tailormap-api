@@ -6,11 +6,20 @@
 
 package nl.b3p.tailormap.api.persistence.helper;
 
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
+import nl.b3p.tailormap.api.persistence.json.AttributeSettings;
+import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class TMFeatureTypeHelper {
   public static boolean isEditable(
@@ -33,5 +42,79 @@ public class TMFeatureTypeHelper {
           Optional.ofNullable(appLayerSettings).map(AppLayerSettings::getEditable).orElse(false);
     }
     return editable;
+  }
+
+  /**
+   * Return a map of attribute names (in order, using a LinkedHashMap implementation) to an
+   * attribute descriptor and configured settings pair, taking into account the configured attribute
+   * order and hidden attributes.
+   *
+   * @param featureType The feature type
+   * @return A sorted map as described
+   */
+  public static Map<String, Pair<TMAttributeDescriptor, AttributeSettings>> getConfiguredAttributes(
+      TMFeatureType featureType) {
+    LinkedHashMap<String, TMAttributeDescriptor> originalAttributesOrder = new LinkedHashMap<>();
+    for (TMAttributeDescriptor attributeDescriptor : featureType.getAttributes()) {
+      originalAttributesOrder.put(attributeDescriptor.getName(), attributeDescriptor);
+    }
+
+    // Order of attributes taking into account hidden attributes and configured attribute order
+    LinkedHashSet<String> finalAttributeOrder;
+
+    if (featureType.getSettings().getAttributeOrder().isEmpty()) {
+      // Use original feature type order
+      finalAttributeOrder = new LinkedHashSet<>(originalAttributesOrder.keySet());
+    } else {
+      finalAttributeOrder = new LinkedHashSet<>(featureType.getSettings().getAttributeOrder());
+      // Remove once ordered attributes which no longer exist in the feature type as saved in the
+      // configuration database
+      finalAttributeOrder.retainAll(originalAttributesOrder.keySet());
+      // Add attributes not named in attributeOrder in feature type order (added to the feature type
+      // after an admin saved/changed the ordering of attributes -- these attributes should not be
+      // hidden).
+      if (finalAttributeOrder.size() != originalAttributesOrder.size()) {
+        finalAttributeOrder.addAll(originalAttributesOrder.keySet());
+      }
+    }
+
+    featureType.getSettings().getHideAttributes().forEach(finalAttributeOrder::remove);
+
+    Map<String, AttributeSettings> attributeSettings =
+        featureType.getSettings().getAttributeSettings();
+    LinkedHashMap<String, Pair<TMAttributeDescriptor, AttributeSettings>> result =
+        new LinkedHashMap<>();
+    for (String attribute : finalAttributeOrder) {
+      AttributeSettings settings =
+          Optional.ofNullable(attributeSettings.get(attribute)).orElseGet(AttributeSettings::new);
+      TMAttributeDescriptor attributeDescriptor = originalAttributesOrder.get(attribute);
+      result.put(attribute, Pair.of(attributeDescriptor, settings));
+    }
+    return result;
+  }
+
+  /**
+   * Get the non-hidden attribute descriptors for a feature type.
+   *
+   * @param featureType The feature type
+   * @return Unordered set of attribute descriptors
+   */
+  public static Set<TMAttributeDescriptor> getNonHiddenAttributes(TMFeatureType featureType) {
+    Set<String> hiddenAttributes = new HashSet<>(featureType.getSettings().getHideAttributes());
+    return featureType.getAttributes().stream()
+        .filter(attributeDescriptor -> !hiddenAttributes.contains(attributeDescriptor.getName()))
+        .collect(Collectors.toSet());
+  }
+
+  /**
+   * Get the non-hidden attribute names for a feature type.
+   *
+   * @param featureType The feature type
+   * @return Unordered set of attribute names
+   */
+  public static Set<String> getNonHiddenAttributeNames(TMFeatureType featureType) {
+    return getNonHiddenAttributes(featureType).stream()
+        .map(TMAttributeDescriptor::getName)
+        .collect(Collectors.toSet());
   }
 }
