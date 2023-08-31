@@ -6,6 +6,7 @@
 
 package nl.b3p.tailormap.api.persistence.helper;
 
+import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import org.junit.jupiter.api.Test;
 class TMFeatureTypeHelperTest {
 
   @Test
-  void getConfiguredAttributes() {
+  void testGetConfiguredAttributes() {
     TMFeatureType ft = new TMFeatureType();
     final Function<String, TMAttributeDescriptor> att =
         (name) -> new TMAttributeDescriptor().name(name).comment("comment for " + name);
@@ -48,7 +49,7 @@ class TMFeatureTypeHelperTest {
             .addAttributeOrderItem("a"));
 
     Map<String, Pair<TMAttributeDescriptor, AttributeSettings>> configuredAttributes =
-        TMFeatureTypeHelper.getConfiguredAttributes(ft);
+        getConfiguredAttributes(ft);
     // Compare using Lists to explicitly check the ordering
     assertEquals(
         List.of(

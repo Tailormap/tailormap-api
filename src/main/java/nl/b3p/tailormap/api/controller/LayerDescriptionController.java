@@ -6,6 +6,7 @@
 package nl.b3p.tailormap.api.controller;
 
 import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
+import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -80,7 +81,7 @@ public class LayerDescriptionController {
                     .orElse(null))
             .editable(TMFeatureTypeHelper.isEditable(application, appTreeLayerNode, tmft));
 
-    TMFeatureTypeHelper.getConfiguredAttributes(tmft).values().stream()
+    getConfiguredAttributes(tmft).values().stream()
         .map(
             pair -> {
               TMAttributeDescriptor a = pair.getLeft();

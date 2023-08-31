@@ -6,6 +6,8 @@
 package nl.b3p.tailormap.api.controller;
 
 import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
+import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
+import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getNonHiddenAttributes;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -25,7 +27,6 @@ import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
-import nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.AttributeSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
@@ -175,10 +176,9 @@ public class FeaturesController implements Constants {
       // TODO evaluate; do we want geometry in this response or not?
       //  if we do the geometry attribute must not be removed from propNames
 
-      // Property names for query: only attributes that aren't hidden
+      // Property names for query: only non-geometry attributes that aren't hidden
       List<String> propNames =
-          TMFeatureTypeHelper.getConfiguredAttributes(tmft).values().stream()
-              .map(Pair::getLeft)
+          getNonHiddenAttributes(tmft).stream()
               .filter(a -> !isGeometry(a.getType()))
               .map(TMAttributeDescriptor::getName)
               .collect(Collectors.toList());
@@ -384,7 +384,7 @@ public class FeaturesController implements Constants {
     }
 
     Map<String, Pair<TMAttributeDescriptor, AttributeSettings>> configuredAttributes =
-        TMFeatureTypeHelper.getConfiguredAttributes(tmFeatureType);
+        getConfiguredAttributes(tmFeatureType);
 
     // send request to attribute source
     try (SimpleFeatureIterator feats = featureSource.getFeatures(selectQuery).features()) {
