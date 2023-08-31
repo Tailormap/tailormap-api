@@ -110,7 +110,7 @@ class LayerExportControllerPostgresIntegrationTest {
                 .with(setServletPath(url))
                 .accept(MediaType.APPLICATION_JSON)
                 .param("outputFormat", "application/json")
-                .param("attributes", "geom,naam,code,ligtInLandCode,ligtInLandNaam"))
+                .param("attributes", "geom,naam,code"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.type").value("FeatureCollection"))

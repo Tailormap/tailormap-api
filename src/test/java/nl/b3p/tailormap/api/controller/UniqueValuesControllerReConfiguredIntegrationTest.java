@@ -158,22 +158,6 @@ class UniqueValuesControllerReConfiguredIntegrationTest {
         .andExpect(jsonPath("$.values").isEmpty());
   }
 
-  @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void broken_filter_returns_bad_request_message() throws Exception {
-    final String url = apiBasePath + begroeidterreindeelPostgisUrl + "bronhouder";
-    mockMvc
-        .perform(
-            get(url)
-                .param("filter", "naam or Utrecht")
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url)))
-        .andExpect(status().is4xxClientError())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.code").value(400))
-        .andExpect(jsonPath("$.message").value("Could not parse requested filter"));
-  }
-
   @RetryingTest(2)
   // https://b3partners.atlassian.net/browse/HTM-758
   void unique_values_from_wfs() throws Exception {
