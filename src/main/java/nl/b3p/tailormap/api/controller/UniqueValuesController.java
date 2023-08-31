@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getNonHiddenAttributeNames;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -18,7 +19,6 @@ import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
-import nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.viewer.model.UniqueValuesResponse;
@@ -92,8 +92,7 @@ public class UniqueValuesController {
     if (tmft == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Layer does not have feature type");
     }
-    if (TMFeatureTypeHelper.getNonHiddenAttributes(tmft).stream()
-        .noneMatch(attributeDescriptor -> attributeDescriptor.getName().equals(attributeName))) {
+    if (!getNonHiddenAttributeNames(tmft).contains(attributeName)) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attribute does not exist");
     }
     UniqueValuesResponse uniqueValuesResponse = getUniqueValues(tmft, attributeName, filter);

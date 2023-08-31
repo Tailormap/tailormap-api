@@ -94,8 +94,7 @@ public class TMFeatureTypeHelper {
   }
 
   /**
-   * Get the non-hidden attributes for a feature type, when you don't care about the ordering or the
-   * settings or having a keyed by attribute names.
+   * Get the non-hidden attribute descriptors for a feature type.
    *
    * @param featureType The feature type
    * @return Unordered set of attribute descriptors
@@ -104,6 +103,18 @@ public class TMFeatureTypeHelper {
     Set<String> hiddenAttributes = new HashSet<>(featureType.getSettings().getHideAttributes());
     return featureType.getAttributes().stream()
         .filter(attributeDescriptor -> !hiddenAttributes.contains(attributeDescriptor.getName()))
+        .collect(Collectors.toSet());
+  }
+
+  /**
+   * Get the non-hidden attribute names for a feature type.
+   *
+   * @param featureType The feature type
+   * @return Unordered set of attribute names
+   */
+  public static Set<String> getNonHiddenAttributeNames(TMFeatureType featureType) {
+    return getNonHiddenAttributes(featureType).stream()
+        .map(TMAttributeDescriptor::getName)
         .collect(Collectors.toSet());
   }
 }
