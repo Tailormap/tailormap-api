@@ -614,7 +614,7 @@ class FeaturesControllerIntegrationTest {
     return new ResultMatcher[] {
       jsonPath("$.columnMetadata[?(@.key == 'gmlid')].alias").value("GML ID"),
       jsonPath("$.columnMetadata").isArray(),
-      jsonPath("$.columnMetadata.length()").value(13),
+      jsonPath("$.columnMetadata.length()").value(15),
       // Verify attributeOrder
       jsonPath("$.columnMetadata[0].key").value("identificatie"),
       jsonPath("$.columnMetadata[1].key").value("bronhouder"),
@@ -622,15 +622,17 @@ class FeaturesControllerIntegrationTest {
       // Verify attributes not hidden but also not in attributeOrder are added after sorted
       // attributes, in feature type order
       jsonPath("$.columnMetadata[3].key").value("gmlid"),
-      jsonPath("$.columnMetadata[4].key").value("tijdstipregistratie"),
-      jsonPath("$.columnMetadata[5].key").value("eindregistratie"),
-      jsonPath("$.columnMetadata[6].key").value("inonderzoek"),
-      jsonPath("$.columnMetadata[7].key").value("relatievehoogteligging"),
-      jsonPath("$.columnMetadata[8].key").value("bgt_status"),
-      jsonPath("$.columnMetadata[9].key").value("plus_status"),
-      jsonPath("$.columnMetadata[10].key").value("plus_fysiekvoorkomen"),
-      jsonPath("$.columnMetadata[11].key").value("begroeidterreindeeloptalud"),
-      jsonPath("$.columnMetadata[12].key").value("geom"),
+      jsonPath("$.columnMetadata[4].key").value("lv_publicatiedatum"),
+      jsonPath("$.columnMetadata[5].key").value("creationdate"),
+      jsonPath("$.columnMetadata[6].key").value("tijdstipregistratie"),
+      jsonPath("$.columnMetadata[7].key").value("eindregistratie"),
+      jsonPath("$.columnMetadata[8].key").value("inonderzoek"),
+      jsonPath("$.columnMetadata[9].key").value("relatievehoogteligging"),
+      jsonPath("$.columnMetadata[10].key").value("bgt_status"),
+      jsonPath("$.columnMetadata[11].key").value("plus_status"),
+      jsonPath("$.columnMetadata[12].key").value("plus_fysiekvoorkomen"),
+      jsonPath("$.columnMetadata[13].key").value("begroeidterreindeeloptalud"),
+      jsonPath("$.columnMetadata[14].key").value("geom"),
     };
   }
 
