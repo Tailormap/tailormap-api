@@ -43,6 +43,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
 
 @AutoConfigureMockMvc
 @PostgresIntegrationTest
@@ -121,7 +122,7 @@ class FeaturesControllerIntegrationTest {
         arguments(waterdeelUrlOracle, "IDENTIFICATIE='W0636.729e31bc9e154f2c9fb72a9c733e7d64'", 1),
         arguments(wegdeelUrlSqlserver, "identificatie='G0344.9cbe9a54d127406087e76c102c6ddc45'", 1),
         arguments(provinciesWFS, "naam='Noord-Holland'", 1),
-        arguments(provinciesWFS, "ligtInLandNaam='Nederland'", 12),
+        arguments(provinciesWFS, "code='26'", 1),
         // greater than
         arguments(begroeidterreindeelUrlPostgis, "relatievehoogteligging > 0", 2),
         arguments(waterdeelUrlOracle, "RELATIEVEHOOGTELIGGING > 0", 0),
@@ -264,6 +265,22 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.code").value(400));
   }
 
+  private static ResultMatcher[] provinciesWFSResultMatchers() {
+    return new ResultMatcher[] {
+      jsonPath("$.features[0].attributes.identificatie").doesNotExist(),
+      jsonPath("$.features[0].attributes.ligtInLandCode").doesNotExist(),
+      jsonPath("$.features[0].attributes.ligtInLandNaam").doesNotExist(),
+      jsonPath("$.features[0].attributes.fuuid").doesNotExist(),
+      jsonPath("$.columnMetadata").isArray(),
+      jsonPath("$.columnMetadata").isNotEmpty(),
+      jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"),
+      jsonPath("$.columnMetadata[?(@.key == 'identificatie')].key").isEmpty(),
+      jsonPath("$.columnMetadata[?(@.key == 'ligtInLandCode')].key").isEmpty(),
+      jsonPath("$.columnMetadata[?(@.key == 'ligtInLandNaam')].key").isEmpty(),
+      jsonPath("$.columnMetadata[?(@.key == 'fuuid')].key").isEmpty(),
+    };
+  }
+
   /**
    * requires layer "Provinciegebied" with id 2 and with wfs attributes to be configured, will fail
    * if configured postgres database is unavailable.
@@ -293,7 +310,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"));
+        .andExpect(jsonPath("$.features[0].attributes.code").value("26"))
+        .andExpectAll(provinciesWFSResultMatchers());
   }
 
   @Test
@@ -321,7 +339,8 @@ class FeaturesControllerIntegrationTest {
             .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
             .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
             .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-            .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+            .andExpect(jsonPath("$.features[0].attributes.code").value("26"))
+            .andExpectAll(provinciesWFSResultMatchers())
             .andReturn();
 
     String body = result.getResponse().getContentAsString();
@@ -362,10 +381,10 @@ class FeaturesControllerIntegrationTest {
             .andExpect(jsonPath("$.features[0]").isNotEmpty())
             .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
             .andExpect(jsonPath("$.features[0].geometry").isEmpty())
-            .andExpect(jsonPath("$.features[0].attributes.naam").value("Groningen"))
-            .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
-            .andExpect(jsonPath("$.columnMetadata").isArray())
-            .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
+            // Features sorted by default by first configured attribute: naam
+            .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
+            .andExpect(jsonPath("$.features[0].attributes.code").value("22"))
+            .andExpectAll(provinciesWFSResultMatchers())
             .andReturn();
 
     String body = result.getResponse().getContentAsString();
@@ -397,8 +416,7 @@ class FeaturesControllerIntegrationTest {
             .andExpect(jsonPath("$.pageSize").value(pageSize))
             .andExpect(jsonPath("$.features").isArray())
             .andExpect(jsonPath("$.features").isNotEmpty())
-            .andExpect(jsonPath("$.columnMetadata").isArray())
-            .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
+            .andExpectAll(provinciesWFSResultMatchers())
             .andReturn();
 
     body = result.getResponse().getContentAsString();
@@ -483,15 +501,14 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
-        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+        .andExpect(jsonPath("$.features[0].attributes.code").value("22"))
         .andExpect(jsonPath("$.features[9]").isMap())
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
         .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[9].attributes.ligtInLandNaam").value("Nederland"))
-        .andExpect(jsonPath("$.columnMetadata").isArray())
-        .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
+        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
+        .andExpectAll(provinciesWFSResultMatchers());
 
     // page 1, sort by naam, invalid direction
     mockMvc
@@ -514,15 +531,14 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
-        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+        .andExpect(jsonPath("$.features[0].attributes.code").value("22"))
         .andExpect(jsonPath("$.features[9]").isMap())
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
         .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[9].attributes.ligtInLandNaam").value("Nederland"))
-        .andExpect(jsonPath("$.columnMetadata").isArray())
-        .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
+        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
+        .andExpectAll(provinciesWFSResultMatchers());
   }
 
   @Test
@@ -554,15 +570,14 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
-        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+        .andExpect(jsonPath("$.features[0].attributes.code").value("22"))
         .andExpect(jsonPath("$.features[9]").isMap())
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
         .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
-        .andExpect(jsonPath("$.features[9].attributes.ligtInLandNaam").value("Nederland"))
-        .andExpect(jsonPath("$.columnMetadata").isArray())
-        .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
+        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
+        .andExpectAll(provinciesWFSResultMatchers());
 
     // page 1, sort descending by naam
     mockMvc
@@ -585,15 +600,38 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Zuid-Holland"))
-        .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value("Nederland"))
+        .andExpect(jsonPath("$.features[0].attributes.code").value("28"))
         .andExpect(jsonPath("$.features[8]").isMap())
         .andExpect(jsonPath("$.features[8]").isNotEmpty())
         .andExpect(jsonPath("$.features[8].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[8].geometry").isEmpty())
         .andExpect(jsonPath("$.features[8].attributes.naam").value("Gelderland"))
-        .andExpect(jsonPath("$.features[8].attributes.ligtInLandNaam").value("Nederland"))
-        .andExpect(jsonPath("$.columnMetadata").isArray())
-        .andExpect(jsonPath("$.columnMetadata").isNotEmpty());
+        .andExpect(jsonPath("$.features[8].attributes.code").value("25"))
+        .andExpectAll(provinciesWFSResultMatchers());
+  }
+
+  private static ResultMatcher[] begroeidterreindeelPostgisResultMatchers() {
+    return new ResultMatcher[] {
+      jsonPath("$.columnMetadata[?(@.key == 'gmlid')].alias").value("GML ID"),
+      jsonPath("$.columnMetadata").isArray(),
+      jsonPath("$.columnMetadata.length()").value(13),
+      // Verify attributeOrder
+      jsonPath("$.columnMetadata[0].key").value("identificatie"),
+      jsonPath("$.columnMetadata[1].key").value("bronhouder"),
+      jsonPath("$.columnMetadata[2].key").value("class"),
+      // Verify attributes not hidden but also not in attributeOrder are added after sorted
+      // attributes, in feature type order
+      jsonPath("$.columnMetadata[3].key").value("gmlid"),
+      jsonPath("$.columnMetadata[4].key").value("tijdstipregistratie"),
+      jsonPath("$.columnMetadata[5].key").value("eindregistratie"),
+      jsonPath("$.columnMetadata[6].key").value("inonderzoek"),
+      jsonPath("$.columnMetadata[7].key").value("relatievehoogteligging"),
+      jsonPath("$.columnMetadata[8].key").value("bgt_status"),
+      jsonPath("$.columnMetadata[9].key").value("plus_status"),
+      jsonPath("$.columnMetadata[10].key").value("plus_fysiekvoorkomen"),
+      jsonPath("$.columnMetadata[11].key").value("begroeidterreindeeloptalud"),
+      jsonPath("$.columnMetadata[12].key").value("geom"),
+    };
   }
 
   @Test
@@ -623,6 +661,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+        .andExpectAll(begroeidterreindeelPostgisResultMatchers())
         .andExpect(
             jsonPath("$.features[0].__fid")
                 .value("begroeidterreindeel.000f22d5ea3eace21bd39111a7212bd9"));
@@ -646,6 +685,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isMap())
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+        .andExpectAll(begroeidterreindeelPostgisResultMatchers())
         .andExpect(
             jsonPath("$.features[0].__fid")
                 .value("begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"));
@@ -672,6 +712,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andExpectAll(begroeidterreindeelPostgisResultMatchers())
         .andExpect(
             jsonPath("$.features[0].__fid")
                 .value(StaticTestData.get("begroeidterreindeel__fid_edit")))
@@ -700,6 +741,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andExpectAll(begroeidterreindeelPostgisResultMatchers())
         .andExpect(
             jsonPath("$.features[0].__fid")
                 .value(StaticTestData.get("begroeidterreindeel__fid_edit")))
@@ -712,7 +754,7 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   void get_by_fid_from_wfs() throws Exception {
-    // note that this test may break when pdok decides to opdate the data or the service.
+    // note that this test may break when pdok decides to update the data or the service.
     // you can get the fid by clicking on the Utrecht feature in the map.
     // alternatively this test could be written to use the wfs service to first get Utrecht
     // feature by naam and then do the fid test.
@@ -735,7 +777,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
         .andExpect(jsonPath("$.features[0].attributes.geom").isEmpty())
-        .andExpect(jsonPath("$.features[0].__fid").value(utrecht__fid));
+        .andExpect(jsonPath("$.features[0].__fid").value(utrecht__fid))
+        .andExpectAll(provinciesWFSResultMatchers());
   }
 
   @Test
@@ -744,7 +787,7 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   void get_by_fid_from_wfs_with_geomerty() throws Exception {
-    // note that this test may break when pdok decides to opdate the data or the service.
+    // note that this test may break when pdok decides to update the data or the service.
     // you can get the fid by clicking on the Utrecht feature in the map.
     // alternatively this test could be written to use the wfs service to first get Utrecht
     // feature by naam and then do the fid test.
@@ -768,7 +811,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
         .andExpect(jsonPath("$.features[0].attributes.geom").isNotEmpty())
-        .andExpect(jsonPath("$.features[0].__fid").value(utrecht__fid));
+        .andExpect(jsonPath("$.features[0].__fid").value(utrecht__fid))
+        .andExpectAll(provinciesWFSResultMatchers());
   }
   /**
    * request 2 pages of data from a database featuretype.
@@ -932,7 +976,7 @@ class FeaturesControllerIntegrationTest {
     final double expected1stCoordinate = 130179.9;
     final double expected2ndCoordinate = 430066.3;
     final String expectedNaam = "Utrecht";
-    final String expectedLand = "Nederland";
+    final String expectedCode = "26";
     final String expectedFid = "Provinciegebied.209e5db1-05cc-4201-9ff6-02f60c51b880";
     final String url = apiBasePath + provinciesWFS;
 
@@ -957,7 +1001,8 @@ class FeaturesControllerIntegrationTest {
             .andExpect(jsonPath("$.features[0].__fid").value(expectedFid))
             .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
             .andExpect(jsonPath("$.features[0].attributes.naam").value(expectedNaam))
-            .andExpect(jsonPath("$.features[0].attributes.ligtInLandNaam").value(expectedLand))
+            .andExpect(jsonPath("$.features[0].attributes.code").value(expectedCode))
+            .andExpectAll(provinciesWFSResultMatchers())
             .andReturn();
 
     String body = result.getResponse().getContentAsString();
@@ -1067,20 +1112,20 @@ class FeaturesControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   void should_return_empty_featurecollection_for_out_of_range_page_database(
-      String applayerUrl, int totalCcount) throws Exception {
-    applayerUrl = apiBasePath + applayerUrl;
+      String appLayerUrl, int totalCount) throws Exception {
+    appLayerUrl = apiBasePath + appLayerUrl;
     // request page ...
-    int page = (totalCcount / pageSize) + 5;
+    int page = (totalCount / pageSize) + 5;
     MvcResult result =
         mockMvc
             .perform(
-                get(applayerUrl)
+                get(appLayerUrl)
                     .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(applayerUrl))
+                    .with(setServletPath(appLayerUrl))
                     .param("page", String.valueOf(page)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.total").value(totalCcount))
+            .andExpect(jsonPath("$.total").value(totalCount))
             .andExpect(jsonPath("$.page").value(page))
             .andExpect(jsonPath("$.pageSize").value(pageSize))
             .andExpect(jsonPath("$.features").isArray())
