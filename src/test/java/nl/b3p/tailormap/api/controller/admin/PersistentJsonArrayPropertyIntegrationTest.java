@@ -133,7 +133,7 @@ class PersistentJsonArrayPropertyIntegrationTest {
             new Component().type("test 1"),
             new Component().type("test 2"),
             new Component().type("test 3"),
-            new Component().type("test 4 [test growing array")));
+            new Component().type("test 4 [test growing array]")));
 
     mockMvc
         .perform(
