@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
@@ -123,6 +124,9 @@ public class LayerExportController {
     } else {
       Set<String> nonHiddenAttributes = getNonHiddenAttributeNames(tmft);
 
+      if (attributes == null) {
+        attributes = Collections.emptyList();
+      }
       if (!attributes.isEmpty()) {
         // Try to only export non-hidden property names. Note that hiding attributes is not a
         // security feature. TM does not try to hide the original WMS URL (even when proxying).
