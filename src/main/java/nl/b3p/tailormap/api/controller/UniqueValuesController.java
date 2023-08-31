@@ -18,6 +18,7 @@ import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.viewer.model.UniqueValuesResponse;
@@ -90,6 +91,10 @@ public class UniqueValuesController {
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
     if (tmft == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Layer does not have feature type");
+    }
+    if (TMFeatureTypeHelper.getNonHiddenAttributes(tmft).stream()
+        .noneMatch(attributeDescriptor -> attributeDescriptor.getName().equals(attributeName))) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attribute does not exist");
     }
     UniqueValuesResponse uniqueValuesResponse = getUniqueValues(tmft, attributeName, filter);
     return ResponseEntity.status(HttpStatus.OK).body(uniqueValuesResponse);
