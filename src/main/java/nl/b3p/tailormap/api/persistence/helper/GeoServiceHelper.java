@@ -252,11 +252,15 @@ public class GeoServiceHelper {
                                             .orElse(null));
                             try {
                               List legendURLs = gtStyle.getLegendURLs();
-                              if (legendURLs != null && !legendURLs.isEmpty()) {
+                              // GeoTools will replace invalid URLs with null in legendURLs
+                              if (legendURLs != null
+                                  && !legendURLs.isEmpty()
+                                  && legendURLs.get(0) != null) {
                                 style.legendURL(new URI((String) legendURLs.get(0)));
                               }
                             } catch (URISyntaxException ignored) {
-                              // Don't care
+                              // Won't occur because GeoTools would have already returned null on
+                              // invalid URL
                             }
                             return style;
                           })
