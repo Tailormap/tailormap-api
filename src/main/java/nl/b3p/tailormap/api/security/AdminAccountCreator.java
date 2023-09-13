@@ -5,6 +5,8 @@
  */
 package nl.b3p.tailormap.api.security;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
@@ -43,6 +45,9 @@ public class AdminAccountCreator {
   @Value("${tailormap-api.security.admin.username}")
   private String newAdminUsername;
 
+  @Value("${tailormap-api.security.admin.hashed-password}")
+  private String newAdminHashedPassword;
+
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
 
@@ -62,20 +67,28 @@ public class AdminAccountCreator {
     InternalAdminAuthentication.setInSecurityContext();
     try {
       if (!userRepository.existsByGroupsNameIn(List.of(Group.ADMIN))) {
-        // Create a new admin account with a random generated password
-        String password = UUID.randomUUID().toString();
-
-        User u =
-            new User().setUsername(newAdminUsername).setPassword(passwordEncoder.encode(password));
-        u.getGroups().add(groupRepository.getReferenceById(Group.ADMIN));
-        userRepository.saveAndFlush(u);
-
-        // Log generated password
-        logger.info(getAccountBanner(newAdminUsername, password));
+        if (isNotBlank(newAdminHashedPassword) && newAdminHashedPassword.startsWith("{bcrypt}")) {
+          createAdmin(newAdminUsername, newAdminHashedPassword);
+          logger.info(
+              "New admin account \"{}\" created with hashed password from environment",
+              newAdminUsername);
+        } else {
+          // Create a new admin account with a random generated password
+          String password = UUID.randomUUID().toString();
+          createAdmin(newAdminUsername, passwordEncoder.encode(password));
+          // Log generated password
+          logger.info(getAccountBanner(newAdminUsername, password));
+        }
       }
     } finally {
       InternalAdminAuthentication.clearSecurityContextAuthentication();
     }
+  }
+
+  private void createAdmin(String username, String hashedPassword) {
+    User u = new User().setUsername(username).setPassword(hashedPassword);
+    u.getGroups().add(groupRepository.getReferenceById(Group.ADMIN));
+    userRepository.saveAndFlush(u);
   }
 
   private static String getAccountBanner(String username, String password) throws IOException {
