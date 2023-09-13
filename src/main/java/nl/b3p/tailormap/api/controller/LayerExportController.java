@@ -5,7 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
-import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getNonHiddenAttributeNames;
+import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
 import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
 
 import io.micrometer.core.annotation.Timed;
@@ -122,7 +122,8 @@ public class LayerExportController {
       throw new ResponseStatusException(
           HttpStatus.SERVICE_UNAVAILABLE, "No suitable WFS available for layer export");
     } else {
-      Set<String> nonHiddenAttributes = getNonHiddenAttributeNames(tmft);
+      // Get attributes in configured or original order
+      Set<String> nonHiddenAttributes = getConfiguredAttributes(tmft).keySet();
 
       if (attributes == null) {
         attributes = Collections.emptyList();
