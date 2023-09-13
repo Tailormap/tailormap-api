@@ -61,7 +61,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.persistence.helper,ApplicationHelpe
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence.helper,TMFeatureTypeHelper,70,100,8,6,17,20,10,3,5,1
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,InvalidPasswordException,17,5,0,0,6,2,3,1,3,1
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,TailormapUserDetails,49,0,4,0,14,0,10,0,8,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.security,AdminAccountCreator,101,0,2,0,27,0,5,0,4,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.security,AdminAccountCreator,127,0,6,0,31,0,8,0,5,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,ActuatorSecurityConfiguration,155,0,8,0,37,0,9,0,5,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,OIDCRepository.OIDCRegistrationMetadata,6,0,0,0,2,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,AuthorizationService,192,0,34,0,50,0,24,0,7,0
