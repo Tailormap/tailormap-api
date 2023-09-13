@@ -7,7 +7,6 @@ package nl.b3p.tailormap.api.controller;
 
 import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
 import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
-import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getNonHiddenAttributes;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -178,7 +177,8 @@ public class FeaturesController implements Constants {
 
       // Property names for query: only non-geometry attributes that aren't hidden
       List<String> propNames =
-          getNonHiddenAttributes(tmft).stream()
+          getConfiguredAttributes(tmft).values().stream()
+              .map(Pair::getLeft)
               .filter(a -> !isGeometry(a.getType()))
               .map(TMAttributeDescriptor::getName)
               .collect(Collectors.toList());
