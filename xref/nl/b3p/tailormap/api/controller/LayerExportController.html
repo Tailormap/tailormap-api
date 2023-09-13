@@ -13,7 +13,7 @@
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">package</strong> nl.b3p.tailormap.api.controller;
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getNonHiddenAttributeNames;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> io.micrometer.core.annotation.Timed;
@@ -130,224 +130,225 @@
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>           HttpStatus.SERVICE_UNAVAILABLE, <span class="jxr_string">"No suitable WFS available for layer export"</span>);
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>     } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>       Set&lt;String&gt; nonHiddenAttributes = getNonHiddenAttributeNames(tmft);
-<a class="jxr_linenumber" name="L126" href="#L126">126</a> 
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>       <strong class="jxr_keyword">if</strong> (attributes == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>         attributes = Collections.emptyList();
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>       }
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>       <strong class="jxr_keyword">if</strong> (!attributes.isEmpty()) {
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>         <em class="jxr_comment">// Try to only export non-hidden property names. Note that hiding attributes is not a</em>
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>         <em class="jxr_comment">// security feature. TM does not try to hide the original WMS URL (even when proxying).</em>
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>         <em class="jxr_comment">// Secret attributes should not be exposed by the WFS service discoverable through the WMS</em>
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>         <em class="jxr_comment">// because all property names are exported when we don't know the default geometry property</em>
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>         <em class="jxr_comment">// name. But a user can also do a DescribeLayer request himself on the original WMS and do a</em>
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>         <em class="jxr_comment">// GetFeature request to get all attributes.</em>
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>         <strong class="jxr_keyword">if</strong> (!nonHiddenAttributes.containsAll(attributes)) {
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>               HttpStatus.BAD_REQUEST,
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>               <span class="jxr_string">"One or more requested attributes are not available on the feature type"</span>);
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>         }
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>       } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (!tmft.getSettings().getHideAttributes().isEmpty()) {
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>         <em class="jxr_comment">// Only specify specific propNames if there are hidden attributes. Having no propNames</em>
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>         <em class="jxr_comment">// request parameter to request all propNames is less error-prone than specifiying the ones</em>
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>         <em class="jxr_comment">// we have saved in the feature type</em>
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>         attributes = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(nonHiddenAttributes);
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>       }
-<a class="jxr_linenumber" name="L148" href="#L148">148</a> 
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>       <strong class="jxr_keyword">return</strong> downloadFromWFS(
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>           wfsSearchResult, outputFormat, attributes, filter, sortBy, sortOrder, crs, request);
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>     }
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>   }
-<a class="jxr_linenumber" name="L153" href="#L153">153</a> 
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>   <strong class="jxr_keyword">private</strong> ResponseEntity&lt;?&gt; downloadFromWFS(
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>       WFSSearchResult wfsSearchResult,
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>       String outputFormat,
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>       List&lt;String&gt; attributes,
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>       String filter,
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>       String sortBy,
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>       String sortOrder,
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>       String crs,
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>       HttpServletRequest request) {
-<a class="jxr_linenumber" name="L163" href="#L163">163</a> 
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>     MultiValueMap&lt;String, String&gt; getFeatureParameters = <strong class="jxr_keyword">new</strong> LinkedMultiValueMap&lt;&gt;();
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>     <em class="jxr_comment">// A layer could have more than one featureType as source, currently we assume it's just one</em>
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>     getFeatureParameters.add(<span class="jxr_string">"typeNames"</span>, wfsSearchResult.getTypeName());
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>     getFeatureParameters.add(<span class="jxr_string">"outputFormat"</span>, outputFormat);
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>     <strong class="jxr_keyword">if</strong> (filter != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>       <em class="jxr_comment">// GeoServer vendor-specific</em>
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>       <em class="jxr_comment">// https://docs.geoserver.org/latest/en/user/services/wfs/vendor.html#cql-filters</em>
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>       getFeatureParameters.add(<span class="jxr_string">"cql_filter"</span>, filter);
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>     }
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>     <strong class="jxr_keyword">if</strong> (crs != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>       getFeatureParameters.add(<span class="jxr_string">"srsName"</span>, crs);
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>     }
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>     <strong class="jxr_keyword">if</strong> (attributes != <strong class="jxr_keyword">null</strong> &amp;&amp; !attributes.isEmpty()) {
-<a class="jxr_linenumber" name="L177" href="#L177">177</a> 
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>       <em class="jxr_comment">// If the WFS was discovered by a WMS DescribeLayer, we haven't loaded the entire feature type</em>
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>       <em class="jxr_comment">// XML schema (because this can be very slow and error-prone) and we don't know the name of</em>
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>       <em class="jxr_comment">// the geometry attribute so do not specify the propertyNames parameter to include all</em>
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>       <em class="jxr_comment">// propertyNames. If the geometry attribute is known, add it to the propertyNames otherwise</em>
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>       <em class="jxr_comment">// the result won't have geometries.</em>
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>       <strong class="jxr_keyword">if</strong> (wfsSearchResult.getGeometryAttribute() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>         attributes.add(wfsSearchResult.getGeometryAttribute());
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>         getFeatureParameters.add(<span class="jxr_string">"propertyName"</span>, String.join(<span class="jxr_string">","</span>, attributes));
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>       }
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>     }
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>     <strong class="jxr_keyword">if</strong> (sortBy != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>       getFeatureParameters.add(<span class="jxr_string">"sortBy"</span>, sortBy + (<span class="jxr_string">"asc"</span>.equals(sortOrder) ? <span class="jxr_string">" A"</span> : <span class="jxr_string">" D"</span>));
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>     }
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>     URI wfsGetFeature =
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>         SimpleWFSHelper.getWFSRequestURL(
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>             wfsSearchResult.getWfsUrl(), <span class="jxr_string">"GetFeature"</span>, getFeatureParameters);
-<a class="jxr_linenumber" name="L194" href="#L194">194</a> 
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>     logger.info(
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>         <span class="jxr_string">"Layer download {}, proxying WFS GetFeature request {}"</span>,
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>         <strong class="jxr_keyword">null</strong> <em class="jxr_comment">/*tagsToString(tags)*/</em>,
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>         wfsGetFeature);
-<a class="jxr_linenumber" name="L199" href="#L199">199</a> 
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>       <em class="jxr_comment">// TODO: close JPA connection before proxying</em>
-<a class="jxr_linenumber" name="L202" href="#L202">202</a> 
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>       HttpResponse&lt;InputStream&gt; response =
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>           WFSProxy.proxyWfsRequest(
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>               wfsGetFeature, wfsSearchResult.getUsername(), wfsSearchResult.getPassword(), request);
-<a class="jxr_linenumber" name="L206" href="#L206">206</a> 
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>       logger.info(
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>           <span class="jxr_string">"Layer download response code: {}, content type: {}, disposition: {}"</span>,
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>           response.statusCode(),
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>           response.headers().firstValue(<span class="jxr_string">"Content-Type"</span>).map(Object::toString).orElse(<span class="jxr_string">"&lt;none&gt;"</span>),
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>           response
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>               .headers()
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>               .firstValue(<span class="jxr_string">"Content-Disposition"</span>)
-<a class="jxr_linenumber" name="L214" href="#L214">214</a>               .map(Object::toString)
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>               .orElse(<span class="jxr_string">"&lt;none&gt;"</span>));
-<a class="jxr_linenumber" name="L216" href="#L216">216</a> 
-<a class="jxr_linenumber" name="L217" href="#L217">217</a>       InputStreamResource body = <strong class="jxr_keyword">new</strong> InputStreamResource(response.body());
-<a class="jxr_linenumber" name="L218" href="#L218">218</a> 
-<a class="jxr_linenumber" name="L219" href="#L219">219</a>       org.springframework.http.HttpHeaders headers =
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>           passthroughResponseHeaders(
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>               response.headers(), Set.of(<span class="jxr_string">"Content-Type"</span>, <span class="jxr_string">"Content-Disposition"</span>));
-<a class="jxr_linenumber" name="L222" href="#L222">222</a> 
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>       <em class="jxr_comment">// TODO: record response size and time with micrometer</em>
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.status(response.statusCode()).headers(headers).body(body);
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>     } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(<span class="jxr_string">"Bad Gateway"</span>);
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>     }
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>   }
-<a class="jxr_linenumber" name="L229" href="#L229">229</a> 
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> WFSSearchResult {
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String wfsUrl;
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String typeName;
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String geometryAttribute;
-<a class="jxr_linenumber" name="L234" href="#L234">234</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String username;
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String password;
-<a class="jxr_linenumber" name="L236" href="#L236">236</a> 
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>     <strong class="jxr_keyword">public</strong> WFSSearchResult(
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>         String wfsUrl,
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>         String typeName,
-<a class="jxr_linenumber" name="L240" href="#L240">240</a>         String geometryAttribute,
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>         String username,
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>         String password) {
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>       <strong class="jxr_keyword">this</strong>.wfsUrl = wfsUrl;
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>       <strong class="jxr_keyword">this</strong>.typeName = typeName;
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>       <strong class="jxr_keyword">this</strong>.geometryAttribute = geometryAttribute;
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>       <strong class="jxr_keyword">this</strong>.username = username;
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>       <strong class="jxr_keyword">this</strong>.password = password;
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>     }
-<a class="jxr_linenumber" name="L249" href="#L249">249</a> 
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>     <em class="jxr_comment">// &lt;editor-fold desc="getters"&gt;</em>
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>     <strong class="jxr_keyword">public</strong> String getWfsUrl() {
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>       <strong class="jxr_keyword">return</strong> wfsUrl;
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>     }
-<a class="jxr_linenumber" name="L254" href="#L254">254</a> 
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>     <strong class="jxr_keyword">public</strong> String getTypeName() {
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>       <strong class="jxr_keyword">return</strong> typeName;
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>     }
-<a class="jxr_linenumber" name="L258" href="#L258">258</a> 
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>     <strong class="jxr_keyword">public</strong> String getGeometryAttribute() {
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>       <strong class="jxr_keyword">return</strong> geometryAttribute;
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>     }
-<a class="jxr_linenumber" name="L262" href="#L262">262</a> 
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>     <strong class="jxr_keyword">public</strong> String getUsername() {
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>       <strong class="jxr_keyword">return</strong> username;
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>     }
-<a class="jxr_linenumber" name="L266" href="#L266">266</a> 
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>     <strong class="jxr_keyword">public</strong> String getPassword() {
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>       <strong class="jxr_keyword">return</strong> password;
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>     }
-<a class="jxr_linenumber" name="L270" href="#L270">270</a> 
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> found() {
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>       <strong class="jxr_keyword">return</strong> wfsUrl != <strong class="jxr_keyword">null</strong> &amp;&amp; typeName != <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>     }
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>     <em class="jxr_comment">// &lt;/editor-fold&gt;</em>
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>   }
-<a class="jxr_linenumber" name="L276" href="#L276">276</a> 
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>   <strong class="jxr_keyword">private</strong> WFSSearchResult findWFSFeatureType(
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>       <a name="GeoService" href="../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, GeoServiceLayer layer, <a name="TMFeatureType" href="../../../../../nl/b3p/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmft) <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L279" href="#L279">279</a> 
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>     String wfsUrl = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>     String typeName = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>     String username = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>     String password = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>     String geometryAttribute = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>     ServiceAuthentication auth = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L286" href="#L286">286</a> 
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>     <strong class="jxr_keyword">if</strong> (tmft != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>       <a name="TMFeatureSource" href="../../../../../nl/b3p/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> featureSource = tmft.getFeatureSource();
-<a class="jxr_linenumber" name="L289" href="#L289">289</a> 
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>       <strong class="jxr_keyword">if</strong> (featureSource.getProtocol() == TMFeatureSource.Protocol.WFS) {
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>         wfsUrl = featureSource.getUrl();
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>         typeName = tmft.getName();
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>         auth = featureSource.getAuthentication();
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>         geometryAttribute = tmft.getDefaultGeometryAttribute();
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>       }
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>     }
-<a class="jxr_linenumber" name="L297" href="#L297">297</a> 
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>     <strong class="jxr_keyword">if</strong> ((wfsUrl == <strong class="jxr_keyword">null</strong> || typeName == <strong class="jxr_keyword">null</strong>) &amp;&amp; service.getProtocol() == GeoServiceProtocol.WMS) {
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>       <em class="jxr_comment">// Try to find out the WFS by doing a DescribeLayer request (from OGC SLD spec)</em>
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>       auth = service.getAuthentication();
-<a class="jxr_linenumber" name="L301" href="#L301">301</a> 
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>       <a name="SimpleWFSLayerDescription" href="../../../../../nl/b3p/tailormap/api/geotools/wfs/SimpleWFSLayerDescription.html#SimpleWFSLayerDescription">SimpleWFSLayerDescription</a> wfsLayerDescription =
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>           getWFSLayerDescriptionForWMS(service, layer.getName() <em class="jxr_comment">/*, tags*/</em>);
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>       <strong class="jxr_keyword">if</strong> (wfsLayerDescription != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>         wfsUrl = wfsLayerDescription.getWfsUrl();
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>         typeName = wfsLayerDescription.getFirstTypeName();
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>         auth = service.getAuthentication();
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>       }
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>     }
-<a class="jxr_linenumber" name="L310" href="#L310">310</a> 
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>     <strong class="jxr_keyword">if</strong> (auth != <strong class="jxr_keyword">null</strong> &amp;&amp; auth.getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>       username = auth.getUsername();
-<a class="jxr_linenumber" name="L313" href="#L313">313</a>       password = auth.getPassword();
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>     }
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> WFSSearchResult(wfsUrl, typeName, geometryAttribute, username, password <em class="jxr_comment">/*, tags*/</em>);
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>   }
-<a class="jxr_linenumber" name="L317" href="#L317">317</a> 
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>   <strong class="jxr_keyword">private</strong> <a name="SimpleWFSLayerDescription" href="../../../../../nl/b3p/tailormap/api/geotools/wfs/SimpleWFSLayerDescription.html#SimpleWFSLayerDescription">SimpleWFSLayerDescription</a> getWFSLayerDescriptionForWMS(
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>       GeoService wmsService, String layerName <em class="jxr_comment">/*, Tags tags*/</em>) <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>     String username = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>     String password = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L322" href="#L322">322</a>     <strong class="jxr_keyword">if</strong> (wmsService.getAuthentication() != <strong class="jxr_keyword">null</strong>
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>         &amp;&amp; wmsService.getAuthentication().getMethod()
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>             == ServiceAuthentication.MethodEnum.PASSWORD) {
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>       username = wmsService.getAuthentication().getUsername();
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>       password = wmsService.getAuthentication().getPassword();
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>     }
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>     <a name="SimpleWFSLayerDescription" href="../../../../../nl/b3p/tailormap/api/geotools/wfs/SimpleWFSLayerDescription.html#SimpleWFSLayerDescription">SimpleWFSLayerDescription</a> wfsLayerDescription =
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>         SimpleWFSHelper.describeWMSLayer(wmsService.getUrl(), username, password, layerName);
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>     <strong class="jxr_keyword">if</strong> (wfsLayerDescription != <strong class="jxr_keyword">null</strong> &amp;&amp; wfsLayerDescription.getTypeNames().length &gt; 0) {
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>       logger.info(
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>           <span class="jxr_string">"WMS described layer \&quot;{}\&quot; with typeNames \&quot;{}\&quot; of WFS \&quot;{}\&quot; for WMS \&quot;{}\&quot;"</span>,
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>           layerName,
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>           Arrays.toString(wfsLayerDescription.getTypeNames()),
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>           wfsLayerDescription.getWfsUrl(),
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>           wmsService.getUrl());
-<a class="jxr_linenumber" name="L337" href="#L337">337</a> 
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>       <strong class="jxr_keyword">return</strong> wfsLayerDescription;
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>     }
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>   }
-<a class="jxr_linenumber" name="L342" href="#L342">342</a> }
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>       <em class="jxr_comment">// Get attributes in configured or original order</em>
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>       Set&lt;String&gt; nonHiddenAttributes = getConfiguredAttributes(tmft).keySet();
+<a class="jxr_linenumber" name="L127" href="#L127">127</a> 
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>       <strong class="jxr_keyword">if</strong> (attributes == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>         attributes = Collections.emptyList();
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>       }
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>       <strong class="jxr_keyword">if</strong> (!attributes.isEmpty()) {
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         <em class="jxr_comment">// Try to only export non-hidden property names. Note that hiding attributes is not a</em>
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>         <em class="jxr_comment">// security feature. TM does not try to hide the original WMS URL (even when proxying).</em>
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>         <em class="jxr_comment">// Secret attributes should not be exposed by the WFS service discoverable through the WMS</em>
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>         <em class="jxr_comment">// because all property names are exported when we don't know the default geometry property</em>
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>         <em class="jxr_comment">// name. But a user can also do a DescribeLayer request himself on the original WMS and do a</em>
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>         <em class="jxr_comment">// GetFeature request to get all attributes.</em>
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>         <strong class="jxr_keyword">if</strong> (!nonHiddenAttributes.containsAll(attributes)) {
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>               HttpStatus.BAD_REQUEST,
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>               <span class="jxr_string">"One or more requested attributes are not available on the feature type"</span>);
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>         }
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>       } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (!tmft.getSettings().getHideAttributes().isEmpty()) {
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>         <em class="jxr_comment">// Only specify specific propNames if there are hidden attributes. Having no propNames</em>
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>         <em class="jxr_comment">// request parameter to request all propNames is less error-prone than specifiying the ones</em>
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>         <em class="jxr_comment">// we have saved in the feature type</em>
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>         attributes = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(nonHiddenAttributes);
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>       }
+<a class="jxr_linenumber" name="L149" href="#L149">149</a> 
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>       <strong class="jxr_keyword">return</strong> downloadFromWFS(
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>           wfsSearchResult, outputFormat, attributes, filter, sortBy, sortOrder, crs, request);
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>     }
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>   }
+<a class="jxr_linenumber" name="L154" href="#L154">154</a> 
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>   <strong class="jxr_keyword">private</strong> ResponseEntity&lt;?&gt; downloadFromWFS(
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>       WFSSearchResult wfsSearchResult,
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>       String outputFormat,
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>       List&lt;String&gt; attributes,
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>       String filter,
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>       String sortBy,
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>       String sortOrder,
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>       String crs,
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>       HttpServletRequest request) {
+<a class="jxr_linenumber" name="L164" href="#L164">164</a> 
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>     MultiValueMap&lt;String, String&gt; getFeatureParameters = <strong class="jxr_keyword">new</strong> LinkedMultiValueMap&lt;&gt;();
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>     <em class="jxr_comment">// A layer could have more than one featureType as source, currently we assume it's just one</em>
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>     getFeatureParameters.add(<span class="jxr_string">"typeNames"</span>, wfsSearchResult.getTypeName());
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>     getFeatureParameters.add(<span class="jxr_string">"outputFormat"</span>, outputFormat);
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>     <strong class="jxr_keyword">if</strong> (filter != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>       <em class="jxr_comment">// GeoServer vendor-specific</em>
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>       <em class="jxr_comment">// https://docs.geoserver.org/latest/en/user/services/wfs/vendor.html#cql-filters</em>
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>       getFeatureParameters.add(<span class="jxr_string">"cql_filter"</span>, filter);
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>     }
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>     <strong class="jxr_keyword">if</strong> (crs != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>       getFeatureParameters.add(<span class="jxr_string">"srsName"</span>, crs);
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>     }
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>     <strong class="jxr_keyword">if</strong> (attributes != <strong class="jxr_keyword">null</strong> &amp;&amp; !attributes.isEmpty()) {
+<a class="jxr_linenumber" name="L178" href="#L178">178</a> 
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>       <em class="jxr_comment">// If the WFS was discovered by a WMS DescribeLayer, we haven't loaded the entire feature type</em>
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>       <em class="jxr_comment">// XML schema (because this can be very slow and error-prone) and we don't know the name of</em>
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>       <em class="jxr_comment">// the geometry attribute so do not specify the propertyNames parameter to include all</em>
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>       <em class="jxr_comment">// propertyNames. If the geometry attribute is known, add it to the propertyNames otherwise</em>
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>       <em class="jxr_comment">// the result won't have geometries.</em>
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>       <strong class="jxr_keyword">if</strong> (wfsSearchResult.getGeometryAttribute() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>         attributes.add(wfsSearchResult.getGeometryAttribute());
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>         getFeatureParameters.add(<span class="jxr_string">"propertyName"</span>, String.join(<span class="jxr_string">","</span>, attributes));
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>       }
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>     }
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>     <strong class="jxr_keyword">if</strong> (sortBy != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>       getFeatureParameters.add(<span class="jxr_string">"sortBy"</span>, sortBy + (<span class="jxr_string">"asc"</span>.equals(sortOrder) ? <span class="jxr_string">" A"</span> : <span class="jxr_string">" D"</span>));
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>     }
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>     URI wfsGetFeature =
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>         SimpleWFSHelper.getWFSRequestURL(
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>             wfsSearchResult.getWfsUrl(), <span class="jxr_string">"GetFeature"</span>, getFeatureParameters);
+<a class="jxr_linenumber" name="L195" href="#L195">195</a> 
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>     logger.info(
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>         <span class="jxr_string">"Layer download {}, proxying WFS GetFeature request {}"</span>,
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>         <strong class="jxr_keyword">null</strong> <em class="jxr_comment">/*tagsToString(tags)*/</em>,
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>         wfsGetFeature);
+<a class="jxr_linenumber" name="L200" href="#L200">200</a> 
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>       <em class="jxr_comment">// TODO: close JPA connection before proxying</em>
+<a class="jxr_linenumber" name="L203" href="#L203">203</a> 
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>       HttpResponse&lt;InputStream&gt; response =
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>           WFSProxy.proxyWfsRequest(
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>               wfsGetFeature, wfsSearchResult.getUsername(), wfsSearchResult.getPassword(), request);
+<a class="jxr_linenumber" name="L207" href="#L207">207</a> 
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>       logger.info(
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>           <span class="jxr_string">"Layer download response code: {}, content type: {}, disposition: {}"</span>,
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>           response.statusCode(),
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>           response.headers().firstValue(<span class="jxr_string">"Content-Type"</span>).map(Object::toString).orElse(<span class="jxr_string">"&lt;none&gt;"</span>),
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>           response
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>               .headers()
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>               .firstValue(<span class="jxr_string">"Content-Disposition"</span>)
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>               .map(Object::toString)
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>               .orElse(<span class="jxr_string">"&lt;none&gt;"</span>));
+<a class="jxr_linenumber" name="L217" href="#L217">217</a> 
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>       InputStreamResource body = <strong class="jxr_keyword">new</strong> InputStreamResource(response.body());
+<a class="jxr_linenumber" name="L219" href="#L219">219</a> 
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>       org.springframework.http.HttpHeaders headers =
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>           passthroughResponseHeaders(
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>               response.headers(), Set.of(<span class="jxr_string">"Content-Type"</span>, <span class="jxr_string">"Content-Disposition"</span>));
+<a class="jxr_linenumber" name="L223" href="#L223">223</a> 
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>       <em class="jxr_comment">// TODO: record response size and time with micrometer</em>
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.status(response.statusCode()).headers(headers).body(body);
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>     } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(<span class="jxr_string">"Bad Gateway"</span>);
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>     }
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>   }
+<a class="jxr_linenumber" name="L230" href="#L230">230</a> 
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> WFSSearchResult {
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String wfsUrl;
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String typeName;
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String geometryAttribute;
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String username;
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String password;
+<a class="jxr_linenumber" name="L237" href="#L237">237</a> 
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>     <strong class="jxr_keyword">public</strong> WFSSearchResult(
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>         String wfsUrl,
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>         String typeName,
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>         String geometryAttribute,
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>         String username,
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>         String password) {
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>       <strong class="jxr_keyword">this</strong>.wfsUrl = wfsUrl;
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>       <strong class="jxr_keyword">this</strong>.typeName = typeName;
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>       <strong class="jxr_keyword">this</strong>.geometryAttribute = geometryAttribute;
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>       <strong class="jxr_keyword">this</strong>.username = username;
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>       <strong class="jxr_keyword">this</strong>.password = password;
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>     }
+<a class="jxr_linenumber" name="L250" href="#L250">250</a> 
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>     <em class="jxr_comment">// &lt;editor-fold desc="getters"&gt;</em>
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>     <strong class="jxr_keyword">public</strong> String getWfsUrl() {
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>       <strong class="jxr_keyword">return</strong> wfsUrl;
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>     }
+<a class="jxr_linenumber" name="L255" href="#L255">255</a> 
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>     <strong class="jxr_keyword">public</strong> String getTypeName() {
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>       <strong class="jxr_keyword">return</strong> typeName;
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>     }
+<a class="jxr_linenumber" name="L259" href="#L259">259</a> 
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>     <strong class="jxr_keyword">public</strong> String getGeometryAttribute() {
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>       <strong class="jxr_keyword">return</strong> geometryAttribute;
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>     }
+<a class="jxr_linenumber" name="L263" href="#L263">263</a> 
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>     <strong class="jxr_keyword">public</strong> String getUsername() {
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>       <strong class="jxr_keyword">return</strong> username;
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>     }
+<a class="jxr_linenumber" name="L267" href="#L267">267</a> 
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>     <strong class="jxr_keyword">public</strong> String getPassword() {
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>       <strong class="jxr_keyword">return</strong> password;
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>     }
+<a class="jxr_linenumber" name="L271" href="#L271">271</a> 
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> found() {
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>       <strong class="jxr_keyword">return</strong> wfsUrl != <strong class="jxr_keyword">null</strong> &amp;&amp; typeName != <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>     }
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>     <em class="jxr_comment">// &lt;/editor-fold&gt;</em>
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>   }
+<a class="jxr_linenumber" name="L277" href="#L277">277</a> 
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>   <strong class="jxr_keyword">private</strong> WFSSearchResult findWFSFeatureType(
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>       <a name="GeoService" href="../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, GeoServiceLayer layer, <a name="TMFeatureType" href="../../../../../nl/b3p/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmft) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L280" href="#L280">280</a> 
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>     String wfsUrl = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>     String typeName = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>     String username = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>     String password = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>     String geometryAttribute = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>     ServiceAuthentication auth = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L287" href="#L287">287</a> 
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>     <strong class="jxr_keyword">if</strong> (tmft != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>       <a name="TMFeatureSource" href="../../../../../nl/b3p/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> featureSource = tmft.getFeatureSource();
+<a class="jxr_linenumber" name="L290" href="#L290">290</a> 
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>       <strong class="jxr_keyword">if</strong> (featureSource.getProtocol() == TMFeatureSource.Protocol.WFS) {
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>         wfsUrl = featureSource.getUrl();
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>         typeName = tmft.getName();
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>         auth = featureSource.getAuthentication();
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>         geometryAttribute = tmft.getDefaultGeometryAttribute();
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>       }
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>     }
+<a class="jxr_linenumber" name="L298" href="#L298">298</a> 
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>     <strong class="jxr_keyword">if</strong> ((wfsUrl == <strong class="jxr_keyword">null</strong> || typeName == <strong class="jxr_keyword">null</strong>) &amp;&amp; service.getProtocol() == GeoServiceProtocol.WMS) {
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>       <em class="jxr_comment">// Try to find out the WFS by doing a DescribeLayer request (from OGC SLD spec)</em>
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>       auth = service.getAuthentication();
+<a class="jxr_linenumber" name="L302" href="#L302">302</a> 
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>       <a name="SimpleWFSLayerDescription" href="../../../../../nl/b3p/tailormap/api/geotools/wfs/SimpleWFSLayerDescription.html#SimpleWFSLayerDescription">SimpleWFSLayerDescription</a> wfsLayerDescription =
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>           getWFSLayerDescriptionForWMS(service, layer.getName() <em class="jxr_comment">/*, tags*/</em>);
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>       <strong class="jxr_keyword">if</strong> (wfsLayerDescription != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>         wfsUrl = wfsLayerDescription.getWfsUrl();
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>         typeName = wfsLayerDescription.getFirstTypeName();
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>         auth = service.getAuthentication();
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>       }
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>     }
+<a class="jxr_linenumber" name="L311" href="#L311">311</a> 
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>     <strong class="jxr_keyword">if</strong> (auth != <strong class="jxr_keyword">null</strong> &amp;&amp; auth.getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>       username = auth.getUsername();
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>       password = auth.getPassword();
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>     }
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> WFSSearchResult(wfsUrl, typeName, geometryAttribute, username, password <em class="jxr_comment">/*, tags*/</em>);
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>   }
+<a class="jxr_linenumber" name="L318" href="#L318">318</a> 
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>   <strong class="jxr_keyword">private</strong> <a name="SimpleWFSLayerDescription" href="../../../../../nl/b3p/tailormap/api/geotools/wfs/SimpleWFSLayerDescription.html#SimpleWFSLayerDescription">SimpleWFSLayerDescription</a> getWFSLayerDescriptionForWMS(
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>       GeoService wmsService, String layerName <em class="jxr_comment">/*, Tags tags*/</em>) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>     String username = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>     String password = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>     <strong class="jxr_keyword">if</strong> (wmsService.getAuthentication() != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>         &amp;&amp; wmsService.getAuthentication().getMethod()
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>             == ServiceAuthentication.MethodEnum.PASSWORD) {
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>       username = wmsService.getAuthentication().getUsername();
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>       password = wmsService.getAuthentication().getPassword();
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>     }
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>     <a name="SimpleWFSLayerDescription" href="../../../../../nl/b3p/tailormap/api/geotools/wfs/SimpleWFSLayerDescription.html#SimpleWFSLayerDescription">SimpleWFSLayerDescription</a> wfsLayerDescription =
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>         SimpleWFSHelper.describeWMSLayer(wmsService.getUrl(), username, password, layerName);
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>     <strong class="jxr_keyword">if</strong> (wfsLayerDescription != <strong class="jxr_keyword">null</strong> &amp;&amp; wfsLayerDescription.getTypeNames().length &gt; 0) {
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>       logger.info(
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>           <span class="jxr_string">"WMS described layer \&quot;{}\&quot; with typeNames \&quot;{}\&quot; of WFS \&quot;{}\&quot; for WMS \&quot;{}\&quot;"</span>,
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>           layerName,
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>           Arrays.toString(wfsLayerDescription.getTypeNames()),
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>           wfsLayerDescription.getWfsUrl(),
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>           wmsService.getUrl());
+<a class="jxr_linenumber" name="L338" href="#L338">338</a> 
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>       <strong class="jxr_keyword">return</strong> wfsLayerDescription;
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>     }
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>   }
+<a class="jxr_linenumber" name="L343" href="#L343">343</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2023 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

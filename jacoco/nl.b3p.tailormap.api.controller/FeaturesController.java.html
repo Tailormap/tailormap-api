@@ -7,7 +7,6 @@ package nl.b3p.tailormap.api.controller;
 
 import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
 import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
-import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getNonHiddenAttributes;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -75,14 +74,14 @@ import org.springframework.web.server.ResponseStatusException;
     path = &quot;${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/features&quot;,
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class FeaturesController implements Constants {
-<span class="nc" id="L78">  private static final Logger logger =</span>
-<span class="nc" id="L79">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L77">  private static final Logger logger =</span>
+<span class="nc" id="L78">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
 
   private final FeatureSourceRepository featureSourceRepository;
-<span class="nc" id="L84">  private final FilterFactory2 ff =</span>
-<span class="nc" id="L85">      CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());</span>
+<span class="nc" id="L83">  private final FilterFactory2 ff =</span>
+<span class="nc" id="L84">      CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());</span>
 
   @Value(&quot;${tailormap-api.pageSize:100}&quot;)
   private int pageSize;
@@ -92,10 +91,10 @@ public class FeaturesController implements Constants {
 
   public FeaturesController(
       FeatureSourceFactoryHelper featureSourceFactoryHelper,
-<span class="nc" id="L95">      FeatureSourceRepository featureSourceRepository) {</span>
-<span class="nc" id="L96">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
-<span class="nc" id="L97">    this.featureSourceRepository = featureSourceRepository;</span>
-<span class="nc" id="L98">  }</span>
+<span class="nc" id="L94">      FeatureSourceRepository featureSourceRepository) {</span>
+<span class="nc" id="L95">    this.featureSourceFactoryHelper = featureSourceFactoryHelper;</span>
+<span class="nc" id="L96">    this.featureSourceRepository = featureSourceRepository;</span>
+<span class="nc" id="L97">  }</span>
 
   @Transactional
   @RequestMapping(method = {GET, POST})
@@ -117,30 +116,30 @@ public class FeaturesController implements Constants {
       @RequestParam(defaultValue = &quot;false&quot;) boolean onlyGeometries,
       @RequestParam(defaultValue = &quot;false&quot;) boolean geometryInAttributes) {
 
-<span class="nc bnc" id="L120" title="All 2 branches missed.">    if (layer == null) {</span>
-<span class="nc" id="L121">      throw new ResponseStatusException(</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">    if (layer == null) {</span>
+<span class="nc" id="L120">      throw new ResponseStatusException(</span>
           HttpStatus.NOT_FOUND, &quot;Can't find layer &quot; + appTreeLayerNode);
     }
 
-<span class="nc" id="L125">    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);</span>
-<span class="nc bnc" id="L126" title="All 2 branches missed.">    if (tmft == null) {</span>
-<span class="nc" id="L127">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Layer does not have feature type&quot;);</span>
+<span class="nc" id="L124">    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">    if (tmft == null) {</span>
+<span class="nc" id="L126">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Layer does not have feature type&quot;);</span>
     }
 
-<span class="nc bnc" id="L130" title="All 2 branches missed.">    if (onlyGeometries) {</span>
-<span class="nc" id="L131">      geometryInAttributes = true;</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">    if (onlyGeometries) {</span>
+<span class="nc" id="L130">      geometryInAttributes = true;</span>
     }
 
     FeaturesResponse featuresResponse;
 
-<span class="nc bnc" id="L136" title="All 2 branches missed.">    if (null != __fid) {</span>
-<span class="nc bnc" id="L137" title="All 2 branches missed.">      featuresResponse = getFeatureByFID(tmft, __fid, application, !geometryInAttributes);</span>
-<span class="nc bnc" id="L138" title="All 4 branches missed.">    } else if (null != x &amp;&amp; null != y) {</span>
-<span class="nc bnc" id="L139" title="All 2 branches missed.">      featuresResponse =</span>
-<span class="nc" id="L140">          getFeaturesByXY(tmft, x, y, application, distance, simplify, !geometryInAttributes);</span>
-<span class="nc bnc" id="L141" title="All 4 branches missed.">    } else if (null != page &amp;&amp; page &gt; 0) {</span>
-<span class="nc bnc" id="L142" title="All 2 branches missed.">      featuresResponse =</span>
-<span class="nc" id="L143">          getAllFeatures(</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">    if (null != __fid) {</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">      featuresResponse = getFeatureByFID(tmft, __fid, application, !geometryInAttributes);</span>
+<span class="nc bnc" id="L137" title="All 4 branches missed.">    } else if (null != x &amp;&amp; null != y) {</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">      featuresResponse =</span>
+<span class="nc" id="L139">          getFeaturesByXY(tmft, x, y, application, distance, simplify, !geometryInAttributes);</span>
+<span class="nc bnc" id="L140" title="All 4 branches missed.">    } else if (null != page &amp;&amp; page &gt; 0) {</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">      featuresResponse =</span>
+<span class="nc" id="L142">          getAllFeatures(</span>
               tmft,
               application,
               page,
@@ -150,11 +149,11 @@ public class FeaturesController implements Constants {
               onlyGeometries,
               !geometryInAttributes);
     } else {
-<span class="nc" id="L153">      throw new ResponseStatusException(</span>
+<span class="nc" id="L152">      throw new ResponseStatusException(</span>
           HttpStatus.BAD_REQUEST, &quot;Unsupported combination of request parameters&quot;);
     }
 
-<span class="nc" id="L157">    return ResponseEntity.status(HttpStatus.OK).body(featuresResponse);</span>
+<span class="nc" id="L156">    return ResponseEntity.status(HttpStatus.OK).body(featuresResponse);</span>
   }
 
   @NotNull
@@ -167,18 +166,19 @@ public class FeaturesController implements Constants {
       String sortOrder,
       boolean onlyGeometries,
       boolean skipGeometryOutput) {
-<span class="nc" id="L170">    FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);</span>
+<span class="nc" id="L169">    FeaturesResponse featuresResponse = new FeaturesResponse().page(page).pageSize(pageSize);</span>
 
-<span class="nc" id="L172">    SimpleFeatureSource fs = null;</span>
+<span class="nc" id="L171">    SimpleFeatureSource fs = null;</span>
     try {
-<span class="nc" id="L174">      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);</span>
+<span class="nc" id="L173">      fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmft);</span>
 
       // TODO evaluate; do we want geometry in this response or not?
       //  if we do the geometry attribute must not be removed from propNames
 
       // Property names for query: only non-geometry attributes that aren't hidden
-<span class="nc" id="L180">      List&lt;String&gt; propNames =</span>
-<span class="nc" id="L181">          getNonHiddenAttributes(tmft).stream()</span>
+<span class="nc" id="L179">      List&lt;String&gt; propNames =</span>
+<span class="nc" id="L180">          getConfiguredAttributes(tmft).values().stream()</span>
+<span class="nc" id="L181">              .map(Pair::getLeft)</span>
 <span class="nc bnc" id="L182" title="All 2 branches missed.">              .filter(a -&gt; !isGeometry(a.getType()))</span>
 <span class="nc" id="L183">              .map(TMAttributeDescriptor::getName)</span>
 <span class="nc" id="L184">              .collect(Collectors.toList());</span>
