@@ -53,6 +53,8 @@ import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.repository.GroupRepository;
 import nl.b3p.tailormap.api.repository.UserRepository;
 import nl.b3p.tailormap.api.security.InternalAdminAuthentication;
+import nl.b3p.tailormap.api.viewer.model.Component;
+import nl.b3p.tailormap.api.viewer.model.ComponentConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -731,6 +733,7 @@ public class PopulateTestData {
             .setTitle("Tailormap demo")
             .setCrs("EPSG:28992")
             .setAuthorizationRules(rule)
+            .setComponents(List.of(new Component().type("EDIT").config(new ComponentConfig().enabled(true))))
             .setContentRoot(
                 new AppContent()
                     .addBaseLayerNodesItem(
