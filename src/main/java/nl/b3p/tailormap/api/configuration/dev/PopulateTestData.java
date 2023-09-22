@@ -733,7 +733,8 @@ public class PopulateTestData {
             .setTitle("Tailormap demo")
             .setCrs("EPSG:28992")
             .setAuthorizationRules(rule)
-            .setComponents(List.of(new Component().type("EDIT").config(new ComponentConfig().enabled(true))))
+            .setComponents(
+                List.of(new Component().type("EDIT").config(new ComponentConfig().enabled(true))))
             .setContentRoot(
                 new AppContent()
                     .addBaseLayerNodesItem(
