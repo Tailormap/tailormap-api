@@ -20,8 +20,10 @@ public class TailormapPasswordStrengthConfig {
    * true.
    */
   private static boolean validation = true;
+
   /** minimum length of the password, defaults to 8. */
   private static int minLength = 8;
+
   /** minimum strength of the password, defaults to 4 (very strong). */
   private static int minStrength = 4;
 

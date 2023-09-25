@@ -251,6 +251,7 @@ public class TMFeatureSource {
     this.featureTypes = featureTypes;
     return this;
   }
+
   // </editor-fold>
 
   public TMFeatureType findFeatureTypeByName(String featureTypeName) {
