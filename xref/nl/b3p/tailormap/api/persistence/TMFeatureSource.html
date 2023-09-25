@@ -259,15 +259,16 @@
 <a class="jxr_linenumber" name="L251" href="#L251">251</a>     <strong class="jxr_keyword">this</strong>.featureTypes = featureTypes;
 <a class="jxr_linenumber" name="L252" href="#L252">252</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L253" href="#L253">253</a>   }
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>   <em class="jxr_comment">// &lt;/editor-fold&gt;</em>
-<a class="jxr_linenumber" name="L255" href="#L255">255</a> 
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>   <strong class="jxr_keyword">public</strong> <a name="TMFeatureType" href="../../../../../nl/b3p/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> findFeatureTypeByName(String featureTypeName) {
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>     <strong class="jxr_keyword">return</strong> getFeatureTypes().stream()
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>         .filter(ft -&gt; featureTypeName.equals(ft.getName()))
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>         .findFirst()
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>         .orElse(<strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>   }
-<a class="jxr_linenumber" name="L262" href="#L262">262</a> }
+<a class="jxr_linenumber" name="L254" href="#L254">254</a> 
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>   <em class="jxr_comment">// &lt;/editor-fold&gt;</em>
+<a class="jxr_linenumber" name="L256" href="#L256">256</a> 
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>   <strong class="jxr_keyword">public</strong> <a name="TMFeatureType" href="../../../../../nl/b3p/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> findFeatureTypeByName(String featureTypeName) {
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>     <strong class="jxr_keyword">return</strong> getFeatureTypes().stream()
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>         .filter(ft -&gt; featureTypeName.equals(ft.getName()))
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>         .findFirst()
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>         .orElse(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>   }
+<a class="jxr_linenumber" name="L263" href="#L263">263</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2023 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

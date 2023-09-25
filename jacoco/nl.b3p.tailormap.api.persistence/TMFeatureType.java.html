@@ -190,30 +190,31 @@ import org.hibernate.annotations.Type;
 <span class="fc" id="L190">    this.settings = settings;</span>
 <span class="fc" id="L191">    return this;</span>
   }
+
   // &lt;/editor-fold&gt;
 
   @PrePersist
   @PreUpdate
   public void checkDefaultGeometryAttribute() {
-<span class="nc bnc" id="L198" title="All 2 branches missed.">    if (defaultGeometryAttribute == null) {</span>
-<span class="nc" id="L199">      defaultGeometryAttribute =</span>
-<span class="nc" id="L200">          getAttributes().stream()</span>
-<span class="nc" id="L201">              .filter(a -&gt; TMAttributeTypeHelper.isGeometry(a.getType()))</span>
-<span class="nc" id="L202">              .findFirst()</span>
-<span class="nc" id="L203">              .map(TMAttributeDescriptor::getName)</span>
-<span class="nc" id="L204">              .orElse(null);</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">    if (defaultGeometryAttribute == null) {</span>
+<span class="nc" id="L200">      defaultGeometryAttribute =</span>
+<span class="nc" id="L201">          getAttributes().stream()</span>
+<span class="nc" id="L202">              .filter(a -&gt; TMAttributeTypeHelper.isGeometry(a.getType()))</span>
+<span class="nc" id="L203">              .findFirst()</span>
+<span class="nc" id="L204">              .map(TMAttributeDescriptor::getName)</span>
+<span class="nc" id="L205">              .orElse(null);</span>
     }
-<span class="nc" id="L206">  }</span>
+<span class="nc" id="L207">  }</span>
 
   public Optional&lt;TMAttributeDescriptor&gt; getDefaultGeometryDescriptor() {
-<span class="nc" id="L209">    return getAttributeByName(defaultGeometryAttribute);</span>
+<span class="nc" id="L210">    return getAttributeByName(defaultGeometryAttribute);</span>
   }
 
   public Optional&lt;TMAttributeDescriptor&gt; getAttributeByName(String name) {
-<span class="nc bnc" id="L213" title="All 2 branches missed.">    if (name == null) {</span>
-<span class="nc" id="L214">      return Optional.empty();</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">    if (name == null) {</span>
+<span class="nc" id="L215">      return Optional.empty();</span>
     }
-<span class="nc" id="L216">    return getAttributes().stream().filter(a -&gt; name.equals(a.getName())).findFirst();</span>
+<span class="nc" id="L217">    return getAttributes().stream().filter(a -&gt; name.equals(a.getName())).findFirst();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

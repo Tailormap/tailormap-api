@@ -251,13 +251,14 @@ import org.hibernate.annotations.Type;
 <span class="nc" id="L251">    this.featureTypes = featureTypes;</span>
 <span class="nc" id="L252">    return this;</span>
   }
+
   // &lt;/editor-fold&gt;
 
   public TMFeatureType findFeatureTypeByName(String featureTypeName) {
-<span class="nc" id="L257">    return getFeatureTypes().stream()</span>
-<span class="nc" id="L258">        .filter(ft -&gt; featureTypeName.equals(ft.getName()))</span>
-<span class="nc" id="L259">        .findFirst()</span>
-<span class="nc" id="L260">        .orElse(null);</span>
+<span class="nc" id="L258">    return getFeatureTypes().stream()</span>
+<span class="nc" id="L259">        .filter(ft -&gt; featureTypeName.equals(ft.getName()))</span>
+<span class="nc" id="L260">        .findFirst()</span>
+<span class="nc" id="L261">        .orElse(null);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

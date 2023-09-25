@@ -296,137 +296,138 @@ import org.springframework.web.util.UriComponentsBuilder;
 <span class="nc" id="L296">    this.settings = settings;</span>
 <span class="nc" id="L297">    return this;</span>
   }
+
   // &lt;/editor-fold&gt;
 
   @PrePersist
   public void assignId() {
-<span class="nc bnc" id="L303" title="All 2 branches missed.">    if (StringUtils.isBlank(getId())) {</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">    if (StringUtils.isBlank(getId())) {</span>
       // We kind of misuse TSIDs here, because we store it as a string. This is because the id
       // string can also be manually assigned. There won't be huge numbers of GeoServices, so it's
       // more of a convenient way to generate an ID that isn't a huge UUID string.
-<span class="nc" id="L307">      setId(TSID.fast().toString());</span>
+<span class="nc" id="L308">      setId(TSID.fast().toString());</span>
     }
-<span class="nc" id="L309">  }</span>
+<span class="nc" id="L310">  }</span>
 
   public Service toJsonPojo(GeoServiceHelper geoServiceHelper) {
     Service.ServerTypeEnum serverTypeEnum;
-<span class="nc bnc" id="L313" title="All 2 branches missed.">    if (settings.getServerType() == GeoServiceSettings.ServerTypeEnum.AUTO) {</span>
-<span class="nc" id="L314">      serverTypeEnum = geoServiceHelper.guessServerTypeFromUrl(getUrl());</span>
+<span class="nc bnc" id="L314" title="All 2 branches missed.">    if (settings.getServerType() == GeoServiceSettings.ServerTypeEnum.AUTO) {</span>
+<span class="nc" id="L315">      serverTypeEnum = geoServiceHelper.guessServerTypeFromUrl(getUrl());</span>
     } else {
-<span class="nc" id="L316">      serverTypeEnum = Service.ServerTypeEnum.fromValue(settings.getServerType().getValue());</span>
+<span class="nc" id="L317">      serverTypeEnum = Service.ServerTypeEnum.fromValue(settings.getServerType().getValue());</span>
     }
 
-<span class="nc" id="L319">    Service s =</span>
+<span class="nc" id="L320">    Service s =</span>
         new Service()
-<span class="nc" id="L321">            .id(this.id)</span>
-<span class="nc" id="L322">            .title(this.title)</span>
-<span class="nc bnc" id="L323" title="All 2 branches missed.">            .url(Boolean.TRUE.equals(this.getSettings().getUseProxy()) ? null : this.url)</span>
-<span class="nc" id="L324">            .protocol(this.protocol)</span>
-<span class="nc" id="L325">            .serverType(serverTypeEnum);</span>
+<span class="nc" id="L322">            .id(this.id)</span>
+<span class="nc" id="L323">            .title(this.title)</span>
+<span class="nc bnc" id="L324" title="All 2 branches missed.">            .url(Boolean.TRUE.equals(this.getSettings().getUseProxy()) ? null : this.url)</span>
+<span class="nc" id="L325">            .protocol(this.protocol)</span>
+<span class="nc" id="L326">            .serverType(serverTypeEnum);</span>
 
-<span class="nc bnc" id="L327" title="All 2 branches missed.">    if (this.protocol == GeoServiceProtocol.WMTS) {</span>
+<span class="nc bnc" id="L328" title="All 2 branches missed.">    if (this.protocol == GeoServiceProtocol.WMTS) {</span>
       // Frontend requires WMTS capabilities to parse TilingMatrix, but WMS capabilities aren't used
       // XXX UTF-8 only, maybe use base64
-<span class="nc" id="L330">      s.capabilities(new String(getCapabilities(), StandardCharsets.UTF_8));</span>
+<span class="nc" id="L331">      s.capabilities(new String(getCapabilities(), StandardCharsets.UTF_8));</span>
     }
 
-<span class="nc" id="L333">    return s;</span>
+<span class="nc" id="L334">    return s;</span>
   }
 
   public GeoServiceLayer findLayer(String name) {
-<span class="nc" id="L337">    return getLayers().stream().filter(sl -&gt; name.equals(sl.getName())).findFirst().orElse(null);</span>
+<span class="nc" id="L338">    return getLayers().stream().filter(sl -&gt; name.equals(sl.getName())).findFirst().orElse(null);</span>
   }
 
   public GeoServiceLayerSettings getLayerSettings(String layerName) {
-<span class="nc" id="L341">    return getSettings().getLayerSettings().get(layerName);</span>
+<span class="nc" id="L342">    return getSettings().getLayerSettings().get(layerName);</span>
   }
 
   @NonNull
   public String getTitleWithSettingsOverrides(String layerName) {
     // First use title in layer settings
-<span class="nc" id="L347">    String title =</span>
-<span class="nc" id="L348">        Optional.ofNullable(getLayerSettings(layerName))</span>
-<span class="nc" id="L349">            .map(GeoServiceLayerSettings::getTitle)</span>
-<span class="nc" id="L350">            .map(TMStringUtils::nullIfEmpty)</span>
-<span class="nc" id="L351">            .orElse(null);</span>
+<span class="nc" id="L348">    String title =</span>
+<span class="nc" id="L349">        Optional.ofNullable(getLayerSettings(layerName))</span>
+<span class="nc" id="L350">            .map(GeoServiceLayerSettings::getTitle)</span>
+<span class="nc" id="L351">            .map(TMStringUtils::nullIfEmpty)</span>
+<span class="nc" id="L352">            .orElse(null);</span>
 
     // If not set, title from capabilities
-<span class="nc bnc" id="L354" title="All 2 branches missed.">    if (title == null) {</span>
-<span class="nc" id="L355">      title =</span>
-<span class="nc" id="L356">          Optional.ofNullable(findLayer(layerName))</span>
-<span class="nc" id="L357">              .map(GeoServiceLayer::getTitle)</span>
-<span class="nc" id="L358">              .map(TMStringUtils::nullIfEmpty)</span>
-<span class="nc" id="L359">              .orElse(null);</span>
+<span class="nc bnc" id="L355" title="All 2 branches missed.">    if (title == null) {</span>
+<span class="nc" id="L356">      title =</span>
+<span class="nc" id="L357">          Optional.ofNullable(findLayer(layerName))</span>
+<span class="nc" id="L358">              .map(GeoServiceLayer::getTitle)</span>
+<span class="nc" id="L359">              .map(TMStringUtils::nullIfEmpty)</span>
+<span class="nc" id="L360">              .orElse(null);</span>
     }
 
     // Do not get title from default layer settings (a default title wouldn't make sense)
 
     // If still not set, use layer name as title
-<span class="nc bnc" id="L365" title="All 2 branches missed.">    if (title == null) {</span>
-<span class="nc" id="L366">      title = layerName;</span>
+<span class="nc bnc" id="L366" title="All 2 branches missed.">    if (title == null) {</span>
+<span class="nc" id="L367">      title = layerName;</span>
     }
 
-<span class="nc" id="L369">    return title;</span>
+<span class="nc" id="L370">    return title;</span>
   }
 
   public TMFeatureType findFeatureTypeForLayer(
       GeoServiceLayer layer, FeatureSourceRepository featureSourceRepository) {
 
-<span class="nc" id="L375">    GeoServiceDefaultLayerSettings defaultLayerSettings = getSettings().getDefaultLayerSettings();</span>
-<span class="nc" id="L376">    GeoServiceLayerSettings layerSettings = getLayerSettings(layer.getName());</span>
+<span class="nc" id="L376">    GeoServiceDefaultLayerSettings defaultLayerSettings = getSettings().getDefaultLayerSettings();</span>
+<span class="nc" id="L377">    GeoServiceLayerSettings layerSettings = getLayerSettings(layer.getName());</span>
 
-<span class="nc" id="L378">    Long featureSourceId = null;</span>
+<span class="nc" id="L379">    Long featureSourceId = null;</span>
     String featureTypeName;
 
-<span class="nc bnc" id="L381" title="All 4 branches missed.">    if (layerSettings != null &amp;&amp; layerSettings.getFeatureType() != null) {</span>
-<span class="nc" id="L382">      featureTypeName =</span>
-<span class="nc" id="L383">          Optional.ofNullable(layerSettings.getFeatureType().getFeatureTypeName())</span>
-<span class="nc" id="L384">              .orElse(layer.getName());</span>
-<span class="nc" id="L385">      featureSourceId = layerSettings.getFeatureType().getFeatureSourceId();</span>
+<span class="nc bnc" id="L382" title="All 4 branches missed.">    if (layerSettings != null &amp;&amp; layerSettings.getFeatureType() != null) {</span>
+<span class="nc" id="L383">      featureTypeName =</span>
+<span class="nc" id="L384">          Optional.ofNullable(layerSettings.getFeatureType().getFeatureTypeName())</span>
+<span class="nc" id="L385">              .orElse(layer.getName());</span>
+<span class="nc" id="L386">      featureSourceId = layerSettings.getFeatureType().getFeatureSourceId();</span>
     } else {
-<span class="nc" id="L387">      featureTypeName = layer.getName();</span>
+<span class="nc" id="L388">      featureTypeName = layer.getName();</span>
     }
 
-<span class="nc bnc" id="L390" title="All 4 branches missed.">    if (featureSourceId == null</span>
+<span class="nc bnc" id="L391" title="All 4 branches missed.">    if (featureSourceId == null</span>
         &amp;&amp; defaultLayerSettings != null
-<span class="nc bnc" id="L392" title="All 2 branches missed.">        &amp;&amp; defaultLayerSettings.getFeatureType() != null) {</span>
-<span class="nc" id="L393">      featureSourceId = defaultLayerSettings.getFeatureType().getFeatureSourceId();</span>
+<span class="nc bnc" id="L393" title="All 2 branches missed.">        &amp;&amp; defaultLayerSettings.getFeatureType() != null) {</span>
+<span class="nc" id="L394">      featureSourceId = defaultLayerSettings.getFeatureType().getFeatureSourceId();</span>
     }
 
-<span class="nc bnc" id="L396" title="All 2 branches missed.">    if (featureTypeName == null) {</span>
-<span class="nc" id="L397">      return null;</span>
+<span class="nc bnc" id="L397" title="All 2 branches missed.">    if (featureTypeName == null) {</span>
+<span class="nc" id="L398">      return null;</span>
     }
 
-<span class="nc" id="L400">    TMFeatureSource tmfs = null;</span>
-<span class="nc" id="L401">    TMFeatureType tmft = null;</span>
+<span class="nc" id="L401">    TMFeatureSource tmfs = null;</span>
+<span class="nc" id="L402">    TMFeatureType tmft = null;</span>
 
-<span class="nc bnc" id="L403" title="All 2 branches missed.">    if (featureSourceId == null) {</span>
-<span class="nc" id="L404">      List&lt;TMFeatureSource&gt; linkedSources = featureSourceRepository.findByLinkedServiceId(getId());</span>
-<span class="nc bnc" id="L405" title="All 2 branches missed.">      for (TMFeatureSource linkedFs : linkedSources) {</span>
-<span class="nc" id="L406">        tmft = linkedFs.findFeatureTypeByName(featureTypeName);</span>
-<span class="nc bnc" id="L407" title="All 2 branches missed.">        if (tmft != null) {</span>
-<span class="nc" id="L408">          tmfs = linkedFs;</span>
-<span class="nc" id="L409">          break;</span>
+<span class="nc bnc" id="L404" title="All 2 branches missed.">    if (featureSourceId == null) {</span>
+<span class="nc" id="L405">      List&lt;TMFeatureSource&gt; linkedSources = featureSourceRepository.findByLinkedServiceId(getId());</span>
+<span class="nc bnc" id="L406" title="All 2 branches missed.">      for (TMFeatureSource linkedFs : linkedSources) {</span>
+<span class="nc" id="L407">        tmft = linkedFs.findFeatureTypeByName(featureTypeName);</span>
+<span class="nc bnc" id="L408" title="All 2 branches missed.">        if (tmft != null) {</span>
+<span class="nc" id="L409">          tmfs = linkedFs;</span>
+<span class="nc" id="L410">          break;</span>
         }
-<span class="nc" id="L411">      }</span>
-<span class="nc" id="L412">    } else {</span>
-<span class="nc" id="L413">      tmfs = featureSourceRepository.findById(featureSourceId).orElse(null);</span>
-<span class="nc bnc" id="L414" title="All 2 branches missed.">      if (tmfs != null) {</span>
-<span class="nc" id="L415">        tmft = tmfs.findFeatureTypeByName(featureTypeName);</span>
+<span class="nc" id="L412">      }</span>
+<span class="nc" id="L413">    } else {</span>
+<span class="nc" id="L414">      tmfs = featureSourceRepository.findById(featureSourceId).orElse(null);</span>
+<span class="nc bnc" id="L415" title="All 2 branches missed.">      if (tmfs != null) {</span>
+<span class="nc" id="L416">        tmft = tmfs.findFeatureTypeByName(featureTypeName);</span>
       }
     }
 
-<span class="nc bnc" id="L419" title="All 2 branches missed.">    if (tmfs == null) {</span>
-<span class="nc" id="L420">      return null;</span>
+<span class="nc bnc" id="L420" title="All 2 branches missed.">    if (tmfs == null) {</span>
+<span class="nc" id="L421">      return null;</span>
     }
 
-<span class="nc bnc" id="L423" title="All 2 branches missed.">    if (tmft == null) {</span>
-<span class="nc" id="L424">      String[] split = featureTypeName.split(&quot;:&quot;, 2);</span>
-<span class="nc bnc" id="L425" title="All 2 branches missed.">      if (split.length == 2) {</span>
-<span class="nc" id="L426">        String shortFeatureTypeName = split[1];</span>
-<span class="nc" id="L427">        tmft = tmfs.findFeatureTypeByName(shortFeatureTypeName);</span>
-<span class="nc bnc" id="L428" title="All 2 branches missed.">        if (tmft != null) {</span>
-<span class="nc" id="L429">          logger.debug(</span>
+<span class="nc bnc" id="L424" title="All 2 branches missed.">    if (tmft == null) {</span>
+<span class="nc" id="L425">      String[] split = featureTypeName.split(&quot;:&quot;, 2);</span>
+<span class="nc bnc" id="L426" title="All 2 branches missed.">      if (split.length == 2) {</span>
+<span class="nc" id="L427">        String shortFeatureTypeName = split[1];</span>
+<span class="nc" id="L428">        tmft = tmfs.findFeatureTypeByName(shortFeatureTypeName);</span>
+<span class="nc bnc" id="L429" title="All 2 branches missed.">        if (tmft != null) {</span>
+<span class="nc" id="L430">          logger.debug(</span>
               &quot;Did not find feature type with full name \&quot;{}\&quot;, using \&quot;{}\&quot; of feature source {}&quot;,
               featureTypeName,
               shortFeatureTypeName,
@@ -434,7 +435,7 @@ import org.springframework.web.util.UriComponentsBuilder;
         }
       }
     }
-<span class="nc" id="L437">    return tmft;</span>
+<span class="nc" id="L438">    return tmft;</span>
   }
 
   /**
@@ -444,22 +445,22 @@ import org.springframework.web.util.UriComponentsBuilder;
    * @return sanitised URL
    */
   private String sanitiseUrl(String url) {
-<span class="pc bpc" id="L447" title="1 of 4 branches missed.">    if (url != null &amp;&amp; url.contains(&quot;?&quot;)) {</span>
-<span class="fc" id="L448">      MultiValueMap&lt;String, String&gt; sanitisedParams = new LinkedMultiValueMap&lt;&gt;();</span>
-<span class="fc" id="L449">      UriComponentsBuilder uri = UriComponentsBuilder.fromUriString(url);</span>
-<span class="fc" id="L450">      MultiValueMap&lt;String, String&gt; /* unmodifiable */ requestParams = uri.build().getQueryParams();</span>
-<span class="fc bfc" id="L451" title="All 2 branches covered.">      for (Map.Entry&lt;String, List&lt;String&gt;&gt; param : requestParams.entrySet()) {</span>
-<span class="fc bfc" id="L452" title="All 2 branches covered.">        if (!REMOVE_PARAMS.contains(param.getKey().toUpperCase(Locale.ROOT))) {</span>
-<span class="fc" id="L453">          sanitisedParams.put(param.getKey(), param.getValue());</span>
+<span class="pc bpc" id="L448" title="1 of 4 branches missed.">    if (url != null &amp;&amp; url.contains(&quot;?&quot;)) {</span>
+<span class="fc" id="L449">      MultiValueMap&lt;String, String&gt; sanitisedParams = new LinkedMultiValueMap&lt;&gt;();</span>
+<span class="fc" id="L450">      UriComponentsBuilder uri = UriComponentsBuilder.fromUriString(url);</span>
+<span class="fc" id="L451">      MultiValueMap&lt;String, String&gt; /* unmodifiable */ requestParams = uri.build().getQueryParams();</span>
+<span class="fc bfc" id="L452" title="All 2 branches covered.">      for (Map.Entry&lt;String, List&lt;String&gt;&gt; param : requestParams.entrySet()) {</span>
+<span class="fc bfc" id="L453" title="All 2 branches covered.">        if (!REMOVE_PARAMS.contains(param.getKey().toUpperCase(Locale.ROOT))) {</span>
+<span class="fc" id="L454">          sanitisedParams.put(param.getKey(), param.getValue());</span>
         }
-<span class="fc" id="L455">      }</span>
+<span class="fc" id="L456">      }</span>
 
-<span class="fc" id="L457">      url = uri.replaceQueryParams(sanitisedParams).build().toUriString();</span>
-<span class="pc bpc" id="L458" title="1 of 2 branches missed.">      if (url.endsWith(&quot;?&quot;)) {</span>
-<span class="nc" id="L459">        url = url.substring(0, url.length() - 1);</span>
+<span class="fc" id="L458">      url = uri.replaceQueryParams(sanitisedParams).build().toUriString();</span>
+<span class="pc bpc" id="L459" title="1 of 2 branches missed.">      if (url.endsWith(&quot;?&quot;)) {</span>
+<span class="nc" id="L460">        url = url.substring(0, url.length() - 1);</span>
       }
     }
-<span class="fc" id="L462">    return url;</span>
+<span class="fc" id="L463">    return url;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
