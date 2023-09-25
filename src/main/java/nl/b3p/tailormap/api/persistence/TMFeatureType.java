@@ -190,6 +190,7 @@ public class TMFeatureType {
     this.settings = settings;
     return this;
   }
+
   // </editor-fold>
 
   @PrePersist

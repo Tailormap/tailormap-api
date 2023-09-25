@@ -24,6 +24,7 @@ class ValidateGeoToolsInArtifactIntegrationTest {
 
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   /** this name is set in the pom file */
   private static final String RUNNABLE_JAR = "target/tailormap-api-exec.jar";
 

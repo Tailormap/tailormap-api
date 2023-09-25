@@ -66,6 +66,7 @@ class FeaturesControllerIntegrationTest {
       "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/features";
   private static final String wegdeelUrlSqlserver =
       "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/features";
+
   /**
    * note that for WFS 2.0.0 this is -1 and for WFS 1.0.0 this is 12! depending on the value of
    * {@link #exactWfsCounts}.
@@ -816,6 +817,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").value(utrecht__fid))
         .andExpectAll(provinciesWFSResultMatchers());
   }
+
   /**
    * request 2 pages of data from a database featuretype.
    *

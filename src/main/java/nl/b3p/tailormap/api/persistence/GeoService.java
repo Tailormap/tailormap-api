@@ -296,6 +296,7 @@ public class GeoService {
     this.settings = settings;
     return this;
   }
+
   // </editor-fold>
 
   @PrePersist
