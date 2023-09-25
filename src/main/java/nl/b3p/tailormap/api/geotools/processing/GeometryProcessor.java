@@ -8,6 +8,8 @@ package nl.b3p.tailormap.api.geotools.processing;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import javax.validation.constraints.NotNull;
+import org.geotools.api.referencing.operation.MathTransform;
+import org.geotools.api.referencing.operation.TransformException;
 import org.geotools.data.geojson.GeoJSONWriter;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.WKTReader2;
@@ -19,8 +21,6 @@ import org.locationtech.jts.io.WKTConstants;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.precision.GeometryPrecisionReducer;
 import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

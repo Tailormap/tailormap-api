@@ -12,14 +12,14 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import nl.b3p.tailormap.api.StaticTestData;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.geometry.jts.WKTReader2;
 import org.geotools.referencing.CRS;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.MathTransform;
 
 class GeometryProcessorTest extends StaticTestData {
 

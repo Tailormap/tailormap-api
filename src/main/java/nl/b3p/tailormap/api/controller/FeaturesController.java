@@ -37,9 +37,16 @@ import nl.b3p.tailormap.api.viewer.model.ColumnMetadata;
 import nl.b3p.tailormap.api.viewer.model.Feature;
 import nl.b3p.tailormap.api.viewer.model.FeaturesResponse;
 import org.apache.commons.lang3.tuple.Pair;
-import org.geotools.data.Query;
+import org.geotools.api.data.Query;
+import org.geotools.api.data.SimpleFeatureSource;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
+import org.geotools.api.filter.sort.SortOrder;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.operation.MathTransform;
+import org.geotools.api.referencing.operation.TransformException;
 import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
@@ -48,13 +55,6 @@ import org.geotools.util.factory.GeoTools;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.util.GeometricShapeFactory;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.sort.SortOrder;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,8 +80,7 @@ public class FeaturesController implements Constants {
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
 
   private final FeatureSourceRepository featureSourceRepository;
-  private final FilterFactory2 ff =
-      CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+  private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
 
   @Value("${tailormap-api.pageSize:100}")
   private int pageSize;

@@ -25,7 +25,7 @@ import java.util.Optional;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
-import org.geotools.data.DataStore;
+import org.geotools.api.data.DataStore;
 
 public class JDBCFeatureSourceHelper extends FeatureSourceHelper {
   private static final Map<JDBCConnectionProperties.DbtypeEnum, Integer> defaultPorts =

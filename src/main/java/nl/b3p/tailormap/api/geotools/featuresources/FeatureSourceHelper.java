@@ -21,13 +21,13 @@ import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
 import nl.b3p.tailormap.api.persistence.json.TMFeatureTypeInfo;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
 import nl.b3p.tailormap.api.persistence.json.TMServiceInfo;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.data.ResourceInfo;
-import org.geotools.data.simple.SimpleFeatureSource;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.AttributeType;
+import org.geotools.api.data.DataStore;
+import org.geotools.api.data.DataStoreFinder;
+import org.geotools.api.data.ResourceInfo;
+import org.geotools.api.data.SimpleFeatureSource;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.feature.type.AttributeDescriptor;
+import org.geotools.api.feature.type.AttributeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +79,7 @@ public abstract class FeatureSourceHelper {
         tmfs.setTitle(ds.getInfo().getTitle());
       }
 
-      org.geotools.data.ServiceInfo si = ds.getInfo();
+      org.geotools.api.data.ServiceInfo si = ds.getInfo();
       tmfs.setServiceCapabilities(
           new TMServiceCaps()
               .serviceInfo(
