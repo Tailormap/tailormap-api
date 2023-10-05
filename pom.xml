@@ -197,6 +197,12 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-rest-webmvc</artifactId>
+            <!-- Downgrade this dependency because of HTM-908 / https://github.com/spring-projects/spring-data-rest/issues/2287 -->
+            <!-- The PersistentJsonArrayPropertyIntegrationTest.testUpdateApplicationComponents test checks whether this
+                 bug is triggered. When spring-data-rest-webmvc is upgraded to a fixed version (as a dependency of
+                 Spring) this version element can be removed and the test should pass. Apparently it wasn't fixed yet in
+                 version 3.7.16 -->
+            <version>3.7.12</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
