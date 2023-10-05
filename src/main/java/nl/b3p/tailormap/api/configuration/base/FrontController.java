@@ -21,28 +21,9 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class FrontController {
-  @GetMapping(value = {"/login", "/app/**", "/service/**"})
+  @GetMapping(value = {"/login", "/app/**", "/service/**", "/admin/**"})
   public String appIndex() {
     return "forward:/index.html";
-  }
-
-  @GetMapping(
-      value = {
-        "/admin",
-        "/admin/login",
-        "/admin/catalog",
-        "/admin/catalog/**", // Extra line needed in order to match slashes. Regexps won't match.
-        "/admin/users",
-        "/admin/users/user/**",
-        "/admin/groups",
-        "/admin/groups/group/**",
-        "/admin/applications",
-        "/admin/applications/**",
-        "/admin/oidc-configurations",
-        "/admin/oidc-configurations/**"
-      })
-  public String adminIndex() {
-    return "forward:/admin/index.html";
   }
 
   @GetMapping(value = {"/swagger-ui", "/swagger-ui/"})
