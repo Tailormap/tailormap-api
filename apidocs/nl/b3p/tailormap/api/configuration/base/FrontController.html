@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10};
+var data = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -187,15 +187,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#adminIndex()">adminIndex</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#appIndex()">appIndex</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#swaggerUiWelcomePage()">swaggerUiWelcomePage</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -249,18 +244,8 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockList">
 <li class="blockList">
 <h4>appIndex</h4>
-<pre class="methodSignature">@GetMapping({"/login","/app/**","/service/**"})
+<pre class="methodSignature">@GetMapping({"/login","/app/**","/service/**","/admin/**"})
 public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;appIndex()</pre>
-</li>
-</ul>
-<a id="adminIndex()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>adminIndex</h4>
-<pre class="methodSignature">@GetMapping({"/admin","/admin/login","/admin/catalog","/admin/catalog/**","/admin/users","/admin/users/user/**","/admin/groups","/admin/groups/group/**","/admin/applications","/admin/applications/**","/admin/oidc-configurations","/admin/oidc-configurations/**"})
-public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;adminIndex()</pre>
 </li>
 </ul>
 <a id="swaggerUiWelcomePage()">

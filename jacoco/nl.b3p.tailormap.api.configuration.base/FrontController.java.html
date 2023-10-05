@@ -21,33 +21,14 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 <span class="nc" id="L23">public class FrontController {</span>
-  @GetMapping(value = {&quot;/login&quot;, &quot;/app/**&quot;, &quot;/service/**&quot;})
+  @GetMapping(value = {&quot;/login&quot;, &quot;/app/**&quot;, &quot;/service/**&quot;, &quot;/admin/**&quot;})
   public String appIndex() {
 <span class="nc" id="L26">    return &quot;forward:/index.html&quot;;</span>
   }
 
-  @GetMapping(
-      value = {
-        &quot;/admin&quot;,
-        &quot;/admin/login&quot;,
-        &quot;/admin/catalog&quot;,
-        &quot;/admin/catalog/**&quot;, // Extra line needed in order to match slashes. Regexps won't match.
-        &quot;/admin/users&quot;,
-        &quot;/admin/users/user/**&quot;,
-        &quot;/admin/groups&quot;,
-        &quot;/admin/groups/group/**&quot;,
-        &quot;/admin/applications&quot;,
-        &quot;/admin/applications/**&quot;,
-        &quot;/admin/oidc-configurations&quot;,
-        &quot;/admin/oidc-configurations/**&quot;
-      })
-  public String adminIndex() {
-<span class="nc" id="L45">    return &quot;forward:/admin/index.html&quot;;</span>
-  }
-
   @GetMapping(value = {&quot;/swagger-ui&quot;, &quot;/swagger-ui/&quot;})
   public String swaggerUiWelcomePage() {
-<span class="nc" id="L50">    return &quot;redirect:/swagger-ui/index.html&quot;;</span>
+<span class="nc" id="L31">    return &quot;redirect:/swagger-ui/index.html&quot;;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
