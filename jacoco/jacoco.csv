@@ -29,7 +29,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.persistence.listener,EntityEventPub
 Aggregate Test Coverage,nl.b3p.tailormap.api,TailormapApiApplication,5,3,0,0,2,1,1,1,1,1
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.dev,PopulateTestData,2460,0,32,0,767,0,33,0,17,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.base,TailormapApiConfiguration,3,0,0,0,1,0,1,0,1,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.base,FrontController,7,0,0,0,3,0,3,0,3,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.base,FrontController,75,0,4,0,15,0,8,0,6,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.processing,GeometryProcessor,28,171,10,18,11,41,10,12,0,8
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,TailormapConfig,11,0,0,0,4,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,JPAConfiguration,16,0,0,0,5,0,3,0,3,0

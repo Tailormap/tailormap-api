@@ -5,8 +5,14 @@
  */
 package nl.b3p.tailormap.api.configuration.base;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 /**
  * Front controller which forwards requests to URLs created by the Angular routing module to the
@@ -20,15 +26,45 @@ import org.springframework.web.bind.annotation.GetMapping;
  * controller, and it is only noticed later when someone presses F5 and gets a 404.
  */
 @Controller
-<span class="nc" id="L23">public class FrontController {</span>
-  @GetMapping(value = {&quot;/login&quot;, &quot;/app/**&quot;, &quot;/service/**&quot;, &quot;/admin/**&quot;})
-  public String appIndex() {
-<span class="nc" id="L26">    return &quot;forward:/index.html&quot;;</span>
+<span class="nc" id="L29">public class FrontController {</span>
+  // Hardcoded list for now. In the future scan the spring.web.resources.static-locations directory
+  // for subdirectories of locale-specific frontend bundles.
+<span class="nc" id="L32">  private static final AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();</span>
+  private static final String DEFAULT_LOCALE;
+
+  static {
+<span class="nc" id="L36">    localeResolver.setSupportedLocales(List.of(new Locale(&quot;en&quot;), new Locale(&quot;nl&quot;)));</span>
+<span class="nc" id="L37">    localeResolver.setDefaultLocale(localeResolver.getSupportedLocales().get(0));</span>
+<span class="nc" id="L38">    DEFAULT_LOCALE = Objects.requireNonNull(localeResolver.getDefaultLocale()).toLanguageTag();</span>
+<span class="nc" id="L39">  }</span>
+
+  @GetMapping(value = {&quot;/&quot;, &quot;/login&quot;, &quot;/app/**&quot;, &quot;/service/**&quot;, &quot;/admin/**&quot;})
+  public String appIndex(HttpServletRequest request) {
+<span class="nc" id="L43">    Locale locale = localeResolver.resolveLocale(request);</span>
+<span class="nc" id="L44">    String path = &quot;/&quot; + locale.toLanguageTag() + request.getRequestURI();</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">    String query = request.getQueryString() == null ? &quot;&quot; : &quot;?&quot; + request.getQueryString();</span>
+<span class="nc" id="L46">    return &quot;redirect:&quot; + path + query;</span>
+  }
+
+  @GetMapping(
+      value = {
+        &quot;/{locale}/&quot;,
+        &quot;/{locale}/login&quot;,
+        &quot;/{locale}/app/**&quot;,
+        &quot;/{locale}/service/**&quot;,
+        &quot;/{locale}/admin/**&quot;
+      })
+  public String appRoutes(@PathVariable(&quot;locale&quot;) String locale) {
+<span class="nc" id="L58">    if (localeResolver.getSupportedLocales().stream()</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        .anyMatch(l -&gt; l.toLanguageTag().equals(locale))) {</span>
+<span class="nc" id="L60">      return &quot;forward:/&quot; + locale + &quot;/index.html&quot;;</span>
+    }
+<span class="nc" id="L62">    return &quot;forward:/&quot; + DEFAULT_LOCALE + &quot;/index.html&quot;;</span>
   }
 
   @GetMapping(value = {&quot;/swagger-ui&quot;, &quot;/swagger-ui/&quot;})
   public String swaggerUiWelcomePage() {
-<span class="nc" id="L31">    return &quot;redirect:/swagger-ui/index.html&quot;;</span>
+<span class="nc" id="L67">    return &quot;redirect:/swagger-ui/index.html&quot;;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
