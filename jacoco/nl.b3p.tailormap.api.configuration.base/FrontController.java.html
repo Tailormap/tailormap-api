@@ -41,31 +41,30 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
   @GetMapping(value = {&quot;/&quot;, &quot;/login&quot;, &quot;/app/**&quot;, &quot;/service/**&quot;, &quot;/admin/**&quot;})
   public String appIndex(HttpServletRequest request) {
 <span class="nc" id="L43">    Locale locale = localeResolver.resolveLocale(request);</span>
-<span class="nc" id="L44">    String path = &quot;/&quot; + locale.toLanguageTag() + request.getRequestURI();</span>
-<span class="nc bnc" id="L45" title="All 2 branches missed.">    String query = request.getQueryString() == null ? &quot;&quot; : &quot;?&quot; + request.getQueryString();</span>
-<span class="nc" id="L46">    return &quot;redirect:&quot; + path + query;</span>
+<span class="nc" id="L44">    return &quot;forward:/&quot; + locale.toLanguageTag() + &quot;/index.html&quot;;</span>
   }
 
   @GetMapping(
       value = {
         &quot;/{locale}/&quot;,
         &quot;/{locale}/login&quot;,
-        // Need to avoid matching /api/app/
+        // Need to avoid matching /api/app/ etc
         &quot;/{locale:^(?!api)[a-zA-Z-]+}/app/**&quot;,
         &quot;/{locale:^(?!api)[a-zA-Z-]+}/service/**&quot;,
         &quot;/{locale:^(?!api)[a-zA-Z-]+}/admin/**&quot;
       })
-  public String appRoutes(@PathVariable(&quot;locale&quot;) String locale) {
-<span class="nc" id="L59">    if (localeResolver.getSupportedLocales().stream()</span>
-<span class="nc bnc" id="L60" title="All 2 branches missed.">        .anyMatch(l -&gt; l.toLanguageTag().equals(locale))) {</span>
-<span class="nc" id="L61">      return &quot;forward:/&quot; + locale + &quot;/index.html&quot;;</span>
+  public String localePrefixedAppIndex(
+      @PathVariable(&quot;locale&quot;) String locale, HttpServletRequest request) {
+<span class="nc" id="L58">    if (localeResolver.getSupportedLocales().stream()</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        .anyMatch(l -&gt; l.toLanguageTag().equals(locale))) {</span>
+<span class="nc" id="L60">      return &quot;forward:/&quot; + locale + &quot;/index.html&quot;;</span>
     }
-<span class="nc" id="L63">    return &quot;forward:/&quot; + DEFAULT_LOCALE + &quot;/index.html&quot;;</span>
+<span class="nc" id="L62">    return appIndex(request);</span>
   }
 
   @GetMapping(value = {&quot;/swagger-ui&quot;, &quot;/swagger-ui/&quot;})
   public String swaggerUiWelcomePage() {
-<span class="nc" id="L68">    return &quot;redirect:/swagger-ui/index.html&quot;;</span>
+<span class="nc" id="L67">    return &quot;redirect:/swagger-ui/index.html&quot;;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

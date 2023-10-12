@@ -49,33 +49,32 @@
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>    @GetMapping(value = {<span class="jxr_string">"/"</span>, <span class="jxr_string">"/login"</span>, <span class="jxr_string">"/app/**"</span>, <span class="jxr_string">"/service/**"</span>, <span class="jxr_string">"/admin/**"</span>})
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">public</strong> String appIndex(HttpServletRequest request) {
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>      Locale locale = localeResolver.resolveLocale(request);
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>      String path = <span class="jxr_string">"/"</span> + locale.toLanguageTag() + request.getRequestURI();
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>      String query = request.getQueryString() == <strong class="jxr_keyword">null</strong> ? <span class="jxr_string">""</span> : <span class="jxr_string">"?"</span> + request.getQueryString();
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>      <strong class="jxr_keyword">return</strong> <span class="jxr_string">"redirect:"</span> + path + query;
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>    }
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>    @GetMapping(
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>        value = {
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>          <span class="jxr_string">"/{locale}/"</span>,
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>          <span class="jxr_string">"/{locale}/login"</span>,
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>          <em class="jxr_comment">// Need to avoid matching /api/app/</em>
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          <span class="jxr_string">"/{locale:^(?!api)[a-zA-Z-]+}/app/**"</span>,
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>          <span class="jxr_string">"/{locale:^(?!api)[a-zA-Z-]+}/service/**"</span>,
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>          <span class="jxr_string">"/{locale:^(?!api)[a-zA-Z-]+}/admin/**"</span>
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>        })
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>    <strong class="jxr_keyword">public</strong> String appRoutes(@PathVariable(<span class="jxr_string">"locale"</span>) String locale) {
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">if</strong> (localeResolver.getSupportedLocales().stream()
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>          .anyMatch(l -&gt; l.toLanguageTag().equals(locale))) {
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>        <strong class="jxr_keyword">return</strong> <span class="jxr_string">"forward:/"</span> + locale + <span class="jxr_string">"/index.html"</span>;
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      }
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">return</strong> <span class="jxr_string">"forward:/"</span> + DEFAULT_LOCALE + <span class="jxr_string">"/index.html"</span>;
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>    }
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>    @GetMapping(value = {<span class="jxr_string">"/swagger-ui"</span>, <span class="jxr_string">"/swagger-ui/"</span>})
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>    <strong class="jxr_keyword">public</strong> String swaggerUiWelcomePage() {
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">return</strong> <span class="jxr_string">"redirect:/swagger-ui/index.html"</span>;
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>    }
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>  }
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      <strong class="jxr_keyword">return</strong> <span class="jxr_string">"forward:/"</span> + locale.toLanguageTag() + <span class="jxr_string">"/index.html"</span>;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    }
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>    @GetMapping(
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>        value = {
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>          <span class="jxr_string">"/{locale}/"</span>,
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>          <span class="jxr_string">"/{locale}/login"</span>,
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          <em class="jxr_comment">// Need to avoid matching /api/app/ etc</em>
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          <span class="jxr_string">"/{locale:^(?!api)[a-zA-Z-]+}/app/**"</span>,
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          <span class="jxr_string">"/{locale:^(?!api)[a-zA-Z-]+}/service/**"</span>,
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>          <span class="jxr_string">"/{locale:^(?!api)[a-zA-Z-]+}/admin/**"</span>
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>        })
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>    <strong class="jxr_keyword">public</strong> String localePrefixedAppIndex(
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>        @PathVariable(<span class="jxr_string">"locale"</span>) String locale, HttpServletRequest request) {
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      <strong class="jxr_keyword">if</strong> (localeResolver.getSupportedLocales().stream()
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          .anyMatch(l -&gt; l.toLanguageTag().equals(locale))) {
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>        <strong class="jxr_keyword">return</strong> <span class="jxr_string">"forward:/"</span> + locale + <span class="jxr_string">"/index.html"</span>;
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>      }
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">return</strong> appIndex(request);
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>    }
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>    @GetMapping(value = {<span class="jxr_string">"/swagger-ui"</span>, <span class="jxr_string">"/swagger-ui/"</span>})
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>    <strong class="jxr_keyword">public</strong> String swaggerUiWelcomePage() {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">return</strong> <span class="jxr_string">"redirect:/swagger-ui/index.html"</span>;
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>    }
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2023 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

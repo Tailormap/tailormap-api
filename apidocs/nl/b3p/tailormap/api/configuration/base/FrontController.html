@@ -192,7 +192,8 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#appRoutes(java.lang.String)">appRoutes</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;locale)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#localePrefixedAppIndex(java.lang.String,javax.servlet.http.HttpServletRequest)">localePrefixedAppIndex</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;locale,
+                      javax.servlet.http.HttpServletRequest&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
@@ -253,15 +254,16 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;appIndex&#8203;(javax.servlet.http.HttpServletRequest&nbsp;request)</pre>
 </li>
 </ul>
-<a id="appRoutes(java.lang.String)">
+<a id="localePrefixedAppIndex(java.lang.String,javax.servlet.http.HttpServletRequest)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>appRoutes</h4>
+<h4>localePrefixedAppIndex</h4>
 <pre class="methodSignature">@GetMapping({"/{locale}/","/{locale}/login","/{locale:^(?!api)[a-zA-Z-]+}/app/**","/{locale:^(?!api)[a-zA-Z-]+}/service/**","/{locale:^(?!api)[a-zA-Z-]+}/admin/**"})
-public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;appRoutes&#8203;(@PathVariable("locale")
-                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;locale)</pre>
+public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;localePrefixedAppIndex&#8203;(@PathVariable("locale")
+                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;locale,
+                                     javax.servlet.http.HttpServletRequest&nbsp;request)</pre>
 </li>
 </ul>
 <a id="swaggerUiWelcomePage()">
