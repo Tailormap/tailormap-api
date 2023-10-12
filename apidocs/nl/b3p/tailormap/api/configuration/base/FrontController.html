@@ -259,7 +259,7 @@ public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.bas
 <ul class="blockList">
 <li class="blockList">
 <h4>appRoutes</h4>
-<pre class="methodSignature">@GetMapping({"/{locale}/","/{locale}/login","/{locale}/app/**","/{locale}/service/**","/{locale}/admin/**"})
+<pre class="methodSignature">@GetMapping({"/{locale}/","/{locale}/login","/{locale:^(?!api)[a-zA-Z-]+}/app/**","/{locale:^(?!api)[a-zA-Z-]+}/service/**","/{locale:^(?!api)[a-zA-Z-]+}/admin/**"})
 public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;appRoutes&#8203;(@PathVariable("locale")
                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;locale)</pre>
 </li>
