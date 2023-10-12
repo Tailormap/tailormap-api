@@ -5,8 +5,14 @@
  */
 package nl.b3p.tailormap.api.configuration.base;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 /**
  * Front controller which forwards requests to URLs created by the Angular routing module to the
@@ -21,9 +27,39 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class FrontController {
-  @GetMapping(value = {"/login", "/app/**", "/service/**", "/admin/**"})
-  public String appIndex() {
-    return "forward:/index.html";
+  // Hardcoded list for now. In the future scan the spring.web.resources.static-locations directory
+  // for subdirectories of locale-specific frontend bundles.
+  private static final AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
+  private static final String DEFAULT_LOCALE;
+
+  static {
+    localeResolver.setSupportedLocales(List.of(new Locale("en"), new Locale("nl")));
+    localeResolver.setDefaultLocale(localeResolver.getSupportedLocales().get(0));
+    DEFAULT_LOCALE = Objects.requireNonNull(localeResolver.getDefaultLocale()).toLanguageTag();
+  }
+
+  @GetMapping(value = {"/", "/login", "/app/**", "/service/**", "/admin/**"})
+  public String appIndex(HttpServletRequest request) {
+    Locale locale = localeResolver.resolveLocale(request);
+    String path = "/" + locale.toLanguageTag() + request.getRequestURI();
+    String query = request.getQueryString() == null ? "" : "?" + request.getQueryString();
+    return "redirect:" + path + query;
+  }
+
+  @GetMapping(
+      value = {
+        "/{locale}/",
+        "/{locale}/login",
+        "/{locale}/app/**",
+        "/{locale}/service/**",
+        "/{locale}/admin/**"
+      })
+  public String appRoutes(@PathVariable("locale") String locale) {
+    if (localeResolver.getSupportedLocales().stream()
+        .anyMatch(l -> l.toLanguageTag().equals(locale))) {
+      return "forward:/" + locale + "/index.html";
+    }
+    return "forward:/" + DEFAULT_LOCALE + "/index.html";
   }
 
   @GetMapping(value = {"/swagger-ui", "/swagger-ui/"})
