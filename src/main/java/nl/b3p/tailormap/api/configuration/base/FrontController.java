@@ -41,26 +41,24 @@ public class FrontController {
   @GetMapping(value = {"/", "/login", "/app/**", "/service/**", "/admin/**"})
   public String appIndex(HttpServletRequest request) {
     Locale locale = localeResolver.resolveLocale(request);
-    String path = "/" + locale.toLanguageTag() + request.getRequestURI();
-    String query = request.getQueryString() == null ? "" : "?" + request.getQueryString();
-    return "redirect:" + path + query;
+    return "forward:/" + locale.toLanguageTag() + "/index.html";
   }
 
   @GetMapping(
       value = {
         "/{locale}/",
         "/{locale}/login",
-        // Need to avoid matching /api/app/
+        // Need to avoid matching /api/app/ etc
         "/{locale:^(?!api)[a-zA-Z-]+}/app/**",
         "/{locale:^(?!api)[a-zA-Z-]+}/service/**",
         "/{locale:^(?!api)[a-zA-Z-]+}/admin/**"
       })
-  public String appRoutes(@PathVariable("locale") String locale) {
+  public String localePrefixedAppIndex(@PathVariable("locale") String locale, HttpServletRequest request) {
     if (localeResolver.getSupportedLocales().stream()
         .anyMatch(l -> l.toLanguageTag().equals(locale))) {
       return "forward:/" + locale + "/index.html";
     }
-    return "forward:/" + DEFAULT_LOCALE + "/index.html";
+    return appIndex(request);
   }
 
   @GetMapping(value = {"/swagger-ui", "/swagger-ui/"})
