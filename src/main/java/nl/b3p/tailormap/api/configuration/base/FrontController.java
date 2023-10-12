@@ -50,9 +50,10 @@ public class FrontController {
       value = {
         "/{locale}/",
         "/{locale}/login",
-        "/{locale}/app/**",
-        "/{locale}/service/**",
-        "/{locale}/admin/**"
+        // Need to avoid matching /api/app/
+        "/{locale:^(?!api)[a-zA-Z-]+}/app/**",
+        "/{locale:^(?!api)[a-zA-Z-]+}/service/**",
+        "/{locale:^(?!api)[a-zA-Z-]+}/admin/**"
       })
   public String appRoutes(@PathVariable("locale") String locale) {
     if (localeResolver.getSupportedLocales().stream()
