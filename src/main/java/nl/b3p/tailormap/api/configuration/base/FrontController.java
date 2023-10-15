@@ -53,7 +53,8 @@ public class FrontController {
         "/{locale:^(?!api)[a-zA-Z-]+}/service/**",
         "/{locale:^(?!api)[a-zA-Z-]+}/admin/**"
       })
-  public String localePrefixedAppIndex(@PathVariable("locale") String locale, HttpServletRequest request) {
+  public String localePrefixedAppIndex(
+      @PathVariable("locale") String locale, HttpServletRequest request) {
     if (localeResolver.getSupportedLocales().stream()
         .anyMatch(l -> l.toLanguageTag().equals(locale))) {
       return "forward:/" + locale + "/index.html";
