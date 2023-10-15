@@ -100,7 +100,7 @@ SPDX-License-Identifier: MIT
         <project.build.outputTimestamp>2023-09-28T12:16:46Z</project.build.outputTimestamp>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <geotools.version>29.2</geotools.version>
+        <geotools.version>30.0</geotools.version>
         <jts.version>1.19.0</jts.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <!--
@@ -381,11 +381,6 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-wmts</artifactId>
-            <version>${geotools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-opengis</artifactId>
             <version>${geotools.version}</version>
         </dependency>
         <dependency>

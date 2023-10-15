@@ -23,16 +23,16 @@ import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.viewer.model.UniqueValuesResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.geotools.data.Query;
-import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.api.data.Query;
+import org.geotools.api.data.SimpleFeatureSource;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
+import org.geotools.api.filter.expression.Function;
+import org.geotools.api.filter.sort.SortOrder;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.util.factory.GeoTools;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.expression.Function;
-import org.opengis.filter.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,8 +64,7 @@ public class UniqueValuesController {
   @Value("${tailormap-api.unique.use_geotools_unique_function:true}")
   private boolean useGeotoolsUniqueFunction;
 
-  private final FilterFactory2 ff =
-      CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+  private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
 
   public UniqueValuesController(
       FeatureSourceFactoryHelper featureSourceFactoryHelper,

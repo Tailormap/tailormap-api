@@ -46,7 +46,7 @@ import nl.b3p.tailormap.api.persistence.json.TMServiceInfo;
 import nl.b3p.tailormap.api.persistence.json.WMSStyle;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import org.apache.commons.lang3.StringUtils;
-import org.geotools.data.ServiceInfo;
+import org.geotools.api.data.ServiceInfo;
 import org.geotools.data.ows.AbstractOpenWebService;
 import org.geotools.data.ows.Capabilities;
 import org.geotools.data.ows.OperationType;

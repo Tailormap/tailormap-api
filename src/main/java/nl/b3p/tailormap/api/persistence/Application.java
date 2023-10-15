@@ -263,9 +263,9 @@ public class Application {
    * @return CoordinateReferenceSystem
    */
   @JsonIgnore
-  public org.opengis.referencing.crs.CoordinateReferenceSystem
+  public org.geotools.api.referencing.crs.CoordinateReferenceSystem
       getGeoToolsCoordinateReferenceSystem() {
-    org.opengis.referencing.crs.CoordinateReferenceSystem gtCrs = null;
+    org.geotools.api.referencing.crs.CoordinateReferenceSystem gtCrs = null;
     try {
       if (getCrs() != null) {
         gtCrs = CRS.decode(getCrs());

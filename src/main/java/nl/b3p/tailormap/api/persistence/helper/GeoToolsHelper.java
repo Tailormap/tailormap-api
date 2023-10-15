@@ -6,10 +6,12 @@
 package nl.b3p.tailormap.api.persistence.helper;
 
 import java.math.BigDecimal;
-import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
+import org.geotools.api.feature.type.AttributeType;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.ows.wms.CRSEnvelope;
 import org.geotools.referencing.CRS;
+import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.LineString;
@@ -18,27 +20,26 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
-import org.opengis.feature.type.AttributeType;
-import org.opengis.geometry.Envelope;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 public class GeoToolsHelper {
 
-  public static Bounds boundsFromCRSEnvelope(CRSEnvelope crsEnvelope) {
+  public static nl.b3p.tailormap.api.persistence.json.Bounds boundsFromCRSEnvelope(
+      CRSEnvelope crsEnvelope) {
     return crsEnvelope == null
         ? null
-        : new Bounds()
+        : new nl.b3p.tailormap.api.persistence.json.Bounds()
             .maxx(crsEnvelope.getMaxX())
             .maxy(crsEnvelope.getMaxY())
             .minx(crsEnvelope.getMinX())
             .miny(crsEnvelope.getMinY());
   }
 
-  public static Bounds fromCRS(org.opengis.referencing.crs.CoordinateReferenceSystem crs) {
-    Envelope envelope = CRS.getEnvelope(crs);
+  public static nl.b3p.tailormap.api.persistence.json.Bounds fromCRS(
+      CoordinateReferenceSystem crs) {
+    org.geotools.api.geometry.Bounds envelope = CRS.getEnvelope(crs);
     return envelope == null
         ? null
-        : new Bounds()
+        : new nl.b3p.tailormap.api.persistence.json.Bounds()
             // ordinate choice may not always be correct...eg. with flipped axis
             .maxx(envelope.getUpperCorner().getOrdinate(0))
             .maxy(envelope.getUpperCorner().getOrdinate(1))
@@ -46,10 +47,10 @@ public class GeoToolsHelper {
             .miny(envelope.getLowerCorner().getOrdinate(1));
   }
 
-  public static Bounds fromEnvelope(org.locationtech.jts.geom.Envelope envelope) {
+  public static nl.b3p.tailormap.api.persistence.json.Bounds fromEnvelope(Envelope envelope) {
     return envelope == null
         ? null
-        : new Bounds()
+        : new nl.b3p.tailormap.api.persistence.json.Bounds()
             .maxx(envelope.getMaxX())
             .maxy(envelope.getMaxY())
             .minx(envelope.getMinX())
