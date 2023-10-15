@@ -263,9 +263,9 @@ import org.springframework.lang.Nullable;
    * @return CoordinateReferenceSystem
    */
   @JsonIgnore
-  public org.opengis.referencing.crs.CoordinateReferenceSystem
+  public org.geotools.api.referencing.crs.CoordinateReferenceSystem
       getGeoToolsCoordinateReferenceSystem() {
-<span class="fc" id="L268">    org.opengis.referencing.crs.CoordinateReferenceSystem gtCrs = null;</span>
+<span class="fc" id="L268">    org.geotools.api.referencing.crs.CoordinateReferenceSystem gtCrs = null;</span>
     try {
 <span class="pc bpc" id="L270" title="1 of 2 branches missed.">      if (getCrs() != null) {</span>
 <span class="fc" id="L271">        gtCrs = CRS.decode(getCrs());</span>
