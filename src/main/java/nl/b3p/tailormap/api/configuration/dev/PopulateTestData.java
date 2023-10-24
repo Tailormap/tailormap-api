@@ -1108,8 +1108,7 @@ public class PopulateTestData {
             .setTitle("Austria")
             .setInitialExtent(
                 new Bounds().minx(987982d).miny(5799551d).maxx(1963423d).maxy(6320708d))
-            .setMaxExtent(
-                new Bounds().minx(206516d).miny(5095461d).maxx(3146930d).maxy(7096232d))
+            .setMaxExtent(new Bounds().minx(206516d).miny(5095461d).maxx(3146930d).maxy(7096232d))
             .setContentRoot(
                 new AppContent()
                     .addBaseLayerNodesItem(
