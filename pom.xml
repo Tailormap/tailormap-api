@@ -120,7 +120,7 @@ SPDX-License-Identifier: MIT
         <!-- GeoTools up to 29.1 uses hsqldb 2.5.2, which has CVE-2022-41853, 29.2 should provide 2.7.2 -->
         <hsqldb.version>2.7.2</hsqldb.version>
         <junit-jupiter.version>5.10.0</junit-jupiter.version>
-        <flyway.version>9.22.2</flyway.version>
+        <flyway.version>9.22.3</flyway.version>
         <mssql-jdbc.version>12.4.1.jre11</mssql-jdbc.version>
         <oracle-database.version>23.3.0.23.09</oracle-database.version>
         <postgresql.version>42.6.0</postgresql.version>
