@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT
 set -e
 
-docker compose -f ./build/ci/docker-compose.yml up --pull -d --wait
+docker compose -f ./build/ci/docker-compose.yml up --pull=always -d --wait
 
 POSTGIS_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" postgis)
 ORACLE_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" oracle)
