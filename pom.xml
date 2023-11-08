@@ -152,7 +152,7 @@ SPDX-License-Identifier: MIT
         <pmd.version>6.55.0</pmd.version>
         <maven-fluido-skin.version>2.0.0-M8</maven-fluido-skin.version>
         <swagger-ui.version>5.9.0</swagger-ui.version>
-        <sentry.version>6.33.0</sentry.version>
+        <sentry.version>6.33.1</sentry.version>
         <errorProne.version>2.23.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
