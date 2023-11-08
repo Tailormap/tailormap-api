@@ -328,7 +328,7 @@ public class EditFeatureController implements Constants {
             new Feature()
 <span class="nc" id="L329">                .geometry(</span>
 <span class="nc" id="L330">                    GeometryProcessor.processGeometry(</span>
-<span class="nc" id="L331">                        (simpleFeature.getDefaultGeometry()),</span>
+<span class="nc" id="L331">                        simpleFeature.getDefaultGeometry(),</span>
 <span class="nc" id="L332">                        false,</span>
 <span class="nc" id="L333">                        true,</span>
 <span class="nc" id="L334">                        TransformationUtil.getTransformationToApplication(application, fs)))</span>

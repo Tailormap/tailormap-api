@@ -51,9 +51,9 @@ import org.springframework.http.HttpHeaders;
 <span class="nc" id="L51">    }</span>
 <span class="nc" id="L52">  }</span>
 
-  public static org.springframework.http.HttpHeaders passthroughResponseHeaders(
+  public static HttpHeaders passthroughResponseHeaders(
       java.net.http.HttpHeaders upstreamHeaders, Set&lt;String&gt; allowedResponseHeaders) {
-<span class="nc" id="L56">    org.springframework.http.HttpHeaders headers = new HttpHeaders();</span>
+<span class="nc" id="L56">    HttpHeaders headers = new HttpHeaders();</span>
 <span class="nc bnc" id="L57" title="All 2 branches missed.">    for (String header : allowedResponseHeaders) {</span>
 <span class="nc" id="L58">      headers.addAll(header, upstreamHeaders.allValues(header));</span>
 <span class="nc" id="L59">    }</span>
