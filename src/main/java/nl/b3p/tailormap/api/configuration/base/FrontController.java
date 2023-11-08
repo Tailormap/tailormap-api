@@ -14,6 +14,8 @@ import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,9 +49,12 @@ public class FrontController {
   private final ConfigurationRepository configurationRepository;
   private final ApplicationRepository applicationRepository;
 
+  @Value("${spring.profiles.active:}")
+  private String activeProfile;
+
   public FrontController(
-      ConfigurationRepository configurationRepository,
-      ApplicationRepository applicationRepository) {
+      @Lazy ConfigurationRepository configurationRepository,
+      @Lazy ApplicationRepository applicationRepository) {
     this.configurationRepository = configurationRepository;
     this.applicationRepository = applicationRepository;
   }
@@ -59,15 +64,17 @@ public class FrontController {
     String path = request.getRequestURI().substring(request.getContextPath().length());
     Application app = null;
 
-    // The language setting of the (default) app takes precedence over the Accept-Language header
-    if ("/".equals(path)) {
-      String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);
-      app = applicationRepository.findByName(defaultAppName);
-    } else if (path.startsWith("/app/")) {
-      String[] parts = path.split("/", 4);
-      if (parts.length > 2) {
-        String appName = UriUtils.decode(parts[2], StandardCharsets.UTF_8);
-        app = applicationRepository.findByName(appName);
+    if (!activeProfile.contains("static-only")) {
+      // The language setting of the (default) app takes precedence over the Accept-Language header
+      if ("/".equals(path)) {
+        String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);
+        app = applicationRepository.findByName(defaultAppName);
+      } else if (path.startsWith("/app/")) {
+        String[] parts = path.split("/", 4);
+        if (parts.length > 2) {
+          String appName = UriUtils.decode(parts[2], StandardCharsets.UTF_8);
+          app = applicationRepository.findByName(appName);
+        }
       }
     }
 
