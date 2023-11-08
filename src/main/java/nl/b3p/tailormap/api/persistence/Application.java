@@ -5,6 +5,8 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
+import static java.util.Objects.requireNonNullElse;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
+import nl.b3p.tailormap.api.persistence.json.AppI18nSettings;
 import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.AppSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
@@ -292,7 +295,9 @@ public class Application {
         .title(getTitle())
         .styling(styling)
         .components(components)
-        .languages(List.of("NL_nl"))
+        .i18nSettings(
+            requireNonNullElse(
+                settings.getI18nSettings(), new AppI18nSettings().hideLanguageSwitcher(false)))
         .projections(List.of(getCrs()));
   }
 

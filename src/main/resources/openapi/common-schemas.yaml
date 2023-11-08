@@ -141,3 +141,17 @@ components:
         legendURL:
           type: string
           format: uri
+
+    AppI18nSettings:
+      title: AppI18nSettings
+      type: object
+      required:
+        - defaultLanguage
+        - hideLanguageSwitcher
+      properties:
+        defaultLanguage:
+          type: string
+          nullable: true
+        hideLanguageSwitcher:
+          nullable: false
+          type: boolean
