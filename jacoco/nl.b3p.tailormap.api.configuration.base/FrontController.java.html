@@ -5,14 +5,20 @@
  */
 package nl.b3p.tailormap.api.configuration.base;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
+import nl.b3p.tailormap.api.persistence.Application;
+import nl.b3p.tailormap.api.persistence.Configuration;
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
+import org.springframework.web.util.UriUtils;
 
 /**
  * Front controller which forwards requests to URLs created by the Angular routing module to the
@@ -26,22 +32,57 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
  * controller, and it is only noticed later when someone presses F5 and gets a 404.
  */
 @Controller
-<span class="nc" id="L29">public class FrontController {</span>
+public class FrontController {
   // Hardcoded list for now. In the future scan the spring.web.resources.static-locations directory
   // for subdirectories of locale-specific frontend bundles.
-<span class="nc" id="L32">  private static final AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();</span>
+<span class="nc" id="L38">  private static final AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();</span>
   private static final String DEFAULT_LOCALE;
 
   static {
-<span class="nc" id="L36">    localeResolver.setSupportedLocales(List.of(new Locale(&quot;en&quot;), new Locale(&quot;nl&quot;)));</span>
-<span class="nc" id="L37">    localeResolver.setDefaultLocale(localeResolver.getSupportedLocales().get(0));</span>
-<span class="nc" id="L38">    DEFAULT_LOCALE = Objects.requireNonNull(localeResolver.getDefaultLocale()).toLanguageTag();</span>
-<span class="nc" id="L39">  }</span>
+<span class="nc" id="L42">    localeResolver.setSupportedLocales(List.of(new Locale(&quot;en&quot;), new Locale(&quot;nl&quot;)));</span>
+<span class="nc" id="L43">    localeResolver.setDefaultLocale(localeResolver.getSupportedLocales().get(0));</span>
+<span class="nc" id="L44">    DEFAULT_LOCALE = Objects.requireNonNull(localeResolver.getDefaultLocale()).toLanguageTag();</span>
+<span class="nc" id="L45">  }</span>
+
+  private final ConfigurationRepository configurationRepository;
+  private final ApplicationRepository applicationRepository;
+
+  public FrontController(
+      ConfigurationRepository configurationRepository,
+<span class="nc" id="L52">      ApplicationRepository applicationRepository) {</span>
+<span class="nc" id="L53">    this.configurationRepository = configurationRepository;</span>
+<span class="nc" id="L54">    this.applicationRepository = applicationRepository;</span>
+<span class="nc" id="L55">  }</span>
 
   @GetMapping(value = {&quot;/&quot;, &quot;/login&quot;, &quot;/app/**&quot;, &quot;/service/**&quot;, &quot;/admin/**&quot;})
   public String appIndex(HttpServletRequest request) {
-<span class="nc" id="L43">    Locale locale = localeResolver.resolveLocale(request);</span>
-<span class="nc" id="L44">    return &quot;forward:/&quot; + locale.toLanguageTag() + &quot;/index.html&quot;;</span>
+<span class="nc" id="L59">    String path = request.getRequestURI().substring(request.getContextPath().length());</span>
+<span class="nc" id="L60">    Application app = null;</span>
+
+    // The language setting of the (default) app takes precedence over the Accept-Language header
+<span class="nc bnc" id="L63" title="All 2 branches missed.">    if (&quot;/&quot;.equals(path)) {</span>
+<span class="nc" id="L64">      String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);</span>
+<span class="nc" id="L65">      app = applicationRepository.findByName(defaultAppName);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">    } else if (path.startsWith(&quot;/app/&quot;)) {</span>
+<span class="nc" id="L67">      String[] parts = path.split(&quot;/&quot;, 4);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">      if (parts.length &gt; 2) {</span>
+<span class="nc" id="L69">        String appName = UriUtils.decode(parts[2], StandardCharsets.UTF_8);</span>
+<span class="nc" id="L70">        app = applicationRepository.findByName(appName);</span>
+      }
+    }
+
+<span class="nc bnc" id="L74" title="All 4 branches missed.">    if (app != null &amp;&amp; app.getSettings().getI18nSettings() != null) {</span>
+<span class="nc" id="L75">      String appLanguage = app.getSettings().getI18nSettings().getDefaultLanguage();</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">      if (appLanguage != null</span>
+<span class="nc" id="L77">          &amp;&amp; localeResolver.getSupportedLocales().stream()</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">              .anyMatch(l -&gt; l.toLanguageTag().equals(appLanguage))) {</span>
+<span class="nc" id="L79">        return &quot;forward:/&quot; + appLanguage + &quot;/index.html&quot;;</span>
+      }
+    }
+
+    // Resolve using Accept-Language header
+<span class="nc" id="L84">    Locale locale = localeResolver.resolveLocale(request);</span>
+<span class="nc" id="L85">    return &quot;forward:/&quot; + locale.toLanguageTag() + &quot;/index.html&quot;;</span>
   }
 
   @GetMapping(
@@ -55,16 +96,16 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
       })
   public String localePrefixedAppIndex(
       @PathVariable(&quot;locale&quot;) String locale, HttpServletRequest request) {
-<span class="nc" id="L58">    if (localeResolver.getSupportedLocales().stream()</span>
-<span class="nc bnc" id="L59" title="All 2 branches missed.">        .anyMatch(l -&gt; l.toLanguageTag().equals(locale))) {</span>
-<span class="nc" id="L60">      return &quot;forward:/&quot; + locale + &quot;/index.html&quot;;</span>
+<span class="nc" id="L99">    if (localeResolver.getSupportedLocales().stream()</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        .anyMatch(l -&gt; l.toLanguageTag().equals(locale))) {</span>
+<span class="nc" id="L101">      return &quot;forward:/&quot; + locale + &quot;/index.html&quot;;</span>
     }
-<span class="nc" id="L62">    return appIndex(request);</span>
+<span class="nc" id="L103">    return appIndex(request);</span>
   }
 
   @GetMapping(value = {&quot;/swagger-ui&quot;, &quot;/swagger-ui/&quot;})
   public String swaggerUiWelcomePage() {
-<span class="nc" id="L67">    return &quot;redirect:/swagger-ui/index.html&quot;;</span>
+<span class="nc" id="L108">    return &quot;redirect:/swagger-ui/index.html&quot;;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

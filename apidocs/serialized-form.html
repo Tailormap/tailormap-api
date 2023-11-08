@@ -185,6 +185,30 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 </ul>
 </li>
+<li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.AppI18nSettings">
+<!--   -->
+</a>
+<h3>Class <a href="nl/b3p/tailormap/api/persistence/json/AppI18nSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">nl.b3p.tailormap.api.persistence.json.AppI18nSettings</a> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>defaultLanguage</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> defaultLanguage</pre>
+</li>
+<li class="blockListLast">
+<h4>hideLanguageSwitcher</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a> hideLanguageSwitcher</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="blockList"><a id="nl.b3p.tailormap.api.persistence.json.AppLayerSettings">
 <!--   -->
 </a>
@@ -233,6 +257,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h3>Serialized Fields</h3>
 <ul class="blockList">
+<li class="blockList">
+<h4>i18nSettings</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/AppI18nSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppI18nSettings</a> i18nSettings</pre>
+</li>
 <li class="blockListLast">
 <h4>layerSettings</h4>
 <pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="nl/b3p/tailormap/api/persistence/json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a>&gt; layerSettings</pre>
@@ -2121,12 +2149,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;@Valid <a href="nl/b3p/tailormap/api/viewer/model/Component.html" title="class in nl.b3p.tailormap.api.viewer.model">Component</a>&gt; components</pre>
 </li>
 <li class="blockList">
-<h4>kind</h4>
-<pre><a href="nl/b3p/tailormap/api/viewer/model/ViewerResponse.KindEnum.html" title="enum in nl.b3p.tailormap.api.viewer.model">ViewerResponse.KindEnum</a> kind</pre>
+<h4>i18nSettings</h4>
+<pre><a href="nl/b3p/tailormap/api/persistence/json/AppI18nSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppI18nSettings</a> i18nSettings</pre>
 </li>
 <li class="blockList">
-<h4>languages</h4>
-<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; languages</pre>
+<h4>kind</h4>
+<pre><a href="nl/b3p/tailormap/api/viewer/model/ViewerResponse.KindEnum.html" title="enum in nl.b3p.tailormap.api.viewer.model">ViewerResponse.KindEnum</a> kind</pre>
 </li>
 <li class="blockList">
 <h4>name</h4>
