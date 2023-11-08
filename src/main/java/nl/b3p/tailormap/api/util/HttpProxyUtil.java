@@ -51,9 +51,9 @@ public class HttpProxyUtil {
     }
   }
 
-  public static org.springframework.http.HttpHeaders passthroughResponseHeaders(
+  public static HttpHeaders passthroughResponseHeaders(
       java.net.http.HttpHeaders upstreamHeaders, Set<String> allowedResponseHeaders) {
-    org.springframework.http.HttpHeaders headers = new HttpHeaders();
+    HttpHeaders headers = new HttpHeaders();
     for (String header : allowedResponseHeaders) {
       headers.addAll(header, upstreamHeaders.allValues(header));
     }

@@ -56,7 +56,7 @@ public class User {
   private String notes;
 
   @Column(columnDefinition = "timestamp with time zone")
-  private java.time.ZonedDateTime validUntil;
+  private ZonedDateTime validUntil;
 
   private boolean enabled = true;
 

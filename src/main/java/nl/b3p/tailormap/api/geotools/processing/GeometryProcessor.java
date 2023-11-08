@@ -136,7 +136,7 @@ public final class GeometryProcessor {
   }
 
   public static String geometryToWKT(@NotNull Geometry geom) {
-    final int dimension = (geom.getDimension() > 1 ? geom.getDimension() : 2);
+    final int dimension = geom.getDimension() > 1 ? geom.getDimension() : 2;
     WKTWriter2 writer = new WKTWriter2(dimension);
     return writer.write(geom);
   }
