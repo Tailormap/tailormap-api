@@ -5,14 +5,20 @@
  */
 package nl.b3p.tailormap.api.configuration.base;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
+import nl.b3p.tailormap.api.persistence.Application;
+import nl.b3p.tailormap.api.persistence.Configuration;
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
+import org.springframework.web.util.UriUtils;
 
 /**
  * Front controller which forwards requests to URLs created by the Angular routing module to the
@@ -38,8 +44,43 @@ public class FrontController {
     DEFAULT_LOCALE = Objects.requireNonNull(localeResolver.getDefaultLocale()).toLanguageTag();
   }
 
+  private final ConfigurationRepository configurationRepository;
+  private final ApplicationRepository applicationRepository;
+
+  public FrontController(
+      ConfigurationRepository configurationRepository,
+      ApplicationRepository applicationRepository) {
+    this.configurationRepository = configurationRepository;
+    this.applicationRepository = applicationRepository;
+  }
+
   @GetMapping(value = {"/", "/login", "/app/**", "/service/**", "/admin/**"})
   public String appIndex(HttpServletRequest request) {
+    String path = request.getRequestURI().substring(request.getContextPath().length());
+    Application app = null;
+
+    // The language setting of the (default) app takes precedence over the Accept-Language header
+    if ("/".equals(path)) {
+      String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);
+      app = applicationRepository.findByName(defaultAppName);
+    } else if (path.startsWith("/app/")) {
+      String[] parts = path.split("/", 4);
+      if (parts.length > 2) {
+        String appName = UriUtils.decode(parts[2], StandardCharsets.UTF_8);
+        app = applicationRepository.findByName(appName);
+      }
+    }
+
+    if (app != null && app.getSettings().getI18nSettings() != null) {
+      String appLanguage = app.getSettings().getI18nSettings().getDefaultLanguage();
+      if (appLanguage != null
+          && localeResolver.getSupportedLocales().stream()
+              .anyMatch(l -> l.toLanguageTag().equals(appLanguage))) {
+        return "forward:/" + appLanguage + "/index.html";
+      }
+    }
+
+    // Resolve using Accept-Language header
     Locale locale = localeResolver.resolveLocale(request);
     return "forward:/" + locale.toLanguageTag() + "/index.html";
   }

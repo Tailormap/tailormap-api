@@ -532,6 +532,8 @@ components:
     AppSettings:
       description: Settings applying to a viewer application.
       properties:
+        i18nSettings:
+          $ref: './common-schemas.yaml#/components/schemas/AppI18nSettings'
         layerSettings:
           title: AppLayerSettings
           description: Map of id of an AppTreeLayerNode to its' settings.

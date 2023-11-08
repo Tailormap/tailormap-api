@@ -162,12 +162,8 @@ components:
           items:
             type: string
           nullable: false
-        languages:
-          description: Available languages for this application. The first item is the default.
-          type: array
-          items:
-            type: string
-          nullable: false
+        i18nSettings:
+          $ref: './common-schemas.yaml#/components/schemas/AppI18nSettings'
         projections:
           description: Available projections for this application. The first item is the default.
             Not all layers may be available in all projections.
