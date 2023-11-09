@@ -89,6 +89,8 @@ public class EditFeatureController implements Constants {
 
   private static void checkFeatureHasOnlyValidAttributes(
       Feature feature, TMFeatureType tmFeatureType) {
+    // TODO check read only attributes
+
     if (!getNonHiddenAttributeNames(tmFeatureType).containsAll(feature.getAttributes().keySet())) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST,

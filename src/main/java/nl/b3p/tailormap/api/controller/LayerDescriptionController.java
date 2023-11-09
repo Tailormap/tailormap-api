@@ -9,12 +9,15 @@ import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGe
 import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper;
+import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.AttributeSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
@@ -81,6 +84,13 @@ public class LayerDescriptionController {
                     .orElse(null))
             .editable(TMFeatureTypeHelper.isEditable(application, appTreeLayerNode, tmft));
 
+    List<String> readOnlyAttributes = new ArrayList<>();
+    Optional.ofNullable(tmft.getSettings().getReadOnlyAttributes())
+        .ifPresent(readOnlyAttributes::addAll);
+    Optional.ofNullable(application.getAppLayerSettings(appTreeLayerNode))
+        .map(AppLayerSettings::getReadOnlyAttributes)
+        .ifPresent(readOnlyAttributes::addAll);
+
     getConfiguredAttributes(tmft).values().stream()
         .map(
             pair -> {
@@ -94,7 +104,9 @@ public class LayerDescriptionController {
                   // attribute there is a specific geometry type set
                   .type(isGeometry(a.getType()) ? TMAttributeType.GEOMETRY : a.getType())
                   // primary key can never be edited
-                  .editable(!a.getName().equals(tmft.getPrimaryKeyAttribute()))
+                  .editable(
+                      !a.getName().equals(tmft.getPrimaryKeyAttribute())
+                          && !readOnlyAttributes.contains(a.getName()))
                   .editAlias(Optional.ofNullable(settings.getTitle()).orElse(a.getName()))
                   .defaultValue(a.getDefaultValue())
                   .nullable(a.getNullable())
