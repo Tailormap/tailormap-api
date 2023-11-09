@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -38,8 +39,6 @@ import org.geotools.referencing.CRS;
 import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 @Entity
 @EntityListeners(EntityEventPublisher.class)
@@ -301,11 +300,11 @@ public class Application {
         .projections(List.of(getCrs()));
   }
 
-  @Nullable
-  public AppLayerSettings getAppLayerSettings(@NonNull AppTreeLayerNode node) {
-    if (getSettings() == null) {
-      return null;
-    }
-    return getSettings().getLayerSettings().get(node.getId());
+  @NotNull
+  public AppLayerSettings getAppLayerSettings(@NotNull AppTreeLayerNode node) {
+    return Optional.ofNullable(getSettings())
+        .map(AppSettings::getLayerSettings)
+        .map(layerSettingsMap -> layerSettingsMap.get(node.getId()))
+        .orElseGet(AppLayerSettings::new);
   }
 }

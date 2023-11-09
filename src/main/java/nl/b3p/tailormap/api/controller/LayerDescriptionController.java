@@ -9,9 +9,8 @@ import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGe
 import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
@@ -84,14 +83,11 @@ public class LayerDescriptionController {
                     .orElse(null))
             .editable(TMFeatureTypeHelper.isEditable(application, appTreeLayerNode, tmft));
 
-    List<String> readOnlyAttributes = new ArrayList<>();
-    Optional.ofNullable(tmft.getSettings().getReadOnlyAttributes())
-        .ifPresent(readOnlyAttributes::addAll);
-    Optional.ofNullable(application.getAppLayerSettings(appTreeLayerNode))
-        .map(AppLayerSettings::getReadOnlyAttributes)
-        .ifPresent(readOnlyAttributes::addAll);
+    AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
+    Set<String> readOnlyAttributes =
+        TMFeatureTypeHelper.getReadOnlyAttributes(tmft, appLayerSettings);
 
-    getConfiguredAttributes(tmft).values().stream()
+    getConfiguredAttributes(tmft, appLayerSettings).values().stream()
         .map(
             pair -> {
               TMAttributeDescriptor a = pair.getLeft();

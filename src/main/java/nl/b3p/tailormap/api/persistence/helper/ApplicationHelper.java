@@ -253,8 +253,7 @@ public class ApplicationHelper {
       GeoServiceLayerSettings serviceLayerSettings =
           Optional.ofNullable(serviceWithLayer.getRight()).orElseGet(GeoServiceLayerSettings::new);
 
-      AppLayerSettings appLayerSettings =
-          Objects.requireNonNullElse(app.getAppLayerSettings(layerRef), new AppLayerSettings());
+      AppLayerSettings appLayerSettings = app.getAppLayerSettings(layerRef);
 
       String title =
           Objects.requireNonNullElse(

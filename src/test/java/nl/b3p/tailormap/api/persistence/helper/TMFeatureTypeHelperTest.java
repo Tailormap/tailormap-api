@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.AttributeSettings;
 import nl.b3p.tailormap.api.persistence.json.FeatureTypeSettings;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
@@ -33,6 +34,8 @@ class TMFeatureTypeHelperTest {
             att.apply("b"),
             att.apply("c"),
             att.apply("d"),
+            att.apply("e"),
+            att.apply("f"),
             att.apply("m"),
             att.apply("n"),
             att.apply("o"),
@@ -45,19 +48,25 @@ class TMFeatureTypeHelperTest {
             .addHideAttributesItem("q")
             .addHideAttributesItem("o")
             .addAttributeOrderItem("c")
+            .addAttributeOrderItem("d")
+            .addAttributeOrderItem("e")
             .addAttributeOrderItem("o")
             .addAttributeOrderItem("a"));
 
+    AppLayerSettings appLayerSettings = new AppLayerSettings();
+    appLayerSettings.setHideAttributes(List.of("e", "f"));
+
     Map<String, Pair<TMAttributeDescriptor, AttributeSettings>> configuredAttributes =
-        getConfiguredAttributes(ft);
+        getConfiguredAttributes(ft, appLayerSettings);
     // Compare using Lists to explicitly check the ordering
     assertEquals(
         List.of(
             "c",
-            // "o" is hidden
+            "d",
+            // "e" and "f" are hidden in app layer settings
+            // "o" is hidden in feature type settings
             "a",
             // after ordered attributes, remaining attributes in original feature type order
-            "d",
             "m",
             "n"),
         new ArrayList<>(configuredAttributes.keySet()));

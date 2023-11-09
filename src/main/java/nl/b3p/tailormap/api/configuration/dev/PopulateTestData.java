@@ -890,7 +890,10 @@ public class PopulateTestData {
                                 "© <a href=\"https://www.openstreetmap.org/copyright/\">OpenStreetMap</a> contributors"))
                     .putLayerSettingsItem(
                         "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
-                        new AppLayerSettings().editable(true))
+                        new AppLayerSettings()
+                            .editable(true)
+                            .addHideAttributesItem("begroeidterreindeeloptalud")
+                            .addReadOnlyAttributesItem("eindregistratie"))
                     .putLayerSettingsItem(
                         "lyr:snapshot-geoserver:sqlserver:wegdeel",
                         new AppLayerSettings().editable(true))
