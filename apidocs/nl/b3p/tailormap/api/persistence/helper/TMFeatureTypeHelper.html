@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -177,7 +177,8 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;org.apache.commons.lang3.tuple.Pair&lt;<a href="../json/TMAttributeDescriptor.html" title="class in nl.b3p.tailormap.api.persistence.json">TMAttributeDescriptor</a>,&#8203;<a href="../json/AttributeSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AttributeSettings</a>&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getConfiguredAttributes(nl.b3p.tailormap.api.persistence.TMFeatureType)">getConfiguredAttributes</a></span>&#8203;(<a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getConfiguredAttributes(nl.b3p.tailormap.api.persistence.TMFeatureType,nl.b3p.tailormap.api.persistence.json.AppLayerSettings)">getConfiguredAttributes</a></span>&#8203;(@NotNull <a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+                       @NotNull <a href="../json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings)</code></th>
 <td class="colLast">
 <div class="block">Return a map of attribute names (in order, using a LinkedHashMap implementation) to an
  attribute descriptor and configured settings pair, taking into account the configured attribute
@@ -186,19 +187,33 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNonHiddenAttributeNames(nl.b3p.tailormap.api.persistence.TMFeatureType)">getNonHiddenAttributeNames</a></span>&#8203;(<a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHiddenAttributes(nl.b3p.tailormap.api.persistence.TMFeatureType,nl.b3p.tailormap.api.persistence.json.AppLayerSettings)">getHiddenAttributes</a></span>&#8203;(@NotNull <a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+                   @NotNull <a href="../json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNonHiddenAttributeNames(nl.b3p.tailormap.api.persistence.TMFeatureType,nl.b3p.tailormap.api.persistence.json.AppLayerSettings)">getNonHiddenAttributeNames</a></span>&#8203;(@NotNull <a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+                          @NotNull <a href="../json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings)</code></th>
 <td class="colLast">
 <div class="block">Get the non-hidden attribute names for a feature type.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="../json/TMAttributeDescriptor.html" title="class in nl.b3p.tailormap.api.persistence.json">TMAttributeDescriptor</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNonHiddenAttributes(nl.b3p.tailormap.api.persistence.TMFeatureType)">getNonHiddenAttributes</a></span>&#8203;(<a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNonHiddenAttributes(nl.b3p.tailormap.api.persistence.TMFeatureType,nl.b3p.tailormap.api.persistence.json.AppLayerSettings)">getNonHiddenAttributes</a></span>&#8203;(@NotNull <a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+                      @NotNull <a href="../json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings)</code></th>
 <td class="colLast">
 <div class="block">Get the non-hidden attribute descriptors for a feature type.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getReadOnlyAttributes(nl.b3p.tailormap.api.persistence.TMFeatureType,nl.b3p.tailormap.api.persistence.json.AppLayerSettings)">getReadOnlyAttributes</a></span>&#8203;(@NotNull <a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+                     @NotNull <a href="../json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isEditable(nl.b3p.tailormap.api.persistence.Application,nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,nl.b3p.tailormap.api.persistence.TMFeatureType)">isEditable</a></span>&#8203;(<a href="../Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
           <a href="../json/AppTreeLayerNode.html" title="class in nl.b3p.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
@@ -259,51 +274,87 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                                  <a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType)</pre>
 </li>
 </ul>
-<a id="getConfiguredAttributes(nl.b3p.tailormap.api.persistence.TMFeatureType)">
+<a id="getHiddenAttributes(nl.b3p.tailormap.api.persistence.TMFeatureType,nl.b3p.tailormap.api.persistence.json.AppLayerSettings)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getHiddenAttributes</h4>
+<pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;getHiddenAttributes&#8203;(@NotNull
+                                              @NotNull <a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+                                              @NotNull
+                                              @NotNull <a href="../json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings)</pre>
+</li>
+</ul>
+<a id="getReadOnlyAttributes(nl.b3p.tailormap.api.persistence.TMFeatureType,nl.b3p.tailormap.api.persistence.json.AppLayerSettings)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getReadOnlyAttributes</h4>
+<pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;getReadOnlyAttributes&#8203;(@NotNull
+                                                @NotNull <a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+                                                @NotNull
+                                                @NotNull <a href="../json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings)</pre>
+</li>
+</ul>
+<a id="getConfiguredAttributes(nl.b3p.tailormap.api.persistence.TMFeatureType,nl.b3p.tailormap.api.persistence.json.AppLayerSettings)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getConfiguredAttributes</h4>
-<pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;org.apache.commons.lang3.tuple.Pair&lt;<a href="../json/TMAttributeDescriptor.html" title="class in nl.b3p.tailormap.api.persistence.json">TMAttributeDescriptor</a>,&#8203;<a href="../json/AttributeSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AttributeSettings</a>&gt;&gt;&nbsp;getConfiguredAttributes&#8203;(<a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType)</pre>
+<pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;org.apache.commons.lang3.tuple.Pair&lt;<a href="../json/TMAttributeDescriptor.html" title="class in nl.b3p.tailormap.api.persistence.json">TMAttributeDescriptor</a>,&#8203;<a href="../json/AttributeSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AttributeSettings</a>&gt;&gt;&nbsp;getConfiguredAttributes&#8203;(@NotNull
+                                                                                                                                           @NotNull <a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+                                                                                                                                           @NotNull
+                                                                                                                                           @NotNull <a href="../json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings)</pre>
 <div class="block">Return a map of attribute names (in order, using a LinkedHashMap implementation) to an
  attribute descriptor and configured settings pair, taking into account the configured attribute
  order and hidden attributes.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>featureType</code> - The feature type</dd>
+<dd><code>appLayerSettings</code> - The app layer settings</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A sorted map as described</dd>
 </dl>
 </li>
 </ul>
-<a id="getNonHiddenAttributes(nl.b3p.tailormap.api.persistence.TMFeatureType)">
+<a id="getNonHiddenAttributes(nl.b3p.tailormap.api.persistence.TMFeatureType,nl.b3p.tailormap.api.persistence.json.AppLayerSettings)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getNonHiddenAttributes</h4>
-<pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="../json/TMAttributeDescriptor.html" title="class in nl.b3p.tailormap.api.persistence.json">TMAttributeDescriptor</a>&gt;&nbsp;getNonHiddenAttributes&#8203;(<a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType)</pre>
+<pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="../json/TMAttributeDescriptor.html" title="class in nl.b3p.tailormap.api.persistence.json">TMAttributeDescriptor</a>&gt;&nbsp;getNonHiddenAttributes&#8203;(@NotNull
+                                                                @NotNull <a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+                                                                @NotNull
+                                                                @NotNull <a href="../json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings)</pre>
 <div class="block">Get the non-hidden attribute descriptors for a feature type.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>featureType</code> - The feature type</dd>
+<dd><code>appLayerSettings</code> - The app layer settings</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Unordered set of attribute descriptors</dd>
 </dl>
 </li>
 </ul>
-<a id="getNonHiddenAttributeNames(nl.b3p.tailormap.api.persistence.TMFeatureType)">
+<a id="getNonHiddenAttributeNames(nl.b3p.tailormap.api.persistence.TMFeatureType,nl.b3p.tailormap.api.persistence.json.AppLayerSettings)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getNonHiddenAttributeNames</h4>
-<pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;getNonHiddenAttributeNames&#8203;(<a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType)</pre>
+<pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Set.html?is-external=true" title="class or interface in java.util" class="externalLink">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;getNonHiddenAttributeNames&#8203;(@NotNull
+                                                     @NotNull <a href="../TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a>&nbsp;featureType,
+                                                     @NotNull
+                                                     @NotNull <a href="../json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings)</pre>
 <div class="block">Get the non-hidden attribute names for a feature type.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>featureType</code> - The feature type</dd>
+<dd><code>appLayerSettings</code> - The app layer settings</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Unordered set of attribute names</dd>
 </dl>

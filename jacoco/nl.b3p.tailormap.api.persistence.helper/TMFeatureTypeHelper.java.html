@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
@@ -21,14 +22,14 @@ import nl.b3p.tailormap.api.persistence.json.AttributeSettings;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import org.apache.commons.lang3.tuple.Pair;
 
-<span class="nc" id="L24">public class TMFeatureTypeHelper {</span>
+<span class="nc" id="L25">public class TMFeatureTypeHelper {</span>
   public static boolean isEditable(
       Application application, AppTreeLayerNode appTreeLayerNode, TMFeatureType featureType) {
-<span class="nc bnc" id="L27" title="All 2 branches missed.">    if (featureType == null) {</span>
-<span class="nc" id="L28">      return false;</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">    if (featureType == null) {</span>
+<span class="nc" id="L29">      return false;</span>
     }
 
-<span class="nc" id="L31">    boolean editable = false;</span>
+<span class="nc" id="L32">    boolean editable = false;</span>
     // Currently FeatureSourceHelper#loadCapabilities() sets editable to true when the datastore is
     // a JDBC DataStore (even when the database account can't write to the table, can't detect this
     // without trying). Other DataStore types we support (only WFS atm) we don't set as writeable
@@ -36,12 +37,30 @@ import org.apache.commons.lang3.tuple.Pair;
     // TODO: in the future, check for authorizations on editing. Currently you only need to be
     // logged in (the viewer frontend already checks this before showing editable layers so we don't
     // need to check for an authenticated user here).
-<span class="nc bnc" id="L39" title="All 2 branches missed.">    if (featureType.isWriteable()) {</span>
-<span class="nc" id="L40">      AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);</span>
-<span class="nc" id="L41">      editable =</span>
-<span class="nc" id="L42">          Optional.ofNullable(appLayerSettings).map(AppLayerSettings::getEditable).orElse(false);</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">    if (featureType.isWriteable()) {</span>
+<span class="nc" id="L41">      AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);</span>
+<span class="nc" id="L42">      editable = Boolean.TRUE.equals(appLayerSettings.getEditable());</span>
     }
 <span class="nc" id="L44">    return editable;</span>
+  }
+
+  public static Set&lt;String&gt; getHiddenAttributes(
+      @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
+<span class="fc" id="L49">    Set&lt;String&gt; hiddenAttributes = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L50">    Optional.ofNullable(featureType.getSettings().getHideAttributes())</span>
+<span class="fc" id="L51">        .ifPresent(hiddenAttributes::addAll);</span>
+<span class="fc" id="L52">    Optional.ofNullable(appLayerSettings.getHideAttributes()).ifPresent(hiddenAttributes::addAll);</span>
+<span class="fc" id="L53">    return hiddenAttributes;</span>
+  }
+
+  public static Set&lt;String&gt; getReadOnlyAttributes(
+      @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
+<span class="nc" id="L58">    Set&lt;String&gt; readOnlyAttributes = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L59">    Optional.ofNullable(featureType.getSettings().getReadOnlyAttributes())</span>
+<span class="nc" id="L60">        .ifPresent(readOnlyAttributes::addAll);</span>
+<span class="nc" id="L61">    Optional.ofNullable(appLayerSettings.getReadOnlyAttributes())</span>
+<span class="nc" id="L62">        .ifPresent(readOnlyAttributes::addAll);</span>
+<span class="nc" id="L63">    return readOnlyAttributes;</span>
   }
 
   /**
@@ -50,72 +69,77 @@ import org.apache.commons.lang3.tuple.Pair;
    * order and hidden attributes.
    *
    * @param featureType The feature type
+   * @param appLayerSettings The app layer settings
    * @return A sorted map as described
    */
   public static Map&lt;String, Pair&lt;TMAttributeDescriptor, AttributeSettings&gt;&gt; getConfiguredAttributes(
-      TMFeatureType featureType) {
-<span class="fc" id="L57">    LinkedHashMap&lt;String, TMAttributeDescriptor&gt; originalAttributesOrder = new LinkedHashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L58" title="All 2 branches covered.">    for (TMAttributeDescriptor attributeDescriptor : featureType.getAttributes()) {</span>
-<span class="fc" id="L59">      originalAttributesOrder.put(attributeDescriptor.getName(), attributeDescriptor);</span>
-<span class="fc" id="L60">    }</span>
+      @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
+<span class="fc" id="L77">    LinkedHashMap&lt;String, TMAttributeDescriptor&gt; originalAttributesOrder = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">    for (TMAttributeDescriptor attributeDescriptor : featureType.getAttributes()) {</span>
+<span class="fc" id="L79">      originalAttributesOrder.put(attributeDescriptor.getName(), attributeDescriptor);</span>
+<span class="fc" id="L80">    }</span>
 
     // Order of attributes taking into account hidden attributes and configured attribute order
     LinkedHashSet&lt;String&gt; finalAttributeOrder;
 
-<span class="pc bpc" id="L65" title="1 of 2 branches missed.">    if (featureType.getSettings().getAttributeOrder().isEmpty()) {</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">    if (featureType.getSettings().getAttributeOrder().isEmpty()) {</span>
       // Use original feature type order
-<span class="nc" id="L67">      finalAttributeOrder = new LinkedHashSet&lt;&gt;(originalAttributesOrder.keySet());</span>
+<span class="nc" id="L87">      finalAttributeOrder = new LinkedHashSet&lt;&gt;(originalAttributesOrder.keySet());</span>
     } else {
-<span class="fc" id="L69">      finalAttributeOrder = new LinkedHashSet&lt;&gt;(featureType.getSettings().getAttributeOrder());</span>
+<span class="fc" id="L89">      finalAttributeOrder = new LinkedHashSet&lt;&gt;(featureType.getSettings().getAttributeOrder());</span>
       // Remove once ordered attributes which no longer exist in the feature type as saved in the
       // configuration database
-<span class="fc" id="L72">      finalAttributeOrder.retainAll(originalAttributesOrder.keySet());</span>
+<span class="fc" id="L92">      finalAttributeOrder.retainAll(originalAttributesOrder.keySet());</span>
       // Add attributes not named in attributeOrder in feature type order (added to the feature type
       // after an admin saved/changed the ordering of attributes -- these attributes should not be
       // hidden).
-<span class="pc bpc" id="L76" title="1 of 2 branches missed.">      if (finalAttributeOrder.size() != originalAttributesOrder.size()) {</span>
-<span class="fc" id="L77">        finalAttributeOrder.addAll(originalAttributesOrder.keySet());</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">      if (finalAttributeOrder.size() != originalAttributesOrder.size()) {</span>
+<span class="fc" id="L97">        finalAttributeOrder.addAll(originalAttributesOrder.keySet());</span>
       }
     }
 
-<span class="fc" id="L81">    featureType.getSettings().getHideAttributes().forEach(finalAttributeOrder::remove);</span>
+<span class="fc" id="L101">    getHiddenAttributes(featureType, appLayerSettings).forEach(finalAttributeOrder::remove);</span>
 
-<span class="fc" id="L83">    Map&lt;String, AttributeSettings&gt; attributeSettings =</span>
-<span class="fc" id="L84">        featureType.getSettings().getAttributeSettings();</span>
-<span class="fc" id="L85">    LinkedHashMap&lt;String, Pair&lt;TMAttributeDescriptor, AttributeSettings&gt;&gt; result =</span>
+<span class="fc" id="L103">    Map&lt;String, AttributeSettings&gt; attributeSettings =</span>
+<span class="fc" id="L104">        featureType.getSettings().getAttributeSettings();</span>
+<span class="fc" id="L105">    LinkedHashMap&lt;String, Pair&lt;TMAttributeDescriptor, AttributeSettings&gt;&gt; result =</span>
         new LinkedHashMap&lt;&gt;();
-<span class="fc bfc" id="L87" title="All 2 branches covered.">    for (String attribute : finalAttributeOrder) {</span>
-<span class="fc" id="L88">      AttributeSettings settings =</span>
-<span class="fc" id="L89">          Optional.ofNullable(attributeSettings.get(attribute)).orElseGet(AttributeSettings::new);</span>
-<span class="fc" id="L90">      TMAttributeDescriptor attributeDescriptor = originalAttributesOrder.get(attribute);</span>
-<span class="fc" id="L91">      result.put(attribute, Pair.of(attributeDescriptor, settings));</span>
-<span class="fc" id="L92">    }</span>
-<span class="fc" id="L93">    return result;</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">    for (String attribute : finalAttributeOrder) {</span>
+<span class="fc" id="L108">      AttributeSettings settings =</span>
+<span class="fc" id="L109">          Optional.ofNullable(attributeSettings.get(attribute)).orElseGet(AttributeSettings::new);</span>
+<span class="fc" id="L110">      TMAttributeDescriptor attributeDescriptor = originalAttributesOrder.get(attribute);</span>
+<span class="fc" id="L111">      result.put(attribute, Pair.of(attributeDescriptor, settings));</span>
+<span class="fc" id="L112">    }</span>
+<span class="fc" id="L113">    return result;</span>
   }
 
   /**
    * Get the non-hidden attribute descriptors for a feature type.
    *
    * @param featureType The feature type
+   * @param appLayerSettings The app layer settings
    * @return Unordered set of attribute descriptors
    */
-  public static Set&lt;TMAttributeDescriptor&gt; getNonHiddenAttributes(TMFeatureType featureType) {
-<span class="nc" id="L103">    Set&lt;String&gt; hiddenAttributes = new HashSet&lt;&gt;(featureType.getSettings().getHideAttributes());</span>
-<span class="nc" id="L104">    return featureType.getAttributes().stream()</span>
-<span class="nc bnc" id="L105" title="All 2 branches missed.">        .filter(attributeDescriptor -&gt; !hiddenAttributes.contains(attributeDescriptor.getName()))</span>
-<span class="nc" id="L106">        .collect(Collectors.toSet());</span>
+  public static Set&lt;TMAttributeDescriptor&gt; getNonHiddenAttributes(
+      @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
+<span class="nc" id="L125">    Set&lt;String&gt; hiddenAttributes = getHiddenAttributes(featureType, appLayerSettings);</span>
+<span class="nc" id="L126">    return featureType.getAttributes().stream()</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">        .filter(attributeDescriptor -&gt; !hiddenAttributes.contains(attributeDescriptor.getName()))</span>
+<span class="nc" id="L128">        .collect(Collectors.toSet());</span>
   }
 
   /**
    * Get the non-hidden attribute names for a feature type.
    *
    * @param featureType The feature type
+   * @param appLayerSettings The app layer settings
    * @return Unordered set of attribute names
    */
-  public static Set&lt;String&gt; getNonHiddenAttributeNames(TMFeatureType featureType) {
-<span class="nc" id="L116">    return getNonHiddenAttributes(featureType).stream()</span>
-<span class="nc" id="L117">        .map(TMAttributeDescriptor::getName)</span>
-<span class="nc" id="L118">        .collect(Collectors.toSet());</span>
+  public static Set&lt;String&gt; getNonHiddenAttributeNames(
+      @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
+<span class="nc" id="L140">    return getNonHiddenAttributes(featureType, appLayerSettings).stream()</span>
+<span class="nc" id="L141">        .map(TMAttributeDescriptor::getName)</span>
+<span class="nc" id="L142">        .collect(Collectors.toSet());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

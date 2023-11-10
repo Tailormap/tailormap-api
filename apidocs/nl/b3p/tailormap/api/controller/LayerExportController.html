@@ -184,8 +184,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>org.springframework.http.ResponseEntity&lt;?&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#download(nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,java.lang.String,java.util.List,java.lang.String,java.lang.String,java.lang.String,java.lang.String,javax.servlet.http.HttpServletRequest)">download</a></span>&#8203;(<a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;service,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#download(nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,nl.b3p.tailormap.api.persistence.Application,nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,java.lang.String,java.util.List,java.lang.String,java.lang.String,java.lang.String,java.lang.String,javax.servlet.http.HttpServletRequest)">download</a></span>&#8203;(<a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;service,
         <a href="../persistence/json/GeoServiceLayer.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
+        <a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
+        <a href="../persistence/json/AppTreeLayerNode.html" title="class in nl.b3p.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;outputFormat,
         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;attributes,
         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;filter,
@@ -257,7 +259,7 @@ public&nbsp;org.springframework.http.ResponseEntity&lt;<a href="https://docs.ora
 </dl>
 </li>
 </ul>
-<a id="download(nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,java.lang.String,java.util.List,java.lang.String,java.lang.String,java.lang.String,java.lang.String,javax.servlet.http.HttpServletRequest)">
+<a id="download(nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,nl.b3p.tailormap.api.persistence.Application,nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,java.lang.String,java.util.List,java.lang.String,java.lang.String,java.lang.String,java.lang.String,javax.servlet.http.HttpServletRequest)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -270,6 +272,10 @@ public&nbsp;org.springframework.http.ResponseEntity&lt;?&gt;&nbsp;download&#8203
                                                            <a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;service,
                                                            @ModelAttribute
                                                            <a href="../persistence/json/GeoServiceLayer.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
+                                                           @ModelAttribute
+                                                           <a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
+                                                           @ModelAttribute
+                                                           <a href="../persistence/json/AppTreeLayerNode.html" title="class in nl.b3p.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
                                                            @RequestParam
                                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;outputFormat,
                                                            @RequestParam(required=false)
