@@ -8,7 +8,6 @@ package nl.b3p.tailormap.api.configuration.base;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Configuration;
@@ -38,12 +37,10 @@ public class FrontController {
   // Hardcoded list for now. In the future scan the spring.web.resources.static-locations directory
   // for subdirectories of locale-specific frontend bundles.
   private static final AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
-  private static final String DEFAULT_LOCALE;
 
   static {
     localeResolver.setSupportedLocales(List.of(new Locale("en"), new Locale("nl")));
     localeResolver.setDefaultLocale(localeResolver.getSupportedLocales().get(0));
-    DEFAULT_LOCALE = Objects.requireNonNull(localeResolver.getDefaultLocale()).toLanguageTag();
   }
 
   private final ConfigurationRepository configurationRepository;
@@ -59,18 +56,18 @@ public class FrontController {
     this.applicationRepository = applicationRepository;
   }
 
-  @GetMapping(value = {"/", "/login", "/app/**", "/service/**", "/admin/**"})
+  @GetMapping(value = {"/", "/login", "/app", "/app/", "/app/**", "/service/**", "/admin/**"})
   public String appIndex(HttpServletRequest request) {
     String path = request.getRequestURI().substring(request.getContextPath().length());
     Application app = null;
 
     if (!activeProfile.contains("static-only")) {
       // The language setting of the (default) app takes precedence over the Accept-Language header
-      if ("/".equals(path)) {
+      if ("/".equals(path) || "/app".equals(path) || "/app/".equals(path)) {
         String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);
         app = applicationRepository.findByName(defaultAppName);
       } else if (path.startsWith("/app/")) {
-        String[] parts = path.split("/", 4);
+        String[] parts = path.split("/");
         if (parts.length > 2) {
           String appName = UriUtils.decode(parts[2], StandardCharsets.UTF_8);
           app = applicationRepository.findByName(appName);
