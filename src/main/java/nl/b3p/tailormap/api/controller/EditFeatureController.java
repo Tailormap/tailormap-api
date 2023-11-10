@@ -7,15 +7,16 @@ package nl.b3p.tailormap.api.controller;
 
 import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getNonHiddenAttributeNames;
 import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getNonHiddenAttributes;
+import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getReadOnlyAttributes;
 
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.TransformationUtil;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
@@ -88,11 +89,19 @@ public class EditFeatureController implements Constants {
   }
 
   private static void checkFeatureHasOnlyValidAttributes(
-      Feature feature, TMFeatureType tmFeatureType) {
-    if (!getNonHiddenAttributeNames(tmFeatureType).containsAll(feature.getAttributes().keySet())) {
+      Feature feature, TMFeatureType tmFeatureType, AppLayerSettings appLayerSettings) {
+
+    if (!getNonHiddenAttributeNames(tmFeatureType, appLayerSettings)
+        .containsAll(feature.getAttributes().keySet())) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST,
           "Feature cannot be edited, one or more requested attributes are not available on the feature type");
+    }
+    if (!Collections.disjoint(
+        getReadOnlyAttributes(tmFeatureType, appLayerSettings), feature.getAttributes().keySet())) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Feature cannot be edited, one or more requested attributes are not editable on the feature type");
     }
   }
 
@@ -115,7 +124,9 @@ public class EditFeatureController implements Constants {
         getEditableFeatureType(application, appTreeLayerNode, service, layer);
     Map<String, Object> attributesMap = completeFeature.getAttributes();
 
-    checkFeatureHasOnlyValidAttributes(completeFeature, tmFeatureType);
+    AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
+
+    checkFeatureHasOnlyValidAttributes(completeFeature, tmFeatureType, appLayerSettings);
 
     Feature newFeature;
     SimpleFeatureSource fs = null;
@@ -132,7 +143,8 @@ public class EditFeatureController implements Constants {
         simpleFeature = simpleFeatureBuilder.buildFeature(null);
       }
 
-      handleGeometryAttributesInput(tmFeatureType, completeFeature, attributesMap, application, fs);
+      handleGeometryAttributesInput(
+          tmFeatureType, appLayerSettings, completeFeature, attributesMap, application, fs);
       for (Map.Entry<String, Object> entry : attributesMap.entrySet()) {
         simpleFeature.setAttribute(entry.getKey(), entry.getValue());
       }
@@ -184,10 +196,11 @@ public class EditFeatureController implements Constants {
 
     TMFeatureType tmFeatureType =
         getEditableFeatureType(application, appTreeLayerNode, service, layer);
+    AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
 
     Map<String, Object> attributesMap = partialFeature.getAttributes();
 
-    checkFeatureHasOnlyValidAttributes(partialFeature, tmFeatureType);
+    checkFeatureHasOnlyValidAttributes(partialFeature, tmFeatureType, appLayerSettings);
 
     Feature patchedFeature;
     SimpleFeatureSource fs = null;
@@ -197,7 +210,7 @@ public class EditFeatureController implements Constants {
       final Filter filter = ff.id(ff.featureId(fid));
       if (!fs.getFeatures(filter).isEmpty() && fs instanceof SimpleFeatureStore) {
         handleGeometryAttributesInput(
-            tmFeatureType, partialFeature, attributesMap, application, fs);
+            tmFeatureType, appLayerSettings, partialFeature, attributesMap, application, fs);
         // NOTE geotools does not report back that the feature was updated, no error === success
         ((SimpleFeatureStore) fs).setTransaction(transaction);
         ((SimpleFeatureStore) fs)
@@ -302,8 +315,7 @@ public class EditFeatureController implements Constants {
     }
 
     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
-    if (null == appLayerSettings
-        || !Optional.ofNullable(appLayerSettings.getEditable()).orElse(false)) {
+    if (!Boolean.TRUE.equals(appLayerSettings.getEditable())) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Layer is not editable");
     }
 
@@ -352,6 +364,7 @@ public class EditFeatureController implements Constants {
   /** Handle geometry attributes, essentially this is a WKT to Geometry conversion. */
   private static void handleGeometryAttributesInput(
       TMFeatureType tmFeatureType,
+      AppLayerSettings appLayerSettings,
       Feature modelFeature,
       Map<String, Object> attributesMap,
       Application application,
@@ -360,7 +373,7 @@ public class EditFeatureController implements Constants {
 
     final MathTransform transform =
         TransformationUtil.getTransformationToDataSource(application, fs);
-    getNonHiddenAttributes(tmFeatureType).stream()
+    getNonHiddenAttributes(tmFeatureType, appLayerSettings).stream()
         .filter(attr -> TMAttributeTypeHelper.isGeometry(attr.getType()))
         .filter(attr -> modelFeature.getAttributes().containsKey(attr.getName()))
         .forEach(

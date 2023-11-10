@@ -615,7 +615,7 @@ class FeaturesControllerIntegrationTest {
     return new ResultMatcher[] {
       jsonPath("$.columnMetadata[?(@.key == 'gmlid')].alias").value("GML ID"),
       jsonPath("$.columnMetadata").isArray(),
-      jsonPath("$.columnMetadata.length()").value(15),
+      jsonPath("$.columnMetadata.length()").value(14),
       // Verify attributeOrder
       jsonPath("$.columnMetadata[0].key").value("identificatie"),
       jsonPath("$.columnMetadata[1].key").value("bronhouder"),
@@ -632,8 +632,7 @@ class FeaturesControllerIntegrationTest {
       jsonPath("$.columnMetadata[10].key").value("bgt_status"),
       jsonPath("$.columnMetadata[11].key").value("plus_status"),
       jsonPath("$.columnMetadata[12].key").value("plus_fysiekvoorkomen"),
-      jsonPath("$.columnMetadata[13].key").value("begroeidterreindeeloptalud"),
-      jsonPath("$.columnMetadata[14].key").value("geom"),
+      jsonPath("$.columnMetadata[13].key").value("geom"),
     };
   }
 

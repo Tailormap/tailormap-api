@@ -24,9 +24,12 @@ import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSLayerDescription;
 import nl.b3p.tailormap.api.geotools.wfs.WFSProxy;
+import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
+import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
@@ -106,6 +109,8 @@ public class LayerExportController {
   public ResponseEntity<?> download(
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,
+      @ModelAttribute Application application,
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
       @RequestParam String outputFormat,
       @RequestParam(required = false) List<String> attributes,
       @RequestParam(required = false) String filter,
@@ -116,6 +121,7 @@ public class LayerExportController {
       throws Exception {
 
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
+    AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
     WFSSearchResult wfsSearchResult = findWFSFeatureType(service, layer, tmft);
 
     if (!wfsSearchResult.found()) {
@@ -123,7 +129,7 @@ public class LayerExportController {
           HttpStatus.SERVICE_UNAVAILABLE, "No suitable WFS available for layer export");
     } else {
       // Get attributes in configured or original order
-      Set<String> nonHiddenAttributes = getConfiguredAttributes(tmft).keySet();
+      Set<String> nonHiddenAttributes = getConfiguredAttributes(tmft, appLayerSettings).keySet();
 
       if (attributes == null) {
         attributes = Collections.emptyList();

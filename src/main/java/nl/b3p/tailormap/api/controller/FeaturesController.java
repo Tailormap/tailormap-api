@@ -26,6 +26,7 @@ import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.AttributeSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
@@ -124,6 +125,7 @@ public class FeaturesController implements Constants {
     if (tmft == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Layer does not have feature type");
     }
+    AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
 
     if (onlyGeometries) {
       geometryInAttributes = true;
@@ -132,15 +134,18 @@ public class FeaturesController implements Constants {
     FeaturesResponse featuresResponse;
 
     if (null != __fid) {
-      featuresResponse = getFeatureByFID(tmft, __fid, application, !geometryInAttributes);
+      featuresResponse =
+          getFeatureByFID(tmft, appLayerSettings, __fid, application, !geometryInAttributes);
     } else if (null != x && null != y) {
       featuresResponse =
-          getFeaturesByXY(tmft, x, y, application, distance, simplify, !geometryInAttributes);
+          getFeaturesByXY(
+              tmft, appLayerSettings, x, y, application, distance, simplify, !geometryInAttributes);
     } else if (null != page && page > 0) {
       featuresResponse =
           getAllFeatures(
               tmft,
               application,
+              appLayerSettings,
               page,
               filter,
               sortBy,
@@ -159,6 +164,7 @@ public class FeaturesController implements Constants {
   private FeaturesResponse getAllFeatures(
       @NotNull TMFeatureType tmft,
       @NotNull Application application,
+      @NotNull AppLayerSettings appLayerSettings,
       Integer page,
       String filterCQL,
       String sortBy,
@@ -176,7 +182,7 @@ public class FeaturesController implements Constants {
 
       // Property names for query: only non-geometry attributes that aren't hidden
       List<String> propNames =
-          getConfiguredAttributes(tmft).values().stream()
+          getConfiguredAttributes(tmft, appLayerSettings).values().stream()
               .map(Pair::getLeft)
               .filter(a -> !isGeometry(a.getType()))
               .map(TMAttributeDescriptor::getName)
@@ -251,7 +257,15 @@ public class FeaturesController implements Constants {
       logger.debug("Attribute query: {}", q);
 
       executeQueryOnFeatureSourceAndClose(
-          false, featuresResponse, tmft, onlyGeometries, fs, q, application, skipGeometryOutput);
+          false,
+          featuresResponse,
+          tmft,
+          appLayerSettings,
+          onlyGeometries,
+          fs,
+          q,
+          application,
+          skipGeometryOutput);
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data.", e);
     } catch (CQLException e) {
@@ -269,6 +283,7 @@ public class FeaturesController implements Constants {
   @NotNull
   private FeaturesResponse getFeatureByFID(
       @NotNull TMFeatureType tmFeatureType,
+      @NotNull AppLayerSettings appLayerSettings,
       @NotNull String fid,
       @NotNull Application application,
       boolean skipGeometryOutput) {
@@ -283,7 +298,15 @@ public class FeaturesController implements Constants {
       logger.debug("FID query: {}", q);
 
       executeQueryOnFeatureSourceAndClose(
-          false, featuresResponse, tmFeatureType, false, fs, q, application, skipGeometryOutput);
+          false,
+          featuresResponse,
+          tmFeatureType,
+          appLayerSettings,
+          false,
+          fs,
+          q,
+          application,
+          skipGeometryOutput);
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data", e);
     } finally {
@@ -298,6 +321,7 @@ public class FeaturesController implements Constants {
   @NotNull
   private FeaturesResponse getFeaturesByXY(
       @NotNull TMFeatureType tmFeatureType,
+      @NotNull AppLayerSettings appLayerSettings,
       @NotNull Double x,
       @NotNull Double y,
       @NotNull Application application,
@@ -352,6 +376,7 @@ public class FeaturesController implements Constants {
           simplifyGeometry,
           featuresResponse,
           tmFeatureType,
+          appLayerSettings,
           false,
           fs,
           q,
@@ -367,6 +392,7 @@ public class FeaturesController implements Constants {
       boolean simplifyGeometry,
       @NotNull FeaturesResponse featuresResponse,
       @NotNull TMFeatureType tmFeatureType,
+      @NotNull AppLayerSettings appLayerSettings,
       boolean onlyGeometries,
       @NotNull SimpleFeatureSource featureSource,
       @NotNull Query selectQuery,
@@ -383,7 +409,7 @@ public class FeaturesController implements Constants {
     }
 
     Map<String, Pair<TMAttributeDescriptor, AttributeSettings>> configuredAttributes =
-        getConfiguredAttributes(tmFeatureType);
+        getConfiguredAttributes(tmFeatureType, appLayerSettings);
 
     // send request to attribute source
     try (SimpleFeatureIterator feats = featureSource.getFeatures(selectQuery).features()) {

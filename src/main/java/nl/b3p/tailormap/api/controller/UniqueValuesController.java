@@ -17,8 +17,11 @@ import java.util.Set;
 import java.util.TreeSet;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
+import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.viewer.model.UniqueValuesResponse;
@@ -81,6 +84,8 @@ public class UniqueValuesController {
   public ResponseEntity<Serializable> getUniqueAttributes(
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,
+      @ModelAttribute Application app,
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
       @PathVariable("attributeName") String attributeName,
       @RequestParam(required = false) String filter) {
     if (StringUtils.isBlank(attributeName)) {
@@ -88,10 +93,11 @@ public class UniqueValuesController {
     }
 
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
+    AppLayerSettings appLayerSettings = app.getAppLayerSettings(appTreeLayerNode);
     if (tmft == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Layer does not have feature type");
     }
-    if (!getNonHiddenAttributeNames(tmft).contains(attributeName)) {
+    if (!getNonHiddenAttributeNames(tmft, appLayerSettings).contains(attributeName)) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attribute does not exist");
     }
     UniqueValuesResponse uniqueValuesResponse = getUniqueValues(tmft, attributeName, filter);

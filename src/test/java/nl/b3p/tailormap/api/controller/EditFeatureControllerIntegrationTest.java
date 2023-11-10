@@ -141,7 +141,7 @@ class EditFeatureControllerIntegrationTest {
                 .content(
                     "{\"__fid\": \""
                         + StaticTestData.get("begroeidterreindeel__fid_edit")
-                        + "\",\"attributes\" : { \"inonderzoek\":true, \"class\": \"weggemaaid grasland\", \"geom\" : \""
+                        + "\",\"attributes\" : { \"class\": \"weggemaaid grasland\", \"geom\" : \""
                         + StaticTestData.get("begroeidterreindeel__geom_edit")
                         + "\"}}"))
         .andExpect(status().is4xxClientError())
@@ -208,6 +208,72 @@ class EditFeatureControllerIntegrationTest {
             jsonPath("$.message")
                 .value(
                     "Feature cannot be edited, one or more requested attributes are not available on the feature type"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void testPatchHiddenAttributeInAppLayerSettings() throws Exception {
+    final String url =
+        apiBasePath
+            + begroeidterreindeelUrlPostgis
+            + StaticTestData.get("begroeidterreindeel__fid_edit");
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode body = objectMapper.createObjectNode();
+    ObjectNode attributes = objectMapper.createObjectNode();
+    attributes.put("begroeidterreindeeloptalud", "something");
+    body.set("attributes", attributes);
+
+    mockMvc
+        .perform(
+            patch(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(body)))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(400))
+        .andExpect(
+            jsonPath("$.message")
+                .value(
+                    "Feature cannot be edited, one or more requested attributes are not available on the feature type"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void testPatchReadOnlyAttribute() throws Exception {
+    final String url =
+        apiBasePath
+            + begroeidterreindeelUrlPostgis
+            + StaticTestData.get("begroeidterreindeel__fid_edit");
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode body = objectMapper.createObjectNode();
+    ObjectNode attributes = objectMapper.createObjectNode();
+    attributes.put("eindregistratie", "something");
+    body.set("attributes", attributes);
+
+    mockMvc
+        .perform(
+            patch(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(body)))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(400))
+        .andExpect(
+            jsonPath("$.message")
+                .value(
+                    "Feature cannot be edited, one or more requested attributes are not editable on the feature type"));
   }
 
   @Test

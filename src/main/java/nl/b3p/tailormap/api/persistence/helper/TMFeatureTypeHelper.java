@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
@@ -38,10 +39,28 @@ public class TMFeatureTypeHelper {
     // need to check for an authenticated user here).
     if (featureType.isWriteable()) {
       AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
-      editable =
-          Optional.ofNullable(appLayerSettings).map(AppLayerSettings::getEditable).orElse(false);
+      editable = Boolean.TRUE.equals(appLayerSettings.getEditable());
     }
     return editable;
+  }
+
+  public static Set<String> getHiddenAttributes(
+      @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
+    Set<String> hiddenAttributes = new HashSet<>();
+    Optional.ofNullable(featureType.getSettings().getHideAttributes())
+        .ifPresent(hiddenAttributes::addAll);
+    Optional.ofNullable(appLayerSettings.getHideAttributes()).ifPresent(hiddenAttributes::addAll);
+    return hiddenAttributes;
+  }
+
+  public static Set<String> getReadOnlyAttributes(
+      @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
+    Set<String> readOnlyAttributes = new HashSet<>();
+    Optional.ofNullable(featureType.getSettings().getReadOnlyAttributes())
+        .ifPresent(readOnlyAttributes::addAll);
+    Optional.ofNullable(appLayerSettings.getReadOnlyAttributes())
+        .ifPresent(readOnlyAttributes::addAll);
+    return readOnlyAttributes;
   }
 
   /**
@@ -50,10 +69,11 @@ public class TMFeatureTypeHelper {
    * order and hidden attributes.
    *
    * @param featureType The feature type
+   * @param appLayerSettings The app layer settings
    * @return A sorted map as described
    */
   public static Map<String, Pair<TMAttributeDescriptor, AttributeSettings>> getConfiguredAttributes(
-      TMFeatureType featureType) {
+      @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
     LinkedHashMap<String, TMAttributeDescriptor> originalAttributesOrder = new LinkedHashMap<>();
     for (TMAttributeDescriptor attributeDescriptor : featureType.getAttributes()) {
       originalAttributesOrder.put(attributeDescriptor.getName(), attributeDescriptor);
@@ -78,7 +98,7 @@ public class TMFeatureTypeHelper {
       }
     }
 
-    featureType.getSettings().getHideAttributes().forEach(finalAttributeOrder::remove);
+    getHiddenAttributes(featureType, appLayerSettings).forEach(finalAttributeOrder::remove);
 
     Map<String, AttributeSettings> attributeSettings =
         featureType.getSettings().getAttributeSettings();
@@ -97,10 +117,12 @@ public class TMFeatureTypeHelper {
    * Get the non-hidden attribute descriptors for a feature type.
    *
    * @param featureType The feature type
+   * @param appLayerSettings The app layer settings
    * @return Unordered set of attribute descriptors
    */
-  public static Set<TMAttributeDescriptor> getNonHiddenAttributes(TMFeatureType featureType) {
-    Set<String> hiddenAttributes = new HashSet<>(featureType.getSettings().getHideAttributes());
+  public static Set<TMAttributeDescriptor> getNonHiddenAttributes(
+      @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
+    Set<String> hiddenAttributes = getHiddenAttributes(featureType, appLayerSettings);
     return featureType.getAttributes().stream()
         .filter(attributeDescriptor -> !hiddenAttributes.contains(attributeDescriptor.getName()))
         .collect(Collectors.toSet());
@@ -110,10 +132,12 @@ public class TMFeatureTypeHelper {
    * Get the non-hidden attribute names for a feature type.
    *
    * @param featureType The feature type
+   * @param appLayerSettings The app layer settings
    * @return Unordered set of attribute names
    */
-  public static Set<String> getNonHiddenAttributeNames(TMFeatureType featureType) {
-    return getNonHiddenAttributes(featureType).stream()
+  public static Set<String> getNonHiddenAttributeNames(
+      @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
+    return getNonHiddenAttributes(featureType, appLayerSettings).stream()
         .map(TMAttributeDescriptor::getName)
         .collect(Collectors.toSet());
   }
