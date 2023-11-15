@@ -67,8 +67,8 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.security,OIDCRepository.OIDCRegistr
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,AuthorizationService,192,0,34,0,50,0,24,0,7,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,TailormapUserDetailsService,39,0,2,0,10,0,4,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,InternalAdminAuthentication,44,0,0,0,17,0,11,0,11,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.security,ApiSecurityConfiguration.new AuthenticationSuccessHandler() {...},27,0,4,0,9,0,4,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,ApiSecurityConfiguration,220,0,10,0,54,0,18,0,13,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.security,ApiSecurityConfiguration.new AuthenticationSuccessHandler() {...},27,0,4,0,9,0,4,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,ApiSecurityConfiguration.new DefaultRedirectStrategy() {...},27,0,4,0,6,0,4,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.security,OIDCRepository,293,0,14,0,79,0,13,0,6,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.util,TMExceptionUtils,17,0,0,0,5,0,3,0,3,0
