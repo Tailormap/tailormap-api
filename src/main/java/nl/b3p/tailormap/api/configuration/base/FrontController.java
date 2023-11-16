@@ -56,7 +56,8 @@ public class FrontController {
     this.applicationRepository = applicationRepository;
   }
 
-  @GetMapping(value = {"/", "/login", "/app", "/app/", "/app/**", "/service/**", "/admin/**"})
+  @GetMapping(
+      value = {"/", "/login", "/app", "/app/", "/app/**", "/service/**", "/admin/**", "/ext/**"})
   public String appIndex(HttpServletRequest request) {
     String path = request.getRequestURI().substring(request.getContextPath().length());
     Application app = null;
@@ -96,7 +97,8 @@ public class FrontController {
         // Need to avoid matching /api/app/ etc
         "/{locale:^(?!api)[a-zA-Z-]+}/app/**",
         "/{locale:^(?!api)[a-zA-Z-]+}/service/**",
-        "/{locale:^(?!api)[a-zA-Z-]+}/admin/**"
+        "/{locale:^(?!api)[a-zA-Z-]+}/admin/**",
+        "/{locale:^(?!api)[a-zA-Z-]+}/ext/**"
       })
   public String localePrefixedAppIndex(
       @PathVariable("locale") String locale, HttpServletRequest request) {
