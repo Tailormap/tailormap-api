@@ -7,6 +7,7 @@
 package nl.b3p.tailormap.api.configuration.base;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -24,16 +25,16 @@ import org.springframework.web.servlet.resource.ResourceTransformerChain;
 import org.springframework.web.servlet.resource.TransformedResource;
 
 @Component
-<span class="nc" id="L27">public class IndexHtmlTransformer implements ResourceTransformer, EnvironmentAware {</span>
-<span class="nc" id="L28">  private static final Logger logger =</span>
-<span class="nc" id="L29">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L28">public class IndexHtmlTransformer implements ResourceTransformer, EnvironmentAware {</span>
+<span class="nc" id="L29">  private static final Logger logger =</span>
+<span class="nc" id="L30">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   private Environment environment;
 
   @Override
   public void setEnvironment(@NonNull Environment environment) {
-<span class="nc" id="L35">    this.environment = environment;</span>
-<span class="nc" id="L36">  }</span>
+<span class="nc" id="L36">    this.environment = environment;</span>
+<span class="nc" id="L37">  }</span>
 
   @Override
   @NonNull
@@ -44,14 +45,14 @@ import org.springframework.web.servlet.resource.TransformedResource;
       throws IOException {
     // Note that caching is not required because of cacheResources param to resourceChain() in
     // WebMvcConfig
-<span class="nc" id="L47">    resource = transformerChain.transform(request, resource);</span>
-<span class="nc" id="L48">    String html = IOUtils.toString(resource.getInputStream(), UTF_8);</span>
-<span class="nc" id="L49">    String sentryDsn = environment.getProperty(&quot;VIEWER_SENTRY_DSN&quot;);</span>
-<span class="nc bnc" id="L50" title="All 2 branches missed.">    if (sentryDsn != null) {</span>
-<span class="nc" id="L51">      logger.info(&quot;Sending Sentry DSN {} for URI {}&quot;, sentryDsn, request.getRequestURI());</span>
-<span class="nc" id="L52">      html = html.replace(&quot;@SENTRY_DSN@&quot;, sentryDsn);</span>
+<span class="nc" id="L48">    resource = transformerChain.transform(request, resource);</span>
+<span class="nc" id="L49">    String html = IOUtils.toString(resource.getInputStream(), UTF_8);</span>
+<span class="nc" id="L50">    String sentryDsn = environment.getProperty(&quot;VIEWER_SENTRY_DSN&quot;);</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">    if (isNotBlank(sentryDsn)) {</span>
+<span class="nc" id="L52">      logger.info(&quot;Sending Sentry DSN {} for URI {}&quot;, sentryDsn, request.getRequestURI());</span>
+<span class="nc" id="L53">      html = html.replace(&quot;@SENTRY_DSN@&quot;, sentryDsn);</span>
     }
-<span class="nc" id="L54">    return new TransformedResource(resource, html.getBytes(UTF_8));</span>
+<span class="nc" id="L55">    return new TransformedResource(resource, html.getBytes(UTF_8));</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
