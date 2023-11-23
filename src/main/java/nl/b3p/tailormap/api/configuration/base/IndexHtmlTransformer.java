@@ -7,6 +7,7 @@
 package nl.b3p.tailormap.api.configuration.base;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -47,7 +48,7 @@ public class IndexHtmlTransformer implements ResourceTransformer, EnvironmentAwa
     resource = transformerChain.transform(request, resource);
     String html = IOUtils.toString(resource.getInputStream(), UTF_8);
     String sentryDsn = environment.getProperty("VIEWER_SENTRY_DSN");
-    if (sentryDsn != null) {
+    if (isNotBlank(sentryDsn)) {
       logger.info("Sending Sentry DSN {} for URI {}", sentryDsn, request.getRequestURI());
       html = html.replace("@SENTRY_DSN@", sentryDsn);
     }
