@@ -47,7 +47,7 @@ jobs:
         run: mvn javadoc:javadoc
 
       - name: Build Maven site
-        run: mvn site
+        run: mvn site -DnvdApiKey=${{ secrets.NVD_API_KEY }}
 
       - name: Archive Maven Site
         if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
