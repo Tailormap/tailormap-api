@@ -147,7 +147,7 @@ SPDX-License-Identifier: MIT
         <maven-pmd-plugin.version>3.21.2</maven-pmd-plugin.version>
         <versions-maven-plugin.version>2.16.2</versions-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
-        <dependency-check-maven.version>8.4.3</dependency-check-maven.version>
+        <dependency-check-maven.version>9.0.1</dependency-check-maven.version>
         <modernizer-maven-plugin.version>2.7.0</modernizer-maven-plugin.version>
         <pmd.version>6.55.0</pmd.version>
         <maven-fluido-skin.version>2.0.0-M8</maven-fluido-skin.version>
