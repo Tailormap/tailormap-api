@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.17</version>
+        <version>2.7.18</version>
     </parent>
     <groupId>nl.b3p.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -113,9 +113,9 @@ SPDX-License-Identifier: MIT
             mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates
         to check
         -->
-        <commons-lang3.version>3.13.0</commons-lang3.version>
-        <jackson-bom.version>2.15.3</jackson-bom.version>
-        <micrometer.version>1.11.5</micrometer.version>
+        <commons-lang3.version>3.14.0</commons-lang3.version>
+        <jackson-bom.version>2.16.0</jackson-bom.version>
+        <micrometer.version>1.12.0</micrometer.version>
         <hibernate.version>5.6.15.Final</hibernate.version>
         <!-- GeoTools up to 29.1 uses hsqldb 2.5.2, which has CVE-2022-41853, 29.2 should provide 2.7.2 -->
         <hsqldb.version>2.7.2</hsqldb.version>
@@ -123,7 +123,7 @@ SPDX-License-Identifier: MIT
         <flyway.version>9.22.3</flyway.version>
         <mssql-jdbc.version>12.4.1.jre11</mssql-jdbc.version>
         <oracle-database.version>23.3.0.23.09</oracle-database.version>
-        <postgresql.version>42.6.0</postgresql.version>
+        <postgresql.version>42.7.0</postgresql.version>
         <snakeyaml.version>2.0</snakeyaml.version>
         <spring-security.version>5.8.8</spring-security.version>
         <spring-hateoas.version>1.5.5</spring-hateoas.version>
@@ -131,7 +131,7 @@ SPDX-License-Identifier: MIT
         <logback.version>1.4.1</logback.version>
         <slf4j.version>2.0.2</slf4j.version>
         -->
-        <webjars-locator-core.version>0.54</webjars-locator-core.version>
+        <webjars-locator-core.version>0.55</webjars-locator-core.version>
         <maven.surefire.version>3.0.0</maven.surefire.version>
         <maven-surefire-plugin.version>${maven.surefire.version}</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>${maven.surefire.version}</maven-failsafe-plugin.version>
@@ -197,12 +197,6 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-rest-webmvc</artifactId>
-            <!-- Downgrade this dependency because of HTM-908 / https://github.com/spring-projects/spring-data-rest/issues/2287 -->
-            <!-- The PersistentJsonArrayPropertyIntegrationTest.testUpdateApplicationComponents test checks whether this
-                 bug is triggered. When spring-data-rest-webmvc is upgraded to a fixed version (as a dependency of
-                 Spring) this version element can be removed and the test should pass. Apparently it wasn't fixed yet in
-                 version 3.7.16 -->
-            <version>3.7.12</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
