@@ -30,7 +30,7 @@ class UserTest {
 
   private static final Validator validator =
       Validation.buildDefaultValidatorFactory().getValidator();
-  private final String expectedMessage = "Username must consist of alphanumeric characters or -";
+  private final String expectedMessage = "Username name must consist of alphanumeric characters, underscore or -";
   private ObjectMapper mapper;
 
   @BeforeEach
@@ -89,6 +89,9 @@ class UserTest {
     assertTrue(violations.isEmpty(), "violations should be empty");
 
     violations = validator.validate(user.setName("marki-marks"));
+    assertTrue(violations.isEmpty(), "violations should be empty");
+
+    violations = validator.validate(user.setName("marki_marks"));
     assertTrue(violations.isEmpty(), "violations should be empty");
   }
 
