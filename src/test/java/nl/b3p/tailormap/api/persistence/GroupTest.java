@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 class GroupTest {
   private static Validator validator;
 
-  private final String expectedMessage = "Group name must consist of alphanumeric characters or -";
+  private final String expectedMessage = "Group name must consist of alphanumeric characters, underscore or -";
 
   @BeforeAll
   public static void setupValidatorInstance() {
@@ -33,6 +33,9 @@ class GroupTest {
     assertTrue(violations.isEmpty(), "violations should be empty");
 
     violations = validator.validate(group.setName("app-Groups"));
+    assertTrue(violations.isEmpty(), "violations should be empty");
+
+    violations = validator.validate(group.setName("app_Groups"));
     assertTrue(violations.isEmpty(), "violations should be empty");
   }
 
