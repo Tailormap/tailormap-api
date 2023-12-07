@@ -123,7 +123,7 @@ SPDX-License-Identifier: MIT
         <flyway.version>9.22.3</flyway.version>
         <mssql-jdbc.version>12.4.1.jre11</mssql-jdbc.version>
         <oracle-database.version>23.3.0.23.09</oracle-database.version>
-        <postgresql.version>42.7.0</postgresql.version>
+        <postgresql.version>42.7.1</postgresql.version>
         <snakeyaml.version>2.0</snakeyaml.version>
         <spring-security.version>5.8.8</spring-security.version>
         <spring-hateoas.version>1.5.5</spring-hateoas.version>
