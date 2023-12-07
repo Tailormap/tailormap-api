@@ -30,7 +30,8 @@ class UserTest {
 
   private static final Validator validator =
       Validation.buildDefaultValidatorFactory().getValidator();
-  private final String expectedMessage = "Username must consist of alphanumeric characters, underscore or -";
+  private final String expectedMessage =
+      "Username must consist of alphanumeric characters, underscore or -";
   private ObjectMapper mapper;
 
   @BeforeEach

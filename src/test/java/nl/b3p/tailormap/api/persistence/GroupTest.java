@@ -18,7 +18,8 @@ import org.junit.jupiter.api.Test;
 class GroupTest {
   private static Validator validator;
 
-  private final String expectedMessage = "Group name must consist of alphanumeric characters, underscore or -";
+  private final String expectedMessage =
+      "Group name must consist of alphanumeric characters, underscore or -";
 
   @BeforeAll
   public static void setupValidatorInstance() {
