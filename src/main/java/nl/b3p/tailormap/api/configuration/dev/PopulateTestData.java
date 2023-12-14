@@ -10,6 +10,7 @@ import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static nl.b3p.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1179,6 +1180,14 @@ public class PopulateTestData {
     config = new Configuration();
     config.setKey(Configuration.DEFAULT_BASE_APP);
     config.setValue("base");
+    configurationRepository.save(config);
+
+    config = new Configuration();
+    config.setKey("test");
+    config.setAvailableForViewer(true);
+    config.setValue("test value");
+    config.setJsonValue(
+        new ObjectMapper().readTree("{ \"someProperty\": 1, \"nestedObject\": { \"num\": 42 } }"));
     configurationRepository.save(config);
 
     logger.info("Test entities created");

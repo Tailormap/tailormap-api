@@ -79,6 +79,21 @@ components:
           items:
             type: string
 
+    ConfigResponse:
+      description: 'Global configuration value'
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+          nullable: true
+          description: 'Scalar string value'
+        object:
+          type: object
+          nullable: true
+          description: 'Free-form value'
+
     MapResponse:
       description: 'Any information needed to draw a basic map on a page. May include base layers.'
       type: object
@@ -320,6 +335,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
+  /config/{key}:
+    summary: 'get global config value by key'
+    get:
+      operationId: 'getConfig'
+      summary: 'Gets global config value by key'
+      parameters:
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+      security: [ ]
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigResponse'
+        '404':
+          description: 'Configuration key not found'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
         '500':
           description: 'Internal server error'
           content:
