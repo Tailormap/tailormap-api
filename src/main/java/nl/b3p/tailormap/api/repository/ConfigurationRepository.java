@@ -9,6 +9,8 @@ import java.util.Optional;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.security.annotation.PreAuthorizeAdmin;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -30,6 +32,10 @@ public interface ConfigurationRepository extends JpaRepository<Configuration, St
   default String get(String key, String defaultValue) {
     return findByKey(key).map(Configuration::getValue).orElse(defaultValue);
   }
+
+  @PreAuthorize("permitAll()")
+  @Query("from Configuration c where c.key = :key and c.availableForViewer = true")
+  Optional<Configuration> getAvailableForViewer(@Param("key") String key);
 
   void deleteConfigurationByKey(String configKey);
 }
