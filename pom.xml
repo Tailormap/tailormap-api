@@ -982,6 +982,7 @@ SPDX-License-Identifier: MIT
                     <suppressionFile>${project.basedir}/build/qa/owasp-suppression.xml</suppressionFile>
                     <hintsFile>${project.basedir}/build/qa/owasp-hints.xml</hintsFile>
                     <format>ALL</format>
+                    <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
                 </configuration>
             </plugin>
             <plugin>
@@ -1396,6 +1397,7 @@ SPDX-License-Identifier: MIT
                 <version>${dependency-check-maven.version}</version>
                 <configuration>
                     <name>OWASP Dependency Check</name>
+                    <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
                 </configuration>
             </plugin>
         </plugins>
