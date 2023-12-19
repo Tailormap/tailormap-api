@@ -129,6 +129,7 @@ SPDX-License-Identifier: MIT
         <spring-security.version>5.8.8</spring-security.version>
         <spring-hateoas.version>1.5.6</spring-hateoas.version>
         <okhttp.version>5.0.0-alpha.12</okhttp.version>
+        <kotlin.version>1.9.21</kotlin.version>
         <logback.version>1.2.13</logback.version>
         <!-- Don't upgrade these; there are some fixed dependencies on org/slf4j/impl/StaticLoggerBinder
         <logback.version>1.4.1</logback.version>
