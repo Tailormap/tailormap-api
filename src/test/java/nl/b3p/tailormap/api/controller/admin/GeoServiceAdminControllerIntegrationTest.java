@@ -76,7 +76,7 @@ class GeoServiceAdminControllerIntegrationTest {
         new Headers(new String[] {"Content-Type", "application/vnd.ogc.wms_xml"});
 
     try (MockWebServer server = new MockWebServer()) {
-      server.enqueue(new MockResponse().setHeaders(contentType).setBody(body));
+      server.enqueue(new MockResponse.Builder().headers(contentType).body(body).build());
       server.start();
 
       String url = server.url("/test-wms").toString();
@@ -104,7 +104,7 @@ class GeoServiceAdminControllerIntegrationTest {
 
       // This capabilities document has an extra layer
       body = getResourceString(wmsTestCapabilitiesUpdated);
-      server.enqueue(new MockResponse().setHeaders(contentType).setBody(body));
+      server.enqueue(new MockResponse.Builder().headers(contentType).body(body).build());
 
       mockMvc
           .perform(
@@ -191,9 +191,11 @@ class GeoServiceAdminControllerIntegrationTest {
 
     try (MockWebServer server = new MockWebServer()) {
       server.enqueue(
-          new MockResponse()
-              .setHeaders(new Headers(new String[] {"Content-Type", "text/xml"}))
-              .setBody(getResourceString(wmsServiceException1_0_0)));
+          new MockResponse.Builder()
+              .headers(new Headers(new String[] {"Content-Type", "text/xml"}))
+              .body(getResourceString(wmsServiceException1_0_0))
+              .build());
+
       server.start();
 
       String url = server.url("/test-wms").toString();
@@ -213,9 +215,10 @@ class GeoServiceAdminControllerIntegrationTest {
                           + "\": Exception: code: InvalidParameterValue: locator: service: Example error message"));
 
       server.enqueue(
-          new MockResponse()
-              .setHeaders(new Headers(new String[] {"Content-Type", "text/xml"}))
-              .setBody(getResourceString(wmsServiceException1_3_0)));
+          new MockResponse.Builder()
+              .headers(new Headers(new String[] {"Content-Type", "text/xml"}))
+              .body(getResourceString(wmsServiceException1_3_0))
+              .build());
 
       mockMvc
           .perform(
@@ -245,7 +248,7 @@ class GeoServiceAdminControllerIntegrationTest {
         MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
     try (MockWebServer server = new MockWebServer()) {
-      server.enqueue(new MockResponse().setResponseCode(HttpStatus.UNAUTHORIZED.value()));
+      server.enqueue(new MockResponse.Builder().code(HttpStatus.UNAUTHORIZED.value()).build());
       server.start();
 
       String url = server.url("/test-wms").toString();
@@ -278,11 +281,19 @@ class GeoServiceAdminControllerIntegrationTest {
         MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
     try (MockWebServer server = new MockWebServer()) {
+
       server.enqueue(
-          new MockResponse()
-              .setBody(getResourceString(wmsTestCapabilities))
-              .setHeader("Content-Type", "application/vnd.ogc.wms_xml")
-              .setHeader("Access-Control-Allow-Origin", "https://my-origin"));
+          new MockResponse.Builder()
+              .headers(
+                  new Headers(
+                      new String[] {
+                        "Content-Type",
+                        "application/vnd.ogc.wms_xml",
+                        "Access-Control-Allow-Origin",
+                        "https://my-origin"
+                      }))
+              .body(getResourceString(wmsTestCapabilities))
+              .build());
       server.start();
 
       String url = server.url("/test-wms").toString();
