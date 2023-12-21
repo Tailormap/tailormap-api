@@ -76,7 +76,7 @@ public class EntityEventPublisher {
   @PostPersist
   public void postPersist(Object entity) {
     // Feature types are created when TMFeatureSource is created, so do not send event
-    // Not that when TMFeatureSource created event is sent, the oneToMany allFeatureTypes
+    // Note that when TMFeatureSource created event is sent, the oneToMany allFeatureTypes
     // have no ID's yet. So for a created feature source the frontend must retrieve the
     // TMFeatureSource separately or use the return value of the POST request.
     if (!(entity instanceof TMFeatureType)) {
