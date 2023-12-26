@@ -84,7 +84,7 @@
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          <strong class="jxr_keyword">new</strong> Headers(<strong class="jxr_keyword">new</strong> String[] {<span class="jxr_string">"Content-Type"</span>, <span class="jxr_string">"application/vnd.ogc.wms_xml"</span>});
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>      <strong class="jxr_keyword">try</strong> (MockWebServer server = <strong class="jxr_keyword">new</strong> MockWebServer()) {
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>        server.enqueue(<strong class="jxr_keyword">new</strong> MockResponse().setHeaders(contentType).setBody(body));
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>        server.enqueue(<strong class="jxr_keyword">new</strong> MockResponse.Builder().headers(contentType).body(body).build());
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>        server.start();
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>  
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>        String url = server.url(<span class="jxr_string">"/test-wms"</span>).toString();
@@ -112,7 +112,7 @@
 <a class="jxr_linenumber" name="L104" href="#L104">104</a> 
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>       <em class="jxr_comment">// This capabilities document has an extra layer</em>
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>       body = getResourceString(wmsTestCapabilitiesUpdated);
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>       server.enqueue(<strong class="jxr_keyword">new</strong> MockResponse().setHeaders(contentType).setBody(body));
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>       server.enqueue(<strong class="jxr_keyword">new</strong> MockResponse.Builder().headers(contentType).body(body).build());
 <a class="jxr_linenumber" name="L108" href="#L108">108</a> 
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>       mockMvc
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>           .perform(
@@ -199,114 +199,125 @@
 <a class="jxr_linenumber" name="L191" href="#L191">191</a> 
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>     <strong class="jxr_keyword">try</strong> (MockWebServer server = <strong class="jxr_keyword">new</strong> MockWebServer()) {
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>       server.enqueue(
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>           <strong class="jxr_keyword">new</strong> MockResponse()
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>               .setHeaders(<strong class="jxr_keyword">new</strong> Headers(<strong class="jxr_keyword">new</strong> String[] {<span class="jxr_string">"Content-Type"</span>, <span class="jxr_string">"text/xml"</span>}))
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>               .setBody(getResourceString(wmsServiceException1_0_0)));
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>       server.start();
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>           <strong class="jxr_keyword">new</strong> MockResponse.Builder()
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>               .headers(<strong class="jxr_keyword">new</strong> Headers(<strong class="jxr_keyword">new</strong> String[] {<span class="jxr_string">"Content-Type"</span>, <span class="jxr_string">"text/xml"</span>}))
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>               .body(getResourceString(wmsServiceException1_0_0))
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>               .build());
 <a class="jxr_linenumber" name="L198" href="#L198">198</a> 
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>       String url = server.url(<span class="jxr_string">"/test-wms"</span>).toString();
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>       String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
-<a class="jxr_linenumber" name="L201" href="#L201">201</a> 
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>       mockMvc
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>           .perform(
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>               post(adminBasePath + <span class="jxr_string">"/geo-services"</span>)
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>                   .contentType(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>                   .content(geoServicePOSTBody))
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>           .andExpect(status().isBadRequest())
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>           .andExpect(
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>               jsonPath(<span class="jxr_string">"$.errors[0].message"</span>)
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>                   .value(
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>                       <span class="jxr_string">"Error loading capabilities from URL \&quot;"</span>
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>                           + url
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>                           + <span class="jxr_string">"\&quot;: Exception: code: InvalidParameterValue: locator: service: Example error message"</span>));
-<a class="jxr_linenumber" name="L214" href="#L214">214</a> 
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>       server.enqueue(
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>           <strong class="jxr_keyword">new</strong> MockResponse()
-<a class="jxr_linenumber" name="L217" href="#L217">217</a>               .setHeaders(<strong class="jxr_keyword">new</strong> Headers(<strong class="jxr_keyword">new</strong> String[] {<span class="jxr_string">"Content-Type"</span>, <span class="jxr_string">"text/xml"</span>}))
-<a class="jxr_linenumber" name="L218" href="#L218">218</a>               .setBody(getResourceString(wmsServiceException1_3_0)));
-<a class="jxr_linenumber" name="L219" href="#L219">219</a> 
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>       mockMvc
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>           .perform(
-<a class="jxr_linenumber" name="L222" href="#L222">222</a>               post(adminBasePath + <span class="jxr_string">"/geo-services"</span>)
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>                   .contentType(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>                   .content(geoServicePOSTBody))
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>           .andExpect(status().isBadRequest())
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>           .andExpect(
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>               jsonPath(<span class="jxr_string">"$.errors[0].message"</span>)
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>                   .value(
-<a class="jxr_linenumber" name="L229" href="#L229">229</a>                       <span class="jxr_string">"Error loading capabilities from URL \&quot;"</span>
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>                           + url
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>                           + <span class="jxr_string">"\&quot;: Exception: code: SomeCode: locator: somewhere: An example error text."</span>));
-<a class="jxr_linenumber" name="L232" href="#L232">232</a> 
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>       server.shutdown();
-<a class="jxr_linenumber" name="L234" href="#L234">234</a>     }
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>   }
-<a class="jxr_linenumber" name="L236" href="#L236">236</a> 
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>   @Test
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L240" href="#L240">240</a>       username = <span class="jxr_string">"admin"</span>,
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>       authorities = {Group.ADMIN})
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>   <strong class="jxr_keyword">void</strong> loadServiceWithWrongCredentials() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L243" href="#L243">243</a> 
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>     MockMvc mockMvc =
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>         MockMvcBuilders.webAppContextSetup(context).build(); <em class="jxr_comment">// Required for Spring Data Rest APIs</em>
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>       server.start();
+<a class="jxr_linenumber" name="L200" href="#L200">200</a> 
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>       String url = server.url(<span class="jxr_string">"/test-wms"</span>).toString();
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>       String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
+<a class="jxr_linenumber" name="L203" href="#L203">203</a> 
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>       mockMvc
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>           .perform(
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>               post(adminBasePath + <span class="jxr_string">"/geo-services"</span>)
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>                   .contentType(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>                   .content(geoServicePOSTBody))
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>           .andExpect(status().isBadRequest())
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>           .andExpect(
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>               jsonPath(<span class="jxr_string">"$.errors[0].message"</span>)
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>                   .value(
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>                       <span class="jxr_string">"Error loading capabilities from URL \&quot;"</span>
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>                           + url
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>                           + <span class="jxr_string">"\&quot;: Exception: code: InvalidParameterValue: locator: service: Example error message"</span>));
+<a class="jxr_linenumber" name="L216" href="#L216">216</a> 
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>       server.enqueue(
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>           <strong class="jxr_keyword">new</strong> MockResponse.Builder()
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>               .headers(<strong class="jxr_keyword">new</strong> Headers(<strong class="jxr_keyword">new</strong> String[] {<span class="jxr_string">"Content-Type"</span>, <span class="jxr_string">"text/xml"</span>}))
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>               .body(getResourceString(wmsServiceException1_3_0))
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>               .build());
+<a class="jxr_linenumber" name="L222" href="#L222">222</a> 
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>       mockMvc
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>           .perform(
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>               post(adminBasePath + <span class="jxr_string">"/geo-services"</span>)
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>                   .contentType(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>                   .content(geoServicePOSTBody))
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>           .andExpect(status().isBadRequest())
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>           .andExpect(
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>               jsonPath(<span class="jxr_string">"$.errors[0].message"</span>)
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>                   .value(
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>                       <span class="jxr_string">"Error loading capabilities from URL \&quot;"</span>
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>                           + url
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>                           + <span class="jxr_string">"\&quot;: Exception: code: SomeCode: locator: somewhere: An example error text."</span>));
+<a class="jxr_linenumber" name="L235" href="#L235">235</a> 
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>       server.shutdown();
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>     }
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>   }
+<a class="jxr_linenumber" name="L239" href="#L239">239</a> 
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>   @Test
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>       username = <span class="jxr_string">"admin"</span>,
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>       authorities = {Group.ADMIN})
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>   <strong class="jxr_keyword">void</strong> loadServiceWithWrongCredentials() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L246" href="#L246">246</a> 
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>     <strong class="jxr_keyword">try</strong> (MockWebServer server = <strong class="jxr_keyword">new</strong> MockWebServer()) {
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>       server.enqueue(<strong class="jxr_keyword">new</strong> MockResponse().setResponseCode(HttpStatus.UNAUTHORIZED.value()));
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>       server.start();
-<a class="jxr_linenumber" name="L250" href="#L250">250</a> 
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>       String url = server.url(<span class="jxr_string">"/test-wms"</span>).toString();
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>       String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>     MockMvc mockMvc =
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>         MockMvcBuilders.webAppContextSetup(context).build(); <em class="jxr_comment">// Required for Spring Data Rest APIs</em>
+<a class="jxr_linenumber" name="L249" href="#L249">249</a> 
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>     <strong class="jxr_keyword">try</strong> (MockWebServer server = <strong class="jxr_keyword">new</strong> MockWebServer()) {
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>       server.enqueue(<strong class="jxr_keyword">new</strong> MockResponse.Builder().code(HttpStatus.UNAUTHORIZED.value()).build());
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>       server.start();
 <a class="jxr_linenumber" name="L253" href="#L253">253</a> 
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>       mockMvc
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>           .perform(
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>               post(adminBasePath + <span class="jxr_string">"/geo-services"</span>)
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>                   .contentType(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>                   .content(geoServicePOSTBody))
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>           .andExpect(status().isBadRequest())
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>           .andExpect(
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>               jsonPath(<span class="jxr_string">"$.errors[0].message"</span>)
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>                   .value(
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>                       <span class="jxr_string">"Error loading capabilities from URL \&quot;"</span>
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>                           + url
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>                           + <span class="jxr_string">"\&quot;: Exception: Error loading WMS, got 401 unauthorized response (credentials may be required or invalid)"</span>));
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>       server.shutdown();
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>     }
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>   }
-<a class="jxr_linenumber" name="L269" href="#L269">269</a> 
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>   @Test
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>   @WithMockUser(
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>       username = <span class="jxr_string">"admin"</span>,
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>       authorities = {Group.ADMIN})
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>   <strong class="jxr_keyword">void</strong> checkCorsHeaderIsSaved() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L276" href="#L276">276</a> 
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>     MockMvc mockMvc =
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>         MockMvcBuilders.webAppContextSetup(context).build(); <em class="jxr_comment">// Required for Spring Data Rest APIs</em>
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>       String url = server.url(<span class="jxr_string">"/test-wms"</span>).toString();
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>       String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
+<a class="jxr_linenumber" name="L256" href="#L256">256</a> 
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>       mockMvc
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>           .perform(
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>               post(adminBasePath + <span class="jxr_string">"/geo-services"</span>)
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>                   .contentType(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>                   .content(geoServicePOSTBody))
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>           .andExpect(status().isBadRequest())
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>           .andExpect(
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>               jsonPath(<span class="jxr_string">"$.errors[0].message"</span>)
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>                   .value(
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>                       <span class="jxr_string">"Error loading capabilities from URL \&quot;"</span>
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>                           + url
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>                           + <span class="jxr_string">"\&quot;: Exception: Error loading WMS, got 401 unauthorized response (credentials may be required or invalid)"</span>));
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>       server.shutdown();
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>     }
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>   }
+<a class="jxr_linenumber" name="L272" href="#L272">272</a> 
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>   @Test
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>   @WithMockUser(
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>       username = <span class="jxr_string">"admin"</span>,
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>       authorities = {Group.ADMIN})
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>   <strong class="jxr_keyword">void</strong> checkCorsHeaderIsSaved() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L279" href="#L279">279</a> 
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>     <strong class="jxr_keyword">try</strong> (MockWebServer server = <strong class="jxr_keyword">new</strong> MockWebServer()) {
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>       server.enqueue(
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>           <strong class="jxr_keyword">new</strong> MockResponse()
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>               .setBody(getResourceString(wmsTestCapabilities))
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>               .setHeader(<span class="jxr_string">"Content-Type"</span>, <span class="jxr_string">"application/vnd.ogc.wms_xml"</span>)
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>               .setHeader(<span class="jxr_string">"Access-Control-Allow-Origin"</span>, <span class="jxr_string">"https://my-origin"</span>));
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>       server.start();
-<a class="jxr_linenumber" name="L287" href="#L287">287</a> 
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>       String url = server.url(<span class="jxr_string">"/test-wms"</span>).toString();
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>       String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
-<a class="jxr_linenumber" name="L290" href="#L290">290</a> 
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>       mockMvc
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>           .perform(
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>               post(adminBasePath + <span class="jxr_string">"/geo-services"</span>)
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>                   .contentType(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>                   .content(geoServicePOSTBody))
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>           .andExpect(status().isCreated())
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>           .andExpect(jsonPath(<span class="jxr_string">"$.serviceCapabilities.corsAllowOrigin"</span>).value(<span class="jxr_string">"https://my-origin"</span>));
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>       server.shutdown();
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>     }
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>   }
-<a class="jxr_linenumber" name="L301" href="#L301">301</a> }
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>     MockMvc mockMvc =
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>         MockMvcBuilders.webAppContextSetup(context).build(); <em class="jxr_comment">// Required for Spring Data Rest APIs</em>
+<a class="jxr_linenumber" name="L282" href="#L282">282</a> 
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>     <strong class="jxr_keyword">try</strong> (MockWebServer server = <strong class="jxr_keyword">new</strong> MockWebServer()) {
+<a class="jxr_linenumber" name="L284" href="#L284">284</a> 
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>       server.enqueue(
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>           <strong class="jxr_keyword">new</strong> MockResponse.Builder()
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>               .headers(
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>                   <strong class="jxr_keyword">new</strong> Headers(
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>                       <strong class="jxr_keyword">new</strong> String[] {
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>                         <span class="jxr_string">"Content-Type"</span>,
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>                         <span class="jxr_string">"application/vnd.ogc.wms_xml"</span>,
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>                         <span class="jxr_string">"Access-Control-Allow-Origin"</span>,
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>                         <span class="jxr_string">"https://my-origin"</span>
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>                       }))
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>               .body(getResourceString(wmsTestCapabilities))
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>               .build());
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>       server.start();
+<a class="jxr_linenumber" name="L298" href="#L298">298</a> 
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>       String url = server.url(<span class="jxr_string">"/test-wms"</span>).toString();
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>       String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
+<a class="jxr_linenumber" name="L301" href="#L301">301</a> 
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>       mockMvc
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>           .perform(
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>               post(adminBasePath + <span class="jxr_string">"/geo-services"</span>)
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>                   .contentType(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>                   .content(geoServicePOSTBody))
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>           .andExpect(status().isCreated())
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>           .andExpect(jsonPath(<span class="jxr_string">"$.serviceCapabilities.corsAllowOrigin"</span>).value(<span class="jxr_string">"https://my-origin"</span>));
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>       server.shutdown();
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>     }
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>   }
+<a class="jxr_linenumber" name="L312" href="#L312">312</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2023 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>
