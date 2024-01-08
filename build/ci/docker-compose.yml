@@ -7,6 +7,7 @@ volumes:
   postgis-db:
   sqlserver-db:
   oracle-db:
+  solr-data:
 
 
 networks:
@@ -98,3 +99,23 @@ services:
       start_period: 1m
       test: healthcheck.sh
     restart: unless-stopped
+
+  solr:
+    container_name: solr
+    depends_on:
+      - postgis
+      - oracle
+      - sqlserver
+    image: solr:latest
+    environment:
+      SOLR_HEAP: 512m
+    volumes:
+      - solr-data:/var/solr
+    ports:
+      - "127.0.0.1:8983:8983"
+    networks:
+      - tailormap-data
+    restart: unless-stopped
+    command:
+      - solr-precreate
+      - tailormap

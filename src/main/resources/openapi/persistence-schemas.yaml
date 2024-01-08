@@ -265,6 +265,16 @@ components:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/AttributeSettings'
+        searchFields:
+          type: array
+          items:
+            type: string
+          description: List of attribute names that should be used to build the search index.
+        searchDisplayFields:
+          type: array
+          items:
+            type: string
+          description: List of attribute names that should be shown in the search results.
 
     AttributeSettings:
       properties:

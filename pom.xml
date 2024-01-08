@@ -129,6 +129,9 @@ SPDX-License-Identifier: MIT
         <snakeyaml.version>2.0</snakeyaml.version>
         <spring-security.version>5.8.10</spring-security.version>
         <spring-hateoas.version>1.5.6</spring-hateoas.version>
+        <!-- solr and jetty versions must match -->
+        <solr.version>9.4.1</solr.version>
+        <jetty.version>10.0.19</jetty.version>
         <okhttp.version>5.0.0-alpha.12</okhttp.version>
         <kotlin.version>1.9.21</kotlin.version>
         <logback.version>1.2.13</logback.version>
@@ -230,6 +233,10 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
         </dependency>
         <dependency>
             <groupId>io.hypersistence</groupId>
@@ -1136,6 +1143,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.springframework.boot:spring-boot-starter-oauth2-client</exclude>
                                         <exclude>org.springframework.security:spring-security-test</exclude>
                                         <exclude>org.webjars:webjars-locator-core</exclude>
+                                        <exclude>org.apache.solr:solr-solrj</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
                                         <exclude>org.springframework.hateoas:spring-hateoas</exclude>
                                         <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
