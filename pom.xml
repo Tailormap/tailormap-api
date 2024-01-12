@@ -151,13 +151,13 @@ SPDX-License-Identifier: MIT
         <maven-pmd-plugin.version>3.21.2</maven-pmd-plugin.version>
         <versions-maven-plugin.version>2.16.2</versions-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
-        <dependency-check-maven.version>9.0.7</dependency-check-maven.version>
+        <dependency-check-maven.version>9.0.8</dependency-check-maven.version>
         <modernizer-maven-plugin.version>2.7.0</modernizer-maven-plugin.version>
         <pmd.version>6.55.0</pmd.version>
         <maven-fluido-skin.version>2.0.0-M8</maven-fluido-skin.version>
         <swagger-ui.version>5.10.3</swagger-ui.version>
         <sentry.version>7.1.0</sentry.version>
-        <errorProne.version>2.23.0</errorProne.version>
+        <errorProne.version>2.24.1</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
         <compiler.lint>deprecation,unchecked</compiler.lint>
@@ -535,7 +535,7 @@ SPDX-License-Identifier: MIT
                 <plugin>
                     <groupId>org.openapitools</groupId>
                     <artifactId>openapi-generator-maven-plugin</artifactId>
-                    <version>7.1.0</version>
+                    <version>7.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.hibernate.orm.tooling</groupId>
@@ -1264,7 +1264,7 @@ SPDX-License-Identifier: MIT
         <plugins>
             <plugin>
                 <artifactId>maven-jxr-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>3.3.2</version>
             </plugin>
             <plugin>
                 <artifactId>maven-pmd-plugin</artifactId>
