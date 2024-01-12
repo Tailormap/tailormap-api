@@ -21,6 +21,7 @@ import javax.persistence.PostRemove;
 import javax.persistence.PostUpdate;
 import nl.b3p.tailormap.api.admin.model.EntityEvent;
 import nl.b3p.tailormap.api.admin.model.ServerSentEvent;
+import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 @Component
 public class EntityEventPublisher {
-<span class="nc" id="L34">  private static final Logger logger =</span>
-<span class="nc" id="L35">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+<span class="nc" id="L35">  private static final Logger logger =</span>
+<span class="nc" id="L36">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
 
   @Autowired @Lazy private EntityManagerFactory entityManagerFactory;
 
@@ -42,49 +43,60 @@ public class EntityEventPublisher {
 
   @Autowired @Lazy private RepositoryRestMvcConfiguration repositoryRestMvcConfiguration;
 
-<span class="nc" id="L45">  public EntityEventPublisher() {}</span>
+<span class="nc" id="L46">  public EntityEventPublisher() {}</span>
 
   private void sendEvent(
       ServerSentEvent.EventTypeEnum eventTypeEnum, Object entity, boolean serializeEntity) {
-<span class="nc" id="L49">    Object id = null;</span>
+<span class="nc" id="L50">    Object id = null;</span>
 
-<span class="nc bnc" id="L51" title="All 2 branches missed.">    if (RequestContextHolder.getRequestAttributes() == null) {</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">    if (RequestContextHolder.getRequestAttributes() == null) {</span>
       // No current request -- do not send events / serialize entities during app startup
-<span class="nc" id="L53">      return;</span>
+<span class="nc" id="L54">      return;</span>
     }
 
     try {
-<span class="nc" id="L57">      id = entityManagerFactory.getPersistenceUnitUtil().getIdentifier(entity);</span>
-<span class="nc" id="L58">      EntityEvent entityEvent =</span>
-<span class="nc" id="L59">          new EntityEvent().entityName(entity.getClass().getSimpleName()).id(String.valueOf(id));</span>
-<span class="nc bnc" id="L60" title="All 2 branches missed.">      if (serializeEntity) {</span>
-<span class="nc" id="L61">        entityEvent.setObject(repositoryRestMvcConfiguration.objectMapper().valueToTree(entity));</span>
+<span class="nc" id="L58">      id = entityManagerFactory.getPersistenceUnitUtil().getIdentifier(entity);</span>
+<span class="nc" id="L59">      EntityEvent entityEvent =</span>
+<span class="nc" id="L60">          new EntityEvent().entityName(entity.getClass().getSimpleName()).id(String.valueOf(id));</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">      if (serializeEntity) {</span>
+<span class="nc" id="L62">        entityEvent.setObject(repositoryRestMvcConfiguration.objectMapper().valueToTree(entity));</span>
       }
-<span class="nc" id="L63">      ServerSentEvent event = new ServerSentEvent().eventType(eventTypeEnum).details(entityEvent);</span>
-<span class="nc" id="L64">      this.eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(event)));</span>
-<span class="nc" id="L65">    } catch (Exception e) {</span>
-<span class="nc" id="L66">      logger.error(</span>
+<span class="nc" id="L64">      ServerSentEvent event = new ServerSentEvent().eventType(eventTypeEnum).details(entityEvent);</span>
+<span class="nc" id="L65">      this.eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(event)));</span>
+<span class="nc" id="L66">    } catch (Exception e) {</span>
+<span class="nc" id="L67">      logger.error(</span>
           &quot;Error sending SSE for event type {}, entity {}, id {}&quot;,
           eventTypeEnum,
-<span class="nc bnc" id="L69" title="All 2 branches missed.">          entity != null ? entity.getClass().getSimpleName() : null,</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">          entity != null ? entity.getClass().getSimpleName() : null,</span>
           id,
           e);
-<span class="nc" id="L72">    }</span>
-<span class="nc" id="L73">  }</span>
+<span class="nc" id="L73">    }</span>
+<span class="nc" id="L74">  }</span>
 
   @PostPersist
   public void postPersist(Object entity) {
-<span class="nc" id="L77">    sendEvent(ENTITY_CREATED, entity, true);</span>
-<span class="nc" id="L78">  }</span>
+    // Feature types are created when TMFeatureSource is created, so do not send event
+    // Note that when TMFeatureSource created event is sent, the oneToMany allFeatureTypes
+    // have no ID's yet. So for a created feature source the frontend must retrieve the
+    // TMFeatureSource separately or use the return value of the POST request.
+<span class="nc bnc" id="L82" title="All 2 branches missed.">    if (!(entity instanceof TMFeatureType)) {</span>
+<span class="nc" id="L83">      sendEvent(ENTITY_CREATED, entity, true);</span>
+    }
+<span class="nc" id="L85">  }</span>
 
   @PostRemove
   public void postRemove(Object entity) {
-<span class="nc" id="L82">    sendEvent(ENTITY_DELETED, entity, false);</span>
-<span class="nc" id="L83">  }</span>
+    // Feature types are only deleted when refreshing the feature source, so the updated/deleted
+    // event for TMFeatureSource suffices.
+<span class="nc bnc" id="L91" title="All 2 branches missed.">    if (!(entity instanceof TMFeatureType)) {</span>
+<span class="nc" id="L92">      sendEvent(ENTITY_DELETED, entity, false);</span>
+    }
+<span class="nc" id="L94">  }</span>
 
   @PostUpdate
   public void postUpdate(Object entity) {
-<span class="nc" id="L87">    sendEvent(ENTITY_UPDATED, entity, true);</span>
-<span class="nc" id="L88">  }</span>
+    // Note that for an updated TMFeatureSource, new TMFeatureTypes do appear to have ID's set.
+<span class="nc" id="L99">    sendEvent(ENTITY_UPDATED, entity, true);</span>
+<span class="nc" id="L100">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
