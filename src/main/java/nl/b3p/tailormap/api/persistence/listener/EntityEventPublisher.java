@@ -21,6 +21,7 @@ import javax.persistence.PostRemove;
 import javax.persistence.PostUpdate;
 import nl.b3p.tailormap.api.admin.model.EntityEvent;
 import nl.b3p.tailormap.api.admin.model.ServerSentEvent;
+import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,16 +75,27 @@ public class EntityEventPublisher {
 
   @PostPersist
   public void postPersist(Object entity) {
-    sendEvent(ENTITY_CREATED, entity, true);
+    // Feature types are created when TMFeatureSource is created, so do not send event
+    // Note that when TMFeatureSource created event is sent, the oneToMany allFeatureTypes
+    // have no ID's yet. So for a created feature source the frontend must retrieve the
+    // TMFeatureSource separately or use the return value of the POST request.
+    if (!(entity instanceof TMFeatureType)) {
+      sendEvent(ENTITY_CREATED, entity, true);
+    }
   }
 
   @PostRemove
   public void postRemove(Object entity) {
-    sendEvent(ENTITY_DELETED, entity, false);
+    // Feature types are only deleted when refreshing the feature source, so the updated/deleted
+    // event for TMFeatureSource suffices.
+    if (!(entity instanceof TMFeatureType)) {
+      sendEvent(ENTITY_DELETED, entity, false);
+    }
   }
 
   @PostUpdate
   public void postUpdate(Object entity) {
+    // Note that for an updated TMFeatureSource, new TMFeatureTypes do appear to have ID's set.
     sendEvent(ENTITY_UPDATED, entity, true);
   }
 }
