@@ -29,6 +29,7 @@ import nl.b3p.tailormap.api.persistence.json.AppI18nSettings;
 import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.AppSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
+import nl.b3p.tailormap.api.persistence.json.AppUiSettings;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
 import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
@@ -297,6 +298,9 @@ public class Application {
         .i18nSettings(
             requireNonNullElse(
                 settings.getI18nSettings(), new AppI18nSettings().hideLanguageSwitcher(false)))
+        .uiSettings(
+            requireNonNullElse(
+                settings.getUiSettings(), new AppUiSettings().hideLoginButton(false)))
         .projections(List.of(getCrs()));
   }
 
