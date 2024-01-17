@@ -179,6 +179,8 @@ components:
           nullable: false
         i18nSettings:
           $ref: './common-schemas.yaml#/components/schemas/AppI18nSettings'
+        uiSettings:
+          $ref: './common-schemas.yaml#/components/schemas/AppUiSettings'
         projections:
           description: Available projections for this application. The first item is the default.
             Not all layers may be available in all projections.

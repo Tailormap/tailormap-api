@@ -540,6 +540,8 @@ components:
       properties:
         i18nSettings:
           $ref: './common-schemas.yaml#/components/schemas/AppI18nSettings'
+        uiSettings:
+          $ref: './common-schemas.yaml#/components/schemas/AppUiSettings'
         layerSettings:
           title: AppLayerSettings
           description: Map of id of an AppTreeLayerNode to its' settings.
