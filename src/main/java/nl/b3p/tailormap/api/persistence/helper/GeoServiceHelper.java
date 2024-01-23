@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.configuration.TailormapConfig;
@@ -55,6 +54,7 @@ import org.geotools.ows.wms.Layer;
 import org.geotools.ows.wms.WMSCapabilities;
 import org.geotools.ows.wms.WebMapServer;
 import org.geotools.ows.wmts.WebMapTileServer;
+import org.geotools.ows.wmts.model.WMTSLayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -211,72 +211,66 @@ public class GeoServiceHelper {
     }
   }
 
-  private void setLayerList(GeoService geoService, List<? extends Layer> layers) {
-    setLayerList(geoService, layers, (l, gsl) -> {});
+  private GeoServiceLayer toGeoServiceLayer(Layer l, List<? extends Layer> layers) {
+    return new GeoServiceLayer()
+        .id(String.valueOf(layers.indexOf(l)))
+        .name(l.getName())
+        .root(l.getParent() == null)
+        .title(l.getTitle())
+        .maxScale(Double.isNaN(l.getScaleDenominatorMax()) ? null : l.getScaleDenominatorMax())
+        .minScale(Double.isNaN(l.getScaleDenominatorMin()) ? null : l.getScaleDenominatorMin())
+        .virtual(l.getName() == null)
+        .crs(l.getSrs())
+        .latLonBoundingBox(GeoToolsHelper.boundsFromCRSEnvelope(l.getLatLonBoundingBox()))
+        .styles(
+            l.getStyles().stream()
+                .map(
+                    gtStyle -> {
+                      WMSStyle style =
+                          new WMSStyle()
+                              .name(gtStyle.getName())
+                              .title(
+                                  Optional.ofNullable(gtStyle.getTitle())
+                                      .map(Objects::toString)
+                                      .orElse(null))
+                              .abstractText(
+                                  Optional.ofNullable(gtStyle.getAbstract())
+                                      .map(Objects::toString)
+                                      .orElse(null));
+                      try {
+                        List legendURLs = gtStyle.getLegendURLs();
+                        // GeoTools will replace invalid URLs with null in legendURLs
+                        if (legendURLs != null
+                            && !legendURLs.isEmpty()
+                            && legendURLs.get(0) != null) {
+                          style.legendURL(new URI((String) legendURLs.get(0)));
+                        }
+                      } catch (URISyntaxException ignored) {
+                        // Won't occur because GeoTools would have already returned null on
+                        // invalid URL
+                      }
+                      return style;
+                    })
+                .collect(Collectors.toList()))
+        .queryable(l.isQueryable())
+        .abstractText(l.get_abstract())
+        .children(
+            l.getLayerChildren().stream()
+                .map(layers::indexOf)
+                .map(String::valueOf)
+                .collect(Collectors.toList()));
   }
 
-  private void setLayerList(
-      GeoService geoService,
-      List<? extends Layer> layers,
-      BiConsumer<Layer, GeoServiceLayer> consumer) {
-    geoService.setLayers(new ArrayList<>());
-
-    for (Layer l : layers) {
-      GeoServiceLayer geoServiceLayer =
-          new GeoServiceLayer()
-              .id(String.valueOf(layers.indexOf(l)))
-              .name(l.getName())
-              .root(l.getParent() == null)
-              .title(l.getTitle())
-              .maxScale(
-                  Double.isNaN(l.getScaleDenominatorMax()) ? null : l.getScaleDenominatorMax())
-              .minScale(
-                  Double.isNaN(l.getScaleDenominatorMin()) ? null : l.getScaleDenominatorMin())
-              .virtual(l.getName() == null)
-              .crs(l.getSrs())
-              .latLonBoundingBox(GeoToolsHelper.boundsFromCRSEnvelope(l.getLatLonBoundingBox()))
-              .styles(
-                  l.getStyles().stream()
-                      .map(
-                          gtStyle -> {
-                            WMSStyle style =
-                                new WMSStyle()
-                                    .name(gtStyle.getName())
-                                    .title(
-                                        Optional.ofNullable(gtStyle.getTitle())
-                                            .map(Objects::toString)
-                                            .orElse(null))
-                                    .abstractText(
-                                        Optional.ofNullable(gtStyle.getAbstract())
-                                            .map(Objects::toString)
-                                            .orElse(null));
-                            try {
-                              List legendURLs = gtStyle.getLegendURLs();
-                              // GeoTools will replace invalid URLs with null in legendURLs
-                              if (legendURLs != null
-                                  && !legendURLs.isEmpty()
-                                  && legendURLs.get(0) != null) {
-                                style.legendURL(new URI((String) legendURLs.get(0)));
-                              }
-                            } catch (URISyntaxException ignored) {
-                              // Won't occur because GeoTools would have already returned null on
-                              // invalid URL
-                            }
-                            return style;
-                          })
-                      .collect(Collectors.toList()))
-              .queryable(l.isQueryable())
-              .abstractText(l.get_abstract())
-              .children(
-                  l.getLayerChildren().stream()
-                      .map(layers::indexOf)
-                      .map(String::valueOf)
-                      .collect(Collectors.toList()));
-
-      if (consumer != null) {
-        consumer.accept(l, geoServiceLayer);
-      }
-      geoService.getLayers().add(geoServiceLayer);
+  private void addLayerRecursive(
+      GeoService geoService, List<? extends Layer> layers, Layer layer, Set<String> parentCrs) {
+    GeoServiceLayer geoServiceLayer = toGeoServiceLayer(layer, layers);
+    // Crses are inherited from the parent and this is applied by GeoTools so Layer.getSrs() has all
+    // supported crses, but to save space we reverse that by only saving new crses for child layers
+    // -- just like the original WMS capabilities.
+    geoServiceLayer.getCrs().removeAll(parentCrs);
+    geoService.getLayers().add(geoServiceLayer);
+    for (Layer l : layer.getLayerChildren()) {
+      addLayerRecursive(geoService, layers, l, layer.getSrs());
     }
   }
 
@@ -363,8 +357,12 @@ public class GeoServiceHelper {
               ? geoService.getServiceCapabilities().getServiceInfo().getTitle()
               : "(none)");
     }
-
-    setLayerList(geoService, wms.getCapabilities().getLayerList());
+    geoService.setLayers(new ArrayList<>());
+    addLayerRecursive(
+        geoService,
+        wms.getCapabilities().getLayerList(),
+        wms.getCapabilities().getLayer(),
+        Collections.emptySet());
   }
 
   void loadWMTSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client)
@@ -374,7 +372,9 @@ public class GeoServiceHelper {
 
     // TODO set capabilities if we need something from it
 
-    setLayerList(geoService, wmts.getCapabilities().getLayerList());
+    List<WMTSLayer> layers = wmts.getCapabilities().getLayerList();
+    geoService.setLayers(
+        layers.stream().map(l -> toGeoServiceLayer(l, layers)).collect(Collectors.toList()));
   }
 
   public Map<String, SimpleWFSLayerDescription> findRelatedWFS(GeoService geoService) {
