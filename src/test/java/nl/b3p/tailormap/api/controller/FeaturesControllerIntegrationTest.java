@@ -980,7 +980,7 @@ class FeaturesControllerIntegrationTest {
     final double expected2ndCoordinate = 430066.3;
     final String expectedNaam = "Utrecht";
     final String expectedCode = "26";
-    final String expectedFid = "Provinciegebied.209e5db1-05cc-4201-9ff6-02f60c51b880";
+    final String expectedFid = StaticTestData.get("utrecht__fid");
     final String url = apiBasePath + provinciesWFS;
 
     MvcResult result =
