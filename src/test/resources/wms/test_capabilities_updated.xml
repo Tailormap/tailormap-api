@@ -39,22 +39,20 @@
         <Layer>
             <Title>Test Layer 1</Title>
             <SRS>EPSG:28992</SRS>
-            <SRS>EPSG:3857</SRS>
-            <SRS>EPSG:4326</SRS>
             <SRS>EPSG:900913</SRS>
             <Layer cascaded="1" queryable="0">
                 <Name>Layer2</Name>
                 <Title>Test Layer 2</Title>
                 <BoundingBox SRS="EPSG:28992" minx="-285401.920000" miny="22598.080000" maxx="595401.920000"
                              maxy="903401.920000"></BoundingBox>
-                <SRS>EPSG:28992</SRS>
+                <SRS>EPSG:3857</SRS>
             </Layer>
             <Layer cascaded="1" queryable="0">
                 <Name>Layer3</Name>
                 <Title>Test Layer 3</Title>
                 <BoundingBox SRS="EPSG:28992" minx="-285401.920000" miny="22598.080000" maxx="595401.920000"
                              maxy="903401.920000"></BoundingBox>
-                <SRS>EPSG:28992</SRS>
+                <SRS>EPSG:4326</SRS>
             </Layer>
         </Layer>
     </Capability>

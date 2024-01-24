@@ -18,6 +18,7 @@ import mockwebserver3.MockWebServer;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.persistence.Group;
 import okhttp3.Headers;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -93,7 +94,15 @@ class GeoServiceAdminControllerIntegrationTest {
               .andExpect(jsonPath("$.layers").isArray())
               .andExpect(jsonPath("$.layers.length()").value(2))
               .andExpect(jsonPath("$.layers[0].title").value("Test Layer 1"))
+              .andExpect(jsonPath("$.layers[0].crs.length()").value(4))
+              .andExpect(
+                  jsonPath(
+                      "$.layers[0].crs",
+                      Matchers.containsInAnyOrder(
+                          "EPSG:900913", "EPSG:4326", "EPSG:3857", "EPSG:28992")))
               .andExpect(jsonPath("$.layers[1].name").value("Layer2"))
+              // Child layer inherits all parent CRSes, should not duplicate those to save space
+              .andExpect(jsonPath("$.layers[1].crs.length()").value(0))
               .andReturn();
       String serviceId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
       String selfLink =
@@ -124,10 +133,17 @@ class GeoServiceAdminControllerIntegrationTest {
           .andExpect(jsonPath("$.layers").isArray())
           .andExpect(jsonPath("$.layers.length()").value(3))
           .andExpect(jsonPath("$.layers[0].title").value("Test Layer 1"))
+          .andExpect(jsonPath("$.layers[0].crs.length()").value(2))
+          .andExpect(
+              jsonPath("$.layers[0].crs", Matchers.containsInAnyOrder("EPSG:28992", "EPSG:900913")))
           .andExpect(jsonPath("$.layers[0].children[0]").value(1))
           .andExpect(jsonPath("$.layers[0].children[1]").value(2))
           .andExpect(jsonPath("$.layers[1].name").value("Layer2"))
-          .andExpect(jsonPath("$.layers[2].name").value("Layer3"));
+          .andExpect(jsonPath("$.layers[1].crs.length()").value(1))
+          .andExpect(jsonPath("$.layers[1].crs[0]").value("EPSG:3857"))
+          .andExpect(jsonPath("$.layers[2].name").value("Layer3"))
+          .andExpect(jsonPath("$.layers[2].crs.length()").value(1))
+          .andExpect(jsonPath("$.layers[2].crs[0]").value("EPSG:4326"));
 
       server.shutdown();
     }
