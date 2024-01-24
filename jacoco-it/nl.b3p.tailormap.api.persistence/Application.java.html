@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Application.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.persistence</a> &gt; <span class="el_source">Application.java</span></div><h1>Application.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.persistence;
+
+import static java.util.Objects.requireNonNullElse;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
+import nl.b3p.tailormap.api.persistence.json.AppContent;
+import nl.b3p.tailormap.api.persistence.json.AppI18nSettings;
+import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
+import nl.b3p.tailormap.api.persistence.json.AppSettings;
+import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
+import nl.b3p.tailormap.api.persistence.json.AppUiSettings;
+import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
+import nl.b3p.tailormap.api.persistence.json.Bounds;
+import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
+import nl.b3p.tailormap.api.viewer.model.AppStyling;
+import nl.b3p.tailormap.api.viewer.model.Component;
+import nl.b3p.tailormap.api.viewer.model.ViewerResponse;
+import org.geotools.referencing.CRS;
+import org.hibernate.annotations.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Entity
+@EntityListeners(EntityEventPublisher.class)
+<span class="nc" id="L46">public class Application {</span>
+<span class="nc" id="L47">  private static final Logger logger =</span>
+<span class="nc" id="L48">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @Version private Long version;
+
+  @NotNull private String name;
+
+  private String title;
+
+  @Column(columnDefinition = &quot;text&quot;)
+  private String adminComments;
+
+  @Column(columnDefinition = &quot;text&quot;)
+  private String previewText;
+
+  @NotNull private String crs;
+
+  @Embedded
+  @AttributeOverrides({
+    @AttributeOverride(name = &quot;minx&quot;, column = @Column(name = &quot;initial_minx&quot;)),
+    @AttributeOverride(name = &quot;maxx&quot;, column = @Column(name = &quot;initial_maxx&quot;)),
+    @AttributeOverride(name = &quot;miny&quot;, column = @Column(name = &quot;initial_miny&quot;)),
+    @AttributeOverride(name = &quot;maxy&quot;, column = @Column(name = &quot;initial_maxy&quot;))
+  })
+  private Bounds initialExtent;
+
+  @Embedded
+  @AttributeOverrides({
+    @AttributeOverride(name = &quot;minx&quot;, column = @Column(name = &quot;max_minx&quot;)),
+    @AttributeOverride(name = &quot;maxx&quot;, column = @Column(name = &quot;max_maxx&quot;)),
+    @AttributeOverride(name = &quot;miny&quot;, column = @Column(name = &quot;max_miny&quot;)),
+    @AttributeOverride(name = &quot;maxy&quot;, column = @Column(name = &quot;max_maxy&quot;))
+  })
+  private Bounds maxExtent;
+
+<span class="nc" id="L86">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
+  @Column(columnDefinition = &quot;jsonb&quot;)
+  @NotNull
+  private AppContent contentRoot = new AppContent();
+
+<span class="nc" id="L91">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
+  @Column(columnDefinition = &quot;jsonb&quot;)
+  @NotNull
+  private AppSettings settings = new AppSettings();
+
+<span class="nc" id="L96">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
+  @Column(columnDefinition = &quot;jsonb&quot;)
+  @NotNull
+  private List&lt;Component&gt; components = new ArrayList&lt;&gt;();
+
+<span class="nc" id="L101">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
+  @Column(columnDefinition = &quot;jsonb&quot;)
+  @NotNull
+  private AppStyling styling = new AppStyling();
+
+<span class="nc" id="L106">  @Type(type = &quot;io.hypersistence.utils.hibernate.type.json.JsonBinaryType&quot;)</span>
+  @Column(columnDefinition = &quot;jsonb&quot;)
+  @NotNull
+  private List&lt;AuthorizationRule&gt; authorizationRules = new ArrayList&lt;&gt;();
+
+  // &lt;editor-fold desc=&quot;getters and setters&quot;&gt;
+  public Long getId() {
+<span class="nc" id="L113">    return id;</span>
+  }
+
+  public Application setId(Long id) {
+<span class="nc" id="L117">    this.id = id;</span>
+<span class="nc" id="L118">    return this;</span>
+  }
+
+  public Long getVersion() {
+<span class="nc" id="L122">    return version;</span>
+  }
+
+  public Application setVersion(Long version) {
+<span class="nc" id="L126">    this.version = version;</span>
+<span class="nc" id="L127">    return this;</span>
+  }
+
+  public String getName() {
+<span class="nc" id="L131">    return name;</span>
+  }
+
+  public Application setName(String name) {
+<span class="nc" id="L135">    this.name = name;</span>
+<span class="nc" id="L136">    return this;</span>
+  }
+
+  public String getTitle() {
+<span class="nc" id="L140">    return title;</span>
+  }
+
+  public Application setTitle(String title) {
+<span class="nc" id="L144">    this.title = title;</span>
+<span class="nc" id="L145">    return this;</span>
+  }
+
+  public String getAdminComments() {
+<span class="nc" id="L149">    return adminComments;</span>
+  }
+
+  public Application setAdminComments(String adminComments) {
+<span class="nc" id="L153">    this.adminComments = adminComments;</span>
+<span class="nc" id="L154">    return this;</span>
+  }
+
+  public String getPreviewText() {
+<span class="nc" id="L158">    return previewText;</span>
+  }
+
+  public Application setPreviewText(String previewText) {
+<span class="nc" id="L162">    this.previewText = previewText;</span>
+<span class="nc" id="L163">    return this;</span>
+  }
+
+  public String getCrs() {
+<span class="nc" id="L167">    return crs;</span>
+  }
+
+  public Application setCrs(String crs) {
+<span class="nc" id="L171">    this.crs = crs;</span>
+<span class="nc" id="L172">    return this;</span>
+  }
+
+  public Bounds getInitialExtent() {
+<span class="nc" id="L176">    return initialExtent;</span>
+  }
+
+  public Application setInitialExtent(Bounds initialExtent) {
+<span class="nc" id="L180">    this.initialExtent = initialExtent;</span>
+<span class="nc" id="L181">    return this;</span>
+  }
+
+  public Bounds getMaxExtent() {
+<span class="nc" id="L185">    return maxExtent;</span>
+  }
+
+  public Application setMaxExtent(Bounds maxExtent) {
+<span class="nc" id="L189">    this.maxExtent = maxExtent;</span>
+<span class="nc" id="L190">    return this;</span>
+  }
+
+  public AppContent getContentRoot() {
+<span class="nc" id="L194">    return contentRoot;</span>
+  }
+
+  public Application setContentRoot(AppContent contentRoot) {
+<span class="nc" id="L198">    this.contentRoot = contentRoot;</span>
+<span class="nc" id="L199">    return this;</span>
+  }
+
+  public AppSettings getSettings() {
+<span class="nc" id="L203">    return settings;</span>
+  }
+
+  public Application setSettings(AppSettings layerSettings) {
+<span class="nc" id="L207">    this.settings = layerSettings;</span>
+<span class="nc" id="L208">    return this;</span>
+  }
+
+  public List&lt;Component&gt; getComponents() {
+<span class="nc" id="L212">    return components;</span>
+  }
+
+  public Application setComponents(List&lt;Component&gt; components) {
+<span class="nc" id="L216">    this.components = components;</span>
+<span class="nc" id="L217">    return this;</span>
+  }
+
+  public AppStyling getStyling() {
+<span class="nc" id="L221">    return styling;</span>
+  }
+
+  public Application setStyling(AppStyling styling) {
+<span class="nc" id="L225">    this.styling = styling;</span>
+<span class="nc" id="L226">    return this;</span>
+  }
+
+  public List&lt;AuthorizationRule&gt; getAuthorizationRules() {
+<span class="nc" id="L230">    return authorizationRules;</span>
+  }
+
+  public Application setAuthorizationRules(List&lt;AuthorizationRule&gt; authorizationRules) {
+<span class="nc" id="L234">    this.authorizationRules = authorizationRules;</span>
+<span class="nc" id="L235">    return this;</span>
+  }
+
+  // &lt;/editor-fold&gt;
+
+  @JsonIgnore
+  public Stream&lt;AppTreeLayerNode&gt; getAllAppTreeLayerNode() {
+<span class="nc bnc" id="L242" title="All 2 branches missed.">    if (this.getContentRoot() == null) {</span>
+<span class="nc" id="L243">      return Stream.empty();</span>
+    }
+<span class="nc" id="L245">    Stream&lt;AppTreeLayerNode&gt; baseLayers = Stream.empty();</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">    if (this.getContentRoot().getBaseLayerNodes() != null) {</span>
+<span class="nc" id="L247">      baseLayers =</span>
+<span class="nc" id="L248">          this.getContentRoot().getBaseLayerNodes().stream()</span>
+<span class="nc" id="L249">              .filter(n -&gt; &quot;AppTreeLayerNode&quot;.equals(n.getObjectType()))</span>
+<span class="nc" id="L250">              .map(n -&gt; (AppTreeLayerNode) n);</span>
+    }
+<span class="nc" id="L252">    Stream&lt;AppTreeLayerNode&gt; layers = Stream.empty();</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">    if (this.getContentRoot().getLayerNodes() != null) {</span>
+<span class="nc" id="L254">      layers =</span>
+<span class="nc" id="L255">          this.getContentRoot().getLayerNodes().stream()</span>
+<span class="nc" id="L256">              .filter(n -&gt; &quot;AppTreeLayerNode&quot;.equals(n.getObjectType()))</span>
+<span class="nc" id="L257">              .map(n -&gt; (AppTreeLayerNode) n);</span>
+    }
+<span class="nc" id="L259">    return Stream.concat(baseLayers, layers);</span>
+  }
+
+  /**
+   * Return a GeoTools CoordinateReferenceSystem from this entities' CRS code or null if there is an
+   * error decoding it, which will be logged (only with stacktrace if loglevel is DEBUG).
+   *
+   * @return CoordinateReferenceSystem
+   */
+  @JsonIgnore
+  public org.geotools.api.referencing.crs.CoordinateReferenceSystem
+      getGeoToolsCoordinateReferenceSystem() {
+<span class="nc" id="L271">    org.geotools.api.referencing.crs.CoordinateReferenceSystem gtCrs = null;</span>
+    try {
+<span class="nc bnc" id="L273" title="All 2 branches missed.">      if (getCrs() != null) {</span>
+<span class="nc" id="L274">        gtCrs = CRS.decode(getCrs());</span>
+      }
+<span class="nc" id="L276">    } catch (Exception e) {</span>
+<span class="nc" id="L277">      String message =</span>
+<span class="nc" id="L278">          String.format(</span>
+              &quot;Application %d: error decoding CRS from code \&quot;%s\&quot;: %s: %s&quot;,
+<span class="nc" id="L280">              getId(), getCrs(), e.getClass(), e.getMessage());</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">      if (logger.isDebugEnabled()) {</span>
+<span class="nc" id="L282">        logger.error(message, e);</span>
+      } else {
+<span class="nc" id="L284">        logger.error(message);</span>
+      }
+<span class="nc" id="L286">    }</span>
+<span class="nc" id="L287">    return gtCrs;</span>
+  }
+
+  @JsonIgnore
+  public ViewerResponse getViewerResponse() {
+<span class="nc" id="L292">    return new ViewerResponse()</span>
+<span class="nc" id="L293">        .kind(ViewerResponse.KindEnum.APP)</span>
+<span class="nc" id="L294">        .name(getName())</span>
+<span class="nc" id="L295">        .title(getTitle())</span>
+<span class="nc" id="L296">        .styling(styling)</span>
+<span class="nc" id="L297">        .components(components)</span>
+<span class="nc" id="L298">        .i18nSettings(</span>
+<span class="nc" id="L299">            requireNonNullElse(</span>
+<span class="nc" id="L300">                settings.getI18nSettings(), new AppI18nSettings().hideLanguageSwitcher(false)))</span>
+<span class="nc" id="L301">        .uiSettings(</span>
+<span class="nc" id="L302">            requireNonNullElse(</span>
+<span class="nc" id="L303">                settings.getUiSettings(), new AppUiSettings().hideLoginButton(false)))</span>
+<span class="nc" id="L304">        .projections(List.of(getCrs()));</span>
+  }
+
+  @NotNull
+  public AppLayerSettings getAppLayerSettings(@NotNull AppTreeLayerNode node) {
+<span class="nc" id="L309">    return Optional.ofNullable(getSettings())</span>
+<span class="nc" id="L310">        .map(AppSettings::getLayerSettings)</span>
+<span class="nc" id="L311">        .map(layerSettingsMap -&gt; layerSettingsMap.get(node.getId()))</span>
+<span class="nc" id="L312">        .orElseGet(AppLayerSettings::new);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
