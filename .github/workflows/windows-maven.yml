@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: setup-java-Linux-maven-${{ hashFiles('**/pom.xml') }}
@@ -40,7 +40,7 @@ jobs:
           mvn --% -e -fae -B clean test
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
 
       - name: Cleanup build artifacts and snapshots
         run: |
