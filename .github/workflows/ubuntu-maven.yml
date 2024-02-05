@@ -42,6 +42,7 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Build javadoc
         run: mvn javadoc:javadoc
@@ -111,6 +112,7 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   # Upload event file so test results can be processed for the PR
   # https://github.com/EnricoMi/publish-unit-test-result-action#support-fork-repositories-and-dependabot-branches
