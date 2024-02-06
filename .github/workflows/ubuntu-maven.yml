@@ -255,7 +255,7 @@ jobs:
     needs: [ build, publish, postgresql-test ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: setup-java-Linux-maven-${{ hashFiles('**/pom.xml') }}
