@@ -34,5 +34,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
         .setCacheControl(CacheControl.noCache())
         .resourceChain(true)
         .addTransformer(indexHtmlTransformer);
+    registry
+        .addResourceHandler("/version.json")
+        .addResourceLocations(resourceLocations.split(",")[0])
+        .setCacheControl(CacheControl.noStore());
   }
 }
