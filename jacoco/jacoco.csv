@@ -34,7 +34,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.base,IndexHtmlTransfo
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.base,TailormapApiConfiguration,3,0,0,0,1,0,1,0,1,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.base,FrontController,149,0,22,0,32,0,18,0,7,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.base,SourceMapSecurityFilter,58,0,8,0,15,0,6,0,2,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.base,WebMvcConfig,58,0,0,0,14,0,2,0,2,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.configuration.base,WebMvcConfig,85,0,0,0,19,0,2,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.processing,GeometryProcessor,28,171,10,18,11,41,10,12,0,8
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,TailormapConfig,11,0,0,0,4,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,JPAConfiguration,16,0,0,0,5,0,3,0,3,0
