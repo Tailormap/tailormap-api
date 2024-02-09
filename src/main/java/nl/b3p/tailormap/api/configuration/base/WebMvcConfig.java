@@ -8,6 +8,7 @@ package nl.b3p.tailormap.api.configuration.base;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.CacheControl;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.EncodedResourceResolver;
@@ -28,8 +29,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
     registry
         .addResourceHandler("/*/index.html")
         .addResourceLocations(resourceLocations.split(",")[0])
+        // no-cache means the browser must revalidate index.html with a conditional HTTP request
+        // using If-Modified-Since. This is needed to always have the latest frontend loaded in the
+        // browser after deployment of a new release.
+        .setCacheControl(CacheControl.noCache())
         .resourceChain(true)
         .addTransformer(indexHtmlTransformer);
+    registry
+        .addResourceHandler("/version.json")
+        .addResourceLocations(resourceLocations.split(",")[0])
+        .setCacheControl(CacheControl.noStore());
     registry
         .addResourceHandler("/**")
         .addResourceLocations(resourceLocations.split(",")[0])
