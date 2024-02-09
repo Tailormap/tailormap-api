@@ -16,29 +16,38 @@
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.annotation.Configuration;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  @Configuration
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="WebMvcConfig" href="../../../../../../nl/b3p/tailormap/api/configuration/base/WebMvcConfig.html#WebMvcConfig">WebMvcConfig</a> <strong class="jxr_keyword">implements</strong> WebMvcConfigurer {
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>    @Value(<span class="jxr_string">"${spring.web.resources.static-locations:file:/home/spring/static/}"</span>)
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>    <strong class="jxr_keyword">private</strong> String resourceLocations;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="IndexHtmlTransformer" href="../../../../../../nl/b3p/tailormap/api/configuration/base/IndexHtmlTransformer.html#IndexHtmlTransformer">IndexHtmlTransformer</a> indexHtmlTransformer;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>    <strong class="jxr_keyword">public</strong> <a name="WebMvcConfig" href="../../../../../../nl/b3p/tailormap/api/configuration/base/WebMvcConfig.html#WebMvcConfig">WebMvcConfig</a>(<a name="IndexHtmlTransformer" href="../../../../../../nl/b3p/tailormap/api/configuration/base/IndexHtmlTransformer.html#IndexHtmlTransformer">IndexHtmlTransformer</a> indexHtmlTransformer) {
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>      <strong class="jxr_keyword">this</strong>.indexHtmlTransformer = indexHtmlTransformer;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>    }
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>    @Override
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addResourceHandlers(ResourceHandlerRegistry registry) {
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>      registry
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>          .addResourceHandler(<span class="jxr_string">"/*/index.html"</span>)
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>          .addResourceLocations(resourceLocations.split(<span class="jxr_string">","</span>)[0])
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>          .resourceChain(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>          .addTransformer(indexHtmlTransformer);
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>    }
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  }
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.CacheControl;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  @Configuration
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="WebMvcConfig" href="../../../../../../nl/b3p/tailormap/api/configuration/base/WebMvcConfig.html#WebMvcConfig">WebMvcConfig</a> <strong class="jxr_keyword">implements</strong> WebMvcConfigurer {
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>    @Value(<span class="jxr_string">"${spring.web.resources.static-locations:file:/home/spring/static/}"</span>)
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>    <strong class="jxr_keyword">private</strong> String resourceLocations;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="IndexHtmlTransformer" href="../../../../../../nl/b3p/tailormap/api/configuration/base/IndexHtmlTransformer.html#IndexHtmlTransformer">IndexHtmlTransformer</a> indexHtmlTransformer;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>    <strong class="jxr_keyword">public</strong> <a name="WebMvcConfig" href="../../../../../../nl/b3p/tailormap/api/configuration/base/WebMvcConfig.html#WebMvcConfig">WebMvcConfig</a>(<a name="IndexHtmlTransformer" href="../../../../../../nl/b3p/tailormap/api/configuration/base/IndexHtmlTransformer.html#IndexHtmlTransformer">IndexHtmlTransformer</a> indexHtmlTransformer) {
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>      <strong class="jxr_keyword">this</strong>.indexHtmlTransformer = indexHtmlTransformer;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>    }
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>    @Override
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addResourceHandlers(ResourceHandlerRegistry registry) {
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      registry
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>          .addResourceHandler(<span class="jxr_string">"/*/index.html"</span>)
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>          .addResourceLocations(resourceLocations.split(<span class="jxr_string">","</span>)[0])
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>          <em class="jxr_comment">// no-cache means the browser must revalidate index.html with a conditional HTTP request</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>          <em class="jxr_comment">// using If-Modified-Since. This is needed to always have the latest frontend loaded in the</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>          <em class="jxr_comment">// browser after deployment of a new release.</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>          .setCacheControl(CacheControl.noCache())
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>          .resourceChain(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          .addTransformer(indexHtmlTransformer);
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      registry
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>          .addResourceHandler(<span class="jxr_string">"/version.json"</span>)
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>          .addResourceLocations(resourceLocations.split(<span class="jxr_string">","</span>)[0])
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>          .setCacheControl(CacheControl.noStore());
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>    }
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>
