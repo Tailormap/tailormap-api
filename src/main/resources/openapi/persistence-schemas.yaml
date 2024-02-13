@@ -326,6 +326,9 @@ components:
               title: laag 2
             'otherLayer':
               hiDpiDisabled: true
+        xyzCrs:
+          type: string
+          nullable: true
 
     LayerSettings:
       description: Settings applying to any kind of layer of a GeoService.

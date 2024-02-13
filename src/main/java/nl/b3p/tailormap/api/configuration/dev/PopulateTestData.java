@@ -209,6 +209,7 @@ public class PopulateTestData {
                 .setAuthorizationRules(rule)
                 .setSettings(
                     new GeoServiceSettings()
+                        .xyzCrs("EPSG:3857")
                         .layerSettings(
                             Map.of(
                                 "xyz",
@@ -313,6 +314,7 @@ public class PopulateTestData {
                 .setAuthorizationRules(rule)
                 .setSettings(
                     new GeoServiceSettings()
+                        .xyzCrs("EPSG:28992")
                         .defaultLayerSettings(
                             new GeoServiceDefaultLayerSettings().attribution(osmAttribution))
                         .layerSettings(
@@ -348,6 +350,7 @@ public class PopulateTestData {
                 .setPublished(true)
                 .setSettings(
                     new GeoServiceSettings()
+                        .xyzCrs("EPSG:28992")
                         .defaultLayerSettings(
                             new GeoServiceDefaultLayerSettings()
                                 .attribution(

@@ -164,6 +164,7 @@ public class GeoServiceHelper {
                 .root(true)
                 .name("xyz")
                 .title(geoService.getTitle())
+                .crs(Set.of(geoService.getSettings().getXyzCrs()))
                 .virtual(false)
                 .queryable(false)));
   }
