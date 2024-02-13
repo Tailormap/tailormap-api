@@ -21,6 +21,7 @@ import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
 import nl.b3p.tailormap.api.persistence.json.TMFeatureTypeInfo;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
 import nl.b3p.tailormap.api.persistence.json.TMServiceInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.geotools.api.data.DataStore;
 import org.geotools.api.data.DataStoreFinder;
 import org.geotools.api.data.ResourceInfo;
@@ -75,7 +76,7 @@ public abstract class FeatureSourceHelper {
   public void loadCapabilities(TMFeatureSource tmfs, Integer timeout) throws IOException {
     DataStore ds = createDataStore(tmfs, timeout);
     try {
-      if (ds.getInfo().getTitle() != null) {
+      if (StringUtils.isBlank(tmfs.getTitle())) {
         tmfs.setTitle(ds.getInfo().getTitle());
       }
 
