@@ -69,7 +69,8 @@ public class GeoServiceValidator implements Validator {
       return;
     }
 
-    if (service.isRefreshCapabilities()) {
+    // For XYZ make sure updated xyzCrs from settings is applied to layer
+    if (service.isRefreshCapabilities() || XYZ.equals(service.getProtocol())) {
       try {
         geoServiceHelper.loadServiceCapabilities(service);
       } catch (UnknownHostException e) {
