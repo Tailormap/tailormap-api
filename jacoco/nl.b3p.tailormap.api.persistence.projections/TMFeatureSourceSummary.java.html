@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties;
+import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import org.springframework.data.rest.core.config.Projection;
 
 @Projection(
@@ -25,7 +26,7 @@ public interface TMFeatureSourceSummary {
   JDBCConnectionProperties getJdbcConnection();
 
   default JDBCConnectionProperties.DbtypeEnum getDbType() {
-<span class="nc bnc" id="L28" title="All 2 branches missed.">    return getJdbcConnection() == null ? null : getJdbcConnection().getDbtype();</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">    return getJdbcConnection() == null ? null : getJdbcConnection().getDbtype();</span>
   }
 
   String getTitle();
@@ -40,6 +41,13 @@ public interface TMFeatureSourceSummary {
     String getTitle();
 
     boolean isWriteable();
+
+    @JsonIgnore
+    List&lt;TMAttributeDescriptor&gt; getAttributes();
+
+    default boolean getHasAttributes() {
+<span class="nc bnc" id="L49" title="All 2 branches missed.">      return !this.getAttributes().isEmpty();</span>
+    }
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

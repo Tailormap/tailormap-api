@@ -24,6 +24,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.controller.admin,FeatureSourceAdmin
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller.admin,AdminRepositoryRestExceptionHandler,4,0,0,0,2,0,1,0,1,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.controller.admin,GeoServiceAdminController,51,0,0,0,14,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence.projections,TMFeatureSourceSummary,9,0,2,0,1,0,2,0,1,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.persistence.projections,TMFeatureSourceSummary.TMFeatureTypeSummary,8,0,2,0,1,0,2,0,1,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.wfs,SimpleWFSLayerDescription,20,0,0,0,7,0,4,0,4,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.wfs,SimpleWFSHelper,417,0,36,0,91,0,32,0,14,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.geotools.wfs,WFSProxy,29,0,0,0,7,0,2,0,2,0
