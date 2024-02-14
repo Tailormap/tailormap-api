@@ -47,27 +47,34 @@ import org.geotools.api.data.DataStore;
 
 <span class="nc" id="L48">    JDBCConnectionProperties c = tmfs.getJdbcConnection();</span>
 <span class="nc" id="L49">    Objects.requireNonNull(c.getDbtype());</span>
-<span class="nc" id="L50">    final String connectionOpts =</span>
+<span class="nc" id="L50">    String connectionOpts =</span>
 <span class="nc" id="L51">        Optional.ofNullable(c.getAdditionalProperties().get(&quot;connectionOptions&quot;)).orElse(&quot;&quot;);</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">    if (c.getDbtype() == JDBCConnectionProperties.DbtypeEnum.POSTGIS</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        &amp;&amp; !connectionOpts.contains(&quot;ApplicationName&quot;)) {</span>
+<span class="nc" id="L54">      connectionOpts =</span>
+          connectionOpts
+<span class="nc bnc" id="L56" title="All 2 branches missed.">              + (connectionOpts.contains(&quot;?&quot;) ? &quot;&amp;amp;&quot; : &quot;?&quot;)</span>
+              + &quot;ApplicationName=tailormap-api&quot;;
+    }
 
-<span class="nc" id="L53">    Map&lt;String, Object&gt; params = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L54">    params.put(DBTYPE.key, c.getDbtype().getValue());</span>
-<span class="nc" id="L55">    params.put(HOST.key, c.getHost());</span>
-<span class="nc bnc" id="L56" title="All 2 branches missed.">    params.put(PORT.key, c.getPort() != null ? c.getPort() : defaultPorts.get(c.getDbtype()));</span>
-<span class="nc" id="L57">    params.put(DATABASE.key, c.getDatabase() + connectionOpts);</span>
-<span class="nc" id="L58">    params.put(SCHEMA.key, c.getSchema());</span>
-<span class="nc" id="L59">    params.put(USER.key, tmfs.getAuthentication().getUsername());</span>
-<span class="nc" id="L60">    params.put(PASSWD.key, tmfs.getAuthentication().getPassword());</span>
-<span class="nc" id="L61">    params.put(FETCHSIZE.key, c.getFetchSize());</span>
-<span class="nc" id="L62">    params.put(EXPOSE_PK.key, true);</span>
-<span class="nc" id="L63">    params.put(PK_METADATA_TABLE.key, c.getPrimaryKeyMetadataTable());</span>
-<span class="nc bnc" id="L64" title="All 2 branches missed.">    if (c.getDbtype() != JDBCConnectionProperties.DbtypeEnum.ORACLE) {</span>
+<span class="nc" id="L60">    Map&lt;String, Object&gt; params = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L61">    params.put(DBTYPE.key, c.getDbtype().getValue());</span>
+<span class="nc" id="L62">    params.put(HOST.key, c.getHost());</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">    params.put(PORT.key, c.getPort() != null ? c.getPort() : defaultPorts.get(c.getDbtype()));</span>
+<span class="nc" id="L64">    params.put(DATABASE.key, c.getDatabase() + connectionOpts);</span>
+<span class="nc" id="L65">    params.put(SCHEMA.key, c.getSchema());</span>
+<span class="nc" id="L66">    params.put(USER.key, tmfs.getAuthentication().getUsername());</span>
+<span class="nc" id="L67">    params.put(PASSWD.key, tmfs.getAuthentication().getPassword());</span>
+<span class="nc" id="L68">    params.put(FETCHSIZE.key, c.getFetchSize());</span>
+<span class="nc" id="L69">    params.put(EXPOSE_PK.key, true);</span>
+<span class="nc" id="L70">    params.put(PK_METADATA_TABLE.key, c.getPrimaryKeyMetadataTable());</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">    if (c.getDbtype() != JDBCConnectionProperties.DbtypeEnum.ORACLE) {</span>
       // this key is available in ao. Oracle and MS SQL datastore factories, but not in the common
       // parent...
       // we need this for mssql to determine a feature type on an empty table
-<span class="nc" id="L68">      params.put(GEOMETRY_METADATA_TABLE.key, &quot;geometry_columns&quot;);</span>
+<span class="nc" id="L75">      params.put(GEOMETRY_METADATA_TABLE.key, &quot;geometry_columns&quot;);</span>
     }
-<span class="nc" id="L70">    return openDatastore(params, PASSWD.key);</span>
+<span class="nc" id="L77">    return openDatastore(params, PASSWD.key);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

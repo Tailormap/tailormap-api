@@ -55,29 +55,36 @@
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>      JDBCConnectionProperties c = tmfs.getJdbcConnection();
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      Objects.requireNonNull(c.getDbtype());
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">final</strong> String connectionOpts =
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      String connectionOpts =
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>          Optional.ofNullable(c.getAdditionalProperties().get(<span class="jxr_string">"connectionOptions"</span>)).orElse(<span class="jxr_string">""</span>);
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>      Map&lt;String, Object&gt; params = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>      params.put(DBTYPE.key, c.getDbtype().getValue());
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>      params.put(HOST.key, c.getHost());
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      params.put(PORT.key, c.getPort() != <strong class="jxr_keyword">null</strong> ? c.getPort() : defaultPorts.get(c.getDbtype()));
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      params.put(DATABASE.key, c.getDatabase() + connectionOpts);
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>      params.put(SCHEMA.key, c.getSchema());
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      params.put(USER.key, tmfs.getAuthentication().getUsername());
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>      params.put(PASSWD.key, tmfs.getAuthentication().getPassword());
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      params.put(FETCHSIZE.key, c.getFetchSize());
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      params.put(EXPOSE_PK.key, <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>      params.put(PK_METADATA_TABLE.key, c.getPrimaryKeyMetadataTable());
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      <strong class="jxr_keyword">if</strong> (c.getDbtype() != JDBCConnectionProperties.DbtypeEnum.ORACLE) {
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>        <em class="jxr_comment">// this key is available in ao. Oracle and MS SQL datastore factories, but not in the common</em>
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>        <em class="jxr_comment">// parent...</em>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>        <em class="jxr_comment">// we need this for mssql to determine a feature type on an empty table</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>        params.put(GEOMETRY_METADATA_TABLE.key, <span class="jxr_string">"geometry_columns"</span>);
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      }
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      <strong class="jxr_keyword">return</strong> openDatastore(params, PASSWD.key);
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>    }
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>  }
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">if</strong> (c.getDbtype() == JDBCConnectionProperties.DbtypeEnum.POSTGIS
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          &amp;&amp; !connectionOpts.contains(<span class="jxr_string">"ApplicationName"</span>)) {
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>        connectionOpts =
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>            connectionOpts
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>                + (connectionOpts.contains(<span class="jxr_string">"?"</span>) ? <span class="jxr_string">"&amp;amp;"</span> : <span class="jxr_string">"?"</span>)
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>                + <span class="jxr_string">"ApplicationName=tailormap-api"</span>;
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      }
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      Map&lt;String, Object&gt; params = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>      params.put(DBTYPE.key, c.getDbtype().getValue());
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      params.put(HOST.key, c.getHost());
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>      params.put(PORT.key, c.getPort() != <strong class="jxr_keyword">null</strong> ? c.getPort() : defaultPorts.get(c.getDbtype()));
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>      params.put(DATABASE.key, c.getDatabase() + connectionOpts);
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      params.put(SCHEMA.key, c.getSchema());
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      params.put(USER.key, tmfs.getAuthentication().getUsername());
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      params.put(PASSWD.key, tmfs.getAuthentication().getPassword());
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      params.put(FETCHSIZE.key, c.getFetchSize());
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>      params.put(EXPOSE_PK.key, <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>      params.put(PK_METADATA_TABLE.key, c.getPrimaryKeyMetadataTable());
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      <strong class="jxr_keyword">if</strong> (c.getDbtype() != JDBCConnectionProperties.DbtypeEnum.ORACLE) {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>        <em class="jxr_comment">// this key is available in ao. Oracle and MS SQL datastore factories, but not in the common</em>
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>        <em class="jxr_comment">// parent...</em>
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>        <em class="jxr_comment">// we need this for mssql to determine a feature type on an empty table</em>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>        params.put(GEOMETRY_METADATA_TABLE.key, <span class="jxr_string">"geometry_columns"</span>);
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>      }
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      <strong class="jxr_keyword">return</strong> openDatastore(params, PASSWD.key);
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>    }
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>
