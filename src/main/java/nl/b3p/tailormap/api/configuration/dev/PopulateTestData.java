@@ -487,7 +487,9 @@ public class PopulateTestData {
                         .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "postgis")
                         .port(connectToSpatialDbsAtLocalhost ? 54322 : 5432)
                         .database("geodata")
-                        .schema("public"))
+                        .schema("public")
+                        .additionalProperties(
+                            Map.of("connectionOptions", "?ApplicationName=tailormap-api")))
                 .setAuthentication(
                     new ServiceAuthentication()
                         .method(ServiceAuthentication.MethodEnum.PASSWORD)
@@ -503,7 +505,9 @@ public class PopulateTestData {
                         .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "postgis")
                         .port(connectToSpatialDbsAtLocalhost ? 54322 : 5432)
                         .database("geodata")
-                        .schema("osm"))
+                        .schema("osm")
+                        .additionalProperties(
+                            Map.of("connectionOptions", "?ApplicationName=tailormap-api")))
                 .setAuthentication(
                     new ServiceAuthentication()
                         .method(ServiceAuthentication.MethodEnum.PASSWORD)

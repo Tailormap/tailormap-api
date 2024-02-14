@@ -47,8 +47,15 @@ public class JDBCFeatureSourceHelper extends FeatureSourceHelper {
 
     JDBCConnectionProperties c = tmfs.getJdbcConnection();
     Objects.requireNonNull(c.getDbtype());
-    final String connectionOpts =
+    String connectionOpts =
         Optional.ofNullable(c.getAdditionalProperties().get("connectionOptions")).orElse("");
+    if (c.getDbtype() == JDBCConnectionProperties.DbtypeEnum.POSTGIS
+        && !connectionOpts.contains("ApplicationName")) {
+      connectionOpts =
+          connectionOpts
+              + (connectionOpts.contains("?") ? "&amp;" : "?")
+              + "ApplicationName=tailormap-api";
+    }
 
     Map<String, Object> params = new HashMap<>();
     params.put(DBTYPE.key, c.getDbtype().getValue());
