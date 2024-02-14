@@ -8,6 +8,7 @@ package nl.b3p.tailormap.api.persistence.projections;
 
 import java.util.List;
 import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
@@ -26,4 +27,6 @@ public interface GeoServiceSummary {
   List<GeoServiceLayer> getLayers();
 
   GeoServiceSettings getSettings();
+
+  List<AuthorizationRule> getAuthorizationRules();
 }
