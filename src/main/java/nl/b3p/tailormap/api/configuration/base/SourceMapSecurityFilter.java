@@ -33,21 +33,24 @@ public class SourceMapSecurityFilter implements Filter {
       ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
       throws ServletException, IOException {
 
-    HttpServletRequest request = (HttpServletRequest) servletRequest;
-    HttpServletResponse response = (HttpServletResponse) servletResponse;
-    String path = request.getRequestURI().substring(request.getContextPath().length());
-    if (!path.startsWith("/api/") && path.endsWith(".map")) {
-      if (sourceMapAuth == null) {
-        response.sendError(SC_FORBIDDEN);
-        return;
-      }
-      String sourceMapAuthorization =
-          "Basic "
-              + Base64.getEncoder().encodeToString(sourceMapAuth.getBytes(StandardCharsets.UTF_8));
-      if (!sourceMapAuthorization.equals(request.getHeader("Authorization"))) {
-        response.addHeader("WWW-Authenticate", "Basic realm=\"Source maps\"");
-        response.sendError(SC_UNAUTHORIZED);
-        return;
+    if (!"public".equals(sourceMapAuth)) {
+      HttpServletRequest request = (HttpServletRequest) servletRequest;
+      HttpServletResponse response = (HttpServletResponse) servletResponse;
+      String path = request.getRequestURI().substring(request.getContextPath().length());
+      if (!path.startsWith("/api/") && path.endsWith(".map")) {
+        if (sourceMapAuth == null) {
+          response.sendError(SC_FORBIDDEN);
+          return;
+        }
+        String sourceMapAuthorization =
+            "Basic "
+                + Base64.getEncoder()
+                    .encodeToString(sourceMapAuth.getBytes(StandardCharsets.UTF_8));
+        if (!sourceMapAuthorization.equals(request.getHeader("Authorization"))) {
+          response.addHeader("WWW-Authenticate", "Basic realm=\"Source maps\"");
+          response.sendError(SC_UNAUTHORIZED);
+          return;
+        }
       }
     }
 
