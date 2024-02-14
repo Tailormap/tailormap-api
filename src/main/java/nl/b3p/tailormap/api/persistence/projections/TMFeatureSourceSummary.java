@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties;
+import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import org.springframework.data.rest.core.config.Projection;
 
 @Projection(
@@ -40,5 +41,12 @@ public interface TMFeatureSourceSummary {
     String getTitle();
 
     boolean isWriteable();
+
+    @JsonIgnore
+    List<TMAttributeDescriptor> getAttributes();
+
+    default boolean getHasAttributes() {
+      return !this.getAttributes().isEmpty();
+    }
   }
 }
