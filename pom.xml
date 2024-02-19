@@ -158,7 +158,7 @@ SPDX-License-Identifier: MIT
         <maven-fluido-skin.version>2.0.0-M8</maven-fluido-skin.version>
         <swagger-ui.version>5.10.3</swagger-ui.version>
         <sentry.version>7.3.0</sentry.version>
-        <errorProne.version>2.24.1</errorProne.version>
+        <errorProne.version>2.25.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
         <compiler.lint>deprecation,unchecked</compiler.lint>
@@ -234,7 +234,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.hypersistence</groupId>
             <artifactId>hypersistence-utils-hibernate-55</artifactId>
-            <version>3.7.2</version>
+            <version>3.7.3</version>
         </dependency>
         <dependency>
             <groupId>io.hypersistence</groupId>
@@ -565,7 +565,7 @@ SPDX-License-Identifier: MIT
                 <plugin>
                     <groupId>io.fabric8</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
-                    <version>0.43.4</version>
+                    <version>0.44.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-scm-publish-plugin</artifactId>
