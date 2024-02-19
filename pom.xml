@@ -234,7 +234,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.hypersistence</groupId>
             <artifactId>hypersistence-utils-hibernate-55</artifactId>
-            <version>3.7.2</version>
+            <version>3.7.3</version>
         </dependency>
         <dependency>
             <groupId>io.hypersistence</groupId>
