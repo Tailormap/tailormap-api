@@ -67,16 +67,6 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.author != 'dependabot[bot]' }}
     needs: build
-    services:
-      postgres:
-        image: postgres:15-alpine
-        env:
-          POSTGRES_USER: tailormap
-          POSTGRES_PASSWORD: tailormap
-          POSTGRES_DB: tailormap
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 15s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v4
 

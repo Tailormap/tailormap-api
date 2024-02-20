@@ -15,6 +15,23 @@ networks:
 
 
 services:
+  postgres:
+    container_name: postgres
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: tailormap
+      POSTGRES_PASSWORD: tailormap
+      POSTGRES_DB: tailormap
+    ports:
+      - "127.0.0.1:5432:5432"
+    networks:
+      - tailormap-data
+    healthcheck:
+      test: pg_isready
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
   postgis:
     container_name: postgis
     image: docker.b3p.nl/b3partners/tailormap-data_postgis:snapshot
