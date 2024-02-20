@@ -20,24 +20,30 @@ public class ValidationConfiguration implements RepositoryRestConfigurer {
 
   private final FeatureSourceValidator featureSourceValidator;
 
+  private final ApplicationValidator applicationValidator;
+
   public ValidationConfiguration(
       LocalValidatorFactoryBean localValidatorFactoryBean,
       GeoServiceValidator geoServiceValidator,
-<span class="nc" id="L26">      FeatureSourceValidator featureSourceValidator) {</span>
-<span class="nc" id="L27">    this.localValidatorFactoryBean = localValidatorFactoryBean;</span>
-<span class="nc" id="L28">    this.geoServiceValidator = geoServiceValidator;</span>
-<span class="nc" id="L29">    this.featureSourceValidator = featureSourceValidator;</span>
-<span class="nc" id="L30">  }</span>
+      FeatureSourceValidator featureSourceValidator,
+<span class="nc" id="L29">      ApplicationValidator applicationValidator) {</span>
+<span class="nc" id="L30">    this.localValidatorFactoryBean = localValidatorFactoryBean;</span>
+<span class="nc" id="L31">    this.geoServiceValidator = geoServiceValidator;</span>
+<span class="nc" id="L32">    this.featureSourceValidator = featureSourceValidator;</span>
+<span class="nc" id="L33">    this.applicationValidator = applicationValidator;</span>
+<span class="nc" id="L34">  }</span>
 
   @Override
   public void configureValidatingRepositoryEventListener(
       ValidatingRepositoryEventListener validatingListener) {
-<span class="nc" id="L35">    validatingListener.addValidator(&quot;beforeCreate&quot;, localValidatorFactoryBean);</span>
-<span class="nc" id="L36">    validatingListener.addValidator(&quot;beforeSave&quot;, localValidatorFactoryBean);</span>
-<span class="nc" id="L37">    validatingListener.addValidator(&quot;beforeCreate&quot;, geoServiceValidator);</span>
-<span class="nc" id="L38">    validatingListener.addValidator(&quot;beforeSave&quot;, geoServiceValidator);</span>
-<span class="nc" id="L39">    validatingListener.addValidator(&quot;beforeCreate&quot;, featureSourceValidator);</span>
-<span class="nc" id="L40">    validatingListener.addValidator(&quot;beforeSave&quot;, featureSourceValidator);</span>
-<span class="nc" id="L41">  }</span>
+<span class="nc" id="L39">    validatingListener.addValidator(&quot;beforeCreate&quot;, localValidatorFactoryBean);</span>
+<span class="nc" id="L40">    validatingListener.addValidator(&quot;beforeSave&quot;, localValidatorFactoryBean);</span>
+<span class="nc" id="L41">    validatingListener.addValidator(&quot;beforeCreate&quot;, geoServiceValidator);</span>
+<span class="nc" id="L42">    validatingListener.addValidator(&quot;beforeSave&quot;, geoServiceValidator);</span>
+<span class="nc" id="L43">    validatingListener.addValidator(&quot;beforeCreate&quot;, featureSourceValidator);</span>
+<span class="nc" id="L44">    validatingListener.addValidator(&quot;beforeSave&quot;, featureSourceValidator);</span>
+<span class="nc" id="L45">    validatingListener.addValidator(&quot;beforeCreate&quot;, applicationValidator);</span>
+<span class="nc" id="L46">    validatingListener.addValidator(&quot;beforeSave&quot;, applicationValidator);</span>
+<span class="nc" id="L47">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
