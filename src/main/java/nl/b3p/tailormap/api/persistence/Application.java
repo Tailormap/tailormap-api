@@ -53,7 +53,9 @@ public class Application {
 
   @Version private Long version;
 
-  @NotNull private String name;
+  @Column(unique = true)
+  @NotNull
+  private String name;
 
   private String title;
 
