@@ -31,6 +31,11 @@ jobs:
           java-version: 11
           distribution: 'temurin'
 
+      - name: 'Set up Maven'
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: '3.9.6'
+
       - name: Priming build with Maven
         run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true install
 

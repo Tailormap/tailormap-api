@@ -22,7 +22,7 @@ To develop the backend this Spring Boot application can be run locally.
 To build and run the project, you need to have the following installed:
 
 - Java 11 JDK
-- Maven 3.8.4 or higher
+- Maven 3.9.5 or higher
 - PostgreSQL configuration database
 - Docker 20.10.x with buildx 0.9 or higher (this requirement may be skipped if you don't need to build
   the docker images or build release artifacts)

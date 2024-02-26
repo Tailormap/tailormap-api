@@ -31,6 +31,11 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: 'Set up Maven'
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: '3.9.6'
+
       - name: Priming build with Maven
         run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true install
 
@@ -76,6 +81,11 @@ jobs:
           java-version: 11
           distribution: 'temurin'
           cache: 'maven'
+
+      - name: 'Set up Maven'
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: '3.9.6'
 
       - name: 'Login to b3p.nl'
         uses: docker/login-action@v3
@@ -159,6 +169,11 @@ jobs:
           java-version: 11
           distribution: 'temurin'
           cache: 'maven'
+
+      - name: 'Set up Maven'
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: '3.9.6'
 
       - name: Build and Push
         # no need to run any QC or tests
