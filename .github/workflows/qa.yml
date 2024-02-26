@@ -31,6 +31,11 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: 'Set up Maven'
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: '3.9.6'
+
       - name: 'QA build with Maven'
         run: mvn -B -V -fae -DskipQA=false -Dfmt.action=check -Dpom.fmt.action=verify -Ddocker.skip=true -DskipTests -DskipITs clean install
 
