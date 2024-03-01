@@ -39,7 +39,8 @@ public class FrontController {
   private static final AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
 
   static {
-    localeResolver.setSupportedLocales(List.of(new Locale("en"), new Locale("nl")));
+    localeResolver.setSupportedLocales(
+        List.of(new Locale("en"), new Locale("nl"), new Locale("de")));
     localeResolver.setDefaultLocale(localeResolver.getSupportedLocales().get(0));
   }
 
