@@ -125,6 +125,12 @@ components:
         maxZoom:
           description: 'Maximum zoom for XYZ layer'
           type: integer
+        tileSize:
+          description: 'Tile size for XYZ layer'
+          type: integer
+        tileGridExtent:
+          $ref: './common-schemas.yaml#/components/schemas/Bounds'
+          description: 'Tile grid bounds for XYZ layer'
         hasAttributes:
           description: 'Whether this layer has attributes that can be accessed eg. for feature info or attribute list'
           type: boolean
