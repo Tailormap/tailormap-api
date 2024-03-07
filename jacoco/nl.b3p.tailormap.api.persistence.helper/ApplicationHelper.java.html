@@ -322,55 +322,57 @@ public class ApplicationHelper {
 <span class="nc" id="L322">              .hiDpiSubstituteLayer(hiDpiSubstituteLayer)</span>
 <span class="nc" id="L323">              .minZoom(serviceLayerSettings.getMinZoom())</span>
 <span class="nc" id="L324">              .maxZoom(serviceLayerSettings.getMaxZoom())</span>
-<span class="nc" id="L325">              .opacity(appLayerSettings.getOpacity())</span>
-<span class="nc" id="L326">              .visible(layerRef.getVisible())</span>
-<span class="nc" id="L327">              .attribution(attribution)</span>
-<span class="nc" id="L328">              .description(description));</span>
-<span class="nc" id="L329">      return true;</span>
+<span class="nc" id="L325">              .tileSize(serviceLayerSettings.getTileSize())</span>
+<span class="nc" id="L326">              .tileGridExtent(serviceLayerSettings.getTileGridExtent())</span>
+<span class="nc" id="L327">              .opacity(appLayerSettings.getOpacity())</span>
+<span class="nc" id="L328">              .visible(layerRef.getVisible())</span>
+<span class="nc" id="L329">              .attribution(attribution)</span>
+<span class="nc" id="L330">              .description(description));</span>
+<span class="nc" id="L331">      return true;</span>
     }
 
     private Triple&lt;GeoService, GeoServiceLayer, GeoServiceLayerSettings&gt; findServiceLayer(
         AppTreeLayerNode layerRef) {
-<span class="nc" id="L334">      GeoService service = geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);</span>
-<span class="nc bnc" id="L335" title="All 2 branches missed.">      if (service == null) {</span>
-<span class="nc" id="L336">        logger.warn(</span>
+<span class="nc" id="L336">      GeoService service = geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);</span>
+<span class="nc bnc" id="L337" title="All 2 branches missed.">      if (service == null) {</span>
+<span class="nc" id="L338">        logger.warn(</span>
             &quot;App {} references layer \&quot;{}\&quot; of missing service {}&quot;,
-<span class="nc" id="L338">            app.getId(),</span>
-<span class="nc" id="L339">            layerRef.getLayerName(),</span>
-<span class="nc" id="L340">            layerRef.getServiceId());</span>
-<span class="nc" id="L341">        return Triple.of(null, null, null);</span>
+<span class="nc" id="L340">            app.getId(),</span>
+<span class="nc" id="L341">            layerRef.getLayerName(),</span>
+<span class="nc" id="L342">            layerRef.getServiceId());</span>
+<span class="nc" id="L343">        return Triple.of(null, null, null);</span>
       }
 
-<span class="nc bnc" id="L344" title="All 2 branches missed.">      if (!authorizationService.mayUserRead(service)) {</span>
-<span class="nc" id="L345">        return Triple.of(null, null, null);</span>
+<span class="nc bnc" id="L346" title="All 2 branches missed.">      if (!authorizationService.mayUserRead(service)) {</span>
+<span class="nc" id="L347">        return Triple.of(null, null, null);</span>
       }
 
-<span class="nc" id="L348">      GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());</span>
+<span class="nc" id="L350">      GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());</span>
 
-<span class="nc bnc" id="L350" title="All 2 branches missed.">      if (serviceLayer == null) {</span>
-<span class="nc" id="L351">        logger.warn(</span>
+<span class="nc bnc" id="L352" title="All 2 branches missed.">      if (serviceLayer == null) {</span>
+<span class="nc" id="L353">        logger.warn(</span>
             &quot;App {} references layer \&quot;{}\&quot; not found in capabilities of service {}&quot;,
-<span class="nc" id="L353">            app.getId(),</span>
-<span class="nc" id="L354">            layerRef.getLayerName(),</span>
-<span class="nc" id="L355">            service.getId());</span>
-<span class="nc" id="L356">        return Triple.of(null, null, null);</span>
+<span class="nc" id="L355">            app.getId(),</span>
+<span class="nc" id="L356">            layerRef.getLayerName(),</span>
+<span class="nc" id="L357">            service.getId());</span>
+<span class="nc" id="L358">        return Triple.of(null, null, null);</span>
       }
 
-<span class="nc bnc" id="L359" title="All 2 branches missed.">      if (!authorizationService.mayUserRead(service, serviceLayer)) {</span>
-<span class="nc" id="L360">        return Triple.of(null, null, null);</span>
+<span class="nc bnc" id="L361" title="All 2 branches missed.">      if (!authorizationService.mayUserRead(service, serviceLayer)) {</span>
+<span class="nc" id="L362">        return Triple.of(null, null, null);</span>
       }
 
-<span class="nc" id="L363">      serviceLayerServiceIds.put(serviceLayer, service.getId());</span>
+<span class="nc" id="L365">      serviceLayerServiceIds.put(serviceLayer, service.getId());</span>
 
-<span class="nc" id="L365">      if (mr.getServices().stream()</span>
-<span class="nc" id="L366">          .filter(s -&gt; s.getId().equals(service.getId()))</span>
-<span class="nc" id="L367">          .findAny()</span>
-<span class="nc bnc" id="L368" title="All 2 branches missed.">          .isEmpty()) {</span>
-<span class="nc" id="L369">        mr.addServicesItem(service.toJsonPojo(geoServiceHelper));</span>
+<span class="nc" id="L367">      if (mr.getServices().stream()</span>
+<span class="nc" id="L368">          .filter(s -&gt; s.getId().equals(service.getId()))</span>
+<span class="nc" id="L369">          .findAny()</span>
+<span class="nc bnc" id="L370" title="All 2 branches missed.">          .isEmpty()) {</span>
+<span class="nc" id="L371">        mr.addServicesItem(service.toJsonPojo(geoServiceHelper));</span>
       }
 
-<span class="nc" id="L372">      GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());</span>
-<span class="nc" id="L373">      return Triple.of(service, serviceLayer, layerSettings);</span>
+<span class="nc" id="L374">      GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());</span>
+<span class="nc" id="L375">      return Triple.of(service, serviceLayer, layerSettings);</span>
     }
   }
 }
