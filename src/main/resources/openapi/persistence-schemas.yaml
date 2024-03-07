@@ -409,6 +409,14 @@ components:
               nullable: true
               type: integer
               description: maxZoom property of OpenLayers XYZ source
+            tileSize:
+              nullable: true
+              type: integer
+              description: 'tile size property of OpenLayers XYZ source'
+            tileGridExtent:
+              nullable: true
+              $ref: './common-schemas.yaml#/components/schemas/Bounds'
+              description: 'tile grid bounds property of OpenLayers XYZ source'
             hiDpiMode:
               $ref: './common-schemas.yaml#/components/schemas/TileLayerHiDpiMode'
             hiDpiSubstituteLayer:
