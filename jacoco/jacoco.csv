@@ -46,7 +46,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,MonitoringConfigurati
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,RestConfiguration,25,0,0,0,9,0,3,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.configuration,GeoToolsEPSGAliasesConfiguration,124,0,4,0,17,0,5,0,3,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.repository.events,OIDCConfigurationEventHandler,30,0,2,0,11,0,4,0,3,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,TMFeatureSource.Protocol,70,0,4,0,12,0,7,0,5,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,TMFeatureSource.Protocol,61,0,4,0,12,0,7,0,5,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,Application,1170,189,174,16,76,18,162,19,68,18
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,TMFeatureType,930,110,131,9,45,10,134,13,65,12
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,User,623,214,98,20,14,20,87,33,29,32
@@ -57,7 +57,7 @@ Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,GeoService,1448,176,225
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,Configuration,379,0,40,0,16,0,56,0,36,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence,Catalog,450,0,76,0,11,0,70,0,32,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.admin.model,EntityEvent,155,0,14,0,35,0,21,0,14,0
-Aggregate Test Coverage,nl.b3p.tailormap.api.admin.model,ServerSentEvent.EventTypeEnum,92,0,4,0,14,0,7,0,5,0
+Aggregate Test Coverage,nl.b3p.tailormap.api.admin.model,ServerSentEvent.EventTypeEnum,75,0,4,0,14,0,7,0,5,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.admin.model,ServerSentEvent,121,0,12,0,28,0,17,0,11,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence.helper,TMAttributeTypeHelper,29,0,4,0,5,0,4,0,2,0
 Aggregate Test Coverage,nl.b3p.tailormap.api.persistence.helper,GeoServiceHelper,909,5,89,0,245,2,61,1,16,1
