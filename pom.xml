@@ -92,14 +92,14 @@ SPDX-License-Identifier: MIT
         </site>
     </distributionManagement>
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
-        <project.build.targetVersion>${java.version}</project.build.targetVersion>
-        <project.build.outputTimestamp>2024-02-28T09:57:27Z</project.build.outputTimestamp>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+        <project.build.outputTimestamp>2024-02-28T09:57:27Z</project.build.outputTimestamp>
         <geotools.version>30.2</geotools.version>
         <jts.version>1.19.0</jts.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
@@ -764,6 +764,17 @@ SPDX-License-Identifier: MIT
                         <!--<arg>-Werror</arg>-->
                         <arg>-Xmaxwarns</arg>
                         <arg>1000</arg>
+                        <!-- see https://errorprone.info/docs/installation -->
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+                        <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+                        <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
                     </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
@@ -1032,7 +1043,7 @@ SPDX-License-Identifier: MIT
                 <artifactId>modernizer-maven-plugin</artifactId>
                 <version>${modernizer-maven-plugin.version}</version>
                 <configuration>
-                    <javaVersion>11</javaVersion>
+                    <javaVersion>${java.version}</javaVersion>
                     <skip>${skipQA}</skip>
                     <failOnViolations>true</failOnViolations>
                 </configuration>
@@ -1099,7 +1110,7 @@ SPDX-License-Identifier: MIT
                             <rules>
                                 <!-- see https://maven.apache.org/enforcer/enforcer-rules/index.html -->
                                 <requireMavenVersion>
-                                    <version>3.8</version>
+                                    <version>3.9</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>${java.version}</version>
