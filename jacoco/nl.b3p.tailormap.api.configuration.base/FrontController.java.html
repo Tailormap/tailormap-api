@@ -39,9 +39,10 @@ public class FrontController {
 <span class="nc" id="L39">  private static final AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();</span>
 
   static {
-<span class="nc" id="L42">    localeResolver.setSupportedLocales(List.of(new Locale(&quot;en&quot;), new Locale(&quot;nl&quot;)));</span>
-<span class="nc" id="L43">    localeResolver.setDefaultLocale(localeResolver.getSupportedLocales().get(0));</span>
-<span class="nc" id="L44">  }</span>
+<span class="nc" id="L42">    localeResolver.setSupportedLocales(</span>
+<span class="nc" id="L43">        List.of(new Locale(&quot;en&quot;), new Locale(&quot;nl&quot;), new Locale(&quot;de&quot;)));</span>
+<span class="nc" id="L44">    localeResolver.setDefaultLocale(localeResolver.getSupportedLocales().get(0));</span>
+<span class="nc" id="L45">  }</span>
 
   private final ConfigurationRepository configurationRepository;
   private final ApplicationRepository applicationRepository;
@@ -51,43 +52,43 @@ public class FrontController {
 
   public FrontController(
       @Lazy ConfigurationRepository configurationRepository,
-<span class="nc" id="L54">      @Lazy ApplicationRepository applicationRepository) {</span>
-<span class="nc" id="L55">    this.configurationRepository = configurationRepository;</span>
-<span class="nc" id="L56">    this.applicationRepository = applicationRepository;</span>
-<span class="nc" id="L57">  }</span>
+<span class="nc" id="L55">      @Lazy ApplicationRepository applicationRepository) {</span>
+<span class="nc" id="L56">    this.configurationRepository = configurationRepository;</span>
+<span class="nc" id="L57">    this.applicationRepository = applicationRepository;</span>
+<span class="nc" id="L58">  }</span>
 
   @GetMapping(
       value = {&quot;/&quot;, &quot;/login&quot;, &quot;/app&quot;, &quot;/app/&quot;, &quot;/app/**&quot;, &quot;/service/**&quot;, &quot;/admin/**&quot;, &quot;/ext/**&quot;})
   public String appIndex(HttpServletRequest request) {
-<span class="nc" id="L62">    String path = request.getRequestURI().substring(request.getContextPath().length());</span>
-<span class="nc" id="L63">    Application app = null;</span>
+<span class="nc" id="L63">    String path = request.getRequestURI().substring(request.getContextPath().length());</span>
+<span class="nc" id="L64">    Application app = null;</span>
 
-<span class="nc bnc" id="L65" title="All 2 branches missed.">    if (!activeProfile.contains(&quot;static-only&quot;)) {</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">    if (!activeProfile.contains(&quot;static-only&quot;)) {</span>
       // The language setting of the (default) app takes precedence over the Accept-Language header
-<span class="nc bnc" id="L67" title="All 6 branches missed.">      if (&quot;/&quot;.equals(path) || &quot;/app&quot;.equals(path) || &quot;/app/&quot;.equals(path)) {</span>
-<span class="nc" id="L68">        String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);</span>
-<span class="nc" id="L69">        app = applicationRepository.findByName(defaultAppName);</span>
-<span class="nc bnc" id="L70" title="All 2 branches missed.">      } else if (path.startsWith(&quot;/app/&quot;)) {</span>
-<span class="nc" id="L71">        String[] parts = path.split(&quot;/&quot;);</span>
-<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (parts.length &gt; 2) {</span>
-<span class="nc" id="L73">          String appName = UriUtils.decode(parts[2], StandardCharsets.UTF_8);</span>
-<span class="nc" id="L74">          app = applicationRepository.findByName(appName);</span>
+<span class="nc bnc" id="L68" title="All 6 branches missed.">      if (&quot;/&quot;.equals(path) || &quot;/app&quot;.equals(path) || &quot;/app/&quot;.equals(path)) {</span>
+<span class="nc" id="L69">        String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);</span>
+<span class="nc" id="L70">        app = applicationRepository.findByName(defaultAppName);</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">      } else if (path.startsWith(&quot;/app/&quot;)) {</span>
+<span class="nc" id="L72">        String[] parts = path.split(&quot;/&quot;);</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (parts.length &gt; 2) {</span>
+<span class="nc" id="L74">          String appName = UriUtils.decode(parts[2], StandardCharsets.UTF_8);</span>
+<span class="nc" id="L75">          app = applicationRepository.findByName(appName);</span>
         }
       }
     }
 
-<span class="nc bnc" id="L79" title="All 4 branches missed.">    if (app != null &amp;&amp; app.getSettings().getI18nSettings() != null) {</span>
-<span class="nc" id="L80">      String appLanguage = app.getSettings().getI18nSettings().getDefaultLanguage();</span>
-<span class="nc bnc" id="L81" title="All 2 branches missed.">      if (appLanguage != null</span>
-<span class="nc" id="L82">          &amp;&amp; localeResolver.getSupportedLocales().stream()</span>
-<span class="nc bnc" id="L83" title="All 2 branches missed.">              .anyMatch(l -&gt; l.toLanguageTag().equals(appLanguage))) {</span>
-<span class="nc" id="L84">        return &quot;forward:/&quot; + appLanguage + &quot;/index.html&quot;;</span>
+<span class="nc bnc" id="L80" title="All 4 branches missed.">    if (app != null &amp;&amp; app.getSettings().getI18nSettings() != null) {</span>
+<span class="nc" id="L81">      String appLanguage = app.getSettings().getI18nSettings().getDefaultLanguage();</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">      if (appLanguage != null</span>
+<span class="nc" id="L83">          &amp;&amp; localeResolver.getSupportedLocales().stream()</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">              .anyMatch(l -&gt; l.toLanguageTag().equals(appLanguage))) {</span>
+<span class="nc" id="L85">        return &quot;forward:/&quot; + appLanguage + &quot;/index.html&quot;;</span>
       }
     }
 
     // Resolve using Accept-Language header
-<span class="nc" id="L89">    Locale locale = localeResolver.resolveLocale(request);</span>
-<span class="nc" id="L90">    return &quot;forward:/&quot; + locale.toLanguageTag() + &quot;/index.html&quot;;</span>
+<span class="nc" id="L90">    Locale locale = localeResolver.resolveLocale(request);</span>
+<span class="nc" id="L91">    return &quot;forward:/&quot; + locale.toLanguageTag() + &quot;/index.html&quot;;</span>
   }
 
   @GetMapping(
@@ -102,16 +103,16 @@ public class FrontController {
       })
   public String localePrefixedAppIndex(
       @PathVariable(&quot;locale&quot;) String locale, HttpServletRequest request) {
-<span class="nc" id="L105">    if (localeResolver.getSupportedLocales().stream()</span>
-<span class="nc bnc" id="L106" title="All 2 branches missed.">        .anyMatch(l -&gt; l.toLanguageTag().equals(locale))) {</span>
-<span class="nc" id="L107">      return &quot;forward:/&quot; + locale + &quot;/index.html&quot;;</span>
+<span class="nc" id="L106">    if (localeResolver.getSupportedLocales().stream()</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">        .anyMatch(l -&gt; l.toLanguageTag().equals(locale))) {</span>
+<span class="nc" id="L108">      return &quot;forward:/&quot; + locale + &quot;/index.html&quot;;</span>
     }
-<span class="nc" id="L109">    return appIndex(request);</span>
+<span class="nc" id="L110">    return appIndex(request);</span>
   }
 
   @GetMapping(value = {&quot;/swagger-ui&quot;, &quot;/swagger-ui/&quot;})
   public String swaggerUiWelcomePage() {
-<span class="nc" id="L114">    return &quot;redirect:/swagger-ui/index.html&quot;;</span>
+<span class="nc" id="L115">    return &quot;redirect:/swagger-ui/index.html&quot;;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
