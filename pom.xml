@@ -116,7 +116,7 @@ SPDX-License-Identifier: MIT
         <commons-lang3.version>3.14.0</commons-lang3.version>
         <jackson-bom.version>2.16.2</jackson-bom.version>
         <json-path.version>2.9.0</json-path.version>
-        <micrometer.version>1.12.2</micrometer.version>
+        <micrometer.version>1.12.4</micrometer.version>
         <hibernate.version>5.6.15.Final</hibernate.version>
         <!-- GeoTools up to 29.1 uses hsqldb 2.5.2, which has CVE-2022-41853, 29.2 and up provide 2.7.2,
           however spring-boot overrides that in org.springframework.boot:spring-boot-dependencies -->
