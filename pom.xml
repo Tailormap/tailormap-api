@@ -1110,10 +1110,12 @@ SPDX-License-Identifier: MIT
                             <rules>
                                 <!-- see https://maven.apache.org/enforcer/enforcer-rules/index.html -->
                                 <requireMavenVersion>
-                                    <version>3.9</version>
+                                    <version>3.9.5</version>
+                                    <message>Requires Maven 3.9.5 or higher</message>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>${java.version}</version>
+                                    <message>Requires Java ${java.version} or higher</message>
                                 </requireJavaVersion>
                                 <bannedDependencies>
                                     <excludes>
