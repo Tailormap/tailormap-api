@@ -114,7 +114,7 @@ SPDX-License-Identifier: MIT
         to check
         -->
         <commons-lang3.version>3.14.0</commons-lang3.version>
-        <jackson-bom.version>2.16.1</jackson-bom.version>
+        <jackson-bom.version>2.16.2</jackson-bom.version>
         <json-path.version>2.9.0</json-path.version>
         <micrometer.version>1.12.2</micrometer.version>
         <hibernate.version>5.6.15.Final</hibernate.version>
