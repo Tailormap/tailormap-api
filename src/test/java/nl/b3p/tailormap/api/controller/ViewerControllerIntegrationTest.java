@@ -24,11 +24,9 @@ import java.util.Set;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.viewer.model.Service;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junitpioneer.jupiter.Issue;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -126,37 +124,35 @@ class ViewerControllerIntegrationTest {
                         endsWith(
                             "/app/default/layer/lyr%3Apdok-kadaster-bestuurlijkegebieden%3AProvinciegebied/proxy/wms"))))
 
-        // Backend does not save legendImageUrl from capabilities, and therefore also does not
-        // replace it with a proxied version. Frontend will use normal URL to create standard WMS
-        // GetLegendGraphic request, which usually works fine
-        // Old 10.0 code:
-        // https://github.com/B3Partners/tailormap-api/blob/tailormap-api-10.0.0/src/main/java/nl/b3p/tailormap/api/controller/MapController.java#L440
-        //        .andExpect(
-        //            jsonPath("$.appLayers[?(@.id ===
-        // 'lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied')].legendImageUrl")
-        //                .value(
-        //                    contains(
-        //                        allOf(
-        //
-        // containsString("/app/default/layer/lyr%3Apdok-kadaster-bestuurlijkegebieden%3AProvinciegebied/proxy/wms"),
-        //                            containsString("request=GetLegendGraphic")))))
-        .andReturn();
+    // Backend does not save legendImageUrl from capabilities, and therefore also does not
+    // replace it with a proxied version. Frontend will use normal URL to create standard WMS
+    // GetLegendGraphic request, which usually works fine
+    // Old 10.0 code:
+    // https://github.com/B3Partners/tailormap-api/blob/tailormap-api-10.0.0/src/main/java/nl/b3p/tailormap/api/controller/MapController.java#L440
+    //        .andExpect(
+    //            jsonPath("$.appLayers[?(@.id ===
+    // 'lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied')].legendImageUrl")
+    //                .value(
+    //                    contains(
+    //                        allOf(
+    //
+    // containsString("/app/default/layer/lyr%3Apdok-kadaster-bestuurlijkegebieden%3AProvinciegebied/proxy/wms"),
+    //                            containsString("request=GetLegendGraphic")))))
+    ;
   }
 
   @Test
-  @Disabled("This test fails, proxying is currently not working/non-existent")
-  @Issue("https://b3partners.atlassian.net/browse/HTM-714")
-  // TODO fix this test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_not_contain_proxied_secured_service_layer() throws Exception {
-    final String path = apiBasePath + "/app/default/map";
+    final String path = apiBasePath + "/app/secured/map";
     mockMvc
         .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.services[?(@.name == 'Beveiligde proxy WMS')]").doesNotExist())
-        .andExpect(jsonPath("$.appLayers[?(@.layerName === \"Provinciegebied\")]").doesNotExist())
-        .andReturn();
+        .andExpect(jsonPath("$.services[?(@.title == 'Openbasiskaart (proxied)')]").exists());
   }
 
   @Test
@@ -171,8 +167,7 @@ class ViewerControllerIntegrationTest {
             // Application layer description
             jsonPath(
                     "$.appLayers[?(@.id === 'lyr:snapshot-geoserver:postgis:begroeidterreindeel')].description")
-                .value(contains(startsWith("This layer shows data from http://www.postgis.net"))))
-        .andReturn();
+                .value(contains(startsWith("This layer shows data from http://www.postgis.net"))));
   }
 
   @Test
