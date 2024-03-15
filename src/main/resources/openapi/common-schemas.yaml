@@ -46,7 +46,9 @@ components:
         - substituteLayerTilePixelRatioOnly
 
     Bounds:
+      description: 'Bounds without the context of a coordinate reference system'
       type: object
+      x-class-extra-annotation: '@jakarta.persistence.Embeddable'
       properties:
         miny:
           description: 'lower bottom'
