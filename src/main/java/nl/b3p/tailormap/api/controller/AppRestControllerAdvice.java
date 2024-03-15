@@ -70,7 +70,7 @@ public class AppRestControllerAdvice {
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new ErrorResponse()
-                .message(ex.getReason() != null ? ex.getReason() : ex.getMessage())
+                .message(ex.getReason() != null ? ex.getReason() : ex.getBody().getTitle())
                 .code(ex.getStatusCode().value()));
   }
 
