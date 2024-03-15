@@ -113,29 +113,22 @@ SPDX-License-Identifier: MIT
             mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates
         to check
         -->
-        <!--        <commons-lang3.version>3.14.0</commons-lang3.version>-->
-        <!--        <jackson-bom.version>2.16.2</jackson-bom.version>-->
-        <!--        <json-path.version>2.9.0</json-path.version>-->
-        <!--        <micrometer.version>1.12.4</micrometer.version>-->
-        <!--        <hibernate.version>5.6.15.Final</hibernate.version>-->
-        <!-- GeoTools up to 29.1 uses hsqldb 2.5.2, which has CVE-2022-41853, 29.2 and up provide 2.7.2,
-          however spring-boot overrides that in org.springframework.boot:spring-boot-dependencies -->
-        <!--        <hsqldb.version>2.7.2</hsqldb.version>-->
-        <!--        <junit-jupiter.version>5.10.2</junit-jupiter.version>-->
-        <!--        <flyway.version>9.22.3</flyway.version>-->
+        <commons-lang3.version>3.14.0</commons-lang3.version>
+        <jackson-bom.version>2.17.0</jackson-bom.version>
+        <!-- <json-path.version>2.9.0</json-path.version>-->
+        <micrometer.version>1.12.4</micrometer.version>
+        <hibernate.version>6.4.4.Final</hibernate.version>
+        <junit-jupiter.version>5.10.2</junit-jupiter.version>
         <mssql-jdbc.version>12.6.1.jre11</mssql-jdbc.version>
         <oracle-database.version>23.3.0.23.09</oracle-database.version>
-        <postgresql.version>42.7.2</postgresql.version>
-        <!--        <snakeyaml.version>2.0</snakeyaml.version>-->
-        <!--        <spring-security.version>5.8.10</spring-security.version>-->
-        <!--        <spring-hateoas.version>1.5.6</spring-hateoas.version>-->
+        <postgresql.version>42.7.3</postgresql.version>
+        <!-- <snakeyaml.version>2.2</snakeyaml.version>-->
+        <!-- <spring-security.version>6.2.2</spring-security.version>-->
+        <spring-hateoas.version>2.2.1</spring-hateoas.version>
         <okhttp.version>5.0.0-alpha.12</okhttp.version>
-        <!--        <logback.version>1.2.13</logback.version>-->
-        <!-- Don't upgrade these; there are some fixed dependencies on org/slf4j/impl/StaticLoggerBinder
-        <logback.version>1.4.1</logback.version>
-        <slf4j.version>2.0.2</slf4j.version>
-        -->
-        <!--        <webjars-locator-core.version>0.58</webjars-locator-core.version>-->
+        <logback.version>1.5.3</logback.version>
+        <!-- <slf4j.version>2.0.12</slf4j.version>-->
+        <webjars-locator-core.version>0.58</webjars-locator-core.version>
         <maven.surefire.version>3.0.0</maven.surefire.version>
         <maven-surefire-plugin.version>${maven.surefire.version}</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>${maven.surefire.version}</maven-failsafe-plugin.version>
@@ -212,16 +205,14 @@ SPDX-License-Identifier: MIT
         <!--            <artifactId>spring-boot-properties-migrator</artifactId>-->
         <!--            <scope>runtime</scope>-->
         <!--        </dependency>-->
-        <!--  HTM-1051 disable micrometer stats for now      -->
-        <!--        <dependency>-->
-        <!--            <groupId>io.micrometer</groupId>-->
-        <!--            <artifactId>micrometer-registry-prometheus</artifactId>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.hibernate</groupId>-->
-        <!--            <artifactId>hibernate-micrometer</artifactId>-->
-        <!--            <version>${hibernate.version}</version>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-micrometer</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
@@ -419,10 +410,6 @@ SPDX-License-Identifier: MIT
             <artifactId>gt-jdbc-postgis</artifactId>
             <version>${geotools.version}</version>
             <exclusions>
-                <exclusion>
-                    <groupId>postgresql</groupId>
-                    <artifactId>postgresql</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>org.postgresql</groupId>
                     <artifactId>postgresql</artifactId>
@@ -1157,8 +1144,8 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.webjars:webjars-locator-core</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
                                         <exclude>org.springframework.hateoas:spring-hateoas</exclude>
-                                        <!--                                        <exclude>io.micrometer:micrometer-registry-prometheus</exclude>-->
-                                        <!--                                        <exclude>org.hibernate:hibernate-micrometer</exclude>-->
+                                        <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
+                                        <exclude>org.hibernate.orm:hibernate-micrometer</exclude>
                                         <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
                                         <exclude>io.sentry:sentry-spring-boot-starter-jakarta</exclude>
                                         <exclude>p6spy:p6spy:jar</exclude>
@@ -1169,6 +1156,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.junit-pioneer:junit-pioneer</exclude>
                                         <exclude>com.squareup.okhttp3:*</exclude>
                                         <!-- lots of Jackson dependencies -->
+                                        <exclude>com.fasterxml.jackson.core:jackson-databind</exclude>
                                         <exclude>org.flywaydb:flyway-core</exclude>
                                         <exclude>ch.rasc:sse-eventbus</exclude>
                                     </excludes>
