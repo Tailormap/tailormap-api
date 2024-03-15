@@ -9,13 +9,13 @@ import static nl.b3p.tailormap.api.util.HttpProxyUtil.addForwardedForRequestHead
 import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughRequestHeaders;
 import static nl.b3p.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHeader;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 
 public class WFSProxy {
   public static HttpResponse<InputStream> proxyWfsRequest(

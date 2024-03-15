@@ -8,13 +8,13 @@ package nl.b3p.tailormap.api.persistence.helper;
 import static nl.b3p.tailormap.api.util.TMStringUtils.nullIfEmpty;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+import jakarta.persistence.EntityManager;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import javax.persistence.EntityManager;
 import nl.b3p.tailormap.api.controller.GeoServiceProxyController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Configuration;

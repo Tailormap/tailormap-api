@@ -9,6 +9,7 @@ import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getCon
 import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
 
 import io.micrometer.core.annotation.Timed;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
@@ -19,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSLayerDescription;

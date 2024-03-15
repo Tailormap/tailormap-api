@@ -8,6 +8,7 @@ package nl.b3p.tailormap.api.security;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import jakarta.annotation.PostConstruct;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -16,7 +17,6 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.persistence.OIDCConfiguration;
 import nl.b3p.tailormap.api.repository.OIDCConfigurationRepository;
 import org.slf4j.Logger;

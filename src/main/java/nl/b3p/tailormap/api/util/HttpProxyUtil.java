@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.util;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -12,7 +13,6 @@ import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 
 public class HttpProxyUtil {

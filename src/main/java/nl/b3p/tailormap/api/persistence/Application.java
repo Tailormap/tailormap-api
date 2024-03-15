@@ -8,22 +8,22 @@ package nl.b3p.tailormap.api.persistence;
 import static java.util.Objects.requireNonNullElse;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Version;
+import jakarta.validation.constraints.NotNull;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Version;
-import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppI18nSettings;
 import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
@@ -85,27 +85,27 @@ public class Application {
   })
   private Bounds maxExtent;
 
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   @NotNull
   private AppContent contentRoot = new AppContent();
 
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   @NotNull
   private AppSettings settings = new AppSettings();
 
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   @NotNull
   private List<Component> components = new ArrayList<>();
 
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   @NotNull
   private AppStyling styling = new AppStyling();
 
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   @NotNull
   private List<AuthorizationRule> authorizationRules = new ArrayList<>();

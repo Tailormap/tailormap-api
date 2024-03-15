@@ -5,17 +5,17 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PreRemove;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
+import jakarta.validation.constraints.Pattern;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.PreRemove;
-import javax.persistence.Table;
-import javax.persistence.Version;
-import javax.validation.constraints.Pattern;
 import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
 import nl.b3p.tailormap.api.util.Constants;
 
