@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.13</version>
+        <version>3.1.9</version>
     </parent>
     <groupId>nl.b3p.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -206,11 +206,12 @@ SPDX-License-Identifier: MIT
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-properties-migrator</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+        <!-- disabled after 3.0 -> 3.1 migration / HTM-1052 -->
+        <!--      <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-properties-migrator</artifactId>-->
+        <!--            <scope>runtime</scope>-->
+        <!--        </dependency>-->
         <!--  HTM-1051 disable micrometer stats for now      -->
         <!--        <dependency>-->
         <!--            <groupId>io.micrometer</groupId>-->
@@ -239,13 +240,14 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>io.hypersistence</groupId>
-            <artifactId>hypersistence-utils-hibernate-60</artifactId>
+            <artifactId>hypersistence-utils-hibernate-62</artifactId>
             <version>3.7.3</version>
         </dependency>
         <dependency>
             <groupId>io.hypersistence</groupId>
             <artifactId>hypersistence-tsid</artifactId>
-            <!-- this version should match that of hypersistence-utils-hibernate-55 / hypersistence-utils-parent -->
+            <!-- this version should match that of hypersistence-utils-hibernate-62 /
+            hypersistence-utils-parent -->
             <version>2.1.1</version>
         </dependency>
         <dependency>
@@ -1151,7 +1153,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.springframework.boot:spring-boot-starter-oauth2-client</exclude>
                                         <exclude>org.springframework.security:spring-security-test</exclude>
                                         <exclude>org.springframework.boot:spring-boot-properties-migrator</exclude>
-                                        <exclude>io.hypersistence:hypersistence-utils-hibernate-60</exclude>
+                                        <exclude>io.hypersistence:hypersistence-utils-hibernate-62</exclude>
                                         <exclude>org.webjars:webjars-locator-core</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
                                         <exclude>org.springframework.hateoas:spring-hateoas</exclude>

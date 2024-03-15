@@ -8,10 +8,6 @@ package nl.b3p.tailormap.api.security;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.repository.GroupRepository;
 import nl.b3p.tailormap.api.repository.OIDCConfigurationRepository;
@@ -22,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -33,6 +28,11 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
@@ -89,23 +89,16 @@ public class ApiSecurityConfiguration {
     // When OAuth2 authentication succeeds, use the redirect URL stored in the session to send them
     // back.
     AuthenticationSuccessHandler authenticationSuccessHandler =
-        new AuthenticationSuccessHandler() {
-          @Override
-          public void onAuthenticationSuccess(
-              HttpServletRequest request,
-              HttpServletResponse response,
-              Authentication authentication)
-              throws IOException {
-            HttpSession session = request.getSession(false);
-            if (session != null) {
-              String redirectUrl = (String) session.getAttribute("redirectUrl");
-              if (redirectUrl != null) {
-                response.sendRedirect(redirectUrl);
-                return;
-              }
+        (request, response, authentication) -> {
+          HttpSession session = request.getSession(false);
+          if (session != null) {
+            String redirectUrl = (String) session.getAttribute("redirectUrl");
+            if (redirectUrl != null) {
+              response.sendRedirect(redirectUrl);
+              return;
             }
-            response.sendRedirect("/");
           }
+          response.sendRedirect("/");
         };
 
     http.securityMatchers(matchers -> matchers.requestMatchers(apiBasePath + "/**"))
@@ -150,8 +143,7 @@ public class ApiSecurityConfiguration {
         authorities.forEach(
             authority -> {
               mappedAuthorities.add(authority);
-              if (authority instanceof OidcUserAuthority) {
-                OidcUserAuthority oidcUserAuthority = (OidcUserAuthority) authority;
+              if (authority instanceof OidcUserAuthority oidcUserAuthority) {
                 OidcIdToken idToken = oidcUserAuthority.getIdToken();
 
                 List<String> roles = idToken.getClaimAsStringList("roles");
