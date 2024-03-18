@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;

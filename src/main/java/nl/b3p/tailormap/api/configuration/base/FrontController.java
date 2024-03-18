@@ -5,10 +5,10 @@
  */
 package nl.b3p.tailormap.api.configuration.base;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
-import javax.servlet.http.HttpServletRequest;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
@@ -110,6 +110,7 @@ public class FrontController {
     return appIndex(request);
   }
 
+  @SuppressWarnings("SameReturnValue")
   @GetMapping(value = {"/swagger-ui", "/swagger-ui/"})
   public String swaggerUiWelcomePage() {
     return "redirect:/swagger-ui/index.html";

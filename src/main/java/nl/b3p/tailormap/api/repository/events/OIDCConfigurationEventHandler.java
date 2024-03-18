@@ -26,7 +26,7 @@ public class OIDCConfigurationEventHandler {
 
   @HandleBeforeCreate
   @HandleBeforeSave
-  public void handleBeforeCreateOrSave(OIDCConfiguration configuration) throws Exception {
+  public void handleBeforeCreateOrSave(OIDCConfiguration configuration) {
     // If the user provided a "full" OIDC discovery URL, strip it.
     if (configuration.getIssuerUrl().endsWith("/.well-known/openid-configuration")) {
       String issuerUrl = configuration.getIssuerUrl();
@@ -39,7 +39,7 @@ public class OIDCConfigurationEventHandler {
   @HandleAfterCreate
   @HandleAfterSave
   @HandleAfterDelete
-  public void handleAfterCreateOrSaveOrDelete(OIDCConfiguration configuration) throws Exception {
+  public void handleAfterCreateOrSaveOrDelete(OIDCConfiguration configuration) {
     oidcRepository.synchronize();
   }
 }

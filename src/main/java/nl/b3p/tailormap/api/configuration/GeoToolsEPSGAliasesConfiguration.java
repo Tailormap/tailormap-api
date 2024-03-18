@@ -5,12 +5,12 @@
  */
 package nl.b3p.tailormap.api.configuration;
 
+import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
-import javax.annotation.PostConstruct;
 import org.geotools.api.referencing.FactoryException;
 import org.geotools.metadata.iso.citation.Citations;
 import org.geotools.referencing.CRS;

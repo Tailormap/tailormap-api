@@ -14,11 +14,11 @@ import static nl.b3p.tailormap.api.admin.model.ServerSentEvent.EventTypeEnum.ENT
 import ch.rasc.sse.eventbus.SseEvent;
 import ch.rasc.sse.eventbus.SseEventBus;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.PostRemove;
+import jakarta.persistence.PostUpdate;
 import java.lang.invoke.MethodHandles;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PostPersist;
-import javax.persistence.PostRemove;
-import javax.persistence.PostUpdate;
 import nl.b3p.tailormap.api.admin.model.EntityEvent;
 import nl.b3p.tailormap.api.admin.model.ServerSentEvent;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;

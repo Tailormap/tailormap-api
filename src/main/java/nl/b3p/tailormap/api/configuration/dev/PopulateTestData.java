@@ -623,9 +623,10 @@ public class PopulateTestData {
                               "postgis:begroeidterreindeel",
                               new GeoServiceLayerSettings()
                                   .description(
-                                      "This layer shows data from http://www.postgis.net/"
-                                          + "\n\n"
-                                          + "https://postgis.net/logos/postgis-logo.png")
+                                      """
+                                                  This layer shows data from http://www.postgis.net/
+
+                                                  https://postgis.net/logos/postgis-logo.png""")
                                   .featureType(
                                       new FeatureTypeRef()
                                           .featureSourceId(featureSources.get("postgis").getId())
@@ -635,9 +636,10 @@ public class PopulateTestData {
                                   .attribution(
                                       "CC BY 4.0 <a href=\"https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\">BGT/Kadaster</a>")
                                   .description(
-                                      "This layer shows data from [MS SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/spatial/spatial-data-sql-server)."
-                                          + "\n\n"
-                                          + "https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communityserver-components-imagefileviewer/communityserver-wikis-components-files-00-00-00-00-05/1884.SQL_5F00_h_5F00_rgb.png_2D00_550x0.png")
+                                      """
+                                                  This layer shows data from [MS SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/spatial/spatial-data-sql-server).
+
+                                                  https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communityserver-components-imagefileviewer/communityserver-wikis-components-files-00-00-00-00-05/1884.SQL_5F00_h_5F00_rgb.png_2D00_550x0.png""")
                                   .featureType(
                                       new FeatureTypeRef()
                                           .featureSourceId(featureSources.get("sqlserver").getId())

@@ -123,7 +123,7 @@ public class AuthorizationService {
       Optional<AuthorizationRuleDecision> decision =
           isAuthorizedByRules(settings.getAuthorizationRules(), ACCESS_TYPE_READ);
       // If no authorization rules are present, fall back to GeoService authorization.
-      if (decision.isPresent() || settings.getAuthorizationRules().size() > 0) {
+      if (decision.isPresent() || !settings.getAuthorizationRules().isEmpty()) {
         return decision.equals(Optional.of(AuthorizationRuleDecision.ALLOW));
       }
     }

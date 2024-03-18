@@ -6,7 +6,7 @@
 
 package nl.b3p.tailormap.api.controller.admin;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import org.springframework.context.ApplicationContext;

@@ -6,11 +6,14 @@ Use this section to tell people about which versions of your project are
 currently being supported with security updates.
 
 | Version                   | Supported          |
-|---------------------------| ------------------ |
+|---------------------------|--------------------|
 | `main` development branch | :green_check_mark: |
-| 10.0.x                    | :green_check_mark: |
-| ??                        | :x:                |
-
+| 11.3.x                    | :green_check_mark: |
+| 11.2.x                    | :green_check_mark: |
+| 11.1.x                    | :x:                |
+| 11.0.x                    | :x:                |
+| 10.0.x                    | :x:                |
+| < 10.0                    | :x:                |
 
 ## Reporting a Vulnerability
 

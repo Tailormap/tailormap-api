@@ -44,6 +44,8 @@ SPDX-License-Identifier: MIT
     <rule ref="category/java/codestyle.xml/UnnecessaryImport"/>
     <rule ref="category/java/codestyle.xml/UnnecessarySemicolon"/>
     <rule ref="category/java/codestyle.xml/EmptyControlStatement"/>
+    <!-- As of PMD 7.0.0 -->
+    <!-- <rule ref="category/java/codestyle.xml/UnnecessaryBoxing"/>-->
     <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/>
     <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators"/>
     <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues"/>
@@ -73,12 +75,6 @@ SPDX-License-Identifier: MIT
     <rule ref="category/java/multithreading.xml/DoubleCheckedLocking"/>
     <rule ref="category/java/performance.xml/BigIntegerInstantiation"/>
     <rule ref="category/java/performance.xml/StringInstantiation"/>
-    <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation">
-        <!--
-             This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0. The planned replacement is not expected before PMD 7.0.0. In PMD 7 the new rule UnnecessaryBoxing can be used instead.
-             https://pmd.github.io/latest/pmd_rules_java_performance.html#unnecessarywrapperobjectcreation
-        -->
-    </rule>
     <rule name="wildcards" language="java" message="No Wildcard Imports"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>Don't use wildcard imports</description>

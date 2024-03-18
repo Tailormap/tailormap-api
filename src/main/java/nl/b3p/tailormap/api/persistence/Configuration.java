@@ -6,11 +6,11 @@
 package nl.b3p.tailormap.api.persistence;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
-import javax.persistence.Version;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.hibernate.annotations.Type;
 
@@ -28,7 +28,7 @@ public class Configuration {
   @Column(columnDefinition = "text")
   private String value;
 
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   private JsonNode jsonValue;
 

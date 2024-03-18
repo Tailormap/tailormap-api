@@ -6,9 +6,9 @@
 
 package nl.b3p.tailormap.api.configuration.ddl;
 
+import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -8,7 +8,7 @@ package nl.b3p.tailormap.api.persistence.helper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import nl.b3p.tailormap.api.StaticTestData;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.json.Bounds;

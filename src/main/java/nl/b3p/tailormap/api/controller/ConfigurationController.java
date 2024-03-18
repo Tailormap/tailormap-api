@@ -5,6 +5,8 @@
  */
 package nl.b3p.tailormap.api.controller;
 
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
 import java.io.Serializable;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Configuration;
@@ -30,6 +32,8 @@ public class ConfigurationController {
   @GetMapping(
       path = "${tailormap-api.base-path}/config/{key}",
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Timed(value = "get_config_key", description = "Get configuration value")
+  @Counted(value = "get_config_key", description = "Count of get configuration value")
   public ResponseEntity<Serializable> getConfig(@PathVariable String key) {
     Configuration config =
         configurationRepository

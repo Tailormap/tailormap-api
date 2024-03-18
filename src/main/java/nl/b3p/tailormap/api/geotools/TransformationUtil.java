@@ -5,7 +5,7 @@
  */
 package nl.b3p.tailormap.api.geotools;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.Application;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.referencing.FactoryException;

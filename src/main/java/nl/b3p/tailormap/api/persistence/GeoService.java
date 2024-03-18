@@ -7,6 +7,18 @@ package nl.b3p.tailormap.api.persistence;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.hypersistence.tsid.TSID;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Transient;
+import jakarta.persistence.Version;
+import jakarta.validation.constraints.NotNull;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -15,18 +27,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
@@ -85,7 +85,7 @@ public class GeoService {
    * Non-null when authentication is required for this service. Currently, the only authentication
    * method is password (HTTP Basic).
    */
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   private ServiceAuthentication authentication;
 
@@ -118,16 +118,16 @@ public class GeoService {
   @Column(length = 2048)
   private String advertisedUrl;
 
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   private TMServiceCaps serviceCapabilities;
 
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   @NotNull
   private List<AuthorizationRule> authorizationRules = new ArrayList<>();
 
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   @NotNull
   private List<GeoServiceLayer> layers = new ArrayList<>();
@@ -138,7 +138,7 @@ public class GeoService {
    * Settings relevant for Tailormap use cases, such as configuring the specific server type for
    * vendor-specific capabilities etc.
    */
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   @NotNull
   private GeoServiceSettings settings = new GeoServiceSettings();

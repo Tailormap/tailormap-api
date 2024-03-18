@@ -5,13 +5,13 @@
  */
 package nl.b3p.tailormap.api.security;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.repository.GroupRepository;
 import nl.b3p.tailormap.api.repository.OIDCConfigurationRepository;
@@ -22,7 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -65,9 +65,9 @@ public class ApiSecurityConfiguration {
     // Disable CSRF protection for development with HAL explorer
     // https://github.com/spring-projects/spring-data-rest/issues/1347
     if (disableCsrf) {
-      http.csrf().disable();
+      http.csrf(AbstractHttpConfigurer::disable);
     } else {
-      http = http.csrf().csrfTokenRepository(csrfTokenRepository).and();
+      http.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository));
     }
 
     // Before redirecting the user to the OAuth2 authorization endpoint, store the requested
@@ -89,33 +89,27 @@ public class ApiSecurityConfiguration {
     // When OAuth2 authentication succeeds, use the redirect URL stored in the session to send them
     // back.
     AuthenticationSuccessHandler authenticationSuccessHandler =
-        new AuthenticationSuccessHandler() {
-          @Override
-          public void onAuthenticationSuccess(
-              HttpServletRequest request,
-              HttpServletResponse response,
-              Authentication authentication)
-              throws IOException {
-            HttpSession session = request.getSession(false);
-            if (session != null) {
-              String redirectUrl = (String) session.getAttribute("redirectUrl");
-              if (redirectUrl != null) {
-                response.sendRedirect(redirectUrl);
-                return;
-              }
+        (request, response, authentication) -> {
+          HttpSession session = request.getSession(false);
+          if (session != null) {
+            String redirectUrl = (String) session.getAttribute("redirectUrl");
+            if (redirectUrl != null) {
+              response.sendRedirect(redirectUrl);
+              return;
             }
-            response.sendRedirect("/");
           }
+          response.sendRedirect("/");
         };
 
     http.securityMatchers(matchers -> matchers.requestMatchers(apiBasePath + "/**"))
         .authorizeHttpRequests(
             authorize ->
                 authorize.requestMatchers(adminApiBasePath + "/**").hasAuthority(Group.ADMIN))
-        .formLogin()
-        .loginPage(apiBasePath + "/unauthorized")
-        .loginProcessingUrl(apiBasePath + "/login")
-        .and()
+        .formLogin(
+            formLogin ->
+                formLogin
+                    .loginPage(apiBasePath + "/unauthorized")
+                    .loginProcessingUrl(apiBasePath + "/login"))
         .oauth2Login(
             login ->
                 login
@@ -127,11 +121,13 @@ public class ApiSecurityConfiguration {
                     .redirectionEndpoint(
                         endpoint -> endpoint.baseUri(apiBasePath + "/oauth2/callback"))
                     .successHandler(authenticationSuccessHandler))
-        .logout()
-        .logoutUrl(apiBasePath + "/logout")
-        .logoutSuccessHandler(
-            (request, response, authentication) -> response.sendError(HttpStatus.OK.value(), "OK"));
-
+        .logout(
+            logout ->
+                logout
+                    .logoutUrl(apiBasePath + "/logout")
+                    .logoutSuccessHandler(
+                        (request, response, authentication) ->
+                            response.sendError(HttpStatus.OK.value(), "OK")));
     return http.build();
   }
 
@@ -150,8 +146,7 @@ public class ApiSecurityConfiguration {
         authorities.forEach(
             authority -> {
               mappedAuthorities.add(authority);
-              if (authority instanceof OidcUserAuthority) {
-                OidcUserAuthority oidcUserAuthority = (OidcUserAuthority) authority;
+              if (authority instanceof OidcUserAuthority oidcUserAuthority) {
                 OidcIdToken idToken = oidcUserAuthority.getIdToken();
 
                 List<String> roles = idToken.getClaimAsStringList("roles");
@@ -172,6 +167,7 @@ public class ApiSecurityConfiguration {
           mappedAuthorities.add(new SimpleGrantedAuthority(groupName));
         }
       } catch (Exception e) {
+        // Ignore
       }
 
       return mappedAuthorities;

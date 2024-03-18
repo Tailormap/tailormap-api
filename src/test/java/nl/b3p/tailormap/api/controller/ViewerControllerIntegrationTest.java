@@ -210,9 +210,7 @@ class ViewerControllerIntegrationTest {
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @WithMockUser(
-      username = "foo",
-      authorities = {})
+  @WithMockUser(username = "foo")
   void should_allow_showing_secured_application_authenticated() throws Exception {
     final String path = apiBasePath + "/app/secured/map";
     mockMvc

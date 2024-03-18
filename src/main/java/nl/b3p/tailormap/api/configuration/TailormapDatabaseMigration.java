@@ -6,8 +6,8 @@
 
 package nl.b3p.tailormap.api.configuration;
 
+import jakarta.annotation.PostConstruct;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import nl.b3p.tailormap.api.configuration.ddl.FlywayMigrationResult;
 import nl.b3p.tailormap.api.persistence.Catalog;
 import nl.b3p.tailormap.api.persistence.json.CatalogNode;

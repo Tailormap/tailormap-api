@@ -12,6 +12,8 @@ import static nl.b3p.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthentication
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import io.micrometer.core.annotation.Timed;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
@@ -26,7 +28,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
@@ -76,6 +77,7 @@ public class GeoServiceProxyController {
   }
 
   @RequestMapping(method = {GET, POST})
+  @Timed(value = "proxy", description = "Proxy OGC service calls")
   public ResponseEntity<?> proxy(
       @ModelAttribute Application application,
       @ModelAttribute GeoService service,

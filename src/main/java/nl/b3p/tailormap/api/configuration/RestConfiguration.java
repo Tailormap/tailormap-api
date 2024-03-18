@@ -6,8 +6,8 @@
 
 package nl.b3p.tailormap.api.configuration;
 
-import javax.persistence.EntityManager;
-import javax.persistence.metamodel.Type;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.metamodel.Type;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;

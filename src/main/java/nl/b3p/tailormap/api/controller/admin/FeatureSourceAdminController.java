@@ -6,8 +6,8 @@
 
 package nl.b3p.tailormap.api.controller.admin;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.lang.invoke.MethodHandles;
-import javax.servlet.http.HttpServletResponse;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import org.slf4j.Logger;

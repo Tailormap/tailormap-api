@@ -5,7 +5,7 @@
  */
 package nl.b3p.tailormap.api.controller;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
@@ -61,17 +61,17 @@ public class AppRestControllerAdvice {
 
   @ExceptionHandler(ResponseStatusException.class)
   protected ResponseEntity<?> handleResponseStatusException(ResponseStatusException ex) {
-    if (HttpStatus.UNAUTHORIZED.equals(ex.getStatus())) {
-      return ResponseEntity.status(ex.getStatus())
+    if (HttpStatus.UNAUTHORIZED.equals(ex.getStatusCode())) {
+      return ResponseEntity.status(ex.getStatusCode())
           .contentType(MediaType.APPLICATION_JSON)
           .body(new RedirectResponse());
     }
-    return ResponseEntity.status(ex.getStatus())
+    return ResponseEntity.status(ex.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new ErrorResponse()
-                .message(ex.getReason() != null ? ex.getReason() : ex.getStatus().getReasonPhrase())
-                .code(ex.getRawStatusCode()));
+                .message(ex.getReason() != null ? ex.getReason() : ex.getBody().getTitle())
+                .code(ex.getStatusCode().value()));
   }
 
   @ModelAttribute
