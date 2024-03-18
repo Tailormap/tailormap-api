@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -64,9 +65,9 @@ public class ApiSecurityConfiguration {
     // Disable CSRF protection for development with HAL explorer
     // https://github.com/spring-projects/spring-data-rest/issues/1347
     if (disableCsrf) {
-      http.csrf().disable();
+      http.csrf(AbstractHttpConfigurer::disable);
     } else {
-      http = http.csrf().csrfTokenRepository(csrfTokenRepository).and();
+      http.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository));
     }
 
     // Before redirecting the user to the OAuth2 authorization endpoint, store the requested
@@ -104,10 +105,11 @@ public class ApiSecurityConfiguration {
         .authorizeHttpRequests(
             authorize ->
                 authorize.requestMatchers(adminApiBasePath + "/**").hasAuthority(Group.ADMIN))
-        .formLogin()
-        .loginPage(apiBasePath + "/unauthorized")
-        .loginProcessingUrl(apiBasePath + "/login")
-        .and()
+        .formLogin(
+            formLogin ->
+                formLogin
+                    .loginPage(apiBasePath + "/unauthorized")
+                    .loginProcessingUrl(apiBasePath + "/login"))
         .oauth2Login(
             login ->
                 login
@@ -119,11 +121,13 @@ public class ApiSecurityConfiguration {
                     .redirectionEndpoint(
                         endpoint -> endpoint.baseUri(apiBasePath + "/oauth2/callback"))
                     .successHandler(authenticationSuccessHandler))
-        .logout()
-        .logoutUrl(apiBasePath + "/logout")
-        .logoutSuccessHandler(
-            (request, response, authentication) -> response.sendError(HttpStatus.OK.value(), "OK"));
-
+        .logout(
+            logout ->
+                logout
+                    .logoutUrl(apiBasePath + "/logout")
+                    .logoutSuccessHandler(
+                        (request, response, authentication) ->
+                            response.sendError(HttpStatus.OK.value(), "OK")));
     return http.build();
   }
 

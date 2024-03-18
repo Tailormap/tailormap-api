@@ -87,9 +87,7 @@ public class ActuatorSecurityConfiguration {
   @Bean
   public SecurityFilterChain actuatorFilterChain(
       HttpSecurity http, CookieCsrfTokenRepository csrfTokenRepository) throws Exception {
-    http.csrf()
-        .csrfTokenRepository(csrfTokenRepository)
-        .and()
+    http.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository))
         .securityMatcher(basePath + "/**")
         .authorizeHttpRequests(
             authorize ->
