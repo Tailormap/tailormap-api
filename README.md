@@ -114,7 +114,7 @@ When the **default** profile is active tailormap-api behaves as deployed in prod
 database schema is empty tables will be created or the existing schema will be updated if necessary
 by Flyway. When an admin account is missing it is created using a random password which is logged.
 
-See also the comments in the `application-(profile).properties` files in the [resources](src%2Fmain%2Fresources)
+See also the comments in the `application-(profile).properties` files in the [resources](src/main/resources)
 directory.
 
 Other Spring profiles are useful during development:

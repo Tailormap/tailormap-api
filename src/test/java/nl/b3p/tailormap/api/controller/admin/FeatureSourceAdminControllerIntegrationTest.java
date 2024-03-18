@@ -59,24 +59,25 @@ class FeatureSourceAdminControllerIntegrationTest {
 
     String featureSourcePOSTBody =
         String.format(
-            "{\n"
-                + "  \"title\": \"My Test Source\",\n"
-                + "  \"protocol\": \"JDBC\",\n"
-                + "  \"url\": \"\",\n"
-                + "  \"refreshCapabilities\": true,\n"
-                + "  \"jdbcConnection\": {\n"
-                + "    \"dbtype\": \"postgis\",\n"
-                + "    \"port\": %s,\n"
-                + "    \"host\": \"%s\",\n"
-                + "    \"database\": \"%s\",\n"
-                + "    \"schema\": \"public\"\n"
-                + "  },\n"
-                + "  \"authentication\": {\n"
-                + "    \"method\": \"password\",\n"
-                + "    \"username\": \"%s\",\n"
-                + "    \"password\": \"%s\"\n"
-                + "  }\n"
-                + "}",
+            """
+                        {
+                          "title": "My Test Source",
+                          "protocol": "JDBC",
+                          "url": "",
+                          "refreshCapabilities": true,
+                          "jdbcConnection": {
+                            "dbtype": "postgis",
+                            "port": %s,
+                            "host": "%s",
+                            "database": "%s",
+                            "schema": "public"
+                          },
+                          "authentication": {
+                            "method": "password",
+                            "username": "%s",
+                            "password": "%s"
+                          }
+                        }""",
             port, host, database, user, password);
 
     MvcResult result =

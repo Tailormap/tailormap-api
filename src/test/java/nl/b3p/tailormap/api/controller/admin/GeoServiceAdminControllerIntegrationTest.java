@@ -1,15 +1,5 @@
 package nl.b3p.tailormap.api.controller.admin;
 
-import static nl.b3p.tailormap.api.StaticTestData.getResourceString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.JsonPath;
@@ -30,6 +20,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Objects;
+
+import static nl.b3p.tailormap.api.StaticTestData.getResourceString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /*
  * Copyright (C) 2023 B3Partners B.V.
@@ -109,7 +111,8 @@ class GeoServiceAdminControllerIntegrationTest {
           JsonPath.read(result.getResponse().getContentAsString(), "$._links.self.href");
 
       assertEquals(
-          "GetCapabilities", server.takeRequest().getRequestUrl().queryParameter("REQUEST"));
+          "GetCapabilities",
+          Objects.requireNonNull(server.takeRequest().getRequestUrl()).queryParameter("REQUEST"));
 
       // This capabilities document has an extra layer
       body = getResourceString(wmsTestCapabilitiesUpdated);
@@ -124,7 +127,8 @@ class GeoServiceAdminControllerIntegrationTest {
           .andExpect(header().string("Location", equalTo(selfLink)));
 
       assertEquals(
-          "GetCapabilities", server.takeRequest().getRequestUrl().queryParameter("REQUEST"));
+          "GetCapabilities",
+          Objects.requireNonNull(server.takeRequest().getRequestUrl()).queryParameter("REQUEST"));
 
       mockMvc
           .perform(get(selfLink).accept(MediaType.APPLICATION_JSON))
@@ -228,7 +232,7 @@ class GeoServiceAdminControllerIntegrationTest {
                   .value(
                       "Error loading capabilities from URL \""
                           + url
-                          + "\": Exception: code: InvalidParameterValue: locator: service: Example error message"));
+                          + "\": Exception: Error loading WMS capabilities: code: InvalidParameterValue: locator: service: Example error message"));
 
       server.enqueue(
           new MockResponse.Builder()
@@ -247,7 +251,7 @@ class GeoServiceAdminControllerIntegrationTest {
                   .value(
                       "Error loading capabilities from URL \""
                           + url
-                          + "\": Exception: code: SomeCode: locator: somewhere: An example error text."));
+                          + "\": Exception: Error loading WMS capabilities: code: SomeCode: locator: somewhere: An example error text."));
 
       server.shutdown();
     }

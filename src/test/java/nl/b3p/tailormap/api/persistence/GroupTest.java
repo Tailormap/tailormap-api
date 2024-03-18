@@ -47,9 +47,7 @@ class GroupTest {
     Set<ConstraintViolation<Group>> violations = validator.validate(group);
     assertEquals(1, violations.size(), "violations should not be empty");
     violations.forEach(
-        action -> {
-          assertEquals(expectedMessage, action.getMessage(), "unexpected message");
-        });
+        action -> assertEquals(expectedMessage, action.getMessage(), "unexpected message"));
   }
 
   @Test
@@ -59,8 +57,6 @@ class GroupTest {
     Set<ConstraintViolation<Group>> violations = validator.validate(group);
     assertEquals(1, violations.size(), "violations should be empty");
     violations.forEach(
-        action -> {
-          assertEquals(expectedMessage, action.getMessage(), "unexpected message");
-        });
+        action -> assertEquals(expectedMessage, action.getMessage(), "unexpected message"));
   }
 }

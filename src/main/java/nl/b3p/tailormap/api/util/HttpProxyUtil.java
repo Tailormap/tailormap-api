@@ -22,9 +22,8 @@ public class HttpProxyUtil {
       String ip = request.getRemoteAddr();
       InetAddress inetAddress = InetAddress.getByName(ip);
 
-      if (inetAddress instanceof Inet6Address) {
+      if (inetAddress instanceof Inet6Address inet6Address) {
         // https://stackoverflow.com/questions/33168783/
-        Inet6Address inet6Address = (Inet6Address) inetAddress;
         int scopeId = inet6Address.getScopeId();
 
         if (scopeId > 0) {

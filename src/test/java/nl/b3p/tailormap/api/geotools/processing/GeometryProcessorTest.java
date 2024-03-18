@@ -153,6 +153,7 @@ class GeometryProcessorTest extends StaticTestData {
         "json output should match");
 
     p = null;
+    //noinspection ConstantValue
     assertEquals("null", GeometryProcessor.geometryToJson(p), "json output should match");
   }
 

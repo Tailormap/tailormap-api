@@ -9,6 +9,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.constraints.NotNull;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -71,7 +72,7 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
   }
 
   @Override
-  public Iterator<ClientRegistration> iterator() {
+  public @NotNull Iterator<ClientRegistration> iterator() {
     return registrations.values().iterator();
   }
 

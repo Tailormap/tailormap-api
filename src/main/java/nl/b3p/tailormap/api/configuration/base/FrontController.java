@@ -110,6 +110,7 @@ public class FrontController {
     return appIndex(request);
   }
 
+  @SuppressWarnings("SameReturnValue")
   @GetMapping(value = {"/swagger-ui", "/swagger-ui/"})
   public String swaggerUiWelcomePage() {
     return "redirect:/swagger-ui/index.html";

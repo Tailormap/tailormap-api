@@ -27,11 +27,13 @@ services:
     networks:
       - tailormap-data
     healthcheck:
-      test: pg_isready
+      test: su postgres -c pg_isready
       interval: 15s
       timeout: 5s
       retries: 5
+      start_period: 45s
     restart: unless-stopped
+
   postgis:
     container_name: postgis
     image: docker.b3p.nl/b3partners/tailormap-data_postgis:snapshot
