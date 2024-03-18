@@ -13,23 +13,17 @@ on:
 
 jobs:
   build:
-    name: Build w/ Java 11
-    runs-on: windows-2022
+    name: Build w/ Java 17
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: setup-java-Linux-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            setup-java-Linux-maven-
 
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: 'temurin'
+          cache: 'maven'
 
       - name: 'Set up Maven'
         uses: stCarolas/setup-maven@v5
