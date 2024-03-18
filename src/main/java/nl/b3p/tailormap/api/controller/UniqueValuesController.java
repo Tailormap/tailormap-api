@@ -9,6 +9,7 @@ import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getNon
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.io.Serializable;
@@ -81,6 +82,7 @@ public class UniqueValuesController {
   @Timed(
       value = "get_unique_attributes",
       description = "time spent to process get unique attributes call")
+  @Counted(value = "get_unique_attributes", description = "number of unique attributes calls")
   public ResponseEntity<Serializable> getUniqueAttributes(
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,

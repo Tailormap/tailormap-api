@@ -8,6 +8,7 @@ package nl.b3p.tailormap.api.controller;
 import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
 import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
 
+import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.InputStream;
@@ -65,7 +66,7 @@ public class LayerExportController {
 
   @Transactional
   @GetMapping(path = "capabilities")
-  @Timed("export_get_capabilities")
+  @Timed(value = "export_get_capabilities", description = "Get layer export capabilities")
   public ResponseEntity<Serializable> capabilities(
       @ModelAttribute GeoService service, @ModelAttribute GeoServiceLayer layer) throws Exception {
 
@@ -106,6 +107,7 @@ public class LayerExportController {
   @RequestMapping(
       path = "download",
       method = {RequestMethod.GET, RequestMethod.POST})
+  @Counted(value = "export_download", description = "Count of layer downloads")
   public ResponseEntity<?> download(
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,

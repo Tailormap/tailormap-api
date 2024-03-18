@@ -6,6 +6,8 @@
 
 package nl.b3p.tailormap.api.controller;
 
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Configuration;
@@ -40,6 +42,8 @@ public class ViewerController {
   }
 
   @GetMapping(path = "${tailormap-api.base-path}/app")
+  @Timed(value = "get_default_app", description = "Get default app")
+  @Counted(value = "get_default_app", description = "Count of get default app")
   public ViewerResponse defaultApp() {
     String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);
     Application app = applicationRepository.findByName(defaultAppName);
@@ -59,6 +63,8 @@ public class ViewerController {
         "${tailormap-api.base-path}/app/{viewerName}",
         "${tailormap-api.base-path}/service/{viewerName}"
       })
+  @Timed(value = "get_named_app", description = "Get named app")
+  @Counted(value = "get_named_app", description = "Count of get named app")
   public ViewerResponse viewer(
       @ModelAttribute Application app, @ModelAttribute ViewerResponse.KindEnum viewerKind) {
     return app.getViewerResponse().kind(viewerKind);

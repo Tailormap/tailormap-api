@@ -8,6 +8,7 @@ package nl.b3p.tailormap.api.controller;
 import static nl.b3p.tailormap.api.persistence.helper.TMAttributeTypeHelper.isGeometry;
 import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
 
+import io.micrometer.core.annotation.Timed;
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.Set;
@@ -51,6 +52,7 @@ public class LayerDescriptionController {
 
   @Transactional
   @GetMapping
+  @Timed(value = "get_layer_description", description = "Get layer description")
   public ResponseEntity<Serializable> getAppLayerDescription(
       @ModelAttribute Application application,
       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
