@@ -158,6 +158,8 @@ SPDX-License-Identifier: MIT
         <failOnValidation>true</failOnValidation>
         <fmt.action>format</fmt.action>
         <pom.fmt.action>sort</pom.fmt.action>
+        <!-- suppress missing javadoc warnings -->
+        <javadoc.doclint>all,-missing</javadoc.doclint>
         <!-- docker.b3p.nl or alternatively ghcr.io  -->
         <docker.deploy.repo>ghcr.io</docker.deploy.repo>
         <docker.skip>false</docker.skip>
@@ -953,6 +955,7 @@ SPDX-License-Identifier: MIT
                             <failOnWarnings>false</failOnWarnings>
                             <failOnError>${failOnValidation}</failOnError>
                             <skip>${skipJavaDoc}</skip>
+                            <doclint>${javadoc.doclint}</doclint>
                         </configuration>
                     </execution>
                 </executions>
@@ -1326,6 +1329,7 @@ SPDX-License-Identifier: MIT
                     <notimestamp>true</notimestamp>
                     <failOnWarnings>false</failOnWarnings>
                     <failOnError>${failOnValidation}</failOnError>
+                    <doclint>${javadoc.doclint}</doclint>
                 </configuration>
                 <reportSets>
                     <reportSet>
