@@ -64,19 +64,18 @@
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>    <strong class="jxr_keyword">protected</strong> TMFeatureTypeInfo getFeatureTypeInfo(
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>        <a name="TMFeatureType" href="../../../../../../nl/b3p/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> pft, ResourceInfo info, SimpleFeatureSource gtFs) {
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      TMFeatureTypeInfo tmInfo = <strong class="jxr_keyword">super</strong>.getFeatureTypeInfo(pft, info, gtFs);
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">if</strong> (info instanceof FeatureTypeInfo) {
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>        FeatureTypeInfo ftInfo = (FeatureTypeInfo) info;
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>        tmInfo
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>            .schema(info.getSchema())
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>            .wgs84BoundingBox(GeoToolsHelper.fromEnvelope(ftInfo.getWGS84BoundingBox()))
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>            .defaultSrs(ftInfo.getDefaultSRS())
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>            .otherSrs(Set.copyOf(ftInfo.getOtherSRS()))
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>            .outputFormats(ftInfo.getOutputFormats())
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>            .abstractText(ftInfo.getAbstract());
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>      }
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">return</strong> tmInfo;
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>    }
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  }
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">if</strong> (info instanceof FeatureTypeInfo ftInfo) {
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>        tmInfo
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>            .schema(info.getSchema())
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>            .wgs84BoundingBox(GeoToolsHelper.fromEnvelope(ftInfo.getWGS84BoundingBox()))
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>            .defaultSrs(ftInfo.getDefaultSRS())
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>            .otherSrs(Set.copyOf(ftInfo.getOtherSRS()))
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>            .outputFormats(ftInfo.getOutputFormats())
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>            .abstractText(ftInfo.getAbstract());
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      }
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">return</strong> tmInfo;
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>    }
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

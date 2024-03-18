@@ -20,212 +20,214 @@
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.web.bind.annotation.RequestMethod.GET;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.web.bind.annotation.RequestMethod.POST;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> java.io.InputStream;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.net.URI;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.net.http.HttpClient;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.net.http.HttpRequest;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.net.http.HttpResponse;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.nio.charset.StandardCharsets;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.util.AbstractMap;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.util.Arrays;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> java.util.List;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> java.util.Locale;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Collectors;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> javax.servlet.http.HttpServletRequest;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.annotation.AppRestController;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.Application;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.GeoService;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.security.AuthorizationService;
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.springframework.core.io.InputStreamResource;
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.HttpHeaders;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.HttpStatus;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.ResponseEntity;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.springframework.util.LinkedMultiValueMap;
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> org.springframework.util.MultiValueMap;
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> org.springframework.validation.annotation.Validated;
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.ModelAttribute;
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.PathVariable;
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.RequestMapping;
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.server.ResponseStatusException;
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.util.UriComponentsBuilder;
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.util.UriUtils;
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment"> * Proxy controller for OGC WMS and WMTS services. Does not attempt to hide the original service</em>
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment"> * URL. Mostly useful for access to HTTP Basic secured services without sending the credentials to</em>
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment"> * the client. The access control is handled by Spring Security and the authorizations configured on</em>
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment"> * the service.</em>
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;Only supports GET requests. Does not support CORS, only meant for tailormap-viewer from the</em>
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment"> * same origin.</em>
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;Implementation note: uses the Java 11 HttpClient. Spring cloud gateway can proxy with many</em>
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment"> * more features but can not be used in a non-reactive application.</em>
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  @AppRestController
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  @Validated
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_comment">// Can't use ${tailormap-api.base-path} because linkTo() won't work</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>  @RequestMapping(path = <span class="jxr_string">"/api/{viewerKind}/{viewerName}/layer/{appLayerId}/proxy/{protocol}"</span>)
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="GeoServiceProxyController" href="../../../../../nl/b3p/tailormap/api/controller/GeoServiceProxyController.html#GeoServiceProxyController">GeoServiceProxyController</a> {
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="AuthorizationService" href="../../../../../nl/b3p/tailormap/api/security/AuthorizationService.html#AuthorizationService">AuthorizationService</a> authorizationService;
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>    <strong class="jxr_keyword">public</strong> <a name="GeoServiceProxyController" href="../../../../../nl/b3p/tailormap/api/controller/GeoServiceProxyController.html#GeoServiceProxyController">GeoServiceProxyController</a>(<a name="AuthorizationService" href="../../../../../nl/b3p/tailormap/api/security/AuthorizationService.html#AuthorizationService">AuthorizationService</a> authorizationService) {
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>      <strong class="jxr_keyword">this</strong>.authorizationService = authorizationService;
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>    }
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>  
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>    @RequestMapping(method = {GET, POST})
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;?&gt; proxy(
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>        @ModelAttribute <a name="Application" href="../../../../../nl/b3p/tailormap/api/persistence/Application.html#Application">Application</a> application,
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>        @ModelAttribute <a name="GeoService" href="../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service,
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>        @ModelAttribute GeoServiceLayer layer,
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>        @PathVariable(<span class="jxr_string">"protocol"</span>) String protocol,
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>        HttpServletRequest request) {
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">if</strong> (service == <strong class="jxr_keyword">null</strong> || layer == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND);
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>      }
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>  
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">if</strong> (GeoServiceProtocol.XYZ.getValue().equals(protocol)) {
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, <span class="jxr_string">"XYZ proxying not implemented"</span>);
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>      }
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>      <strong class="jxr_keyword">if</strong> (!service.getProtocol().getValue().equals(protocol)) {
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>            HttpStatus.BAD_REQUEST, <span class="jxr_string">"Invalid proxy protocol: "</span> + protocol);
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>      }
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>  
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>      <strong class="jxr_keyword">if</strong> (!service.getSettings().getUseProxy()) {
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>           HttpStatus.FORBIDDEN, <span class="jxr_string">"Proxy not enabled for requested service"</span>);
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>     }
-<a class="jxr_linenumber" name="L103" href="#L103">103</a> 
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>     <strong class="jxr_keyword">if</strong> (service.getAuthentication() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>       <strong class="jxr_keyword">if</strong> (!authorizationService.allowProxyAccess(application, service)) {
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>         logger.warn(
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>             <span class="jxr_string">"App {} (\&quot;{}\&quot;) is using layer \&quot;{}\&quot; from proxied secured service URL {} (username \&quot;{}\&quot;), but app is publicly accessible. Denying proxy, even if user is authenticated."</span>,
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>             application.getId(),
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>             application.getName(),
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>             layer.getName(),
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>             service.getUrl(),
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>             service.getAuthentication().getUsername());
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.FORBIDDEN);
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>       }
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>     }
-<a class="jxr_linenumber" name="L116" href="#L116">116</a> 
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>     <strong class="jxr_keyword">final</strong> UriComponentsBuilder originalServiceUrl =
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>         UriComponentsBuilder.fromHttpUrl(service.getUrl());
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>     <em class="jxr_comment">// request.getParameterMap() includes parameters from an application/x-www-form-urlencoded POST</em>
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <em class="jxr_comment">// body</em>
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>     <strong class="jxr_keyword">final</strong> MultiValueMap&lt;String, String&gt; requestParams =
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>         request.getParameterMap().entrySet().stream()
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>             .map(
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>                 entry -&gt;
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>                     <strong class="jxr_keyword">new</strong> AbstractMap.SimpleEntry&lt;&gt;(
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>                         entry.getKey(),
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>                         Arrays.stream(entry.getValue())
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>                             .map(value -&gt; UriUtils.encode(value, StandardCharsets.UTF_8))
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>                             .collect(Collectors.toList())))
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>             .collect(
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>                 Collectors.toMap(
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>                     Map.Entry::getKey, Map.Entry::getValue, (x, y) -&gt; y, LinkedMultiValueMap::<strong class="jxr_keyword">new</strong>));
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>     <strong class="jxr_keyword">final</strong> MultiValueMap&lt;String, String&gt; params =
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>         buildOgcProxyRequestParams(originalServiceUrl.build(<strong class="jxr_keyword">true</strong>).getQueryParams(), requestParams);
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>     originalServiceUrl.replaceQueryParams(params);
-<a class="jxr_linenumber" name="L136" href="#L136">136</a> 
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>     <strong class="jxr_keyword">return</strong> doProxy(originalServiceUrl.build(<strong class="jxr_keyword">true</strong>).toUri(), service, request);
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>   }
-<a class="jxr_linenumber" name="L139" href="#L139">139</a> 
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> MultiValueMap&lt;String, String&gt; buildOgcProxyRequestParams(
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>       MultiValueMap&lt;String, String&gt; originalServiceParams,
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>       MultiValueMap&lt;String, String&gt; requestParams) {
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>     <em class="jxr_comment">// Start with all the parameters from the request</em>
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>     <strong class="jxr_keyword">final</strong> MultiValueMap&lt;String, String&gt; params = <strong class="jxr_keyword">new</strong> LinkedMultiValueMap&lt;&gt;(requestParams);
-<a class="jxr_linenumber" name="L145" href="#L145">145</a> 
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>     <em class="jxr_comment">// Add original service URL parameters if they are not required OGC params (case-insensitive)</em>
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>     <em class="jxr_comment">// and not already set by request</em>
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>     <strong class="jxr_keyword">final</strong> List&lt;String&gt; ogcParams = List.of(<strong class="jxr_keyword">new</strong> String[] {<span class="jxr_string">"SERVICE"</span>, <span class="jxr_string">"REQUEST"</span>, <span class="jxr_string">"VERSION"</span>});
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>     <strong class="jxr_keyword">for</strong> (Map.Entry&lt;String, List&lt;String&gt;&gt; serviceParam : originalServiceParams.entrySet()) {
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>       <strong class="jxr_keyword">if</strong> (!params.containsKey(serviceParam.getKey())
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>           &amp;&amp; !ogcParams.contains(serviceParam.getKey().toUpperCase(Locale.ROOT))) {
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>         params.put(serviceParam.getKey(), serviceParam.getValue());
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>       }
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>     }
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>     <strong class="jxr_keyword">return</strong> params;
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>   }
-<a class="jxr_linenumber" name="L157" href="#L157">157</a> 
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> ResponseEntity&lt;?&gt; doProxy(
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>       URI uri, <a name="GeoService" href="../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, HttpServletRequest request) {
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>     <strong class="jxr_keyword">final</strong> HttpClient.Builder builder =
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>         HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>     <strong class="jxr_keyword">final</strong> HttpClient httpClient = builder.build();
-<a class="jxr_linenumber" name="L163" href="#L163">163</a> 
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>     HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(uri);
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> io.micrometer.core.annotation.Timed;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> jakarta.servlet.http.HttpServletRequest;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.io.InputStream;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.net.URI;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.net.http.HttpClient;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.net.http.HttpRequest;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.net.http.HttpResponse;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.nio.charset.StandardCharsets;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> java.util.AbstractMap;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> java.util.Arrays;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> java.util.Locale;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Collectors;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.annotation.AppRestController;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.Application;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.GeoService;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.security.AuthorizationService;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.springframework.core.io.InputStreamResource;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.HttpHeaders;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.HttpStatus;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.ResponseEntity;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> org.springframework.util.LinkedMultiValueMap;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> org.springframework.util.MultiValueMap;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> org.springframework.validation.annotation.Validated;
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.ModelAttribute;
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.PathVariable;
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.RequestMapping;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.server.ResponseStatusException;
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.util.UriComponentsBuilder;
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.util.UriUtils;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment"> * Proxy controller for OGC WMS and WMTS services. Does not attempt to hide the original service</em>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment"> * URL. Mostly useful for access to HTTP Basic secured services without sending the credentials to</em>
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment"> * the client. The access control is handled by Spring Security and the authorizations configured on</em>
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment"> * the service.</em>
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;Only supports GET requests. Does not support CORS, only meant for tailormap-viewer from the</em>
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment"> * same origin.</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;Implementation note: uses the Java 11 HttpClient. Spring cloud gateway can proxy with many</em>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment"> * more features but can not be used in a non-reactive application.</em>
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  @AppRestController
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>  @Validated
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_comment">// Can't use ${tailormap-api.base-path} because linkTo() won't work</em>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  @RequestMapping(path = <span class="jxr_string">"/api/{viewerKind}/{viewerName}/layer/{appLayerId}/proxy/{protocol}"</span>)
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="GeoServiceProxyController" href="../../../../../nl/b3p/tailormap/api/controller/GeoServiceProxyController.html#GeoServiceProxyController">GeoServiceProxyController</a> {
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="AuthorizationService" href="../../../../../nl/b3p/tailormap/api/security/AuthorizationService.html#AuthorizationService">AuthorizationService</a> authorizationService;
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>    <strong class="jxr_keyword">public</strong> <a name="GeoServiceProxyController" href="../../../../../nl/b3p/tailormap/api/controller/GeoServiceProxyController.html#GeoServiceProxyController">GeoServiceProxyController</a>(<a name="AuthorizationService" href="../../../../../nl/b3p/tailormap/api/security/AuthorizationService.html#AuthorizationService">AuthorizationService</a> authorizationService) {
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>      <strong class="jxr_keyword">this</strong>.authorizationService = authorizationService;
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>    }
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>    @RequestMapping(method = {GET, POST})
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>    @Timed(value = <span class="jxr_string">"proxy"</span>, description = <span class="jxr_string">"Proxy OGC service calls"</span>)
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;?&gt; proxy(
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>        @ModelAttribute <a name="Application" href="../../../../../nl/b3p/tailormap/api/persistence/Application.html#Application">Application</a> application,
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>        @ModelAttribute <a name="GeoService" href="../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service,
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>        @ModelAttribute GeoServiceLayer layer,
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>        @PathVariable(<span class="jxr_string">"protocol"</span>) String protocol,
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>        HttpServletRequest request) {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>      <strong class="jxr_keyword">if</strong> (service == <strong class="jxr_keyword">null</strong> || layer == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND);
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      }
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>  
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">if</strong> (GeoServiceProtocol.XYZ.getValue().equals(protocol)) {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, <span class="jxr_string">"XYZ proxying not implemented"</span>);
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>      }
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>      <strong class="jxr_keyword">if</strong> (!service.getProtocol().getValue().equals(protocol)) {
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>            HttpStatus.BAD_REQUEST, <span class="jxr_string">"Invalid proxy protocol: "</span> + protocol);
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>      }
+<a class="jxr_linenumber" name="L100" href="#L100">100</a> 
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>     <strong class="jxr_keyword">if</strong> (!service.getSettings().getUseProxy()) {
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>           HttpStatus.FORBIDDEN, <span class="jxr_string">"Proxy not enabled for requested service"</span>);
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>     }
+<a class="jxr_linenumber" name="L105" href="#L105">105</a> 
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>     <strong class="jxr_keyword">if</strong> (service.getAuthentication() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>       <strong class="jxr_keyword">if</strong> (!authorizationService.allowProxyAccess(application, service)) {
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>         logger.warn(
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>             <span class="jxr_string">"App {} (\&quot;{}\&quot;) is using layer \&quot;{}\&quot; from proxied secured service URL {} (username \&quot;{}\&quot;), but app is publicly accessible. Denying proxy, even if user is authenticated."</span>,
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>             application.getId(),
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>             application.getName(),
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>             layer.getName(),
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>             service.getUrl(),
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>             service.getAuthentication().getUsername());
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.FORBIDDEN);
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>       }
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>     }
+<a class="jxr_linenumber" name="L118" href="#L118">118</a> 
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>     <strong class="jxr_keyword">final</strong> UriComponentsBuilder originalServiceUrl =
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>         UriComponentsBuilder.fromHttpUrl(service.getUrl());
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>     <em class="jxr_comment">// request.getParameterMap() includes parameters from an application/x-www-form-urlencoded POST</em>
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>     <em class="jxr_comment">// body</em>
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>     <strong class="jxr_keyword">final</strong> MultiValueMap&lt;String, String&gt; requestParams =
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>         request.getParameterMap().entrySet().stream()
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>             .map(
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>                 entry -&gt;
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>                     <strong class="jxr_keyword">new</strong> AbstractMap.SimpleEntry&lt;&gt;(
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>                         entry.getKey(),
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>                         Arrays.stream(entry.getValue())
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>                             .map(value -&gt; UriUtils.encode(value, StandardCharsets.UTF_8))
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>                             .collect(Collectors.toList())))
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>             .collect(
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>                 Collectors.toMap(
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>                     Map.Entry::getKey, Map.Entry::getValue, (x, y) -&gt; y, LinkedMultiValueMap::<strong class="jxr_keyword">new</strong>));
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>     <strong class="jxr_keyword">final</strong> MultiValueMap&lt;String, String&gt; params =
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>         buildOgcProxyRequestParams(originalServiceUrl.build(<strong class="jxr_keyword">true</strong>).getQueryParams(), requestParams);
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>     originalServiceUrl.replaceQueryParams(params);
+<a class="jxr_linenumber" name="L138" href="#L138">138</a> 
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>     <strong class="jxr_keyword">return</strong> doProxy(originalServiceUrl.build(<strong class="jxr_keyword">true</strong>).toUri(), service, request);
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>   }
+<a class="jxr_linenumber" name="L141" href="#L141">141</a> 
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> MultiValueMap&lt;String, String&gt; buildOgcProxyRequestParams(
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>       MultiValueMap&lt;String, String&gt; originalServiceParams,
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>       MultiValueMap&lt;String, String&gt; requestParams) {
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>     <em class="jxr_comment">// Start with all the parameters from the request</em>
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>     <strong class="jxr_keyword">final</strong> MultiValueMap&lt;String, String&gt; params = <strong class="jxr_keyword">new</strong> LinkedMultiValueMap&lt;&gt;(requestParams);
+<a class="jxr_linenumber" name="L147" href="#L147">147</a> 
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>     <em class="jxr_comment">// Add original service URL parameters if they are not required OGC params (case-insensitive)</em>
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>     <em class="jxr_comment">// and not already set by request</em>
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>     <strong class="jxr_keyword">final</strong> List&lt;String&gt; ogcParams = List.of(<strong class="jxr_keyword">new</strong> String[] {<span class="jxr_string">"SERVICE"</span>, <span class="jxr_string">"REQUEST"</span>, <span class="jxr_string">"VERSION"</span>});
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>     <strong class="jxr_keyword">for</strong> (Map.Entry&lt;String, List&lt;String&gt;&gt; serviceParam : originalServiceParams.entrySet()) {
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>       <strong class="jxr_keyword">if</strong> (!params.containsKey(serviceParam.getKey())
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>           &amp;&amp; !ogcParams.contains(serviceParam.getKey().toUpperCase(Locale.ROOT))) {
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>         params.put(serviceParam.getKey(), serviceParam.getValue());
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>       }
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>     }
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>     <strong class="jxr_keyword">return</strong> params;
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>   }
+<a class="jxr_linenumber" name="L159" href="#L159">159</a> 
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> ResponseEntity&lt;?&gt; doProxy(
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>       URI uri, <a name="GeoService" href="../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, HttpServletRequest request) {
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>     <strong class="jxr_keyword">final</strong> HttpClient.Builder builder =
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>         HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>     <strong class="jxr_keyword">final</strong> HttpClient httpClient = builder.build();
 <a class="jxr_linenumber" name="L165" href="#L165">165</a> 
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>     addForwardedForRequestHeaders(requestBuilder, request);
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>     HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(uri);
 <a class="jxr_linenumber" name="L167" href="#L167">167</a> 
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>     passthroughRequestHeaders(
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>         requestBuilder,
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>         request,
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>         Set.of(
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>             <span class="jxr_string">"Accept"</span>,
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>             <span class="jxr_string">"If-Modified-Since"</span>,
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>             <span class="jxr_string">"If-Unmodified-Since"</span>,
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>             <span class="jxr_string">"If-Match"</span>,
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>             <span class="jxr_string">"If-None-Match"</span>,
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>             <span class="jxr_string">"If-Range"</span>,
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>             <span class="jxr_string">"Range"</span>,
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>             <span class="jxr_string">"Referer"</span>,
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>             <span class="jxr_string">"User-Agent"</span>));
-<a class="jxr_linenumber" name="L181" href="#L181">181</a> 
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>     <strong class="jxr_keyword">if</strong> (service.getAuthentication() != <strong class="jxr_keyword">null</strong>
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>         &amp;&amp; service.getAuthentication().getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>       setHttpBasicAuthenticationHeader(
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>           requestBuilder,
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>           service.getAuthentication().getUsername(),
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>           service.getAuthentication().getPassword());
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>     }
-<a class="jxr_linenumber" name="L189" href="#L189">189</a> 
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>       <em class="jxr_comment">// TODO: close JPA connection before proxying</em>
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>       HttpResponse&lt;InputStream&gt; response =
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>           httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
-<a class="jxr_linenumber" name="L194" href="#L194">194</a> 
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>       <em class="jxr_comment">// If the server does not accept our credentials it might 'hide' the layer or even send a 401</em>
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>       <em class="jxr_comment">// Unauthorized status. We do not send the WWW-Authenticate header back, so the client will</em>
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>       <em class="jxr_comment">// get the error but not an authorization popup.</em>
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>       <em class="jxr_comment">// It would be nice if proxy (auth) errors were logged and available in the admin interface.</em>
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>       <em class="jxr_comment">// Currently, a layer will just stop working if the geo service credentials are changed</em>
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>       <em class="jxr_comment">// without updating them in the geo service registry.</em>
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>       InputStreamResource body = <strong class="jxr_keyword">new</strong> InputStreamResource(response.body());
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>       HttpHeaders headers =
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>           passthroughResponseHeaders(
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>               response.headers(),
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>               Set.of(
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>                   <span class="jxr_string">"Content-Type"</span>,
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>                   <span class="jxr_string">"Content-Length"</span>,
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>                   <span class="jxr_string">"Content-Range"</span>,
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>                   <span class="jxr_string">"Content-Disposition"</span>,
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>                   <span class="jxr_string">"Cache-Control"</span>,
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>                   <span class="jxr_string">"Expires"</span>,
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>                   <span class="jxr_string">"Last-Modified"</span>,
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>                   <span class="jxr_string">"ETag"</span>,
-<a class="jxr_linenumber" name="L214" href="#L214">214</a>                   <span class="jxr_string">"Pragma"</span>));
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.status(response.statusCode()).headers(headers).body(body);
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>     } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L217" href="#L217">217</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(<span class="jxr_string">"Bad Gateway"</span>);
-<a class="jxr_linenumber" name="L218" href="#L218">218</a>     }
-<a class="jxr_linenumber" name="L219" href="#L219">219</a>   }
-<a class="jxr_linenumber" name="L220" href="#L220">220</a> }
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>     addForwardedForRequestHeaders(requestBuilder, request);
+<a class="jxr_linenumber" name="L169" href="#L169">169</a> 
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>     passthroughRequestHeaders(
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>         requestBuilder,
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>         request,
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>         Set.of(
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>             <span class="jxr_string">"Accept"</span>,
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>             <span class="jxr_string">"If-Modified-Since"</span>,
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>             <span class="jxr_string">"If-Unmodified-Since"</span>,
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>             <span class="jxr_string">"If-Match"</span>,
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>             <span class="jxr_string">"If-None-Match"</span>,
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>             <span class="jxr_string">"If-Range"</span>,
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>             <span class="jxr_string">"Range"</span>,
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>             <span class="jxr_string">"Referer"</span>,
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>             <span class="jxr_string">"User-Agent"</span>));
+<a class="jxr_linenumber" name="L183" href="#L183">183</a> 
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>     <strong class="jxr_keyword">if</strong> (service.getAuthentication() != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>         &amp;&amp; service.getAuthentication().getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>       setHttpBasicAuthenticationHeader(
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>           requestBuilder,
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>           service.getAuthentication().getUsername(),
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>           service.getAuthentication().getPassword());
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>     }
+<a class="jxr_linenumber" name="L191" href="#L191">191</a> 
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>       <em class="jxr_comment">// TODO: close JPA connection before proxying</em>
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>       HttpResponse&lt;InputStream&gt; response =
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>           httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
+<a class="jxr_linenumber" name="L196" href="#L196">196</a> 
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>       <em class="jxr_comment">// If the server does not accept our credentials it might 'hide' the layer or even send a 401</em>
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>       <em class="jxr_comment">// Unauthorized status. We do not send the WWW-Authenticate header back, so the client will</em>
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>       <em class="jxr_comment">// get the error but not an authorization popup.</em>
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>       <em class="jxr_comment">// It would be nice if proxy (auth) errors were logged and available in the admin interface.</em>
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>       <em class="jxr_comment">// Currently, a layer will just stop working if the geo service credentials are changed</em>
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>       <em class="jxr_comment">// without updating them in the geo service registry.</em>
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>       InputStreamResource body = <strong class="jxr_keyword">new</strong> InputStreamResource(response.body());
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>       HttpHeaders headers =
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>           passthroughResponseHeaders(
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>               response.headers(),
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>               Set.of(
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>                   <span class="jxr_string">"Content-Type"</span>,
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>                   <span class="jxr_string">"Content-Length"</span>,
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>                   <span class="jxr_string">"Content-Range"</span>,
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>                   <span class="jxr_string">"Content-Disposition"</span>,
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>                   <span class="jxr_string">"Cache-Control"</span>,
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>                   <span class="jxr_string">"Expires"</span>,
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>                   <span class="jxr_string">"Last-Modified"</span>,
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>                   <span class="jxr_string">"ETag"</span>,
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>                   <span class="jxr_string">"Pragma"</span>));
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.status(response.statusCode()).headers(headers).body(body);
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>     } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(<span class="jxr_string">"Bad Gateway"</span>);
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>     }
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>   }
+<a class="jxr_linenumber" name="L222" href="#L222">222</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

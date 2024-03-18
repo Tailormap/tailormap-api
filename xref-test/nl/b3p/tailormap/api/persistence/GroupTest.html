@@ -16,10 +16,10 @@
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.jupiter.api.Assertions.assertEquals;
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.jupiter.api.Assertions.assertTrue;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> javax.validation.ConstraintViolation;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> javax.validation.Validation;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> javax.validation.Validator;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> jakarta.validation.ConstraintViolation;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> jakarta.validation.Validation;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> jakarta.validation.Validator;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.BeforeAll;
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  
@@ -55,23 +55,19 @@
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>      Set&lt;ConstraintViolation&lt;Group&gt;&gt; violations = validator.validate(group);
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>      assertEquals(1, violations.size(), <span class="jxr_string">"violations should not be empty"</span>);
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      violations.forEach(
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>          action -&gt; {
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>            assertEquals(expectedMessage, action.getMessage(), <span class="jxr_string">"unexpected message"</span>);
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>          });
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>    }
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>  
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>    @Test
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>    <strong class="jxr_keyword">void</strong> invalid_GroupName() {
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      Group group = <strong class="jxr_keyword">new</strong> Group().setName(<span class="jxr_string">"app Groups"</span>);
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      Set&lt;ConstraintViolation&lt;Group&gt;&gt; violations = validator.validate(group);
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>      assertEquals(1, violations.size(), <span class="jxr_string">"violations should be empty"</span>);
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      violations.forEach(
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>          action -&gt; {
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>            assertEquals(expectedMessage, action.getMessage(), <span class="jxr_string">"unexpected message"</span>);
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>          });
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>    }
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  }
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>          action -&gt; assertEquals(expectedMessage, action.getMessage(), <span class="jxr_string">"unexpected message"</span>));
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>    }
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>    @Test
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">void</strong> invalid_GroupName() {
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      Group group = <strong class="jxr_keyword">new</strong> Group().setName(<span class="jxr_string">"app Groups"</span>);
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      Set&lt;ConstraintViolation&lt;Group&gt;&gt; violations = validator.validate(group);
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      assertEquals(1, violations.size(), <span class="jxr_string">"violations should be empty"</span>);
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      violations.forEach(
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>          action -&gt; assertEquals(expectedMessage, action.getMessage(), <span class="jxr_string">"unexpected message"</span>));
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>    }
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

@@ -13,7 +13,7 @@
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">package</strong> nl.b3p.tailormap.api.controller;
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> javax.servlet.http.HttpServletRequest;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> jakarta.servlet.http.HttpServletRequest;
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.annotation.AppRestController;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.Application;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.GeoService;
@@ -69,17 +69,17 @@
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>  
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>    @ExceptionHandler(ResponseStatusException.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>    <strong class="jxr_keyword">protected</strong> ResponseEntity&lt;?&gt; handleResponseStatusException(ResponseStatusException ex) {
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      <strong class="jxr_keyword">if</strong> (HttpStatus.UNAUTHORIZED.equals(ex.getStatus())) {
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>        <strong class="jxr_keyword">return</strong> ResponseEntity.status(ex.getStatus())
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>      <strong class="jxr_keyword">if</strong> (HttpStatus.UNAUTHORIZED.equals(ex.getStatusCode())) {
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>        <strong class="jxr_keyword">return</strong> ResponseEntity.status(ex.getStatusCode())
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>            .contentType(MediaType.APPLICATION_JSON)
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>            .body(<strong class="jxr_keyword">new</strong> RedirectResponse());
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      }
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">return</strong> ResponseEntity.status(ex.getStatus())
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">return</strong> ResponseEntity.status(ex.getStatusCode())
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          .contentType(MediaType.APPLICATION_JSON)
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          .body(
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>              <strong class="jxr_keyword">new</strong> ErrorResponse()
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  .message(ex.getReason() != <strong class="jxr_keyword">null</strong> ? ex.getReason() : ex.getStatus().getReasonPhrase())
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>                  .code(ex.getRawStatusCode()));
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  .message(ex.getReason() != <strong class="jxr_keyword">null</strong> ? ex.getReason() : ex.getBody().getTitle())
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>                  .code(ex.getStatusCode().value()));
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>    }
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>  
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>    @ModelAttribute

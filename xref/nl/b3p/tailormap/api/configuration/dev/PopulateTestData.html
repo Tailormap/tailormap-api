@@ -631,583 +631,585 @@
 <a class="jxr_linenumber" name="L623" href="#L623">623</a>                               <span class="jxr_string">"postgis:begroeidterreindeel"</span>,
 <a class="jxr_linenumber" name="L624" href="#L624">624</a>                               <strong class="jxr_keyword">new</strong> GeoServiceLayerSettings()
 <a class="jxr_linenumber" name="L625" href="#L625">625</a>                                   .description(
-<a class="jxr_linenumber" name="L626" href="#L626">626</a>                                       <span class="jxr_string">"This layer shows data from http://www.postgis.net/"</span>
-<a class="jxr_linenumber" name="L627" href="#L627">627</a>                                           + <span class="jxr_string">"\n\n"</span>
-<a class="jxr_linenumber" name="L628" href="#L628">628</a>                                           + <span class="jxr_string">"https://postgis.net/logos/postgis-logo.png"</span>)
-<a class="jxr_linenumber" name="L629" href="#L629">629</a>                                   .featureType(
-<a class="jxr_linenumber" name="L630" href="#L630">630</a>                                       <strong class="jxr_keyword">new</strong> FeatureTypeRef()
-<a class="jxr_linenumber" name="L631" href="#L631">631</a>                                           .featureSourceId(featureSources.get(<span class="jxr_string">"postgis"</span>).getId())
-<a class="jxr_linenumber" name="L632" href="#L632">632</a>                                           .featureTypeName(<span class="jxr_string">"begroeidterreindeel"</span>)),
-<a class="jxr_linenumber" name="L633" href="#L633">633</a>                               <span class="jxr_string">"sqlserver:wegdeel"</span>,
-<a class="jxr_linenumber" name="L634" href="#L634">634</a>                               <strong class="jxr_keyword">new</strong> GeoServiceLayerSettings()
-<a class="jxr_linenumber" name="L635" href="#L635">635</a>                                   .attribution(
-<a class="jxr_linenumber" name="L636" href="#L636">636</a>                                       <span class="jxr_string">"CC BY 4.0 &lt;a href=\&quot;https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\&quot;&gt;BGT/Kadaster&lt;/a&gt;"</span>)
-<a class="jxr_linenumber" name="L637" href="#L637">637</a>                                   .description(
-<a class="jxr_linenumber" name="L638" href="#L638">638</a>                                       <span class="jxr_string">"This layer shows data from [MS SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/spatial/spatial-data-sql-server)."</span>
-<a class="jxr_linenumber" name="L639" href="#L639">639</a>                                           + <span class="jxr_string">"\n\n"</span>
-<a class="jxr_linenumber" name="L640" href="#L640">640</a>                                           + <span class="jxr_string">"https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communityserver-components-imagefileviewer/communityserver-wikis-components-files-00-00-00-00-05/1884.SQL_5F00_h_5F00_rgb.png_2D00_550x0.png"</span>)
-<a class="jxr_linenumber" name="L641" href="#L641">641</a>                                   .featureType(
-<a class="jxr_linenumber" name="L642" href="#L642">642</a>                                       <strong class="jxr_keyword">new</strong> FeatureTypeRef()
-<a class="jxr_linenumber" name="L643" href="#L643">643</a>                                           .featureSourceId(featureSources.get(<span class="jxr_string">"sqlserver"</span>).getId())
-<a class="jxr_linenumber" name="L644" href="#L644">644</a>                                           .featureTypeName(<span class="jxr_string">"wegdeel"</span>)),
-<a class="jxr_linenumber" name="L645" href="#L645">645</a>                               <span class="jxr_string">"oracle:WATERDEEL"</span>,
-<a class="jxr_linenumber" name="L646" href="#L646">646</a>                               <strong class="jxr_keyword">new</strong> GeoServiceLayerSettings()
-<a class="jxr_linenumber" name="L647" href="#L647">647</a>                                   .description(<span class="jxr_string">"This layer shows data from Oracle Spatial."</span>)
-<a class="jxr_linenumber" name="L648" href="#L648">648</a>                                   .featureType(
-<a class="jxr_linenumber" name="L649" href="#L649">649</a>                                       <strong class="jxr_keyword">new</strong> FeatureTypeRef()
-<a class="jxr_linenumber" name="L650" href="#L650">650</a>                                           .featureSourceId(featureSources.get(<span class="jxr_string">"oracle"</span>).getId())
-<a class="jxr_linenumber" name="L651" href="#L651">651</a>                                           .featureTypeName(<span class="jxr_string">"WATERDEEL"</span>)),
-<a class="jxr_linenumber" name="L652" href="#L652">652</a>                               <span class="jxr_string">"postgis:osm_polygon"</span>,
-<a class="jxr_linenumber" name="L653" href="#L653">653</a>                               <strong class="jxr_keyword">new</strong> GeoServiceLayerSettings()
-<a class="jxr_linenumber" name="L654" href="#L654">654</a>                                   .description(<span class="jxr_string">"This layer shows OSM data from postgis."</span>)
-<a class="jxr_linenumber" name="L655" href="#L655">655</a>                                   .featureType(
-<a class="jxr_linenumber" name="L656" href="#L656">656</a>                                       <strong class="jxr_keyword">new</strong> FeatureTypeRef()
-<a class="jxr_linenumber" name="L657" href="#L657">657</a>                                           .featureSourceId(
-<a class="jxr_linenumber" name="L658" href="#L658">658</a>                                               featureSources.get(<span class="jxr_string">"postgis_osm"</span>).getId())
-<a class="jxr_linenumber" name="L659" href="#L659">659</a>                                           .featureTypeName(<span class="jxr_string">"osm_polygon"</span>)))));
-<a class="jxr_linenumber" name="L660" href="#L660">660</a>     }
-<a class="jxr_linenumber" name="L661" href="#L661">661</a> 
-<a class="jxr_linenumber" name="L662" href="#L662">662</a>     featureSources.get(<span class="jxr_string">"pdok-kadaster-bestuurlijkegebieden"</span>).getFeatureTypes().stream()
-<a class="jxr_linenumber" name="L663" href="#L663">663</a>         .filter(ft -&gt; ft.getName().equals(<span class="jxr_string">"bestuurlijkegebieden:Provinciegebied"</span>))
-<a class="jxr_linenumber" name="L664" href="#L664">664</a>         .findFirst()
-<a class="jxr_linenumber" name="L665" href="#L665">665</a>         .ifPresent(
-<a class="jxr_linenumber" name="L666" href="#L666">666</a>             ft -&gt; {
-<a class="jxr_linenumber" name="L667" href="#L667">667</a>               ft.getSettings().addHideAttributesItem(<span class="jxr_string">"identificatie"</span>);
-<a class="jxr_linenumber" name="L668" href="#L668">668</a>               ft.getSettings().addHideAttributesItem(<span class="jxr_string">"ligtInLandCode"</span>);
-<a class="jxr_linenumber" name="L669" href="#L669">669</a>               ft.getSettings().addHideAttributesItem(<span class="jxr_string">"ligtInLandNaam"</span>);
-<a class="jxr_linenumber" name="L670" href="#L670">670</a>               ft.getSettings().addHideAttributesItem(<span class="jxr_string">"fuuid"</span>);
-<a class="jxr_linenumber" name="L671" href="#L671">671</a>               ft.getSettings()
-<a class="jxr_linenumber" name="L672" href="#L672">672</a>                   .putAttributeSettingsItem(<span class="jxr_string">"naam"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Naam"</span>));
-<a class="jxr_linenumber" name="L673" href="#L673">673</a>             });
-<a class="jxr_linenumber" name="L674" href="#L674">674</a> 
-<a class="jxr_linenumber" name="L675" href="#L675">675</a>     featureSources.get(<span class="jxr_string">"postgis"</span>).getFeatureTypes().stream()
-<a class="jxr_linenumber" name="L676" href="#L676">676</a>         .filter(ft -&gt; ft.getName().equals(<span class="jxr_string">"begroeidterreindeel"</span>))
-<a class="jxr_linenumber" name="L677" href="#L677">677</a>         .findFirst()
-<a class="jxr_linenumber" name="L678" href="#L678">678</a>         .ifPresent(
-<a class="jxr_linenumber" name="L679" href="#L679">679</a>             ft -&gt; {
-<a class="jxr_linenumber" name="L680" href="#L680">680</a>               ft.getSettings().addHideAttributesItem(<span class="jxr_string">"terminationdate"</span>);
-<a class="jxr_linenumber" name="L681" href="#L681">681</a>               ft.getSettings().addHideAttributesItem(<span class="jxr_string">"geom_kruinlijn"</span>);
-<a class="jxr_linenumber" name="L682" href="#L682">682</a>               ft.getSettings()
-<a class="jxr_linenumber" name="L683" href="#L683">683</a>                   .putAttributeSettingsItem(<span class="jxr_string">"gmlid"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"GML ID"</span>));
+<a class="jxr_linenumber" name="L626" href="#L626">626</a>                                       <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L627" href="#L627">627</a>                                                   This layer shows data from http:<em class="jxr_comment">//www.postgis.net/</em>
+<a class="jxr_linenumber" name="L628" href="#L628">628</a> 
+<a class="jxr_linenumber" name="L629" href="#L629">629</a>                                                   https:<em class="jxr_comment">//postgis.net/logos/postgis-logo.png""")</em>
+<a class="jxr_linenumber" name="L630" href="#L630">630</a>                                   .featureType(
+<a class="jxr_linenumber" name="L631" href="#L631">631</a>                                       <strong class="jxr_keyword">new</strong> FeatureTypeRef()
+<a class="jxr_linenumber" name="L632" href="#L632">632</a>                                           .featureSourceId(featureSources.get(<span class="jxr_string">"postgis"</span>).getId())
+<a class="jxr_linenumber" name="L633" href="#L633">633</a>                                           .featureTypeName(<span class="jxr_string">"begroeidterreindeel"</span>)),
+<a class="jxr_linenumber" name="L634" href="#L634">634</a>                               <span class="jxr_string">"sqlserver:wegdeel"</span>,
+<a class="jxr_linenumber" name="L635" href="#L635">635</a>                               <strong class="jxr_keyword">new</strong> GeoServiceLayerSettings()
+<a class="jxr_linenumber" name="L636" href="#L636">636</a>                                   .attribution(
+<a class="jxr_linenumber" name="L637" href="#L637">637</a>                                       <span class="jxr_string">"CC BY 4.0 &lt;a href=\&quot;https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\&quot;&gt;BGT/Kadaster&lt;/a&gt;"</span>)
+<a class="jxr_linenumber" name="L638" href="#L638">638</a>                                   .description(
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>                                       <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L640" href="#L640">640</a>                                                   This layer shows data from [MS SQL Server](https:<em class="jxr_comment">//learn.microsoft.com/en-us/sql/relational-databases/spatial/spatial-data-sql-server).</em>
+<a class="jxr_linenumber" name="L641" href="#L641">641</a> 
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>                                                   https:<em class="jxr_comment">//social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communityserver-components-imagefileviewer/communityserver-wikis-components-files-00-00-00-00-05/1884.SQL_5F00_h_5F00_rgb.png_2D00_550x0.png""")</em>
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>                                   .featureType(
+<a class="jxr_linenumber" name="L644" href="#L644">644</a>                                       <strong class="jxr_keyword">new</strong> FeatureTypeRef()
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>                                           .featureSourceId(featureSources.get(<span class="jxr_string">"sqlserver"</span>).getId())
+<a class="jxr_linenumber" name="L646" href="#L646">646</a>                                           .featureTypeName(<span class="jxr_string">"wegdeel"</span>)),
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>                               <span class="jxr_string">"oracle:WATERDEEL"</span>,
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>                               <strong class="jxr_keyword">new</strong> GeoServiceLayerSettings()
+<a class="jxr_linenumber" name="L649" href="#L649">649</a>                                   .description(<span class="jxr_string">"This layer shows data from Oracle Spatial."</span>)
+<a class="jxr_linenumber" name="L650" href="#L650">650</a>                                   .featureType(
+<a class="jxr_linenumber" name="L651" href="#L651">651</a>                                       <strong class="jxr_keyword">new</strong> FeatureTypeRef()
+<a class="jxr_linenumber" name="L652" href="#L652">652</a>                                           .featureSourceId(featureSources.get(<span class="jxr_string">"oracle"</span>).getId())
+<a class="jxr_linenumber" name="L653" href="#L653">653</a>                                           .featureTypeName(<span class="jxr_string">"WATERDEEL"</span>)),
+<a class="jxr_linenumber" name="L654" href="#L654">654</a>                               <span class="jxr_string">"postgis:osm_polygon"</span>,
+<a class="jxr_linenumber" name="L655" href="#L655">655</a>                               <strong class="jxr_keyword">new</strong> GeoServiceLayerSettings()
+<a class="jxr_linenumber" name="L656" href="#L656">656</a>                                   .description(<span class="jxr_string">"This layer shows OSM data from postgis."</span>)
+<a class="jxr_linenumber" name="L657" href="#L657">657</a>                                   .featureType(
+<a class="jxr_linenumber" name="L658" href="#L658">658</a>                                       <strong class="jxr_keyword">new</strong> FeatureTypeRef()
+<a class="jxr_linenumber" name="L659" href="#L659">659</a>                                           .featureSourceId(
+<a class="jxr_linenumber" name="L660" href="#L660">660</a>                                               featureSources.get(<span class="jxr_string">"postgis_osm"</span>).getId())
+<a class="jxr_linenumber" name="L661" href="#L661">661</a>                                           .featureTypeName(<span class="jxr_string">"osm_polygon"</span>)))));
+<a class="jxr_linenumber" name="L662" href="#L662">662</a>     }
+<a class="jxr_linenumber" name="L663" href="#L663">663</a> 
+<a class="jxr_linenumber" name="L664" href="#L664">664</a>     featureSources.get(<span class="jxr_string">"pdok-kadaster-bestuurlijkegebieden"</span>).getFeatureTypes().stream()
+<a class="jxr_linenumber" name="L665" href="#L665">665</a>         .filter(ft -&gt; ft.getName().equals(<span class="jxr_string">"bestuurlijkegebieden:Provinciegebied"</span>))
+<a class="jxr_linenumber" name="L666" href="#L666">666</a>         .findFirst()
+<a class="jxr_linenumber" name="L667" href="#L667">667</a>         .ifPresent(
+<a class="jxr_linenumber" name="L668" href="#L668">668</a>             ft -&gt; {
+<a class="jxr_linenumber" name="L669" href="#L669">669</a>               ft.getSettings().addHideAttributesItem(<span class="jxr_string">"identificatie"</span>);
+<a class="jxr_linenumber" name="L670" href="#L670">670</a>               ft.getSettings().addHideAttributesItem(<span class="jxr_string">"ligtInLandCode"</span>);
+<a class="jxr_linenumber" name="L671" href="#L671">671</a>               ft.getSettings().addHideAttributesItem(<span class="jxr_string">"ligtInLandNaam"</span>);
+<a class="jxr_linenumber" name="L672" href="#L672">672</a>               ft.getSettings().addHideAttributesItem(<span class="jxr_string">"fuuid"</span>);
+<a class="jxr_linenumber" name="L673" href="#L673">673</a>               ft.getSettings()
+<a class="jxr_linenumber" name="L674" href="#L674">674</a>                   .putAttributeSettingsItem(<span class="jxr_string">"naam"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Naam"</span>));
+<a class="jxr_linenumber" name="L675" href="#L675">675</a>             });
+<a class="jxr_linenumber" name="L676" href="#L676">676</a> 
+<a class="jxr_linenumber" name="L677" href="#L677">677</a>     featureSources.get(<span class="jxr_string">"postgis"</span>).getFeatureTypes().stream()
+<a class="jxr_linenumber" name="L678" href="#L678">678</a>         .filter(ft -&gt; ft.getName().equals(<span class="jxr_string">"begroeidterreindeel"</span>))
+<a class="jxr_linenumber" name="L679" href="#L679">679</a>         .findFirst()
+<a class="jxr_linenumber" name="L680" href="#L680">680</a>         .ifPresent(
+<a class="jxr_linenumber" name="L681" href="#L681">681</a>             ft -&gt; {
+<a class="jxr_linenumber" name="L682" href="#L682">682</a>               ft.getSettings().addHideAttributesItem(<span class="jxr_string">"terminationdate"</span>);
+<a class="jxr_linenumber" name="L683" href="#L683">683</a>               ft.getSettings().addHideAttributesItem(<span class="jxr_string">"geom_kruinlijn"</span>);
 <a class="jxr_linenumber" name="L684" href="#L684">684</a>               ft.getSettings()
-<a class="jxr_linenumber" name="L685" href="#L685">685</a>                   .putAttributeSettingsItem(
-<a class="jxr_linenumber" name="L686" href="#L686">686</a>                       <span class="jxr_string">"identificatie"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Identificatie"</span>));
-<a class="jxr_linenumber" name="L687" href="#L687">687</a>               ft.getSettings()
-<a class="jxr_linenumber" name="L688" href="#L688">688</a>                   .putAttributeSettingsItem(
-<a class="jxr_linenumber" name="L689" href="#L689">689</a>                       <span class="jxr_string">"tijdstipregistratie"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Registratie"</span>));
-<a class="jxr_linenumber" name="L690" href="#L690">690</a>               ft.getSettings()
-<a class="jxr_linenumber" name="L691" href="#L691">691</a>                   .putAttributeSettingsItem(
-<a class="jxr_linenumber" name="L692" href="#L692">692</a>                       <span class="jxr_string">"eindregistratie"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Eind registratie"</span>));
-<a class="jxr_linenumber" name="L693" href="#L693">693</a>               ft.getSettings()
-<a class="jxr_linenumber" name="L694" href="#L694">694</a>                   .putAttributeSettingsItem(<span class="jxr_string">"class"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Klasse"</span>));
+<a class="jxr_linenumber" name="L685" href="#L685">685</a>                   .putAttributeSettingsItem(<span class="jxr_string">"gmlid"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"GML ID"</span>));
+<a class="jxr_linenumber" name="L686" href="#L686">686</a>               ft.getSettings()
+<a class="jxr_linenumber" name="L687" href="#L687">687</a>                   .putAttributeSettingsItem(
+<a class="jxr_linenumber" name="L688" href="#L688">688</a>                       <span class="jxr_string">"identificatie"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Identificatie"</span>));
+<a class="jxr_linenumber" name="L689" href="#L689">689</a>               ft.getSettings()
+<a class="jxr_linenumber" name="L690" href="#L690">690</a>                   .putAttributeSettingsItem(
+<a class="jxr_linenumber" name="L691" href="#L691">691</a>                       <span class="jxr_string">"tijdstipregistratie"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Registratie"</span>));
+<a class="jxr_linenumber" name="L692" href="#L692">692</a>               ft.getSettings()
+<a class="jxr_linenumber" name="L693" href="#L693">693</a>                   .putAttributeSettingsItem(
+<a class="jxr_linenumber" name="L694" href="#L694">694</a>                       <span class="jxr_string">"eindregistratie"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Eind registratie"</span>));
 <a class="jxr_linenumber" name="L695" href="#L695">695</a>               ft.getSettings()
-<a class="jxr_linenumber" name="L696" href="#L696">696</a>                   .putAttributeSettingsItem(
-<a class="jxr_linenumber" name="L697" href="#L697">697</a>                       <span class="jxr_string">"bronhouder"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Bronhouder"</span>));
-<a class="jxr_linenumber" name="L698" href="#L698">698</a>               ft.getSettings()
-<a class="jxr_linenumber" name="L699" href="#L699">699</a>                   .putAttributeSettingsItem(
-<a class="jxr_linenumber" name="L700" href="#L700">700</a>                       <span class="jxr_string">"inonderzoek"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"In onderzoek"</span>));
-<a class="jxr_linenumber" name="L701" href="#L701">701</a>               ft.getSettings()
-<a class="jxr_linenumber" name="L702" href="#L702">702</a>                   .putAttributeSettingsItem(
-<a class="jxr_linenumber" name="L703" href="#L703">703</a>                       <span class="jxr_string">"relatievehoogteligging"</span>,
-<a class="jxr_linenumber" name="L704" href="#L704">704</a>                       <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Relatieve hoogteligging"</span>));
-<a class="jxr_linenumber" name="L705" href="#L705">705</a>               ft.getSettings()
-<a class="jxr_linenumber" name="L706" href="#L706">706</a>                   .putAttributeSettingsItem(
-<a class="jxr_linenumber" name="L707" href="#L707">707</a>                       <span class="jxr_string">"bgt_status"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"BGT status"</span>));
-<a class="jxr_linenumber" name="L708" href="#L708">708</a>               ft.getSettings()
-<a class="jxr_linenumber" name="L709" href="#L709">709</a>                   .putAttributeSettingsItem(
-<a class="jxr_linenumber" name="L710" href="#L710">710</a>                       <span class="jxr_string">"plus_status"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Plus-status"</span>));
-<a class="jxr_linenumber" name="L711" href="#L711">711</a>               ft.getSettings()
-<a class="jxr_linenumber" name="L712" href="#L712">712</a>                   .putAttributeSettingsItem(
-<a class="jxr_linenumber" name="L713" href="#L713">713</a>                       <span class="jxr_string">"plus_fysiekvoorkomen"</span>,
-<a class="jxr_linenumber" name="L714" href="#L714">714</a>                       <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Plus-fysiek voorkomen"</span>));
-<a class="jxr_linenumber" name="L715" href="#L715">715</a>               ft.getSettings()
-<a class="jxr_linenumber" name="L716" href="#L716">716</a>                   .putAttributeSettingsItem(
-<a class="jxr_linenumber" name="L717" href="#L717">717</a>                       <span class="jxr_string">"begroeidterreindeeloptalud"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Op talud"</span>));
-<a class="jxr_linenumber" name="L718" href="#L718">718</a>               ft.getSettings().addAttributeOrderItem(<span class="jxr_string">"identificatie"</span>);
-<a class="jxr_linenumber" name="L719" href="#L719">719</a>               ft.getSettings().addAttributeOrderItem(<span class="jxr_string">"bronhouder"</span>);
-<a class="jxr_linenumber" name="L720" href="#L720">720</a>               ft.getSettings().addAttributeOrderItem(<span class="jxr_string">"class"</span>);
-<a class="jxr_linenumber" name="L721" href="#L721">721</a>             });
-<a class="jxr_linenumber" name="L722" href="#L722">722</a> 
-<a class="jxr_linenumber" name="L723" href="#L723">723</a>     List&lt;AppTreeNode&gt; baseNodes =
-<a class="jxr_linenumber" name="L724" href="#L724">724</a>         List.of(
-<a class="jxr_linenumber" name="L725" href="#L725">725</a>             <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L726" href="#L726">726</a>                 .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L727" href="#L727">727</a>                 .id(<span class="jxr_string">"lyr:openbasiskaart:osm"</span>)
-<a class="jxr_linenumber" name="L728" href="#L728">728</a>                 .serviceId(<span class="jxr_string">"openbasiskaart"</span>)
-<a class="jxr_linenumber" name="L729" href="#L729">729</a>                 .layerName(<span class="jxr_string">"osm"</span>)
-<a class="jxr_linenumber" name="L730" href="#L730">730</a>                 .visible(<strong class="jxr_keyword">true</strong>),
-<a class="jxr_linenumber" name="L731" href="#L731">731</a>             <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L732" href="#L732">732</a>                 .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L733" href="#L733">733</a>                 .id(<span class="jxr_string">"lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"</span>)
-<a class="jxr_linenumber" name="L734" href="#L734">734</a>                 .serviceId(<span class="jxr_string">"pdok-hwh-luchtfotorgb"</span>)
-<a class="jxr_linenumber" name="L735" href="#L735">735</a>                 .layerName(<span class="jxr_string">"Actueel_orthoHR"</span>)
-<a class="jxr_linenumber" name="L736" href="#L736">736</a>                 .visible(false));
-<a class="jxr_linenumber" name="L737" href="#L737">737</a> 
-<a class="jxr_linenumber" name="L738" href="#L738">738</a>     <a name="Application" href="../../../../../../nl/b3p/tailormap/api/persistence/Application.html#Application">Application</a> app =
-<a class="jxr_linenumber" name="L739" href="#L739">739</a>         <strong class="jxr_keyword">new</strong> <a name="Application" href="../../../../../../nl/b3p/tailormap/api/persistence/Application.html#Application">Application</a>()
-<a class="jxr_linenumber" name="L740" href="#L740">740</a>             .setName(<span class="jxr_string">"default"</span>)
-<a class="jxr_linenumber" name="L741" href="#L741">741</a>             .setTitle(<span class="jxr_string">"Tailormap demo"</span>)
-<a class="jxr_linenumber" name="L742" href="#L742">742</a>             .setCrs(<span class="jxr_string">"EPSG:28992"</span>)
-<a class="jxr_linenumber" name="L743" href="#L743">743</a>             .setAuthorizationRules(rule)
-<a class="jxr_linenumber" name="L744" href="#L744">744</a>             .setComponents(
-<a class="jxr_linenumber" name="L745" href="#L745">745</a>                 List.of(<strong class="jxr_keyword">new</strong> Component().type(<span class="jxr_string">"EDIT"</span>).config(<strong class="jxr_keyword">new</strong> ComponentConfig().enabled(<strong class="jxr_keyword">true</strong>))))
-<a class="jxr_linenumber" name="L746" href="#L746">746</a>             .setContentRoot(
-<a class="jxr_linenumber" name="L747" href="#L747">747</a>                 <strong class="jxr_keyword">new</strong> AppContent()
-<a class="jxr_linenumber" name="L748" href="#L748">748</a>                     .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L749" href="#L749">749</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
-<a class="jxr_linenumber" name="L750" href="#L750">750</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
-<a class="jxr_linenumber" name="L751" href="#L751">751</a>                             .id(<span class="jxr_string">"root-base-layers"</span>)
-<a class="jxr_linenumber" name="L752" href="#L752">752</a>                             .root(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L753" href="#L753">753</a>                             .title(<span class="jxr_string">"Base layers"</span>)
-<a class="jxr_linenumber" name="L754" href="#L754">754</a>                             .childrenIds(
-<a class="jxr_linenumber" name="L755" href="#L755">755</a>                                 List.of(
-<a class="jxr_linenumber" name="L756" href="#L756">756</a>                                     <span class="jxr_string">"lyr:openbasiskaart:osm"</span>,
-<a class="jxr_linenumber" name="L757" href="#L757">757</a>                                     <span class="jxr_string">"lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"</span>,
-<a class="jxr_linenumber" name="L758" href="#L758">758</a>                                     <span class="jxr_string">"lyr:openbasiskaart-proxied:osm"</span>,
-<a class="jxr_linenumber" name="L759" href="#L759">759</a>                                     <span class="jxr_string">"lyr:openbasiskaart-tms:xyz"</span>,
-<a class="jxr_linenumber" name="L760" href="#L760">760</a>                                     <span class="jxr_string">"lyr:b3p-mapproxy-luchtfoto:xyz"</span>)))
-<a class="jxr_linenumber" name="L761" href="#L761">761</a>                     .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L762" href="#L762">762</a>                         <em class="jxr_comment">// This layer from a secured proxied service should not be proxyable in a</em>
-<a class="jxr_linenumber" name="L763" href="#L763">763</a>                         <em class="jxr_comment">// public app, see test_wms_secured_proxy_not_in_public_app() testcase</em>
-<a class="jxr_linenumber" name="L764" href="#L764">764</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L765" href="#L765">765</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L766" href="#L766">766</a>                             .id(<span class="jxr_string">"lyr:openbasiskaart-proxied:osm"</span>)
-<a class="jxr_linenumber" name="L767" href="#L767">767</a>                             .serviceId(<span class="jxr_string">"openbasiskaart-proxied"</span>)
-<a class="jxr_linenumber" name="L768" href="#L768">768</a>                             .layerName(<span class="jxr_string">"osm"</span>)
-<a class="jxr_linenumber" name="L769" href="#L769">769</a>                             .visible(false))
-<a class="jxr_linenumber" name="L770" href="#L770">770</a>                     .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L771" href="#L771">771</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L772" href="#L772">772</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L773" href="#L773">773</a>                             .id(<span class="jxr_string">"lyr:openbasiskaart-tms:xyz"</span>)
-<a class="jxr_linenumber" name="L774" href="#L774">774</a>                             .serviceId(<span class="jxr_string">"openbasiskaart-tms"</span>)
-<a class="jxr_linenumber" name="L775" href="#L775">775</a>                             .layerName(<span class="jxr_string">"xyz"</span>)
-<a class="jxr_linenumber" name="L776" href="#L776">776</a>                             .visible(false))
-<a class="jxr_linenumber" name="L777" href="#L777">777</a>                     .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L778" href="#L778">778</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L779" href="#L779">779</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L780" href="#L780">780</a>                             .id(<span class="jxr_string">"lyr:b3p-mapproxy-luchtfoto:xyz"</span>)
-<a class="jxr_linenumber" name="L781" href="#L781">781</a>                             .serviceId(<span class="jxr_string">"b3p-mapproxy-luchtfoto"</span>)
-<a class="jxr_linenumber" name="L782" href="#L782">782</a>                             .layerName(<span class="jxr_string">"xyz"</span>)
-<a class="jxr_linenumber" name="L783" href="#L783">783</a>                             .visible(false))
-<a class="jxr_linenumber" name="L784" href="#L784">784</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L785" href="#L785">785</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
-<a class="jxr_linenumber" name="L786" href="#L786">786</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
-<a class="jxr_linenumber" name="L787" href="#L787">787</a>                             .id(<span class="jxr_string">"root"</span>)
-<a class="jxr_linenumber" name="L788" href="#L788">788</a>                             .root(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L789" href="#L789">789</a>                             .title(<span class="jxr_string">"Layers"</span>)
-<a class="jxr_linenumber" name="L790" href="#L790">790</a>                             .childrenIds(
-<a class="jxr_linenumber" name="L791" href="#L791">791</a>                                 List.of(
-<a class="jxr_linenumber" name="L792" href="#L792">792</a>                                     <span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied"</span>,
-<a class="jxr_linenumber" name="L793" href="#L793">793</a>                                     <span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied"</span>,
-<a class="jxr_linenumber" name="L794" href="#L794">794</a>                                     <span class="jxr_string">"lyr:snapshot-geoserver:postgis:begroeidterreindeel"</span>,
-<a class="jxr_linenumber" name="L795" href="#L795">795</a>                                     <span class="jxr_string">"lyr:snapshot-geoserver:sqlserver:wegdeel"</span>,
-<a class="jxr_linenumber" name="L796" href="#L796">796</a>                                     <span class="jxr_string">"lyr:snapshot-geoserver:oracle:WATERDEEL"</span>,
-<a class="jxr_linenumber" name="L797" href="#L797">797</a>                                     <span class="jxr_string">"lyr:snapshot-geoserver:BGT"</span>,
-<a class="jxr_linenumber" name="L798" href="#L798">798</a>                                     <span class="jxr_string">"lvl:proxied"</span>,
-<a class="jxr_linenumber" name="L799" href="#L799">799</a>                                     <span class="jxr_string">"lvl:osm"</span>)))
-<a class="jxr_linenumber" name="L800" href="#L800">800</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L801" href="#L801">801</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L802" href="#L802">802</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L803" href="#L803">803</a>                             .id(<span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied"</span>)
-<a class="jxr_linenumber" name="L804" href="#L804">804</a>                             .serviceId(<span class="jxr_string">"pdok-kadaster-bestuurlijkegebieden"</span>)
-<a class="jxr_linenumber" name="L805" href="#L805">805</a>                             .layerName(<span class="jxr_string">"Provinciegebied"</span>)
-<a class="jxr_linenumber" name="L806" href="#L806">806</a>                             .visible(<strong class="jxr_keyword">true</strong>))
-<a class="jxr_linenumber" name="L807" href="#L807">807</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L808" href="#L808">808</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L809" href="#L809">809</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L810" href="#L810">810</a>                             .id(<span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied"</span>)
-<a class="jxr_linenumber" name="L811" href="#L811">811</a>                             .serviceId(<span class="jxr_string">"pdok-kadaster-bestuurlijkegebieden"</span>)
-<a class="jxr_linenumber" name="L812" href="#L812">812</a>                             .layerName(<span class="jxr_string">"Gemeentegebied"</span>)
-<a class="jxr_linenumber" name="L813" href="#L813">813</a>                             .visible(<strong class="jxr_keyword">true</strong>))
-<a class="jxr_linenumber" name="L814" href="#L814">814</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L815" href="#L815">815</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L816" href="#L816">816</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L817" href="#L817">817</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver:postgis:begroeidterreindeel"</span>)
-<a class="jxr_linenumber" name="L818" href="#L818">818</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver"</span>)
-<a class="jxr_linenumber" name="L819" href="#L819">819</a>                             .layerName(<span class="jxr_string">"postgis:begroeidterreindeel"</span>)
-<a class="jxr_linenumber" name="L820" href="#L820">820</a>                             .visible(<strong class="jxr_keyword">true</strong>))
-<a class="jxr_linenumber" name="L821" href="#L821">821</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L822" href="#L822">822</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L823" href="#L823">823</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L824" href="#L824">824</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver:sqlserver:wegdeel"</span>)
-<a class="jxr_linenumber" name="L825" href="#L825">825</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver"</span>)
-<a class="jxr_linenumber" name="L826" href="#L826">826</a>                             .layerName(<span class="jxr_string">"sqlserver:wegdeel"</span>)
-<a class="jxr_linenumber" name="L827" href="#L827">827</a>                             .visible(<strong class="jxr_keyword">true</strong>))
-<a class="jxr_linenumber" name="L828" href="#L828">828</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L829" href="#L829">829</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L830" href="#L830">830</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L831" href="#L831">831</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver:oracle:WATERDEEL"</span>)
-<a class="jxr_linenumber" name="L832" href="#L832">832</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver"</span>)
-<a class="jxr_linenumber" name="L833" href="#L833">833</a>                             .layerName(<span class="jxr_string">"oracle:WATERDEEL"</span>)
-<a class="jxr_linenumber" name="L834" href="#L834">834</a>                             .visible(<strong class="jxr_keyword">true</strong>))
-<a class="jxr_linenumber" name="L835" href="#L835">835</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L836" href="#L836">836</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L837" href="#L837">837</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L838" href="#L838">838</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver:BGT"</span>)
-<a class="jxr_linenumber" name="L839" href="#L839">839</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver"</span>)
-<a class="jxr_linenumber" name="L840" href="#L840">840</a>                             .layerName(<span class="jxr_string">"BGT"</span>)
-<a class="jxr_linenumber" name="L841" href="#L841">841</a>                             .visible(false))
-<a class="jxr_linenumber" name="L842" href="#L842">842</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L843" href="#L843">843</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
-<a class="jxr_linenumber" name="L844" href="#L844">844</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
-<a class="jxr_linenumber" name="L845" href="#L845">845</a>                             .id(<span class="jxr_string">"lvl:proxied"</span>)
-<a class="jxr_linenumber" name="L846" href="#L846">846</a>                             .title(<span class="jxr_string">"Proxied"</span>)
-<a class="jxr_linenumber" name="L847" href="#L847">847</a>                             .childrenIds(
-<a class="jxr_linenumber" name="L848" href="#L848">848</a>                                 List.of(
-<a class="jxr_linenumber" name="L849" href="#L849">849</a>                                     <span class="jxr_string">"lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel"</span>)))
-<a class="jxr_linenumber" name="L850" href="#L850">850</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L851" href="#L851">851</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L852" href="#L852">852</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L853" href="#L853">853</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel"</span>)
-<a class="jxr_linenumber" name="L854" href="#L854">854</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver-proxied"</span>)
-<a class="jxr_linenumber" name="L855" href="#L855">855</a>                             .layerName(<span class="jxr_string">"postgis:begroeidterreindeel"</span>)
-<a class="jxr_linenumber" name="L856" href="#L856">856</a>                             .visible(false))
-<a class="jxr_linenumber" name="L857" href="#L857">857</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L858" href="#L858">858</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
-<a class="jxr_linenumber" name="L859" href="#L859">859</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
-<a class="jxr_linenumber" name="L860" href="#L860">860</a>                             .id(<span class="jxr_string">"lvl:osm"</span>)
-<a class="jxr_linenumber" name="L861" href="#L861">861</a>                             .title(<span class="jxr_string">"OSM"</span>)
-<a class="jxr_linenumber" name="L862" href="#L862">862</a>                             .childrenIds(List.of(<span class="jxr_string">"lyr:snapshot-geoserver:postgis:osm_polygon"</span>)))
-<a class="jxr_linenumber" name="L863" href="#L863">863</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L864" href="#L864">864</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L865" href="#L865">865</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L866" href="#L866">866</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver:postgis:osm_polygon"</span>)
-<a class="jxr_linenumber" name="L867" href="#L867">867</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver"</span>)
-<a class="jxr_linenumber" name="L868" href="#L868">868</a>                             .layerName(<span class="jxr_string">"postgis:osm_polygon"</span>)
-<a class="jxr_linenumber" name="L869" href="#L869">869</a>                             .visible(false)))
-<a class="jxr_linenumber" name="L870" href="#L870">870</a>             .setSettings(
-<a class="jxr_linenumber" name="L871" href="#L871">871</a>                 <strong class="jxr_keyword">new</strong> AppSettings()
-<a class="jxr_linenumber" name="L872" href="#L872">872</a>                     .putLayerSettingsItem(
-<a class="jxr_linenumber" name="L873" href="#L873">873</a>                         <span class="jxr_string">"lyr:openbasiskaart:osm"</span>, <strong class="jxr_keyword">new</strong> AppLayerSettings().title(<span class="jxr_string">"Openbasiskaart"</span>))
+<a class="jxr_linenumber" name="L696" href="#L696">696</a>                   .putAttributeSettingsItem(<span class="jxr_string">"class"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Klasse"</span>));
+<a class="jxr_linenumber" name="L697" href="#L697">697</a>               ft.getSettings()
+<a class="jxr_linenumber" name="L698" href="#L698">698</a>                   .putAttributeSettingsItem(
+<a class="jxr_linenumber" name="L699" href="#L699">699</a>                       <span class="jxr_string">"bronhouder"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Bronhouder"</span>));
+<a class="jxr_linenumber" name="L700" href="#L700">700</a>               ft.getSettings()
+<a class="jxr_linenumber" name="L701" href="#L701">701</a>                   .putAttributeSettingsItem(
+<a class="jxr_linenumber" name="L702" href="#L702">702</a>                       <span class="jxr_string">"inonderzoek"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"In onderzoek"</span>));
+<a class="jxr_linenumber" name="L703" href="#L703">703</a>               ft.getSettings()
+<a class="jxr_linenumber" name="L704" href="#L704">704</a>                   .putAttributeSettingsItem(
+<a class="jxr_linenumber" name="L705" href="#L705">705</a>                       <span class="jxr_string">"relatievehoogteligging"</span>,
+<a class="jxr_linenumber" name="L706" href="#L706">706</a>                       <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Relatieve hoogteligging"</span>));
+<a class="jxr_linenumber" name="L707" href="#L707">707</a>               ft.getSettings()
+<a class="jxr_linenumber" name="L708" href="#L708">708</a>                   .putAttributeSettingsItem(
+<a class="jxr_linenumber" name="L709" href="#L709">709</a>                       <span class="jxr_string">"bgt_status"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"BGT status"</span>));
+<a class="jxr_linenumber" name="L710" href="#L710">710</a>               ft.getSettings()
+<a class="jxr_linenumber" name="L711" href="#L711">711</a>                   .putAttributeSettingsItem(
+<a class="jxr_linenumber" name="L712" href="#L712">712</a>                       <span class="jxr_string">"plus_status"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Plus-status"</span>));
+<a class="jxr_linenumber" name="L713" href="#L713">713</a>               ft.getSettings()
+<a class="jxr_linenumber" name="L714" href="#L714">714</a>                   .putAttributeSettingsItem(
+<a class="jxr_linenumber" name="L715" href="#L715">715</a>                       <span class="jxr_string">"plus_fysiekvoorkomen"</span>,
+<a class="jxr_linenumber" name="L716" href="#L716">716</a>                       <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Plus-fysiek voorkomen"</span>));
+<a class="jxr_linenumber" name="L717" href="#L717">717</a>               ft.getSettings()
+<a class="jxr_linenumber" name="L718" href="#L718">718</a>                   .putAttributeSettingsItem(
+<a class="jxr_linenumber" name="L719" href="#L719">719</a>                       <span class="jxr_string">"begroeidterreindeeloptalud"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"Op talud"</span>));
+<a class="jxr_linenumber" name="L720" href="#L720">720</a>               ft.getSettings().addAttributeOrderItem(<span class="jxr_string">"identificatie"</span>);
+<a class="jxr_linenumber" name="L721" href="#L721">721</a>               ft.getSettings().addAttributeOrderItem(<span class="jxr_string">"bronhouder"</span>);
+<a class="jxr_linenumber" name="L722" href="#L722">722</a>               ft.getSettings().addAttributeOrderItem(<span class="jxr_string">"class"</span>);
+<a class="jxr_linenumber" name="L723" href="#L723">723</a>             });
+<a class="jxr_linenumber" name="L724" href="#L724">724</a> 
+<a class="jxr_linenumber" name="L725" href="#L725">725</a>     List&lt;AppTreeNode&gt; baseNodes =
+<a class="jxr_linenumber" name="L726" href="#L726">726</a>         List.of(
+<a class="jxr_linenumber" name="L727" href="#L727">727</a>             <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L728" href="#L728">728</a>                 .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L729" href="#L729">729</a>                 .id(<span class="jxr_string">"lyr:openbasiskaart:osm"</span>)
+<a class="jxr_linenumber" name="L730" href="#L730">730</a>                 .serviceId(<span class="jxr_string">"openbasiskaart"</span>)
+<a class="jxr_linenumber" name="L731" href="#L731">731</a>                 .layerName(<span class="jxr_string">"osm"</span>)
+<a class="jxr_linenumber" name="L732" href="#L732">732</a>                 .visible(<strong class="jxr_keyword">true</strong>),
+<a class="jxr_linenumber" name="L733" href="#L733">733</a>             <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L734" href="#L734">734</a>                 .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L735" href="#L735">735</a>                 .id(<span class="jxr_string">"lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"</span>)
+<a class="jxr_linenumber" name="L736" href="#L736">736</a>                 .serviceId(<span class="jxr_string">"pdok-hwh-luchtfotorgb"</span>)
+<a class="jxr_linenumber" name="L737" href="#L737">737</a>                 .layerName(<span class="jxr_string">"Actueel_orthoHR"</span>)
+<a class="jxr_linenumber" name="L738" href="#L738">738</a>                 .visible(false));
+<a class="jxr_linenumber" name="L739" href="#L739">739</a> 
+<a class="jxr_linenumber" name="L740" href="#L740">740</a>     <a name="Application" href="../../../../../../nl/b3p/tailormap/api/persistence/Application.html#Application">Application</a> app =
+<a class="jxr_linenumber" name="L741" href="#L741">741</a>         <strong class="jxr_keyword">new</strong> <a name="Application" href="../../../../../../nl/b3p/tailormap/api/persistence/Application.html#Application">Application</a>()
+<a class="jxr_linenumber" name="L742" href="#L742">742</a>             .setName(<span class="jxr_string">"default"</span>)
+<a class="jxr_linenumber" name="L743" href="#L743">743</a>             .setTitle(<span class="jxr_string">"Tailormap demo"</span>)
+<a class="jxr_linenumber" name="L744" href="#L744">744</a>             .setCrs(<span class="jxr_string">"EPSG:28992"</span>)
+<a class="jxr_linenumber" name="L745" href="#L745">745</a>             .setAuthorizationRules(rule)
+<a class="jxr_linenumber" name="L746" href="#L746">746</a>             .setComponents(
+<a class="jxr_linenumber" name="L747" href="#L747">747</a>                 List.of(<strong class="jxr_keyword">new</strong> Component().type(<span class="jxr_string">"EDIT"</span>).config(<strong class="jxr_keyword">new</strong> ComponentConfig().enabled(<strong class="jxr_keyword">true</strong>))))
+<a class="jxr_linenumber" name="L748" href="#L748">748</a>             .setContentRoot(
+<a class="jxr_linenumber" name="L749" href="#L749">749</a>                 <strong class="jxr_keyword">new</strong> AppContent()
+<a class="jxr_linenumber" name="L750" href="#L750">750</a>                     .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L751" href="#L751">751</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
+<a class="jxr_linenumber" name="L752" href="#L752">752</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
+<a class="jxr_linenumber" name="L753" href="#L753">753</a>                             .id(<span class="jxr_string">"root-base-layers"</span>)
+<a class="jxr_linenumber" name="L754" href="#L754">754</a>                             .root(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L755" href="#L755">755</a>                             .title(<span class="jxr_string">"Base layers"</span>)
+<a class="jxr_linenumber" name="L756" href="#L756">756</a>                             .childrenIds(
+<a class="jxr_linenumber" name="L757" href="#L757">757</a>                                 List.of(
+<a class="jxr_linenumber" name="L758" href="#L758">758</a>                                     <span class="jxr_string">"lyr:openbasiskaart:osm"</span>,
+<a class="jxr_linenumber" name="L759" href="#L759">759</a>                                     <span class="jxr_string">"lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"</span>,
+<a class="jxr_linenumber" name="L760" href="#L760">760</a>                                     <span class="jxr_string">"lyr:openbasiskaart-proxied:osm"</span>,
+<a class="jxr_linenumber" name="L761" href="#L761">761</a>                                     <span class="jxr_string">"lyr:openbasiskaart-tms:xyz"</span>,
+<a class="jxr_linenumber" name="L762" href="#L762">762</a>                                     <span class="jxr_string">"lyr:b3p-mapproxy-luchtfoto:xyz"</span>)))
+<a class="jxr_linenumber" name="L763" href="#L763">763</a>                     .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L764" href="#L764">764</a>                         <em class="jxr_comment">// This layer from a secured proxied service should not be proxyable in a</em>
+<a class="jxr_linenumber" name="L765" href="#L765">765</a>                         <em class="jxr_comment">// public app, see test_wms_secured_proxy_not_in_public_app() testcase</em>
+<a class="jxr_linenumber" name="L766" href="#L766">766</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L767" href="#L767">767</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L768" href="#L768">768</a>                             .id(<span class="jxr_string">"lyr:openbasiskaart-proxied:osm"</span>)
+<a class="jxr_linenumber" name="L769" href="#L769">769</a>                             .serviceId(<span class="jxr_string">"openbasiskaart-proxied"</span>)
+<a class="jxr_linenumber" name="L770" href="#L770">770</a>                             .layerName(<span class="jxr_string">"osm"</span>)
+<a class="jxr_linenumber" name="L771" href="#L771">771</a>                             .visible(false))
+<a class="jxr_linenumber" name="L772" href="#L772">772</a>                     .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L773" href="#L773">773</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L774" href="#L774">774</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L775" href="#L775">775</a>                             .id(<span class="jxr_string">"lyr:openbasiskaart-tms:xyz"</span>)
+<a class="jxr_linenumber" name="L776" href="#L776">776</a>                             .serviceId(<span class="jxr_string">"openbasiskaart-tms"</span>)
+<a class="jxr_linenumber" name="L777" href="#L777">777</a>                             .layerName(<span class="jxr_string">"xyz"</span>)
+<a class="jxr_linenumber" name="L778" href="#L778">778</a>                             .visible(false))
+<a class="jxr_linenumber" name="L779" href="#L779">779</a>                     .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L780" href="#L780">780</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L781" href="#L781">781</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L782" href="#L782">782</a>                             .id(<span class="jxr_string">"lyr:b3p-mapproxy-luchtfoto:xyz"</span>)
+<a class="jxr_linenumber" name="L783" href="#L783">783</a>                             .serviceId(<span class="jxr_string">"b3p-mapproxy-luchtfoto"</span>)
+<a class="jxr_linenumber" name="L784" href="#L784">784</a>                             .layerName(<span class="jxr_string">"xyz"</span>)
+<a class="jxr_linenumber" name="L785" href="#L785">785</a>                             .visible(false))
+<a class="jxr_linenumber" name="L786" href="#L786">786</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L787" href="#L787">787</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
+<a class="jxr_linenumber" name="L788" href="#L788">788</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
+<a class="jxr_linenumber" name="L789" href="#L789">789</a>                             .id(<span class="jxr_string">"root"</span>)
+<a class="jxr_linenumber" name="L790" href="#L790">790</a>                             .root(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L791" href="#L791">791</a>                             .title(<span class="jxr_string">"Layers"</span>)
+<a class="jxr_linenumber" name="L792" href="#L792">792</a>                             .childrenIds(
+<a class="jxr_linenumber" name="L793" href="#L793">793</a>                                 List.of(
+<a class="jxr_linenumber" name="L794" href="#L794">794</a>                                     <span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied"</span>,
+<a class="jxr_linenumber" name="L795" href="#L795">795</a>                                     <span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied"</span>,
+<a class="jxr_linenumber" name="L796" href="#L796">796</a>                                     <span class="jxr_string">"lyr:snapshot-geoserver:postgis:begroeidterreindeel"</span>,
+<a class="jxr_linenumber" name="L797" href="#L797">797</a>                                     <span class="jxr_string">"lyr:snapshot-geoserver:sqlserver:wegdeel"</span>,
+<a class="jxr_linenumber" name="L798" href="#L798">798</a>                                     <span class="jxr_string">"lyr:snapshot-geoserver:oracle:WATERDEEL"</span>,
+<a class="jxr_linenumber" name="L799" href="#L799">799</a>                                     <span class="jxr_string">"lyr:snapshot-geoserver:BGT"</span>,
+<a class="jxr_linenumber" name="L800" href="#L800">800</a>                                     <span class="jxr_string">"lvl:proxied"</span>,
+<a class="jxr_linenumber" name="L801" href="#L801">801</a>                                     <span class="jxr_string">"lvl:osm"</span>)))
+<a class="jxr_linenumber" name="L802" href="#L802">802</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L803" href="#L803">803</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L804" href="#L804">804</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L805" href="#L805">805</a>                             .id(<span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied"</span>)
+<a class="jxr_linenumber" name="L806" href="#L806">806</a>                             .serviceId(<span class="jxr_string">"pdok-kadaster-bestuurlijkegebieden"</span>)
+<a class="jxr_linenumber" name="L807" href="#L807">807</a>                             .layerName(<span class="jxr_string">"Provinciegebied"</span>)
+<a class="jxr_linenumber" name="L808" href="#L808">808</a>                             .visible(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L809" href="#L809">809</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L810" href="#L810">810</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L811" href="#L811">811</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L812" href="#L812">812</a>                             .id(<span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied"</span>)
+<a class="jxr_linenumber" name="L813" href="#L813">813</a>                             .serviceId(<span class="jxr_string">"pdok-kadaster-bestuurlijkegebieden"</span>)
+<a class="jxr_linenumber" name="L814" href="#L814">814</a>                             .layerName(<span class="jxr_string">"Gemeentegebied"</span>)
+<a class="jxr_linenumber" name="L815" href="#L815">815</a>                             .visible(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L816" href="#L816">816</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L817" href="#L817">817</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L818" href="#L818">818</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L819" href="#L819">819</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver:postgis:begroeidterreindeel"</span>)
+<a class="jxr_linenumber" name="L820" href="#L820">820</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver"</span>)
+<a class="jxr_linenumber" name="L821" href="#L821">821</a>                             .layerName(<span class="jxr_string">"postgis:begroeidterreindeel"</span>)
+<a class="jxr_linenumber" name="L822" href="#L822">822</a>                             .visible(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L823" href="#L823">823</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L824" href="#L824">824</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L825" href="#L825">825</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L826" href="#L826">826</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver:sqlserver:wegdeel"</span>)
+<a class="jxr_linenumber" name="L827" href="#L827">827</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver"</span>)
+<a class="jxr_linenumber" name="L828" href="#L828">828</a>                             .layerName(<span class="jxr_string">"sqlserver:wegdeel"</span>)
+<a class="jxr_linenumber" name="L829" href="#L829">829</a>                             .visible(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L830" href="#L830">830</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L831" href="#L831">831</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L832" href="#L832">832</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L833" href="#L833">833</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver:oracle:WATERDEEL"</span>)
+<a class="jxr_linenumber" name="L834" href="#L834">834</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver"</span>)
+<a class="jxr_linenumber" name="L835" href="#L835">835</a>                             .layerName(<span class="jxr_string">"oracle:WATERDEEL"</span>)
+<a class="jxr_linenumber" name="L836" href="#L836">836</a>                             .visible(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L837" href="#L837">837</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L838" href="#L838">838</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L839" href="#L839">839</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L840" href="#L840">840</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver:BGT"</span>)
+<a class="jxr_linenumber" name="L841" href="#L841">841</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver"</span>)
+<a class="jxr_linenumber" name="L842" href="#L842">842</a>                             .layerName(<span class="jxr_string">"BGT"</span>)
+<a class="jxr_linenumber" name="L843" href="#L843">843</a>                             .visible(false))
+<a class="jxr_linenumber" name="L844" href="#L844">844</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L845" href="#L845">845</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
+<a class="jxr_linenumber" name="L846" href="#L846">846</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
+<a class="jxr_linenumber" name="L847" href="#L847">847</a>                             .id(<span class="jxr_string">"lvl:proxied"</span>)
+<a class="jxr_linenumber" name="L848" href="#L848">848</a>                             .title(<span class="jxr_string">"Proxied"</span>)
+<a class="jxr_linenumber" name="L849" href="#L849">849</a>                             .childrenIds(
+<a class="jxr_linenumber" name="L850" href="#L850">850</a>                                 List.of(
+<a class="jxr_linenumber" name="L851" href="#L851">851</a>                                     <span class="jxr_string">"lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel"</span>)))
+<a class="jxr_linenumber" name="L852" href="#L852">852</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L853" href="#L853">853</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L854" href="#L854">854</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L855" href="#L855">855</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel"</span>)
+<a class="jxr_linenumber" name="L856" href="#L856">856</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver-proxied"</span>)
+<a class="jxr_linenumber" name="L857" href="#L857">857</a>                             .layerName(<span class="jxr_string">"postgis:begroeidterreindeel"</span>)
+<a class="jxr_linenumber" name="L858" href="#L858">858</a>                             .visible(false))
+<a class="jxr_linenumber" name="L859" href="#L859">859</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L860" href="#L860">860</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
+<a class="jxr_linenumber" name="L861" href="#L861">861</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
+<a class="jxr_linenumber" name="L862" href="#L862">862</a>                             .id(<span class="jxr_string">"lvl:osm"</span>)
+<a class="jxr_linenumber" name="L863" href="#L863">863</a>                             .title(<span class="jxr_string">"OSM"</span>)
+<a class="jxr_linenumber" name="L864" href="#L864">864</a>                             .childrenIds(List.of(<span class="jxr_string">"lyr:snapshot-geoserver:postgis:osm_polygon"</span>)))
+<a class="jxr_linenumber" name="L865" href="#L865">865</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L866" href="#L866">866</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L867" href="#L867">867</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L868" href="#L868">868</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver:postgis:osm_polygon"</span>)
+<a class="jxr_linenumber" name="L869" href="#L869">869</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver"</span>)
+<a class="jxr_linenumber" name="L870" href="#L870">870</a>                             .layerName(<span class="jxr_string">"postgis:osm_polygon"</span>)
+<a class="jxr_linenumber" name="L871" href="#L871">871</a>                             .visible(false)))
+<a class="jxr_linenumber" name="L872" href="#L872">872</a>             .setSettings(
+<a class="jxr_linenumber" name="L873" href="#L873">873</a>                 <strong class="jxr_keyword">new</strong> AppSettings()
 <a class="jxr_linenumber" name="L874" href="#L874">874</a>                     .putLayerSettingsItem(
-<a class="jxr_linenumber" name="L875" href="#L875">875</a>                         <span class="jxr_string">"lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"</span>,
-<a class="jxr_linenumber" name="L876" href="#L876">876</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings().title(<span class="jxr_string">"Luchtfoto"</span>))
-<a class="jxr_linenumber" name="L877" href="#L877">877</a>                     .putLayerSettingsItem(
-<a class="jxr_linenumber" name="L878" href="#L878">878</a>                         <span class="jxr_string">"lyr:openbasiskaart-proxied:osm"</span>,
-<a class="jxr_linenumber" name="L879" href="#L879">879</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings().title(<span class="jxr_string">"Openbasiskaart (proxied)"</span>))
-<a class="jxr_linenumber" name="L880" href="#L880">880</a>                     .putLayerSettingsItem(
-<a class="jxr_linenumber" name="L881" href="#L881">881</a>                         <span class="jxr_string">"lyr:snapshot-geoserver:oracle:WATERDEEL"</span>,
-<a class="jxr_linenumber" name="L882" href="#L882">882</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings()
-<a class="jxr_linenumber" name="L883" href="#L883">883</a>                             .opacity(50)
-<a class="jxr_linenumber" name="L884" href="#L884">884</a>                             .title(<span class="jxr_string">"Waterdeel overridden title"</span>)
-<a class="jxr_linenumber" name="L885" href="#L885">885</a>                             .editable(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L886" href="#L886">886</a>                             .description(
-<a class="jxr_linenumber" name="L887" href="#L887">887</a>                                 <span class="jxr_string">"This is the layer description from the app layer setting."</span>)
-<a class="jxr_linenumber" name="L888" href="#L888">888</a>                             .attribution(
-<a class="jxr_linenumber" name="L889" href="#L889">889</a>                                 <span class="jxr_string">"CC BY 4.0 &lt;a href=\&quot;https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\&quot;&gt;BGT/Kadaster&lt;/a&gt;"</span>))
-<a class="jxr_linenumber" name="L890" href="#L890">890</a>                     .putLayerSettingsItem(
-<a class="jxr_linenumber" name="L891" href="#L891">891</a>                         <span class="jxr_string">"lyr:snapshot-geoserver:postgis:osm_polygon"</span>,
-<a class="jxr_linenumber" name="L892" href="#L892">892</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings()
-<a class="jxr_linenumber" name="L893" href="#L893">893</a>                             .description(<span class="jxr_string">"OpenStreetMap polygon data in EPSG:3857"</span>)
-<a class="jxr_linenumber" name="L894" href="#L894">894</a>                             .opacity(60)
-<a class="jxr_linenumber" name="L895" href="#L895">895</a>                             .editable(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L896" href="#L896">896</a>                             .title(<span class="jxr_string">"OSM Polygon (EPSG:3857)"</span>)
-<a class="jxr_linenumber" name="L897" href="#L897">897</a>                             .attribution(
-<a class="jxr_linenumber" name="L898" href="#L898">898</a>                                 <span class="jxr_string">"© &lt;a href=\&quot;https://www.openstreetmap.org/copyright/\&quot;&gt;OpenStreetMap&lt;/a&gt; contributors"</span>))
-<a class="jxr_linenumber" name="L899" href="#L899">899</a>                     .putLayerSettingsItem(
-<a class="jxr_linenumber" name="L900" href="#L900">900</a>                         <span class="jxr_string">"lyr:snapshot-geoserver:postgis:begroeidterreindeel"</span>,
-<a class="jxr_linenumber" name="L901" href="#L901">901</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings()
-<a class="jxr_linenumber" name="L902" href="#L902">902</a>                             .editable(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L903" href="#L903">903</a>                             .addHideAttributesItem(<span class="jxr_string">"begroeidterreindeeloptalud"</span>)
-<a class="jxr_linenumber" name="L904" href="#L904">904</a>                             .addReadOnlyAttributesItem(<span class="jxr_string">"eindregistratie"</span>))
-<a class="jxr_linenumber" name="L905" href="#L905">905</a>                     .putLayerSettingsItem(
-<a class="jxr_linenumber" name="L906" href="#L906">906</a>                         <span class="jxr_string">"lyr:snapshot-geoserver:sqlserver:wegdeel"</span>,
-<a class="jxr_linenumber" name="L907" href="#L907">907</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings().editable(<strong class="jxr_keyword">true</strong>))
-<a class="jxr_linenumber" name="L908" href="#L908">908</a>                     .putLayerSettingsItem(
-<a class="jxr_linenumber" name="L909" href="#L909">909</a>                         <span class="jxr_string">"lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel"</span>,
-<a class="jxr_linenumber" name="L910" href="#L910">910</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings().editable(false)));
-<a class="jxr_linenumber" name="L911" href="#L911">911</a> 
-<a class="jxr_linenumber" name="L912" href="#L912">912</a>     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
-<a class="jxr_linenumber" name="L913" href="#L913">913</a>     app.setInitialExtent(<strong class="jxr_keyword">new</strong> Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));
-<a class="jxr_linenumber" name="L914" href="#L914">914</a>     app.setMaxExtent(<strong class="jxr_keyword">new</strong> Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));
-<a class="jxr_linenumber" name="L915" href="#L915">915</a> 
-<a class="jxr_linenumber" name="L916" href="#L916">916</a>     <strong class="jxr_keyword">if</strong> (map5url != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L917" href="#L917">917</a>       AppTreeLevelNode root = (AppTreeLevelNode) app.getContentRoot().getBaseLayerNodes().get(0);
-<a class="jxr_linenumber" name="L918" href="#L918">918</a>       List&lt;String&gt; childrenIds = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(root.getChildrenIds());
-<a class="jxr_linenumber" name="L919" href="#L919">919</a>       childrenIds.add(<span class="jxr_string">"lyr:map5:map5topo_simple"</span>);
-<a class="jxr_linenumber" name="L920" href="#L920">920</a>       childrenIds.add(<span class="jxr_string">"lvl:luchtfoto-labels"</span>);
-<a class="jxr_linenumber" name="L921" href="#L921">921</a>       root.setChildrenIds(childrenIds);
-<a class="jxr_linenumber" name="L922" href="#L922">922</a>       app.getSettings()
-<a class="jxr_linenumber" name="L923" href="#L923">923</a>           .putLayerSettingsItem(<span class="jxr_string">"lyr:map5:map5topo_simple"</span>, <strong class="jxr_keyword">new</strong> AppLayerSettings().title(<span class="jxr_string">"Map5"</span>));
-<a class="jxr_linenumber" name="L924" href="#L924">924</a>       app.getContentRoot()
-<a class="jxr_linenumber" name="L925" href="#L925">925</a>           .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L926" href="#L926">926</a>               <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L927" href="#L927">927</a>                   .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L928" href="#L928">928</a>                   .id(<span class="jxr_string">"lyr:map5:map5topo_simple"</span>)
-<a class="jxr_linenumber" name="L929" href="#L929">929</a>                   .serviceId(<span class="jxr_string">"map5"</span>)
-<a class="jxr_linenumber" name="L930" href="#L930">930</a>                   .layerName(<span class="jxr_string">"map5topo_simple"</span>)
-<a class="jxr_linenumber" name="L931" href="#L931">931</a>                   .visible(false))
-<a class="jxr_linenumber" name="L932" href="#L932">932</a>           .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L933" href="#L933">933</a>               <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
-<a class="jxr_linenumber" name="L934" href="#L934">934</a>                   .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
-<a class="jxr_linenumber" name="L935" href="#L935">935</a>                   .id(<span class="jxr_string">"lvl:luchtfoto-labels"</span>)
-<a class="jxr_linenumber" name="L936" href="#L936">936</a>                   .title(<span class="jxr_string">"Luchtfoto met labels"</span>)
-<a class="jxr_linenumber" name="L937" href="#L937">937</a>                   .addChildrenIdsItem(<span class="jxr_string">"lyr:map5:luforoadslabels"</span>)
-<a class="jxr_linenumber" name="L938" href="#L938">938</a>                   .addChildrenIdsItem(<span class="jxr_string">"lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR2"</span>))
-<a class="jxr_linenumber" name="L939" href="#L939">939</a>           .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L940" href="#L940">940</a>               <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L941" href="#L941">941</a>                   .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L942" href="#L942">942</a>                   .id(<span class="jxr_string">"lyr:map5:luforoadslabels"</span>)
-<a class="jxr_linenumber" name="L943" href="#L943">943</a>                   .serviceId(<span class="jxr_string">"map5"</span>)
-<a class="jxr_linenumber" name="L944" href="#L944">944</a>                   .layerName(<span class="jxr_string">"luforoadslabels"</span>)
-<a class="jxr_linenumber" name="L945" href="#L945">945</a>                   .visible(false))
-<a class="jxr_linenumber" name="L946" href="#L946">946</a>           .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L947" href="#L947">947</a>               <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L948" href="#L948">948</a>                   .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L949" href="#L949">949</a>                   .id(<span class="jxr_string">"lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR2"</span>)
-<a class="jxr_linenumber" name="L950" href="#L950">950</a>                   .serviceId(<span class="jxr_string">"pdok-hwh-luchtfotorgb"</span>)
-<a class="jxr_linenumber" name="L951" href="#L951">951</a>                   .layerName(<span class="jxr_string">"Actueel_orthoHR"</span>)
-<a class="jxr_linenumber" name="L952" href="#L952">952</a>                   .visible(false));
-<a class="jxr_linenumber" name="L953" href="#L953">953</a>     }
-<a class="jxr_linenumber" name="L954" href="#L954">954</a> 
-<a class="jxr_linenumber" name="L955" href="#L955">955</a>     applicationRepository.save(app);
+<a class="jxr_linenumber" name="L875" href="#L875">875</a>                         <span class="jxr_string">"lyr:openbasiskaart:osm"</span>, <strong class="jxr_keyword">new</strong> AppLayerSettings().title(<span class="jxr_string">"Openbasiskaart"</span>))
+<a class="jxr_linenumber" name="L876" href="#L876">876</a>                     .putLayerSettingsItem(
+<a class="jxr_linenumber" name="L877" href="#L877">877</a>                         <span class="jxr_string">"lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"</span>,
+<a class="jxr_linenumber" name="L878" href="#L878">878</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings().title(<span class="jxr_string">"Luchtfoto"</span>))
+<a class="jxr_linenumber" name="L879" href="#L879">879</a>                     .putLayerSettingsItem(
+<a class="jxr_linenumber" name="L880" href="#L880">880</a>                         <span class="jxr_string">"lyr:openbasiskaart-proxied:osm"</span>,
+<a class="jxr_linenumber" name="L881" href="#L881">881</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings().title(<span class="jxr_string">"Openbasiskaart (proxied)"</span>))
+<a class="jxr_linenumber" name="L882" href="#L882">882</a>                     .putLayerSettingsItem(
+<a class="jxr_linenumber" name="L883" href="#L883">883</a>                         <span class="jxr_string">"lyr:snapshot-geoserver:oracle:WATERDEEL"</span>,
+<a class="jxr_linenumber" name="L884" href="#L884">884</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings()
+<a class="jxr_linenumber" name="L885" href="#L885">885</a>                             .opacity(50)
+<a class="jxr_linenumber" name="L886" href="#L886">886</a>                             .title(<span class="jxr_string">"Waterdeel overridden title"</span>)
+<a class="jxr_linenumber" name="L887" href="#L887">887</a>                             .editable(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L888" href="#L888">888</a>                             .description(
+<a class="jxr_linenumber" name="L889" href="#L889">889</a>                                 <span class="jxr_string">"This is the layer description from the app layer setting."</span>)
+<a class="jxr_linenumber" name="L890" href="#L890">890</a>                             .attribution(
+<a class="jxr_linenumber" name="L891" href="#L891">891</a>                                 <span class="jxr_string">"CC BY 4.0 &lt;a href=\&quot;https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\&quot;&gt;BGT/Kadaster&lt;/a&gt;"</span>))
+<a class="jxr_linenumber" name="L892" href="#L892">892</a>                     .putLayerSettingsItem(
+<a class="jxr_linenumber" name="L893" href="#L893">893</a>                         <span class="jxr_string">"lyr:snapshot-geoserver:postgis:osm_polygon"</span>,
+<a class="jxr_linenumber" name="L894" href="#L894">894</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings()
+<a class="jxr_linenumber" name="L895" href="#L895">895</a>                             .description(<span class="jxr_string">"OpenStreetMap polygon data in EPSG:3857"</span>)
+<a class="jxr_linenumber" name="L896" href="#L896">896</a>                             .opacity(60)
+<a class="jxr_linenumber" name="L897" href="#L897">897</a>                             .editable(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L898" href="#L898">898</a>                             .title(<span class="jxr_string">"OSM Polygon (EPSG:3857)"</span>)
+<a class="jxr_linenumber" name="L899" href="#L899">899</a>                             .attribution(
+<a class="jxr_linenumber" name="L900" href="#L900">900</a>                                 <span class="jxr_string">"© &lt;a href=\&quot;https://www.openstreetmap.org/copyright/\&quot;&gt;OpenStreetMap&lt;/a&gt; contributors"</span>))
+<a class="jxr_linenumber" name="L901" href="#L901">901</a>                     .putLayerSettingsItem(
+<a class="jxr_linenumber" name="L902" href="#L902">902</a>                         <span class="jxr_string">"lyr:snapshot-geoserver:postgis:begroeidterreindeel"</span>,
+<a class="jxr_linenumber" name="L903" href="#L903">903</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings()
+<a class="jxr_linenumber" name="L904" href="#L904">904</a>                             .editable(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L905" href="#L905">905</a>                             .addHideAttributesItem(<span class="jxr_string">"begroeidterreindeeloptalud"</span>)
+<a class="jxr_linenumber" name="L906" href="#L906">906</a>                             .addReadOnlyAttributesItem(<span class="jxr_string">"eindregistratie"</span>))
+<a class="jxr_linenumber" name="L907" href="#L907">907</a>                     .putLayerSettingsItem(
+<a class="jxr_linenumber" name="L908" href="#L908">908</a>                         <span class="jxr_string">"lyr:snapshot-geoserver:sqlserver:wegdeel"</span>,
+<a class="jxr_linenumber" name="L909" href="#L909">909</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings().editable(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L910" href="#L910">910</a>                     .putLayerSettingsItem(
+<a class="jxr_linenumber" name="L911" href="#L911">911</a>                         <span class="jxr_string">"lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel"</span>,
+<a class="jxr_linenumber" name="L912" href="#L912">912</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings().editable(false)));
+<a class="jxr_linenumber" name="L913" href="#L913">913</a> 
+<a class="jxr_linenumber" name="L914" href="#L914">914</a>     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
+<a class="jxr_linenumber" name="L915" href="#L915">915</a>     app.setInitialExtent(<strong class="jxr_keyword">new</strong> Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d));
+<a class="jxr_linenumber" name="L916" href="#L916">916</a>     app.setMaxExtent(<strong class="jxr_keyword">new</strong> Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d));
+<a class="jxr_linenumber" name="L917" href="#L917">917</a> 
+<a class="jxr_linenumber" name="L918" href="#L918">918</a>     <strong class="jxr_keyword">if</strong> (map5url != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L919" href="#L919">919</a>       AppTreeLevelNode root = (AppTreeLevelNode) app.getContentRoot().getBaseLayerNodes().get(0);
+<a class="jxr_linenumber" name="L920" href="#L920">920</a>       List&lt;String&gt; childrenIds = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(root.getChildrenIds());
+<a class="jxr_linenumber" name="L921" href="#L921">921</a>       childrenIds.add(<span class="jxr_string">"lyr:map5:map5topo_simple"</span>);
+<a class="jxr_linenumber" name="L922" href="#L922">922</a>       childrenIds.add(<span class="jxr_string">"lvl:luchtfoto-labels"</span>);
+<a class="jxr_linenumber" name="L923" href="#L923">923</a>       root.setChildrenIds(childrenIds);
+<a class="jxr_linenumber" name="L924" href="#L924">924</a>       app.getSettings()
+<a class="jxr_linenumber" name="L925" href="#L925">925</a>           .putLayerSettingsItem(<span class="jxr_string">"lyr:map5:map5topo_simple"</span>, <strong class="jxr_keyword">new</strong> AppLayerSettings().title(<span class="jxr_string">"Map5"</span>));
+<a class="jxr_linenumber" name="L926" href="#L926">926</a>       app.getContentRoot()
+<a class="jxr_linenumber" name="L927" href="#L927">927</a>           .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L928" href="#L928">928</a>               <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L929" href="#L929">929</a>                   .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L930" href="#L930">930</a>                   .id(<span class="jxr_string">"lyr:map5:map5topo_simple"</span>)
+<a class="jxr_linenumber" name="L931" href="#L931">931</a>                   .serviceId(<span class="jxr_string">"map5"</span>)
+<a class="jxr_linenumber" name="L932" href="#L932">932</a>                   .layerName(<span class="jxr_string">"map5topo_simple"</span>)
+<a class="jxr_linenumber" name="L933" href="#L933">933</a>                   .visible(false))
+<a class="jxr_linenumber" name="L934" href="#L934">934</a>           .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L935" href="#L935">935</a>               <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
+<a class="jxr_linenumber" name="L936" href="#L936">936</a>                   .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
+<a class="jxr_linenumber" name="L937" href="#L937">937</a>                   .id(<span class="jxr_string">"lvl:luchtfoto-labels"</span>)
+<a class="jxr_linenumber" name="L938" href="#L938">938</a>                   .title(<span class="jxr_string">"Luchtfoto met labels"</span>)
+<a class="jxr_linenumber" name="L939" href="#L939">939</a>                   .addChildrenIdsItem(<span class="jxr_string">"lyr:map5:luforoadslabels"</span>)
+<a class="jxr_linenumber" name="L940" href="#L940">940</a>                   .addChildrenIdsItem(<span class="jxr_string">"lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR2"</span>))
+<a class="jxr_linenumber" name="L941" href="#L941">941</a>           .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L942" href="#L942">942</a>               <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L943" href="#L943">943</a>                   .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L944" href="#L944">944</a>                   .id(<span class="jxr_string">"lyr:map5:luforoadslabels"</span>)
+<a class="jxr_linenumber" name="L945" href="#L945">945</a>                   .serviceId(<span class="jxr_string">"map5"</span>)
+<a class="jxr_linenumber" name="L946" href="#L946">946</a>                   .layerName(<span class="jxr_string">"luforoadslabels"</span>)
+<a class="jxr_linenumber" name="L947" href="#L947">947</a>                   .visible(false))
+<a class="jxr_linenumber" name="L948" href="#L948">948</a>           .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L949" href="#L949">949</a>               <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L950" href="#L950">950</a>                   .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L951" href="#L951">951</a>                   .id(<span class="jxr_string">"lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR2"</span>)
+<a class="jxr_linenumber" name="L952" href="#L952">952</a>                   .serviceId(<span class="jxr_string">"pdok-hwh-luchtfotorgb"</span>)
+<a class="jxr_linenumber" name="L953" href="#L953">953</a>                   .layerName(<span class="jxr_string">"Actueel_orthoHR"</span>)
+<a class="jxr_linenumber" name="L954" href="#L954">954</a>                   .visible(false));
+<a class="jxr_linenumber" name="L955" href="#L955">955</a>     }
 <a class="jxr_linenumber" name="L956" href="#L956">956</a> 
-<a class="jxr_linenumber" name="L957" href="#L957">957</a>     app =
-<a class="jxr_linenumber" name="L958" href="#L958">958</a>         <strong class="jxr_keyword">new</strong> <a name="Application" href="../../../../../../nl/b3p/tailormap/api/persistence/Application.html#Application">Application</a>()
-<a class="jxr_linenumber" name="L959" href="#L959">959</a>             .setName(<span class="jxr_string">"base"</span>)
-<a class="jxr_linenumber" name="L960" href="#L960">960</a>             .setTitle(<span class="jxr_string">"Service base app"</span>)
-<a class="jxr_linenumber" name="L961" href="#L961">961</a>             .setCrs(<span class="jxr_string">"EPSG:28992"</span>)
-<a class="jxr_linenumber" name="L962" href="#L962">962</a>             .setAuthorizationRules(rule)
-<a class="jxr_linenumber" name="L963" href="#L963">963</a>             .setContentRoot(
-<a class="jxr_linenumber" name="L964" href="#L964">964</a>                 <strong class="jxr_keyword">new</strong> AppContent()
-<a class="jxr_linenumber" name="L965" href="#L965">965</a>                     .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L966" href="#L966">966</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
-<a class="jxr_linenumber" name="L967" href="#L967">967</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
-<a class="jxr_linenumber" name="L968" href="#L968">968</a>                             .id(<span class="jxr_string">"root-base-layers"</span>)
-<a class="jxr_linenumber" name="L969" href="#L969">969</a>                             .root(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L970" href="#L970">970</a>                             .title(<span class="jxr_string">"Base layers"</span>)
-<a class="jxr_linenumber" name="L971" href="#L971">971</a>                             .childrenIds(
-<a class="jxr_linenumber" name="L972" href="#L972">972</a>                                 List.of(
-<a class="jxr_linenumber" name="L973" href="#L973">973</a>                                     <span class="jxr_string">"lyr:openbasiskaart:osm"</span>,
-<a class="jxr_linenumber" name="L974" href="#L974">974</a>                                     <span class="jxr_string">"lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"</span>))));
-<a class="jxr_linenumber" name="L975" href="#L975">975</a>     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
-<a class="jxr_linenumber" name="L976" href="#L976">976</a>     applicationRepository.save(app);
-<a class="jxr_linenumber" name="L977" href="#L977">977</a> 
-<a class="jxr_linenumber" name="L978" href="#L978">978</a>     app =
-<a class="jxr_linenumber" name="L979" href="#L979">979</a>         <strong class="jxr_keyword">new</strong> <a name="Application" href="../../../../../../nl/b3p/tailormap/api/persistence/Application.html#Application">Application</a>()
-<a class="jxr_linenumber" name="L980" href="#L980">980</a>             .setName(<span class="jxr_string">"secured"</span>)
-<a class="jxr_linenumber" name="L981" href="#L981">981</a>             .setTitle(<span class="jxr_string">"secured app"</span>)
-<a class="jxr_linenumber" name="L982" href="#L982">982</a>             .setCrs(<span class="jxr_string">"EPSG:28992"</span>)
-<a class="jxr_linenumber" name="L983" href="#L983">983</a>             .setAuthorizationRules(ruleLoggedIn)
-<a class="jxr_linenumber" name="L984" href="#L984">984</a>             .setContentRoot(
-<a class="jxr_linenumber" name="L985" href="#L985">985</a>                 <strong class="jxr_keyword">new</strong> AppContent()
-<a class="jxr_linenumber" name="L986" href="#L986">986</a>                     .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L987" href="#L987">987</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
-<a class="jxr_linenumber" name="L988" href="#L988">988</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
-<a class="jxr_linenumber" name="L989" href="#L989">989</a>                             .id(<span class="jxr_string">"root-base-layers"</span>)
-<a class="jxr_linenumber" name="L990" href="#L990">990</a>                             .root(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L991" href="#L991">991</a>                             .title(<span class="jxr_string">"Base layers"</span>)
-<a class="jxr_linenumber" name="L992" href="#L992">992</a>                             .childrenIds(
-<a class="jxr_linenumber" name="L993" href="#L993">993</a>                                 List.of(
-<a class="jxr_linenumber" name="L994" href="#L994">994</a>                                     <span class="jxr_string">"lyr:openbasiskaart:osm"</span>,
-<a class="jxr_linenumber" name="L995" href="#L995">995</a>                                     <span class="jxr_string">"lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"</span>,
-<a class="jxr_linenumber" name="L996" href="#L996">996</a>                                     <span class="jxr_string">"lyr:openbasiskaart-proxied:osm"</span>)))
-<a class="jxr_linenumber" name="L997" href="#L997">997</a>                     .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L998" href="#L998">998</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L999" href="#L999">999</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L1000" href="#L1000">1000</a>                             .id(<span class="jxr_string">"lyr:openbasiskaart-proxied:osm"</span>)
-<a class="jxr_linenumber" name="L1001" href="#L1001">1001</a>                             .serviceId(<span class="jxr_string">"openbasiskaart-proxied"</span>)
-<a class="jxr_linenumber" name="L1002" href="#L1002">1002</a>                             .layerName(<span class="jxr_string">"osm"</span>)
-<a class="jxr_linenumber" name="L1003" href="#L1003">1003</a>                             .visible(false))
-<a class="jxr_linenumber" name="L1004" href="#L1004">1004</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L1005" href="#L1005">1005</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
-<a class="jxr_linenumber" name="L1006" href="#L1006">1006</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
-<a class="jxr_linenumber" name="L1007" href="#L1007">1007</a>                             .id(<span class="jxr_string">"root"</span>)
-<a class="jxr_linenumber" name="L1008" href="#L1008">1008</a>                             .root(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L1009" href="#L1009">1009</a>                             .title(<span class="jxr_string">"Layers"</span>)
-<a class="jxr_linenumber" name="L1010" href="#L1010">1010</a>                             .childrenIds(
-<a class="jxr_linenumber" name="L1011" href="#L1011">1011</a>                                 List.of(
-<a class="jxr_linenumber" name="L1012" href="#L1012">1012</a>                                     <span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied"</span>,
-<a class="jxr_linenumber" name="L1013" href="#L1013">1013</a>                                     <span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied"</span>,
-<a class="jxr_linenumber" name="L1014" href="#L1014">1014</a>                                     <span class="jxr_string">"lvl:proxied"</span>)))
-<a class="jxr_linenumber" name="L1015" href="#L1015">1015</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L1016" href="#L1016">1016</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L1017" href="#L1017">1017</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L1018" href="#L1018">1018</a>                             .id(<span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied"</span>)
-<a class="jxr_linenumber" name="L1019" href="#L1019">1019</a>                             .serviceId(<span class="jxr_string">"pdok-kadaster-bestuurlijkegebieden"</span>)
-<a class="jxr_linenumber" name="L1020" href="#L1020">1020</a>                             .layerName(<span class="jxr_string">"Gemeentegebied"</span>)
-<a class="jxr_linenumber" name="L1021" href="#L1021">1021</a>                             .visible(<strong class="jxr_keyword">true</strong>))
-<a class="jxr_linenumber" name="L1022" href="#L1022">1022</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L1023" href="#L1023">1023</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L1024" href="#L1024">1024</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L1025" href="#L1025">1025</a>                             .id(<span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied"</span>)
-<a class="jxr_linenumber" name="L1026" href="#L1026">1026</a>                             .serviceId(<span class="jxr_string">"pdok-kadaster-bestuurlijkegebieden"</span>)
-<a class="jxr_linenumber" name="L1027" href="#L1027">1027</a>                             .layerName(<span class="jxr_string">"Provinciegebied"</span>)
-<a class="jxr_linenumber" name="L1028" href="#L1028">1028</a>                             .visible(false))
-<a class="jxr_linenumber" name="L1029" href="#L1029">1029</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L1030" href="#L1030">1030</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
-<a class="jxr_linenumber" name="L1031" href="#L1031">1031</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
-<a class="jxr_linenumber" name="L1032" href="#L1032">1032</a>                             .id(<span class="jxr_string">"lvl:proxied"</span>)
-<a class="jxr_linenumber" name="L1033" href="#L1033">1033</a>                             .title(<span class="jxr_string">"Proxied"</span>)
-<a class="jxr_linenumber" name="L1034" href="#L1034">1034</a>                             .childrenIds(
-<a class="jxr_linenumber" name="L1035" href="#L1035">1035</a>                                 List.of(
-<a class="jxr_linenumber" name="L1036" href="#L1036">1036</a>                                     <span class="jxr_string">"lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel"</span>)))
-<a class="jxr_linenumber" name="L1037" href="#L1037">1037</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L1038" href="#L1038">1038</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L1039" href="#L1039">1039</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L1040" href="#L1040">1040</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel"</span>)
-<a class="jxr_linenumber" name="L1041" href="#L1041">1041</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver-proxied"</span>)
-<a class="jxr_linenumber" name="L1042" href="#L1042">1042</a>                             .layerName(<span class="jxr_string">"postgis:begroeidterreindeel"</span>)
-<a class="jxr_linenumber" name="L1043" href="#L1043">1043</a>                             .visible(false)))
-<a class="jxr_linenumber" name="L1044" href="#L1044">1044</a>             .setSettings(
-<a class="jxr_linenumber" name="L1045" href="#L1045">1045</a>                 <strong class="jxr_keyword">new</strong> AppSettings()
-<a class="jxr_linenumber" name="L1046" href="#L1046">1046</a>                     .putLayerSettingsItem(
-<a class="jxr_linenumber" name="L1047" href="#L1047">1047</a>                         <span class="jxr_string">"lyr:openbasiskaart-proxied:osm"</span>,
-<a class="jxr_linenumber" name="L1048" href="#L1048">1048</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings().title(<span class="jxr_string">"Openbasiskaart (proxied)"</span>)));
-<a class="jxr_linenumber" name="L1049" href="#L1049">1049</a> 
-<a class="jxr_linenumber" name="L1050" href="#L1050">1050</a>     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
-<a class="jxr_linenumber" name="L1051" href="#L1051">1051</a>     applicationRepository.save(app);
-<a class="jxr_linenumber" name="L1052" href="#L1052">1052</a> 
-<a class="jxr_linenumber" name="L1053" href="#L1053">1053</a>     app =
-<a class="jxr_linenumber" name="L1054" href="#L1054">1054</a>         <strong class="jxr_keyword">new</strong> <a name="Application" href="../../../../../../nl/b3p/tailormap/api/persistence/Application.html#Application">Application</a>()
-<a class="jxr_linenumber" name="L1055" href="#L1055">1055</a>             .setName(<span class="jxr_string">"secured-auth"</span>)
-<a class="jxr_linenumber" name="L1056" href="#L1056">1056</a>             .setTitle(<span class="jxr_string">"secured (with authorizations)"</span>)
-<a class="jxr_linenumber" name="L1057" href="#L1057">1057</a>             .setCrs(<span class="jxr_string">"EPSG:28992"</span>)
-<a class="jxr_linenumber" name="L1058" href="#L1058">1058</a>             .setAuthorizationRules(
-<a class="jxr_linenumber" name="L1059" href="#L1059">1059</a>                 List.of(
-<a class="jxr_linenumber" name="L1060" href="#L1060">1060</a>                     <strong class="jxr_keyword">new</strong> AuthorizationRule()
-<a class="jxr_linenumber" name="L1061" href="#L1061">1061</a>                         .groupName(<span class="jxr_string">"test-foo"</span>)
-<a class="jxr_linenumber" name="L1062" href="#L1062">1062</a>                         .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)),
-<a class="jxr_linenumber" name="L1063" href="#L1063">1063</a>                     <strong class="jxr_keyword">new</strong> AuthorizationRule()
-<a class="jxr_linenumber" name="L1064" href="#L1064">1064</a>                         .groupName(<span class="jxr_string">"test-bar"</span>)
-<a class="jxr_linenumber" name="L1065" href="#L1065">1065</a>                         .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW))))
-<a class="jxr_linenumber" name="L1066" href="#L1066">1066</a>             .setContentRoot(
-<a class="jxr_linenumber" name="L1067" href="#L1067">1067</a>                 <strong class="jxr_keyword">new</strong> AppContent()
-<a class="jxr_linenumber" name="L1068" href="#L1068">1068</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L1069" href="#L1069">1069</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
-<a class="jxr_linenumber" name="L1070" href="#L1070">1070</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
-<a class="jxr_linenumber" name="L1071" href="#L1071">1071</a>                             .id(<span class="jxr_string">"root"</span>)
-<a class="jxr_linenumber" name="L1072" href="#L1072">1072</a>                             .root(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L1073" href="#L1073">1073</a>                             .title(<span class="jxr_string">"Layers"</span>)
-<a class="jxr_linenumber" name="L1074" href="#L1074">1074</a>                             .childrenIds(List.of(<span class="jxr_string">"lyr:needs-auth"</span>, <span class="jxr_string">"lyr:public"</span>)))
-<a class="jxr_linenumber" name="L1075" href="#L1075">1075</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L1076" href="#L1076">1076</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
-<a class="jxr_linenumber" name="L1077" href="#L1077">1077</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
-<a class="jxr_linenumber" name="L1078" href="#L1078">1078</a>                             .id(<span class="jxr_string">"lvl:public"</span>)
-<a class="jxr_linenumber" name="L1079" href="#L1079">1079</a>                             .title(<span class="jxr_string">"Public"</span>)
-<a class="jxr_linenumber" name="L1080" href="#L1080">1080</a>                             .childrenIds(List.of(<span class="jxr_string">"lyr:snapshot-geoserver:BGT"</span>)))
-<a class="jxr_linenumber" name="L1081" href="#L1081">1081</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L1082" href="#L1082">1082</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
-<a class="jxr_linenumber" name="L1083" href="#L1083">1083</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
-<a class="jxr_linenumber" name="L1084" href="#L1084">1084</a>                             .id(<span class="jxr_string">"lvl:needs-auth"</span>)
-<a class="jxr_linenumber" name="L1085" href="#L1085">1085</a>                             .title(<span class="jxr_string">"Needs auth"</span>)
-<a class="jxr_linenumber" name="L1086" href="#L1086">1086</a>                             .childrenIds(
-<a class="jxr_linenumber" name="L1087" href="#L1087">1087</a>                                 List.of(
-<a class="jxr_linenumber" name="L1088" href="#L1088">1088</a>                                     <span class="jxr_string">"lyr:filtered-snapshot-geoserver:BGT"</span>,
-<a class="jxr_linenumber" name="L1089" href="#L1089">1089</a>                                     <span class="jxr_string">"lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel"</span>)))
-<a class="jxr_linenumber" name="L1090" href="#L1090">1090</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L1091" href="#L1091">1091</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L1092" href="#L1092">1092</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L1093" href="#L1093">1093</a>                             .id(<span class="jxr_string">"lyr:filtered-snapshot-geoserver:BGT"</span>)
-<a class="jxr_linenumber" name="L1094" href="#L1094">1094</a>                             .serviceId(<span class="jxr_string">"filtered-snapshot-geoserver"</span>)
-<a class="jxr_linenumber" name="L1095" href="#L1095">1095</a>                             .layerName(<span class="jxr_string">"BGT"</span>)
-<a class="jxr_linenumber" name="L1096" href="#L1096">1096</a>                             .visible(<strong class="jxr_keyword">true</strong>))
-<a class="jxr_linenumber" name="L1097" href="#L1097">1097</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L1098" href="#L1098">1098</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L1099" href="#L1099">1099</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L1100" href="#L1100">1100</a>                             .id(<span class="jxr_string">"lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel"</span>)
-<a class="jxr_linenumber" name="L1101" href="#L1101">1101</a>                             .serviceId(<span class="jxr_string">"filtered-snapshot-geoserver"</span>)
-<a class="jxr_linenumber" name="L1102" href="#L1102">1102</a>                             .layerName(<span class="jxr_string">"postgis:begroeidterreindeel"</span>)
-<a class="jxr_linenumber" name="L1103" href="#L1103">1103</a>                             .visible(<strong class="jxr_keyword">true</strong>))
-<a class="jxr_linenumber" name="L1104" href="#L1104">1104</a>                     .addLayerNodesItem(
-<a class="jxr_linenumber" name="L1105" href="#L1105">1105</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L1106" href="#L1106">1106</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L1107" href="#L1107">1107</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver:BGT"</span>)
-<a class="jxr_linenumber" name="L1108" href="#L1108">1108</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver"</span>)
-<a class="jxr_linenumber" name="L1109" href="#L1109">1109</a>                             .layerName(<span class="jxr_string">"BGT"</span>)
-<a class="jxr_linenumber" name="L1110" href="#L1110">1110</a>                             .visible(<strong class="jxr_keyword">true</strong>)));
-<a class="jxr_linenumber" name="L1111" href="#L1111">1111</a> 
-<a class="jxr_linenumber" name="L1112" href="#L1112">1112</a>     applicationRepository.save(app);
+<a class="jxr_linenumber" name="L957" href="#L957">957</a>     applicationRepository.save(app);
+<a class="jxr_linenumber" name="L958" href="#L958">958</a> 
+<a class="jxr_linenumber" name="L959" href="#L959">959</a>     app =
+<a class="jxr_linenumber" name="L960" href="#L960">960</a>         <strong class="jxr_keyword">new</strong> <a name="Application" href="../../../../../../nl/b3p/tailormap/api/persistence/Application.html#Application">Application</a>()
+<a class="jxr_linenumber" name="L961" href="#L961">961</a>             .setName(<span class="jxr_string">"base"</span>)
+<a class="jxr_linenumber" name="L962" href="#L962">962</a>             .setTitle(<span class="jxr_string">"Service base app"</span>)
+<a class="jxr_linenumber" name="L963" href="#L963">963</a>             .setCrs(<span class="jxr_string">"EPSG:28992"</span>)
+<a class="jxr_linenumber" name="L964" href="#L964">964</a>             .setAuthorizationRules(rule)
+<a class="jxr_linenumber" name="L965" href="#L965">965</a>             .setContentRoot(
+<a class="jxr_linenumber" name="L966" href="#L966">966</a>                 <strong class="jxr_keyword">new</strong> AppContent()
+<a class="jxr_linenumber" name="L967" href="#L967">967</a>                     .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L968" href="#L968">968</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
+<a class="jxr_linenumber" name="L969" href="#L969">969</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
+<a class="jxr_linenumber" name="L970" href="#L970">970</a>                             .id(<span class="jxr_string">"root-base-layers"</span>)
+<a class="jxr_linenumber" name="L971" href="#L971">971</a>                             .root(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L972" href="#L972">972</a>                             .title(<span class="jxr_string">"Base layers"</span>)
+<a class="jxr_linenumber" name="L973" href="#L973">973</a>                             .childrenIds(
+<a class="jxr_linenumber" name="L974" href="#L974">974</a>                                 List.of(
+<a class="jxr_linenumber" name="L975" href="#L975">975</a>                                     <span class="jxr_string">"lyr:openbasiskaart:osm"</span>,
+<a class="jxr_linenumber" name="L976" href="#L976">976</a>                                     <span class="jxr_string">"lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"</span>))));
+<a class="jxr_linenumber" name="L977" href="#L977">977</a>     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
+<a class="jxr_linenumber" name="L978" href="#L978">978</a>     applicationRepository.save(app);
+<a class="jxr_linenumber" name="L979" href="#L979">979</a> 
+<a class="jxr_linenumber" name="L980" href="#L980">980</a>     app =
+<a class="jxr_linenumber" name="L981" href="#L981">981</a>         <strong class="jxr_keyword">new</strong> <a name="Application" href="../../../../../../nl/b3p/tailormap/api/persistence/Application.html#Application">Application</a>()
+<a class="jxr_linenumber" name="L982" href="#L982">982</a>             .setName(<span class="jxr_string">"secured"</span>)
+<a class="jxr_linenumber" name="L983" href="#L983">983</a>             .setTitle(<span class="jxr_string">"secured app"</span>)
+<a class="jxr_linenumber" name="L984" href="#L984">984</a>             .setCrs(<span class="jxr_string">"EPSG:28992"</span>)
+<a class="jxr_linenumber" name="L985" href="#L985">985</a>             .setAuthorizationRules(ruleLoggedIn)
+<a class="jxr_linenumber" name="L986" href="#L986">986</a>             .setContentRoot(
+<a class="jxr_linenumber" name="L987" href="#L987">987</a>                 <strong class="jxr_keyword">new</strong> AppContent()
+<a class="jxr_linenumber" name="L988" href="#L988">988</a>                     .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L989" href="#L989">989</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
+<a class="jxr_linenumber" name="L990" href="#L990">990</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
+<a class="jxr_linenumber" name="L991" href="#L991">991</a>                             .id(<span class="jxr_string">"root-base-layers"</span>)
+<a class="jxr_linenumber" name="L992" href="#L992">992</a>                             .root(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L993" href="#L993">993</a>                             .title(<span class="jxr_string">"Base layers"</span>)
+<a class="jxr_linenumber" name="L994" href="#L994">994</a>                             .childrenIds(
+<a class="jxr_linenumber" name="L995" href="#L995">995</a>                                 List.of(
+<a class="jxr_linenumber" name="L996" href="#L996">996</a>                                     <span class="jxr_string">"lyr:openbasiskaart:osm"</span>,
+<a class="jxr_linenumber" name="L997" href="#L997">997</a>                                     <span class="jxr_string">"lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"</span>,
+<a class="jxr_linenumber" name="L998" href="#L998">998</a>                                     <span class="jxr_string">"lyr:openbasiskaart-proxied:osm"</span>)))
+<a class="jxr_linenumber" name="L999" href="#L999">999</a>                     .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L1000" href="#L1000">1000</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L1001" href="#L1001">1001</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L1002" href="#L1002">1002</a>                             .id(<span class="jxr_string">"lyr:openbasiskaart-proxied:osm"</span>)
+<a class="jxr_linenumber" name="L1003" href="#L1003">1003</a>                             .serviceId(<span class="jxr_string">"openbasiskaart-proxied"</span>)
+<a class="jxr_linenumber" name="L1004" href="#L1004">1004</a>                             .layerName(<span class="jxr_string">"osm"</span>)
+<a class="jxr_linenumber" name="L1005" href="#L1005">1005</a>                             .visible(false))
+<a class="jxr_linenumber" name="L1006" href="#L1006">1006</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L1007" href="#L1007">1007</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
+<a class="jxr_linenumber" name="L1008" href="#L1008">1008</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
+<a class="jxr_linenumber" name="L1009" href="#L1009">1009</a>                             .id(<span class="jxr_string">"root"</span>)
+<a class="jxr_linenumber" name="L1010" href="#L1010">1010</a>                             .root(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L1011" href="#L1011">1011</a>                             .title(<span class="jxr_string">"Layers"</span>)
+<a class="jxr_linenumber" name="L1012" href="#L1012">1012</a>                             .childrenIds(
+<a class="jxr_linenumber" name="L1013" href="#L1013">1013</a>                                 List.of(
+<a class="jxr_linenumber" name="L1014" href="#L1014">1014</a>                                     <span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied"</span>,
+<a class="jxr_linenumber" name="L1015" href="#L1015">1015</a>                                     <span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied"</span>,
+<a class="jxr_linenumber" name="L1016" href="#L1016">1016</a>                                     <span class="jxr_string">"lvl:proxied"</span>)))
+<a class="jxr_linenumber" name="L1017" href="#L1017">1017</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L1018" href="#L1018">1018</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L1019" href="#L1019">1019</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L1020" href="#L1020">1020</a>                             .id(<span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied"</span>)
+<a class="jxr_linenumber" name="L1021" href="#L1021">1021</a>                             .serviceId(<span class="jxr_string">"pdok-kadaster-bestuurlijkegebieden"</span>)
+<a class="jxr_linenumber" name="L1022" href="#L1022">1022</a>                             .layerName(<span class="jxr_string">"Gemeentegebied"</span>)
+<a class="jxr_linenumber" name="L1023" href="#L1023">1023</a>                             .visible(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L1024" href="#L1024">1024</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L1025" href="#L1025">1025</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L1026" href="#L1026">1026</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L1027" href="#L1027">1027</a>                             .id(<span class="jxr_string">"lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied"</span>)
+<a class="jxr_linenumber" name="L1028" href="#L1028">1028</a>                             .serviceId(<span class="jxr_string">"pdok-kadaster-bestuurlijkegebieden"</span>)
+<a class="jxr_linenumber" name="L1029" href="#L1029">1029</a>                             .layerName(<span class="jxr_string">"Provinciegebied"</span>)
+<a class="jxr_linenumber" name="L1030" href="#L1030">1030</a>                             .visible(false))
+<a class="jxr_linenumber" name="L1031" href="#L1031">1031</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L1032" href="#L1032">1032</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
+<a class="jxr_linenumber" name="L1033" href="#L1033">1033</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
+<a class="jxr_linenumber" name="L1034" href="#L1034">1034</a>                             .id(<span class="jxr_string">"lvl:proxied"</span>)
+<a class="jxr_linenumber" name="L1035" href="#L1035">1035</a>                             .title(<span class="jxr_string">"Proxied"</span>)
+<a class="jxr_linenumber" name="L1036" href="#L1036">1036</a>                             .childrenIds(
+<a class="jxr_linenumber" name="L1037" href="#L1037">1037</a>                                 List.of(
+<a class="jxr_linenumber" name="L1038" href="#L1038">1038</a>                                     <span class="jxr_string">"lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel"</span>)))
+<a class="jxr_linenumber" name="L1039" href="#L1039">1039</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L1040" href="#L1040">1040</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L1041" href="#L1041">1041</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L1042" href="#L1042">1042</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel"</span>)
+<a class="jxr_linenumber" name="L1043" href="#L1043">1043</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver-proxied"</span>)
+<a class="jxr_linenumber" name="L1044" href="#L1044">1044</a>                             .layerName(<span class="jxr_string">"postgis:begroeidterreindeel"</span>)
+<a class="jxr_linenumber" name="L1045" href="#L1045">1045</a>                             .visible(false)))
+<a class="jxr_linenumber" name="L1046" href="#L1046">1046</a>             .setSettings(
+<a class="jxr_linenumber" name="L1047" href="#L1047">1047</a>                 <strong class="jxr_keyword">new</strong> AppSettings()
+<a class="jxr_linenumber" name="L1048" href="#L1048">1048</a>                     .putLayerSettingsItem(
+<a class="jxr_linenumber" name="L1049" href="#L1049">1049</a>                         <span class="jxr_string">"lyr:openbasiskaart-proxied:osm"</span>,
+<a class="jxr_linenumber" name="L1050" href="#L1050">1050</a>                         <strong class="jxr_keyword">new</strong> AppLayerSettings().title(<span class="jxr_string">"Openbasiskaart (proxied)"</span>)));
+<a class="jxr_linenumber" name="L1051" href="#L1051">1051</a> 
+<a class="jxr_linenumber" name="L1052" href="#L1052">1052</a>     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
+<a class="jxr_linenumber" name="L1053" href="#L1053">1053</a>     applicationRepository.save(app);
+<a class="jxr_linenumber" name="L1054" href="#L1054">1054</a> 
+<a class="jxr_linenumber" name="L1055" href="#L1055">1055</a>     app =
+<a class="jxr_linenumber" name="L1056" href="#L1056">1056</a>         <strong class="jxr_keyword">new</strong> <a name="Application" href="../../../../../../nl/b3p/tailormap/api/persistence/Application.html#Application">Application</a>()
+<a class="jxr_linenumber" name="L1057" href="#L1057">1057</a>             .setName(<span class="jxr_string">"secured-auth"</span>)
+<a class="jxr_linenumber" name="L1058" href="#L1058">1058</a>             .setTitle(<span class="jxr_string">"secured (with authorizations)"</span>)
+<a class="jxr_linenumber" name="L1059" href="#L1059">1059</a>             .setCrs(<span class="jxr_string">"EPSG:28992"</span>)
+<a class="jxr_linenumber" name="L1060" href="#L1060">1060</a>             .setAuthorizationRules(
+<a class="jxr_linenumber" name="L1061" href="#L1061">1061</a>                 List.of(
+<a class="jxr_linenumber" name="L1062" href="#L1062">1062</a>                     <strong class="jxr_keyword">new</strong> AuthorizationRule()
+<a class="jxr_linenumber" name="L1063" href="#L1063">1063</a>                         .groupName(<span class="jxr_string">"test-foo"</span>)
+<a class="jxr_linenumber" name="L1064" href="#L1064">1064</a>                         .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)),
+<a class="jxr_linenumber" name="L1065" href="#L1065">1065</a>                     <strong class="jxr_keyword">new</strong> AuthorizationRule()
+<a class="jxr_linenumber" name="L1066" href="#L1066">1066</a>                         .groupName(<span class="jxr_string">"test-bar"</span>)
+<a class="jxr_linenumber" name="L1067" href="#L1067">1067</a>                         .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW))))
+<a class="jxr_linenumber" name="L1068" href="#L1068">1068</a>             .setContentRoot(
+<a class="jxr_linenumber" name="L1069" href="#L1069">1069</a>                 <strong class="jxr_keyword">new</strong> AppContent()
+<a class="jxr_linenumber" name="L1070" href="#L1070">1070</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L1071" href="#L1071">1071</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
+<a class="jxr_linenumber" name="L1072" href="#L1072">1072</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
+<a class="jxr_linenumber" name="L1073" href="#L1073">1073</a>                             .id(<span class="jxr_string">"root"</span>)
+<a class="jxr_linenumber" name="L1074" href="#L1074">1074</a>                             .root(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L1075" href="#L1075">1075</a>                             .title(<span class="jxr_string">"Layers"</span>)
+<a class="jxr_linenumber" name="L1076" href="#L1076">1076</a>                             .childrenIds(List.of(<span class="jxr_string">"lyr:needs-auth"</span>, <span class="jxr_string">"lyr:public"</span>)))
+<a class="jxr_linenumber" name="L1077" href="#L1077">1077</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L1078" href="#L1078">1078</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
+<a class="jxr_linenumber" name="L1079" href="#L1079">1079</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
+<a class="jxr_linenumber" name="L1080" href="#L1080">1080</a>                             .id(<span class="jxr_string">"lvl:public"</span>)
+<a class="jxr_linenumber" name="L1081" href="#L1081">1081</a>                             .title(<span class="jxr_string">"Public"</span>)
+<a class="jxr_linenumber" name="L1082" href="#L1082">1082</a>                             .childrenIds(List.of(<span class="jxr_string">"lyr:snapshot-geoserver:BGT"</span>)))
+<a class="jxr_linenumber" name="L1083" href="#L1083">1083</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L1084" href="#L1084">1084</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
+<a class="jxr_linenumber" name="L1085" href="#L1085">1085</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
+<a class="jxr_linenumber" name="L1086" href="#L1086">1086</a>                             .id(<span class="jxr_string">"lvl:needs-auth"</span>)
+<a class="jxr_linenumber" name="L1087" href="#L1087">1087</a>                             .title(<span class="jxr_string">"Needs auth"</span>)
+<a class="jxr_linenumber" name="L1088" href="#L1088">1088</a>                             .childrenIds(
+<a class="jxr_linenumber" name="L1089" href="#L1089">1089</a>                                 List.of(
+<a class="jxr_linenumber" name="L1090" href="#L1090">1090</a>                                     <span class="jxr_string">"lyr:filtered-snapshot-geoserver:BGT"</span>,
+<a class="jxr_linenumber" name="L1091" href="#L1091">1091</a>                                     <span class="jxr_string">"lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel"</span>)))
+<a class="jxr_linenumber" name="L1092" href="#L1092">1092</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L1093" href="#L1093">1093</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L1094" href="#L1094">1094</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L1095" href="#L1095">1095</a>                             .id(<span class="jxr_string">"lyr:filtered-snapshot-geoserver:BGT"</span>)
+<a class="jxr_linenumber" name="L1096" href="#L1096">1096</a>                             .serviceId(<span class="jxr_string">"filtered-snapshot-geoserver"</span>)
+<a class="jxr_linenumber" name="L1097" href="#L1097">1097</a>                             .layerName(<span class="jxr_string">"BGT"</span>)
+<a class="jxr_linenumber" name="L1098" href="#L1098">1098</a>                             .visible(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L1099" href="#L1099">1099</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L1100" href="#L1100">1100</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L1101" href="#L1101">1101</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L1102" href="#L1102">1102</a>                             .id(<span class="jxr_string">"lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel"</span>)
+<a class="jxr_linenumber" name="L1103" href="#L1103">1103</a>                             .serviceId(<span class="jxr_string">"filtered-snapshot-geoserver"</span>)
+<a class="jxr_linenumber" name="L1104" href="#L1104">1104</a>                             .layerName(<span class="jxr_string">"postgis:begroeidterreindeel"</span>)
+<a class="jxr_linenumber" name="L1105" href="#L1105">1105</a>                             .visible(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L1106" href="#L1106">1106</a>                     .addLayerNodesItem(
+<a class="jxr_linenumber" name="L1107" href="#L1107">1107</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L1108" href="#L1108">1108</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L1109" href="#L1109">1109</a>                             .id(<span class="jxr_string">"lyr:snapshot-geoserver:BGT"</span>)
+<a class="jxr_linenumber" name="L1110" href="#L1110">1110</a>                             .serviceId(<span class="jxr_string">"snapshot-geoserver"</span>)
+<a class="jxr_linenumber" name="L1111" href="#L1111">1111</a>                             .layerName(<span class="jxr_string">"BGT"</span>)
+<a class="jxr_linenumber" name="L1112" href="#L1112">1112</a>                             .visible(<strong class="jxr_keyword">true</strong>)));
 <a class="jxr_linenumber" name="L1113" href="#L1113">1113</a> 
-<a class="jxr_linenumber" name="L1114" href="#L1114">1114</a>     app =
-<a class="jxr_linenumber" name="L1115" href="#L1115">1115</a>         <strong class="jxr_keyword">new</strong> <a name="Application" href="../../../../../../nl/b3p/tailormap/api/persistence/Application.html#Application">Application</a>()
-<a class="jxr_linenumber" name="L1116" href="#L1116">1116</a>             .setName(<span class="jxr_string">"austria"</span>)
-<a class="jxr_linenumber" name="L1117" href="#L1117">1117</a>             .setCrs(<span class="jxr_string">"EPSG:3857"</span>)
-<a class="jxr_linenumber" name="L1118" href="#L1118">1118</a>             .setAuthorizationRules(rule)
-<a class="jxr_linenumber" name="L1119" href="#L1119">1119</a>             .setTitle(<span class="jxr_string">"Austria"</span>)
-<a class="jxr_linenumber" name="L1120" href="#L1120">1120</a>             .setInitialExtent(
-<a class="jxr_linenumber" name="L1121" href="#L1121">1121</a>                 <strong class="jxr_keyword">new</strong> Bounds().minx(987982d).miny(5799551d).maxx(1963423d).maxy(6320708d))
-<a class="jxr_linenumber" name="L1122" href="#L1122">1122</a>             .setMaxExtent(<strong class="jxr_keyword">new</strong> Bounds().minx(206516d).miny(5095461d).maxx(3146930d).maxy(7096232d))
-<a class="jxr_linenumber" name="L1123" href="#L1123">1123</a>             .setContentRoot(
-<a class="jxr_linenumber" name="L1124" href="#L1124">1124</a>                 <strong class="jxr_keyword">new</strong> AppContent()
-<a class="jxr_linenumber" name="L1125" href="#L1125">1125</a>                     .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L1126" href="#L1126">1126</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
-<a class="jxr_linenumber" name="L1127" href="#L1127">1127</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
-<a class="jxr_linenumber" name="L1128" href="#L1128">1128</a>                             .id(<span class="jxr_string">"root-base-layers"</span>)
-<a class="jxr_linenumber" name="L1129" href="#L1129">1129</a>                             .root(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L1130" href="#L1130">1130</a>                             .title(<span class="jxr_string">"Base layers"</span>)
-<a class="jxr_linenumber" name="L1131" href="#L1131">1131</a>                             .childrenIds(
-<a class="jxr_linenumber" name="L1132" href="#L1132">1132</a>                                 List.of(
-<a class="jxr_linenumber" name="L1133" href="#L1133">1133</a>                                     <span class="jxr_string">"lyr:at-basemap:geolandbasemap"</span>,
-<a class="jxr_linenumber" name="L1134" href="#L1134">1134</a>                                     <span class="jxr_string">"lyr:at-basemap:orthofoto"</span>,
-<a class="jxr_linenumber" name="L1135" href="#L1135">1135</a>                                     <span class="jxr_string">"lvl:orthofoto-labels"</span>,
-<a class="jxr_linenumber" name="L1136" href="#L1136">1136</a>                                     <span class="jxr_string">"lyr:osm:xyz"</span>)))
-<a class="jxr_linenumber" name="L1137" href="#L1137">1137</a>                     .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L1138" href="#L1138">1138</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L1139" href="#L1139">1139</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L1140" href="#L1140">1140</a>                             .id(<span class="jxr_string">"lyr:at-basemap:geolandbasemap"</span>)
-<a class="jxr_linenumber" name="L1141" href="#L1141">1141</a>                             .serviceId(<span class="jxr_string">"at-basemap"</span>)
-<a class="jxr_linenumber" name="L1142" href="#L1142">1142</a>                             .layerName(<span class="jxr_string">"geolandbasemap"</span>)
-<a class="jxr_linenumber" name="L1143" href="#L1143">1143</a>                             .visible(<strong class="jxr_keyword">true</strong>))
-<a class="jxr_linenumber" name="L1144" href="#L1144">1144</a>                     .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L1145" href="#L1145">1145</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L1146" href="#L1146">1146</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L1147" href="#L1147">1147</a>                             .id(<span class="jxr_string">"lyr:at-basemap:orthofoto"</span>)
-<a class="jxr_linenumber" name="L1148" href="#L1148">1148</a>                             .serviceId(<span class="jxr_string">"at-basemap"</span>)
-<a class="jxr_linenumber" name="L1149" href="#L1149">1149</a>                             .layerName(<span class="jxr_string">"bmaporthofoto30cm"</span>)
-<a class="jxr_linenumber" name="L1150" href="#L1150">1150</a>                             .visible(false))
-<a class="jxr_linenumber" name="L1151" href="#L1151">1151</a>                     .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L1152" href="#L1152">1152</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
-<a class="jxr_linenumber" name="L1153" href="#L1153">1153</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
-<a class="jxr_linenumber" name="L1154" href="#L1154">1154</a>                             .id(<span class="jxr_string">"lvl:orthofoto-labels"</span>)
-<a class="jxr_linenumber" name="L1155" href="#L1155">1155</a>                             .title(<span class="jxr_string">"Orthophoto with labels"</span>)
-<a class="jxr_linenumber" name="L1156" href="#L1156">1156</a>                             .childrenIds(
-<a class="jxr_linenumber" name="L1157" href="#L1157">1157</a>                                 List.of(
-<a class="jxr_linenumber" name="L1158" href="#L1158">1158</a>                                     <span class="jxr_string">"lyr:at-basemap:bmapoverlay"</span>, <span class="jxr_string">"lyr:at-basemap:orthofoto_2"</span>)))
-<a class="jxr_linenumber" name="L1159" href="#L1159">1159</a>                     .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L1160" href="#L1160">1160</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L1161" href="#L1161">1161</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L1162" href="#L1162">1162</a>                             .id(<span class="jxr_string">"lyr:at-basemap:bmapoverlay"</span>)
-<a class="jxr_linenumber" name="L1163" href="#L1163">1163</a>                             .serviceId(<span class="jxr_string">"at-basemap"</span>)
-<a class="jxr_linenumber" name="L1164" href="#L1164">1164</a>                             .layerName(<span class="jxr_string">"bmapoverlay"</span>)
-<a class="jxr_linenumber" name="L1165" href="#L1165">1165</a>                             .visible(false))
-<a class="jxr_linenumber" name="L1166" href="#L1166">1166</a>                     .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L1167" href="#L1167">1167</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L1168" href="#L1168">1168</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L1169" href="#L1169">1169</a>                             .id(<span class="jxr_string">"lyr:at-basemap:orthofoto_2"</span>)
-<a class="jxr_linenumber" name="L1170" href="#L1170">1170</a>                             .serviceId(<span class="jxr_string">"at-basemap"</span>)
-<a class="jxr_linenumber" name="L1171" href="#L1171">1171</a>                             .layerName(<span class="jxr_string">"bmaporthofoto30cm"</span>)
-<a class="jxr_linenumber" name="L1172" href="#L1172">1172</a>                             .visible(false))
-<a class="jxr_linenumber" name="L1173" href="#L1173">1173</a>                     .addBaseLayerNodesItem(
-<a class="jxr_linenumber" name="L1174" href="#L1174">1174</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
-<a class="jxr_linenumber" name="L1175" href="#L1175">1175</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
-<a class="jxr_linenumber" name="L1176" href="#L1176">1176</a>                             .id(<span class="jxr_string">"lyr:osm:xyz"</span>)
-<a class="jxr_linenumber" name="L1177" href="#L1177">1177</a>                             .serviceId(<span class="jxr_string">"osm"</span>)
-<a class="jxr_linenumber" name="L1178" href="#L1178">1178</a>                             .layerName(<span class="jxr_string">"xyz"</span>)
-<a class="jxr_linenumber" name="L1179" href="#L1179">1179</a>                             .visible(false)));
-<a class="jxr_linenumber" name="L1180" href="#L1180">1180</a> 
-<a class="jxr_linenumber" name="L1181" href="#L1181">1181</a>     applicationRepository.save(app);
+<a class="jxr_linenumber" name="L1114" href="#L1114">1114</a>     applicationRepository.save(app);
+<a class="jxr_linenumber" name="L1115" href="#L1115">1115</a> 
+<a class="jxr_linenumber" name="L1116" href="#L1116">1116</a>     app =
+<a class="jxr_linenumber" name="L1117" href="#L1117">1117</a>         <strong class="jxr_keyword">new</strong> <a name="Application" href="../../../../../../nl/b3p/tailormap/api/persistence/Application.html#Application">Application</a>()
+<a class="jxr_linenumber" name="L1118" href="#L1118">1118</a>             .setName(<span class="jxr_string">"austria"</span>)
+<a class="jxr_linenumber" name="L1119" href="#L1119">1119</a>             .setCrs(<span class="jxr_string">"EPSG:3857"</span>)
+<a class="jxr_linenumber" name="L1120" href="#L1120">1120</a>             .setAuthorizationRules(rule)
+<a class="jxr_linenumber" name="L1121" href="#L1121">1121</a>             .setTitle(<span class="jxr_string">"Austria"</span>)
+<a class="jxr_linenumber" name="L1122" href="#L1122">1122</a>             .setInitialExtent(
+<a class="jxr_linenumber" name="L1123" href="#L1123">1123</a>                 <strong class="jxr_keyword">new</strong> Bounds().minx(987982d).miny(5799551d).maxx(1963423d).maxy(6320708d))
+<a class="jxr_linenumber" name="L1124" href="#L1124">1124</a>             .setMaxExtent(<strong class="jxr_keyword">new</strong> Bounds().minx(206516d).miny(5095461d).maxx(3146930d).maxy(7096232d))
+<a class="jxr_linenumber" name="L1125" href="#L1125">1125</a>             .setContentRoot(
+<a class="jxr_linenumber" name="L1126" href="#L1126">1126</a>                 <strong class="jxr_keyword">new</strong> AppContent()
+<a class="jxr_linenumber" name="L1127" href="#L1127">1127</a>                     .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L1128" href="#L1128">1128</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
+<a class="jxr_linenumber" name="L1129" href="#L1129">1129</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
+<a class="jxr_linenumber" name="L1130" href="#L1130">1130</a>                             .id(<span class="jxr_string">"root-base-layers"</span>)
+<a class="jxr_linenumber" name="L1131" href="#L1131">1131</a>                             .root(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L1132" href="#L1132">1132</a>                             .title(<span class="jxr_string">"Base layers"</span>)
+<a class="jxr_linenumber" name="L1133" href="#L1133">1133</a>                             .childrenIds(
+<a class="jxr_linenumber" name="L1134" href="#L1134">1134</a>                                 List.of(
+<a class="jxr_linenumber" name="L1135" href="#L1135">1135</a>                                     <span class="jxr_string">"lyr:at-basemap:geolandbasemap"</span>,
+<a class="jxr_linenumber" name="L1136" href="#L1136">1136</a>                                     <span class="jxr_string">"lyr:at-basemap:orthofoto"</span>,
+<a class="jxr_linenumber" name="L1137" href="#L1137">1137</a>                                     <span class="jxr_string">"lvl:orthofoto-labels"</span>,
+<a class="jxr_linenumber" name="L1138" href="#L1138">1138</a>                                     <span class="jxr_string">"lyr:osm:xyz"</span>)))
+<a class="jxr_linenumber" name="L1139" href="#L1139">1139</a>                     .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L1140" href="#L1140">1140</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L1141" href="#L1141">1141</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L1142" href="#L1142">1142</a>                             .id(<span class="jxr_string">"lyr:at-basemap:geolandbasemap"</span>)
+<a class="jxr_linenumber" name="L1143" href="#L1143">1143</a>                             .serviceId(<span class="jxr_string">"at-basemap"</span>)
+<a class="jxr_linenumber" name="L1144" href="#L1144">1144</a>                             .layerName(<span class="jxr_string">"geolandbasemap"</span>)
+<a class="jxr_linenumber" name="L1145" href="#L1145">1145</a>                             .visible(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L1146" href="#L1146">1146</a>                     .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L1147" href="#L1147">1147</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L1148" href="#L1148">1148</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L1149" href="#L1149">1149</a>                             .id(<span class="jxr_string">"lyr:at-basemap:orthofoto"</span>)
+<a class="jxr_linenumber" name="L1150" href="#L1150">1150</a>                             .serviceId(<span class="jxr_string">"at-basemap"</span>)
+<a class="jxr_linenumber" name="L1151" href="#L1151">1151</a>                             .layerName(<span class="jxr_string">"bmaporthofoto30cm"</span>)
+<a class="jxr_linenumber" name="L1152" href="#L1152">1152</a>                             .visible(false))
+<a class="jxr_linenumber" name="L1153" href="#L1153">1153</a>                     .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L1154" href="#L1154">1154</a>                         <strong class="jxr_keyword">new</strong> AppTreeLevelNode()
+<a class="jxr_linenumber" name="L1155" href="#L1155">1155</a>                             .objectType(<span class="jxr_string">"AppTreeLevelNode"</span>)
+<a class="jxr_linenumber" name="L1156" href="#L1156">1156</a>                             .id(<span class="jxr_string">"lvl:orthofoto-labels"</span>)
+<a class="jxr_linenumber" name="L1157" href="#L1157">1157</a>                             .title(<span class="jxr_string">"Orthophoto with labels"</span>)
+<a class="jxr_linenumber" name="L1158" href="#L1158">1158</a>                             .childrenIds(
+<a class="jxr_linenumber" name="L1159" href="#L1159">1159</a>                                 List.of(
+<a class="jxr_linenumber" name="L1160" href="#L1160">1160</a>                                     <span class="jxr_string">"lyr:at-basemap:bmapoverlay"</span>, <span class="jxr_string">"lyr:at-basemap:orthofoto_2"</span>)))
+<a class="jxr_linenumber" name="L1161" href="#L1161">1161</a>                     .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L1162" href="#L1162">1162</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L1163" href="#L1163">1163</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L1164" href="#L1164">1164</a>                             .id(<span class="jxr_string">"lyr:at-basemap:bmapoverlay"</span>)
+<a class="jxr_linenumber" name="L1165" href="#L1165">1165</a>                             .serviceId(<span class="jxr_string">"at-basemap"</span>)
+<a class="jxr_linenumber" name="L1166" href="#L1166">1166</a>                             .layerName(<span class="jxr_string">"bmapoverlay"</span>)
+<a class="jxr_linenumber" name="L1167" href="#L1167">1167</a>                             .visible(false))
+<a class="jxr_linenumber" name="L1168" href="#L1168">1168</a>                     .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L1169" href="#L1169">1169</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L1170" href="#L1170">1170</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L1171" href="#L1171">1171</a>                             .id(<span class="jxr_string">"lyr:at-basemap:orthofoto_2"</span>)
+<a class="jxr_linenumber" name="L1172" href="#L1172">1172</a>                             .serviceId(<span class="jxr_string">"at-basemap"</span>)
+<a class="jxr_linenumber" name="L1173" href="#L1173">1173</a>                             .layerName(<span class="jxr_string">"bmaporthofoto30cm"</span>)
+<a class="jxr_linenumber" name="L1174" href="#L1174">1174</a>                             .visible(false))
+<a class="jxr_linenumber" name="L1175" href="#L1175">1175</a>                     .addBaseLayerNodesItem(
+<a class="jxr_linenumber" name="L1176" href="#L1176">1176</a>                         <strong class="jxr_keyword">new</strong> AppTreeLayerNode()
+<a class="jxr_linenumber" name="L1177" href="#L1177">1177</a>                             .objectType(<span class="jxr_string">"AppTreeLayerNode"</span>)
+<a class="jxr_linenumber" name="L1178" href="#L1178">1178</a>                             .id(<span class="jxr_string">"lyr:osm:xyz"</span>)
+<a class="jxr_linenumber" name="L1179" href="#L1179">1179</a>                             .serviceId(<span class="jxr_string">"osm"</span>)
+<a class="jxr_linenumber" name="L1180" href="#L1180">1180</a>                             .layerName(<span class="jxr_string">"xyz"</span>)
+<a class="jxr_linenumber" name="L1181" href="#L1181">1181</a>                             .visible(false)));
 <a class="jxr_linenumber" name="L1182" href="#L1182">1182</a> 
-<a class="jxr_linenumber" name="L1183" href="#L1183">1183</a>     <a name="Configuration" href="../../../../../../nl/b3p/tailormap/api/persistence/Configuration.html#Configuration">Configuration</a> config = <strong class="jxr_keyword">new</strong> <a name="Configuration" href="../../../../../../nl/b3p/tailormap/api/persistence/Configuration.html#Configuration">Configuration</a>();
-<a class="jxr_linenumber" name="L1184" href="#L1184">1184</a>     config.setKey(Configuration.DEFAULT_APP);
-<a class="jxr_linenumber" name="L1185" href="#L1185">1185</a>     config.setValue(<span class="jxr_string">"default"</span>);
-<a class="jxr_linenumber" name="L1186" href="#L1186">1186</a>     configurationRepository.save(config);
-<a class="jxr_linenumber" name="L1187" href="#L1187">1187</a>     config = <strong class="jxr_keyword">new</strong> <a name="Configuration" href="../../../../../../nl/b3p/tailormap/api/persistence/Configuration.html#Configuration">Configuration</a>();
-<a class="jxr_linenumber" name="L1188" href="#L1188">1188</a>     config.setKey(Configuration.DEFAULT_BASE_APP);
-<a class="jxr_linenumber" name="L1189" href="#L1189">1189</a>     config.setValue(<span class="jxr_string">"base"</span>);
-<a class="jxr_linenumber" name="L1190" href="#L1190">1190</a>     configurationRepository.save(config);
-<a class="jxr_linenumber" name="L1191" href="#L1191">1191</a> 
-<a class="jxr_linenumber" name="L1192" href="#L1192">1192</a>     config = <strong class="jxr_keyword">new</strong> <a name="Configuration" href="../../../../../../nl/b3p/tailormap/api/persistence/Configuration.html#Configuration">Configuration</a>();
-<a class="jxr_linenumber" name="L1193" href="#L1193">1193</a>     config.setKey(<span class="jxr_string">"test"</span>);
-<a class="jxr_linenumber" name="L1194" href="#L1194">1194</a>     config.setAvailableForViewer(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L1195" href="#L1195">1195</a>     config.setValue(<span class="jxr_string">"test value"</span>);
-<a class="jxr_linenumber" name="L1196" href="#L1196">1196</a>     config.setJsonValue(
-<a class="jxr_linenumber" name="L1197" href="#L1197">1197</a>         <strong class="jxr_keyword">new</strong> ObjectMapper().readTree(<span class="jxr_string">"{ \&quot;someProperty\&quot;: 1, \&quot;nestedObject\&quot;: { \&quot;num\&quot;: 42 } }"</span>));
-<a class="jxr_linenumber" name="L1198" href="#L1198">1198</a>     configurationRepository.save(config);
-<a class="jxr_linenumber" name="L1199" href="#L1199">1199</a> 
-<a class="jxr_linenumber" name="L1200" href="#L1200">1200</a>     logger.info(<span class="jxr_string">"Test entities created"</span>);
-<a class="jxr_linenumber" name="L1201" href="#L1201">1201</a>   }
-<a class="jxr_linenumber" name="L1202" href="#L1202">1202</a> }
+<a class="jxr_linenumber" name="L1183" href="#L1183">1183</a>     applicationRepository.save(app);
+<a class="jxr_linenumber" name="L1184" href="#L1184">1184</a> 
+<a class="jxr_linenumber" name="L1185" href="#L1185">1185</a>     <a name="Configuration" href="../../../../../../nl/b3p/tailormap/api/persistence/Configuration.html#Configuration">Configuration</a> config = <strong class="jxr_keyword">new</strong> <a name="Configuration" href="../../../../../../nl/b3p/tailormap/api/persistence/Configuration.html#Configuration">Configuration</a>();
+<a class="jxr_linenumber" name="L1186" href="#L1186">1186</a>     config.setKey(Configuration.DEFAULT_APP);
+<a class="jxr_linenumber" name="L1187" href="#L1187">1187</a>     config.setValue(<span class="jxr_string">"default"</span>);
+<a class="jxr_linenumber" name="L1188" href="#L1188">1188</a>     configurationRepository.save(config);
+<a class="jxr_linenumber" name="L1189" href="#L1189">1189</a>     config = <strong class="jxr_keyword">new</strong> <a name="Configuration" href="../../../../../../nl/b3p/tailormap/api/persistence/Configuration.html#Configuration">Configuration</a>();
+<a class="jxr_linenumber" name="L1190" href="#L1190">1190</a>     config.setKey(Configuration.DEFAULT_BASE_APP);
+<a class="jxr_linenumber" name="L1191" href="#L1191">1191</a>     config.setValue(<span class="jxr_string">"base"</span>);
+<a class="jxr_linenumber" name="L1192" href="#L1192">1192</a>     configurationRepository.save(config);
+<a class="jxr_linenumber" name="L1193" href="#L1193">1193</a> 
+<a class="jxr_linenumber" name="L1194" href="#L1194">1194</a>     config = <strong class="jxr_keyword">new</strong> <a name="Configuration" href="../../../../../../nl/b3p/tailormap/api/persistence/Configuration.html#Configuration">Configuration</a>();
+<a class="jxr_linenumber" name="L1195" href="#L1195">1195</a>     config.setKey(<span class="jxr_string">"test"</span>);
+<a class="jxr_linenumber" name="L1196" href="#L1196">1196</a>     config.setAvailableForViewer(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L1197" href="#L1197">1197</a>     config.setValue(<span class="jxr_string">"test value"</span>);
+<a class="jxr_linenumber" name="L1198" href="#L1198">1198</a>     config.setJsonValue(
+<a class="jxr_linenumber" name="L1199" href="#L1199">1199</a>         <strong class="jxr_keyword">new</strong> ObjectMapper().readTree(<span class="jxr_string">"{ \&quot;someProperty\&quot;: 1, \&quot;nestedObject\&quot;: { \&quot;num\&quot;: 42 } }"</span>));
+<a class="jxr_linenumber" name="L1200" href="#L1200">1200</a>     configurationRepository.save(config);
+<a class="jxr_linenumber" name="L1201" href="#L1201">1201</a> 
+<a class="jxr_linenumber" name="L1202" href="#L1202">1202</a>     logger.info(<span class="jxr_string">"Test entities created"</span>);
+<a class="jxr_linenumber" name="L1203" href="#L1203">1203</a>   }
+<a class="jxr_linenumber" name="L1204" href="#L1204">1204</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

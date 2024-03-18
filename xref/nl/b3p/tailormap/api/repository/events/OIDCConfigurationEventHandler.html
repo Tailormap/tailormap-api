@@ -34,7 +34,7 @@
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>    @HandleBeforeCreate
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>    @HandleBeforeSave
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> handleBeforeCreateOrSave(<a name="OIDCConfiguration" href="../../../../../../nl/b3p/tailormap/api/persistence/OIDCConfiguration.html#OIDCConfiguration">OIDCConfiguration</a> configuration) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> handleBeforeCreateOrSave(<a name="OIDCConfiguration" href="../../../../../../nl/b3p/tailormap/api/persistence/OIDCConfiguration.html#OIDCConfiguration">OIDCConfiguration</a> configuration) {
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>      <em class="jxr_comment">// If the user provided a "full" OIDC discovery URL, strip it.</em>
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">if</strong> (configuration.getIssuerUrl().endsWith(<span class="jxr_string">"/.well-known/openid-configuration"</span>)) {
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>        String issuerUrl = configuration.getIssuerUrl();
@@ -47,7 +47,7 @@
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>    @HandleAfterCreate
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>    @HandleAfterSave
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>    @HandleAfterDelete
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> handleAfterCreateOrSaveOrDelete(<a name="OIDCConfiguration" href="../../../../../../nl/b3p/tailormap/api/persistence/OIDCConfiguration.html#OIDCConfiguration">OIDCConfiguration</a> configuration) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> handleAfterCreateOrSaveOrDelete(<a name="OIDCConfiguration" href="../../../../../../nl/b3p/tailormap/api/persistence/OIDCConfiguration.html#OIDCConfiguration">OIDCConfiguration</a> configuration) {
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>      oidcRepository.synchronize();
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>    }
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  }

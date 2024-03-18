@@ -15,27 +15,27 @@
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.core.JsonProcessingException;
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.databind.ObjectMapper;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.util.List;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> javax.persistence.Basic;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> javax.persistence.CascadeType;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> javax.persistence.Column;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> javax.persistence.Entity;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> javax.persistence.EntityListeners;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> javax.persistence.EnumType;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> javax.persistence.Enumerated;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> javax.persistence.GeneratedValue;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> javax.persistence.GenerationType;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> javax.persistence.Id;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> javax.persistence.JoinColumn;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> javax.persistence.JoinTable;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> javax.persistence.ManyToOne;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> javax.persistence.OneToMany;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> javax.persistence.OrderBy;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> javax.persistence.Table;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> javax.persistence.Transient;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> javax.persistence.Version;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> javax.validation.constraints.NotNull;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.Basic;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.CascadeType;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.Column;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.Entity;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.EntityListeners;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.EnumType;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.Enumerated;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.GeneratedValue;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.GenerationType;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.Id;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.JoinColumn;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.JoinTable;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.ManyToOne;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.OneToMany;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.OrderBy;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.Table;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.Transient;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> jakarta.persistence.Version;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> jakarta.validation.constraints.NotNull;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> java.util.List;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties;
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
@@ -97,11 +97,11 @@
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>    @Column(length = 2048)
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>    <strong class="jxr_keyword">private</strong> String url;
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>    @Type(type = <span class="jxr_string">"io.hypersistence.utils.hibernate.type.json.JsonBinaryType"</span>)
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>    @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>    @Column(columnDefinition = <span class="jxr_string">"jsonb"</span>)
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>    <strong class="jxr_keyword">private</strong> JDBCConnectionProperties jdbcConnection;
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>  
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>    @Type(type = <span class="jxr_string">"io.hypersistence.utils.hibernate.type.json.JsonBinaryType"</span>)
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>    @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>    @Column(columnDefinition = <span class="jxr_string">"jsonb"</span>)
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>    <strong class="jxr_keyword">private</strong> ServiceAuthentication authentication;
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>  
@@ -109,7 +109,7 @@
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>   @JoinColumn(name = <span class="jxr_string">"linked_service"</span>)
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>   <strong class="jxr_keyword">private</strong> <a name="GeoService" href="../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> linkedService;
 <a class="jxr_linenumber" name="L103" href="#L103">103</a> 
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>   @Type(type = <span class="jxr_string">"io.hypersistence.utils.hibernate.type.json.JsonBinaryType"</span>)
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>   @Column(columnDefinition = <span class="jxr_string">"jsonb"</span>)
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>   <strong class="jxr_keyword">private</strong> TMServiceCaps serviceCapabilities;
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> 
