@@ -31,6 +31,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
@@ -102,9 +103,14 @@ public class ApiSecurityConfiguration {
         };
 
     http.securityMatchers(matchers -> matchers.requestMatchers(apiBasePath + "/**"))
+        .addFilterAfter(
+            /* (debug) log user making the request */ new AuditInterceptor(),
+            AnonymousAuthenticationFilter.class)
         .authorizeHttpRequests(
-            authorize ->
-                authorize.requestMatchers(adminApiBasePath + "/**").hasAuthority(Group.ADMIN))
+            authorize -> {
+              authorize.requestMatchers(adminApiBasePath + "/**").hasAuthority(Group.ADMIN);
+              authorize.requestMatchers(apiBasePath + "/**").permitAll();
+            })
         .formLogin(
             formLogin ->
                 formLogin
@@ -121,6 +127,7 @@ public class ApiSecurityConfiguration {
                     .redirectionEndpoint(
                         endpoint -> endpoint.baseUri(apiBasePath + "/oauth2/callback"))
                     .successHandler(authenticationSuccessHandler))
+        .anonymous(anonymous -> anonymous.authorities(Group.ANONYMOUS))
         .logout(
             logout ->
                 logout
