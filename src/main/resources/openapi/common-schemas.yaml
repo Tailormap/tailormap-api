@@ -167,3 +167,88 @@ components:
         hideLoginButton:
           nullable: false
           type: boolean
+
+    FormOptions:
+      description: 'model with options for an form'
+      type: object
+      properties:
+        description:
+          description: 'description text for the form'
+          type: string
+          nullable: true
+        columns:
+          description: 'the number of columns (adjusts the width of the form)'
+          type: integer
+          format: int32
+        tabs:
+          description: 'list of tabs for a form'
+          type: array
+          items:
+            type: object
+            title: FormTab
+            properties:
+              id:
+                description: 'id of the tab'
+                type: string
+              name:
+                description: 'title of the tab'
+                type: string
+
+    FormField:
+      description: 'model for a single form field'
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        label:
+          type: string
+        type:
+          enum:
+            - text
+            - number
+            - integer
+            - boolean
+            - select
+            - textarea
+            - date
+        tab:
+          type: string
+          nullable: true
+        column:
+          type: number
+          nullable: true
+        uniqueValuesAsOptions:
+          description: 'when true the unique values for the column are used when editing this field'
+          type: boolean
+          nullable: true
+        valueList:
+          type: array
+          nullable: true
+          items:
+            type: object
+            title: FormFieldValue
+            properties:
+              value:
+                oneOf:
+                  - type: string
+                  - type: integer
+                  - type: boolean
+              label:
+                type: string
+        allowValueListOnly:
+          type: boolean
+          nullable: true
+        disabled:
+          type: boolean
+          nullable: true
+        required:
+          type: boolean
+          nullable: true
+        placeholder:
+          type: string
+          nullable: true
+        hint:
+          type: string
+          nullable: true

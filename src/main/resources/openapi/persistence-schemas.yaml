@@ -581,6 +581,10 @@ components:
           type: boolean
           nullable: true
           default: false
+        formId:
+          type: integer
+          nullable: true
+          format: int64
         hideAttributes:
           description: List of attribute names that should be hidden (in addition to attributes already hidden by the
             feature type settings).
@@ -593,5 +597,9 @@ components:
           type: array
           items:
             type: string
-
         # TODO add properties for selected WMS style, feature info popup template, etc.
+
+    FormOptions:
+      $ref: './common-schemas.yaml#/components/schemas/FormOptions'
+    FormField:
+      $ref: './common-schemas.yaml#/components/schemas/FormField'

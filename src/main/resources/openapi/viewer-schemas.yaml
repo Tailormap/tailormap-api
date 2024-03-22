@@ -192,6 +192,16 @@ components:
         editable:
           type: boolean
           default: false
+        form:
+          type: object
+          nullable: true
+          properties:
+            options:
+              $ref: './common-schemas.yaml#/components/schemas/FormOptions'
+            fields:
+              type: array
+              items:
+                $ref: './common-schemas.yaml#/components/schemas/FormField'
         attributes:
           description: '
           Array with attributes.
@@ -233,9 +243,6 @@ components:
         editable:
           description: 'Whether the attribute can be edited.'
           type: boolean
-        editAlias:
-          description: 'Alias to use in edit mode.'
-          type: string
         defaultValue:
           description: 'Default value for this attribute. The value may need to be coerced to the correct type.'
           nullable: true
@@ -243,16 +250,6 @@ components:
         nullable:
           description: 'Whether the attribute can be null.'
           type: boolean
-        valueList:
-          type: array
-          description: 'List of possible values for this attribute. The value may need to be coerced to the correct type.'
-          nullable: true
-          items:
-            type: string
-        allowValueListOnly:
-          description: 'Whether the attribute can only have values from the valueList.'
-          type: boolean
-          default: true
 
     Feature:
       description: '
