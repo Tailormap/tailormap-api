@@ -90,7 +90,7 @@ class ApplicationAdminControllerIntegrationTest {
   @Test
   @Order(1)
   @WithMockUser(
-      username = "admin",
+      username = "tm-admin",
       authorities = {Group.ADMIN})
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testCreateApplications() throws Exception {
