@@ -23,11 +23,13 @@ import com.jayway.jsonpath.JsonPath;
 import nl.b3p.tailormap.api.StaticTestData;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.ClassOrderer;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestClassOrder;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.locationtech.jts.geom.Geometry;
@@ -38,6 +40,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -46,8 +50,9 @@ import org.springframework.test.web.servlet.MvcResult;
 // should be last test to prevent side effects - as some data is deleted
 @Order(Integer.MAX_VALUE)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EditFeatureControllerIntegrationTest {
-  /** bestuurlijke gebieden WFS; provincies . */
+  /** bestuurlijke gebieden WFS; provincies. */
   private static final String provinciesWFS =
       "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/edit/feature/"
           + StaticTestData.get("utrecht__fid");
@@ -67,7 +72,14 @@ class EditFeatureControllerIntegrationTest {
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired private WebApplicationContext context;
+
+  private MockMvc mockMvc;
+
+  @BeforeAll
+  void initialize() {
+    mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+  }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
