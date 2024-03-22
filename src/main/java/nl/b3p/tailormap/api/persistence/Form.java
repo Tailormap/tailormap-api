@@ -13,7 +13,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
+import nl.b3p.tailormap.api.persistence.json.FormField;
+import nl.b3p.tailormap.api.persistence.json.FormOptions;
 import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
+import org.hibernate.annotations.Type;
 
 @Entity
 @EntityListeners(EntityEventPublisher.class)
@@ -25,6 +30,20 @@ public class Form {
   @Version private Long version;
 
   @NotNull private String name;
+
+  private Long featureSourceId;
+
+  private String featureTypeName;
+
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @Column(columnDefinition = "jsonb")
+  @NotNull
+  private FormOptions options = new FormOptions();
+
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @Column(columnDefinition = "jsonb")
+  @NotNull
+  private List<FormField> fields = new ArrayList<>();
 
   public Long getId() {
     return id;
@@ -48,5 +67,37 @@ public class Form {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public Long getFeatureSourceId() {
+    return featureSourceId;
+  }
+
+  public void setFeatureSourceId(Long featureSourceId) {
+    this.featureSourceId = featureSourceId;
+  }
+
+  public String getFeatureTypeName() {
+    return featureTypeName;
+  }
+
+  public void setFeatureTypeName(String featureTypeName) {
+    this.featureTypeName = featureTypeName;
+  }
+
+  public FormOptions getOptions() {
+    return options;
+  }
+
+  public void setOptions(FormOptions options) {
+    this.options = options;
+  }
+
+  public List<FormField> getComponents() {
+    return fields;
+  }
+
+  public void setComponents(List<FormField> fields) {
+    this.fields = fields;
   }
 }
