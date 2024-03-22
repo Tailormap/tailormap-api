@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
+import nl.b3p.tailormap.api.persistence.Form;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper;
@@ -25,8 +26,10 @@ import nl.b3p.tailormap.api.persistence.json.TMAttributeDescriptor;
 import nl.b3p.tailormap.api.persistence.json.TMAttributeType;
 import nl.b3p.tailormap.api.persistence.json.TMGeometryType;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
+import nl.b3p.tailormap.api.repository.FormRepository;
 import nl.b3p.tailormap.api.viewer.model.Attribute;
 import nl.b3p.tailormap.api.viewer.model.LayerDetails;
+import nl.b3p.tailormap.api.viewer.model.LayerDetailsForm;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,8 +49,12 @@ public class LayerDescriptionController {
 
   private final FeatureSourceRepository featureSourceRepository;
 
-  public LayerDescriptionController(FeatureSourceRepository featureSourceRepository) {
+  private final FormRepository formRepository;
+
+  public LayerDescriptionController(
+      FeatureSourceRepository featureSourceRepository, FormRepository formRepository) {
     this.featureSourceRepository = featureSourceRepository;
+    this.formRepository = formRepository;
   }
 
   @Transactional
@@ -86,6 +93,15 @@ public class LayerDescriptionController {
             .editable(TMFeatureTypeHelper.isEditable(application, appTreeLayerNode, tmft));
 
     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
+
+    Form form;
+    if (appLayerSettings.getFormId() != null) {
+      form = formRepository.findById(appLayerSettings.getFormId()).orElse(null);
+      if (form != null) {
+        r.setForm(new LayerDetailsForm().options(form.getOptions()).fields(form.getFields()));
+      }
+    }
+
     Set<String> readOnlyAttributes =
         TMFeatureTypeHelper.getReadOnlyAttributes(tmft, appLayerSettings);
 

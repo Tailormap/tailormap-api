@@ -872,7 +872,12 @@ SPDX-License-Identifier: MIT
                                 TMGeometryType=nl.b3p.tailormap.api.persistence.json.TMGeometryType,
                                 WMSStyle=nl.b3p.tailormap.api.persistence.json.WMSStyle,
                                 AppI18nSettings=nl.b3p.tailormap.api.persistence.json.AppI18nSettings,
-                                AppUiSettings=nl.b3p.tailormap.api.persistence.json.AppUiSettings</importMappings>
+                                AppUiSettings=nl.b3p.tailormap.api.persistence.json.AppUiSettings,
+                                FormOptions=nl.b3p.tailormap.api.persistence.json.FormOptions,
+                                FormTab=nl.b3p.tailormap.api.persistence.json.FormTab,
+                                FormField=nl.b3p.tailormap.api.persistence.json.FormField,
+                                FormFieldValue=nl.b3p.tailormap.api.persistence.json.FormFieldValue
+                            </importMappings>
                             <ignoreFileOverride>${project.basedir}/src/main/resources/openapi/common-schemas-openapi-ignore</ignoreFileOverride>
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>

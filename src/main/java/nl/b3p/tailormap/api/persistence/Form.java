@@ -6,6 +6,7 @@
 
 package nl.b3p.tailormap.api.persistence;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -93,11 +94,11 @@ public class Form {
     this.options = options;
   }
 
-  public List<FormField> getComponents() {
+  public List<FormField> getFields() {
     return fields;
   }
 
-  public void setComponents(List<FormField> fields) {
+  public void setFields(List<FormField> fields) {
     this.fields = fields;
   }
 }
