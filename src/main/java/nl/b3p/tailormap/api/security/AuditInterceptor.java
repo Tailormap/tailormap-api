@@ -36,7 +36,7 @@ public class AuditInterceptor extends OncePerRequestFilter {
       }
       if (authentication instanceof UsernamePasswordAuthenticationToken) {
         logger.debug(
-            "Audit: request by  registered user: {}, authorities: {}",
+            "Audit: request by registered user: {}, authorities: {}",
             authentication.getName(),
             authentication.getAuthorities());
       }
