@@ -33,7 +33,9 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -60,15 +62,19 @@ public class ApiSecurityConfiguration {
   }
 
   @Bean
-  public SecurityFilterChain apiFilterChain(
-      HttpSecurity http, CookieCsrfTokenRepository csrfTokenRepository) throws Exception {
+  public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
 
     // Disable CSRF protection for development with HAL explorer
     // https://github.com/spring-projects/spring-data-rest/issues/1347
     if (disableCsrf) {
       http.csrf(AbstractHttpConfigurer::disable);
     } else {
-      http.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository));
+      // https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
+      http.csrf(
+          csrf ->
+              csrf.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                  .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
+      http.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
     }
 
     // Before redirecting the user to the OAuth2 authorization endpoint, store the requested
