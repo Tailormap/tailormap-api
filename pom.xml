@@ -103,6 +103,12 @@ SPDX-License-Identifier: MIT
         <geotools.version>31.0</geotools.version>
         <jts.version>1.19.0</jts.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
+
+        <!-- solr and jetty versions may need to match
+        <jetty.version>10.0.19</jetty.version>
+        -->
+        <solr.version>9.5.0</solr.version>
+
         <!--
         Spring Boot version overrides.
         See org.springframework.boot:spring-boot-dependencies
@@ -211,6 +217,11 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-micrometer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+            <version>${solr.version}</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
