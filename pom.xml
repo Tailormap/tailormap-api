@@ -103,12 +103,10 @@ SPDX-License-Identifier: MIT
         <geotools.version>31.0</geotools.version>
         <jts.version>1.19.0</jts.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
-
-        <!-- solr and jetty versions may need to match
-        <jetty.version>10.0.19</jetty.version>
-        -->
+        <!-- solr and jetty versions may need to match to prevent errors such as
+        Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener -->
+        <jetty.version>10.0.20</jetty.version>
         <solr.version>9.5.0</solr.version>
-
         <!--
         Spring Boot version overrides.
         See org.springframework.boot:spring-boot-dependencies
@@ -190,6 +188,15 @@ SPDX-License-Identifier: MIT
                 <groupId>org.gaul</groupId>
                 <artifactId>modernizer-maven-annotations</artifactId>
                 <version>${modernizer-maven-plugin.version}</version>
+            </dependency>
+            <dependency>
+                <!-- override the jetty-ee10-bom import so we can downgrade jetty to a solrj compatible version,
+                 our spring-boot parent provides this import -->
+                <groupId>org.eclipse.jetty.ee10</groupId>
+                <artifactId>jetty-ee10-bom</artifactId>
+                <version>12.0.7</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -1192,6 +1199,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>com.fasterxml.jackson.core:jackson-databind</exclude>
                                         <exclude>org.flywaydb:flyway-core</exclude>
                                         <exclude>ch.rasc:sse-eventbus</exclude>
+                                        <exclude>org.apache.solr:solr-solrj</exclude>
                                     </excludes>
                                 </banTransitiveDependencies>
                             </rules>

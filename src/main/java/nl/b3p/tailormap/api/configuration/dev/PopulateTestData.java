@@ -725,6 +725,9 @@ public class PopulateTestData {
               ft.getSettings().addAttributeOrderItem("identificatie");
               ft.getSettings().addAttributeOrderItem("bronhouder");
               ft.getSettings().addAttributeOrderItem("class");
+              ft.getSettings()
+                  .setSearchFields(List.of("class", "plus_fysiekvoorkomen", "bronhouder"));
+              ft.getSettings().setSearchDisplayFields(List.of("class", "plus_fysiekvoorkomen"));
             });
 
     List<AppTreeNode> baseNodes =
