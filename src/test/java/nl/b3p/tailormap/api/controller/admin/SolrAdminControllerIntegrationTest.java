@@ -80,7 +80,7 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @Order(1)
+  @Order(2)
   void addPostgisLayerToIndex() throws Exception {
     mockMvc
         .perform(
@@ -95,7 +95,7 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @Order(2)
+  @Order(1)
   void deletePostgisLayerFromIndex() throws Exception {
     mockMvc
         .perform(

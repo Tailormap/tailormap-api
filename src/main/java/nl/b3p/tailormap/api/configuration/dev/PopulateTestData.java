@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.concurrent.TimeUnit;
+import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
 import nl.b3p.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
 import nl.b3p.tailormap.api.persistence.Application;
@@ -25,6 +27,7 @@ import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
+import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.User;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
@@ -40,6 +43,7 @@ import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.CatalogNode;
 import nl.b3p.tailormap.api.persistence.json.FeatureTypeRef;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
+import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
 import nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties;
@@ -54,8 +58,11 @@ import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.repository.GroupRepository;
 import nl.b3p.tailormap.api.repository.UserRepository;
 import nl.b3p.tailormap.api.security.InternalAdminAuthentication;
+import nl.b3p.tailormap.api.solr.SolrHelper;
 import nl.b3p.tailormap.api.viewer.model.Component;
 import nl.b3p.tailormap.api.viewer.model.ComponentConfig;
+import org.apache.solr.client.solrj.impl.ConcurrentUpdateHttp2SolrClient;
+import org.apache.solr.client.solrj.impl.Http2SolrClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -92,6 +99,9 @@ public class PopulateTestData {
   @Value("${MAP5_URL:#{null}}")
   private String map5url;
 
+  @Value("${tailormap-api.solr-core-name:tailormap}")
+  private String solrCoreName;
+
   private final ApplicationContext appContext;
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
@@ -102,6 +112,7 @@ public class PopulateTestData {
   private final FeatureSourceRepository featureSourceRepository;
   private final ApplicationRepository applicationRepository;
   private final ConfigurationRepository configurationRepository;
+  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
 
   public PopulateTestData(
       ApplicationContext appContext,
@@ -112,7 +123,8 @@ public class PopulateTestData {
       GeoServiceHelper geoServiceHelper,
       FeatureSourceRepository featureSourceRepository,
       ApplicationRepository applicationRepository,
-      ConfigurationRepository configurationRepository) {
+      ConfigurationRepository configurationRepository,
+      FeatureSourceFactoryHelper featureSourceFactoryHelper) {
     this.appContext = appContext;
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
@@ -122,6 +134,7 @@ public class PopulateTestData {
     this.featureSourceRepository = featureSourceRepository;
     this.applicationRepository = applicationRepository;
     this.configurationRepository = configurationRepository;
+    this.featureSourceFactoryHelper = featureSourceFactoryHelper;
   }
 
   @EventListener(ApplicationReadyEvent.class)
@@ -133,6 +146,7 @@ public class PopulateTestData {
       // and the latest schema re-created
       createTestUsersAndGroups();
       createTestConfiguration();
+      createSolrIndex();
     } finally {
       InternalAdminAuthentication.clearSecurityContextAuthentication();
     }
@@ -143,7 +157,6 @@ public class PopulateTestData {
               () -> {
                 try {
                   Thread.sleep(5000);
-
                 } catch (InterruptedException ignored) {
                   // Ignore
                 }
@@ -629,7 +642,7 @@ public class PopulateTestData {
                               new GeoServiceLayerSettings()
                                   .description(
                                       """
-                                                  This layer shows data from http://www.postgis.net/
+                                                  This layer shows data from https://www.postgis.net/
 
                                                   https://postgis.net/logos/postgis-logo.png""")
                                   .featureType(
@@ -728,6 +741,22 @@ public class PopulateTestData {
               ft.getSettings()
                   .setSearchFields(List.of("class", "plus_fysiekvoorkomen", "bronhouder"));
               ft.getSettings().setSearchDisplayFields(List.of("class", "plus_fysiekvoorkomen"));
+            });
+
+    featureSources.get("sqlserver").getFeatureTypes().stream()
+        .filter(ft -> ft.getName().equals("wegdeel"))
+        .findFirst()
+        .ifPresent(
+            ft -> {
+              ft.getSettings()
+                  .setSearchFields(
+                      List.of(
+                          "function_",
+                          "plus_fysiekvoorkomenwegdeel",
+                          "surfacematerial",
+                          "bronhouder"));
+              ft.getSettings()
+                  .setSearchDisplayFields(List.of("function_", "plus_fysiekvoorkomenwegdeel"));
             });
 
     List<AppTreeNode> baseNodes =
@@ -1208,5 +1237,53 @@ public class PopulateTestData {
     configurationRepository.save(config);
 
     logger.info("Test entities created");
+  }
+
+  @Transactional(readOnly = true)
+  public void createSolrIndex() throws Exception {
+    if (connectToSpatialDbs) {
+      // flush() the repo because we need to make sure feature type testdata is fully stored
+      // before creating the Solr index (which requires access to the feature type settings)
+      featureSourceRepository.flush();
+
+      logger.info("Creating Solr index");
+      @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
+      final String solrUrl =
+          "http://"
+              + (connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "solr")
+              + ":8983/solr/"
+              + solrCoreName;
+      SolrHelper solrHelper =
+          new SolrHelper(
+              new ConcurrentUpdateHttp2SolrClient.Builder(
+                      solrUrl,
+                      new Http2SolrClient.Builder()
+                          .useHttp1_1(true)
+                          .withFollowRedirects(true)
+                          .withConnectionTimeout(10000, TimeUnit.MILLISECONDS)
+                          .withRequestTimeout(60000, TimeUnit.MILLISECONDS)
+                          .build())
+                  .withQueueSize(SolrHelper.SOLR_BATCH_SIZE * 2)
+                  .withThreadCount(10)
+                  .build(),
+              featureSourceFactoryHelper);
+
+      final String serviceId = "snapshot-geoserver";
+      GeoService geoService = geoServiceRepository.findById(serviceId).orElseThrow();
+      GeoServiceLayer layer = geoService.findLayer("postgis:begroeidterreindeel");
+      TMFeatureType tmFeatureType =
+          geoService.findFeatureTypeForLayer(layer, featureSourceRepository);
+
+      layer = geoService.findLayer("sqlserver:wegdeel");
+      TMFeatureType tmFeatureType2 =
+          geoService.findFeatureTypeForLayer(layer, featureSourceRepository);
+
+      try (solrHelper) {
+        solrHelper.addFeatureTypeIndexForLayer(
+            SolrHelper.getIndexLayerId(serviceId, "postgis:begroeidterreindeel"), tmFeatureType);
+        solrHelper.addFeatureTypeIndexForLayer(
+            SolrHelper.getIndexLayerId(serviceId, "sqlserver:wegdeel"), tmFeatureType2);
+      }
+    }
   }
 }

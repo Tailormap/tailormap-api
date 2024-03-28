@@ -1,7 +1,6 @@
 # Copyright (C) 2022 B3Partners B.V.
 #
 # SPDX-License-Identifier: MIT
-version: '3.9'
 name: 'tailormap-ci'
 
 volumes:
@@ -80,8 +79,7 @@ services:
   oracle:
     container_name: oracle
     image: docker.b3p.nl/b3partners/tailormap-data_oracle:snapshot
-    environment:
-      # Note Oracle has default maximum password length of 16!
+    environment: # Note Oracle has default maximum password length of 16!
       ORACLE_PASSWORD: ${ORACLE_PASSWORD:-fa6efb5b-075b-4b}
       # this user is created in XEPDB1, not in XE
       APP_USER: "geodata"
@@ -128,6 +126,9 @@ services:
     container_name: solr-status
     depends_on:
       - solr
+    profiles:
+      # in the CI scenario, we don't want to run the solr-exporter
+      - monitoring-enabled
     image: solr:latest
     ports:
       - "127.0.0.1:9854:9854"
@@ -138,5 +139,8 @@ services:
       PORT: 9854
       SCRAPE_INTERVAL: 15
       SOLR_URL: http://solr:8983/solr/
+    restart: unless-stopped
     command:
-      - /opt/solr-9.5.0/prometheus-exporter/bin/solr-exporter
+      # this script should be in the path for the current user
+      # /opt/solr-9.5.0/prometheus-exporter/bin/solr-exporter
+      - solr-exporter

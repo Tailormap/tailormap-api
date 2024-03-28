@@ -8,24 +8,29 @@ package nl.b3p.tailormap.api.solr;
 import nl.b3p.tailormap.api.util.Constants;
 import org.apache.solr.client.solrj.beans.Field;
 
-public class FeatureDocument implements Constants {
-  @Field(value = "id")
-  private final String __fid;
+public class FeatureIndexingDocument implements Constants {
+  @Field(value = ID)
+  @SuppressWarnings("unused")
+  private final String fid;
 
   @Field(value = SEARCH_LAYER)
+  @SuppressWarnings("unused")
   private final String searchLayer;
 
   @Field(value = INDEX_SEARCH_FIELD)
+  @SuppressWarnings("unused")
   private String[] searchFields;
 
   @Field(value = INDEX_DISPLAY_FIELD)
+  @SuppressWarnings("unused")
   private String[] displayFields;
 
   @Field(value = INDEX_GEOM_FIELD)
+  @SuppressWarnings("unused")
   private String geometry;
 
-  public FeatureDocument(String __fid, String searchLayerId) {
-    this.__fid = __fid;
+  public FeatureIndexingDocument(String fid, String searchLayerId) {
+    this.fid = fid;
     this.searchLayer = searchLayerId;
   }
 

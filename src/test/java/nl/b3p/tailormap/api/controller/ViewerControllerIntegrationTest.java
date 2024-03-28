@@ -167,7 +167,7 @@ class ViewerControllerIntegrationTest {
             // Application layer description
             jsonPath(
                     "$.appLayers[?(@.id === 'lyr:snapshot-geoserver:postgis:begroeidterreindeel')].description")
-                .value(contains(startsWith("This layer shows data from http://www.postgis.net"))));
+                .value(contains(startsWith("This layer shows data from https://www.postgis.net"))));
   }
 
   @Test
