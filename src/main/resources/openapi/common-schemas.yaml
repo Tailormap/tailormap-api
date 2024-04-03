@@ -198,8 +198,6 @@ components:
       description: 'model for a single form field'
       type: object
       properties:
-        id:
-          type: string
         name:
           type: string
         label:
@@ -213,6 +211,7 @@ components:
             - select
             - textarea
             - date
+            - timestamp
         tab:
           type: string
           nullable: true
@@ -231,10 +230,7 @@ components:
             title: FormFieldValue
             properties:
               value:
-                oneOf:
-                  - type: string
-                  - type: integer
-                  - type: boolean
+                type: string
               label:
                 type: string
         allowValueListOnly:
