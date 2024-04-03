@@ -211,6 +211,7 @@ components:
             - select
             - textarea
             - date
+            - timestamp
         tab:
           type: string
           nullable: true
