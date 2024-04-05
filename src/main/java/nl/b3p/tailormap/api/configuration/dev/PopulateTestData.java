@@ -199,6 +199,9 @@ public class PopulateTestData {
     String osmAttribution =
         "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors";
 
+    Bounds rdTileGridExtent =
+        new Bounds().minx(-285401.92).maxx(595401.92).miny(22598.08).maxy(903401.92);
+
     Collection<GeoService> services =
         List.of(
             new GeoService()
@@ -322,6 +325,7 @@ public class PopulateTestData {
                                 "xyz",
                                 new GeoServiceLayerSettings()
                                     .maxZoom(15)
+                                    .tileGridExtent(rdTileGridExtent)
                                     .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERTILEPIXELRATIOONLY)
                                     .hiDpiSubstituteLayer(
                                         "https://openbasiskaart.nl/mapcache/tms/1.0.0/osm-hq@rd-hq/{z}/{x}/{-y}.png")))),
@@ -361,6 +365,7 @@ public class PopulateTestData {
                                 "xyz",
                                 new GeoServiceLayerSettings()
                                     .maxZoom(14)
+                                    .tileGridExtent(rdTileGridExtent)
                                     .hiDpiMode(TileLayerHiDpiMode.SHOWNEXTZOOMLEVEL)))),
             new GeoService()
                 .setId("at-basemap")
