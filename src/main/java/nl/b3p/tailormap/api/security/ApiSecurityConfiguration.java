@@ -59,7 +59,13 @@ public class ApiSecurityConfiguration {
     CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
     // Allow cross-domain non-GET (unsafe) requests for embedding with an iframe
     csrfTokenRepository.setCookieCustomizer(
-        cookieCustomizer -> cookieCustomizer.sameSite(Cookie.SameSite.NONE.attributeValue()));
+        cookieCustomizer -> {
+          // Do not set SameSite=None when testing with HTTP instead of HTTPS
+          // Ideally use HttpServletRequest.isSecure(), but look at built cookie for now...
+          if (cookieCustomizer.build().isSecure()) {
+            cookieCustomizer.sameSite(Cookie.SameSite.NONE.attributeValue());
+          }
+        });
     return csrfTokenRepository;
   }
 
