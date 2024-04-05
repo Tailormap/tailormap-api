@@ -16,6 +16,7 @@ import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.repository.GroupRepository;
 import nl.b3p.tailormap.api.repository.OIDCConfigurationRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.server.Cookie;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -52,17 +53,19 @@ public class ApiSecurityConfiguration {
 
   @Bean
   public CookieCsrfTokenRepository csrfTokenRepository() {
-    // Note: CSRF protection only required when using cookies for authentication. This requires an
-    // X-XSRF-TOKEN header read from the XSRF-TOKEN cookie by JavaScript so set HttpOnly to false.
-    // Angular has automatic XSRF protection support:
+    // Spring CSRF protection requires an X-XSRF-TOKEN header read from the XSRF-TOKEN cookie by
+    // JavaScript so set HttpOnly to false. Angular has automatic XSRF protection support:
     // https://angular.io/guide/http#security-xsrf-protection
     CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
-    csrfTokenRepository.setCookiePath("/");
+    // Allow cross-domain non-GET (unsafe) requests for embedding with an iframe
+    csrfTokenRepository.setCookieCustomizer(
+        cookieCustomizer -> cookieCustomizer.sameSite(Cookie.SameSite.NONE.attributeValue()));
     return csrfTokenRepository;
   }
 
   @Bean
-  public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain apiFilterChain(
+      HttpSecurity http, CookieCsrfTokenRepository csrfTokenRepository) throws Exception {
 
     // Disable CSRF protection for development with HAL explorer
     // https://github.com/spring-projects/spring-data-rest/issues/1347
@@ -73,7 +76,7 @@ public class ApiSecurityConfiguration {
       http.csrf(
           csrf ->
               csrf.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-                  .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
+                  .csrfTokenRepository(csrfTokenRepository));
       http.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
     }
 
