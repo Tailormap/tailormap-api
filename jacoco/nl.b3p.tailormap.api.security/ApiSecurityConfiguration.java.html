@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ApiSecurityConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.security</a> &gt; <span class="el_source">ApiSecurityConfiguration.java</span></div><h1>ApiSecurityConfiguration.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2022 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.security;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import nl.b3p.tailormap.api.persistence.Group;
+import nl.b3p.tailormap.api.repository.GroupRepository;
+import nl.b3p.tailormap.api.repository.OIDCConfigurationRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.server.Cookie;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+<span class="nc" id="L44">public class ApiSecurityConfiguration {</span>
+  @Value(&quot;${tailormap-api.base-path}&quot;)
+  private String apiBasePath;
+
+  @Value(&quot;${tailormap-api.admin.base-path}&quot;)
+  private String adminApiBasePath;
+
+  @Value(&quot;${tailormap-api.security.disable-csrf:false}&quot;)
+  private boolean disableCsrf;
+
+  @Bean
+  public CookieCsrfTokenRepository csrfTokenRepository() {
+    // Spring CSRF protection requires an X-XSRF-TOKEN header read from the XSRF-TOKEN cookie by
+    // JavaScript so set HttpOnly to false. Angular has automatic XSRF protection support:
+    // https://angular.io/guide/http#security-xsrf-protection
+<span class="nc" id="L59">    CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();</span>
+    // Allow cross-domain non-GET (unsafe) requests for embedding with an iframe
+<span class="nc" id="L61">    csrfTokenRepository.setCookieCustomizer(</span>
+        cookieCustomizer -&gt; {
+          // Do not set SameSite=None when testing with HTTP instead of HTTPS
+          // Ideally use HttpServletRequest.isSecure(), but look at built cookie for now...
+<span class="nc bnc" id="L65" title="All 2 branches missed.">          if (cookieCustomizer.build().isSecure()) {</span>
+<span class="nc" id="L66">            cookieCustomizer.sameSite(Cookie.SameSite.NONE.attributeValue());</span>
+          }
+<span class="nc" id="L68">        });</span>
+<span class="nc" id="L69">    return csrfTokenRepository;</span>
+  }
+
+  @Bean
+  public SecurityFilterChain apiFilterChain(
+      HttpSecurity http, CookieCsrfTokenRepository csrfTokenRepository) throws Exception {
+
+    // Disable CSRF protection for development with HAL explorer
+    // https://github.com/spring-projects/spring-data-rest/issues/1347
+<span class="nc bnc" id="L78" title="All 2 branches missed.">    if (disableCsrf) {</span>
+<span class="nc" id="L79">      http.csrf(AbstractHttpConfigurer::disable);</span>
+    } else {
+      // https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
+<span class="nc" id="L82">      http.csrf(</span>
+          csrf -&gt;
+<span class="nc" id="L84">              csrf.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())</span>
+<span class="nc" id="L85">                  .csrfTokenRepository(csrfTokenRepository));</span>
+<span class="nc" id="L86">      http.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);</span>
+    }
+
+    // Before redirecting the user to the OAuth2 authorization endpoint, store the requested
+    // redirect URL.
+<span class="nc" id="L91">    RedirectStrategy redirectStrategy =</span>
+<span class="nc" id="L92">        new DefaultRedirectStrategy() {</span>
+          @Override
+          public void sendRedirect(
+              HttpServletRequest request, HttpServletResponse response, String url)
+              throws IOException {
+<span class="nc" id="L97">            String redirectUrl = request.getParameter(&quot;redirectUrl&quot;);</span>
+<span class="nc bnc" id="L98" title="All 4 branches missed.">            if (redirectUrl != null &amp;&amp; redirectUrl.startsWith(&quot;/&quot;)) {</span>
+<span class="nc" id="L99">              request.getSession().setAttribute(&quot;redirectUrl&quot;, redirectUrl);</span>
+            }
+<span class="nc" id="L101">            super.sendRedirect(request, response, url);</span>
+<span class="nc" id="L102">          }</span>
+        };
+
+    // When OAuth2 authentication succeeds, use the redirect URL stored in the session to send them
+    // back.
+<span class="nc" id="L107">    AuthenticationSuccessHandler authenticationSuccessHandler =</span>
+        (request, response, authentication) -&gt; {
+<span class="nc" id="L109">          HttpSession session = request.getSession(false);</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">          if (session != null) {</span>
+<span class="nc" id="L111">            String redirectUrl = (String) session.getAttribute(&quot;redirectUrl&quot;);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            if (redirectUrl != null) {</span>
+<span class="nc" id="L113">              response.sendRedirect(redirectUrl);</span>
+<span class="nc" id="L114">              return;</span>
+            }
+          }
+<span class="nc" id="L117">          response.sendRedirect(&quot;/&quot;);</span>
+<span class="nc" id="L118">        };</span>
+
+<span class="nc" id="L120">    http.securityMatchers(matchers -&gt; matchers.requestMatchers(apiBasePath + &quot;/**&quot;))</span>
+<span class="nc" id="L121">        .addFilterAfter(</span>
+            /* (debug) log user making the request */ new AuditInterceptor(),
+            AnonymousAuthenticationFilter.class)
+<span class="nc" id="L124">        .authorizeHttpRequests(</span>
+            authorize -&gt; {
+<span class="nc" id="L126">              authorize.requestMatchers(adminApiBasePath + &quot;/**&quot;).hasAuthority(Group.ADMIN);</span>
+<span class="nc" id="L127">              authorize.requestMatchers(apiBasePath + &quot;/**&quot;).permitAll();</span>
+<span class="nc" id="L128">            })</span>
+<span class="nc" id="L129">        .formLogin(</span>
+            formLogin -&gt;
+<span class="nc" id="L131">                formLogin</span>
+<span class="nc" id="L132">                    .loginPage(apiBasePath + &quot;/unauthorized&quot;)</span>
+<span class="nc" id="L133">                    .loginProcessingUrl(apiBasePath + &quot;/login&quot;))</span>
+<span class="nc" id="L134">        .oauth2Login(</span>
+            login -&gt;
+<span class="nc" id="L136">                login</span>
+<span class="nc" id="L137">                    .authorizationEndpoint(</span>
+                        endpoint -&gt;
+<span class="nc" id="L139">                            endpoint</span>
+<span class="nc" id="L140">                                .baseUri(apiBasePath + &quot;/oauth2/authorization&quot;)</span>
+<span class="nc" id="L141">                                .authorizationRedirectStrategy(redirectStrategy))</span>
+<span class="nc" id="L142">                    .redirectionEndpoint(</span>
+<span class="nc" id="L143">                        endpoint -&gt; endpoint.baseUri(apiBasePath + &quot;/oauth2/callback&quot;))</span>
+<span class="nc" id="L144">                    .successHandler(authenticationSuccessHandler))</span>
+<span class="nc" id="L145">        .anonymous(anonymous -&gt; anonymous.authorities(Group.ANONYMOUS))</span>
+<span class="nc" id="L146">        .logout(</span>
+            logout -&gt;
+<span class="nc" id="L148">                logout</span>
+<span class="nc" id="L149">                    .logoutUrl(apiBasePath + &quot;/logout&quot;)</span>
+<span class="nc" id="L150">                    .logoutSuccessHandler(</span>
+                        (request, response, authentication) -&gt;
+<span class="nc" id="L152">                            response.sendError(HttpStatus.OK.value(), &quot;OK&quot;)));</span>
+<span class="nc" id="L153">    return http.build();</span>
+  }
+
+  @Bean
+  public OIDCRepository clientRegistrationRepository(OIDCConfigurationRepository repository) {
+<span class="nc" id="L158">    return new OIDCRepository(repository);</span>
+  }
+
+  @Bean
+  public GrantedAuthoritiesMapper userAuthoritiesMapper(GroupRepository repository) {
+<span class="nc" id="L163">    return (authorities) -&gt; {</span>
+<span class="nc" id="L164">      Set&lt;GrantedAuthority&gt; mappedAuthorities = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L165">      Set&lt;String&gt; wantedGroups = new HashSet&lt;&gt;();</span>
+
+      try {
+<span class="nc" id="L168">        authorities.forEach(</span>
+            authority -&gt; {
+<span class="nc" id="L170">              mappedAuthorities.add(authority);</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">              if (authority instanceof OidcUserAuthority oidcUserAuthority) {</span>
+<span class="nc" id="L172">                OidcIdToken idToken = oidcUserAuthority.getIdToken();</span>
+
+<span class="nc" id="L174">                List&lt;String&gt; roles = idToken.getClaimAsStringList(&quot;roles&quot;);</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">                if (roles != null) {</span>
+<span class="nc" id="L176">                  wantedGroups.addAll(roles);</span>
+                }
+              }
+<span class="nc" id="L179">            });</span>
+
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        for (String groupName : wantedGroups) {</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">          if (repository.findById(groupName).isEmpty()) {</span>
+<span class="nc" id="L183">            Group group = new Group();</span>
+<span class="nc" id="L184">            group.setName(groupName);</span>
+<span class="nc" id="L185">            group.setDescription(&quot;&lt;imported from SSO&gt;&quot;);</span>
+<span class="nc" id="L186">            repository.save(group);</span>
+          }
+
+<span class="nc" id="L189">          mappedAuthorities.add(new SimpleGrantedAuthority(groupName));</span>
+<span class="nc" id="L190">        }</span>
+<span class="nc" id="L191">      } catch (Exception e) {</span>
+        // Ignore
+<span class="nc" id="L193">      }</span>
+
+<span class="nc" id="L195">      return mappedAuthorities;</span>
+    };
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
