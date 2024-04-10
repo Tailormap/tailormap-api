@@ -82,7 +82,10 @@ public class ApiSecurityConfiguration {
       http.csrf(
           csrf ->
               csrf.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-                  .csrfTokenRepository(csrfTokenRepository));
+                  .csrfTokenRepository(csrfTokenRepository)
+                  // This uses POST for large filter in body, but is safe (read-only)
+                  .ignoringRequestMatchers(
+                      apiBasePath + "/{viewerKind}/{viewerName}/layer/{appLayerId}/features"));
       http.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
     }
 
