@@ -14,13 +14,12 @@ import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.util.concurrent.TimeUnit;
 import nl.b3p.tailormap.api.annotation.AppRestController;
-import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
-import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.SearchIndex;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
-import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
+import nl.b3p.tailormap.api.repository.SearchIndexRepository;
 import nl.b3p.tailormap.api.solr.SolrHelper;
 import nl.b3p.tailormap.api.viewer.model.SearchResponse;
 import org.apache.solr.client.solrj.SolrClient;
@@ -48,9 +47,8 @@ import org.springframework.web.server.ResponseStatusException;
 public class SearchController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
 
-  private final FeatureSourceRepository featureSourceRepository;
+  private final SearchIndexRepository searchIndexRepository;
 
   @Value("${tailormap-api.solr-url}")
   private String solrUrl;
@@ -61,11 +59,8 @@ public class SearchController {
   @Value("${tailormap-api.pageSize:100}")
   private int numResultsToReturn;
 
-  public SearchController(
-      FeatureSourceFactoryHelper featureSourceFactoryHelper,
-      FeatureSourceRepository featureSourceRepository) {
-    this.featureSourceFactoryHelper = featureSourceFactoryHelper;
-    this.featureSourceRepository = featureSourceRepository;
+  public SearchController(SearchIndexRepository searchIndexRepository) {
+    this.searchIndexRepository = searchIndexRepository;
   }
 
   @Transactional(readOnly = true)
@@ -77,27 +72,28 @@ public class SearchController {
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,
       @ModelAttribute Application application,
-      @RequestParam(required = false) final String q,
+      @RequestParam(required = false, name = "q") final String solrQuery,
       @RequestParam(required = false, defaultValue = "0") Integer start) {
 
     if (layer == null) {
       throw new ResponseStatusException(
-          HttpStatus.NOT_FOUND, "Can't find layer " + appTreeLayerNode);
+          HttpStatus.NOT_FOUND, "Can't find layer " + appTreeLayerNode.getLayerName());
     }
-    TMFeatureType tmFeatureType = service.findFeatureTypeForLayer(layer, featureSourceRepository);
-    if (tmFeatureType == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Layer does not have feature type");
-    }
+
+    final SearchIndex searchIndex =
+        service
+            .findSearchIndexForLayer(layer, searchIndexRepository)
+            .orElseThrow(
+                () ->
+                    new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Layer '%s' does not have a search index"
+                            .formatted(appTreeLayerNode.getLayerName())));
 
     try (SolrClient solrClient = getSolrClient();
-        SolrHelper solrHelper = new SolrHelper(solrClient, featureSourceFactoryHelper)) {
+        SolrHelper solrHelper = new SolrHelper(solrClient)) {
       final SearchResponse searchResponse =
-          solrHelper.findInIndex(
-              SolrHelper.getIndexLayerId(service.getId(), layer.getName()),
-              q,
-              start,
-              numResultsToReturn);
-
+          solrHelper.findInIndex(searchIndex, solrQuery, start, numResultsToReturn);
       return (null == searchResponse.getDocuments() || searchResponse.getDocuments().isEmpty())
           ? ResponseEntity.noContent().build()
           : ResponseEntity.ok().body(searchResponse);

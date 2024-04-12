@@ -26,6 +26,7 @@ import nl.b3p.tailormap.api.persistence.Catalog;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.Group;
+import nl.b3p.tailormap.api.persistence.SearchIndex;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.User;
@@ -43,10 +44,10 @@ import nl.b3p.tailormap.api.persistence.json.Bounds;
 import nl.b3p.tailormap.api.persistence.json.CatalogNode;
 import nl.b3p.tailormap.api.persistence.json.FeatureTypeRef;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
-import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
 import nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties;
+import nl.b3p.tailormap.api.persistence.json.SearchIndexRef;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import nl.b3p.tailormap.api.persistence.json.TailormapObjectRef;
 import nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode;
@@ -56,6 +57,7 @@ import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.repository.GroupRepository;
+import nl.b3p.tailormap.api.repository.SearchIndexRepository;
 import nl.b3p.tailormap.api.repository.UserRepository;
 import nl.b3p.tailormap.api.security.InternalAdminAuthentication;
 import nl.b3p.tailormap.api.solr.SolrHelper;
@@ -112,6 +114,7 @@ public class PopulateTestData {
   private final FeatureSourceRepository featureSourceRepository;
   private final ApplicationRepository applicationRepository;
   private final ConfigurationRepository configurationRepository;
+  private final SearchIndexRepository searchIndexRepository;
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
 
   public PopulateTestData(
@@ -124,7 +127,8 @@ public class PopulateTestData {
       FeatureSourceRepository featureSourceRepository,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository,
-      FeatureSourceFactoryHelper featureSourceFactoryHelper) {
+      FeatureSourceFactoryHelper featureSourceFactoryHelper,
+      SearchIndexRepository searchIndexRepository) {
     this.appContext = appContext;
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
@@ -135,6 +139,7 @@ public class PopulateTestData {
     this.applicationRepository = applicationRepository;
     this.configurationRepository = configurationRepository;
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
+    this.searchIndexRepository = searchIndexRepository;
   }
 
   @EventListener(ApplicationReadyEvent.class)
@@ -1239,7 +1244,7 @@ public class PopulateTestData {
     logger.info("Test entities created");
   }
 
-  @Transactional(readOnly = true)
+  @Transactional
   public void createSolrIndex() throws Exception {
     if (connectToSpatialDbs) {
       // flush() the repo because we need to make sure feature type testdata is fully stored
@@ -1265,24 +1270,38 @@ public class PopulateTestData {
                           .build())
                   .withQueueSize(SolrHelper.SOLR_BATCH_SIZE * 2)
                   .withThreadCount(10)
-                  .build(),
-              featureSourceFactoryHelper);
+                  .build());
 
-      final String serviceId = "snapshot-geoserver";
-      GeoService geoService = geoServiceRepository.findById(serviceId).orElseThrow();
-      GeoServiceLayer layer = geoService.findLayer("postgis:begroeidterreindeel");
-      TMFeatureType tmFeatureType =
-          geoService.findFeatureTypeForLayer(layer, featureSourceRepository);
+      GeoService geoService = geoServiceRepository.findById("snapshot-geoserver").orElseThrow();
 
-      layer = geoService.findLayer("sqlserver:wegdeel");
-      TMFeatureType tmFeatureType2 =
-          geoService.findFeatureTypeForLayer(layer, featureSourceRepository);
+      TMFeatureType begroeidterreindeelFT =
+          geoService.findFeatureTypeForLayer(
+              geoService.findLayer("postgis:begroeidterreindeel"), featureSourceRepository);
+
+      TMFeatureType wegdeelFT =
+          geoService.findFeatureTypeForLayer(
+              geoService.findLayer("sqlserver:wegdeel"), featureSourceRepository);
 
       try (solrHelper) {
-        solrHelper.addFeatureTypeIndexForLayer(
-            SolrHelper.getIndexLayerId(serviceId, "postgis:begroeidterreindeel"), tmFeatureType);
-        solrHelper.addFeatureTypeIndexForLayer(
-            SolrHelper.getIndexLayerId(serviceId, "sqlserver:wegdeel"), tmFeatureType2);
+        SearchIndex begroeidterreindeelIndex =
+            new SearchIndex().featureTypeId(begroeidterreindeelFT.getId());
+        begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
+        solrHelper.addFeatureTypeIndex(
+            begroeidterreindeelIndex, begroeidterreindeelFT, featureSourceFactoryHelper);
+        begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
+
+        SearchIndex wegdeelIndex = new SearchIndex().featureTypeId(wegdeelFT.getId());
+        wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
+        solrHelper.addFeatureTypeIndex(wegdeelIndex, wegdeelFT, featureSourceFactoryHelper);
+        wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
+
+        geoService
+            .getLayerSettings("postgis:begroeidterreindeel")
+            .setSearchIndex(new SearchIndexRef().searchIndexId(begroeidterreindeelIndex.getId()));
+        geoService
+            .getLayerSettings("sqlserver:wegdeel")
+            .setSearchIndex(new SearchIndexRef().searchIndexId(wegdeelIndex.getId()));
+        geoServiceRepository.save(geoService);
       }
     }
   }

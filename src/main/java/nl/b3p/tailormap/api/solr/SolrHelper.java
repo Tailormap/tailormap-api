@@ -8,6 +8,9 @@ package nl.b3p.tailormap.api.solr;
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
+import nl.b3p.tailormap.api.persistence.SearchIndex;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.util.Constants;
 import nl.b3p.tailormap.api.viewer.model.SearchDocument;
@@ -45,7 +49,6 @@ import org.slf4j.LoggerFactory;
  */
 public class SolrHelper implements AutoCloseable, Constants {
   private final SolrClient solrClient;
-  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
 
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -55,48 +58,62 @@ public class SolrHelper implements AutoCloseable, Constants {
   private static final int SOLR_TIMEOUT = 7000;
 
   /**
-   * Constructor.
+   * Constructor
    *
    * @param solrClient the Solr client, this will be closed when this class is closed
-   * @param featureSourceFactoryHelper the feature source factory helper
    */
-  public SolrHelper(
-      @NotNull SolrClient solrClient,
-      @NotNull FeatureSourceFactoryHelper featureSourceFactoryHelper) {
+  public SolrHelper(@NotNull SolrClient solrClient) {
     this.solrClient = solrClient;
-    this.featureSourceFactoryHelper = featureSourceFactoryHelper;
-  }
-
-  public static String getIndexLayerId(String serviceId, String layerName) {
-    return (serviceId + "__" + layerName).replaceAll(":", "__");
   }
 
   /**
    * Add or update a feature type index for a layer.
    *
-   * @param indexLayerId the layer name, as created by using {@link #getIndexLayerId(String,
-   *     String)}
+   * @param searchIndex the search index config
    * @param tmFeatureType the feature type
    * @throws UnsupportedOperationException if the operation is not supported, possibly because not
    *     search field shave been defined
    * @throws IOException if an I/O error occurs
    * @throws SolrServerException if a Solr error occurs
    */
-  public void addFeatureTypeIndexForLayer(
-      @NotNull String indexLayerId, @NotNull TMFeatureType tmFeatureType)
+  @SuppressWarnings("FromTemporalAccessor")
+  public void addFeatureTypeIndex(
+      @NotNull SearchIndex searchIndex,
+      @NotNull TMFeatureType tmFeatureType,
+      @NotNull FeatureSourceFactoryHelper featureSourceFactoryHelper)
       throws UnsupportedOperationException, IOException, SolrServerException {
 
     createSchemaIfNotExists();
-    if (null == tmFeatureType) {
+
+    final Instant start = Instant.now();
+
+    if (null == tmFeatureType.getSettings().getSearchFields()) {
+      logger.warn("No search fields configured for featuretype: {}", tmFeatureType.getName());
       throw new UnsupportedOperationException(
-          "No Feature type found for layer id: " + indexLayerId);
+          "No search fields configured for featuretype: %s".formatted(tmFeatureType.getName()));
     }
-    List<String> searchFields = tmFeatureType.getSettings().getSearchFields();
-    List<String> displayFields = tmFeatureType.getSettings().getSearchDisplayFields();
-    if (null == searchFields || searchFields.isEmpty()) {
-      logger.info("No search fields configured for layer id: {}", indexLayerId);
+
+    // set fields while filtering out hidden fields
+    List<String> searchFields =
+        tmFeatureType.getSettings().getSearchFields().stream()
+            .filter(s -> !tmFeatureType.getSettings().getHideAttributes().contains(s))
+            .toList();
+    List<String> displayFields =
+        tmFeatureType.getSettings().getSearchDisplayFields().stream()
+            .filter(s -> !tmFeatureType.getSettings().getHideAttributes().contains(s))
+            .toList();
+
+    searchIndex
+        .searchFieldsUsed(searchFields)
+        .searchDisplayFieldsUsed(displayFields)
+        .status(SearchIndex.Status.INDEXING);
+
+    if (searchFields.isEmpty()) {
+      logger.info("No valid search fields configured for featuretype: {}", tmFeatureType.getName());
+      searchIndex.setStatus(SearchIndex.Status.ERROR);
       throw new UnsupportedOperationException(
-          "No search fields configured for layer id: " + indexLayerId);
+          "No valid search fields configured for featuretype: %s"
+              .formatted(tmFeatureType.getName()));
     }
 
     // add search and display properties to query
@@ -106,13 +123,17 @@ public class SolrHelper implements AutoCloseable, Constants {
     propertyNames.add(tmFeatureType.getDefaultGeometryAttribute());
     propertyNames.addAll(searchFields);
 
-    final boolean hasDisplayFields = displayFields != null && !displayFields.isEmpty();
+    final boolean hasDisplayFields = !displayFields.isEmpty();
     if (hasDisplayFields) {
       propertyNames.addAll(displayFields);
     }
 
-    clearIndexForLayer(indexLayerId);
-    logger.info("Indexing started for layer id: {}", indexLayerId);
+    clearIndexForLayer(searchIndex.getId());
+
+    logger.info(
+        "Indexing started for index id: {}, feature type: {}",
+        searchIndex.getId(),
+        tmFeatureType.getName());
     // collect features to index
     SimpleFeatureSource fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
     Query q = new Query(fs.getName().toString());
@@ -127,8 +148,7 @@ public class SolrHelper implements AutoCloseable, Constants {
     final int total = simpleFeatureCollection.size();
     List<FeatureIndexingDocument> docsBatch = new ArrayList<>(SOLR_BATCH_SIZE);
     // TODO this does not currently batch/page the feature source query, this doesn't seem to be an
-    // issue for now
-    //  but could be if the feature source is very large or slow e.g. WFS
+    //   issue for now but could be if the feature source is very large or slow e.g. WFS
     UpdateResponse updateResponse;
     try (SimpleFeatureIterator iterator = simpleFeatureCollection.features()) {
       int indexCounter = 0;
@@ -136,7 +156,8 @@ public class SolrHelper implements AutoCloseable, Constants {
         indexCounter++;
         SimpleFeature feature = iterator.next();
         // note that this will create a unique document
-        FeatureIndexingDocument doc = new FeatureIndexingDocument(feature.getID(), indexLayerId);
+        FeatureIndexingDocument doc =
+            new FeatureIndexingDocument(feature.getID(), searchIndex.getId());
         List<String> searchValues = new ArrayList<>();
         List<String> displayValues = new ArrayList<>();
         propertyNames.forEach(
@@ -178,6 +199,20 @@ public class SolrHelper implements AutoCloseable, Constants {
       logger.info("Added last {} documents of {} to index", docsBatch.size(), total);
       logger.debug("Update response status: {}", updateResponse.getStatus());
     }
+    final Instant end = Instant.now();
+    Duration processTime = Duration.between(start, end).abs();
+    logger.info(
+        "Indexing finished for index id: {}, featuretype: {} at {} in {}",
+        searchIndex.getId(),
+        tmFeatureType.getName(),
+        end,
+        processTime);
+    searchIndex.setComment(
+        "Indexed %s features in %s.%s seconds, started at %s"
+            .formatted(total, processTime.getSeconds(), processTime.getNano(), start));
+
+    searchIndex.setLastIndexed(end.atOffset(ZoneId.systemDefault().getRules().getOffset(end)));
+    searchIndex.setStatus(SearchIndex.Status.INDEXED);
 
     updateResponse = this.solrClient.commit();
     logger.debug("Update response status: {}", updateResponse.getStatus());
@@ -186,22 +221,23 @@ public class SolrHelper implements AutoCloseable, Constants {
   /**
    * Clear the index for a layer.
    *
-   * @param searchLayer the layer id, as created by using {@link #getIndexLayerId(String, String)}
+   * @param searchLayerId the layer id
    * @throws IOException if an I/O error occurs
    * @throws SolrServerException if a Solr error occurs
    */
-  public void clearIndexForLayer(@NotNull String searchLayer)
+  public void clearIndexForLayer(@NotNull Long searchLayerId)
       throws IOException, SolrServerException {
     QueryResponse response =
-        solrClient.query(new SolrQuery("exists(query(" + SEARCH_LAYER + ":" + searchLayer + "))"));
+        solrClient.query(
+            new SolrQuery("exists(query(" + SEARCH_LAYER + ":" + searchLayerId + "))"));
     if (response.getResults().getNumFound() > 0) {
-      logger.info("Clearing index for searchLayer {}", searchLayer);
-      UpdateResponse updateResponse = solrClient.deleteByQuery(SEARCH_LAYER + ":" + searchLayer);
+      logger.info("Clearing index for searchLayer {}", searchLayerId);
+      UpdateResponse updateResponse = solrClient.deleteByQuery(SEARCH_LAYER + ":" + searchLayerId);
       logger.debug("Update response status: {}", updateResponse.getStatus());
       updateResponse = solrClient.commit();
       logger.debug("Update response status: {}", updateResponse.getStatus());
     } else {
-      logger.info("No index to clear for layer {}", searchLayer);
+      logger.info("No index to clear for layer {}", searchLayerId);
     }
   }
 
@@ -209,9 +245,9 @@ public class SolrHelper implements AutoCloseable, Constants {
    * Search in the index for a layer. The given query is augmented to filter on the {@code
    * solrLayerId}.
    *
-   * @param solrLayerId the layer identifier, as created by using {@link #getIndexLayerId(String,
-   *     String)}
-   * @param q the query, when {@code null} or empty, the query is set to {@code *} (match all)
+   * @param searchIndex the search index
+   * @param solrQuery the query, when {@code null} or empty, the query is set to {@code *} (match
+   *     all)
    * @param start the start index, starting at 0
    * @param numResultsToReturn the number of results to return
    * @return the documents
@@ -219,19 +255,19 @@ public class SolrHelper implements AutoCloseable, Constants {
    * @throws SolrServerException if a Solr error occurs
    */
   public SearchResponse findInIndex(
-      @NotNull String solrLayerId, String q, int start, int numResultsToReturn)
+      @NotNull SearchIndex searchIndex, String solrQuery, int start, int numResultsToReturn)
       throws IOException, SolrServerException, SolrException {
-    logger.info("Find in index for {}", solrLayerId);
-    if (null == q || q.isBlank()) {
-      q = "*";
+    logger.info("Find in index for {}", searchIndex.getId());
+    if (null == solrQuery || solrQuery.isBlank()) {
+      solrQuery = "*";
     }
     final SolrQuery query =
-        new SolrQuery(INDEX_SEARCH_FIELD + ":" + q)
+        new SolrQuery(INDEX_SEARCH_FIELD + ":" + solrQuery)
             .setShowDebugInfo(logger.isDebugEnabled())
             .setTimeAllowed(SOLR_TIMEOUT)
             .setIncludeScore(true)
             .setFields(SEARCH_ID_FIELD, INDEX_DISPLAY_FIELD, INDEX_GEOM_FIELD)
-            .addFilterQuery(SEARCH_LAYER + ":" + solrLayerId)
+            .addFilterQuery(SEARCH_LAYER + ":" + searchIndex.getId())
             .setSort("score", SolrQuery.ORDER.desc)
             .addSort(SEARCH_ID_FIELD, SolrQuery.ORDER.asc)
             .setRows(numResultsToReturn)

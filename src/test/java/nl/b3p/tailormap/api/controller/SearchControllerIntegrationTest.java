@@ -142,7 +142,7 @@ class SearchControllerIntegrationTest implements Constants {
                 .accept(MediaType.APPLICATION_JSON)
                 .with(setServletPath(url))
                 .param("q", "bestaan*"))
-        .andExpect(status().isNoContent());
+        .andExpect(status().isNotFound());
   }
 
   @Test
@@ -177,7 +177,7 @@ class SearchControllerIntegrationTest implements Constants {
                 .param("q", "bestaan*"))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.message").value("Layer does not have feature type"));
+        .andExpect(jsonPath("$.message").value("Layer 'BGT' does not have a search index"));
   }
 
   @Test

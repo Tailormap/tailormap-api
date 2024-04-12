@@ -354,6 +354,8 @@ components:
           type: boolean
         featureType:
           $ref: '#/components/schemas/FeatureTypeRef'
+        searchIndex:
+          $ref: '#/components/schemas/SearchIndexRef'
         attribution:
           description: 'Attribution to show for this layer.'
           nullable: true
@@ -366,6 +368,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthorizationRule'
+
+    SearchIndexRef:
+      description: Reference (by id) to a search index.
+      required:
+        - SearchIndexId
+      properties:
+        searchIndexId:
+          type: integer
+          format: int64
+          nullable: false
+          uniqueItems: true
 
     FeatureTypeRef:
       required: [featureSourceId, featureTypeName]

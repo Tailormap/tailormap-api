@@ -15,7 +15,7 @@ public class FeatureIndexingDocument implements Constants {
 
   @Field(value = SEARCH_LAYER)
   @SuppressWarnings("unused")
-  private final String searchLayer;
+  private final Long searchLayer;
 
   @Field(value = INDEX_SEARCH_FIELD)
   @SuppressWarnings("unused")
@@ -29,7 +29,7 @@ public class FeatureIndexingDocument implements Constants {
   @SuppressWarnings("unused")
   private String geometry;
 
-  public FeatureIndexingDocument(String fid, String searchLayerId) {
+  public FeatureIndexingDocument(String fid, Long searchLayerId) {
     this.fid = fid;
     this.searchLayer = searchLayerId;
   }

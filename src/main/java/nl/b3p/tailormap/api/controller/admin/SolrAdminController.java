@@ -13,12 +13,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
-import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.SearchIndex;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
+import nl.b3p.tailormap.api.repository.FeatureTypeRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
+import nl.b3p.tailormap.api.repository.SearchIndexRepository;
 import nl.b3p.tailormap.api.solr.SolrHelper;
 import nl.b3p.tailormap.api.viewer.model.ErrorResponse;
 import org.apache.solr.client.solrj.SolrClient;
@@ -55,16 +58,21 @@ public class SolrAdminController {
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
 
   private final FeatureSourceRepository featureSourceRepository;
-
+  private final FeatureTypeRepository featureTypeRepository;
   private final GeoServiceRepository geoServiceRepository;
+  private final SearchIndexRepository searchIndexRepository;
 
   public SolrAdminController(
       FeatureSourceFactoryHelper featureSourceFactoryHelper,
       FeatureSourceRepository featureSourceRepository,
-      GeoServiceRepository geoServiceRepository) {
+      FeatureTypeRepository featureTypeRepository,
+      GeoServiceRepository geoServiceRepository,
+      SearchIndexRepository searchIndexRepository) {
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
     this.featureSourceRepository = featureSourceRepository;
+    this.featureTypeRepository = featureTypeRepository;
     this.geoServiceRepository = geoServiceRepository;
+    this.searchIndexRepository = searchIndexRepository;
   }
 
   /**
@@ -87,7 +95,9 @@ public class SolrAdminController {
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(example = "{\"message\":\"Some error message..\",\"code\":500}")))
-  @GetMapping(path = "${tailormap-api.admin.base-path}/index/ping")
+  @GetMapping(
+      path = "${tailormap-api.admin.base-path}/index/ping",
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> pingSolr() {
     try (SolrClient solrClient = getSolrClient()) {
       final SolrPingResponse ping = solrClient.ping();
@@ -108,6 +118,11 @@ public class SolrAdminController {
     }
   }
 
+  /**
+   * Get a concurrent update Solr client for bulk operations.
+   *
+   * @return the Solr client
+   */
   private SolrClient getSolrClient() {
     return new ConcurrentUpdateHttp2SolrClient.Builder(
             solrUrl + solrCoreName,
@@ -124,8 +139,7 @@ public class SolrAdminController {
   /**
    * (re-) Index a layer.
    *
-   * @param geoserviceId the geoservice id
-   * @param layerId the layer id
+   * @param searchIndexId the searchIndex id
    * @return the response entity (accepted or an error response)
    */
   @Operation(
@@ -151,30 +165,34 @@ public class SolrAdminController {
               schema = @Schema(example = "{\"message\":\"Some error message..\",\"code\":500}")))
   @Transactional
   @Timed(value = "index_feature_type", description = "time spent to index feature type")
-  @PutMapping(path = "${tailormap-api.admin.base-path}/index/{geoserviceId}/{layerId}")
-  public ResponseEntity<?> index(@PathVariable String geoserviceId, @PathVariable String layerId) {
-    GeoService geoService =
-        geoServiceRepository
-            .findById(geoserviceId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    TMFeatureType tmFeatureType =
-        geoService.findFeatureTypeForLayer(geoService.findLayer(layerId), featureSourceRepository);
-    if (tmFeatureType == null) {
+  @PutMapping(
+      path = "${tailormap-api.admin.base-path}/index/{searchIndexId}",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<?> index(@PathVariable Long searchIndexId) {
 
-      return ResponseEntity.status(HttpStatus.NOT_FOUND)
-          .contentType(MediaType.APPLICATION_JSON)
-          .body(
-              new ErrorResponse()
-                  .message("Layer does not have feature type")
-                  .code(HttpStatus.NOT_FOUND.value()));
-    }
+    SearchIndex searchIndex =
+        searchIndexRepository
+            .findById(searchIndexId)
+            .orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Search index not found"));
 
+    TMFeatureType indexingFT =
+        featureTypeRepository
+            .findById(searchIndex.getFeatureTypeId())
+            .orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Feature type not found"));
+
+    boolean createNewIndex =
+        (null == searchIndex.getLastIndexed()
+            || searchIndex.getStatus() == SearchIndex.Status.INITIAL);
     try (SolrClient solrClient = getSolrClient();
-        SolrHelper solrHelper = new SolrHelper(solrClient, featureSourceFactoryHelper)) {
-      solrHelper.addFeatureTypeIndexForLayer(
-          SolrHelper.getIndexLayerId(geoserviceId, layerId), tmFeatureType);
+        SolrHelper solrHelper = new SolrHelper(solrClient)) {
+      solrHelper.addFeatureTypeIndex(searchIndex, indexingFT, featureSourceFactoryHelper);
+      searchIndexRepository.save(searchIndex);
     } catch (UnsupportedOperationException | IOException | SolrServerException | SolrException e) {
       logger.error("Error indexing", e);
+      searchIndex.setStatus(SearchIndex.Status.ERROR);
+      searchIndexRepository.save(searchIndex);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
           .contentType(MediaType.APPLICATION_JSON)
           .body(
@@ -183,23 +201,26 @@ public class SolrAdminController {
                   .code(HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
 
-    logger.info("Indexing finished");
-    // TODO if created return 201 if updated return 204
-    return ResponseEntity.accepted().build();
+    if (createNewIndex) {
+      logger.info("Created new index for search index {}", searchIndexId);
+      return ResponseEntity.status(HttpStatus.CREATED).build();
+    } else {
+      logger.info("Updated index for search index {}", searchIndexId);
+      return ResponseEntity.accepted().build();
+    }
   }
 
   /**
-   * Clear index for the given service and layer. Since deleting a non-existing index is a no-op,
-   * this will not cause an error and return.
+   * Clear an index; does not remove the {@link SearchIndex} metadata.
    *
-   * @param geoserviceId the geoservice id
-   * @param layerName the layer id
+   * @param searchIndexId the searchindex id
    * @return the response entity ({@code 204 NOCONTENT} or an error response)
    */
   @Operation(
       summary = "Clear index for a feature type",
-      description = "Clear index for the feature type associated with a layer")
+      description = "Clear index for the feature type")
   @ApiResponse(responseCode = "204", description = "Index cleared")
+  @ApiResponse(responseCode = "404", description = "Index not configured for feature type")
   @ApiResponse(
       responseCode = "500",
       description = "Error while clearing index",
@@ -208,14 +229,26 @@ public class SolrAdminController {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(example = "{\"message\":\"Some error message..\",\"code\":500}")))
   @Timed(value = "index_delete", description = "time spent to delete an index of a feature type")
-  @DeleteMapping(path = "${tailormap-api.admin.base-path}/index/{geoserviceId}/{layerName}")
-  public ResponseEntity<?> clearIndex(
-      @PathVariable String geoserviceId, @PathVariable String layerName) {
+  @DeleteMapping(
+      path = "${tailormap-api.admin.base-path}/index/{searchIndexId}",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  @Transactional
+  public ResponseEntity<?> clearIndex(@PathVariable Long searchIndexId) {
     try (SolrClient solrClient = getSolrClient();
-        SolrHelper solrHelper = new SolrHelper(solrClient, featureSourceFactoryHelper)) {
-      solrHelper.clearIndexForLayer(SolrHelper.getIndexLayerId(geoserviceId, layerName));
-    } catch (IOException | SolrServerException e) {
-      logger.error("Error clearing index", e);
+        SolrHelper solrHelper = new SolrHelper(solrClient)) {
+      solrHelper.clearIndexForLayer(searchIndexId);
+      // do not delete the SearchIndex metadata object
+      // searchIndexRepository.findById(searchIndexId).ifPresent(searchIndexRepository::delete);
+      SearchIndex searchIndex =
+          searchIndexRepository
+              .findById(searchIndexId)
+              .orElseThrow(
+                  () ->
+                      new ResponseStatusException(HttpStatus.NOT_FOUND, "Search index not found"));
+      searchIndex.lastIndexed(null).status(SearchIndex.Status.INITIAL).setComment("Index cleared");
+      searchIndexRepository.save(searchIndex);
+    } catch (IOException | SolrServerException | NoSuchElementException e) {
+      logger.warn("Error clearing index", e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
           .contentType(MediaType.APPLICATION_JSON)
           .body(
@@ -224,7 +257,7 @@ public class SolrAdminController {
                   .code(HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
 
-    logger.info("Index cleared for layer {}:{}", geoserviceId, layerName);
+    logger.info("Index cleared for index {}", searchIndexId);
     return ResponseEntity.noContent().build();
   }
 }

@@ -5,7 +5,6 @@
  */
 package nl.b3p.tailormap.api.controller.admin;
 
-import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -67,12 +66,12 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void deleteNonExistentLayerFromIndex() throws Exception {
+  void deleteNonExistentIndex() throws Exception {
     mockMvc
         .perform(
-            delete(adminBasePath + "/index/snapshot-geoserver/doesnotexist")
+            delete(adminBasePath + "/index/snapshot-geoserver/1000")
                 .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNoContent());
+        .andExpect(status().isNotFound());
   }
 
   @Test
@@ -80,11 +79,11 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @Order(2)
-  void addPostgisLayerToIndex() throws Exception {
+  @Order(1)
+  void refreshIndex1() throws Exception {
     mockMvc
         .perform(
-            put(adminBasePath + "/index/snapshot-geoserver/postgis:begroeidterreindeel")
+            put(adminBasePath + "/index/1")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted());
@@ -95,13 +94,23 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @Order(1)
-  void deletePostgisLayerFromIndex() throws Exception {
+  @Order(2)
+  void clearIndex1() throws Exception {
     mockMvc
-        .perform(
-            delete(adminBasePath + "/index/snapshot-geoserver/postgis:begroeidterreindeel")
-                .accept(MediaType.APPLICATION_JSON))
+        .perform(delete(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {Group.ADMIN})
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @Order(3)
+  void recreateIndex1() throws Exception {
+    mockMvc
+        .perform(put(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
   }
 
   @Test
@@ -110,29 +119,12 @@ class SolrAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(1)
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void indexOracleLayerWithoutSearchFields() throws Exception {
+  void indexWithoutSearchIndexConfigured() throws Exception {
     mockMvc
         .perform(
-            put(adminBasePath + "/index/snapshot-geoserver/oracle:WATERDEEL")
+            put(adminBasePath + "/index/100")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isInternalServerError())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(
-            jsonPath("$.message").value(startsWith("No search fields configured for layer")));
-  }
-
-  @Test
-  @WithMockUser(
-      username = "tm-admin",
-      authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @Order(2)
-  void deleteOracleLayerFromIndex() throws Exception {
-    mockMvc
-        .perform(
-            delete(adminBasePath + "/index/snapshot-geoserver/oracle:WATERDEEL")
-                .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNoContent());
+        .andExpect(status().isNotFound());
   }
 }
