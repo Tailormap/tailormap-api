@@ -124,7 +124,7 @@ SPDX-License-Identifier: MIT
         <postgresql.version>42.7.3</postgresql.version>
         <!-- <snakeyaml.version>2.2</snakeyaml.version>-->
         <spring-security.version>6.2.3</spring-security.version>
-        <spring-data-bom.version>2023.1.4</spring-data-bom.version>
+        <spring-data-bom.version>2023.1.5</spring-data-bom.version>
         <spring-hateoas.version>2.2.2</spring-hateoas.version>
         <okhttp.version>5.0.0-alpha.12</okhttp.version>
         <logback.version>1.5.3</logback.version>
