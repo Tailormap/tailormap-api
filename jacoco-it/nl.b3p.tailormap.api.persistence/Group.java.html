@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Group.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.persistence</a> &gt; <span class="el_source">Group.java</span></div><h1>Group.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.persistence;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PreRemove;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
+import jakarta.validation.constraints.Pattern;
+import java.util.HashSet;
+import java.util.Set;
+import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
+import nl.b3p.tailormap.api.util.Constants;
+import org.hibernate.annotations.Type;
+
+@Entity
+@Table(name = &quot;groups&quot;)
+@EntityListeners(EntityEventPublisher.class)
+<span class="nc" id="L27">public class Group {</span>
+  // Group to make authorization rules for anonymous users
+  public static final String ANONYMOUS = &quot;anonymous&quot;;
+  // Group to make authorization rules for authenticated users
+  public static final String AUTHENTICATED = &quot;authenticated&quot;;
+  public static final String ADMIN = &quot;admin&quot;;
+  public static final String ACTUATOR = &quot;actuator&quot;;
+
+  @Id
+  @Pattern(regexp = Constants.NAME_REGEX, message = &quot;Group &quot; + Constants.NAME_REGEX_INVALID_MESSAGE)
+  private String name;
+
+  @Version private Long version;
+
+  private boolean systemGroup;
+
+  private String description;
+
+  @Column(columnDefinition = &quot;text&quot;)
+  private String notes;
+
+<span class="nc" id="L48">  @ManyToMany(mappedBy = &quot;groups&quot;)</span>
+  private Set&lt;User&gt; members = new HashSet&lt;&gt;();
+
+  /**
+   * Generic additional properties which can be set on a group. A viewer admin frontend extension
+   * component can define attributes for the purposes of the extension and the viewer admin UI will
+   * show a control to edit the attribute in the group detail form.
+   */
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @Column(columnDefinition = &quot;jsonb&quot;)
+  private JsonNode additionalProperties;
+
+  public String getName() {
+<span class="nc" id="L61">    return name;</span>
+  }
+
+  public Group setName(String name) {
+<span class="nc" id="L65">    this.name = name;</span>
+<span class="nc" id="L66">    return this;</span>
+  }
+
+  public Long getVersion() {
+<span class="nc" id="L70">    return version;</span>
+  }
+
+  public Group setVersion(Long version) {
+<span class="nc" id="L74">    this.version = version;</span>
+<span class="nc" id="L75">    return this;</span>
+  }
+
+  public boolean isSystemGroup() {
+<span class="nc" id="L79">    return systemGroup;</span>
+  }
+
+  public Group setSystemGroup(boolean systemGroup) {
+<span class="nc" id="L83">    this.systemGroup = systemGroup;</span>
+<span class="nc" id="L84">    return this;</span>
+  }
+
+  public String getDescription() {
+<span class="nc" id="L88">    return description;</span>
+  }
+
+  public Group setDescription(String title) {
+<span class="nc" id="L92">    this.description = title;</span>
+<span class="nc" id="L93">    return this;</span>
+  }
+
+  public String getNotes() {
+<span class="nc" id="L97">    return notes;</span>
+  }
+
+  public Group setNotes(String notes) {
+<span class="nc" id="L101">    this.notes = notes;</span>
+<span class="nc" id="L102">    return this;</span>
+  }
+
+  public Set&lt;User&gt; getMembers() {
+<span class="nc" id="L106">    return members;</span>
+  }
+
+  public Group setMembers(Set&lt;User&gt; members) {
+<span class="nc" id="L110">    this.members = members;</span>
+<span class="nc" id="L111">    return this;</span>
+  }
+
+  public JsonNode getAdditionalProperties() {
+<span class="nc" id="L115">    return additionalProperties;</span>
+  }
+
+  public void setAdditionalProperties(JsonNode additionalProperties) {
+<span class="nc" id="L119">    this.additionalProperties = additionalProperties;</span>
+<span class="nc" id="L120">  }</span>
+
+  @PreRemove
+  @SuppressWarnings(&quot;PMD.UnusedPrivateMethod&quot;)
+  private void removeMembers() {
+<span class="nc bnc" id="L125" title="All 2 branches missed.">    for (User user : this.members) {</span>
+<span class="nc" id="L126">      user.getGroups().remove(this);</span>
+<span class="nc" id="L127">    }</span>
+<span class="nc" id="L128">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
