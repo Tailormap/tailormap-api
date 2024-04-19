@@ -54,7 +54,7 @@ updates:
     labels:
       - infrastucture
     ignore:
-      # stay on Java 11 for now
+      # stay on Java 17 for now
       - dependency-name: "eclipse-temurin"
         versions:
-          - ">= 12"
+          - ">= 18"
