@@ -35,7 +35,7 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  @Schema(name = <span class="jxr_string">"GeoServiceLayer"</span>, description = <span class="jxr_string">"Layer of a service which can be an OGC WMS/WMTS service or from XYZ/ArcGIS REST."</span>)
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.4.0"</span>)
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.5.0"</span>)
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="GeoServiceLayer" href="../../../../../../nl/b3p/tailormap/api/persistence/json/GeoServiceLayer.html#GeoServiceLayer">GeoServiceLayer</a> <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
@@ -55,12 +55,12 @@
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>    <strong class="jxr_keyword">private</strong> Double minScale;
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>    @Valid
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>    <strong class="jxr_keyword">private</strong> Set&lt;String&gt; crs;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>    <strong class="jxr_keyword">private</strong> Set&lt;String&gt; crs = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;&gt;();
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">private</strong> <a name="Bounds" href="../../../../../../nl/b3p/tailormap/api/persistence/json/Bounds.html#Bounds">Bounds</a> latLonBoundingBox;
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>    @Valid
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>    <strong class="jxr_keyword">private</strong> List&lt;@Valid WMSStyle&gt; styles;
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>    <strong class="jxr_keyword">private</strong> List&lt;@Valid WMSStyle&gt; styles = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>    <strong class="jxr_keyword">private</strong> Boolean queryable;
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  
