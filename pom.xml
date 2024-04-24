@@ -9,11 +9,11 @@ SPDX-License-Identifier: MIT
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
+        <version>3.2.5</version>
     </parent>
     <groupId>nl.b3p.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
-    <version>11.2.3-SNAPSHOT</version>
+    <version>11.3.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Tailormap API</name>
     <description>Tailormap API provides the backend for Tailormap</description>
@@ -63,7 +63,7 @@ SPDX-License-Identifier: MIT
     <scm>
         <connection>scm:git:git@github.com:B3Partners/tailormap-api.git</connection>
         <developerConnection>scm:git:git@github.com:B3Partners/tailormap-api.git</developerConnection>
-        <tag>tailormap-api-11.2.1</tag>
+        <tag>tailormap-api-11.3.0</tag>
         <url>https://github.com/B3Partners/tailormap-api/</url>
     </scm>
     <issueManagement>
@@ -92,19 +92,20 @@ SPDX-License-Identifier: MIT
         </site>
     </distributionManagement>
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
-        <project.build.targetVersion>${java.version}</project.build.targetVersion>
-        <project.build.outputTimestamp>2024-02-14T17:23:25Z</project.build.outputTimestamp>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <geotools.version>30.2</geotools.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+        <project.build.outputTimestamp>2024-04-17T13:37:13Z</project.build.outputTimestamp>
+        <geotools.version>31.0</geotools.version>
         <jts.version>1.19.0</jts.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <!--
-        Spring-Boot version overrides. see org.springframework.boot:spring-boot-dependencies
+        Spring Boot version overrides.
+        See org.springframework.boot:spring-boot-dependencies
         eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies
 
         and use
@@ -114,29 +115,22 @@ SPDX-License-Identifier: MIT
         to check
         -->
         <commons-lang3.version>3.14.0</commons-lang3.version>
-        <jackson-bom.version>2.16.1</jackson-bom.version>
-        <json-path.version>2.9.0</json-path.version>
-        <micrometer.version>1.12.2</micrometer.version>
-        <hibernate.version>5.6.15.Final</hibernate.version>
-        <!-- GeoTools up to 29.1 uses hsqldb 2.5.2, which has CVE-2022-41853, 29.2 and up provide 2.7.2,
-          however spring-boot overrides that in org.springframework.boot:spring-boot-dependencies -->
-        <hsqldb.version>2.7.2</hsqldb.version>
+        <hibernate.version>6.4.5.Final</hibernate.version>
+        <jackson-bom.version>2.17.0</jackson-bom.version>
+        <!-- <json-path.version>2.9.0</json-path.version>-->
         <junit-jupiter.version>5.10.2</junit-jupiter.version>
-        <flyway.version>9.22.3</flyway.version>
-        <mssql-jdbc.version>12.6.0.jre11</mssql-jdbc.version>
+        <logback.version>1.5.3</logback.version>
+        <micrometer.version>1.12.5</micrometer.version>
+        <mssql-jdbc.version>12.6.1.jre11</mssql-jdbc.version>
+        <okhttp.version>5.0.0-alpha.14</okhttp.version>
         <oracle-database.version>23.3.0.23.09</oracle-database.version>
-        <postgresql.version>42.7.1</postgresql.version>
-        <snakeyaml.version>2.0</snakeyaml.version>
-        <spring-security.version>5.8.9</spring-security.version>
-        <spring-hateoas.version>1.5.6</spring-hateoas.version>
-        <okhttp.version>5.0.0-alpha.12</okhttp.version>
-        <kotlin.version>1.9.21</kotlin.version>
-        <logback.version>1.2.13</logback.version>
-        <!-- Don't upgrade these; there are some fixed dependencies on org/slf4j/impl/StaticLoggerBinder
-        <logback.version>1.4.1</logback.version>
-        <slf4j.version>2.0.2</slf4j.version>
-        -->
-        <webjars-locator-core.version>0.55</webjars-locator-core.version>
+        <postgresql.version>42.7.3</postgresql.version>
+        <!-- <slf4j.version>2.0.12</slf4j.version>-->
+        <!-- <snakeyaml.version>2.2</snakeyaml.version>-->
+        <spring-data-bom.version>2023.1.5</spring-data-bom.version>
+        <spring-hateoas.version>2.2.2</spring-hateoas.version>
+        <spring-security.version>6.2.4</spring-security.version>
+        <webjars-locator-core.version>0.58</webjars-locator-core.version>
         <maven.surefire.version>3.0.0</maven.surefire.version>
         <maven-surefire-plugin.version>${maven.surefire.version}</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>${maven.surefire.version}</maven-failsafe-plugin.version>
@@ -149,22 +143,25 @@ SPDX-License-Identifier: MIT
         <maven-install-plugin.version>3.1.0</maven-install-plugin.version>
         <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
         <!-- end version overrides -->
+        <!-- when updating the version of the maven-pmd-plugin, some dependencies should be removed, see below -->
         <maven-pmd-plugin.version>3.21.2</maven-pmd-plugin.version>
         <versions-maven-plugin.version>2.16.2</versions-maven-plugin.version>
-        <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
-        <dependency-check-maven.version>9.0.9</dependency-check-maven.version>
-        <modernizer-maven-plugin.version>2.7.0</modernizer-maven-plugin.version>
-        <pmd.version>6.55.0</pmd.version>
+        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
+        <dependency-check-maven.version>9.1.0</dependency-check-maven.version>
+        <modernizer-maven-plugin.version>2.8.0</modernizer-maven-plugin.version>
+        <pmd.version>7.0.0</pmd.version>
         <maven-fluido-skin.version>2.0.0-M8</maven-fluido-skin.version>
-        <swagger-ui.version>5.10.3</swagger-ui.version>
-        <sentry.version>7.3.0</sentry.version>
-        <errorProne.version>2.25.0</errorProne.version>
+        <swagger-ui.version>5.17.0</swagger-ui.version>
+        <sentry.version>7.8.0</sentry.version>
+        <errorProne.version>2.26.1</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
         <compiler.lint>deprecation,unchecked</compiler.lint>
         <failOnValidation>true</failOnValidation>
         <fmt.action>format</fmt.action>
         <pom.fmt.action>sort</pom.fmt.action>
+        <!-- suppress missing javadoc warnings -->
+        <javadoc.doclint>all,-missing</javadoc.doclint>
         <!-- docker.b3p.nl or alternatively ghcr.io  -->
         <docker.deploy.repo>ghcr.io</docker.deploy.repo>
         <docker.skip>false</docker.skip>
@@ -212,7 +209,7 @@ SPDX-License-Identifier: MIT
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-micrometer</artifactId>
         </dependency>
         <dependency>
@@ -233,13 +230,14 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>io.hypersistence</groupId>
-            <artifactId>hypersistence-utils-hibernate-55</artifactId>
-            <version>3.7.3</version>
+            <artifactId>hypersistence-utils-hibernate-63</artifactId>
+            <version>3.7.4</version>
         </dependency>
         <dependency>
             <groupId>io.hypersistence</groupId>
             <artifactId>hypersistence-tsid</artifactId>
-            <!-- this version should match that of hypersistence-utils-hibernate-55 / hypersistence-utils-parent -->
+            <!-- this version should match that of hypersistence-utils-hibernate-63 /
+            hypersistence-utils-parent -->
             <version>2.1.1</version>
         </dependency>
         <dependency>
@@ -412,10 +410,6 @@ SPDX-License-Identifier: MIT
             <version>${geotools.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>postgresql</groupId>
-                    <artifactId>postgresql</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.postgresql</groupId>
                     <artifactId>postgresql</artifactId>
                 </exclusion>
@@ -439,7 +433,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>2.2.20</version>
+            <version>2.2.21</version>
         </dependency>
         <dependency>
             <groupId>org.webjars</groupId>
@@ -452,7 +446,7 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>io.sentry</groupId>
-            <artifactId>sentry-spring-boot-starter</artifactId>
+            <artifactId>sentry-spring-boot-starter-jakarta</artifactId>
             <version>${sentry.version}</version>
         </dependency>
         <dependency>
@@ -473,7 +467,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>ch.rasc</groupId>
             <artifactId>sse-eventbus</artifactId>
-            <version>1.1.9</version>
+            <version>2.0.1</version>
         </dependency>
     </dependencies>
     <repositories>
@@ -536,7 +530,7 @@ SPDX-License-Identifier: MIT
                 <plugin>
                     <groupId>org.openapitools</groupId>
                     <artifactId>openapi-generator-maven-plugin</artifactId>
-                    <version>7.3.0</version>
+                    <version>7.5.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.hibernate.orm.tooling</groupId>
@@ -555,12 +549,12 @@ SPDX-License-Identifier: MIT
                 <plugin>
                     <groupId>com.github.ekryd.sortpom</groupId>
                     <artifactId>sortpom-maven-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.4.1</version>
                 </plugin>
                 <plugin>
                     <groupId>com.spotify.fmt</groupId>
                     <artifactId>fmt-maven-plugin</artifactId>
-                    <version>2.22.1</version>
+                    <version>2.23</version>
                 </plugin>
                 <plugin>
                     <groupId>io.fabric8</groupId>
@@ -590,7 +584,7 @@ SPDX-License-Identifier: MIT
             <plugin>
                 <groupId>io.github.git-commit-id</groupId>
                 <artifactId>git-commit-id-maven-plugin</artifactId>
-                <version>7.0.0</version>
+                <version>8.0.2</version>
                 <configuration>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
                 </configuration>
@@ -681,7 +675,8 @@ SPDX-License-Identifier: MIT
                 </configuration>
             </plugin>
             <plugin>
-                <!-- Required for lazy fetching of properties, see https://vladmihalcea.com/the-best-way-to-lazy-load-entity-attributes-using-jpa-and-hibernate/ -->
+                <!-- Required for lazy fetching of properties,
+                see https://vladmihalcea.com/the-best-way-to-lazy-load-entity-attributes-using-jpa-and-hibernate/ -->
                 <groupId>org.hibernate.orm.tooling</groupId>
                 <artifactId>hibernate-enhance-maven-plugin</artifactId>
                 <executions>
@@ -764,6 +759,17 @@ SPDX-License-Identifier: MIT
                         <!--<arg>-Werror</arg>-->
                         <arg>-Xmaxwarns</arg>
                         <arg>1000</arg>
+                        <!-- see https://errorprone.info/docs/installation -->
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+                        <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+                        <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
                     </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
@@ -798,6 +804,8 @@ SPDX-License-Identifier: MIT
                                 <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
                                 <developerOrganization>${project.organization.name}</developerOrganization>
                                 <developerOrganizationUrl>${project.organization.url}</developerOrganizationUrl>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useSpringBoot3>true</useSpringBoot3>
                             </configOptions>
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>
@@ -825,6 +833,8 @@ SPDX-License-Identifier: MIT
                                 <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
                                 <developerOrganization>${project.organization.name}</developerOrganization>
                                 <developerOrganizationUrl>${project.organization.url}</developerOrganizationUrl>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useSpringBoot3>true</useSpringBoot3>
                             </configOptions>
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>
@@ -852,6 +862,8 @@ SPDX-License-Identifier: MIT
                                 <serializableModel>true</serializableModel>
                                 <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
                                 <useOptional>true</useOptional>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useSpringBoot3>true</useSpringBoot3>
                             </configOptions>
                             <!-- All common models from common-schemas.yaml here, comma separated -->
                             <importMappings>TileLayerHiDpiMode=nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode,
@@ -862,7 +874,11 @@ SPDX-License-Identifier: MIT
                                 TMGeometryType=nl.b3p.tailormap.api.persistence.json.TMGeometryType,
                                 WMSStyle=nl.b3p.tailormap.api.persistence.json.WMSStyle,
                                 AppI18nSettings=nl.b3p.tailormap.api.persistence.json.AppI18nSettings,
-                                AppUiSettings=nl.b3p.tailormap.api.persistence.json.AppUiSettings</importMappings>
+                                AppUiSettings=nl.b3p.tailormap.api.persistence.json.AppUiSettings,
+                                FormOptions=nl.b3p.tailormap.api.persistence.json.FormOptions,
+                                FormTab=nl.b3p.tailormap.api.persistence.json.FormTab,
+                                FormField=nl.b3p.tailormap.api.persistence.json.FormField,
+                                FormFieldValue=nl.b3p.tailormap.api.persistence.json.FormFieldValue</importMappings>
                             <ignoreFileOverride>${project.basedir}/src/main/resources/openapi/common-schemas-openapi-ignore</ignoreFileOverride>
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>
@@ -895,12 +911,13 @@ SPDX-License-Identifier: MIT
                         <phase>process-sources</phase>
                         <configuration>
                             <target name="fix-generated-sources">
-                                <!-- remove unused imports, this bug seems to be resolved in openapi-generator-maven-plugin 5.4.0
-                                <replace dir="target/generated-sources/openapi/src/main/java/nl/b3p/tailormap/api/model/" summary="true">
-                                  <replacetoken><![CDATA[import io.swagger.annotations.ApiModel;]]></replacetoken>
-                                  <replacevalue></replacevalue>
-                                </replace>
+                                <!-- HTM-1051 replace javax.validation with jakarta.validation in generated sources
+                                the current config still generates javax.validation, but we want jakarta.validation
                                 -->
+                                <replace dir="target/generated-sources/openapi/src/main/java/nl/b3p/tailormap/api/" summary="true">
+                                    <replacetoken><![CDATA[import javax.validation.]]></replacetoken>
+                                    <replacevalue><![CDATA[import jakarta.validation.]]></replacevalue>
+                                </replace>
                             </target>
                         </configuration>
                     </execution>
@@ -944,6 +961,7 @@ SPDX-License-Identifier: MIT
                             <failOnWarnings>false</failOnWarnings>
                             <failOnError>${failOnValidation}</failOnError>
                             <skip>${skipJavaDoc}</skip>
+                            <doclint>${javadoc.doclint}</doclint>
                         </configuration>
                     </execution>
                 </executions>
@@ -1008,6 +1026,12 @@ SPDX-License-Identifier: MIT
                 </configuration>
                 <dependencies>
                     <dependency>
+                        <!-- can be removed after maven-pmd-plugin upgrade, see https://github.com/pmd/pmd/discussions/4478#discussioncomment-8052410 -->
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-compat6</artifactId>
+                        <version>${pmd.version}</version>
+                    </dependency>
+                    <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
                         <artifactId>pmd-core</artifactId>
                         <version>${pmd.version}</version>
@@ -1015,6 +1039,18 @@ SPDX-License-Identifier: MIT
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
                         <artifactId>pmd-java</artifactId>
+                        <version>${pmd.version}</version>
+                    </dependency>
+                    <dependency>
+                        <!-- can be removed after maven-pmd-plugin upgrade, see https://github.com/pmd/pmd/discussions/4478#discussioncomment-8052410 -->
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-javascript</artifactId>
+                        <version>${pmd.version}</version>
+                    </dependency>
+                    <dependency>
+                        <!-- can be removed after maven-pmd-plugin upgrade, see https://github.com/pmd/pmd/discussions/4478#discussioncomment-8052410 -->
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-jsp</artifactId>
                         <version>${pmd.version}</version>
                     </dependency>
                 </dependencies>
@@ -1032,7 +1068,7 @@ SPDX-License-Identifier: MIT
                 <artifactId>modernizer-maven-plugin</artifactId>
                 <version>${modernizer-maven-plugin.version}</version>
                 <configuration>
-                    <javaVersion>11</javaVersion>
+                    <javaVersion>${java.version}</javaVersion>
                     <skip>${skipQA}</skip>
                     <failOnViolations>true</failOnViolations>
                 </configuration>
@@ -1099,10 +1135,12 @@ SPDX-License-Identifier: MIT
                             <rules>
                                 <!-- see https://maven.apache.org/enforcer/enforcer-rules/index.html -->
                                 <requireMavenVersion>
-                                    <version>3.8</version>
+                                    <version>3.9.5</version>
+                                    <message>Requires Maven 3.9.5 or higher</message>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>${java.version}</version>
+                                    <message>Requires Java ${java.version} or higher</message>
                                 </requireJavaVersion>
                                 <bannedDependencies>
                                     <excludes>
@@ -1124,13 +1162,14 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.springframework.boot:spring-boot-starter-security</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-oauth2-client</exclude>
                                         <exclude>org.springframework.security:spring-security-test</exclude>
+                                        <exclude>io.hypersistence:hypersistence-utils-hibernate-63</exclude>
                                         <exclude>org.webjars:webjars-locator-core</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
                                         <exclude>org.springframework.hateoas:spring-hateoas</exclude>
                                         <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
-                                        <exclude>org.hibernate:hibernate-micrometer</exclude>
+                                        <exclude>org.hibernate.orm:hibernate-micrometer</exclude>
                                         <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
-                                        <exclude>io.sentry:sentry-spring-boot-starter</exclude>
+                                        <exclude>io.sentry:sentry-spring-boot-starter-jakarta</exclude>
                                         <exclude>p6spy:p6spy:jar</exclude>
                                         <!-- basically each and every geotools module has a load of transitive dependencies -->
                                         <exclude>org.geotools:*</exclude>
@@ -1139,6 +1178,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.junit-pioneer:junit-pioneer</exclude>
                                         <exclude>com.squareup.okhttp3:*</exclude>
                                         <!-- lots of Jackson dependencies -->
+                                        <exclude>com.fasterxml.jackson.core:jackson-databind</exclude>
                                         <exclude>org.flywaydb:flyway-core</exclude>
                                         <exclude>ch.rasc:sse-eventbus</exclude>
                                     </excludes>
@@ -1246,7 +1286,7 @@ SPDX-License-Identifier: MIT
             <plugin>
                 <groupId>org.cyclonedx</groupId>
                 <artifactId>cyclonedx-maven-plugin</artifactId>
-                <version>2.7.11</version>
+                <version>2.8.0</version>
                 <configuration>
                     <projectType>application</projectType>
                     <skip>${skipSBOM}</skip>
@@ -1313,6 +1353,7 @@ SPDX-License-Identifier: MIT
                     <notimestamp>true</notimestamp>
                     <failOnWarnings>false</failOnWarnings>
                     <failOnError>${failOnValidation}</failOnError>
+                    <doclint>${javadoc.doclint}</doclint>
                 </configuration>
                 <reportSets>
                     <reportSet>
@@ -1428,29 +1469,15 @@ SPDX-License-Identifier: MIT
                             <imagePullPolicy>Always</imagePullPolicy>
                             <images>
                                 <image>
-                                    <name>${docker.deploy.repo}/b3partners/%a:%l</name>
+                                    <name>${docker.deploy.repo}/b3partners/%a:%v</name>
                                     <build>
                                         <dockerFile>${project.basedir}/Dockerfile</dockerFile>
+                                        <tags>
+                                            <tag>latest</tag>
+                                        </tags>
                                         <args>
                                             <TAILORMAP_API_VERSION>${project.version}</TAILORMAP_API_VERSION>
-                                        </args>
-                                        <buildx>
-                                            <platforms>
-                                                <platform>linux/amd64</platform>
-                                                <platform>linux/arm64</platform>
-                                            </platforms>
-                                            <attestations>
-                                                <provenance>false</provenance>
-                                            </attestations>
-                                        </buildx>
-                                    </build>
-                                </image>
-                                <image>
-                                    <name>${docker.deploy.repo}/b3partners/%a:latest</name>
-                                    <build>
-                                        <dockerFile>${project.basedir}/Dockerfile</dockerFile>
-                                        <args>
-                                            <TAILORMAP_API_VERSION>${project.version}</TAILORMAP_API_VERSION>
+                                            <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
                                         </args>
                                         <buildx>
                                             <platforms>

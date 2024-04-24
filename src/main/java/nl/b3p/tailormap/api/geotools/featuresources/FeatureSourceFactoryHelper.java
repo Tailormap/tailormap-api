@@ -29,13 +29,10 @@ public class FeatureSourceFactoryHelper {
   }
 
   private FeatureSourceHelper getHelper(TMFeatureSource fs) {
-    switch (fs.getProtocol()) {
-      case JDBC:
-        return new JDBCFeatureSourceHelper();
-      case WFS:
-        return new WFSFeatureSourceHelper();
-      default:
-        throw new IllegalArgumentException("Invalid protocol: " + fs.getProtocol());
-    }
+    return switch (fs.getProtocol()) {
+      case JDBC -> new JDBCFeatureSourceHelper();
+      case WFS -> new WFSFeatureSourceHelper();
+      default -> throw new IllegalArgumentException("Invalid protocol: " + fs.getProtocol());
+    };
   }
 }

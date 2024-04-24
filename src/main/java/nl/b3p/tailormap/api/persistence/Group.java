@@ -5,19 +5,21 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PreRemove;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
+import jakarta.validation.constraints.Pattern;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.PreRemove;
-import javax.persistence.Table;
-import javax.persistence.Version;
-import javax.validation.constraints.Pattern;
 import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
 import nl.b3p.tailormap.api.util.Constants;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "groups")
@@ -45,6 +47,15 @@ public class Group {
 
   @ManyToMany(mappedBy = "groups")
   private Set<User> members = new HashSet<>();
+
+  /**
+   * Generic additional properties which can be set on a group. A viewer admin frontend extension
+   * component can define attributes for the purposes of the extension and the viewer admin UI will
+   * show a control to edit the attribute in the group detail form.
+   */
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @Column(columnDefinition = "jsonb")
+  private JsonNode additionalProperties;
 
   public String getName() {
     return name;
@@ -98,6 +109,14 @@ public class Group {
   public Group setMembers(Set<User> members) {
     this.members = members;
     return this;
+  }
+
+  public JsonNode getAdditionalProperties() {
+    return additionalProperties;
+  }
+
+  public void setAdditionalProperties(JsonNode additionalProperties) {
+    this.additionalProperties = additionalProperties;
   }
 
   @PreRemove

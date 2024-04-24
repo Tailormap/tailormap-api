@@ -15,18 +15,17 @@ updates:
     labels:
       - infrastucture
       - dependency
-    # we need to stay on springboot 2.7.x / spring-security 5.8.x / hibernate 5.6.x
-    # at least until geotools has moved to the new Jakarta EE api
+    # stay on springboot 3.x / spring-security 6.x / hibernate 6.x
     ignore:
       - dependency-name: org.springframework.boot:spring-boot-starter-parent
         versions:
-          - '>= 3'
-      - dependency-name: org.springframework.security:spring-security-crypto
+          - '>= 4'
+      - dependency-name: org.springframework.security:spring-security-test
         versions:
-          - '>= 6'
+          - '>= 7'
       - dependency-name: org.hibernate.orm.tooling:hibernate-enhance-maven-plugin
         versions:
-          - '>= 6'
+          - '>= 7'
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -55,7 +54,7 @@ updates:
     labels:
       - infrastucture
     ignore:
-      # stay on Java 11 for now
+      # stay on Java 17 for now
       - dependency-name: "eclipse-temurin"
         versions:
-          - ">= 12"
+          - ">= 18"

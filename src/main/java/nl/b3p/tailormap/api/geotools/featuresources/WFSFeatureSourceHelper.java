@@ -56,8 +56,7 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
   protected TMFeatureTypeInfo getFeatureTypeInfo(
       TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
     TMFeatureTypeInfo tmInfo = super.getFeatureTypeInfo(pft, info, gtFs);
-    if (info instanceof FeatureTypeInfo) {
-      FeatureTypeInfo ftInfo = (FeatureTypeInfo) info;
+    if (info instanceof FeatureTypeInfo ftInfo) {
       tmInfo
           .schema(info.getSchema())
           .wgs84BoundingBox(GeoToolsHelper.fromEnvelope(ftInfo.getWGS84BoundingBox()))

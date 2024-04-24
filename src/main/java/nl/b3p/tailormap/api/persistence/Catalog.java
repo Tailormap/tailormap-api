@@ -5,14 +5,14 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
+import jakarta.persistence.Version;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
-import javax.persistence.Version;
-import javax.validation.constraints.NotNull;
 import nl.b3p.tailormap.api.persistence.json.CatalogNode;
 import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.hibernate.annotations.Type;
@@ -25,7 +25,7 @@ public class Catalog {
 
   @Version private Long version;
 
-  @Type(type = "io.hypersistence.utils.hibernate.type.json.JsonBinaryType")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   @NotNull
   private List<CatalogNode> nodes = new ArrayList<>();

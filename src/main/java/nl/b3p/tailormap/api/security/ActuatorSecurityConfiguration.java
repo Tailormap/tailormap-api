@@ -21,8 +21,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,9 +88,7 @@ public class ActuatorSecurityConfiguration {
   @Bean
   public SecurityFilterChain actuatorFilterChain(
       HttpSecurity http, CookieCsrfTokenRepository csrfTokenRepository) throws Exception {
-    http.csrf()
-        .csrfTokenRepository(csrfTokenRepository)
-        .and()
+    http.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository))
         .securityMatcher(basePath + "/**")
         .authorizeHttpRequests(
             authorize ->
@@ -99,7 +99,10 @@ public class ActuatorSecurityConfiguration {
                     .permitAll()
                     .requestMatchers(basePath + "/**")
                     .hasAnyAuthority(Group.ADMIN, Group.ACTUATOR))
-        .httpBasic();
+        .httpBasic(Customizer.withDefaults())
+        .addFilterAfter(
+            /* debug logging user making the request */ new AuditInterceptor(),
+            AnonymousAuthenticationFilter.class);
     return http.build();
   }
 }

@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.JsonPath;
+import java.util.Objects;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
@@ -109,7 +110,8 @@ class GeoServiceAdminControllerIntegrationTest {
           JsonPath.read(result.getResponse().getContentAsString(), "$._links.self.href");
 
       assertEquals(
-          "GetCapabilities", server.takeRequest().getRequestUrl().queryParameter("REQUEST"));
+          "GetCapabilities",
+          Objects.requireNonNull(server.takeRequest().getRequestUrl()).queryParameter("REQUEST"));
 
       // This capabilities document has an extra layer
       body = getResourceString(wmsTestCapabilitiesUpdated);
@@ -124,7 +126,8 @@ class GeoServiceAdminControllerIntegrationTest {
           .andExpect(header().string("Location", equalTo(selfLink)));
 
       assertEquals(
-          "GetCapabilities", server.takeRequest().getRequestUrl().queryParameter("REQUEST"));
+          "GetCapabilities",
+          Objects.requireNonNull(server.takeRequest().getRequestUrl()).queryParameter("REQUEST"));
 
       mockMvc
           .perform(get(selfLink).accept(MediaType.APPLICATION_JSON))
@@ -228,7 +231,7 @@ class GeoServiceAdminControllerIntegrationTest {
                   .value(
                       "Error loading capabilities from URL \""
                           + url
-                          + "\": Exception: code: InvalidParameterValue: locator: service: Example error message"));
+                          + "\": Exception: Error loading WMS capabilities: code: InvalidParameterValue: locator: service: Example error message"));
 
       server.enqueue(
           new MockResponse.Builder()
@@ -247,7 +250,7 @@ class GeoServiceAdminControllerIntegrationTest {
                   .value(
                       "Error loading capabilities from URL \""
                           + url
-                          + "\": Exception: code: SomeCode: locator: somewhere: An example error text."));
+                          + "\": Exception: Error loading WMS capabilities: code: SomeCode: locator: somewhere: An example error text."));
 
       server.shutdown();
     }

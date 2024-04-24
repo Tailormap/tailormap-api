@@ -17,12 +17,11 @@ SPDX-License-Identifier: MIT
     <rule ref="category/java/bestpractices.xml/SystemPrintln"/>
     <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach"/>
     <rule ref="category/java/bestpractices.xml/UseTryWithResources">
-        <properties>-->
+        <properties>
             <property name="violationSuppressXPath"
                       value="./FinallyStatement//Name[substring-after(@Image, '.') = 'close' or substring-after(@Image, '.') = 'closeQuietly'][pmd-java:typeIs('java.lang.AutoCloseable') and fn:substring-before(@Image, '.') = ancestor::MethodDeclaration/MethodDeclarator//VariableDeclaratorId/@Name]"/>
-            -->
+
         </properties>
-        -->
     </rule>
     <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap"/>
     <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList"/>
@@ -44,6 +43,8 @@ SPDX-License-Identifier: MIT
     <rule ref="category/java/codestyle.xml/UnnecessaryImport"/>
     <rule ref="category/java/codestyle.xml/UnnecessarySemicolon"/>
     <rule ref="category/java/codestyle.xml/EmptyControlStatement"/>
+    <!-- As of PMD 7.0.0 -->
+    <!-- <rule ref="category/java/codestyle.xml/UnnecessaryBoxing"/>-->
     <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/>
     <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators"/>
     <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues"/>
@@ -61,11 +62,12 @@ SPDX-License-Identifier: MIT
     <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable"/>
     <rule ref="category/java/errorprone.xml/CloseResource">
         <properties>
-            <!-- When calling the store to close, PMD wants the full prefix before the call to the method to match, so let's try to use common var names for store ... -->
+            <!-- When calling the store to close, PMD wants the full prefix before the call to the method to match,
+            so let's try to use common var names for store ... -->
             <property name="closeTargets"
                       value="releaseConnection,store.releaseConnection,closeQuietly,closeConnection,closeSafe,store.closeSafe,dataStore.closeSafe,getDataStore().closeSafe,close,closeResultSet,closeStmt"/>
             <property name="allowedResourceTypes"
-                      value="java.io.ByteArrayOutputStream|java.io.ByteArrayInputStream|java.io.StringWriter|java.io.CharArrayWriter|java.util.stream.Stream|java.util.stream.IntStream|java.util.stream.LongStream|java.util.stream.DoubleStream|java.io.StringReader"/>
+                      value="java.io.ByteArrayOutputStream,java.io.ByteArrayInputStream,java.io.StringWriter,java.io.CharArrayWriter,java.util.stream.Stream,java.util.stream.IntStream,java.util.stream.LongStream,java.util.stream.DoubleStream,java.io.StringReader"/>
         </properties>
     </rule>
     <rule ref="category/java/multithreading.xml/AvoidThreadGroup"/>
@@ -73,18 +75,11 @@ SPDX-License-Identifier: MIT
     <rule ref="category/java/multithreading.xml/DoubleCheckedLocking"/>
     <rule ref="category/java/performance.xml/BigIntegerInstantiation"/>
     <rule ref="category/java/performance.xml/StringInstantiation"/>
-    <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation">
-        <!--
-             This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0. The planned replacement is not expected before PMD 7.0.0. In PMD 7 the new rule UnnecessaryBoxing can be used instead.
-             https://pmd.github.io/latest/pmd_rules_java_performance.html#unnecessarywrapperobjectcreation
-        -->
-    </rule>
     <rule name="wildcards" language="java" message="No Wildcard Imports"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
         <description>Don't use wildcard imports</description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
           //ImportDeclaration[@ImportedName=@PackageName]
@@ -103,7 +98,6 @@ SPDX-License-Identifier: MIT
         <description>Do not use Commons Logging</description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
           //ImportDeclaration[@ImportedName='org.apache.commons.logging.Log']
@@ -117,7 +111,6 @@ SPDX-License-Identifier: MIT
         <description>Use MethodHandles.lookup().lookupClass() to get logger</description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
           //VariableInitializer[Expression//PrimaryPrefix/Name[@Image='LoggerFactory.getLogger'] and not(Expression//PrimarySuffix//PrimaryPrefix/Name[@Image='MethodHandles.lookup'])]

@@ -214,24 +214,15 @@ public class SimpleWFSHelper {
       // specifications.
       DescribeLayerRequest describeLayerRequest =
           new WMS1_1_1().createDescribeLayerRequest(new URL(url));
-      describeLayerRequest.setProperty(
-          "VERSION", "1.1.1"); // Otherwise GeoTools will send VERSION=1.1.0...
+      // XXX Otherwise GeoTools will send VERSION=1.1.0...
+      describeLayerRequest.setProperty("VERSION", "1.1.1");
       describeLayerRequest.setLayers(String.join(",", layers));
       // GeoTools will throw a ClassCastException when a WMS ServiceException is returned
       DescribeLayerResponse describeLayerResponse = wms.issueRequest(describeLayerRequest);
 
       Map<String, SimpleWFSLayerDescription> descriptions = new HashMap<>();
       for (LayerDescription ld : describeLayerResponse.getLayerDescs()) {
-        String wfsUrl = ld.getWfs() != null ? ld.getWfs().toString() : null;
-        if (wfsUrl == null && "WFS".equalsIgnoreCase(ld.getOwsType())) {
-          wfsUrl = ld.getOwsURL().toString();
-        }
-        // OGC 02-070 Annex B says the wfs/owsURL attributed are not required but implied. Some
-        // Deegree instance encountered has all attributes empty, and apparently the meaning is that
-        // the WFS URL is the same as the WMS URL (not explicitly defined in the spec).
-        if (wfsUrl == null) {
-          wfsUrl = wms.getInfo().getSource().toString();
-        }
+        String wfsUrl = getWfsUrl(ld, wms);
 
         if (wfsUrl != null && ld.getQueries() != null && ld.getQueries().length != 0) {
           descriptions.put(ld.getName(), new SimpleWFSLayerDescription(wfsUrl, ld.getQueries()));
@@ -251,5 +242,19 @@ public class SimpleWFSHelper {
     }
 
     return Collections.emptyMap();
+  }
+
+  private static String getWfsUrl(LayerDescription ld, WebMapServer wms) {
+    String wfsUrl = (ld.getWfs() != null) ? ld.getWfs().toString() : null;
+    if (wfsUrl == null && "WFS".equalsIgnoreCase(ld.getOwsType())) {
+      wfsUrl = ld.getOwsURL().toString();
+    }
+    // OGC 02-070 Annex B says the wfs/owsURL attributed are not required but implied. Some
+    // Deegree instance encountered has all attributes empty, and apparently the meaning is that
+    // the WFS URL is the same as the WMS URL (not explicitly defined in the spec).
+    if (wfsUrl == null) {
+      wfsUrl = wms.getInfo().getSource().toString();
+    }
+    return wfsUrl;
   }
 }

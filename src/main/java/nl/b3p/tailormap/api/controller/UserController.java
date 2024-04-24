@@ -56,7 +56,6 @@ public class UserController {
   @GetMapping(
       path = "${tailormap-api.base-path}/login/configuration",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @SuppressWarnings("unchecked")
   public ResponseEntity<LoginConfiguration> getSSOEndpoints() {
     LoginConfiguration result = new LoginConfiguration();
 

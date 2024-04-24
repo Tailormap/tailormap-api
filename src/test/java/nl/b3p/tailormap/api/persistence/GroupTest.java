@@ -8,10 +8,10 @@ package nl.b3p.tailormap.api.persistence;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import java.util.Set;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -47,9 +47,7 @@ class GroupTest {
     Set<ConstraintViolation<Group>> violations = validator.validate(group);
     assertEquals(1, violations.size(), "violations should not be empty");
     violations.forEach(
-        action -> {
-          assertEquals(expectedMessage, action.getMessage(), "unexpected message");
-        });
+        action -> assertEquals(expectedMessage, action.getMessage(), "unexpected message"));
   }
 
   @Test
@@ -59,8 +57,6 @@ class GroupTest {
     Set<ConstraintViolation<Group>> violations = validator.validate(group);
     assertEquals(1, violations.size(), "violations should be empty");
     violations.forEach(
-        action -> {
-          assertEquals(expectedMessage, action.getMessage(), "unexpected message");
-        });
+        action -> assertEquals(expectedMessage, action.getMessage(), "unexpected message"));
   }
 }

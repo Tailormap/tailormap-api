@@ -40,21 +40,27 @@ jobs:
       - name: "Checkout repository"
         uses: actions/checkout@v4
 
-      - name: "Cache Maven repository"
-        uses: actions/cache@v4
+      - name: 'Set up JDK'
+        uses: actions/setup-java@v4
         with:
-          path: ~/.m2/repository
-          key: setup-java-Linux-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            setup-java-Linux-maven-
+          java-version: 17
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: 'Set up Maven'
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: '3.9.6'
 
       - name: "Initialize CodeQL"
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
 
-      - name: "Autobuild"
-        uses: github/codeql-action/autobuild@v3
+#      - name: "Autobuild"
+#        uses: github/codeql-action/autobuild@v3
+      - name: "Build with Maven"
+        run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Dmaven.javadoc.skip=true -Ddocker.skip=true install
 
       - name: "Perform CodeQL Analysis"
         uses: github/codeql-action/analyze@v3

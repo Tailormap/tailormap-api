@@ -22,7 +22,7 @@ To develop the backend this Spring Boot application can be run locally.
 To build and run the project, you need to have the following installed:
 
 - Java 11 JDK
-- Maven 3.8.4 or higher
+- Maven 3.9.5 or higher
 - PostgreSQL configuration database
 - Docker 20.10.x with buildx 0.9 or higher (this requirement may be skipped if you don't need to build
   the docker images or build release artifacts)
@@ -114,7 +114,7 @@ When the **default** profile is active tailormap-api behaves as deployed in prod
 database schema is empty tables will be created or the existing schema will be updated if necessary
 by Flyway. When an admin account is missing it is created using a random password which is logged.
 
-See also the comments in the `application-(profile).properties` files in the [resources](src%2Fmain%2Fresources)
+See also the comments in the `application-(profile).properties` files in the [resources](src/main/resources)
 directory.
 
 Other Spring profiles are useful during development:

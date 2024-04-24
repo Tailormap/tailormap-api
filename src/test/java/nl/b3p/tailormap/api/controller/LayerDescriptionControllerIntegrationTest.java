@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -180,20 +179,5 @@ class LayerDescriptionControllerIntegrationTest {
     mockMvc
         .perform(get(bgtPath).accept(MediaType.APPLICATION_JSON).with(setServletPath(bgtPath)))
         .andExpect(status().isUnauthorized());
-  }
-
-  @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @Disabled("TODO: test app was removed from integration dataset, restore later")
-  // TODO: fix this test
-  void handles_unknown_attribute_type() throws Exception {
-    // Depends on external service, may fail/change
-    mockMvc
-        .perform(get("/app/7/layer/24/describe"))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.attributes").isArray())
-        .andExpect(jsonPath("$.attributes.length()").value(9))
-        .andReturn();
   }
 }

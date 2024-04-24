@@ -22,7 +22,9 @@ import java.util.Locale;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +34,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GeoServiceProxyControllerIntegrationTest {
   private final String begroeidterreindeelUrl =
       "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wms";
@@ -44,7 +49,14 @@ class GeoServiceProxyControllerIntegrationTest {
   private final String pdokWmsGemeentegebiedUrl =
       "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/proxy/wms";
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired private WebApplicationContext context;
+
+  private MockMvc mockMvc;
+
+  @BeforeAll
+  void initialize() {
+    mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+  }
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;

@@ -257,6 +257,7 @@ public class GeoServiceHelper {
                                       .map(Objects::toString)
                                       .orElse(null));
                       try {
+                        @SuppressWarnings("unchecked")
                         List legendURLs = gtStyle.getLegendURLs();
                         // GeoTools will replace invalid URLs with null in legendURLs
                         if (legendURLs != null
@@ -313,9 +314,10 @@ public class GeoServiceHelper {
         String wmsException =
             WMSServiceExceptionUtil.tryGetServiceExceptionMessage(client.getLatestResponseCopy());
         throw new Exception(
-            "Error loading WMS capabilities: " + wmsException != null
-                ? wmsException
-                : new String(client.getLatestResponseCopy(), StandardCharsets.UTF_8));
+            "Error loading WMS capabilities: "
+                + (wmsException != null
+                    ? wmsException
+                    : new String(client.getLatestResponseCopy(), StandardCharsets.UTF_8)));
       } else {
         throw e;
       }

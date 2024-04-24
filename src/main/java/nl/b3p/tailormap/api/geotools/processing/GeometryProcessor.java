@@ -5,9 +5,9 @@
  */
 package nl.b3p.tailormap.api.geotools.processing;
 
+import jakarta.validation.constraints.NotNull;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
-import javax.validation.constraints.NotNull;
 import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.api.referencing.operation.TransformException;
 import org.geotools.data.geojson.GeoJSONWriter;

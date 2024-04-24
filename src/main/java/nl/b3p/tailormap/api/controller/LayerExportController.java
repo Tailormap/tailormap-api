@@ -8,7 +8,9 @@ package nl.b3p.tailormap.api.controller;
 import static nl.b3p.tailormap.api.persistence.helper.TMFeatureTypeHelper.getConfiguredAttributes;
 import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
 
+import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
@@ -19,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSLayerDescription;
@@ -65,7 +66,7 @@ public class LayerExportController {
 
   @Transactional
   @GetMapping(path = "capabilities")
-  @Timed("export_get_capabilities")
+  @Timed(value = "export_get_capabilities", description = "Get layer export capabilities")
   public ResponseEntity<Serializable> capabilities(
       @ModelAttribute GeoService service, @ModelAttribute GeoServiceLayer layer) throws Exception {
 
@@ -80,14 +81,14 @@ public class LayerExportController {
       try {
         List<String> outputFormats =
             SimpleWFSHelper.getOutputFormats(
-                wfsSearchResult.getWfsUrl(),
-                wfsSearchResult.getTypeName(),
-                wfsSearchResult.getUsername(),
-                wfsSearchResult.getPassword());
+                wfsSearchResult.wfsUrl(),
+                wfsSearchResult.typeName(),
+                wfsSearchResult.username(),
+                wfsSearchResult.password());
         capabilities.setOutputFormats(outputFormats);
       } catch (Exception e) {
         String msg =
-            String.format("Error getting capabilities for WFS \"%s\"", wfsSearchResult.getWfsUrl());
+            String.format("Error getting capabilities for WFS \"%s\"", wfsSearchResult.wfsUrl());
         if (logger.isTraceEnabled()) {
           logger.trace(msg, e);
         } else {
@@ -106,6 +107,7 @@ public class LayerExportController {
   @RequestMapping(
       path = "download",
       method = {RequestMethod.GET, RequestMethod.POST})
+  @Counted(value = "export_download", description = "Count of layer downloads")
   public ResponseEntity<?> download(
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,
@@ -170,7 +172,7 @@ public class LayerExportController {
 
     MultiValueMap<String, String> getFeatureParameters = new LinkedMultiValueMap<>();
     // A layer could have more than one featureType as source, currently we assume it's just one
-    getFeatureParameters.add("typeNames", wfsSearchResult.getTypeName());
+    getFeatureParameters.add("typeNames", wfsSearchResult.typeName());
     getFeatureParameters.add("outputFormat", outputFormat);
     if (filter != null) {
       // GeoServer vendor-specific
@@ -187,8 +189,8 @@ public class LayerExportController {
       // the geometry attribute so do not specify the propertyNames parameter to include all
       // propertyNames. If the geometry attribute is known, add it to the propertyNames otherwise
       // the result won't have geometries.
-      if (wfsSearchResult.getGeometryAttribute() != null) {
-        attributes.add(wfsSearchResult.getGeometryAttribute());
+      if (wfsSearchResult.geometryAttribute() != null) {
+        attributes.add(wfsSearchResult.geometryAttribute());
         getFeatureParameters.add("propertyName", String.join(",", attributes));
       }
     }
@@ -197,7 +199,7 @@ public class LayerExportController {
     }
     URI wfsGetFeature =
         SimpleWFSHelper.getWFSRequestURL(
-            wfsSearchResult.getWfsUrl(), "GetFeature", getFeatureParameters);
+            wfsSearchResult.wfsUrl(), "GetFeature", getFeatureParameters);
 
     logger.info(
         "Layer download {}, proxying WFS GetFeature request {}",
@@ -209,7 +211,7 @@ public class LayerExportController {
 
       HttpResponse<InputStream> response =
           WFSProxy.proxyWfsRequest(
-              wfsGetFeature, wfsSearchResult.getUsername(), wfsSearchResult.getPassword(), request);
+              wfsGetFeature, wfsSearchResult.username(), wfsSearchResult.password(), request);
 
       logger.info(
           "Layer download response code: {}, content type: {}, disposition: {}",
@@ -234,46 +236,8 @@ public class LayerExportController {
     }
   }
 
-  private static class WFSSearchResult {
-    private final String wfsUrl;
-    private final String typeName;
-    private final String geometryAttribute;
-    private final String username;
-    private final String password;
-
-    public WFSSearchResult(
-        String wfsUrl,
-        String typeName,
-        String geometryAttribute,
-        String username,
-        String password) {
-      this.wfsUrl = wfsUrl;
-      this.typeName = typeName;
-      this.geometryAttribute = geometryAttribute;
-      this.username = username;
-      this.password = password;
-    }
-
-    // <editor-fold desc="getters">
-    public String getWfsUrl() {
-      return wfsUrl;
-    }
-
-    public String getTypeName() {
-      return typeName;
-    }
-
-    public String getGeometryAttribute() {
-      return geometryAttribute;
-    }
-
-    public String getUsername() {
-      return username;
-    }
-
-    public String getPassword() {
-      return password;
-    }
+  private record WFSSearchResult(
+      String wfsUrl, String typeName, String geometryAttribute, String username, String password) {
 
     public boolean found() {
       return wfsUrl != null && typeName != null;
@@ -282,7 +246,7 @@ public class LayerExportController {
   }
 
   private WFSSearchResult findWFSFeatureType(
-      GeoService service, GeoServiceLayer layer, TMFeatureType tmft) throws Exception {
+      GeoService service, GeoServiceLayer layer, TMFeatureType tmft) {
 
     String wfsUrl = null;
     String typeName = null;
@@ -323,7 +287,7 @@ public class LayerExportController {
   }
 
   private SimpleWFSLayerDescription getWFSLayerDescriptionForWMS(
-      GeoService wmsService, String layerName /*, Tags tags*/) throws Exception {
+      GeoService wmsService, String layerName /*, Tags tags*/) {
     String username = null;
     String password = null;
     if (wmsService.getAuthentication() != null
