@@ -32,6 +32,7 @@ components:
         - wms
         - wmts
         - xyz
+        - Tileset3D
     TileLayerHiDpiMode:
       type: string
       enum:
@@ -161,7 +162,11 @@ components:
       type: object
       required:
         - hideLoginButton
+        - enable3D
       properties:
         hideLoginButton:
+          nullable: false
+          type: boolean
+        enable3D:
           nullable: false
           type: boolean

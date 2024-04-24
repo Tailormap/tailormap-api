@@ -8,6 +8,7 @@ package nl.b3p.tailormap.api.persistence.helper;
 import static nl.b3p.tailormap.api.persistence.TMFeatureSource.Protocol.WFS;
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
+import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.TILESET3D;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -102,6 +103,11 @@ public class GeoServiceHelper {
       return;
     }
 
+    if (geoService.getProtocol() == TILESET3D) {
+      setTileset3DCapabilities(geoService);
+      return;
+    }
+
     ResponseTeeingHTTPClient client =
         new ResponseTeeingHTTPClient(
             HTTPClientFinder.createClient(), null, Set.of("Access-Control-Allow-Origin"));
@@ -165,6 +171,18 @@ public class GeoServiceHelper {
                 .name("xyz")
                 .title(geoService.getTitle())
                 .crs(Set.of(geoService.getSettings().getXyzCrs()))
+                .virtual(false)
+                .queryable(false)));
+  }
+
+  private static void setTileset3DCapabilities(GeoService geoService) {
+    geoService.setLayers(
+        List.of(
+            new GeoServiceLayer()
+                .id("0")
+                .root(true)
+                .name("Tileset3D")
+                .title(geoService.getTitle())
                 .virtual(false)
                 .queryable(false)));
   }

@@ -309,6 +309,7 @@ components:
             - $ref: '#/components/schemas/LayerSettings'
             - $ref: '#/components/schemas/WMSLayerSettings'
             - $ref: '#/components/schemas/WMTSLayerSettings'
+            - $ref: '#/components/schemas/Tileset3DLayerSettings'
           default:
         layerSettings:
           title: GeoServiceLayerSettings
@@ -319,6 +320,7 @@ components:
               - $ref: '#/components/schemas/WMSLayerSettings'
               - $ref: '#/components/schemas/WMTSLayerSettings'
               - $ref: '#/components/schemas/XYZLayerSettings'
+              - $ref: '#/components/schemas/Tileset3DLayerSettings'
           example:
             'begroeidterreindeel':
               title: laag 1
@@ -415,6 +417,19 @@ components:
               nullable: true
               description: Alternate URL template to use when rendering at high dpi (using 'layer' instead of 'url' in the name for ease of use).
               type: string
+
+    Tileset3DLayerSettings:
+      description: Settings applying to a 3D Tileset layer.
+      allOf:
+        - $ref: '#/components/schemas/LayerSettings'
+#        - type: object
+#          properties:
+#            hiDpiMode:
+#              $ref: './common-schemas.yaml#/components/schemas/TileLayerHiDpiMode'
+#            hiDpiSubstituteLayer:
+#              nullable: true
+#              description: Layer name of this service to substitute when rendering at high dpi.
+#              type: string
 
     GeoServiceLayer:
       description: Layer of a service which can be an OGC WMS/WMTS service or from XYZ/ArcGIS REST.

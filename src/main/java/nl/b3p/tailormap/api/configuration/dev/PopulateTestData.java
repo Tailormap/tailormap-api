@@ -5,9 +5,7 @@
  */
 package nl.b3p.tailormap.api.configuration.dev;
 
-import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
-import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
-import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
+import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.*;
 import static nl.b3p.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -224,6 +222,13 @@ public class PopulateTestData {
                 .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
                 .setAuthorizationRules(rule)
                 .setPublished(true),
+//            new GeoService()
+//                    .setId("test3D-Rotterdam")
+//                    .setProtocol(TILESET3D)
+//                    .setTitle("test 3D Rotterdam")
+//                    .setUrl("https://3dtilesnederland.nl/tiles/1.0/implicit/nederland/599.json")
+//                    .setAuthorizationRules(rule)
+//                    .setPublished(true),
             new GeoService()
                 .setId("filtered-snapshot-geoserver")
                 .setProtocol(WMS)
