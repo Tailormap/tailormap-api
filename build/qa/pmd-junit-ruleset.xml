@@ -16,7 +16,7 @@ Junit ruleset. https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html
   <rule name="DisallowJunit3"
       language="java"
       message="Avoid using JUnit3"
-      class="net.sourceforge.pmd.lang.rule.XPathRule" >
+      class="net.sourceforge.pmd.lang.rule.xpath.XPathRule" >
     <description>
         Don't use JUnit3, use JUnit5 instead
     </description>
@@ -35,7 +35,7 @@ Junit ruleset. https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html
   <rule name="DisallowJunit4"
         language="java"
         message="Avoid using JUnit4"
-        class="net.sourceforge.pmd.lang.rule.XPathRule" >
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule" >
     <description>
       Don't use JUnit4, use JUnit5 instead
     </description>
