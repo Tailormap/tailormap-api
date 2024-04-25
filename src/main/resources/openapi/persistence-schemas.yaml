@@ -265,6 +265,18 @@ components:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/AttributeSettings'
+        searchFields:
+          description: List of attribute names that should be used to build the search index.
+          type: array
+          items:
+            type: string
+        searchDisplayFields:
+          description: List of attribute names that should be shown in the search results, when `null` searchFields is used.
+          type: array
+          nullable: true
+          items:
+            type: string
+
 
     AttributeSettings:
       properties:
@@ -342,6 +354,8 @@ components:
           type: boolean
         featureType:
           $ref: '#/components/schemas/FeatureTypeRef'
+        searchIndex:
+          $ref: '#/components/schemas/SearchIndexRef'
         attribution:
           description: 'Attribution to show for this layer.'
           nullable: true
@@ -354,6 +368,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthorizationRule'
+
+    SearchIndexRef:
+      description: Reference (by id) to a search index.
+      required:
+        - SearchIndexId
+      properties:
+        searchIndexId:
+          type: integer
+          format: int64
+          nullable: false
+          uniqueItems: true
 
     FeatureTypeRef:
       required: [featureSourceId, featureTypeName]

@@ -38,6 +38,7 @@ import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import nl.b3p.tailormap.api.persistence.json.TMServiceCaps;
 import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
+import nl.b3p.tailormap.api.repository.SearchIndexRepository;
 import nl.b3p.tailormap.api.util.TMStringUtils;
 import nl.b3p.tailormap.api.viewer.model.Service;
 import org.apache.commons.lang3.StringUtils;
@@ -436,6 +437,34 @@ public class GeoService {
       }
     }
     return tmft;
+  }
+
+  /**
+   * Find the search index for the given layer. If the layer has a specific search index, that one
+   * is returned. If not, {@code null} is returned.
+   *
+   * @param layer the layer to find the search index for
+   * @param searchIndexRepository repository to find the search index
+   * @return the search index for the layer, or {@code null} if no search index is found
+   */
+  public Optional<SearchIndex> findSearchIndexForLayer(
+      GeoServiceLayer layer, SearchIndexRepository searchIndexRepository) {
+
+    GeoServiceDefaultLayerSettings defaultLayerSettings = getSettings().getDefaultLayerSettings();
+    GeoServiceLayerSettings layerSettings = getLayerSettings(layer.getName());
+
+    Long searchIndexId = null;
+    if (layerSettings != null && layerSettings.getSearchIndex() != null) {
+      searchIndexId = layerSettings.getSearchIndex().getSearchIndexId();
+    }
+    if (searchIndexId == null
+        && defaultLayerSettings != null
+        && defaultLayerSettings.getSearchIndex() != null) {
+      searchIndexId = defaultLayerSettings.getSearchIndex().getSearchIndexId();
+    }
+    return (null == searchIndexId)
+        ? Optional.empty()
+        : searchIndexRepository.findById(searchIndexId);
   }
 
   /**
