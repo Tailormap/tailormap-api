@@ -70,7 +70,7 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Known Implementing Classes:</dt>
-<dd><code><a href="../controller/EditFeatureController.html" title="class in nl.b3p.tailormap.api.controller">EditFeatureController</a></code>, <code><a href="../controller/FeaturesController.html" title="class in nl.b3p.tailormap.api.controller">FeaturesController</a></code></dd>
+<dd><code><a href="../controller/EditFeatureController.html" title="class in nl.b3p.tailormap.api.controller">EditFeatureController</a></code>, <code><a href="../solr/FeatureIndexingDocument.html" title="class in nl.b3p.tailormap.api.solr">FeatureIndexingDocument</a></code>, <code><a href="../controller/FeaturesController.html" title="class in nl.b3p.tailormap.api.controller">FeaturesController</a></code>, <code><a href="../solr/SolrHelper.html" title="class in nl.b3p.tailormap.api.solr">SolrHelper</a></code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">Constants</span></div>
@@ -93,10 +93,28 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color"><code><a href="#FID" class="member-name-link">FID</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><code><a href="#ID" class="member-name-link">ID</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#INDEX_DISPLAY_FIELD" class="member-name-link">INDEX_DISPLAY_FIELD</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><code><a href="#INDEX_GEOM_FIELD" class="member-name-link">INDEX_GEOM_FIELD</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#INDEX_SEARCH_FIELD" class="member-name-link">INDEX_SEARCH_FIELD</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color"><code><a href="#NAME_REGEX" class="member-name-link">NAME_REGEX</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color"><code><a href="#NAME_REGEX_INVALID_MESSAGE" class="member-name-link">NAME_REGEX_INVALID_MESSAGE</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><code><a href="#SEARCH_ID_FIELD" class="member-name-link">SEARCH_ID_FIELD</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#SEARCH_LAYER" class="member-name-link">SEARCH_LAYER</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
@@ -110,6 +128,20 @@ loadScripts(document, 'script');</script>
 <section class="field-details" id="field-detail">
 <h2>Field Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="DEFAULT_MAX_FEATURES">
+<h3>DEFAULT_MAX_FEATURES</h3>
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">DEFAULT_MAX_FEATURES</span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../../../../constant-values.html#nl.b3p.tailormap.api.util.Constants.DEFAULT_MAX_FEATURES">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
 <li>
 <section class="detail" id="FID">
 <h3>FID</h3>
@@ -125,14 +157,14 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="DEFAULT_MAX_FEATURES">
-<h3>DEFAULT_MAX_FEATURES</h3>
-<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">DEFAULT_MAX_FEATURES</span></div>
+<section class="detail" id="ID">
+<h3>ID</h3>
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">ID</span></div>
 <dl class="notes">
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
-<li><a href="../../../../../constant-values.html#nl.b3p.tailormap.api.util.Constants.DEFAULT_MAX_FEATURES">Constant Field Values</a></li>
+<li><a href="../../../../../constant-values.html#nl.b3p.tailormap.api.util.Constants.ID">Constant Field Values</a></li>
 </ul>
 </dd>
 </dl>
@@ -161,6 +193,76 @@ loadScripts(document, 'script');</script>
 <dd>
 <ul class="see-list">
 <li><a href="../../../../../constant-values.html#nl.b3p.tailormap.api.util.Constants.NAME_REGEX_INVALID_MESSAGE">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="SEARCH_ID_FIELD">
+<h3>SEARCH_ID_FIELD</h3>
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">SEARCH_ID_FIELD</span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../../../../constant-values.html#nl.b3p.tailormap.api.util.Constants.SEARCH_ID_FIELD">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="SEARCH_LAYER">
+<h3>SEARCH_LAYER</h3>
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">SEARCH_LAYER</span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../../../../constant-values.html#nl.b3p.tailormap.api.util.Constants.SEARCH_LAYER">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="INDEX_SEARCH_FIELD">
+<h3>INDEX_SEARCH_FIELD</h3>
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">INDEX_SEARCH_FIELD</span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../../../../constant-values.html#nl.b3p.tailormap.api.util.Constants.INDEX_SEARCH_FIELD">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="INDEX_DISPLAY_FIELD">
+<h3>INDEX_DISPLAY_FIELD</h3>
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">INDEX_DISPLAY_FIELD</span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../../../../constant-values.html#nl.b3p.tailormap.api.util.Constants.INDEX_DISPLAY_FIELD">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="INDEX_GEOM_FIELD">
+<h3>INDEX_GEOM_FIELD</h3>
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">INDEX_GEOM_FIELD</span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../../../../constant-values.html#nl.b3p.tailormap.api.util.Constants.INDEX_GEOM_FIELD">Constant Field Values</a></li>
 </ul>
 </dd>
 </dl>

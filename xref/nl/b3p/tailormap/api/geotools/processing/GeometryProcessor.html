@@ -112,7 +112,7 @@
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> String simplify(@NotNull Geometry geom) {
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> megabytes = 2097152 <em class="jxr_comment">/* 2MB is the default tomcat max post size */</em> - 100 * 1024;
 <a class="jxr_linenumber" name="L106" href="#L106">106</a> 
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>     logger.debug(<span class="jxr_string">"PrecisionModel scale: {}"</span>, geom.getPrecisionModel().getScale());
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>     logger.trace(<span class="jxr_string">"PrecisionModel scale: {}"</span>, geom.getPrecisionModel().getScale());
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>     PrecisionModel pm = <strong class="jxr_keyword">new</strong> PrecisionModel(geom.getPrecisionModel());
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>     GeometryPrecisionReducer gpr = <strong class="jxr_keyword">new</strong> GeometryPrecisionReducer(pm);
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>     geom = gpr.reduce(geom);

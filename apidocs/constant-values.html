@@ -133,6 +133,19 @@ loadScripts(document, 'script');</script>
 </ul>
 <ul class="block-list">
 <li>
+<div class="caption"><span>nl.b3p.tailormap.api.solr.<a href="nl/b3p/tailormap/api/solr/SolrHelper.html" title="class in nl.b3p.tailormap.api.solr">SolrHelper</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Constant Field</div>
+<div class="table-header col-last">Value</div>
+<div class="col-first even-row-color"><code id="nl.b3p.tailormap.api.solr.SolrHelper.SOLR_BATCH_SIZE">public&nbsp;static&nbsp;final&nbsp;int</code></div>
+<div class="col-second even-row-color"><code><a href="nl/b3p/tailormap/api/solr/SolrHelper.html#SOLR_BATCH_SIZE">SOLR_BATCH_SIZE</a></code></div>
+<div class="col-last even-row-color"><code>1000</code></div>
+</div>
+</li>
+</ul>
+<ul class="block-list">
+<li>
 <div class="caption"><span>nl.b3p.tailormap.api.util.<a href="nl/b3p/tailormap/api/util/Constants.html" title="interface in nl.b3p.tailormap.api.util">Constants</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -144,12 +157,30 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color"><code id="nl.b3p.tailormap.api.util.Constants.FID">public&nbsp;static&nbsp;final&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color"><code><a href="nl/b3p/tailormap/api/util/Constants.html#FID">FID</a></code></div>
 <div class="col-last odd-row-color"><code>"__fid"</code></div>
+<div class="col-first even-row-color"><code id="nl.b3p.tailormap.api.util.Constants.ID">public&nbsp;static&nbsp;final&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><code><a href="nl/b3p/tailormap/api/util/Constants.html#ID">ID</a></code></div>
+<div class="col-last even-row-color"><code>"id"</code></div>
+<div class="col-first odd-row-color"><code id="nl.b3p.tailormap.api.util.Constants.INDEX_DISPLAY_FIELD">public&nbsp;static&nbsp;final&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><code><a href="nl/b3p/tailormap/api/util/Constants.html#INDEX_DISPLAY_FIELD">INDEX_DISPLAY_FIELD</a></code></div>
+<div class="col-last odd-row-color"><code>"displayFields"</code></div>
+<div class="col-first even-row-color"><code id="nl.b3p.tailormap.api.util.Constants.INDEX_GEOM_FIELD">public&nbsp;static&nbsp;final&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><code><a href="nl/b3p/tailormap/api/util/Constants.html#INDEX_GEOM_FIELD">INDEX_GEOM_FIELD</a></code></div>
+<div class="col-last even-row-color"><code>"geometry"</code></div>
+<div class="col-first odd-row-color"><code id="nl.b3p.tailormap.api.util.Constants.INDEX_SEARCH_FIELD">public&nbsp;static&nbsp;final&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><code><a href="nl/b3p/tailormap/api/util/Constants.html#INDEX_SEARCH_FIELD">INDEX_SEARCH_FIELD</a></code></div>
+<div class="col-last odd-row-color"><code>"searchFields"</code></div>
 <div class="col-first even-row-color"><code id="nl.b3p.tailormap.api.util.Constants.NAME_REGEX">public&nbsp;static&nbsp;final&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color"><code><a href="nl/b3p/tailormap/api/util/Constants.html#NAME_REGEX">NAME_REGEX</a></code></div>
 <div class="col-last even-row-color"><code>"^[a-zA-Z0-9-_]+"</code></div>
 <div class="col-first odd-row-color"><code id="nl.b3p.tailormap.api.util.Constants.NAME_REGEX_INVALID_MESSAGE">public&nbsp;static&nbsp;final&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color"><code><a href="nl/b3p/tailormap/api/util/Constants.html#NAME_REGEX_INVALID_MESSAGE">NAME_REGEX_INVALID_MESSAGE</a></code></div>
 <div class="col-last odd-row-color"><code>"name must consist of alphanumeric characters, underscore or -"</code></div>
+<div class="col-first even-row-color"><code id="nl.b3p.tailormap.api.util.Constants.SEARCH_ID_FIELD">public&nbsp;static&nbsp;final&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><code><a href="nl/b3p/tailormap/api/util/Constants.html#SEARCH_ID_FIELD">SEARCH_ID_FIELD</a></code></div>
+<div class="col-last even-row-color"><code>"id"</code></div>
+<div class="col-first odd-row-color"><code id="nl.b3p.tailormap.api.util.Constants.SEARCH_LAYER">public&nbsp;static&nbsp;final&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><code><a href="nl/b3p/tailormap/api/util/Constants.html#SEARCH_LAYER">SEARCH_LAYER</a></code></div>
+<div class="col-last odd-row-color"><code>"searchLayer"</code></div>
 </div>
 </li>
 </ul>

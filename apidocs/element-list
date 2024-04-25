@@ -21,5 +21,6 @@ nl.b3p.tailormap.api.repository.events
 nl.b3p.tailormap.api.repository.validation
 nl.b3p.tailormap.api.security
 nl.b3p.tailormap.api.security.annotation
+nl.b3p.tailormap.api.solr
 nl.b3p.tailormap.api.util
 nl.b3p.tailormap.api.viewer.model
