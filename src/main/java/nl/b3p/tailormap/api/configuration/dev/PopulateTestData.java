@@ -151,7 +151,11 @@ public class PopulateTestData {
       // and the latest schema re-created
       createTestUsersAndGroups();
       createTestConfiguration();
-      createSolrIndex();
+      try {
+        createSolrIndex();
+      } catch (Exception e) {
+        logger.error("Exception creating Solr Index for testdata (continuing)", e);
+      }
     } finally {
       InternalAdminAuthentication.clearSecurityContextAuthentication();
     }
