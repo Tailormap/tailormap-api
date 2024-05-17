@@ -139,7 +139,15 @@ public class FeaturesController implements Constants {
     } else if (null != x && null != y) {
       featuresResponse =
           getFeaturesByXY(
-              tmft, appLayerSettings, x, y, application, distance, simplify, !geometryInAttributes);
+              tmft,
+              appLayerSettings,
+              filter,
+              x,
+              y,
+              application,
+              distance,
+              simplify,
+              !geometryInAttributes);
     } else if (null != page && page > 0) {
       featuresResponse =
           getAllFeatures(
@@ -322,6 +330,7 @@ public class FeaturesController implements Constants {
   private FeaturesResponse getFeaturesByXY(
       @NotNull TMFeatureType tmFeatureType,
       @NotNull AppLayerSettings appLayerSettings,
+      String filterCQL,
       @NotNull Double x,
       @NotNull Double y,
       @NotNull Application application,
@@ -366,10 +375,13 @@ public class FeaturesController implements Constants {
       Filter spatialFilter =
           ff.intersects(ff.property(tmFeatureType.getDefaultGeometryAttribute()), ff.literal(p));
 
-      // TODO flamingo does some fancy stuff to combine with existing filters using
-      //      TailormapCQL and some filter visitors
+      Filter finalFilter = spatialFilter;
+      if (null != filterCQL) {
+        Filter filter = ECQL.toFilter(filterCQL);
+        finalFilter = ff.and(spatialFilter, filter);
+      }
       Query q = new Query(fs.getName().toString());
-      q.setFilter(spatialFilter);
+      q.setFilter(finalFilter);
       q.setMaxFeatures(DEFAULT_MAX_FEATURES);
 
       executeQueryOnFeatureSourceAndClose(
@@ -384,6 +396,9 @@ public class FeaturesController implements Constants {
           skipGeometryOutput);
     } catch (IOException e) {
       logger.error("Could not retrieve attribute data", e);
+    } catch (CQLException e) {
+      logger.error("Could not parse requested filter.", e);
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not parse requested filter");
     }
     return featuresResponse;
   }
