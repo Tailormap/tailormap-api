@@ -637,7 +637,7 @@ components:
         - public
         - value
       properties:
-        name:
+        key:
           type: string
           nullable: false
         isPublic:

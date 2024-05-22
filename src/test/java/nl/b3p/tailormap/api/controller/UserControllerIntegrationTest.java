@@ -68,10 +68,10 @@ class UserControllerIntegrationTest {
             jsonPath("$.roles")
                 .value(Matchers.containsInAnyOrder(Group.ADMIN, "test-bar", "test-baz")))
         .andExpect(jsonPath("$.properties.length()").value(1))
-        .andExpect(jsonPath("$.properties[0].name").value("some-property"))
+        .andExpect(jsonPath("$.properties[0].key").value("some-property"))
         .andExpect(jsonPath("$.properties[0].value").value("some-value"))
         .andExpect(jsonPath("$.groupProperties.length()").value(1))
-        .andExpect(jsonPath("$.groupProperties[0].name").value("group-property"))
+        .andExpect(jsonPath("$.groupProperties[0].key").value("group-property"))
         .andExpect(jsonPath("$.groupProperties[0].value").value(Boolean.TRUE));
   }
 }

@@ -182,11 +182,11 @@ public class PopulateTestData {
     groupRepository.save(groupFoo);
 
     AdminAdditionalProperty gp1 = new AdminAdditionalProperty();
-    gp1.setName("group-property");
+    gp1.setKey("group-property");
     gp1.setValue(Boolean.TRUE);
     gp1.setIsPublic(true);
     AdminAdditionalProperty gp2 = new AdminAdditionalProperty();
-    gp2.setName("group-private-property");
+    gp2.setKey("group-private-property");
     gp2.setValue(999.9);
     gp2.setIsPublic(false);
     Group groupBar =
@@ -206,11 +206,11 @@ public class PopulateTestData {
 
     // Superuser with all access
     AdminAdditionalProperty up1 = new AdminAdditionalProperty();
-    up1.setName("some-property");
+    up1.setKey("some-property");
     up1.setValue("some-value");
     up1.setIsPublic(true);
     AdminAdditionalProperty up2 = new AdminAdditionalProperty();
-    up2.setName("admin-property");
+    up2.setKey("admin-property");
     up2.setValue("private-value");
     up2.setIsPublic(false);
     u =

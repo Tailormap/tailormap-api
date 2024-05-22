@@ -74,7 +74,7 @@ public class UserController {
       // but for users which are from the Tailormap database we support additional properties. Only
       // return public ones to the frontend.
       Function<AdminAdditionalProperty, AdditionalProperty> mapToPublicProperty =
-          ap -> new AdditionalProperty().name(ap.getName()).value(ap.getValue());
+          ap -> new AdditionalProperty().key(ap.getKey()).value(ap.getValue());
       userRepository
           .findById(authentication.getName())
           .map(User::getAdditionalProperties)

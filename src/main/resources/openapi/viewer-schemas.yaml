@@ -387,7 +387,7 @@ components:
         - name
         - value
       properties:
-        name:
+        key:
           type: string
           nullable: false
         value:
