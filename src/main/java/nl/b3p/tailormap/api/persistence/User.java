@@ -6,7 +6,6 @@
 package nl.b3p.tailormap.api.persistence;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,8 +21,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import nl.b3p.tailormap.api.persistence.json.AdminAdditionalProperty;
 import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
 import nl.b3p.tailormap.api.util.Constants;
 import nl.b3p.tailormap.api.util.TMPasswordDeserializer;
@@ -62,7 +64,7 @@ public class User {
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  private JsonNode additionalProperties;
+  private List<AdminAdditionalProperty> additionalProperties = new ArrayList<>();
 
   @ManyToMany
   @JoinTable(
@@ -125,11 +127,11 @@ public class User {
     return this;
   }
 
-  public JsonNode getAdditionalProperties() {
+  public List<AdminAdditionalProperty> getAdditionalProperties() {
     return additionalProperties;
   }
 
-  public User setAdditionalProperties(JsonNode additionalProperties) {
+  public User setAdditionalProperties(List<AdminAdditionalProperty> additionalProperties) {
     this.additionalProperties = additionalProperties;
     return this;
   }

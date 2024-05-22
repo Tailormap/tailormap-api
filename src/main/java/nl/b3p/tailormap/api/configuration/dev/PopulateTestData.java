@@ -31,6 +31,7 @@ import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.User;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
+import nl.b3p.tailormap.api.persistence.json.AdminAdditionalProperty;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.AppSettings;
@@ -180,7 +181,19 @@ public class PopulateTestData {
     Group groupFoo = new Group().setName("test-foo").setDescription("Used for integration tests.");
     groupRepository.save(groupFoo);
 
-    Group groupBar = new Group().setName("test-bar").setDescription("Used for integration tests.");
+    AdminAdditionalProperty gp1 = new AdminAdditionalProperty();
+    gp1.setKey("group-property");
+    gp1.setValue(Boolean.TRUE);
+    gp1.setIsPublic(true);
+    AdminAdditionalProperty gp2 = new AdminAdditionalProperty();
+    gp2.setKey("group-private-property");
+    gp2.setValue(999.9);
+    gp2.setIsPublic(false);
+    Group groupBar =
+        new Group()
+            .setName("test-bar")
+            .setDescription("Used for integration tests.")
+            .setAdditionalProperties(List.of(gp1, gp2));
     groupRepository.save(groupBar);
 
     Group groupBaz = new Group().setName("test-baz").setDescription("Used for integration tests.");
@@ -192,8 +205,21 @@ public class PopulateTestData {
     userRepository.save(u);
 
     // Superuser with all access
-    u = new User().setUsername("tm-admin").setPassword(adminHashedPassword);
+    AdminAdditionalProperty up1 = new AdminAdditionalProperty();
+    up1.setKey("some-property");
+    up1.setValue("some-value");
+    up1.setIsPublic(true);
+    AdminAdditionalProperty up2 = new AdminAdditionalProperty();
+    up2.setKey("admin-property");
+    up2.setValue("private-value");
+    up2.setIsPublic(false);
+    u =
+        new User()
+            .setUsername("tm-admin")
+            .setPassword(adminHashedPassword)
+            .setAdditionalProperties(List.of(up1, up2));
     u.getGroups().add(groupRepository.findById(Group.ADMIN).orElseThrow());
+    u.getGroups().add(groupBar);
     userRepository.save(u);
   }
 

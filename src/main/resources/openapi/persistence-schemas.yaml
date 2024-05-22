@@ -628,3 +628,20 @@ components:
       $ref: './common-schemas.yaml#/components/schemas/FormOptions'
     FormField:
       $ref: './common-schemas.yaml#/components/schemas/FormField'
+
+    AdminAdditionalProperty:
+      type: object
+      title: AdminAdditionalProperty
+      required:
+        - name
+        - public
+        - value
+      properties:
+        key:
+          type: string
+          nullable: false
+        isPublic:
+          type: boolean
+          nullable: false
+        value:
+          type: object

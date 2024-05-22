@@ -6,8 +6,19 @@
 package nl.b3p.tailormap.api.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import nl.b3p.tailormap.api.persistence.Group;
+import nl.b3p.tailormap.api.persistence.User;
+import nl.b3p.tailormap.api.persistence.json.AdminAdditionalProperty;
+import nl.b3p.tailormap.api.repository.GroupRepository;
+import nl.b3p.tailormap.api.repository.UserRepository;
 import nl.b3p.tailormap.api.security.OIDCRepository;
+import nl.b3p.tailormap.api.viewer.model.AdditionalProperty;
 import nl.b3p.tailormap.api.viewer.model.LoginConfiguration;
 import nl.b3p.tailormap.api.viewer.model.LoginConfigurationSsoLinksInner;
 import nl.b3p.tailormap.api.viewer.model.UserResponse;
@@ -26,9 +37,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
   private final OIDCRepository oidcRepository;
+  private final UserRepository userRepository;
+  private final GroupRepository groupRepository;
 
-  public UserController(OIDCRepository oidcRepository) {
+  public UserController(
+      OIDCRepository oidcRepository,
+      UserRepository userRepository,
+      GroupRepository groupRepository) {
     this.oidcRepository = oidcRepository;
+    this.userRepository = userRepository;
+    this.groupRepository = groupRepository;
   }
 
   /**
@@ -49,6 +67,34 @@ public class UserController {
           authentication.getAuthorities().stream()
               .map(GrantedAuthority::getAuthority)
               .collect(Collectors.toSet()));
+
+      // Public user and group properties are meant for a (modified) frontend to implement custom
+      // logic depending on who's logged in. When used for authorization to something the check
+      // should also be performed server-side, possibly in an extra microservice.
+
+      // Authentication may be external (OIDC) and a user may not exist in the Tailormap database,
+      // but for users which are from the Tailormap database we support additional properties. Only
+      // return public ones to the frontend.
+      Function<AdminAdditionalProperty, AdditionalProperty> mapToPublicProperty =
+          ap -> new AdditionalProperty().key(ap.getKey()).value(ap.getValue());
+      userRepository
+          .findById(authentication.getName())
+          .map(User::getAdditionalProperties)
+          .orElse(new ArrayList<>())
+          .stream()
+          .filter(AdminAdditionalProperty::getIsPublic)
+          .map(mapToPublicProperty)
+          .forEach(userResponse::addPropertiesItem);
+
+      // Even an externally authenticated user may have authorities which map to Groups from the
+      // Tailormap database and have public properties.
+      groupRepository.findAllById(userResponse.getRoles()).stream()
+          .map(Group::getAdditionalProperties)
+          .filter(Objects::nonNull)
+          .flatMap(Collection::stream)
+          .filter(AdminAdditionalProperty::getIsPublic)
+          .map(mapToPublicProperty)
+          .forEach(userResponse::addGroupPropertiesItem);
     }
     return ResponseEntity.status(HttpStatus.OK).body(userResponse);
   }
