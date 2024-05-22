@@ -380,3 +380,15 @@ components:
       example:
         primaryColor: '#6236ff'
         logo: '<<base64 string>> | <<url>>'
+
+    AdditionalProperty:
+      type: object
+      required:
+        - name
+        - value
+      properties:
+        name:
+          type: string
+          nullable: false
+        value:
+          type: object
