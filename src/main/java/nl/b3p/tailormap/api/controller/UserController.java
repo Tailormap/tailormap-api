@@ -6,7 +6,9 @@
 package nl.b3p.tailormap.api.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -78,12 +80,11 @@ public class UserController {
       userRepository
           .findById(authentication.getName())
           .map(User::getAdditionalProperties)
-          .ifPresent(
-              properties ->
-                  properties.stream()
-                      .filter(AdminAdditionalProperty::getIsPublic)
-                      .map(mapToPublicProperty)
-                      .forEach(userResponse::addPropertiesItem));
+          .orElse(new ArrayList<>())
+          .stream()
+          .filter(AdminAdditionalProperty::getIsPublic)
+          .map(mapToPublicProperty)
+          .forEach(userResponse::addPropertiesItem);
 
       // Even an externally authenticated user may have authorities which map to Groups from the
       // Tailormap database and have public properties.
