@@ -31,6 +31,8 @@ public class SearchIndex implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @NotNull private String name;
+
   private Long featureTypeId;
 
   /** List of attribute names that were used last last when building the search index. */
@@ -107,6 +109,14 @@ public class SearchIndex implements Serializable {
   public SearchIndex featureTypeId(Long featureTypeName) {
     this.featureTypeId = featureTypeName;
     return this;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public Long getFeatureTypeId() {
