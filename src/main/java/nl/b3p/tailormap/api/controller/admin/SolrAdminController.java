@@ -245,7 +245,10 @@ public class SolrAdminController {
               .orElseThrow(
                   () ->
                       new ResponseStatusException(HttpStatus.NOT_FOUND, "Search index not found"));
-      searchIndex.setLastIndexed(null).setStatus(SearchIndex.Status.INITIAL).setComment("Index cleared");
+      searchIndex
+          .setLastIndexed(null)
+          .setStatus(SearchIndex.Status.INITIAL)
+          .setComment("Index cleared");
       searchIndexRepository.save(searchIndex);
     } catch (IOException | SolrServerException | NoSuchElementException e) {
       logger.warn("Error clearing index", e);
