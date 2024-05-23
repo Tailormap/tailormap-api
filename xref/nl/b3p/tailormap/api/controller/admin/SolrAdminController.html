@@ -253,22 +253,25 @@
 <a class="jxr_linenumber" name="L245" href="#L245">245</a>               .orElseThrow(
 <a class="jxr_linenumber" name="L246" href="#L246">246</a>                   () -&gt;
 <a class="jxr_linenumber" name="L247" href="#L247">247</a>                       <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND, <span class="jxr_string">"Search index not found"</span>));
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>       searchIndex.lastIndexed(<strong class="jxr_keyword">null</strong>).status(SearchIndex.Status.INITIAL).setComment(<span class="jxr_string">"Index cleared"</span>);
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>       searchIndexRepository.save(searchIndex);
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>     } <strong class="jxr_keyword">catch</strong> (IOException | SolrServerException | NoSuchElementException e) {
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>       logger.warn(<span class="jxr_string">"Error clearing index"</span>, e);
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>           .contentType(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>           .body(
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>               <strong class="jxr_keyword">new</strong> ErrorResponse()
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>                   .message(e.getLocalizedMessage())
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>                   .code(HttpStatus.INTERNAL_SERVER_ERROR.value()));
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>     }
-<a class="jxr_linenumber" name="L259" href="#L259">259</a> 
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>     logger.info(<span class="jxr_string">"Index cleared for index {}"</span>, searchIndexId);
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>     <strong class="jxr_keyword">return</strong> ResponseEntity.noContent().build();
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>   }
-<a class="jxr_linenumber" name="L263" href="#L263">263</a> }
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>       searchIndex
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>           .setLastIndexed(<strong class="jxr_keyword">null</strong>)
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>           .setStatus(SearchIndex.Status.INITIAL)
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>           .setComment(<span class="jxr_string">"Index cleared"</span>);
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>       searchIndexRepository.save(searchIndex);
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>     } <strong class="jxr_keyword">catch</strong> (IOException | SolrServerException | NoSuchElementException e) {
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>       logger.warn(<span class="jxr_string">"Error clearing index"</span>, e);
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>           .contentType(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>           .body(
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>               <strong class="jxr_keyword">new</strong> ErrorResponse()
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>                   .message(e.getLocalizedMessage())
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>                   .code(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>     }
+<a class="jxr_linenumber" name="L262" href="#L262">262</a> 
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>     logger.info(<span class="jxr_string">"Index cleared for index {}"</span>, searchIndexId);
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>     <strong class="jxr_keyword">return</strong> ResponseEntity.noContent().build();
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>   }
+<a class="jxr_linenumber" name="L266" href="#L266">266</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

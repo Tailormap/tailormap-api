@@ -1322,28 +1322,31 @@
 <a class="jxr_linenumber" name="L1314" href="#L1314">1314</a> 
 <a class="jxr_linenumber" name="L1315" href="#L1315">1315</a>       <strong class="jxr_keyword">try</strong> (solrHelper) {
 <a class="jxr_linenumber" name="L1316" href="#L1316">1316</a>         <a name="SearchIndex" href="../../../../../../nl/b3p/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> begroeidterreindeelIndex =
-<a class="jxr_linenumber" name="L1317" href="#L1317">1317</a>             <strong class="jxr_keyword">new</strong> <a name="SearchIndex" href="../../../../../../nl/b3p/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a>().featureTypeId(begroeidterreindeelFT.getId());
-<a class="jxr_linenumber" name="L1318" href="#L1318">1318</a>         begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
-<a class="jxr_linenumber" name="L1319" href="#L1319">1319</a>         solrHelper.addFeatureTypeIndex(
-<a class="jxr_linenumber" name="L1320" href="#L1320">1320</a>             begroeidterreindeelIndex, begroeidterreindeelFT, featureSourceFactoryHelper);
-<a class="jxr_linenumber" name="L1321" href="#L1321">1321</a>         begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
-<a class="jxr_linenumber" name="L1322" href="#L1322">1322</a> 
-<a class="jxr_linenumber" name="L1323" href="#L1323">1323</a>         <a name="SearchIndex" href="../../../../../../nl/b3p/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> wegdeelIndex = <strong class="jxr_keyword">new</strong> <a name="SearchIndex" href="../../../../../../nl/b3p/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a>().featureTypeId(wegdeelFT.getId());
-<a class="jxr_linenumber" name="L1324" href="#L1324">1324</a>         wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
-<a class="jxr_linenumber" name="L1325" href="#L1325">1325</a>         solrHelper.addFeatureTypeIndex(wegdeelIndex, wegdeelFT, featureSourceFactoryHelper);
-<a class="jxr_linenumber" name="L1326" href="#L1326">1326</a>         wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
-<a class="jxr_linenumber" name="L1327" href="#L1327">1327</a> 
-<a class="jxr_linenumber" name="L1328" href="#L1328">1328</a>         geoService
-<a class="jxr_linenumber" name="L1329" href="#L1329">1329</a>             .getLayerSettings(<span class="jxr_string">"postgis:begroeidterreindeel"</span>)
-<a class="jxr_linenumber" name="L1330" href="#L1330">1330</a>             .setSearchIndex(<strong class="jxr_keyword">new</strong> SearchIndexRef().searchIndexId(begroeidterreindeelIndex.getId()));
+<a class="jxr_linenumber" name="L1317" href="#L1317">1317</a>             <strong class="jxr_keyword">new</strong> <a name="SearchIndex" href="../../../../../../nl/b3p/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a>()
+<a class="jxr_linenumber" name="L1318" href="#L1318">1318</a>                 .setName(<span class="jxr_string">"Begroeidterreindeel"</span>)
+<a class="jxr_linenumber" name="L1319" href="#L1319">1319</a>                 .setFeatureTypeId(begroeidterreindeelFT.getId());
+<a class="jxr_linenumber" name="L1320" href="#L1320">1320</a>         begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
+<a class="jxr_linenumber" name="L1321" href="#L1321">1321</a>         solrHelper.addFeatureTypeIndex(
+<a class="jxr_linenumber" name="L1322" href="#L1322">1322</a>             begroeidterreindeelIndex, begroeidterreindeelFT, featureSourceFactoryHelper);
+<a class="jxr_linenumber" name="L1323" href="#L1323">1323</a>         begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
+<a class="jxr_linenumber" name="L1324" href="#L1324">1324</a> 
+<a class="jxr_linenumber" name="L1325" href="#L1325">1325</a>         <a name="SearchIndex" href="../../../../../../nl/b3p/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> wegdeelIndex =
+<a class="jxr_linenumber" name="L1326" href="#L1326">1326</a>             <strong class="jxr_keyword">new</strong> <a name="SearchIndex" href="../../../../../../nl/b3p/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a>().setName(<span class="jxr_string">"Wegdeel"</span>).setFeatureTypeId(wegdeelFT.getId());
+<a class="jxr_linenumber" name="L1327" href="#L1327">1327</a>         wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
+<a class="jxr_linenumber" name="L1328" href="#L1328">1328</a>         solrHelper.addFeatureTypeIndex(wegdeelIndex, wegdeelFT, featureSourceFactoryHelper);
+<a class="jxr_linenumber" name="L1329" href="#L1329">1329</a>         wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
+<a class="jxr_linenumber" name="L1330" href="#L1330">1330</a> 
 <a class="jxr_linenumber" name="L1331" href="#L1331">1331</a>         geoService
-<a class="jxr_linenumber" name="L1332" href="#L1332">1332</a>             .getLayerSettings(<span class="jxr_string">"sqlserver:wegdeel"</span>)
-<a class="jxr_linenumber" name="L1333" href="#L1333">1333</a>             .setSearchIndex(<strong class="jxr_keyword">new</strong> SearchIndexRef().searchIndexId(wegdeelIndex.getId()));
-<a class="jxr_linenumber" name="L1334" href="#L1334">1334</a>         geoServiceRepository.save(geoService);
-<a class="jxr_linenumber" name="L1335" href="#L1335">1335</a>       }
-<a class="jxr_linenumber" name="L1336" href="#L1336">1336</a>     }
-<a class="jxr_linenumber" name="L1337" href="#L1337">1337</a>   }
-<a class="jxr_linenumber" name="L1338" href="#L1338">1338</a> }
+<a class="jxr_linenumber" name="L1332" href="#L1332">1332</a>             .getLayerSettings(<span class="jxr_string">"postgis:begroeidterreindeel"</span>)
+<a class="jxr_linenumber" name="L1333" href="#L1333">1333</a>             .setSearchIndex(<strong class="jxr_keyword">new</strong> SearchIndexRef().searchIndexId(begroeidterreindeelIndex.getId()));
+<a class="jxr_linenumber" name="L1334" href="#L1334">1334</a>         geoService
+<a class="jxr_linenumber" name="L1335" href="#L1335">1335</a>             .getLayerSettings(<span class="jxr_string">"sqlserver:wegdeel"</span>)
+<a class="jxr_linenumber" name="L1336" href="#L1336">1336</a>             .setSearchIndex(<strong class="jxr_keyword">new</strong> SearchIndexRef().searchIndexId(wegdeelIndex.getId()));
+<a class="jxr_linenumber" name="L1337" href="#L1337">1337</a>         geoServiceRepository.save(geoService);
+<a class="jxr_linenumber" name="L1338" href="#L1338">1338</a>       }
+<a class="jxr_linenumber" name="L1339" href="#L1339">1339</a>     }
+<a class="jxr_linenumber" name="L1340" href="#L1340">1340</a>   }
+<a class="jxr_linenumber" name="L1341" href="#L1341">1341</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>
