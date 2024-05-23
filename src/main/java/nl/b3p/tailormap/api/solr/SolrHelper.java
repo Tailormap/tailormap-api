@@ -104,9 +104,9 @@ public class SolrHelper implements AutoCloseable, Constants {
             .toList();
 
     searchIndex
-        .searchFieldsUsed(searchFields)
-        .searchDisplayFieldsUsed(displayFields)
-        .status(SearchIndex.Status.INDEXING);
+        .setSearchFieldsUsed(searchFields)
+        .setSearchDisplayFieldsUsed(displayFields)
+        .setStatus(SearchIndex.Status.INDEXING);
 
     if (searchFields.isEmpty()) {
       logger.info("No valid search fields configured for featuretype: {}", tmFeatureType.getName());

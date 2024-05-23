@@ -1314,13 +1314,13 @@ public class PopulateTestData {
 
       try (solrHelper) {
         SearchIndex begroeidterreindeelIndex =
-            new SearchIndex().featureTypeId(begroeidterreindeelFT.getId());
+            new SearchIndex().setName("Begroeidterreindeel").setFeatureTypeId(begroeidterreindeelFT.getId());
         begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
         solrHelper.addFeatureTypeIndex(
             begroeidterreindeelIndex, begroeidterreindeelFT, featureSourceFactoryHelper);
         begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
 
-        SearchIndex wegdeelIndex = new SearchIndex().featureTypeId(wegdeelFT.getId());
+        SearchIndex wegdeelIndex = new SearchIndex().setName("Wegdeel").setFeatureTypeId(wegdeelFT.getId());
         wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
         solrHelper.addFeatureTypeIndex(wegdeelIndex, wegdeelFT, featureSourceFactoryHelper);
         wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
