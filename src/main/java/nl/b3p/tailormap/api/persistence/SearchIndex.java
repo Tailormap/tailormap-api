@@ -35,19 +35,19 @@ public class SearchIndex implements Serializable {
 
   private Long featureTypeId;
 
-  /** List of attribute names that were used last last when building the search index. */
+  /** List of attribute names that were used when building the search index. */
   @JsonProperty("searchFieldsUsed")
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   @Valid
-  private List<String> searchFieldsUsed;
+  private List<String> searchFieldsUsed = new ArrayList<>();
 
-  /** List of attribute names for display that were used last when building the search index. */
+  /** List of attribute names for display that were used when building the search index. */
   @JsonProperty("searchDisplayFieldsUsed")
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   @Valid
-  private List<String> searchDisplayFieldsUsed;
+  private List<String> searchDisplayFieldsUsed = new ArrayList<>();
 
   @Column(columnDefinition = "text")
   private String comment;
@@ -93,21 +93,12 @@ public class SearchIndex implements Serializable {
   @Column(columnDefinition = "varchar(8) default 'INITIAL'")
   private SearchIndex.Status status = SearchIndex.Status.INITIAL;
 
-  public SearchIndex id(Long id) {
-    this.id = id;
-    return this;
-  }
-
   public Long getId() {
-    return this.id;
+    return id;
   }
 
-  public void setId(Long id) {
+  public SearchIndex setId(Long id) {
     this.id = id;
-  }
-
-  public SearchIndex featureTypeId(Long featureTypeName) {
-    this.featureTypeId = featureTypeName;
     return this;
   }
 
@@ -115,57 +106,26 @@ public class SearchIndex implements Serializable {
     return name;
   }
 
-  public void setName(String name) {
+  public SearchIndex setName(String name) {
     this.name = name;
-  }
-
-  public Long getFeatureTypeId() {
-    return this.featureTypeId;
-  }
-
-  public void setFeatureTypeId(Long featureTypeName) {
-    this.featureTypeId = featureTypeName;
-  }
-
-  public String getComment() {
-    return this.comment;
-  }
-
-  public void setComment(String comment) {
-    this.comment = comment;
-  }
-
-  public SearchIndex searchFieldsUsed(List<String> searchFields) {
-    this.searchFieldsUsed = searchFields;
     return this;
   }
 
-  public SearchIndex addSearchFieldsUsedItem(String searchFieldsItem) {
-    if (this.searchFieldsUsed == null) {
-      this.searchFieldsUsed = new ArrayList<>();
-    }
-    this.searchFieldsUsed.add(searchFieldsItem);
+  public Long getFeatureTypeId() {
+    return featureTypeId;
+  }
+
+  public SearchIndex setFeatureTypeId(Long featureTypeId) {
+    this.featureTypeId = featureTypeId;
     return this;
   }
 
   public List<String> getSearchFieldsUsed() {
-    return this.searchFieldsUsed;
+    return searchFieldsUsed;
   }
 
-  public void setSearchFieldsUsed(List<String> searchFields) {
-    this.searchFieldsUsed = searchFields;
-  }
-
-  public SearchIndex searchDisplayFieldsUsed(List<String> searchDisplayFields) {
-    this.searchDisplayFieldsUsed = searchDisplayFields;
-    return this;
-  }
-
-  public SearchIndex addSearchDisplayFieldsUsedItem(String searchDisplayFieldsItem) {
-    if (this.searchDisplayFieldsUsed == null) {
-      this.searchDisplayFieldsUsed = new ArrayList<>();
-    }
-    this.searchDisplayFieldsUsed.add(searchDisplayFieldsItem);
+  public SearchIndex setSearchFieldsUsed(List<String> searchFieldsUsed) {
+    this.searchFieldsUsed = searchFieldsUsed;
     return this;
   }
 
@@ -173,33 +133,35 @@ public class SearchIndex implements Serializable {
     return searchDisplayFieldsUsed;
   }
 
-  public void setSearchDisplayFieldsUsed(List<String> searchDisplayFields) {
-    this.searchDisplayFieldsUsed = searchDisplayFields;
-  }
-
-  public SearchIndex status(SearchIndex.Status status) {
-    this.status = status;
+  public SearchIndex setSearchDisplayFieldsUsed(List<String> searchDisplayFieldsUsed) {
+    this.searchDisplayFieldsUsed = searchDisplayFieldsUsed;
     return this;
   }
 
-  public SearchIndex.Status getStatus() {
-    return this.status;
+  public String getComment() {
+    return comment;
   }
 
-  public void setStatus(SearchIndex.Status status) {
-    this.status = status;
-  }
-
-  public SearchIndex lastIndexed(OffsetDateTime lastIndexed) {
-    this.lastIndexed = lastIndexed;
+  public SearchIndex setComment(String comment) {
+    this.comment = comment;
     return this;
   }
 
   public OffsetDateTime getLastIndexed() {
-    return this.lastIndexed;
+    return lastIndexed;
   }
 
-  public void setLastIndexed(OffsetDateTime lastIndexed) {
+  public SearchIndex setLastIndexed(OffsetDateTime lastIndexed) {
     this.lastIndexed = lastIndexed;
+    return this;
+  }
+
+  public Status getStatus() {
+    return status;
+  }
+
+  public SearchIndex setStatus(Status status) {
+    this.status = status;
+    return this;
   }
 }

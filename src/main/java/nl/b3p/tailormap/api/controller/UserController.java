@@ -8,7 +8,6 @@ package nl.b3p.tailormap.api.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
