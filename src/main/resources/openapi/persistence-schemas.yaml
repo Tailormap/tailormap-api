@@ -622,6 +622,11 @@ components:
           type: array
           items:
             type: string
+        autoRefreshInSeconds:
+          description: Auto refresh layer in seconds
+          type: number
+          format: double
+          nullable: true
         # TODO add properties for selected WMS style, feature info popup template, etc.
 
     FormOptions:
