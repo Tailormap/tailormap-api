@@ -325,6 +325,7 @@ public class ApplicationHelper {
               .tileSize(serviceLayerSettings.getTileSize())
               .tileGridExtent(serviceLayerSettings.getTileGridExtent())
               .opacity(appLayerSettings.getOpacity())
+              .autoRefreshInSeconds(appLayerSettings.getAutoRefreshInSeconds())
               .visible(layerRef.getVisible())
               .attribution(attribution)
               .description(description));

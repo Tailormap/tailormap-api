@@ -5,7 +5,6 @@
  */
 package nl.b3p.tailormap.api.persistence;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -15,8 +14,11 @@ import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.Pattern;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import nl.b3p.tailormap.api.persistence.json.AdminAdditionalProperty;
 import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
 import nl.b3p.tailormap.api.util.Constants;
 import org.hibernate.annotations.Type;
@@ -55,7 +57,7 @@ public class Group {
    */
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  private JsonNode additionalProperties;
+  private List<AdminAdditionalProperty> additionalProperties = new ArrayList<>();
 
   public String getName() {
     return name;
@@ -111,12 +113,13 @@ public class Group {
     return this;
   }
 
-  public JsonNode getAdditionalProperties() {
+  public List<AdminAdditionalProperty> getAdditionalProperties() {
     return additionalProperties;
   }
 
-  public void setAdditionalProperties(JsonNode additionalProperties) {
+  public Group setAdditionalProperties(List<AdminAdditionalProperty> additionalProperties) {
     this.additionalProperties = additionalProperties;
+    return this;
   }
 
   @PreRemove

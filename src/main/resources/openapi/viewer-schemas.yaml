@@ -143,6 +143,12 @@ components:
         description:
           description: 'Description text to show for this layer, may contain some links and images (see htmlify pipe)'
           type: string
+        autoRefreshInSeconds:
+          description: 'Automatically refresh the layer (in seconds)'
+          type: number
+          format: double
+          nullable: true
+
 
     LayerTreeNode:
       description: Grouping of layers in a tree structure.
@@ -380,3 +386,15 @@ components:
       example:
         primaryColor: '#6236ff'
         logo: '<<base64 string>> | <<url>>'
+
+    AdditionalProperty:
+      type: object
+      required:
+        - name
+        - value
+      properties:
+        key:
+          type: string
+          nullable: false
+        value:
+          type: object

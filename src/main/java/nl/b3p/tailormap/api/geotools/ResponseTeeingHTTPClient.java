@@ -185,6 +185,16 @@ public class ResponseTeeingHTTPClient implements HTTPClient {
   }
 
   @Override
+  public Map<String, String> getExtraParams() {
+    return wrapped.getExtraParams();
+  }
+
+  @Override
+  public void setExtraParams(Map<String, String> extraParams) {
+    wrapped.setExtraParams(extraParams);
+  }
+
+  @Override
   public int getConnectTimeout() {
     return wrapped.getConnectTimeout();
   }

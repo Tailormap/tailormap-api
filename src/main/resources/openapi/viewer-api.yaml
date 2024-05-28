@@ -78,6 +78,15 @@ components:
           uniqueItems: true
           items:
             type: string
+        properties:
+          type: array
+          items:
+            $ref: './viewer-schemas.yaml#/components/schemas/AdditionalProperty'
+        groupProperties:
+          type: array
+          items:
+            $ref: './viewer-schemas.yaml#/components/schemas/AdditionalProperty'
+
 
     ConfigResponse:
       description: 'Global configuration value'
@@ -263,6 +272,60 @@ components:
       example:
         filterApplied: false
         values: [ "value 1", "value 2" ]
+
+    SearchResponse:
+      description: 'A -possibly empty- list of search documents that fulfill the requested conditions and some metadata.'
+      type: object
+      properties:
+        start:
+          description: 'requested start point, this will allow the client to request the next or previous page by adding or removing 1 or more. See also https://solr.apache.org/guide/solr/latest/query-guide/common-query-parameters.html#start-parameter'
+          type: integer
+          format: int64
+          nullable: true
+          minimum: 0
+        total:
+          description: 'the total number of available search documents, could be an estimated value.'
+          type: integer
+          format: int64
+          nullable: false
+        maxScore:
+          description: 'the maximum score of the search documents. Commonly `null` for wildcard searches as these are filters and don''t score.'
+          type: number
+          format: float
+          nullable: true
+        documents:
+          description: 'list of search documents. When the pagenumber*pagesize exceeds the number of documents this list will be empty'
+          type: array
+          minLength: 0
+          items:
+            $ref: '#/components/schemas/SearchDocument'
+      example: { "total": 2,
+                 "start": 10,
+                 "maxScore": null,
+                 "documents": [ { "fid": "fid1","geometry": "POINT(1 2)","displayValues": [ "value 1","value 2" ] } ] }
+
+    SearchDocument:
+      description: 'A search result document'
+      type: object
+      properties:
+        fid:
+          description: 'The unique identifier of the feature, also the primary key in the underlying data source'
+          type: string
+          nullable: false
+        geometry:
+          description: 'The geometry of the feature (WKT'
+          type: string
+          nullable: true
+        displayValues:
+          description: 'The values from the index to display in the search result'
+          type: array
+          nullable: true
+          items:
+            type: string
+      example: { "fid": "fid1",
+                 "geometry": "POINT(1 2)",
+                 "displayValues": [ "value 1", "value 2" ] }
+
 
 paths:
   /unauthorized:
@@ -1200,6 +1263,76 @@ paths:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
         '500':
           description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
+
+  /{viewerKind}/{viewerName}/layer/{appLayerId}/search:
+    summary: 'Use this endpoint to search for features using external indexes (eg. Solr).'
+    parameters:
+      - in: path
+        name: viewerKind
+        required: true
+        schema:
+          type: string
+          enum:
+            - app
+            - service
+      - description: 'viewer name'
+        in: path
+        name: viewerName
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: appLayerId
+        required: true
+        schema:
+          type: string
+      - description: '(Solr) search term'
+        in: query
+        name: q
+        required: true
+        schema:
+          type: string
+      - description: 'start index for the search results, default is 0. Use this to paginate the results.'
+        in: query
+        name: start
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+    get:
+      operationId: 'search'
+      description: 'retrieve a limited list of search responses that fulfill the requested conditions (parameters).'
+      security:
+        - formAuth: [ ]
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '204':
+          description: 'No content. The search did not return any results. This could be because the search term was too specific and no results were found or there is no search index.'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+        '500':
+          description: 'Internal server error. Something went wrong while processing the search request, maybe search index is down.'
           content:
             application/json:
               schema:

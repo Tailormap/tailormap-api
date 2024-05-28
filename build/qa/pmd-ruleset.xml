@@ -4,7 +4,8 @@ Copyright (C) 2021 B3Partners B.V.
 
 SPDX-License-Identifier: MIT
 -->
-<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          name="Maven PMD Plugin Ruleset"
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.net/ruleset_2_0_0.xsd">
     <description>Maven PMD Plugin Ruleset.</description>
@@ -43,8 +44,7 @@ SPDX-License-Identifier: MIT
     <rule ref="category/java/codestyle.xml/UnnecessaryImport"/>
     <rule ref="category/java/codestyle.xml/UnnecessarySemicolon"/>
     <rule ref="category/java/codestyle.xml/EmptyControlStatement"/>
-    <!-- As of PMD 7.0.0 -->
-    <!-- <rule ref="category/java/codestyle.xml/UnnecessaryBoxing"/>-->
+    <rule ref="category/java/codestyle.xml/UnnecessaryBoxing"/>
     <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/>
     <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators"/>
     <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues"/>
@@ -76,7 +76,7 @@ SPDX-License-Identifier: MIT
     <rule ref="category/java/performance.xml/BigIntegerInstantiation"/>
     <rule ref="category/java/performance.xml/StringInstantiation"/>
     <rule name="wildcards" language="java" message="No Wildcard Imports"
-          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <description>Don't use wildcard imports</description>
         <priority>3</priority>
         <properties>
@@ -94,7 +94,7 @@ SPDX-License-Identifier: MIT
         </properties>
     </rule>
     <rule name="no-commons-logging" language="java" message="Do not import Commons Logging (use SLF4J instead)"
-          class="net.sourceforge.pmd.lang.rule.XPathRule">
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <description>Do not use Commons Logging</description>
         <priority>3</priority>
         <properties>
@@ -107,7 +107,7 @@ SPDX-License-Identifier: MIT
     </rule>
     <rule ref="category/java/errorprone.xml/MoreThanOneLogger" />
     <rule name="slf4j-use-methodhandles-lookup" language="java" message="Use MethodHandles.lookup().lookupClass() to get logger"
-          class="net.sourceforge.pmd.lang.rule.XPathRule">
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <description>Use MethodHandles.lookup().lookupClass() to get logger</description>
         <priority>3</priority>
         <properties>
