@@ -121,16 +121,13 @@ SPDX-License-Identifier: MIT
         <commons-lang3.version>3.14.0</commons-lang3.version>
         <hibernate.version>6.5.2.Final</hibernate.version>
         <jackson-bom.version>2.17.1</jackson-bom.version>
-        <!-- <json-path.version>2.9.0</json-path.version>-->
         <junit-jupiter.version>5.10.2</junit-jupiter.version>
-        <logback.version>1.5.3</logback.version>
+        <logback.version>1.5.6</logback.version>
         <micrometer.version>1.13.0</micrometer.version>
         <mssql-jdbc.version>12.6.2.jre11</mssql-jdbc.version>
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
         <oracle-database.version>23.4.0.24.05</oracle-database.version>
         <postgresql.version>42.7.3</postgresql.version>
-        <!-- <slf4j.version>2.0.12</slf4j.version>-->
-        <!-- <snakeyaml.version>2.2</snakeyaml.version>-->
         <spring-data-bom.version>2024.0.0</spring-data-bom.version>
         <spring-hateoas.version>2.3.0</spring-hateoas.version>
         <spring-security.version>6.3.0</spring-security.version>
