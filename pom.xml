@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
+        <version>3.3.0</version>
     </parent>
     <groupId>nl.b3p.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -119,25 +119,22 @@ SPDX-License-Identifier: MIT
         to check
         -->
         <commons-lang3.version>3.14.0</commons-lang3.version>
-        <hibernate.version>6.4.6.Final</hibernate.version>
-        <jackson-bom.version>2.17.0</jackson-bom.version>
-        <!-- <json-path.version>2.9.0</json-path.version>-->
+        <flyway.version>10.13.0</flyway.version>
+        <hibernate.version>6.5.2.Final</hibernate.version>
+        <jackson-bom.version>2.17.1</jackson-bom.version>
         <junit-jupiter.version>5.10.2</junit-jupiter.version>
-        <logback.version>1.5.3</logback.version>
-        <micrometer.version>1.12.5</micrometer.version>
-        <mssql-jdbc.version>12.6.1.jre11</mssql-jdbc.version>
+        <logback.version>1.5.6</logback.version>
+        <micrometer.version>1.13.0</micrometer.version>
+        <mssql-jdbc.version>12.6.2.jre11</mssql-jdbc.version>
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
-        <oracle-database.version>23.3.0.23.09</oracle-database.version>
+        <oracle-database.version>23.4.0.24.05</oracle-database.version>
         <postgresql.version>42.7.3</postgresql.version>
-        <!-- <slf4j.version>2.0.12</slf4j.version>-->
-        <!-- <snakeyaml.version>2.2</snakeyaml.version>-->
-        <spring-data-bom.version>2023.1.5</spring-data-bom.version>
-        <spring-hateoas.version>2.2.2</spring-hateoas.version>
-        <spring-security.version>6.2.4</spring-security.version>
+        <spring-data-bom.version>2024.0.0</spring-data-bom.version>
+        <spring-hateoas.version>2.3.0</spring-hateoas.version>
+        <spring-security.version>6.3.0</spring-security.version>
         <webjars-locator-core.version>0.58</webjars-locator-core.version>
-        <maven.surefire.version>3.0.0</maven.surefire.version>
-        <maven-surefire-plugin.version>${maven.surefire.version}</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>${maven.surefire.version}</maven-failsafe-plugin.version>
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
         <maven-deploy-plugin.version>3.1.0</maven-deploy-plugin.version>
         <maven-install-plugin.version>3.1.0</maven-install-plugin.version>
         <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
@@ -231,6 +228,10 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
