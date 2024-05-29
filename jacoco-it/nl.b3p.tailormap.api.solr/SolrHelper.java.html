@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SolrHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.solr</a> &gt; <span class="el_source">SolrHelper.java</span></div><h1>SolrHelper.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2024 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.solr;
+
+import jakarta.validation.constraints.NotNull;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import nl.b3p.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+import nl.b3p.tailormap.api.geotools.processing.GeometryProcessor;
+import nl.b3p.tailormap.api.persistence.SearchIndex;
+import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.util.Constants;
+import nl.b3p.tailormap.api.viewer.model.SearchDocument;
+import nl.b3p.tailormap.api.viewer.model.SearchResponse;
+import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.request.schema.SchemaRequest;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.UpdateResponse;
+import org.apache.solr.client.solrj.response.schema.SchemaResponse;
+import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.SolrException;
+import org.geotools.api.data.Query;
+import org.geotools.api.data.SimpleFeatureSource;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.locationtech.jts.geom.Geometry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Solr utility/wrapper class. This class provides methods to add or update a full-text feature type
+ * index for a layer, find in the index for a layer, and clear the index for a layer. It also
+ * provides a method to close the Solr client as well as automatically closing the client when used
+ * in a try-with-resources.
+ */
+public class SolrHelper implements AutoCloseable, Constants {
+  private final SolrClient solrClient;
+
+<span class="nc" id="L53">  private static final Logger logger =</span>
+<span class="nc" id="L54">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  public static final int SOLR_BATCH_SIZE = 1000;
+  // milliseconds
+  private static final int SOLR_TIMEOUT = 7000;
+
+  /**
+   * Constructor
+   *
+   * @param solrClient the Solr client, this will be closed when this class is closed
+   */
+<span class="nc" id="L65">  public SolrHelper(@NotNull SolrClient solrClient) {</span>
+<span class="nc" id="L66">    this.solrClient = solrClient;</span>
+<span class="nc" id="L67">  }</span>
+
+  /**
+   * Add or update a feature type index for a layer.
+   *
+   * @param searchIndex the search index config
+   * @param tmFeatureType the feature type
+   * @throws UnsupportedOperationException if the operation is not supported, possibly because not
+   *     search field shave been defined
+   * @throws IOException if an I/O error occurs
+   * @throws SolrServerException if a Solr error occurs
+   */
+  @SuppressWarnings(&quot;FromTemporalAccessor&quot;)
+  public void addFeatureTypeIndex(
+      @NotNull SearchIndex searchIndex,
+      @NotNull TMFeatureType tmFeatureType,
+      @NotNull FeatureSourceFactoryHelper featureSourceFactoryHelper)
+      throws UnsupportedOperationException, IOException, SolrServerException {
+
+<span class="nc" id="L86">    createSchemaIfNotExists();</span>
+
+<span class="nc" id="L88">    final Instant start = Instant.now();</span>
+
+<span class="nc bnc" id="L90" title="All 2 branches missed.">    if (null == tmFeatureType.getSettings().getSearchFields()) {</span>
+<span class="nc" id="L91">      logger.warn(&quot;No search fields configured for featuretype: {}&quot;, tmFeatureType.getName());</span>
+<span class="nc" id="L92">      throw new UnsupportedOperationException(</span>
+<span class="nc" id="L93">          &quot;No search fields configured for featuretype: %s&quot;.formatted(tmFeatureType.getName()));</span>
+    }
+
+    // set fields while filtering out hidden fields
+<span class="nc" id="L97">    List&lt;String&gt; searchFields =</span>
+<span class="nc" id="L98">        tmFeatureType.getSettings().getSearchFields().stream()</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">            .filter(s -&gt; !tmFeatureType.getSettings().getHideAttributes().contains(s))</span>
+<span class="nc" id="L100">            .toList();</span>
+<span class="nc" id="L101">    List&lt;String&gt; displayFields =</span>
+<span class="nc" id="L102">        tmFeatureType.getSettings().getSearchDisplayFields().stream()</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">            .filter(s -&gt; !tmFeatureType.getSettings().getHideAttributes().contains(s))</span>
+<span class="nc" id="L104">            .toList();</span>
+
+<span class="nc" id="L106">    searchIndex</span>
+<span class="nc" id="L107">        .setSearchFieldsUsed(searchFields)</span>
+<span class="nc" id="L108">        .setSearchDisplayFieldsUsed(displayFields)</span>
+<span class="nc" id="L109">        .setStatus(SearchIndex.Status.INDEXING);</span>
+
+<span class="nc bnc" id="L111" title="All 2 branches missed.">    if (searchFields.isEmpty()) {</span>
+<span class="nc" id="L112">      logger.info(&quot;No valid search fields configured for featuretype: {}&quot;, tmFeatureType.getName());</span>
+<span class="nc" id="L113">      searchIndex.setStatus(SearchIndex.Status.ERROR);</span>
+<span class="nc" id="L114">      throw new UnsupportedOperationException(</span>
+          &quot;No valid search fields configured for featuretype: %s&quot;
+<span class="nc" id="L116">              .formatted(tmFeatureType.getName()));</span>
+    }
+
+    // add search and display properties to query
+<span class="nc" id="L120">    Set&lt;String&gt; propertyNames = new HashSet&lt;&gt;();</span>
+    // always add primary key and default geometry to geotools query
+<span class="nc" id="L122">    propertyNames.add(tmFeatureType.getPrimaryKeyAttribute());</span>
+<span class="nc" id="L123">    propertyNames.add(tmFeatureType.getDefaultGeometryAttribute());</span>
+<span class="nc" id="L124">    propertyNames.addAll(searchFields);</span>
+
+<span class="nc bnc" id="L126" title="All 2 branches missed.">    final boolean hasDisplayFields = !displayFields.isEmpty();</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">    if (hasDisplayFields) {</span>
+<span class="nc" id="L128">      propertyNames.addAll(displayFields);</span>
+    }
+
+<span class="nc" id="L131">    clearIndexForLayer(searchIndex.getId());</span>
+
+<span class="nc" id="L133">    logger.info(</span>
+        &quot;Indexing started for index id: {}, feature type: {}&quot;,
+<span class="nc" id="L135">        searchIndex.getId(),</span>
+<span class="nc" id="L136">        tmFeatureType.getName());</span>
+    // collect features to index
+<span class="nc" id="L138">    SimpleFeatureSource fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);</span>
+<span class="nc" id="L139">    Query q = new Query(fs.getName().toString());</span>
+    // filter out any hidden properties (there should be none though)
+<span class="nc" id="L141">    tmFeatureType.getSettings().getHideAttributes().forEach(propertyNames::remove);</span>
+<span class="nc" id="L142">    q.setPropertyNames(List.copyOf(propertyNames));</span>
+<span class="nc" id="L143">    q.setStartIndex(0);</span>
+    // TODO: make maxFeatures configurable? perhaps for WFS sources?
+    // q.setMaxFeatures(Integer.MAX_VALUE);
+<span class="nc" id="L146">    logger.trace(&quot;Indexing query: {}&quot;, q);</span>
+<span class="nc" id="L147">    SimpleFeatureCollection simpleFeatureCollection = fs.getFeatures(q);</span>
+<span class="nc" id="L148">    final int total = simpleFeatureCollection.size();</span>
+<span class="nc" id="L149">    List&lt;FeatureIndexingDocument&gt; docsBatch = new ArrayList&lt;&gt;(SOLR_BATCH_SIZE);</span>
+    // TODO this does not currently batch/page the feature source query, this doesn't seem to be an
+    //   issue for now but could be if the feature source is very large or slow e.g. WFS
+    UpdateResponse updateResponse;
+<span class="nc" id="L153">    try (SimpleFeatureIterator iterator = simpleFeatureCollection.features()) {</span>
+<span class="nc" id="L154">      int indexCounter = 0;</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">      while (iterator.hasNext()) {</span>
+<span class="nc" id="L156">        indexCounter++;</span>
+<span class="nc" id="L157">        SimpleFeature feature = iterator.next();</span>
+        // note that this will create a unique document
+<span class="nc" id="L159">        FeatureIndexingDocument doc =</span>
+<span class="nc" id="L160">            new FeatureIndexingDocument(feature.getID(), searchIndex.getId());</span>
+<span class="nc" id="L161">        List&lt;String&gt; searchValues = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L162">        List&lt;String&gt; displayValues = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L163">        propertyNames.forEach(</span>
+            propertyName -&gt; {
+<span class="nc" id="L165">              Object value = feature.getAttribute(propertyName);</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">              if (value != null) {</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">                if (value instanceof Geometry) {</span>
+<span class="nc" id="L168">                  doc.setGeometry(GeometryProcessor.processGeometry(value, true, true, null));</span>
+                } else {
+                  // when display and/or search fields are configured, add the value to the search
+                  // and/or display field otherwise add the value to the search and display field
+<span class="nc bnc" id="L172" title="All 2 branches missed.">                  if (searchFields.contains(propertyName)) {</span>
+<span class="nc" id="L173">                    searchValues.add(value.toString());</span>
+                  }
+<span class="nc bnc" id="L175" title="All 2 branches missed.">                  if (hasDisplayFields) {</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">                    if (displayFields.contains(propertyName)) {</span>
+<span class="nc" id="L177">                      displayValues.add(value.toString());</span>
+                    }
+                  }
+                }
+              }
+<span class="nc" id="L182">            });</span>
+<span class="nc" id="L183">        doc.setSearchFields(searchValues.toArray(new String[searchFields.size() + 2]));</span>
+<span class="nc" id="L184">        doc.setDisplayFields(displayValues.toArray(new String[0]));</span>
+<span class="nc" id="L185">        docsBatch.add(doc);</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (indexCounter % SOLR_BATCH_SIZE == 0) {</span>
+<span class="nc" id="L187">          updateResponse = solrClient.addBeans(docsBatch);</span>
+<span class="nc" id="L188">          logger.info(</span>
+              &quot;Added {} documents of {} to index, result status: {}&quot;,
+<span class="nc" id="L190">              indexCounter,</span>
+<span class="nc" id="L191">              total,</span>
+<span class="nc" id="L192">              updateResponse.getStatus());</span>
+<span class="nc" id="L193">          docsBatch.clear();</span>
+        }
+<span class="nc" id="L195">      }</span>
+    }
+<span class="nc bnc" id="L197" title="All 2 branches missed.">    if (!docsBatch.isEmpty()) {</span>
+<span class="nc" id="L198">      updateResponse = solrClient.addBeans(docsBatch);</span>
+<span class="nc" id="L199">      logger.info(&quot;Added last {} documents of {} to index&quot;, docsBatch.size(), total);</span>
+<span class="nc" id="L200">      logger.debug(&quot;Update response status: {}&quot;, updateResponse.getStatus());</span>
+    }
+<span class="nc" id="L202">    final Instant end = Instant.now();</span>
+<span class="nc" id="L203">    Duration processTime = Duration.between(start, end).abs();</span>
+<span class="nc" id="L204">    logger.info(</span>
+        &quot;Indexing finished for index id: {}, featuretype: {} at {} in {}&quot;,
+<span class="nc" id="L206">        searchIndex.getId(),</span>
+<span class="nc" id="L207">        tmFeatureType.getName(),</span>
+        end,
+        processTime);
+<span class="nc" id="L210">    searchIndex.setComment(</span>
+        &quot;Indexed %s features in %s.%s seconds, started at %s&quot;
+<span class="nc" id="L212">            .formatted(total, processTime.getSeconds(), processTime.getNano(), start));</span>
+
+<span class="nc" id="L214">    searchIndex.setLastIndexed(end.atOffset(ZoneId.systemDefault().getRules().getOffset(end)));</span>
+<span class="nc" id="L215">    searchIndex.setStatus(SearchIndex.Status.INDEXED);</span>
+
+<span class="nc" id="L217">    updateResponse = this.solrClient.commit();</span>
+<span class="nc" id="L218">    logger.debug(&quot;Update response status: {}&quot;, updateResponse.getStatus());</span>
+<span class="nc" id="L219">  }</span>
+
+  /**
+   * Clear the index for a layer.
+   *
+   * @param searchLayerId the layer id
+   * @throws IOException if an I/O error occurs
+   * @throws SolrServerException if a Solr error occurs
+   */
+  public void clearIndexForLayer(@NotNull Long searchLayerId)
+      throws IOException, SolrServerException {
+<span class="nc" id="L230">    QueryResponse response =</span>
+<span class="nc" id="L231">        solrClient.query(</span>
+            new SolrQuery(&quot;exists(query(&quot; + SEARCH_LAYER + &quot;:&quot; + searchLayerId + &quot;))&quot;));
+<span class="nc bnc" id="L233" title="All 2 branches missed.">    if (response.getResults().getNumFound() &gt; 0) {</span>
+<span class="nc" id="L234">      logger.info(&quot;Clearing index for searchLayer {}&quot;, searchLayerId);</span>
+<span class="nc" id="L235">      UpdateResponse updateResponse = solrClient.deleteByQuery(SEARCH_LAYER + &quot;:&quot; + searchLayerId);</span>
+<span class="nc" id="L236">      logger.debug(&quot;Update response status: {}&quot;, updateResponse.getStatus());</span>
+<span class="nc" id="L237">      updateResponse = solrClient.commit();</span>
+<span class="nc" id="L238">      logger.debug(&quot;Update response status: {}&quot;, updateResponse.getStatus());</span>
+<span class="nc" id="L239">    } else {</span>
+<span class="nc" id="L240">      logger.info(&quot;No index to clear for layer {}&quot;, searchLayerId);</span>
+    }
+<span class="nc" id="L242">  }</span>
+
+  /**
+   * Search in the index for a layer. The given query is augmented to filter on the {@code
+   * solrLayerId}.
+   *
+   * @param searchIndex the search index
+   * @param solrQuery the query, when {@code null} or empty, the query is set to {@code *} (match
+   *     all)
+   * @param start the start index, starting at 0
+   * @param numResultsToReturn the number of results to return
+   * @return the documents
+   * @throws IOException if an I/O error occurs
+   * @throws SolrServerException if a Solr error occurs
+   */
+  public SearchResponse findInIndex(
+      @NotNull SearchIndex searchIndex, String solrQuery, int start, int numResultsToReturn)
+      throws IOException, SolrServerException, SolrException {
+<span class="nc" id="L260">    logger.info(&quot;Find in index for {}&quot;, searchIndex.getId());</span>
+<span class="nc bnc" id="L261" title="All 4 branches missed.">    if (null == solrQuery || solrQuery.isBlank()) {</span>
+<span class="nc" id="L262">      solrQuery = &quot;*&quot;;</span>
+    }
+    // TODO We could escape special/syntax characters, but that also prevents using keys like ~ and
+    // *
+    // solrQuery = ClientUtils.escapeQueryChars(solrQuery);
+
+<span class="nc" id="L268">    final SolrQuery query =</span>
+        new SolrQuery(INDEX_SEARCH_FIELD + &quot;:&quot; + solrQuery)
+<span class="nc" id="L270">            .setShowDebugInfo(logger.isDebugEnabled())</span>
+<span class="nc" id="L271">            .setTimeAllowed(SOLR_TIMEOUT)</span>
+<span class="nc" id="L272">            .setIncludeScore(true)</span>
+<span class="nc" id="L273">            .setFields(SEARCH_ID_FIELD, INDEX_DISPLAY_FIELD, INDEX_GEOM_FIELD)</span>
+<span class="nc" id="L274">            .addFilterQuery(SEARCH_LAYER + &quot;:&quot; + searchIndex.getId())</span>
+<span class="nc" id="L275">            .setSort(&quot;score&quot;, SolrQuery.ORDER.desc)</span>
+<span class="nc" id="L276">            .addSort(SEARCH_ID_FIELD, SolrQuery.ORDER.asc)</span>
+<span class="nc" id="L277">            .setRows(numResultsToReturn)</span>
+<span class="nc" id="L278">            .setStart(start);</span>
+<span class="nc" id="L279">    query.set(&quot;q.op&quot;, &quot;AND&quot;);</span>
+<span class="nc" id="L280">    logger.debug(&quot;Solr query: {}&quot;, query);</span>
+
+<span class="nc" id="L282">    final QueryResponse response = solrClient.query(query);</span>
+<span class="nc" id="L283">    logger.debug(&quot;response: {}&quot;, response);</span>
+
+<span class="nc" id="L285">    final SolrDocumentList solrDocumentList = response.getResults();</span>
+<span class="nc" id="L286">    logger.debug(&quot;Found {} solr documents&quot;, solrDocumentList.getNumFound());</span>
+<span class="nc" id="L287">    final SearchResponse searchResponse =</span>
+        new SearchResponse()
+<span class="nc" id="L289">            .total(solrDocumentList.getNumFound())</span>
+<span class="nc" id="L290">            .start(response.getResults().getStart())</span>
+<span class="nc" id="L291">            .maxScore(solrDocumentList.getMaxScore());</span>
+<span class="nc" id="L292">    response</span>
+<span class="nc" id="L293">        .getResults()</span>
+<span class="nc" id="L294">        .forEach(</span>
+            solrDocument -&gt; {
+<span class="nc" id="L296">              List&lt;String&gt; displayValues =</span>
+<span class="nc" id="L297">                  solrDocument.getFieldValues(INDEX_DISPLAY_FIELD).stream()</span>
+<span class="nc" id="L298">                      .map(Object::toString)</span>
+<span class="nc" id="L299">                      .toList();</span>
+<span class="nc" id="L300">              searchResponse.addDocumentsItem(</span>
+                  new SearchDocument()
+<span class="nc" id="L302">                      .fid(solrDocument.getFieldValue(SEARCH_ID_FIELD).toString())</span>
+<span class="nc" id="L303">                      .geometry(solrDocument.getFieldValue(INDEX_GEOM_FIELD).toString())</span>
+<span class="nc" id="L304">                      .displayValues(displayValues));</span>
+<span class="nc" id="L305">            });</span>
+
+<span class="nc" id="L307">    return searchResponse;</span>
+  }
+
+  /**
+   * Programmatically create (part of) the schema if it does not exist. Only checks for the
+   * existence of the search layer {@link Constants#SEARCH_LAYER}.
+   *
+   * @throws SolrServerException if a Solr error occurs
+   * @throws IOException if an I/O error occurs
+   */
+  private void createSchemaIfNotExists() throws SolrServerException, IOException {
+<span class="nc" id="L318">    SchemaRequest.Field fieldCheck = new SchemaRequest.Field(SEARCH_LAYER);</span>
+<span class="nc" id="L319">    boolean schemaExists = true;</span>
+    try {
+<span class="nc" id="L321">      SchemaResponse.FieldResponse isField = fieldCheck.process(solrClient);</span>
+<span class="nc" id="L322">      logger.debug(&quot;Field type {} exists&quot;, isField.getField());</span>
+<span class="nc" id="L323">    } catch (Exception e) {</span>
+<span class="nc" id="L324">      logger.debug(e.getLocalizedMessage());</span>
+<span class="nc" id="L325">      logger.info(&quot;Field type {} does not exist, creating it&quot;, SEARCH_LAYER);</span>
+<span class="nc" id="L326">      schemaExists = false;</span>
+<span class="nc" id="L327">    }</span>
+
+<span class="nc bnc" id="L329" title="All 2 branches missed.">    if (schemaExists) {</span>
+<span class="nc" id="L330">      return;</span>
+    }
+
+<span class="nc" id="L333">    logger.info(&quot;Creating Solr field type {}&quot;, SEARCH_LAYER);</span>
+<span class="nc" id="L334">    SchemaRequest.AddField schemaRequest =</span>
+        new SchemaRequest.AddField(
+<span class="nc" id="L336">            Map.of(</span>
+                &quot;name&quot;, SEARCH_LAYER,
+                &quot;type&quot;, &quot;string&quot;,
+<span class="nc" id="L339">                &quot;indexed&quot;, true,</span>
+<span class="nc" id="L340">                &quot;stored&quot;, true,</span>
+<span class="nc" id="L341">                &quot;multiValued&quot;, false,</span>
+<span class="nc" id="L342">                &quot;required&quot;, true,</span>
+<span class="nc" id="L343">                &quot;uninvertible&quot;, false));</span>
+<span class="nc" id="L344">    schemaRequest.process(solrClient);</span>
+
+<span class="nc" id="L346">    logger.info(&quot;Creating Solr field type {}&quot;, INDEX_GEOM_FIELD);</span>
+    // TODO https://b3partners.atlassian.net/browse/HTM-1091
+    //  this should be a spatial field type using (&quot;type&quot;, &quot;location_rpt&quot;)
+    //  but that requires some more work
+<span class="nc" id="L350">    SchemaRequest.AddField schemaRequestGeom =</span>
+        new SchemaRequest.AddField(
+<span class="nc" id="L352">            Map.of(</span>
+                &quot;name&quot;, INDEX_GEOM_FIELD,
+                &quot;type&quot;, &quot;string&quot;,
+<span class="nc" id="L355">                &quot;indexed&quot;, false,</span>
+<span class="nc" id="L356">                &quot;stored&quot;, true,</span>
+<span class="nc" id="L357">                &quot;multiValued&quot;, false));</span>
+<span class="nc" id="L358">    schemaRequestGeom.process(solrClient);</span>
+<span class="nc" id="L359">  }</span>
+
+  /**
+   * Close the wrapped Solr client.
+   *
+   * @throws IOException if an I/O error occurs
+   */
+  @Override
+  public void close() throws IOException {
+<span class="nc bnc" id="L368" title="All 2 branches missed.">    if (null != this.solrClient) this.solrClient.close();</span>
+<span class="nc" id="L369">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
