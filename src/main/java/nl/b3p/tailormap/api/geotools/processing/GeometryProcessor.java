@@ -104,11 +104,15 @@ public final class GeometryProcessor {
   private static String simplify(@NotNull Geometry geom) {
     final int megabytes = 2097152 /* 2MB is the default tomcat max post size */ - 100 * 1024;
 
-    logger.trace("PrecisionModel scale: {}", geom.getPrecisionModel().getScale());
-    PrecisionModel pm = new PrecisionModel(geom.getPrecisionModel());
-    GeometryPrecisionReducer gpr = new GeometryPrecisionReducer(pm);
-    geom = gpr.reduce(geom);
     Geometry bbox = geom.getEnvelope();
+    logger.trace("PrecisionModel scale: {}", geom.getPrecisionModel().getScale());
+    GeometryPrecisionReducer gpr =
+        new GeometryPrecisionReducer(new PrecisionModel(geom.getPrecisionModel()));
+    try {
+      geom = gpr.reduce(geom);
+    } catch (IllegalArgumentException e) {
+      logger.error("Failed to reduce geometry precision", e);
+    }
 
     double distanceTolerance = 1.0;
     String geomTxt = geom.toText();
@@ -118,7 +122,11 @@ public final class GeometryProcessor {
         && distanceTolerance < 9999) {
       logger.debug("Simplify selected feature geometry with distance of: {}", distanceTolerance);
       geom = TopologyPreservingSimplifier.simplify(geom, distanceTolerance);
-      geom = gpr.reduce(geom);
+      try {
+        geom = gpr.reduce(geom);
+      } catch (IllegalArgumentException e) {
+        logger.error("Failed to reduce geometry precision", e);
+      }
       geomTxt = geom.toText();
       distanceTolerance = 10 * distanceTolerance;
     }
