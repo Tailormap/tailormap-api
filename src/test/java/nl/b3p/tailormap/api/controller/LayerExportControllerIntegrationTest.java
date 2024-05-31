@@ -30,12 +30,14 @@ import org.springframework.test.web.servlet.MockMvc;
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class LayerExportControllerPostgresIntegrationTest {
+class LayerExportControllerIntegrationTest {
 
   private static final String waterdeelUrlOracle =
       "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/export/download";
   private static final String pdokProvincies =
       "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/export/download";
+  private static final String begroeidterreindeel =
+      "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/export/download";
 
   @Autowired private MockMvc mockMvc;
 
@@ -190,5 +192,46 @@ class LayerExportControllerPostgresIntegrationTest {
         .andExpect(jsonPath("$.features.length()").value(19))
         .andExpect(jsonPath("$.features[0].geometry.type").value("Polygon"))
         .andExpect(jsonPath("$.features[0].properties.CLASS").value("watervlakte"));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void shouldNotExportHiddenAttributesInGeoJSONWhenRequested() throws Exception {
+    final String url = apiBasePath + begroeidterreindeel;
+    mockMvc
+        .perform(
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .param("outputFormat", "application/json")
+                // terminationdate,geom_kruinlijn are hidden attributes
+                .param(
+                    "attributes", "identificatie,bronhouder,class,terminationdate,geom_kruinlijn"))
+        .andExpect(status().is4xxClientError())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(
+            jsonPath("$.message")
+                .value("One or more requested attributes are not available on the feature type"));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void shouldNotExportHiddenAttributesInGeoJSON() throws Exception {
+    final String url = apiBasePath + begroeidterreindeel;
+    mockMvc
+        .perform(
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .param("outputFormat", "application/json")
+                .param("filter", "(bronhouder ILIKE 'L0001')"))
+        .andExpect(status().isOk())
+        // GeoServer returns application/json;charset=UTF-8; but this is deprecated
+        // .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(jsonPath("$.type").value("FeatureCollection"))
+        .andExpect(jsonPath("$.features.length()").value(14))
+        // terminationdate,geom_kruinlijn are hidden attributes
+        .andExpect(jsonPath("$.features[0].properties.terminationdate").doesNotExist())
+        .andExpect(jsonPath("$.features[0].properties.geom_kruinlijn").doesNotExist());
   }
 }

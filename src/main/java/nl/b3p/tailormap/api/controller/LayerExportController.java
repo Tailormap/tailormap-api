@@ -11,6 +11,7 @@ import static nl.b3p.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import jakarta.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
@@ -19,8 +20,11 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSHelper;
 import nl.b3p.tailormap.api.geotools.wfs.SimpleWFSLayerDescription;
@@ -36,6 +40,9 @@ import nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.viewer.model.LayerExportCapabilities;
+import org.geotools.api.feature.type.AttributeDescriptor;
+import org.geotools.data.wfs.WFSDataStore;
+import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
@@ -183,7 +190,6 @@ public class LayerExportController {
       getFeatureParameters.add("srsName", crs);
     }
     if (attributes != null && !attributes.isEmpty()) {
-
       // If the WFS was discovered by a WMS DescribeLayer, we haven't loaded the entire feature type
       // XML schema (because this can be very slow and error-prone) and we don't know the name of
       // the geometry attribute so do not specify the propertyNames parameter to include all
@@ -191,8 +197,18 @@ public class LayerExportController {
       // the result won't have geometries.
       if (wfsSearchResult.geometryAttribute() != null) {
         attributes.add(wfsSearchResult.geometryAttribute());
-        getFeatureParameters.add("propertyName", String.join(",", attributes));
       }
+      try {
+        // filter out any attributes that are not in the WFS featuretype
+        List<String> wfsAttributeNames = getWFSAttributeNames(wfsSearchResult);
+        attributes =
+            attributes.stream().filter(wfsAttributeNames::contains).collect(Collectors.toList());
+      } catch (IOException e) {
+        logger.error("Error getting WFS featuretype", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("Error getting WFS featuretype");
+      }
+      getFeatureParameters.add("propertyName", String.join(",", attributes));
     }
     if (sortBy != null) {
       getFeatureParameters.add("sortBy", sortBy + ("asc".equals(sortOrder) ? " A" : " D"));
@@ -201,14 +217,9 @@ public class LayerExportController {
         SimpleWFSHelper.getWFSRequestURL(
             wfsSearchResult.wfsUrl(), "GetFeature", getFeatureParameters);
 
-    logger.info(
-        "Layer download {}, proxying WFS GetFeature request {}",
-        null /*tagsToString(tags)*/,
-        wfsGetFeature);
-
+    logger.info("Layer download {}, proxying WFS GetFeature request {}", null, wfsGetFeature);
     try {
       // TODO: close JPA connection before proxying
-
       HttpResponse<InputStream> response =
           WFSProxy.proxyWfsRequest(
               wfsGetFeature, wfsSearchResult.username(), wfsSearchResult.password(), request);
@@ -234,6 +245,44 @@ public class LayerExportController {
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Bad Gateway");
     }
+  }
+
+  /**
+   * Get the (exposed) attribute names of the WFS feature type.
+   *
+   * @param wfsSearchResult provides the WFS feature type to get the attribute names for
+   * @return a list of attribute names for the WFS feature type
+   * @throws IOException if there were any problems setting up (creating or connecting) the
+   *     datasource.
+   */
+  private static List<String> getWFSAttributeNames(WFSSearchResult wfsSearchResult)
+      throws IOException {
+    Map<String, Object> connectionParameters = new HashMap<>();
+    connectionParameters.put(
+        "WFSDataStoreFactory:GET_CAPABILITIES_URL",
+        wfsSearchResult.wfsUrl() + "REQUEST=GetCapabilities&VERSION=1.1.0");
+    connectionParameters.put("WFSDataStoreFactory:PROTOCOL", Boolean.FALSE);
+    connectionParameters.put("WFSDataStoreFactory:WFS_STRATEGY", "geoserver");
+    connectionParameters.put("WFSDataStoreFactory:LENIENT", Boolean.TRUE);
+    // the default timeout is 3000ms
+    connectionParameters.put("WFSDataStoreFactory:TIMEOUT", 2000);
+    if (wfsSearchResult.username() != null) {
+      connectionParameters.put("WFSDataStoreFactory.USERNAME", wfsSearchResult.username());
+      connectionParameters.put("WFSDataStoreFactory.PASSWORD", wfsSearchResult.password());
+    }
+
+    WFSDataStore wfs = new WFSDataStoreFactory().createDataStore(connectionParameters);
+    List<String> attributeNames =
+        wfs
+            .getFeatureSource(wfsSearchResult.typeName())
+            .getSchema()
+            .getAttributeDescriptors()
+            .stream()
+            .map(AttributeDescriptor::getLocalName)
+            .toList();
+
+    wfs.dispose();
+    return attributeNames;
   }
 
   private record WFSSearchResult(
