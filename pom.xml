@@ -150,7 +150,7 @@ SPDX-License-Identifier: MIT
         <dependency-check-maven.version>9.2.0</dependency-check-maven.version>
         <modernizer-maven-plugin.version>2.9.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.0.0-M9</maven-fluido-skin.version>
-        <swagger-ui.version>5.17.11</swagger-ui.version>
+        <swagger-ui.version>5.17.14</swagger-ui.version>
         <sentry.version>7.9.0</sentry.version>
         <errorProne.version>2.28.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
