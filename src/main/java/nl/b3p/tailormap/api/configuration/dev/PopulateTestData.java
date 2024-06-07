@@ -12,6 +12,8 @@ import static nl.b3p.tailormap.api.security.AuthorizationService.ACCESS_TYPE_REA
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +31,7 @@ import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.persistence.SearchIndex;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.Upload;
 import nl.b3p.tailormap.api.persistence.User;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.AdminAdditionalProperty;
@@ -59,9 +62,11 @@ import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.repository.GroupRepository;
 import nl.b3p.tailormap.api.repository.SearchIndexRepository;
+import nl.b3p.tailormap.api.repository.UploadRepository;
 import nl.b3p.tailormap.api.repository.UserRepository;
 import nl.b3p.tailormap.api.security.InternalAdminAuthentication;
 import nl.b3p.tailormap.api.solr.SolrHelper;
+import nl.b3p.tailormap.api.viewer.model.AppStyling;
 import nl.b3p.tailormap.api.viewer.model.Component;
 import nl.b3p.tailormap.api.viewer.model.ComponentConfig;
 import org.apache.solr.client.solrj.impl.ConcurrentUpdateHttp2SolrClient;
@@ -117,6 +122,7 @@ public class PopulateTestData {
   private final ConfigurationRepository configurationRepository;
   private final SearchIndexRepository searchIndexRepository;
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
+  private final UploadRepository uploadRepository;
 
   public PopulateTestData(
       ApplicationContext appContext,
@@ -129,7 +135,8 @@ public class PopulateTestData {
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository,
       FeatureSourceFactoryHelper featureSourceFactoryHelper,
-      SearchIndexRepository searchIndexRepository) {
+      SearchIndexRepository searchIndexRepository,
+      UploadRepository uploadRepository) {
     this.appContext = appContext;
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
@@ -141,6 +148,7 @@ public class PopulateTestData {
     this.configurationRepository = configurationRepository;
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
     this.searchIndexRepository = searchIndexRepository;
+    this.uploadRepository = uploadRepository;
   }
 
   @EventListener(ApplicationReadyEvent.class)
@@ -794,6 +802,98 @@ public class PopulateTestData {
                   .setSearchDisplayFields(List.of("function_", "plus_fysiekvoorkomenwegdeel"));
             });
 
+    Upload logo =
+        new Upload()
+            .setCategory(Upload.CATEGORY_APP_LOGO)
+            .setFilename("gradient.svg")
+            .setMimeType("image/svg+xml")
+            .setContent(
+                    """
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 152 152"
+   xml:space="preserve"
+   fill-rule="evenodd"
+   clip-rule="evenodd"
+   stroke-linejoin="round"
+   stroke-miterlimit="2"
+   version="1.1"
+   id="svg16"
+   sodipodi:docname="gradient.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs20"><linearGradient
+     inkscape:collect="always"
+     id="linearGradient889"><stop
+       style="stop-color:#d40000;stop-opacity:1;"
+       offset="0"
+       id="stop885" /><stop
+       style="stop-color:#d40000;stop-opacity:0;"
+       offset="1"
+       id="stop887" /></linearGradient><linearGradient
+     inkscape:collect="always"
+     xlink:href="#linearGradient889"
+     id="linearGradient891"
+     x1="67.307869"
+     y1="85.15332"
+     x2="99.881165"
+     y2="40.547676"
+     gradientUnits="userSpaceOnUse" /></defs><sodipodi:namedview
+   id="namedview18"
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1.0"
+   inkscape:pageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   showgrid="false"
+   inkscape:zoom="5.5197368"
+   inkscape:cx="76"
+   inkscape:cy="76.090584"
+   inkscape:window-width="1920"
+   inkscape:window-height="1011"
+   inkscape:window-x="0"
+   inkscape:window-y="32"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="svg16" />
+  <g
+   fill-rule="nonzero"
+   id="g14">
+    <path
+   d="m33 127.8 14.31-91.37L97.96 24l10.31 78.86L33 127.8Z"
+   fill="#e3e3ff"
+   id="path2" />
+    <path
+   d="m127.68 91.5-21.5-5.02-70.44 23.28-11.79-3.32 14.27-64.26 8.12.99 45.89-10.62 6.09-5 11.74-2.08L97.96 24 47.31 36.43l-19.09-2.66L0 116.84l33 10.96 75.27-24.94 43.43 10.99-26-78.94-7.68 5.43 9.66 51.16Z"
+   fill="#6236ff"
+   id="path4" />
+    <path
+   d="m64.53 71.2-13.4-11.45-7.8 1.33 21.48 34.47 30.97-43.24 4.95-6.74L129.67 27l-8.52-1.99-22.07 8.22-17.3 19.08L64.53 71.2Z"
+   fill="#6236ff"
+   id="path6" />
+    <path
+   d="M108.27 102.86h.01l-2.17-16.36-70.33 23.24-2.84 18.04.06.02 75.27-24.94ZM46.34 43.17l45.89-10.62 6.07-4.99-.46-3.53-50.53 12.4-.01-.01-1.06 6.74.1.01Z"
+   fill="#4d2ee8"
+   id="path8" />
+    <path
+   d="m43.33 61.08.08.12.02-.14-.1.02Z"
+   fill="#6236ff"
+   id="path10" />
+    <path
+   d="m95.78 52.31 4.92-6.69-1.64-12.36-17.28 19.05L64.53 71.2l-13.4-11.45-7.7 1.31-.02.14 21.4 34.35 30.97-43.24Z"
+   fill="#4d2ee8"
+   id="path12"
+   style="fill:url(#linearGradient891);fill-opacity:1" />
+  </g>
+</svg>"""
+                    .getBytes(StandardCharsets.US_ASCII))
+            .setLastModified(OffsetDateTime.now());
+    uploadRepository.saveAndFlush(logo);
+
     List<AppTreeNode> baseNodes =
         List.of(
             new AppTreeLayerNode()
@@ -941,6 +1041,7 @@ public class PopulateTestData {
                             .serviceId("snapshot-geoserver")
                             .layerName("postgis:osm_polygon")
                             .visible(false)))
+            .setStyling(new AppStyling().logo(logo.getId().toString()))
             .setSettings(
                 new AppSettings()
                     .putLayerSettingsItem(
