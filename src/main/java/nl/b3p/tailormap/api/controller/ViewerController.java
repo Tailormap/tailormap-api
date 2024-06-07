@@ -89,7 +89,7 @@ public class ViewerController {
                 // Modify entity for viewer but don't save so changes aren't persisted
                 styling.setLogo(
                     linkTo(
-                            UploadController.class,
+                            UploadsController.class,
                             Map.of(
                                 "id",
                                 logo.getId().toString(),

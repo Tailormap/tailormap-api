@@ -27,10 +27,10 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 // Can't use ${tailormap-api.base-path} because linkTo() won't work
 @RequestMapping(path = "/api/uploads/{category}/{id}/{filename}")
-public class UploadController {
+public class UploadsController {
   private final UploadRepository uploadRepository;
 
-  public UploadController(UploadRepository uploadRepository) {
+  public UploadsController(UploadRepository uploadRepository) {
     this.uploadRepository = uploadRepository;
   }
 
@@ -63,14 +63,11 @@ public class UploadController {
             .findByIdAndCategory(id, category)
             .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
 
-    ResponseEntity.BodyBuilder b =
-        ResponseEntity.ok()
-            .header("Content-Type", upload.getMimeType())
-            .contentLength(upload.getContentLength())
-            .cacheControl(CacheControl.noCache().cachePublic());
-    if (upload.getLastModified() != null) {
-      b.lastModified(upload.getLastModified().toInstant());
-    }
-    return b.body(upload.getContent());
+    return ResponseEntity.ok()
+        .header("Content-Type", upload.getMimeType())
+        .lastModified(upload.getLastModified().toInstant())
+        .contentLength(upload.getContentLength())
+        .cacheControl(CacheControl.noCache().cachePublic())
+        .body(upload.getContent());
   }
 }

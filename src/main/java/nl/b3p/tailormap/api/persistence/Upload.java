@@ -13,6 +13,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import nl.b3p.tailormap.api.persistence.listener.EntityEventPublisher;
@@ -39,7 +40,7 @@ public class Upload {
 
   private Boolean hiDpiImage;
 
-  private OffsetDateTime lastModified;
+  @NotNull private OffsetDateTime lastModified = OffsetDateTime.now();
 
   @Basic(fetch = FetchType.LAZY)
   private byte[] content;

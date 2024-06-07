@@ -19,7 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface UploadRepository extends JpaRepository<Upload, UUID> {
   @PreAuthorize("permitAll()")
   @NonNull
-  @Query("select coalesce(lastModified, now()) from Upload where id = :id")
+  @Query("select lastModified from Upload where id = :id")
   Optional<OffsetDateTime> findLastModifiedById(@NonNull UUID id);
 
   @PreAuthorize("permitAll()")
