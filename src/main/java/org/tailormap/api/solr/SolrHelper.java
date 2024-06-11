@@ -61,7 +61,7 @@ public class SolrHelper implements AutoCloseable, Constants {
   /**
    * Constructor
    *
-   * @param solrClient the Solr client, this will be closed when this class is closed
+   * @param solrClient the Solr client, this client will be closed when this class is closed.
    */
   public SolrHelper(@NotNull SolrClient solrClient) {
     this.solrClient = solrClient;

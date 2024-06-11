@@ -46,7 +46,6 @@ public class SolrAdminController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
-
   private final FeatureTypeRepository featureTypeRepository;
   private final SearchIndexRepository searchIndexRepository;
   private final SolrService solrService;
@@ -65,7 +64,7 @@ public class SolrAdminController {
   /**
    * Ping solr.
    *
-   * @return the response entity (ok or an error response)
+   * @return the response entity (OK or an error response)
    */
   @Operation(summary = "Ping Solr", description = "Ping Solr to check if it is available")
   @ApiResponse(
