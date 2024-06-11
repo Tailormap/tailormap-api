@@ -60,7 +60,7 @@ public class UploadsController {
 
     Upload upload =
         uploadRepository
-            .findByIdAndCategory(id, category)
+            .findWithContentByIdAndCategory(id, category)
             .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
 
     return ResponseEntity.ok()

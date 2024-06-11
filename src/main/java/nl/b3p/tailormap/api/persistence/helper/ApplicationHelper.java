@@ -302,6 +302,9 @@ public class ApplicationHelper {
 
       boolean proxied = service.getSettings().getUseProxy();
 
+      String legendImageUrl = null; // TODO get from WMS capabilities
+      legendImageUrl = serviceLayerSettings.getLegendImageId();
+
       mr.addAppLayersItem(
           new AppLayer()
               .id(layerRef.getId())
@@ -326,6 +329,7 @@ public class ApplicationHelper {
               .tileGridExtent(serviceLayerSettings.getTileGridExtent())
               .opacity(appLayerSettings.getOpacity())
               .autoRefreshInSeconds(appLayerSettings.getAutoRefreshInSeconds())
+              .legendImageUrl(legendImageUrl)
               .visible(layerRef.getVisible())
               .attribution(attribution)
               .description(description));

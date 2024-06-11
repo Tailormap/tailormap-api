@@ -110,6 +110,30 @@ public class ViewerController {
         "${tailormap-api.base-path}/service/{viewerName}/map"
       })
   public MapResponse map(@ModelAttribute Application app) {
-    return applicationHelper.toMapResponse(app);
+    MapResponse mapResponse = applicationHelper.toMapResponse(app);
+    mapResponse.getAppLayers().stream()
+        .filter(l -> l.getLegendImageUrl() != null && l.getLegendImageUrl().matches(UUID_REGEX))
+        .forEach(
+            l -> {
+              String url =
+                  uploadRepository
+                      .findByIdAndCategory(
+                          UUID.fromString(l.getLegendImageUrl()), Upload.CATEGORY_LEGEND)
+                      .map(
+                          upload ->
+                              linkTo(
+                                      UploadsController.class,
+                                      Map.of(
+                                          "id",
+                                          l.getLegendImageUrl(),
+                                          "category",
+                                          Upload.CATEGORY_LEGEND,
+                                          "filename",
+                                          upload.getFilename()))
+                                  .toString())
+                      .orElse(null);
+              l.setLegendImageUrl(url);
+            });
+    return mapResponse;
   }
 }
