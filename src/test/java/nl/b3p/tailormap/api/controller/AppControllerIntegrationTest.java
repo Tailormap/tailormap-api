@@ -46,7 +46,7 @@ class AppControllerIntegrationTest {
         .andExpect(jsonPath("$.name").value("default"))
         .andExpect(jsonPath("$.title").value("Tailormap demo"))
         .andExpect(jsonPath("$.components").isArray())
-        .andExpect(jsonPath("$.components.length()").value(1))
+        .andExpect(jsonPath("$.components.length()").value(2))
         .andExpect(jsonPath("$.components[0].type").value("EDIT"))
         .andExpect(jsonPath("$.components[0].config.enabled").value(true))
         .andExpect(jsonPath("$.styling.primaryColor").isEmpty())
