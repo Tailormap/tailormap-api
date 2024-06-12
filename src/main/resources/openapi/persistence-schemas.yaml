@@ -364,6 +364,10 @@ components:
           description: 'Description to show for this layer.'
           nullable: true
           type: string
+        legendImageId:
+          description: 'ID of uploaded legend image'
+          nullable: true
+          type: string
         authorizationRules:
           type: array
           items:

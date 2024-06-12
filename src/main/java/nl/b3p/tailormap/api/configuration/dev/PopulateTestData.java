@@ -12,6 +12,7 @@ import static nl.b3p.tailormap.api.security.AuthorizationService.ACCESS_TYPE_REA
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.invoke.MethodHandles;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +30,7 @@ import nl.b3p.tailormap.api.persistence.Group;
 import nl.b3p.tailormap.api.persistence.SearchIndex;
 import nl.b3p.tailormap.api.persistence.TMFeatureSource;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
+import nl.b3p.tailormap.api.persistence.Upload;
 import nl.b3p.tailormap.api.persistence.User;
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.AdminAdditionalProperty;
@@ -59,9 +61,11 @@ import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
 import nl.b3p.tailormap.api.repository.GroupRepository;
 import nl.b3p.tailormap.api.repository.SearchIndexRepository;
+import nl.b3p.tailormap.api.repository.UploadRepository;
 import nl.b3p.tailormap.api.repository.UserRepository;
 import nl.b3p.tailormap.api.security.InternalAdminAuthentication;
 import nl.b3p.tailormap.api.solr.SolrHelper;
+import nl.b3p.tailormap.api.viewer.model.AppStyling;
 import nl.b3p.tailormap.api.viewer.model.Component;
 import nl.b3p.tailormap.api.viewer.model.ComponentConfig;
 import org.apache.solr.client.solrj.impl.ConcurrentUpdateHttp2SolrClient;
@@ -74,6 +78,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -117,6 +122,7 @@ public class PopulateTestData {
   private final ConfigurationRepository configurationRepository;
   private final SearchIndexRepository searchIndexRepository;
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
+  private final UploadRepository uploadRepository;
 
   public PopulateTestData(
       ApplicationContext appContext,
@@ -129,7 +135,8 @@ public class PopulateTestData {
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository,
       FeatureSourceFactoryHelper featureSourceFactoryHelper,
-      SearchIndexRepository searchIndexRepository) {
+      SearchIndexRepository searchIndexRepository,
+      UploadRepository uploadRepository) {
     this.appContext = appContext;
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
@@ -141,6 +148,7 @@ public class PopulateTestData {
     this.configurationRepository = configurationRepository;
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
     this.searchIndexRepository = searchIndexRepository;
+    this.uploadRepository = uploadRepository;
   }
 
   @EventListener(ApplicationReadyEvent.class)
@@ -249,6 +257,16 @@ public class PopulateTestData {
 
     Bounds rdTileGridExtent =
         new Bounds().minx(-285401.92).maxx(595401.92).miny(22598.08).maxy(903401.92);
+
+    Upload legend =
+        new Upload()
+            .setCategory(Upload.CATEGORY_LEGEND)
+            .setFilename("gemeentegebied-legend.png")
+            .setMimeType("image/png")
+            .setContent(
+                new ClassPathResource("test/gemeentegebied-legend.png").getContentAsByteArray())
+            .setLastModified(OffsetDateTime.now());
+    uploadRepository.save(legend);
 
     Collection<GeoService> services =
         List.of(
@@ -454,7 +472,10 @@ public class PopulateTestData {
                                 .description("This layer shows an administrative boundary."))
                         // No attribution required: service is CC0
                         .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)
-                        .useProxy(true))
+                        .useProxy(true)
+                        .putLayerSettingsItem(
+                            "Gemeentegebied",
+                            new GeoServiceLayerSettings().legendImageId(legend.getId().toString())))
                 .setPublished(true)
                 .setTitle("PDOK Kadaster bestuurlijke gebieden")
             // TODO MapServer WMS "https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk"
@@ -617,20 +638,20 @@ public class PopulateTestData {
             geoService -> {
               geoService
                   .getSettings()
-                  .layerSettings(
-                      Map.of(
-                          "Provinciegebied",
-                          new GeoServiceLayerSettings()
-                              .description(
-                                  "The administrative boundary of Dutch Provinces, connected to a WFS.")
-                              .featureType(
-                                  new FeatureTypeRef()
-                                      .featureSourceId(
-                                          featureSources
-                                              .get("pdok-kadaster-bestuurlijkegebieden")
-                                              .getId())
-                                      .featureTypeName("bestuurlijkegebieden:Provinciegebied"))
-                              .title("Provinciegebied (WFS)")));
+                  .getLayerSettings()
+                  .put(
+                      "Provinciegebied",
+                      new GeoServiceLayerSettings()
+                          .description(
+                              "The administrative boundary of Dutch Provinces, connected to a WFS.")
+                          .featureType(
+                              new FeatureTypeRef()
+                                  .featureSourceId(
+                                      featureSources
+                                          .get("pdok-kadaster-bestuurlijkegebieden")
+                                          .getId())
+                                  .featureTypeName("bestuurlijkegebieden:Provinciegebied"))
+                          .title("Provinciegebied (WFS)"));
               geoServiceRepository.save(geoService);
             });
 
@@ -794,6 +815,15 @@ public class PopulateTestData {
                   .setSearchDisplayFields(List.of("function_", "plus_fysiekvoorkomenwegdeel"));
             });
 
+    Upload logo =
+        new Upload()
+            .setCategory(Upload.CATEGORY_APP_LOGO)
+            .setFilename("gradient.svg")
+            .setMimeType("image/svg+xml")
+            .setContent(new ClassPathResource("test/gradient-logo.svg").getContentAsByteArray())
+            .setLastModified(OffsetDateTime.now());
+    uploadRepository.save(logo);
+
     List<AppTreeNode> baseNodes =
         List.of(
             new AppTreeLayerNode()
@@ -941,6 +971,7 @@ public class PopulateTestData {
                             .serviceId("snapshot-geoserver")
                             .layerName("postgis:osm_polygon")
                             .visible(false)))
+            .setStyling(new AppStyling().logo(logo.getId().toString()))
             .setSettings(
                 new AppSettings()
                     .putLayerSettingsItem(

@@ -6,6 +6,7 @@
 package nl.b3p.tailormap.api.controller;
 
 import static nl.b3p.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -49,7 +50,11 @@ class AppControllerIntegrationTest {
         .andExpect(jsonPath("$.components[0].type").value("EDIT"))
         .andExpect(jsonPath("$.components[0].config.enabled").value(true))
         .andExpect(jsonPath("$.styling.primaryColor").isEmpty())
-        .andExpect(jsonPath("$.styling.logo").isEmpty());
+        .andExpect(
+            jsonPath(
+                "$.styling.logo",
+                matchesPattern(
+                    "^http://localhost/api/uploads/app-logo/[\\da-f]{8}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{12}/gradient\\.svg$")));
   }
 
   @Test

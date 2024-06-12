@@ -17,4 +17,6 @@ public interface Constants {
   String INDEX_SEARCH_FIELD = "searchFields";
   String INDEX_DISPLAY_FIELD = "displayFields";
   String INDEX_GEOM_FIELD = "geometry";
+
+  String UUID_REGEX = "(?i)^[\\da-f]{8}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{12}$";
 }
