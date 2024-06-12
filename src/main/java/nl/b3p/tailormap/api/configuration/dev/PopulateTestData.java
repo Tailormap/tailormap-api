@@ -846,7 +846,34 @@ public class PopulateTestData {
             .setCrs("EPSG:28992")
             .setAuthorizationRules(rule)
             .setComponents(
-                List.of(new Component().type("EDIT").config(new ComponentConfig().enabled(true))))
+                List.of(
+                    new Component().type("EDIT").config(new ComponentConfig().enabled(true)),
+                    new Component()
+                        .type("COORDINATE_LINK_WINDOW")
+                        .config(
+                            new ComponentConfig()
+                                .enabled(true)
+                                .putAdditionalProperty(
+                                    "urls",
+                                    List.of(
+                                        Map.of(
+                                            "id",
+                                            "google-maps",
+                                            "url",
+                                            "https://www.google.com/maps/@[lat],[lon],18z",
+                                            "alias",
+                                            "Google Maps",
+                                            "projection",
+                                            "EPSG:4326"),
+                                        Map.of(
+                                            "id",
+                                            "tm-demo",
+                                            "url",
+                                            "https://demo.tailormap.com/#@[X],[Y],18",
+                                            "alias",
+                                            "Tailormap demo",
+                                            "projection",
+                                            "EPSG:28992"))))))
             .setContentRoot(
                 new AppContent()
                     .addBaseLayerNodesItem(
