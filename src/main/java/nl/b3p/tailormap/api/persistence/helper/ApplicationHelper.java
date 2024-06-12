@@ -302,8 +302,8 @@ public class ApplicationHelper {
 
       boolean proxied = service.getSettings().getUseProxy();
 
-      String legendImageUrl = null; // TODO get from WMS capabilities
-      legendImageUrl = serviceLayerSettings.getLegendImageId();
+      // TODO get from WMS capabilities first
+      String legendImageUrl = serviceLayerSettings.getLegendImageId();
 
       mr.addAppLayersItem(
           new AppLayer()
