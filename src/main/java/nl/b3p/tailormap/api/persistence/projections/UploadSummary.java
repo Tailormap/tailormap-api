@@ -28,8 +28,6 @@ public interface UploadSummary {
 
   Boolean getHiDpiImage();
 
-  String getImageAltText();
-
   OffsetDateTime getLastModified();
 
   int getContentLength();
