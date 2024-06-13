@@ -166,7 +166,7 @@ jobs:
       - name: 'Set up Maven'
         uses: stCarolas/setup-maven@v5
         with:
-          maven-version: ${{ env.MAVEN_VERSION }}${{ env.MAVEN_VERSION }}${{ env.MAVEN_VERSION }}
+          maven-version: ${{ env.MAVEN_VERSION }}
 
       - name: Build and Push
         # no need to run any QC or tests
