@@ -81,7 +81,7 @@ services:
     image: docker.b3p.nl/b3partners/tailormap-data_oracle:snapshot
     environment: # Note Oracle has default maximum password length of 16!
       ORACLE_PASSWORD: ${ORACLE_PASSWORD:-fa6efb5b-075b-4b}
-      # this user is created in FREEPDB1, not in XE
+      # this user is created in XEPDB1, not in XE
       APP_USER: "geodata"
       APP_USER_PASSWORD: ${GEODATA_PASSWORD:-980f1c8A-25933b2}
       GEODATA_PASSWORD: ${GEODATA_PASSWORD:-980f1c8A-25933b2}

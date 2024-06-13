@@ -595,7 +595,7 @@ public class PopulateTestData {
                     new JDBCConnectionProperties()
                         .dbtype(JDBCConnectionProperties.DbtypeEnum.ORACLE)
                         .host(connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "oracle")
-                        .database("/FREEPDB1")
+                        .database("/XEPDB1")
                         .schema("GEODATA")
                         .additionalProperties(
                             Map.of("connectionOptions", "?oracle.jdbc.J2EE13Compliant=true")))
