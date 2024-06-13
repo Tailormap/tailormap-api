@@ -179,13 +179,13 @@ jobs:
           docker run --privileged --rm tonistiigi/binfmt --install arm64
           mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip clean deploy --settings .github/maven-settings.xml
 
-#      - name: 'Publish SBOM'
-#        uses: DependencyTrack/gh-upload-sbom@v3
-#        with:
-#          serverhostname: ${{ secrets.DEPENDENCY_TRACK_HOSTNAME }}
-#          apikey: ${{ secrets.DEPENDENCY_TRACK_APIKEY }}
-#          project: '00501150-f4b1-4d75-a099-a6a9d1d8f06a'
-#          bomfilename: 'target/bom.xml'
+      - name: 'Publish SBOM'
+        uses: DependencyTrack/gh-upload-sbom@v3
+        with:
+          serverhostname: ${{ secrets.DEPENDENCY_TRACK_HOSTNAME }}
+          apikey: ${{ secrets.DEPENDENCY_TRACK_APIKEY }}
+          project: '00501150-f4b1-4d75-a099-a6a9d1d8f06a'
+          bomfilename: 'target/classes/META-INF/sbom/application.cdx.json'
 
 
   deploy:
