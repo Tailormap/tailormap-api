@@ -2,6 +2,7 @@ name: 'Ubuntu QA Maven build'
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
+  MAVEN_VERSION: '3.9.7'
 
 concurrency:
   # More info: https://stackoverflow.com/a/68422069/253468
@@ -34,7 +35,7 @@ jobs:
       - name: 'Set up Maven'
         uses: stCarolas/setup-maven@v5
         with:
-          maven-version: '3.9.6'
+          maven-version: ${{ env.MAVEN_VERSION }}
 
       - name: 'QA build with Maven'
         run: mvn -B -V -fae -DskipQA=false -Dfmt.action=check -Dpom.fmt.action=verify -Ddocker.skip=true -DskipTests -DskipITs clean install
