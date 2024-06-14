@@ -24,6 +24,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -60,6 +61,7 @@ class UploadsControllerIntegrationTest {
   @Test
   @Order(1)
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @Transactional
   void testExists() throws Exception {
     Upload logo = uploadRepository.findByCategory(Upload.CATEGORY_APP_LOGO).get(0);
 
