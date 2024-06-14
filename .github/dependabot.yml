@@ -13,7 +13,7 @@ updates:
     assignees:
       - mprins
     labels:
-      - infrastucture
+      - infrastructure
       - dependency
     # stay on springboot 3.x / spring-security 6.x / hibernate 6.x
     ignore:
@@ -37,7 +37,7 @@ updates:
     assignees:
       - mprins
     labels:
-      - infrastucture
+      - infrastructure
 
   - package-ecosystem: docker
     directory: "/"
@@ -52,7 +52,7 @@ updates:
     assignees:
       - mprins
     labels:
-      - infrastucture
+      - infrastructure
     ignore:
       # stay on Java 17 for now
       - dependency-name: "eclipse-temurin"
