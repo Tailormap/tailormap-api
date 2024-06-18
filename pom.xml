@@ -131,7 +131,7 @@ SPDX-License-Identifier: MIT
         <postgresql.version>42.7.3</postgresql.version>
         <spring-data-bom.version>2024.0.0</spring-data-bom.version>
         <spring-hateoas.version>2.3.0</spring-hateoas.version>
-        <spring-security.version>6.3.0</spring-security.version>
+        <spring-security.version>6.3.1</spring-security.version>
         <webjars-locator-core.version>0.58</webjars-locator-core.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
