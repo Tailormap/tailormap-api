@@ -10,6 +10,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import jakarta.persistence.EntityManager;
 import java.lang.invoke.MethodHandles;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.ServicePublishingSettings;
 import nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode;
+import nl.b3p.tailormap.api.persistence.json.WMSStyle;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
@@ -302,8 +304,12 @@ public class ApplicationHelper {
 
       boolean proxied = service.getSettings().getUseProxy();
 
-      // TODO get from WMS capabilities first
       String legendImageUrl = serviceLayerSettings.getLegendImageId();
+      if (legendImageUrl == null) {
+        URI serviceLegendUrl =
+            serviceLayer.getStyles().stream().findFirst().map(WMSStyle::getLegendURL).orElse(null);
+        legendImageUrl = serviceLegendUrl != null ? serviceLegendUrl.toString() : null;
+      }
 
       mr.addAppLayersItem(
           new AppLayer()
