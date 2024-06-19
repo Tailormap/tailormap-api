@@ -30,5 +30,6 @@ public class RestConfiguration implements RepositoryRestConfigurer {
             .map(Type::getJavaType)
             .toArray(Class[]::new);
     config.exposeIdsFor(classes);
+    config.setReturnBodyOnDelete(false);
   }
 }

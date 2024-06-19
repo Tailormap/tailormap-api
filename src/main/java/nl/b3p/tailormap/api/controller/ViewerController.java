@@ -6,15 +6,23 @@
 
 package nl.b3p.tailormap.api.controller;
 
+import static nl.b3p.tailormap.api.util.Constants.UUID_REGEX;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
+import java.util.Map;
+import java.util.UUID;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Configuration;
+import nl.b3p.tailormap.api.persistence.Upload;
 import nl.b3p.tailormap.api.persistence.helper.ApplicationHelper;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
+import nl.b3p.tailormap.api.repository.UploadRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
+import nl.b3p.tailormap.api.viewer.model.AppStyling;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
 import nl.b3p.tailormap.api.viewer.model.ViewerResponse;
 import org.springframework.http.HttpStatus;
@@ -29,16 +37,19 @@ public class ViewerController {
   private final ApplicationRepository applicationRepository;
   private final ApplicationHelper applicationHelper;
   private final AuthorizationService authorizationService;
+  private final UploadRepository uploadRepository;
 
   public ViewerController(
       ConfigurationRepository configurationRepository,
       ApplicationRepository applicationRepository,
       ApplicationHelper applicationHelper,
-      AuthorizationService authorizationService) {
+      AuthorizationService authorizationService,
+      UploadRepository uploadRepository) {
     this.configurationRepository = configurationRepository;
     this.applicationRepository = applicationRepository;
     this.applicationHelper = applicationHelper;
     this.authorizationService = authorizationService;
+    this.uploadRepository = uploadRepository;
   }
 
   @GetMapping(path = "${tailormap-api.base-path}/app")
@@ -67,7 +78,30 @@ public class ViewerController {
   @Counted(value = "get_named_app", description = "Count of get named app")
   public ViewerResponse viewer(
       @ModelAttribute Application app, @ModelAttribute ViewerResponse.KindEnum viewerKind) {
-    return app.getViewerResponse().kind(viewerKind);
+    ViewerResponse viewerResponse = app.getViewerResponse().kind(viewerKind);
+
+    AppStyling styling = viewerResponse.getStyling();
+    if (styling != null && styling.getLogo() != null && styling.getLogo().matches(UUID_REGEX)) {
+      uploadRepository
+          .findByIdAndCategory(UUID.fromString(styling.getLogo()), Upload.CATEGORY_APP_LOGO)
+          .ifPresentOrElse(
+              logo -> {
+                // Modify entity for viewer but don't save so changes aren't persisted
+                styling.setLogo(
+                    linkTo(
+                            UploadsController.class,
+                            Map.of(
+                                "id",
+                                logo.getId().toString(),
+                                "category",
+                                logo.getCategory(),
+                                "filename",
+                                logo.getFilename()))
+                        .toString());
+              },
+              () -> styling.setLogo(null));
+    }
+    return viewerResponse;
   }
 
   @GetMapping(
@@ -76,6 +110,30 @@ public class ViewerController {
         "${tailormap-api.base-path}/service/{viewerName}/map"
       })
   public MapResponse map(@ModelAttribute Application app) {
-    return applicationHelper.toMapResponse(app);
+    MapResponse mapResponse = applicationHelper.toMapResponse(app);
+    mapResponse.getAppLayers().stream()
+        .filter(l -> l.getLegendImageUrl() != null && l.getLegendImageUrl().matches(UUID_REGEX))
+        .forEach(
+            l -> {
+              String url =
+                  uploadRepository
+                      .findByIdAndCategory(
+                          UUID.fromString(l.getLegendImageUrl()), Upload.CATEGORY_LEGEND)
+                      .map(
+                          upload ->
+                              linkTo(
+                                      UploadsController.class,
+                                      Map.of(
+                                          "id",
+                                          l.getLegendImageUrl(),
+                                          "category",
+                                          Upload.CATEGORY_LEGEND,
+                                          "filename",
+                                          upload.getFilename()))
+                                  .toString())
+                      .orElse(null);
+              l.setLegendImageUrl(url);
+            });
+    return mapResponse;
   }
 }

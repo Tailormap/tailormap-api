@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT
     </parent>
     <groupId>nl.b3p.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
-    <version>11.3.3-SNAPSHOT</version>
+    <version>11.3.4-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Tailormap API</name>
     <description>Tailormap API provides the backend for Tailormap</description>
@@ -99,14 +99,14 @@ SPDX-License-Identifier: MIT
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
-        <project.build.outputTimestamp>2024-05-23T09:40:04Z</project.build.outputTimestamp>
-        <geotools.version>31.1</geotools.version>
+        <project.build.outputTimestamp>2024-05-29T13:36:34Z</project.build.outputTimestamp>
+        <geotools.version>31.2</geotools.version>
         <jts.version>1.19.0</jts.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <!-- solr and jetty versions may need to match to prevent errors such as
         Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener -->
         <jetty.version>10.0.20</jetty.version>
-        <solr.version>9.6.0</solr.version>
+        <solr.version>9.6.1</solr.version>
         <!--
         Spring Boot version overrides.
         See org.springframework.boot:spring-boot-dependencies
@@ -119,40 +119,40 @@ SPDX-License-Identifier: MIT
         to check
         -->
         <commons-lang3.version>3.14.0</commons-lang3.version>
-        <flyway.version>10.13.0</flyway.version>
+        <flyway.version>10.15.0</flyway.version>
         <hibernate.version>6.5.2.Final</hibernate.version>
         <jackson-bom.version>2.17.1</jackson-bom.version>
         <junit-jupiter.version>5.10.2</junit-jupiter.version>
         <logback.version>1.5.6</logback.version>
-        <micrometer.version>1.13.0</micrometer.version>
+        <micrometer.version>1.13.1</micrometer.version>
         <mssql-jdbc.version>12.6.2.jre11</mssql-jdbc.version>
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
         <oracle-database.version>23.4.0.24.05</oracle-database.version>
         <postgresql.version>42.7.3</postgresql.version>
-        <spring-data-bom.version>2024.0.0</spring-data-bom.version>
+        <spring-data-bom.version>2024.0.1</spring-data-bom.version>
         <spring-hateoas.version>2.3.0</spring-hateoas.version>
-        <spring-security.version>6.3.0</spring-security.version>
-        <webjars-locator-core.version>0.58</webjars-locator-core.version>
+        <spring-security.version>6.3.1</spring-security.version>
+        <webjars-locator-core.version>0.59</webjars-locator-core.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
         <maven-deploy-plugin.version>3.1.0</maven-deploy-plugin.version>
         <maven-install-plugin.version>3.1.0</maven-install-plugin.version>
-        <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.7.0</maven-javadoc-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
         <maven-enforcer-plugin.version>3.2.1</maven-enforcer-plugin.version>
         <maven-install-plugin.version>3.1.0</maven-install-plugin.version>
         <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
         <!-- end version overrides -->
-        <maven-pmd-plugin.version>3.22.0</maven-pmd-plugin.version>
+        <maven-pmd-plugin.version>3.23.0</maven-pmd-plugin.version>
         <versions-maven-plugin.version>2.16.2</versions-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <dependency-check-maven.version>9.2.0</dependency-check-maven.version>
         <modernizer-maven-plugin.version>2.9.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.0.0-M9</maven-fluido-skin.version>
-        <swagger-ui.version>5.17.11</swagger-ui.version>
-        <sentry.version>7.9.0</sentry.version>
-        <errorProne.version>2.27.1</errorProne.version>
+        <swagger-ui.version>5.17.14</swagger-ui.version>
+        <sentry.version>7.10.0</sentry.version>
+        <errorProne.version>2.28.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
         <compiler.lint>deprecation,unchecked</compiler.lint>
@@ -189,7 +189,7 @@ SPDX-License-Identifier: MIT
                  our spring-boot parent provides this import -->
                 <groupId>org.eclipse.jetty.ee10</groupId>
                 <artifactId>jetty-ee10-bom</artifactId>
-                <version>12.0.9</version>
+                <version>12.0.10</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -248,7 +248,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.hypersistence</groupId>
             <artifactId>hypersistence-utils-hibernate-63</artifactId>
-            <version>3.7.5</version>
+            <version>3.7.6</version>
         </dependency>
         <dependency>
             <groupId>io.hypersistence</groupId>
@@ -584,7 +584,7 @@ SPDX-License-Identifier: MIT
                 </plugin>
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>4.0.0-M14</version>
+                    <version>4.0.0-M15</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
@@ -593,7 +593,7 @@ SPDX-License-Identifier: MIT
                 </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.1.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -601,7 +601,7 @@ SPDX-License-Identifier: MIT
             <plugin>
                 <groupId>io.github.git-commit-id</groupId>
                 <artifactId>git-commit-id-maven-plugin</artifactId>
-                <version>8.0.2</version>
+                <version>9.0.0</version>
                 <configuration>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
                 </configuration>
@@ -1294,7 +1294,7 @@ SPDX-License-Identifier: MIT
         <plugins>
             <plugin>
                 <artifactId>maven-jxr-plugin</artifactId>
-                <version>3.3.2</version>
+                <version>3.4.0</version>
             </plugin>
             <plugin>
                 <artifactId>maven-pmd-plugin</artifactId>
@@ -1313,7 +1313,7 @@ SPDX-License-Identifier: MIT
             </plugin>
             <plugin>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.6.0</version>
                 <reportSets>
                     <reportSet>
                         <reports>
