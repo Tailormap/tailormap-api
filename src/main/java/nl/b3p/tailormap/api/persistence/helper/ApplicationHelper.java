@@ -305,7 +305,7 @@ public class ApplicationHelper {
       boolean proxied = service.getSettings().getUseProxy();
 
       String legendImageUrl = serviceLayerSettings.getLegendImageId();
-      if (legendImageUrl == null) {
+      if (legendImageUrl == null && serviceLayer.getStyles() != null) {
         URI serviceLegendUrl =
             serviceLayer.getStyles().stream().findFirst().map(WMSStyle::getLegendURL).orElse(null);
         legendImageUrl = serviceLegendUrl != null ? serviceLegendUrl.toString() : null;
