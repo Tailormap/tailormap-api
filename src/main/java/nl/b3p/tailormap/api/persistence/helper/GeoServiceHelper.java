@@ -6,9 +6,9 @@
 package nl.b3p.tailormap.api.persistence.helper;
 
 import static nl.b3p.tailormap.api.persistence.TMFeatureSource.Protocol.WFS;
+import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.TILESET3D;
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
-import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.TILESET3D;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
