@@ -459,14 +459,6 @@ components:
       description: Settings applying to a 3D Tileset layer.
       allOf:
         - $ref: '#/components/schemas/LayerSettings'
-#        - type: object
-#          properties:
-#            hiDpiMode:
-#              $ref: './common-schemas.yaml#/components/schemas/TileLayerHiDpiMode'
-#            hiDpiSubstituteLayer:
-#              nullable: true
-#              description: Layer name of this service to substitute when rendering at high dpi.
-#              type: string
 
     GeoServiceLayer:
       description: Layer of a service which can be an OGC WMS/WMTS service or from XYZ/ArcGIS REST.
