@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ViewerController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.controller</a> &gt; <span class="el_source">ViewerController.java</span></div><h1>ViewerController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+package nl.b3p.tailormap.api.controller;
+
+import static nl.b3p.tailormap.api.util.Constants.UUID_REGEX;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
+import java.util.Map;
+import java.util.UUID;
+import nl.b3p.tailormap.api.annotation.AppRestController;
+import nl.b3p.tailormap.api.persistence.Application;
+import nl.b3p.tailormap.api.persistence.Configuration;
+import nl.b3p.tailormap.api.persistence.Upload;
+import nl.b3p.tailormap.api.persistence.helper.ApplicationHelper;
+import nl.b3p.tailormap.api.repository.ApplicationRepository;
+import nl.b3p.tailormap.api.repository.ConfigurationRepository;
+import nl.b3p.tailormap.api.repository.UploadRepository;
+import nl.b3p.tailormap.api.security.AuthorizationService;
+import nl.b3p.tailormap.api.viewer.model.AppStyling;
+import nl.b3p.tailormap.api.viewer.model.MapResponse;
+import nl.b3p.tailormap.api.viewer.model.ViewerResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.server.ResponseStatusException;
+
+@AppRestController
+public class ViewerController {
+
+  private final ConfigurationRepository configurationRepository;
+  private final ApplicationRepository applicationRepository;
+  private final ApplicationHelper applicationHelper;
+  private final AuthorizationService authorizationService;
+  private final UploadRepository uploadRepository;
+
+  public ViewerController(
+      ConfigurationRepository configurationRepository,
+      ApplicationRepository applicationRepository,
+      ApplicationHelper applicationHelper,
+      AuthorizationService authorizationService,
+<span class="nc" id="L47">      UploadRepository uploadRepository) {</span>
+<span class="nc" id="L48">    this.configurationRepository = configurationRepository;</span>
+<span class="nc" id="L49">    this.applicationRepository = applicationRepository;</span>
+<span class="nc" id="L50">    this.applicationHelper = applicationHelper;</span>
+<span class="nc" id="L51">    this.authorizationService = authorizationService;</span>
+<span class="nc" id="L52">    this.uploadRepository = uploadRepository;</span>
+<span class="nc" id="L53">  }</span>
+
+  @GetMapping(path = &quot;${tailormap-api.base-path}/app&quot;)
+  @Timed(value = &quot;get_default_app&quot;, description = &quot;Get default app&quot;)
+  @Counted(value = &quot;get_default_app&quot;, description = &quot;Count of get default app&quot;)
+  public ViewerResponse defaultApp() {
+<span class="nc" id="L59">    String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);</span>
+<span class="nc" id="L60">    Application app = applicationRepository.findByName(defaultAppName);</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">    if (app == null) {</span>
+<span class="nc" id="L62">      throw new ResponseStatusException(HttpStatus.NOT_FOUND);</span>
+    }
+<span class="nc bnc" id="L64" title="All 2 branches missed.">    if (!this.authorizationService.mayUserRead(app)) {</span>
+<span class="nc" id="L65">      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);</span>
+    }
+<span class="nc" id="L67">    return viewer(app, ViewerResponse.KindEnum.APP);</span>
+  }
+
+  // We can't parametrize viewerKind (/app/ and /service/) because they'd clash with /api/admin/...
+  // so name the paths separately
+  @GetMapping(
+      path = {
+        &quot;${tailormap-api.base-path}/app/{viewerName}&quot;,
+        &quot;${tailormap-api.base-path}/service/{viewerName}&quot;
+      })
+  @Timed(value = &quot;get_named_app&quot;, description = &quot;Get named app&quot;)
+  @Counted(value = &quot;get_named_app&quot;, description = &quot;Count of get named app&quot;)
+  public ViewerResponse viewer(
+      @ModelAttribute Application app, @ModelAttribute ViewerResponse.KindEnum viewerKind) {
+<span class="nc" id="L81">    ViewerResponse viewerResponse = app.getViewerResponse().kind(viewerKind);</span>
+
+<span class="nc" id="L83">    AppStyling styling = viewerResponse.getStyling();</span>
+<span class="nc bnc" id="L84" title="All 6 branches missed.">    if (styling != null &amp;&amp; styling.getLogo() != null &amp;&amp; styling.getLogo().matches(UUID_REGEX)) {</span>
+<span class="nc" id="L85">      uploadRepository</span>
+<span class="nc" id="L86">          .findByIdAndCategory(UUID.fromString(styling.getLogo()), Upload.CATEGORY_APP_LOGO)</span>
+<span class="nc" id="L87">          .ifPresentOrElse(</span>
+              logo -&gt; {
+                // Modify entity for viewer but don't save so changes aren't persisted
+<span class="nc" id="L90">                styling.setLogo(</span>
+<span class="nc" id="L91">                    linkTo(</span>
+                            UploadsController.class,
+<span class="nc" id="L93">                            Map.of(</span>
+                                &quot;id&quot;,
+<span class="nc" id="L95">                                logo.getId().toString(),</span>
+                                &quot;category&quot;,
+<span class="nc" id="L97">                                logo.getCategory(),</span>
+                                &quot;filename&quot;,
+<span class="nc" id="L99">                                logo.getFilename()))</span>
+<span class="nc" id="L100">                        .toString());</span>
+<span class="nc" id="L101">              },</span>
+<span class="nc" id="L102">              () -&gt; styling.setLogo(null));</span>
+    }
+<span class="nc" id="L104">    return viewerResponse;</span>
+  }
+
+  @GetMapping(
+      path = {
+        &quot;${tailormap-api.base-path}/app/{viewerName}/map&quot;,
+        &quot;${tailormap-api.base-path}/service/{viewerName}/map&quot;
+      })
+  public MapResponse map(@ModelAttribute Application app) {
+<span class="nc" id="L113">    MapResponse mapResponse = applicationHelper.toMapResponse(app);</span>
+<span class="nc" id="L114">    mapResponse.getAppLayers().stream()</span>
+<span class="nc bnc" id="L115" title="All 4 branches missed.">        .filter(l -&gt; l.getLegendImageUrl() != null &amp;&amp; l.getLegendImageUrl().matches(UUID_REGEX))</span>
+<span class="nc" id="L116">        .forEach(</span>
+            l -&gt; {
+<span class="nc" id="L118">              String url =</span>
+                  uploadRepository
+<span class="nc" id="L120">                      .findByIdAndCategory(</span>
+<span class="nc" id="L121">                          UUID.fromString(l.getLegendImageUrl()), Upload.CATEGORY_LEGEND)</span>
+<span class="nc" id="L122">                      .map(</span>
+                          upload -&gt;
+<span class="nc" id="L124">                              linkTo(</span>
+                                      UploadsController.class,
+<span class="nc" id="L126">                                      Map.of(</span>
+                                          &quot;id&quot;,
+<span class="nc" id="L128">                                          l.getLegendImageUrl(),</span>
+                                          &quot;category&quot;,
+                                          Upload.CATEGORY_LEGEND,
+                                          &quot;filename&quot;,
+<span class="nc" id="L132">                                          upload.getFilename()))</span>
+<span class="nc" id="L133">                                  .toString())</span>
+<span class="nc" id="L134">                      .orElse(null);</span>
+<span class="nc" id="L135">              l.setLegendImageUrl(url);</span>
+<span class="nc" id="L136">            });</span>
+<span class="nc" id="L137">    return mapResponse;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
