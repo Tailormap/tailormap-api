@@ -13,6 +13,9 @@ categories:
     labels:
       - enhancement
       - feature
+  - title: 🔨 Security fixes en updates
+    labels:
+      - security
   - title: 🐛 Bug Fixes
     labels:
       - bug
@@ -21,10 +24,10 @@ categories:
       - regression
   - title: 📖 Documentation updates
     label: documentation
-  - title: 🚨 Removed
-    label: removed
-  - title: ⚠️ Deprecated
-    label: deprecated
+  - title: 🚨 Removed / ⚠️ Deprecated
+    labels: 
+      - removed
+      - deprecated
   - title: 🚦 Tests and Infrastructure
     labels:
       - tests
