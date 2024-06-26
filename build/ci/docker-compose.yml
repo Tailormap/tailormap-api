@@ -11,8 +11,8 @@ volumes:
 
 
 networks:
-  tailormap-data:
-    name: tailormap-data
+  tailormap-ci:
+    name: tailormap-ci
 
 
 services:
@@ -26,7 +26,7 @@ services:
     ports:
       - "127.0.0.1:5432:5432"
     networks:
-      - tailormap-data
+      - tailormap-ci
     healthcheck:
       test: su postgres -c pg_isready
       interval: 15s
@@ -46,7 +46,7 @@ services:
     ports:
       - "127.0.0.1:54322:5432"
     networks:
-      - tailormap-data
+      - tailormap-ci
     healthcheck:
       interval: 1m
       timeout: 5s
@@ -67,7 +67,7 @@ services:
     ports:
       - "127.0.0.1:1433:1433"
     networks:
-      - tailormap-data
+      - tailormap-ci
     healthcheck:
       interval: 1m
       timeout: 5s
@@ -90,7 +90,7 @@ services:
     ports:
       - "127.0.0.1:1521:1521"
     networks:
-      - tailormap-data
+      - tailormap-ci
     labels:
       traefik.enable: false
     healthcheck:
@@ -110,37 +110,19 @@ services:
     image: solr:latest
     environment:
       TZ: Europe/Amsterdam
-      SOLR_HEAP: 1g
     volumes:
       - solr-data:/var/solr
     ports:
       - "127.0.0.1:8983:8983"
     networks:
-      - tailormap-data
+      - tailormap-ci
     restart: unless-stopped
     command:
       - solr-precreate
       - tailormap
-
-  solr-status:
-    container_name: solr-status
-    depends_on:
-      - solr
-    profiles:
-      # in the CI scenario, we don't want to run the solr-exporter
-      - monitoring-enabled
-    image: solr:latest
-    ports:
-      - "127.0.0.1:9854:9854"
-    networks:
-      - tailormap-data
-    environment:
-      TZ: Europe/Amsterdam
-      PORT: 9854
-      SCRAPE_INTERVAL: 15
-      SOLR_URL: http://solr:8983/solr/
-    restart: unless-stopped
-    command:
-      # this script should be in the path for the current user
-      # /opt/solr-9.5.0/prometheus-exporter/bin/solr-exporter
-      - solr-exporter
+    healthcheck:
+      test: 'curl -s http://localhost:8983/solr/tailormap/admin/ping | grep -q "OK" || exit 1'
+      start_period: 60s
+      interval: 15s
+      timeout: 5s
+      retries: 3
