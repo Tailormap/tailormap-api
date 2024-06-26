@@ -5,6 +5,7 @@
  */
 package nl.b3p.tailormap.api.persistence.helper;
 
+import static nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol.PROXIEDLEGEND;
 import static nl.b3p.tailormap.api.util.TMStringUtils.nullIfEmpty;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -32,7 +33,6 @@ import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.ServicePublishingSettings;
 import nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode;
-import nl.b3p.tailormap.api.persistence.json.WMSStyle;
 import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
@@ -164,6 +164,21 @@ public class ApplicationHelper {
                 "viewerName", application.getName(),
                 "appLayerId", appTreeLayerNode.getId(),
                 "protocol", geoService.getProtocol().getValue()))
+        .toString();
+  }
+
+  private String getLegendProxyUrl(Application application, AppTreeLayerNode appTreeLayerNode) {
+    return linkTo(
+            GeoServiceProxyController.class,
+            Map.of(
+                "viewerKind",
+                "app",
+                "viewerName",
+                application.getName(),
+                "appLayerId",
+                appTreeLayerNode.getId(),
+                "protocol",
+                PROXIEDLEGEND.getValue()))
         .toString();
   }
 
@@ -306,9 +321,12 @@ public class ApplicationHelper {
 
       String legendImageUrl = serviceLayerSettings.getLegendImageId();
       if (legendImageUrl == null && serviceLayer.getStyles() != null) {
-        URI serviceLegendUrl =
-            serviceLayer.getStyles().stream().findFirst().map(WMSStyle::getLegendURL).orElse(null);
+        URI serviceLegendUrl = GeoServiceHelper.getLayerLegendUrlFromStyles(serviceLayer);
         legendImageUrl = serviceLegendUrl != null ? serviceLegendUrl.toString() : null;
+        if (null != legendImageUrl && proxied) {
+          // generate a pseudo protocol link to the proxied legend image
+          legendImageUrl = getLegendProxyUrl(app, layerRef);
+        }
       }
 
       mr.addAppLayersItem(

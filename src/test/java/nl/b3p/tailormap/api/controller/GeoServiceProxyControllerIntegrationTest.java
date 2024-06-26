@@ -45,6 +45,12 @@ class GeoServiceProxyControllerIntegrationTest {
   private final String begroeidterreindeelUrl =
       "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wms";
 
+  private final String begroeidterreindeelLegendUrl =
+      "/app/secured/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/proxiedlegend";
+
+  private final String pdokWmsProvinciegebiedLegendUrl =
+      "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/proxy/proxiedlegend";
+
   private final String obkUrl = "/app/secured/layer/lyr:openbasiskaart-proxied:osm/proxy/wmts";
   private final String pdokWmsGemeentegebiedUrl =
       "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/proxy/wms";
@@ -60,6 +66,46 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
+
+  @Test
+  @WithMockUser(username = "user")
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void test_proxied_legend_from_capabilities() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelLegendUrl;
+    mockMvc
+        .perform(
+            get(path)
+                .param("SCALE", "693745.6953993673")
+                .with(setServletPath(path))
+                .accept(MediaType.IMAGE_PNG))
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
+        .andExpect(
+            header()
+                .string(
+                    "Content-Disposition", "inline; filename=geoserver-GetLegendGraphic.image"));
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void test_proxied_legend_from_capabilities_unauthorized() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelLegendUrl;
+    mockMvc
+        .perform(get(path).param("SCALE", "693745.6953993673").with(setServletPath(path)))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @WithMockUser(username = "user")
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void test_proxied_legend_from_capabilities2() throws Exception {
+    final String path = apiBasePath + pdokWmsProvinciegebiedLegendUrl;
+    mockMvc
+        .perform(get(path).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
+        .andExpect(header().string("Content-Length", new StringIsNotZeroMatcher()));
+  }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")

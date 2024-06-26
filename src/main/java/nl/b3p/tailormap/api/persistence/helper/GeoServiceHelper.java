@@ -491,4 +491,16 @@ public class GeoServiceHelper {
               }
             });
   }
+
+  /**
+   * Try to extract the legend url from the styles of the layer.
+   *
+   * @param serviceLayer the layer to get the legend url for
+   * @return a URI to the legend image or null if not found
+   *     <p>TODO this is a temporary solution, it does not work properly for grouped layers, see
+   *     HTM-1133
+   */
+  public static URI getLayerLegendUrlFromStyles(GeoServiceLayer serviceLayer) {
+    return serviceLayer.getStyles().stream().findFirst().map(WMSStyle::getLegendURL).orElse(null);
+  }
 }
