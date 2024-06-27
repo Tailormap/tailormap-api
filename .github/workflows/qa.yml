@@ -6,7 +6,7 @@ env:
 
 concurrency:
   # More info: https://stackoverflow.com/a/68422069/253468
-  group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-master-{0}', github.sha) || format('ci-master-{0}', github.ref) }}
+  group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
   cancel-in-progress: true
 
 on:
@@ -39,6 +39,11 @@ jobs:
 
       - name: 'QA build with Maven'
         run: mvn -B -V -fae -DskipQA=false -Dfmt.action=check -Dpom.fmt.action=verify -Ddocker.skip=true -DskipTests -DskipITs clean install
+
+      - uses: lcollins/pmd-github-action@v3.0.0
+        if: always()
+        with:
+          path: '**/pmd.xml'
 
       - name: 'Cleanup snapshots'
         run: |
