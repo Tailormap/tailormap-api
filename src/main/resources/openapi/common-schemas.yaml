@@ -28,11 +28,14 @@ components:
   schemas:
     GeoServiceProtocol:
       type: string
+      description: Note that the values are case-insensitive and that `proxiedlegend` is a pseudo-protocol for proxied legend requests.
       enum:
         - wms
         - wmts
         - xyz
         - Tileset3D
+        - proxiedlegend
+
     TileLayerHiDpiMode:
       type: string
       enum:

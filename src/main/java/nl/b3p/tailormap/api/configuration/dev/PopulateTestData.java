@@ -13,6 +13,7 @@ import static nl.b3p.tailormap.api.security.AuthorizationService.ACCESS_TYPE_REA
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -265,7 +266,7 @@ public class PopulateTestData {
             .setMimeType("image/png")
             .setContent(
                 new ClassPathResource("test/gemeentegebied-legend.png").getContentAsByteArray())
-            .setLastModified(OffsetDateTime.now());
+            .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
     uploadRepository.save(legend);
 
     Collection<GeoService> services =
@@ -700,7 +701,7 @@ public class PopulateTestData {
                                       """
                                                   This layer shows data from https://www.postgis.net/
 
-                                                  https://postgis.net/logos/postgis-logo.png""")
+                                                  https://postgis.net/brand.svg""")
                                   .featureType(
                                       new FeatureTypeRef()
                                           .featureSourceId(featureSources.get("postgis").getId())
@@ -821,7 +822,7 @@ public class PopulateTestData {
             .setFilename("gradient.svg")
             .setMimeType("image/svg+xml")
             .setContent(new ClassPathResource("test/gradient-logo.svg").getContentAsByteArray())
-            .setLastModified(OffsetDateTime.now());
+            .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
     uploadRepository.save(logo);
 
     List<AppTreeNode> baseNodes =

@@ -8,6 +8,7 @@ package nl.b3p.tailormap.api.controller;
 import static nl.b3p.tailormap.api.TestRequestProcessor.setServletPath;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -15,15 +16,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.github.romankh3.image.comparison.ImageComparison;
+import com.github.romankh3.image.comparison.ImageComparisonUtil;
+import com.github.romankh3.image.comparison.model.ImageComparisonResult;
+import com.github.romankh3.image.comparison.model.ImageComparisonState;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Objects;
+import javax.imageio.ImageIO;
 import nl.b3p.tailormap.api.annotation.PostgresIntegrationTest;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -33,6 +44,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -45,13 +57,24 @@ class GeoServiceProxyControllerIntegrationTest {
   private final String begroeidterreindeelUrl =
       "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wms";
 
+  private final String begroeidterreindeelLegendUrl =
+      "/app/secured/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/proxiedlegend";
+
+  private final String pdokWmsProvinciegebiedLegendUrl =
+      "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/proxy/proxiedlegend";
+
   private final String obkUrl = "/app/secured/layer/lyr:openbasiskaart-proxied:osm/proxy/wmts";
+
   private final String pdokWmsGemeentegebiedUrl =
       "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/proxy/wms";
 
   @Autowired private WebApplicationContext context;
 
   private MockMvc mockMvc;
+
+  private static final String expectedImagesPath =
+      Objects.requireNonNull(GeoServiceProxyControllerIntegrationTest.class.getResource("./"))
+          .getPath();
 
   @BeforeAll
   void initialize() {
@@ -60,6 +83,71 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void test_proxied_legend_from_capabilities_unauthorized() throws Exception {
+    final String path = apiBasePath + begroeidterreindeelLegendUrl;
+    mockMvc
+        .perform(get(path).param("SCALE", "693745.6953993673").with(setServletPath(path)))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @WithMockUser(username = "user")
+  void test_proxied_legend_from_capabilities(TestInfo testInfo) throws Exception {
+    final String path = apiBasePath + begroeidterreindeelLegendUrl;
+    MvcResult result =
+        mockMvc
+            .perform(
+                get(path)
+                    .param("SCALE", "693745.6953993673")
+                    .with(setServletPath(path))
+                    .accept(MediaType.IMAGE_PNG))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
+            .andExpect(
+                header()
+                    .string(
+                        "Content-Disposition", "inline; filename=geoserver-GetLegendGraphic.image"))
+            .andReturn();
+    assertImagesEqual(
+        expectedImagesPath + "begroeidterreindeelLegend_expected.png", result, testInfo);
+  }
+
+  @Test
+  @WithMockUser(username = "user")
+  void test_proxied_legend_from_capabilities2(TestInfo testInfo) throws Exception {
+    final String path = apiBasePath + pdokWmsProvinciegebiedLegendUrl;
+    MvcResult result =
+        mockMvc
+            .perform(get(path).with(setServletPath(path)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
+            .andExpect(header().string("Content-Length", new StringIsNotZeroMatcher()))
+            .andReturn();
+
+    assertImagesEqual(
+        expectedImagesPath + "pdokWmsProvinciegebiedLegend_expected.png", result, testInfo);
+  }
+
+  private static void assertImagesEqual(
+      String expectedImageFileName, MvcResult result, TestInfo testInfo) throws Exception {
+    BufferedImage expectedImage = ImageComparisonUtil.readImageFromResources(expectedImageFileName);
+
+    BufferedImage actualImage =
+        ImageIO.read(new ByteArrayInputStream(result.getResponse().getContentAsByteArray()));
+    ImageIO.write(
+        actualImage, "png", new File("./target/" + testInfo.getDisplayName() + "_actual.png"));
+
+    ImageComparisonResult imageComparisonResult =
+        new ImageComparison(expectedImage, actualImage)
+            .setAllowingPercentOfDifferentPixels(5)
+            .setDestination(new File("./target/" + testInfo.getDisplayName() + "_comparison.png"))
+            .compareImages();
+
+    assertEquals(ImageComparisonState.MATCH, imageComparisonResult.getImageComparisonState());
+  }
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")

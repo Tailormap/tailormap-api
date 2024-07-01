@@ -28,9 +28,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
@@ -82,18 +84,19 @@ public class GeoServiceProxyController {
       @ModelAttribute Application application,
       @ModelAttribute GeoService service,
       @ModelAttribute GeoServiceLayer layer,
-      @PathVariable("protocol") String protocol,
+      @PathVariable("protocol") GeoServiceProtocol protocol,
       HttpServletRequest request) {
 
     if (service == null || layer == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    if (GeoServiceProtocol.XYZ.getValue().equals(protocol)) {
+    if (GeoServiceProtocol.XYZ.equals(protocol)) {
       throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "XYZ proxying not implemented");
     }
 
-    if (!service.getProtocol().getValue().equals(protocol)) {
+    if (!(service.getProtocol().equals(protocol)
+        || GeoServiceProtocol.PROXIEDLEGEND.equals(protocol))) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Invalid proxy protocol: " + protocol);
     }
@@ -116,6 +119,50 @@ public class GeoServiceProxyController {
       }
     }
 
+    switch (protocol) {
+      case WMS:
+      case WMTS:
+        return doProxy(buildWMSUrl(service, request), service, request);
+      case PROXIEDLEGEND:
+        URI legendURI = buildLegendURI(service, layer, request);
+        if (null == legendURI) {
+          logger.warn("No legend URL found for layer {}", layer.getName());
+          return null;
+        }
+        return doProxy(legendURI, service, request);
+      default:
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Unsupported proxy protocol: " + protocol);
+    }
+  }
+
+  private @Nullable URI buildLegendURI(
+      GeoService service, GeoServiceLayer layer, HttpServletRequest request) {
+    URI legendURI = GeoServiceHelper.getLayerLegendUrlFromStyles(layer);
+    if (null != legendURI && null != legendURI.getQuery() && null != request.getQueryString()) {
+      // assume this is a getLegendGraphic request
+      UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUri(legendURI);
+      switch (service.getSettings().getServerType()) {
+        case GEOSERVER:
+          uriComponentsBuilder.queryParam(
+              "LEGEND_OPTIONS", "fontAntiAliasing:true;labelMargin:0;forceLabels:on");
+          break;
+        case MAPSERVER:
+          // no special options
+          break;
+      }
+      if (null != request.getParameterMap().get("SCALE")) {
+        legendURI =
+            uriComponentsBuilder
+                .queryParam("SCALE", request.getParameterMap().get("SCALE")[0])
+                .build(true)
+                .toUri();
+      }
+    }
+    return legendURI;
+  }
+
+  private URI buildWMSUrl(GeoService service, HttpServletRequest request) {
     final UriComponentsBuilder originalServiceUrl =
         UriComponentsBuilder.fromHttpUrl(service.getUrl());
     // request.getParameterMap() includes parameters from an application/x-www-form-urlencoded POST
@@ -135,8 +182,7 @@ public class GeoServiceProxyController {
     final MultiValueMap<String, String> params =
         buildOgcProxyRequestParams(originalServiceUrl.build(true).getQueryParams(), requestParams);
     originalServiceUrl.replaceQueryParams(params);
-
-    return doProxy(originalServiceUrl.build(true).toUri(), service, request);
+    return originalServiceUrl.build(true).toUri();
   }
 
   public static MultiValueMap<String, String> buildOgcProxyRequestParams(
