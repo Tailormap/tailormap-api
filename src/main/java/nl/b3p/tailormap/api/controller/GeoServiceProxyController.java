@@ -124,7 +124,7 @@ public class GeoServiceProxyController {
       case WMTS:
         return doProxy(buildWMSUrl(service, request), service, request);
       case PROXIEDLEGEND:
-        URI legendURI = buildLegendURI(layer, request);
+        URI legendURI = buildLegendURI(service, layer, request);
         if (null == legendURI) {
           logger.warn("No legend URL found for layer {}", layer.getName());
           return null;
@@ -136,18 +136,28 @@ public class GeoServiceProxyController {
     }
   }
 
-  private @Nullable URI buildLegendURI(GeoServiceLayer layer, HttpServletRequest request) {
+  private @Nullable URI buildLegendURI(
+      GeoService service, GeoServiceLayer layer, HttpServletRequest request) {
     URI legendURI = GeoServiceHelper.getLayerLegendUrlFromStyles(layer);
-    if (null != legendURI
-        && null != legendURI.getQuery()
-        && null != request.getQueryString()
-        && null != request.getParameterMap().get("SCALE")) {
-      // append scale parameter to legend url if it's a getLegendGraphic request
-      legendURI =
-          UriComponentsBuilder.fromUri(legendURI)
-              .queryParam("SCALE", request.getParameterMap().get("SCALE")[0])
-              .build(true)
-              .toUri();
+    if (null != legendURI && null != legendURI.getQuery() && null != request.getQueryString()) {
+      // assume this is a getLegendGraphic request
+      UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUri(legendURI);
+      switch (service.getSettings().getServerType()) {
+        case GEOSERVER:
+          uriComponentsBuilder.queryParam(
+              "LEGEND_OPTIONS", "fontAntiAliasing:true;labelMargin:0;forceLabels:on");
+          break;
+        case MAPSERVER:
+          // no special options
+          break;
+      }
+      if (null != request.getParameterMap().get("SCALE")) {
+        legendURI =
+            uriComponentsBuilder
+                .queryParam("SCALE", request.getParameterMap().get("SCALE")[0])
+                .build(true)
+                .toUri();
+      }
     }
     return legendURI;
   }
