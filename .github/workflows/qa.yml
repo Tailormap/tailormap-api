@@ -44,6 +44,8 @@ jobs:
         if: always()
         with:
           path: '**/pmd.xml'
+          fail-on-violation: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Cleanup snapshots'
         run: |
