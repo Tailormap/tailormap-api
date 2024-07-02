@@ -6,7 +6,7 @@ env:
 
 concurrency:
   # More info: https://stackoverflow.com/a/68422069/253468
-  group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-master-{0}', github.sha) || format('ci-master-{0}', github.ref) }}
+  group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
   cancel-in-progress: true
 
 on:
@@ -19,11 +19,16 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: write
+      checks: write
     steps:
       - uses: actions/checkout@v4
 
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v4
+        with:
+          deny-licenses: GPL-2.0+, AGPL-3.0+
+          comment-summary-in-pr: on-failure
 
       - name: 'Set up JDK'
         uses: actions/setup-java@v4
@@ -39,6 +44,13 @@ jobs:
 
       - name: 'QA build with Maven'
         run: mvn -B -V -fae -DskipQA=false -Dfmt.action=check -Dpom.fmt.action=verify -Ddocker.skip=true -DskipTests -DskipITs clean install
+
+      - uses: lcollins/pmd-github-action@v3.0.0
+        if: always()
+        with:
+          path: '**/pmd.xml'
+          fail-on-violation: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Cleanup snapshots'
         run: |
