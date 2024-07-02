@@ -493,14 +493,31 @@ public class GeoServiceHelper {
   }
 
   /**
-   * Try to extract the legend url from the styles of the layer.
+   * Try to extract the legend url from the styles of the layer. This works by getting all styles
+   * for the layer and then removing any styles attached to other (parent) layers from the list of
+   * all styles. What remains is/are the legend url(s) for the layer. <i>NOTE: when a layer has more
+   * than one -not an inherited style- style the first style is used.</i>
    *
+   * @param service the service that has the layer
    * @param serviceLayer the layer to get the legend url for
    * @return a URI to the legend image or null if not found
-   *     <p>TODO this is a temporary solution, it does not work properly for grouped layers, see
-   *     HTM-1133
    */
-  public static URI getLayerLegendUrlFromStyles(GeoServiceLayer serviceLayer) {
-    return serviceLayer.getStyles().stream().findFirst().map(WMSStyle::getLegendURL).orElse(null);
+  public static URI getLayerLegendUrlFromStyles(GeoService service, GeoServiceLayer serviceLayer) {
+    if (serviceLayer.getRoot()) {
+      // if this is a root layer, there are no parent layers, return the first style we find for
+      // this layer, if any
+      return serviceLayer.getStyles().stream().findFirst().map(WMSStyle::getLegendURL).orElse(null);
+    }
+
+    final List<WMSStyle> allOurLayersStyles = serviceLayer.getStyles();
+    if (allOurLayersStyles.size() == 1) {
+      return allOurLayersStyles.get(0).getLegendURL();
+    }
+    // remove the styles from all the other layer(s) from the list of all our layers styles
+    service.getLayers().stream()
+        .filter(layer -> !layer.equals(serviceLayer))
+        .forEach(layer -> allOurLayersStyles.removeAll(layer.getStyles()));
+
+    return allOurLayersStyles.stream().findFirst().map(WMSStyle::getLegendURL).orElse(null);
   }
 }

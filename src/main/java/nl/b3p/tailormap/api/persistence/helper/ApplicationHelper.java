@@ -322,7 +322,7 @@ public class ApplicationHelper {
       String legendImageUrl = serviceLayerSettings.getLegendImageId();
       if (legendImageUrl == null && serviceLayer.getStyles() != null) {
         // no user defined legend image, try to get legend image from styles
-        URI serviceLegendUrl = GeoServiceHelper.getLayerLegendUrlFromStyles(serviceLayer);
+        URI serviceLegendUrl = GeoServiceHelper.getLayerLegendUrlFromStyles(service, serviceLayer);
         legendImageUrl = serviceLegendUrl != null ? serviceLegendUrl.toString() : null;
         if (null != legendImageUrl && proxied) {
           // service styles provides a legend image, but we need to proxy it
