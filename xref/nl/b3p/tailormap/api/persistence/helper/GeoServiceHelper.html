@@ -501,17 +501,34 @@
 <a class="jxr_linenumber" name="L493" href="#L493">493</a>   }
 <a class="jxr_linenumber" name="L494" href="#L494">494</a> 
 <a class="jxr_linenumber" name="L495" href="#L495">495</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L496" href="#L496">496</a> <em class="jxr_javadoccomment">   * Try to extract the legend url from the styles of the layer.</em>
-<a class="jxr_linenumber" name="L497" href="#L497">497</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L498" href="#L498">498</a> <em class="jxr_javadoccomment">   * @param serviceLayer the layer to get the legend url for</em>
-<a class="jxr_linenumber" name="L499" href="#L499">499</a> <em class="jxr_javadoccomment">   * @return a URI to the legend image or null if not found</em>
-<a class="jxr_linenumber" name="L500" href="#L500">500</a> <em class="jxr_javadoccomment">   *     &lt;p&gt;TODO this is a temporary solution, it does not work properly for grouped layers, see</em>
-<a class="jxr_linenumber" name="L501" href="#L501">501</a> <em class="jxr_javadoccomment">   *     HTM-1133</em>
-<a class="jxr_linenumber" name="L502" href="#L502">502</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L503" href="#L503">503</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> URI getLayerLegendUrlFromStyles(GeoServiceLayer serviceLayer) {
-<a class="jxr_linenumber" name="L504" href="#L504">504</a>     <strong class="jxr_keyword">return</strong> serviceLayer.getStyles().stream().findFirst().map(WMSStyle::getLegendURL).orElse(<strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L505" href="#L505">505</a>   }
-<a class="jxr_linenumber" name="L506" href="#L506">506</a> }
+<a class="jxr_linenumber" name="L496" href="#L496">496</a> <em class="jxr_javadoccomment">   * Try to extract the legend url from the styles of the layer. This works by getting all styles</em>
+<a class="jxr_linenumber" name="L497" href="#L497">497</a> <em class="jxr_javadoccomment">   * for the layer and then removing any styles attached to other (parent) layers from the list of</em>
+<a class="jxr_linenumber" name="L498" href="#L498">498</a> <em class="jxr_javadoccomment">   * all styles. What remains is/are the legend url(s) for the layer. &lt;i&gt;NOTE: when a layer has more</em>
+<a class="jxr_linenumber" name="L499" href="#L499">499</a> <em class="jxr_javadoccomment">   * than one -not an inherited style- style the first style is used.&lt;/i&gt;</em>
+<a class="jxr_linenumber" name="L500" href="#L500">500</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L501" href="#L501">501</a> <em class="jxr_javadoccomment">   * @param service the service that has the layer</em>
+<a class="jxr_linenumber" name="L502" href="#L502">502</a> <em class="jxr_javadoccomment">   * @param serviceLayer the layer to get the legend url for</em>
+<a class="jxr_linenumber" name="L503" href="#L503">503</a> <em class="jxr_javadoccomment">   * @return a URI to the legend image or null if not found</em>
+<a class="jxr_linenumber" name="L504" href="#L504">504</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> URI getLayerLegendUrlFromStyles(<a name="GeoService" href="../../../../../../nl/b3p/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, GeoServiceLayer serviceLayer) {
+<a class="jxr_linenumber" name="L506" href="#L506">506</a>     <strong class="jxr_keyword">if</strong> (serviceLayer.getRoot()) {
+<a class="jxr_linenumber" name="L507" href="#L507">507</a>       <em class="jxr_comment">// if this is a root layer, there are no parent layers, return the first style we find for</em>
+<a class="jxr_linenumber" name="L508" href="#L508">508</a>       <em class="jxr_comment">// this layer, if any</em>
+<a class="jxr_linenumber" name="L509" href="#L509">509</a>       <strong class="jxr_keyword">return</strong> serviceLayer.getStyles().stream().findFirst().map(WMSStyle::getLegendURL).orElse(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L510" href="#L510">510</a>     }
+<a class="jxr_linenumber" name="L511" href="#L511">511</a> 
+<a class="jxr_linenumber" name="L512" href="#L512">512</a>     <strong class="jxr_keyword">final</strong> List&lt;WMSStyle&gt; allOurLayersStyles = serviceLayer.getStyles();
+<a class="jxr_linenumber" name="L513" href="#L513">513</a>     <strong class="jxr_keyword">if</strong> (allOurLayersStyles.size() == 1) {
+<a class="jxr_linenumber" name="L514" href="#L514">514</a>       <strong class="jxr_keyword">return</strong> allOurLayersStyles.get(0).getLegendURL();
+<a class="jxr_linenumber" name="L515" href="#L515">515</a>     }
+<a class="jxr_linenumber" name="L516" href="#L516">516</a>     <em class="jxr_comment">// remove the styles from all the other layer(s) from the list of all our layers styles</em>
+<a class="jxr_linenumber" name="L517" href="#L517">517</a>     service.getLayers().stream()
+<a class="jxr_linenumber" name="L518" href="#L518">518</a>         .filter(layer -&gt; !layer.equals(serviceLayer))
+<a class="jxr_linenumber" name="L519" href="#L519">519</a>         .forEach(layer -&gt; allOurLayersStyles.removeAll(layer.getStyles()));
+<a class="jxr_linenumber" name="L520" href="#L520">520</a> 
+<a class="jxr_linenumber" name="L521" href="#L521">521</a>     <strong class="jxr_keyword">return</strong> allOurLayersStyles.stream().findFirst().map(WMSStyle::getLegendURL).orElse(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L522" href="#L522">522</a>   }
+<a class="jxr_linenumber" name="L523" href="#L523">523</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>

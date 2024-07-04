@@ -330,7 +330,7 @@
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>       String legendImageUrl = serviceLayerSettings.getLegendImageId();
 <a class="jxr_linenumber" name="L323" href="#L323">323</a>       <strong class="jxr_keyword">if</strong> (legendImageUrl == <strong class="jxr_keyword">null</strong> &amp;&amp; serviceLayer.getStyles() != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L324" href="#L324">324</a>         <em class="jxr_comment">// no user defined legend image, try to get legend image from styles</em>
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>         URI serviceLegendUrl = GeoServiceHelper.getLayerLegendUrlFromStyles(serviceLayer);
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>         URI serviceLegendUrl = GeoServiceHelper.getLayerLegendUrlFromStyles(service, serviceLayer);
 <a class="jxr_linenumber" name="L326" href="#L326">326</a>         legendImageUrl = serviceLegendUrl != <strong class="jxr_keyword">null</strong> ? serviceLegendUrl.toString() : <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L327" href="#L327">327</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> != legendImageUrl &amp;&amp; proxied) {
 <a class="jxr_linenumber" name="L328" href="#L328">328</a>           <em class="jxr_comment">// service styles provides a legend image, but we need to proxy it</em>
