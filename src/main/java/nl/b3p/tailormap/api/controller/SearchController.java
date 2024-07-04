@@ -17,8 +17,8 @@ import nl.b3p.tailormap.api.annotation.AppRestController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.GeoService;
 import nl.b3p.tailormap.api.persistence.SearchIndex;
+import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode;
-import nl.b3p.tailormap.api.persistence.json.GeoServiceLayer;
 import nl.b3p.tailormap.api.repository.SearchIndexRepository;
 import nl.b3p.tailormap.api.solr.SolrHelper;
 import nl.b3p.tailormap.api.viewer.model.SearchResponse;
@@ -70,19 +70,21 @@ public class SearchController {
   public ResponseEntity<Serializable> search(
       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
       @ModelAttribute GeoService service,
-      @ModelAttribute GeoServiceLayer layer,
       @ModelAttribute Application application,
       @RequestParam(required = false, name = "q") final String solrQuery,
       @RequestParam(required = false, defaultValue = "0") Integer start) {
 
-    if (layer == null) {
+    AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
+
+    if (appLayerSettings.getSearchIndexId() == null) {
       throw new ResponseStatusException(
-          HttpStatus.NOT_FOUND, "Can't find layer " + appTreeLayerNode.getLayerName());
+          HttpStatus.NOT_FOUND,
+          "Layer '%s' does not have a search index".formatted(appTreeLayerNode.getLayerName()));
     }
 
     final SearchIndex searchIndex =
-        service
-            .findSearchIndexForLayer(layer, searchIndexRepository)
+        searchIndexRepository
+            .findById(appLayerSettings.getSearchIndexId())
             .orElseThrow(
                 () ->
                     new ResponseStatusException(
