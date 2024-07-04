@@ -21,6 +21,7 @@ import nl.b3p.tailormap.api.controller.GeoServiceProxyController;
 import nl.b3p.tailormap.api.persistence.Application;
 import nl.b3p.tailormap.api.persistence.Configuration;
 import nl.b3p.tailormap.api.persistence.GeoService;
+import nl.b3p.tailormap.api.persistence.SearchIndex;
 import nl.b3p.tailormap.api.persistence.TMFeatureType;
 import nl.b3p.tailormap.api.persistence.json.AppContent;
 import nl.b3p.tailormap.api.persistence.json.AppLayerSettings;
@@ -37,8 +38,10 @@ import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
+import nl.b3p.tailormap.api.repository.SearchIndexRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.viewer.model.AppLayer;
+import nl.b3p.tailormap.api.viewer.model.LayerSearchIndex;
 import nl.b3p.tailormap.api.viewer.model.LayerTreeNode;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
 import nl.b3p.tailormap.api.viewer.model.TMCoordinateReferenceSystem;
@@ -65,6 +68,7 @@ public class ApplicationHelper {
   private final FeatureSourceRepository featureSourceRepository;
   private final EntityManager entityManager;
   private final AuthorizationService authorizationService;
+  private final SearchIndexRepository searchIndexRepository;
 
   public ApplicationHelper(
       GeoServiceHelper geoServiceHelper,
@@ -73,7 +77,8 @@ public class ApplicationHelper {
       ApplicationRepository applicationRepository,
       FeatureSourceRepository featureSourceRepository,
       EntityManager entityManager,
-      AuthorizationService authorizationService) {
+      AuthorizationService authorizationService,
+      SearchIndexRepository searchIndexRepository) {
     this.geoServiceHelper = geoServiceHelper;
     this.geoServiceRepository = geoServiceRepository;
     this.configurationRepository = configurationRepository;
@@ -81,6 +86,7 @@ public class ApplicationHelper {
     this.featureSourceRepository = featureSourceRepository;
     this.entityManager = entityManager;
     this.authorizationService = authorizationService;
+    this.searchIndexRepository = searchIndexRepository;
   }
 
   public Application getServiceApplication(
@@ -330,6 +336,12 @@ public class ApplicationHelper {
         }
       }
 
+      SearchIndex searchIndex = null;
+      if (appLayerSettings.getSearchIndexId() != null) {
+        searchIndex =
+            searchIndexRepository.findById(appLayerSettings.getSearchIndexId()).orElse(null);
+      }
+
       mr.addAppLayersItem(
           new AppLayer()
               .id(layerRef.getId())
@@ -354,6 +366,10 @@ public class ApplicationHelper {
               .tileGridExtent(serviceLayerSettings.getTileGridExtent())
               .opacity(appLayerSettings.getOpacity())
               .autoRefreshInSeconds(appLayerSettings.getAutoRefreshInSeconds())
+              .searchIndex(
+                  searchIndex != null
+                      ? new LayerSearchIndex().id(searchIndex.getId()).name(searchIndex.getName())
+                      : null)
               .legendImageUrl(legendImageUrl)
               .visible(layerRef.getVisible())
               .attribution(attribution)

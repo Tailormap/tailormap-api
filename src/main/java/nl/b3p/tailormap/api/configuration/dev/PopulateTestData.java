@@ -51,7 +51,6 @@ import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceSettings;
 import nl.b3p.tailormap.api.persistence.json.JDBCConnectionProperties;
-import nl.b3p.tailormap.api.persistence.json.SearchIndexRef;
 import nl.b3p.tailormap.api.persistence.json.ServiceAuthentication;
 import nl.b3p.tailormap.api.persistence.json.TailormapObjectRef;
 import nl.b3p.tailormap.api.persistence.json.TileLayerHiDpiMode;
@@ -1383,6 +1382,7 @@ public class PopulateTestData {
                   .build());
 
       GeoService geoService = geoServiceRepository.findById("snapshot-geoserver").orElseThrow();
+      Application defaultApp = applicationRepository.findByName("default");
 
       TMFeatureType begroeidterreindeelFT =
           geoService.findFeatureTypeForLayer(
@@ -1408,13 +1408,33 @@ public class PopulateTestData {
         solrHelper.addFeatureTypeIndex(wegdeelIndex, wegdeelFT, featureSourceFactoryHelper);
         wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
 
-        geoService
-            .getLayerSettings("postgis:begroeidterreindeel")
-            .setSearchIndex(new SearchIndexRef().searchIndexId(begroeidterreindeelIndex.getId()));
-        geoService
-            .getLayerSettings("sqlserver:wegdeel")
-            .setSearchIndex(new SearchIndexRef().searchIndexId(wegdeelIndex.getId()));
-        geoServiceRepository.save(geoService);
+        AppTreeLayerNode begroeidTerreindeelLayerNode =
+            defaultApp
+                .getAllAppTreeLayerNode()
+                .filter(
+                    node ->
+                        node.getId().equals("lyr:snapshot-geoserver:postgis:begroeidterreindeel"))
+                .findFirst()
+                .orElse(null);
+
+        if (begroeidTerreindeelLayerNode != null) {
+          defaultApp
+              .getAppLayerSettings(begroeidTerreindeelLayerNode)
+              .setSearchIndexId(begroeidterreindeelIndex.getId());
+        }
+
+        AppTreeLayerNode wegdeel =
+            defaultApp
+                .getAllAppTreeLayerNode()
+                .filter(node -> node.getId().equals("lyr:snapshot-geoserver:sqlserver:wegdeel"))
+                .findFirst()
+                .orElse(null);
+
+        if (wegdeel != null) {
+          defaultApp.getAppLayerSettings(wegdeel).setSearchIndexId(wegdeelIndex.getId());
+        }
+
+        applicationRepository.save(defaultApp);
       }
     }
   }
