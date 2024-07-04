@@ -16,6 +16,7 @@ import nl.b3p.tailormap.api.repository.ApplicationRepository;
 import nl.b3p.tailormap.api.repository.ConfigurationRepository;
 import nl.b3p.tailormap.api.repository.FeatureSourceRepository;
 import nl.b3p.tailormap.api.repository.GeoServiceRepository;
+import nl.b3p.tailormap.api.repository.SearchIndexRepository;
 import nl.b3p.tailormap.api.security.AuthorizationService;
 import nl.b3p.tailormap.api.viewer.model.MapResponse;
 import nl.b3p.tailormap.api.viewer.model.TMCoordinateReferenceSystem;
@@ -34,6 +35,7 @@ class ApplicationHelperTest {
   @MockBean ApplicationRepository applicationRepository;
   @MockBean EntityManager entityManager;
   @MockBean AuthorizationService authorizationService;
+  @MockBean SearchIndexRepository searchIndexRepository;
   @Autowired ApplicationHelper applicationHelper;
 
   @Test
