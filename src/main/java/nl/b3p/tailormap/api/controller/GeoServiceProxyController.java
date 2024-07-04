@@ -138,7 +138,7 @@ public class GeoServiceProxyController {
 
   private @Nullable URI buildLegendURI(
       GeoService service, GeoServiceLayer layer, HttpServletRequest request) {
-    URI legendURI = GeoServiceHelper.getLayerLegendUrlFromStyles(layer);
+    URI legendURI = GeoServiceHelper.getLayerLegendUrlFromStyles(service, layer);
     if (null != legendURI && null != legendURI.getQuery() && null != request.getQueryString()) {
       // assume this is a getLegendGraphic request
       UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUri(legendURI);

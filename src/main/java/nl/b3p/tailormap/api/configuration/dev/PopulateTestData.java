@@ -272,6 +272,13 @@ public class PopulateTestData {
     Collection<GeoService> services =
         List.of(
             new GeoService()
+                .setId("demo")
+                .setProtocol(WMS)
+                .setTitle("Demo")
+                .setPublished(true)
+                .setAuthorizationRules(rule)
+                .setUrl("https://demo.tailormap.com/geoserver/geodata/ows?SERVICE=WMS"),
+            new GeoService()
                 .setId("osm")
                 .setProtocol(XYZ)
                 .setTitle("OSM")
@@ -928,7 +935,8 @@ public class PopulateTestData {
                                     "lyr:snapshot-geoserver:oracle:WATERDEEL",
                                     "lyr:snapshot-geoserver:BGT",
                                     "lvl:proxied",
-                                    "lvl:osm")))
+                                    "lvl:osm",
+                                    "lvl:archeo")))
                     .addLayerNodesItem(
                         new AppTreeLayerNode()
                             .objectType("AppTreeLayerNode")
@@ -998,7 +1006,20 @@ public class PopulateTestData {
                             .id("lyr:snapshot-geoserver:postgis:osm_polygon")
                             .serviceId("snapshot-geoserver")
                             .layerName("postgis:osm_polygon")
-                            .visible(false)))
+                            .visible(false))
+                    .addLayerNodesItem(
+                        new AppTreeLevelNode()
+                            .objectType("AppTreeLevelNode")
+                            .id("lvl:archeo")
+                            .title("Archeology")
+                            .childrenIds(List.of("lyr:demo:geomorfologie")))
+                    .addLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:demo:geomorfologie")
+                            .serviceId("demo")
+                            .layerName("geomorfologie")
+                            .visible(true)))
             .setStyling(new AppStyling().logo(logo.getId().toString()))
             .setSettings(
                 new AppSettings()
