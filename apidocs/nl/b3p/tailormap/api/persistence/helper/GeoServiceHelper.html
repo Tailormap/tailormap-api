@@ -101,7 +101,7 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel">
 <div class="summary-table three-column-summary" aria-labelledby="method-summary-table-tab0">
 <div class="table-header col-first">Modifier and Type</div>
@@ -113,12 +113,17 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="../../geotools/wfs/SimpleWFSLayerDescription.html" title="class in nl.b3p.tailormap.api.geotools.wfs">SimpleWFSLayerDescription</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#findRelatedWFS(nl.b3p.tailormap.api.persistence.GeoService)" class="member-name-link">findRelatedWFS</a><wbr>(<a href="../GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../viewer/model/Service.ServerTypeEnum.html" title="enum class in nl.b3p.tailormap.api.viewer.model">Service.ServerTypeEnum</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#guessServerTypeFromUrl(java.lang.String)" class="member-name-link">guessServerTypeFromUrl</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadServiceCapabilities(nl.b3p.tailormap.api.persistence.GeoService)" class="member-name-link">loadServiceCapabilities</a><wbr>(<a href="../GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getLayerLegendUrlFromStyles(nl.b3p.tailormap.api.persistence.json.GeoServiceLayer)" class="member-name-link">getLayerLegendUrlFromStyles</a><wbr>(<a href="../json/GeoServiceLayer.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;serviceLayer)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Try to extract the legend url from the styles of the layer.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../viewer/model/Service.ServerTypeEnum.html" title="enum class in nl.b3p.tailormap.api.viewer.model">Service.ServerTypeEnum</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#guessServerTypeFromUrl(java.lang.String)" class="member-name-link">guessServerTypeFromUrl</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadServiceCapabilities(nl.b3p.tailormap.api.persistence.GeoService)" class="member-name-link">loadServiceCapabilities</a><wbr>(<a href="../GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -179,6 +184,21 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="findAndSaveRelatedWFS(nl.b3p.tailormap.api.persistence.GeoService)">
 <h3>findAndSaveRelatedWFS</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">findAndSaveRelatedWFS</span><wbr><span class="parameters">(<a href="../GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="getLayerLegendUrlFromStyles(nl.b3p.tailormap.api.persistence.json.GeoServiceLayer)">
+<h3>getLayerLegendUrlFromStyles</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a></span>&nbsp;<span class="element-name">getLayerLegendUrlFromStyles</span><wbr><span class="parameters">(<a href="../json/GeoServiceLayer.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;serviceLayer)</span></div>
+<div class="block">Try to extract the legend url from the styles of the layer.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>serviceLayer</code> - the layer to get the legend url for</dd>
+<dt>Returns:</dt>
+<dd>a URI to the legend image or null if not found
+     <p>TODO this is a temporary solution, it does not work properly for grouped layers, see
+     HTM-1133</dd>
+</dl>
 </section>
 </li>
 </ul>

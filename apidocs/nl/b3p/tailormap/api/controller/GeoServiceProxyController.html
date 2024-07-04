@@ -122,10 +122,10 @@ loadScripts(document, 'script');</script>
  org.springframework.util.MultiValueMap&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;requestParams)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity&lt;?&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#proxy(nl.b3p.tailormap.api.persistence.Application,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,java.lang.String,jakarta.servlet.http.HttpServletRequest)" class="member-name-link">proxy</a><wbr>(<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#proxy(nl.b3p.tailormap.api.persistence.Application,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol,jakarta.servlet.http.HttpServletRequest)" class="member-name-link">proxy</a><wbr>(<a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;service,
  <a href="../persistence/json/GeoServiceLayer.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;protocol,
+ <a href="../persistence/json/GeoServiceProtocol.html" title="enum class in nl.b3p.tailormap.api.persistence.json">GeoServiceProtocol</a>&nbsp;protocol,
  jakarta.servlet.http.HttpServletRequest&nbsp;request)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
@@ -160,7 +160,7 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="proxy(nl.b3p.tailormap.api.persistence.Application,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,java.lang.String,jakarta.servlet.http.HttpServletRequest)">
+<section class="detail" id="proxy(nl.b3p.tailormap.api.persistence.Application,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,nl.b3p.tailormap.api.persistence.json.GeoServiceProtocol,jakarta.servlet.http.HttpServletRequest)">
 <h3>proxy</h3>
 <div class="member-signature"><span class="annotations">@RequestMapping(method={GET,POST})
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;?&gt;</span>&nbsp;<span class="element-name">proxy</span><wbr><span class="parameters">(@ModelAttribute
@@ -170,7 +170,7 @@ loadScripts(document, 'script');</script>
  @ModelAttribute
  <a href="../persistence/json/GeoServiceLayer.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
  @PathVariable("protocol")
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;protocol,
+ <a href="../persistence/json/GeoServiceProtocol.html" title="enum class in nl.b3p.tailormap.api.persistence.json">GeoServiceProtocol</a>&nbsp;protocol,
  jakarta.servlet.http.HttpServletRequest&nbsp;request)</span></div>
 </section>
 </li>

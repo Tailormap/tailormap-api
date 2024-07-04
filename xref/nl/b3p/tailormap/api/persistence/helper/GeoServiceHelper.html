@@ -499,7 +499,19 @@
 <a class="jxr_linenumber" name="L491" href="#L491">491</a>               }
 <a class="jxr_linenumber" name="L492" href="#L492">492</a>             });
 <a class="jxr_linenumber" name="L493" href="#L493">493</a>   }
-<a class="jxr_linenumber" name="L494" href="#L494">494</a> }
+<a class="jxr_linenumber" name="L494" href="#L494">494</a> 
+<a class="jxr_linenumber" name="L495" href="#L495">495</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L496" href="#L496">496</a> <em class="jxr_javadoccomment">   * Try to extract the legend url from the styles of the layer.</em>
+<a class="jxr_linenumber" name="L497" href="#L497">497</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L498" href="#L498">498</a> <em class="jxr_javadoccomment">   * @param serviceLayer the layer to get the legend url for</em>
+<a class="jxr_linenumber" name="L499" href="#L499">499</a> <em class="jxr_javadoccomment">   * @return a URI to the legend image or null if not found</em>
+<a class="jxr_linenumber" name="L500" href="#L500">500</a> <em class="jxr_javadoccomment">   *     &lt;p&gt;TODO this is a temporary solution, it does not work properly for grouped layers, see</em>
+<a class="jxr_linenumber" name="L501" href="#L501">501</a> <em class="jxr_javadoccomment">   *     HTM-1133</em>
+<a class="jxr_linenumber" name="L502" href="#L502">502</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> URI getLayerLegendUrlFromStyles(GeoServiceLayer serviceLayer) {
+<a class="jxr_linenumber" name="L504" href="#L504">504</a>     <strong class="jxr_keyword">return</strong> serviceLayer.getStyles().stream().findFirst().map(WMSStyle::getLegendURL).orElse(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>   }
+<a class="jxr_linenumber" name="L506" href="#L506">506</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021&#x2013;2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a>. All rights reserved.</div>
