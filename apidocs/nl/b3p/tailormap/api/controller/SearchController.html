@@ -109,9 +109,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#search(nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,nl.b3p.tailormap.api.persistence.Application,java.lang.String,java.lang.Integer)" class="member-name-link">search</a><wbr>(<a href="../persistence/json/AppTreeLayerNode.html" title="class in nl.b3p.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#search(nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.Application,java.lang.String,java.lang.Integer)" class="member-name-link">search</a><wbr>(<a href="../persistence/json/AppTreeLayerNode.html" title="class in nl.b3p.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
  <a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;service,
- <a href="../persistence/json/GeoServiceLayer.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
  <a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrQuery,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;start)</code></div>
@@ -148,7 +147,7 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="search(nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,nl.b3p.tailormap.api.persistence.Application,java.lang.String,java.lang.Integer)">
+<section class="detail" id="search(nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.Application,java.lang.String,java.lang.Integer)">
 <h3>search</h3>
 <div class="member-signature"><span class="annotations">@Transactional(readOnly=true)
 @RequestMapping(method=GET)
@@ -156,8 +155,6 @@ loadScripts(document, 'script');</script>
  <a href="../persistence/json/AppTreeLayerNode.html" title="class in nl.b3p.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
  @ModelAttribute
  <a href="../persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a>&nbsp;service,
- @ModelAttribute
- <a href="../persistence/json/GeoServiceLayer.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
  @ModelAttribute
  <a href="../persistence/Application.html" title="class in nl.b3p.tailormap.api.persistence">Application</a>&nbsp;application,
  @RequestParam(required=false,name="q")

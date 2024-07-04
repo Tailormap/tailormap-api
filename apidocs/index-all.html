@@ -271,7 +271,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/helper/ApplicationHelper.html" class="type-name-link" title="class in nl.b3p.tailormap.api.persistence.helper">ApplicationHelper</a> - Class in <a href="nl/b3p/tailormap/api/persistence/helper/package-summary.html">nl.b3p.tailormap.api.persistence.helper</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/helper/ApplicationHelper.html#%3Cinit%3E(nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper,nl.b3p.tailormap.api.repository.GeoServiceRepository,nl.b3p.tailormap.api.repository.ConfigurationRepository,nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.FeatureSourceRepository,jakarta.persistence.EntityManager,nl.b3p.tailormap.api.security.AuthorizationService)" class="member-name-link">ApplicationHelper(GeoServiceHelper, GeoServiceRepository, ConfigurationRepository, ApplicationRepository, FeatureSourceRepository, EntityManager, AuthorizationService)</a> - Constructor for class nl.b3p.tailormap.api.persistence.helper.<a href="nl/b3p/tailormap/api/persistence/helper/ApplicationHelper.html" title="class in nl.b3p.tailormap.api.persistence.helper">ApplicationHelper</a></dt>
+<dt><a href="nl/b3p/tailormap/api/persistence/helper/ApplicationHelper.html#%3Cinit%3E(nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper,nl.b3p.tailormap.api.repository.GeoServiceRepository,nl.b3p.tailormap.api.repository.ConfigurationRepository,nl.b3p.tailormap.api.repository.ApplicationRepository,nl.b3p.tailormap.api.repository.FeatureSourceRepository,jakarta.persistence.EntityManager,nl.b3p.tailormap.api.security.AuthorizationService,nl.b3p.tailormap.api.repository.SearchIndexRepository)" class="member-name-link">ApplicationHelper(GeoServiceHelper, GeoServiceRepository, ConfigurationRepository, ApplicationRepository, FeatureSourceRepository, EntityManager, AuthorizationService, SearchIndexRepository)</a> - Constructor for class nl.b3p.tailormap.api.persistence.helper.<a href="nl/b3p/tailormap/api/persistence/helper/ApplicationHelper.html" title="class in nl.b3p.tailormap.api.persistence.helper">ApplicationHelper</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/repository/ApplicationRepository.html" class="type-name-link" title="interface in nl.b3p.tailormap.api.repository">ApplicationRepository</a> - Interface in <a href="nl/b3p/tailormap/api/repository/package-summary.html">nl.b3p.tailormap.api.repository</a></dt>
 <dd>&nbsp;</dd>
@@ -796,8 +796,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/LayerSettings.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/LayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">LayerSettings</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html" title="class in nl.b3p.tailormap.api.persistence.json">SearchIndexRef</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/ServiceAuthentication.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/ServiceAuthentication.html" title="class in nl.b3p.tailormap.api.persistence.json">ServiceAuthentication</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/ServicePublishingSettings.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/ServicePublishingSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">ServicePublishingSettings</a></dt>
@@ -857,6 +855,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/LayerDetailsForm.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerDetailsForm.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerDetailsForm</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/LayerExportCapabilities.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerExportCapabilities.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerExportCapabilities</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerSearchIndex</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerTreeNode</a></dt>
 <dd>&nbsp;</dd>
@@ -1045,10 +1045,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/helper/GeoServiceHelper.html#findRelatedWFS(nl.b3p.tailormap.api.persistence.GeoService)" class="member-name-link">findRelatedWFS(GeoService)</a> - Method in class nl.b3p.tailormap.api.persistence.helper.<a href="nl/b3p/tailormap/api/persistence/helper/GeoServiceHelper.html" title="class in nl.b3p.tailormap.api.persistence.helper">GeoServiceHelper</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/GeoService.html#findSearchIndexForLayer(nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,nl.b3p.tailormap.api.repository.SearchIndexRepository)" class="member-name-link">findSearchIndexForLayer(GeoServiceLayer, SearchIndexRepository)</a> - Method in class nl.b3p.tailormap.api.persistence.<a href="nl/b3p/tailormap/api/persistence/GeoService.html" title="class in nl.b3p.tailormap.api.persistence">GeoService</a></dt>
-<dd>
-<div class="block">Find the search index for the given layer.</div>
-</dd>
 <dt><a href="nl/b3p/tailormap/api/repository/UploadRepository.html#findWithContentByIdAndCategory(java.util.UUID,java.lang.String)" class="member-name-link">findWithContentByIdAndCategory(UUID, String)</a> - Method in interface nl.b3p.tailormap.api.repository.<a href="nl/b3p/tailormap/api/repository/UploadRepository.html" title="interface in nl.b3p.tailormap.api.repository">UploadRepository</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/configuration/ddl/FlywayCleanSchema.html#flywayCleanMigrationStrategy()" class="member-name-link">flywayCleanMigrationStrategy()</a> - Method in class nl.b3p.tailormap.api.configuration.ddl.<a href="nl/b3p/tailormap/api/configuration/ddl/FlywayCleanSchema.html" title="class in nl.b3p.tailormap.api.configuration.ddl">FlywayCleanSchema</a></dt>
@@ -2127,6 +2123,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Get id</div>
 </dd>
+<dt><a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html#getId()" class="member-name-link">getId()</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerSearchIndex</a></dt>
+<dd>
+<div class="block">Get id</div>
+</dd>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html#getId()" class="member-name-link">getId()</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerTreeNode</a></dt>
 <dd>
 <div class="block">A unique identifier across all tree nodes.</div>
@@ -2441,6 +2441,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/security/InternalAdminAuthentication.html#getName()" class="member-name-link">getName()</a> - Method in class nl.b3p.tailormap.api.security.<a href="nl/b3p/tailormap/api/security/InternalAdminAuthentication.html" title="class in nl.b3p.tailormap.api.security">InternalAdminAuthentication</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html#getName()" class="member-name-link">getName()</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerSearchIndex</a></dt>
+<dd>
+<div class="block">Get name</div>
+</dd>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html#getName()" class="member-name-link">getName()</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerTreeNode</a></dt>
 <dd>
 <div class="block">Display name of this tree node.</div>
@@ -2687,35 +2691,11 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/SearchIndex.html#getSearchFieldsUsed()" class="member-name-link">getSearchFieldsUsed()</a> - Method in class nl.b3p.tailormap.api.persistence.<a href="nl/b3p/tailormap/api/persistence/SearchIndex.html" title="class in nl.b3p.tailormap.api.persistence">SearchIndex</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html#getSearchIndex()" class="member-name-link">getSearchIndex()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceDefaultLayerSettings</a></dt>
+<dt><a href="nl/b3p/tailormap/api/viewer/model/AppLayer.html#getSearchIndex()" class="member-name-link">getSearchIndex()</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/AppLayer.html" title="class in nl.b3p.tailormap.api.viewer.model">AppLayer</a></dt>
 <dd>
 <div class="block">Get searchIndex</div>
 </dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/GeoServiceLayerSettings.html#getSearchIndex()" class="member-name-link">getSearchIndex()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/GeoServiceLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayerSettings</a></dt>
-<dd>
-<div class="block">Get searchIndex</div>
-</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/LayerSettings.html#getSearchIndex()" class="member-name-link">getSearchIndex()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/LayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">LayerSettings</a></dt>
-<dd>
-<div class="block">Get searchIndex</div>
-</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/Tileset3DLayerSettings.html#getSearchIndex()" class="member-name-link">getSearchIndex()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/Tileset3DLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">Tileset3DLayerSettings</a></dt>
-<dd>
-<div class="block">Get searchIndex</div>
-</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/WMSLayerSettings.html#getSearchIndex()" class="member-name-link">getSearchIndex()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/WMSLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">WMSLayerSettings</a></dt>
-<dd>
-<div class="block">Get searchIndex</div>
-</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/WMTSLayerSettings.html#getSearchIndex()" class="member-name-link">getSearchIndex()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/WMTSLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">WMTSLayerSettings</a></dt>
-<dd>
-<div class="block">Get searchIndex</div>
-</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/XYZLayerSettings.html#getSearchIndex()" class="member-name-link">getSearchIndex()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/XYZLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">XYZLayerSettings</a></dt>
-<dd>
-<div class="block">Get searchIndex</div>
-</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html#getSearchIndexId()" class="member-name-link">getSearchIndexId()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html" title="class in nl.b3p.tailormap.api.persistence.json">SearchIndexRef</a></dt>
+<dt><a href="nl/b3p/tailormap/api/persistence/json/AppLayerSettings.html#getSearchIndexId()" class="member-name-link">getSearchIndexId()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a></dt>
 <dd>
 <div class="block">Get searchIndexId</div>
 </dd>
@@ -3262,8 +3242,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/LayerSettings.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/LayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">LayerSettings</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html" title="class in nl.b3p.tailormap.api.persistence.json">SearchIndexRef</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/ServiceAuthentication.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/ServiceAuthentication.html" title="class in nl.b3p.tailormap.api.persistence.json">ServiceAuthentication</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/ServicePublishingSettings.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/ServicePublishingSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">ServicePublishingSettings</a></dt>
@@ -3323,6 +3301,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/LayerDetailsForm.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerDetailsForm.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerDetailsForm</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/LayerExportCapabilities.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerExportCapabilities.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerExportCapabilities</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerSearchIndex</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerTreeNode</a></dt>
 <dd>&nbsp;</dd>
@@ -3410,6 +3390,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/AppSettings.html#i18nSettings(nl.b3p.tailormap.api.persistence.json.AppI18nSettings)" class="member-name-link">i18nSettings(AppI18nSettings)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/AppSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/ViewerResponse.html#i18nSettings(nl.b3p.tailormap.api.persistence.json.AppI18nSettings)" class="member-name-link">i18nSettings(AppI18nSettings)</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/ViewerResponse.html" title="class in nl.b3p.tailormap.api.viewer.model">ViewerResponse</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html#id(java.lang.Long)" class="member-name-link">id(Long)</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerSearchIndex</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/admin/model/EntityEvent.html#id(java.lang.String)" class="member-name-link">id(String)</a> - Method in class nl.b3p.tailormap.api.admin.model.<a href="nl/b3p/tailormap/api/admin/model/EntityEvent.html" title="class in nl.b3p.tailormap.api.admin.model">EntityEvent</a></dt>
 <dd>&nbsp;</dd>
@@ -3618,6 +3600,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/AppContent.html#layerNodes(java.util.List)" class="member-name-link">layerNodes(List&lt;AppTreeNode&gt;)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/AppContent.html" title="class in nl.b3p.tailormap.api.persistence.json">AppContent</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html" class="type-name-link" title="class in nl.b3p.tailormap.api.viewer.model">LayerSearchIndex</a> - Class in <a href="nl/b3p/tailormap/api/viewer/model/package-summary.html">nl.b3p.tailormap.api.viewer.model</a></dt>
+<dd>
+<div class="block">LayerSearchIndex</div>
+</dd>
+<dt><a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html#%3Cinit%3E()" class="member-name-link">LayerSearchIndex()</a> - Constructor for class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerSearchIndex</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/AppSettings.html#layerSettings(java.util.Map)" class="member-name-link">layerSettings(Map&lt;String, AppLayerSettings&gt;)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/AppSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/GeoServiceSettings.html#layerSettings(java.util.Map)" class="member-name-link">layerSettings(Map&lt;String, GeoServiceLayerSettings&gt;)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/GeoServiceSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceSettings</a></dt>
@@ -3777,6 +3765,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/TMAttributeDescriptor.html#name(java.lang.String)" class="member-name-link">name(String)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/TMAttributeDescriptor.html" title="class in nl.b3p.tailormap.api.persistence.json">TMAttributeDescriptor</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/WMSStyle.html#name(java.lang.String)" class="member-name-link">name(String)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/WMSStyle.html" title="class in nl.b3p.tailormap.api.persistence.json">WMSStyle</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html#name(java.lang.String)" class="member-name-link">name(String)</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerSearchIndex</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html#name(java.lang.String)" class="member-name-link">name(String)</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerTreeNode</a></dt>
 <dd>&nbsp;</dd>
@@ -4082,7 +4072,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/TMServiceInfo.html#schema(java.net.URI)" class="member-name-link">schema(URI)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/TMServiceInfo.html" title="class in nl.b3p.tailormap.api.persistence.json">TMServiceInfo</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/controller/SearchController.html#search(nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.json.GeoServiceLayer,nl.b3p.tailormap.api.persistence.Application,java.lang.String,java.lang.Integer)" class="member-name-link">search(AppTreeLayerNode, GeoService, GeoServiceLayer, Application, String, Integer)</a> - Method in class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/SearchController.html" title="class in nl.b3p.tailormap.api.controller">SearchController</a></dt>
+<dt><a href="nl/b3p/tailormap/api/controller/SearchController.html#search(nl.b3p.tailormap.api.persistence.json.AppTreeLayerNode,nl.b3p.tailormap.api.persistence.GeoService,nl.b3p.tailormap.api.persistence.Application,java.lang.String,java.lang.Integer)" class="member-name-link">search(AppTreeLayerNode, GeoService, Application, String, Integer)</a> - Method in class nl.b3p.tailormap.api.controller.<a href="nl/b3p/tailormap/api/controller/SearchController.html" title="class in nl.b3p.tailormap.api.controller">SearchController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/util/Constants.html#SEARCH_ID_FIELD" class="member-name-link">SEARCH_ID_FIELD</a> - Static variable in interface nl.b3p.tailormap.api.util.<a href="nl/b3p/tailormap/api/util/Constants.html" title="interface in nl.b3p.tailormap.api.util">Constants</a></dt>
 <dd>&nbsp;</dd>
@@ -4102,19 +4092,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/FeatureTypeSettings.html#searchFields(java.util.List)" class="member-name-link">searchFields(List&lt;String&gt;)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/FeatureTypeSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">FeatureTypeSettings</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html#searchIndex(nl.b3p.tailormap.api.persistence.json.SearchIndexRef)" class="member-name-link">searchIndex(SearchIndexRef)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceDefaultLayerSettings</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/GeoServiceLayerSettings.html#searchIndex(nl.b3p.tailormap.api.persistence.json.SearchIndexRef)" class="member-name-link">searchIndex(SearchIndexRef)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/GeoServiceLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayerSettings</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/LayerSettings.html#searchIndex(nl.b3p.tailormap.api.persistence.json.SearchIndexRef)" class="member-name-link">searchIndex(SearchIndexRef)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/LayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">LayerSettings</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/Tileset3DLayerSettings.html#searchIndex(nl.b3p.tailormap.api.persistence.json.SearchIndexRef)" class="member-name-link">searchIndex(SearchIndexRef)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/Tileset3DLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">Tileset3DLayerSettings</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/WMSLayerSettings.html#searchIndex(nl.b3p.tailormap.api.persistence.json.SearchIndexRef)" class="member-name-link">searchIndex(SearchIndexRef)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/WMSLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">WMSLayerSettings</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/WMTSLayerSettings.html#searchIndex(nl.b3p.tailormap.api.persistence.json.SearchIndexRef)" class="member-name-link">searchIndex(SearchIndexRef)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/WMTSLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">WMTSLayerSettings</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/XYZLayerSettings.html#searchIndex(nl.b3p.tailormap.api.persistence.json.SearchIndexRef)" class="member-name-link">searchIndex(SearchIndexRef)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/XYZLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">XYZLayerSettings</a></dt>
+<dt><a href="nl/b3p/tailormap/api/viewer/model/AppLayer.html#searchIndex(nl.b3p.tailormap.api.viewer.model.LayerSearchIndex)" class="member-name-link">searchIndex(LayerSearchIndex)</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/AppLayer.html" title="class in nl.b3p.tailormap.api.viewer.model">AppLayer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/SearchIndex.html" class="type-name-link" title="class in nl.b3p.tailormap.api.persistence">SearchIndex</a> - Class in <a href="nl/b3p/tailormap/api/persistence/package-summary.html">nl.b3p.tailormap.api.persistence</a></dt>
 <dd>
@@ -4124,13 +4102,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/SearchIndex.Status.html" class="type-name-link" title="enum class in nl.b3p.tailormap.api.persistence">SearchIndex.Status</a> - Enum Class in <a href="nl/b3p/tailormap/api/persistence/package-summary.html">nl.b3p.tailormap.api.persistence</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html#searchIndexId(java.lang.Long)" class="member-name-link">searchIndexId(Long)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html" title="class in nl.b3p.tailormap.api.persistence.json">SearchIndexRef</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html" class="type-name-link" title="class in nl.b3p.tailormap.api.persistence.json">SearchIndexRef</a> - Class in <a href="nl/b3p/tailormap/api/persistence/json/package-summary.html">nl.b3p.tailormap.api.persistence.json</a></dt>
-<dd>
-<div class="block">Reference (by id) to a search index.</div>
-</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html#%3Cinit%3E()" class="member-name-link">SearchIndexRef()</a> - Constructor for class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html" title="class in nl.b3p.tailormap.api.persistence.json">SearchIndexRef</a></dt>
+<dt><a href="nl/b3p/tailormap/api/persistence/json/AppLayerSettings.html#searchIndexId(java.lang.Long)" class="member-name-link">searchIndexId(Long)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/repository/SearchIndexRepository.html" class="type-name-link" title="interface in nl.b3p.tailormap.api.repository">SearchIndexRepository</a> - Interface in <a href="nl/b3p/tailormap/api/repository/package-summary.html">nl.b3p.tailormap.api.repository</a></dt>
 <dd>&nbsp;</dd>
@@ -4606,6 +4578,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/TMFeatureType.html#setId(java.lang.Long)" class="member-name-link">setId(Long)</a> - Method in class nl.b3p.tailormap.api.persistence.<a href="nl/b3p/tailormap/api/persistence/TMFeatureType.html" title="class in nl.b3p.tailormap.api.persistence">TMFeatureType</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html#setId(java.lang.Long)" class="member-name-link">setId(Long)</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerSearchIndex</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/admin/model/EntityEvent.html#setId(java.lang.String)" class="member-name-link">setId(String)</a> - Method in class nl.b3p.tailormap.api.admin.model.<a href="nl/b3p/tailormap/api/admin/model/EntityEvent.html" title="class in nl.b3p.tailormap.api.admin.model">EntityEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/Catalog.html#setId(java.lang.String)" class="member-name-link">setId(String)</a> - Method in class nl.b3p.tailormap.api.persistence.<a href="nl/b3p/tailormap/api/persistence/Catalog.html" title="class in nl.b3p.tailormap.api.persistence">Catalog</a></dt>
@@ -4801,6 +4775,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/User.html#setName(java.lang.String)" class="member-name-link">setName(String)</a> - Method in class nl.b3p.tailormap.api.persistence.<a href="nl/b3p/tailormap/api/persistence/User.html" title="class in nl.b3p.tailormap.api.persistence">User</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html#setName(java.lang.String)" class="member-name-link">setName(String)</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerSearchIndex</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html#setName(java.lang.String)" class="member-name-link">setName(String)</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerTreeNode</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/LoginConfigurationSsoLinksInner.html#setName(java.lang.String)" class="member-name-link">setName(String)</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LoginConfigurationSsoLinksInner.html" title="class in nl.b3p.tailormap.api.viewer.model">LoginConfigurationSsoLinksInner</a></dt>
@@ -4931,21 +4907,9 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/SearchIndex.html#setSearchFieldsUsed(java.util.List)" class="member-name-link">setSearchFieldsUsed(List&lt;String&gt;)</a> - Method in class nl.b3p.tailormap.api.persistence.<a href="nl/b3p/tailormap/api/persistence/SearchIndex.html" title="class in nl.b3p.tailormap.api.persistence">SearchIndex</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html#setSearchIndex(nl.b3p.tailormap.api.persistence.json.SearchIndexRef)" class="member-name-link">setSearchIndex(SearchIndexRef)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceDefaultLayerSettings</a></dt>
+<dt><a href="nl/b3p/tailormap/api/viewer/model/AppLayer.html#setSearchIndex(nl.b3p.tailormap.api.viewer.model.LayerSearchIndex)" class="member-name-link">setSearchIndex(LayerSearchIndex)</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/AppLayer.html" title="class in nl.b3p.tailormap.api.viewer.model">AppLayer</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/GeoServiceLayerSettings.html#setSearchIndex(nl.b3p.tailormap.api.persistence.json.SearchIndexRef)" class="member-name-link">setSearchIndex(SearchIndexRef)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/GeoServiceLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceLayerSettings</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/LayerSettings.html#setSearchIndex(nl.b3p.tailormap.api.persistence.json.SearchIndexRef)" class="member-name-link">setSearchIndex(SearchIndexRef)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/LayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">LayerSettings</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/Tileset3DLayerSettings.html#setSearchIndex(nl.b3p.tailormap.api.persistence.json.SearchIndexRef)" class="member-name-link">setSearchIndex(SearchIndexRef)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/Tileset3DLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">Tileset3DLayerSettings</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/WMSLayerSettings.html#setSearchIndex(nl.b3p.tailormap.api.persistence.json.SearchIndexRef)" class="member-name-link">setSearchIndex(SearchIndexRef)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/WMSLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">WMSLayerSettings</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/WMTSLayerSettings.html#setSearchIndex(nl.b3p.tailormap.api.persistence.json.SearchIndexRef)" class="member-name-link">setSearchIndex(SearchIndexRef)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/WMTSLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">WMTSLayerSettings</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/XYZLayerSettings.html#setSearchIndex(nl.b3p.tailormap.api.persistence.json.SearchIndexRef)" class="member-name-link">setSearchIndex(SearchIndexRef)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/XYZLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">XYZLayerSettings</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html#setSearchIndexId(java.lang.Long)" class="member-name-link">setSearchIndexId(Long)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html" title="class in nl.b3p.tailormap.api.persistence.json">SearchIndexRef</a></dt>
+<dt><a href="nl/b3p/tailormap/api/persistence/json/AppLayerSettings.html#setSearchIndexId(java.lang.Long)" class="member-name-link">setSearchIndexId(Long)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/AppLayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">AppLayerSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/GeoServiceSettings.html#setServerType(nl.b3p.tailormap.api.persistence.json.GeoServiceSettings.ServerTypeEnum)" class="member-name-link">setServerType(GeoServiceSettings.ServerTypeEnum)</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/GeoServiceSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">GeoServiceSettings</a></dt>
 <dd>&nbsp;</dd>
@@ -5561,8 +5525,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/LayerSettings.html#toString()" class="member-name-link">toString()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/LayerSettings.html" title="class in nl.b3p.tailormap.api.persistence.json">LayerSettings</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html#toString()" class="member-name-link">toString()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/SearchIndexRef.html" title="class in nl.b3p.tailormap.api.persistence.json">SearchIndexRef</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/ServiceAuthentication.MethodEnum.html#toString()" class="member-name-link">toString()</a> - Method in enum class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/ServiceAuthentication.MethodEnum.html" title="enum class in nl.b3p.tailormap.api.persistence.json">ServiceAuthentication.MethodEnum</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/persistence/json/ServiceAuthentication.html#toString()" class="member-name-link">toString()</a> - Method in class nl.b3p.tailormap.api.persistence.json.<a href="nl/b3p/tailormap/api/persistence/json/ServiceAuthentication.html" title="class in nl.b3p.tailormap.api.persistence.json">ServiceAuthentication</a></dt>
@@ -5638,6 +5600,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/LayerDetailsForm.html#toString()" class="member-name-link">toString()</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerDetailsForm.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerDetailsForm</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/LayerExportCapabilities.html#toString()" class="member-name-link">toString()</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerExportCapabilities.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerExportCapabilities</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html#toString()" class="member-name-link">toString()</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerSearchIndex.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerSearchIndex</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html#toString()" class="member-name-link">toString()</a> - Method in class nl.b3p.tailormap.api.viewer.model.<a href="nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html" title="class in nl.b3p.tailormap.api.viewer.model">LayerTreeNode</a></dt>
 <dd>&nbsp;</dd>
