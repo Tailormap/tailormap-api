@@ -801,25 +801,6 @@ public class PopulateTestData {
               ft.getSettings().addAttributeOrderItem("identificatie");
               ft.getSettings().addAttributeOrderItem("bronhouder");
               ft.getSettings().addAttributeOrderItem("class");
-              ft.getSettings()
-                  .setSearchFields(List.of("class", "plus_fysiekvoorkomen", "bronhouder"));
-              ft.getSettings().setSearchDisplayFields(List.of("class", "plus_fysiekvoorkomen"));
-            });
-
-    featureSources.get("sqlserver").getFeatureTypes().stream()
-        .filter(ft -> ft.getName().equals("wegdeel"))
-        .findFirst()
-        .ifPresent(
-            ft -> {
-              ft.getSettings()
-                  .setSearchFields(
-                      List.of(
-                          "function_",
-                          "plus_fysiekvoorkomenwegdeel",
-                          "surfacematerial",
-                          "bronhouder"));
-              ft.getSettings()
-                  .setSearchDisplayFields(List.of("function_", "plus_fysiekvoorkomenwegdeel"));
             });
 
     Upload logo =
@@ -1393,20 +1374,28 @@ public class PopulateTestData {
               geoService.findLayer("sqlserver:wegdeel"), featureSourceRepository);
 
       try (solrHelper) {
-        SearchIndex begroeidterreindeelIndex =
-            new SearchIndex()
-                .setName("Begroeidterreindeel")
-                .setFeatureTypeId(begroeidterreindeelFT.getId());
-        begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
-        solrHelper.addFeatureTypeIndex(
-            begroeidterreindeelIndex, begroeidterreindeelFT, featureSourceFactoryHelper);
-        begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
 
-        SearchIndex wegdeelIndex =
-            new SearchIndex().setName("Wegdeel").setFeatureTypeId(wegdeelFT.getId());
-        wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
-        solrHelper.addFeatureTypeIndex(wegdeelIndex, wegdeelFT, featureSourceFactoryHelper);
-        wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
+        SearchIndex begroeidterreindeelIndex = null;
+        if (begroeidterreindeelFT != null) {
+          begroeidterreindeelIndex =
+              new SearchIndex()
+                  .setName("Begroeidterreindeel")
+                  .setFeatureTypeId(begroeidterreindeelFT.getId())
+                  .setSearchFieldsUsed(List.of("class", "plus_fysiekvoorkomen", "bronhouder"))
+                  .setSearchDisplayFieldsUsed(List.of("class", "plus_fysiekvoorkomen"));
+          begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
+          solrHelper.addFeatureTypeIndex(
+              begroeidterreindeelIndex, begroeidterreindeelFT, featureSourceFactoryHelper);
+          begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
+        }
+
+        SearchIndex wegdeelIndex = null;
+        if (wegdeelFT != null) {
+          wegdeelIndex = new SearchIndex().setName("Wegdeel").setFeatureTypeId(wegdeelFT.getId());
+          wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
+          solrHelper.addFeatureTypeIndex(wegdeelIndex, wegdeelFT, featureSourceFactoryHelper);
+          wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
+        }
 
         AppTreeLayerNode begroeidTerreindeelLayerNode =
             defaultApp
@@ -1417,7 +1406,7 @@ public class PopulateTestData {
                 .findFirst()
                 .orElse(null);
 
-        if (begroeidTerreindeelLayerNode != null) {
+        if (begroeidTerreindeelLayerNode != null && begroeidterreindeelIndex != null) {
           defaultApp
               .getAppLayerSettings(begroeidTerreindeelLayerNode)
               .setSearchIndexId(begroeidterreindeelIndex.getId());
@@ -1430,7 +1419,7 @@ public class PopulateTestData {
                 .findFirst()
                 .orElse(null);
 
-        if (wegdeel != null) {
+        if (wegdeel != null && wegdeelIndex != null) {
           defaultApp.getAppLayerSettings(wegdeel).setSearchIndexId(wegdeelIndex.getId());
         }
 

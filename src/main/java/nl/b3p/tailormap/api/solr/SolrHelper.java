@@ -87,26 +87,23 @@ public class SolrHelper implements AutoCloseable, Constants {
 
     final Instant start = Instant.now();
 
-    if (null == tmFeatureType.getSettings().getSearchFields()) {
-      logger.warn("No search fields configured for featuretype: {}", tmFeatureType.getName());
+    if (null == searchIndex.getSearchFieldsUsed()) {
+      logger.warn("No search fields configured for search index: {}", searchIndex.getName());
       throw new UnsupportedOperationException(
-          "No search fields configured for featuretype: %s".formatted(tmFeatureType.getName()));
+          "No search fields configured for search index: %s".formatted(searchIndex.getName()));
     }
 
     // set fields while filtering out hidden fields
     List<String> searchFields =
-        tmFeatureType.getSettings().getSearchFields().stream()
+        searchIndex.getSearchFieldsUsed().stream()
             .filter(s -> !tmFeatureType.getSettings().getHideAttributes().contains(s))
             .toList();
     List<String> displayFields =
-        tmFeatureType.getSettings().getSearchDisplayFields().stream()
+        searchIndex.getSearchDisplayFieldsUsed().stream()
             .filter(s -> !tmFeatureType.getSettings().getHideAttributes().contains(s))
             .toList();
 
-    searchIndex
-        .setSearchFieldsUsed(searchFields)
-        .setSearchDisplayFieldsUsed(displayFields)
-        .setStatus(SearchIndex.Status.INDEXING);
+    searchIndex.setStatus(SearchIndex.Status.INDEXING);
 
     if (searchFields.isEmpty()) {
       logger.info("No valid search fields configured for featuretype: {}", tmFeatureType.getName());
