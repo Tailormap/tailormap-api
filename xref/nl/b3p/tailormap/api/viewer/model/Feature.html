@@ -29,7 +29,7 @@
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  @Schema(name = <span class="jxr_string">"Feature"</span>, description = <span class="jxr_string">" A possibly complete feature from the attribute source. The feature could have been filtered to not provide certain attributes. Any geometry attributes will be presented in WKT format "</span>)
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.6.0"</span>)
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.7.0"</span>)
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="Feature" href="../../../../../../nl/b3p/tailormap/api/viewer/model/Feature.html#Feature">Feature</a> <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
@@ -53,7 +53,7 @@
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>    <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment">   * feature id, a non-mutable identifier from the attribute source</em>
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">   * @return fid</em>
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>    
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>    @Schema(name = <span class="jxr_string">"__fid"</span>, accessMode = Schema.AccessMode.READ_ONLY, description = <span class="jxr_string">"feature id, a non-mutable identifier from the attribute source"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>    @JsonProperty(<span class="jxr_string">"__fid"</span>)
@@ -73,7 +73,7 @@
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>    <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">   *  Default geometry of the feature as WKT, possibly simplified. Always linearized to make sure that it only holds a specification valid WKT. Can be used for highlighting or buffer/selection, not for editing. </em>
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">   * @return geometry</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>    
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>    @Schema(name = <span class="jxr_string">"geometry"</span>, description = <span class="jxr_string">" Default geometry of the feature as WKT, possibly simplified. Always linearized to make sure that it only holds a specification valid WKT. Can be used for highlighting or buffer/selection, not for editing. "</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>    @JsonProperty(<span class="jxr_string">"geometry"</span>)
@@ -101,7 +101,7 @@
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>    <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">   * feature attributes in key/value pairs</em>
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>  <em class="jxr_javadoccomment">   * @return attributes</em>
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>  <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>    @NotNull 
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>    @Schema(name = <span class="jxr_string">"attributes"</span>, description = <span class="jxr_string">"feature attributes in key/value pairs"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>    @JsonProperty(<span class="jxr_string">"attributes"</span>)

@@ -30,7 +30,7 @@
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  @Schema(name = <span class="jxr_string">"LayerTreeNode"</span>, description = <span class="jxr_string">"Grouping of layers in a tree structure."</span>)
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.6.0"</span>)
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.7.0"</span>)
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="LayerTreeNode" href="../../../../../../nl/b3p/tailormap/api/viewer/model/LayerTreeNode.html#LayerTreeNode">LayerTreeNode</a> <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
@@ -60,7 +60,7 @@
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>    <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">   * A unique identifier across all tree nodes.</em>
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">   * @return id</em>
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>    @NotNull 
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>    @Schema(name = <span class="jxr_string">"id"</span>, description = <span class="jxr_string">"A unique identifier across all tree nodes."</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>    @JsonProperty(<span class="jxr_string">"id"</span>)
@@ -80,7 +80,7 @@
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>    <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">   * Get appLayerId</em>
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">   * @return appLayerId</em>
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>    
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>    @Schema(name = <span class="jxr_string">"appLayerId"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>    @JsonProperty(<span class="jxr_string">"appLayerId"</span>)
@@ -100,7 +100,7 @@
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>    <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">   * Only a single node in a tree will have this set to true.</em>
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">   * @return root</em>
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>  <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>    
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>    @Schema(name = <span class="jxr_string">"root"</span>, description = <span class="jxr_string">"Only a single node in a tree will have this set to true."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>    @JsonProperty(<span class="jxr_string">"root"</span>)
@@ -120,7 +120,7 @@
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L113" href="#L113">113</a> <em class="jxr_javadoccomment">   * Display name of this tree node. If appLayerId is present, this is the title of that AppLayer.</em>
 <a class="jxr_linenumber" name="L114" href="#L114">114</a> <em class="jxr_javadoccomment">   * @return name</em>
-<a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>   @NotNull 
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>   @Schema(name = <span class="jxr_string">"name"</span>, description = <span class="jxr_string">"Display name of this tree node. If appLayerId is present, this is the title of that AppLayer."</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>   @JsonProperty(<span class="jxr_string">"name"</span>)
@@ -140,7 +140,7 @@
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_javadoccomment">   * Description for this node entered by application admin.</em>
 <a class="jxr_linenumber" name="L134" href="#L134">134</a> <em class="jxr_javadoccomment">   * @return description</em>
-<a class="jxr_linenumber" name="L135" href="#L135">135</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L135" href="#L135">135</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>   
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>   @Schema(name = <span class="jxr_string">"description"</span>, description = <span class="jxr_string">"Description for this node entered by application admin."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>   @JsonProperty(<span class="jxr_string">"description"</span>)
@@ -168,7 +168,7 @@
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L161" href="#L161">161</a> <em class="jxr_javadoccomment">   * Ordered list of ids of LayerTreeNodes that are children of this node.</em>
 <a class="jxr_linenumber" name="L162" href="#L162">162</a> <em class="jxr_javadoccomment">   * @return childrenIds</em>
-<a class="jxr_linenumber" name="L163" href="#L163">163</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L163" href="#L163">163</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>   
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>   @Schema(name = <span class="jxr_string">"childrenIds"</span>, description = <span class="jxr_string">"Ordered list of ids of LayerTreeNodes that are children of this node."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>   @JsonProperty(<span class="jxr_string">"childrenIds"</span>)

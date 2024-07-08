@@ -31,7 +31,7 @@
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  @Schema(name = <span class="jxr_string">"AppLayer"</span>, description = <span class="jxr_string">" A map layer, but only enough information to draw the layer. For advanced functionality that required access to attributes the LayerDetails should be requested. "</span>)
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.6.0"</span>)
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.7.0"</span>)
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AppLayer" href="../../../../../../nl/b3p/tailormap/api/viewer/model/AppLayer.html#AppLayer">AppLayer</a> <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
@@ -98,7 +98,7 @@
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>    <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">   * Unique id of this layer reference in the application. Another app layer may exist which references the same layerName of the same service, but with different settings.</em>
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>  <em class="jxr_javadoccomment">   * @return id</em>
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>    @NotNull 
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>    @Schema(name = <span class="jxr_string">"id"</span>, description = <span class="jxr_string">"Unique id of this layer reference in the application. Another app layer may exist which references the same layerName of the same service, but with different settings."</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>    @JsonProperty(<span class="jxr_string">"id"</span>)
@@ -118,7 +118,7 @@
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L111" href="#L111">111</a> <em class="jxr_javadoccomment">   * Get serviceId</em>
 <a class="jxr_linenumber" name="L112" href="#L112">112</a> <em class="jxr_javadoccomment">   * @return serviceId</em>
-<a class="jxr_linenumber" name="L113" href="#L113">113</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L113" href="#L113">113</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>   @NotNull 
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>   @Schema(name = <span class="jxr_string">"serviceId"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>   @JsonProperty(<span class="jxr_string">"serviceId"</span>)
@@ -138,7 +138,7 @@
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> <em class="jxr_javadoccomment">   * Layer name as known by the service.</em>
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> <em class="jxr_javadoccomment">   * @return layerName</em>
-<a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>   @NotNull 
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>   @Schema(name = <span class="jxr_string">"layerName"</span>, description = <span class="jxr_string">"Layer name as known by the service."</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>   @JsonProperty(<span class="jxr_string">"layerName"</span>)
@@ -158,7 +158,7 @@
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L151" href="#L151">151</a> <em class="jxr_javadoccomment">   * Layer title or display name.</em>
 <a class="jxr_linenumber" name="L152" href="#L152">152</a> <em class="jxr_javadoccomment">   * @return title</em>
-<a class="jxr_linenumber" name="L153" href="#L153">153</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L153" href="#L153">153</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>   @NotNull 
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>   @Schema(name = <span class="jxr_string">"title"</span>, description = <span class="jxr_string">"Layer title or display name."</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>   @JsonProperty(<span class="jxr_string">"title"</span>)
@@ -178,7 +178,7 @@
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L171" href="#L171">171</a> <em class="jxr_javadoccomment">   * URL for this specific layer. If empty use URL from the service.</em>
 <a class="jxr_linenumber" name="L172" href="#L172">172</a> <em class="jxr_javadoccomment">   * @return url</em>
-<a class="jxr_linenumber" name="L173" href="#L173">173</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L173" href="#L173">173</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>   
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>   @Schema(name = <span class="jxr_string">"url"</span>, description = <span class="jxr_string">"URL for this specific layer. If empty use URL from the service."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>   @JsonProperty(<span class="jxr_string">"url"</span>)
@@ -198,7 +198,7 @@
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L191" href="#L191">191</a> <em class="jxr_javadoccomment">   * Get visible</em>
 <a class="jxr_linenumber" name="L192" href="#L192">192</a> <em class="jxr_javadoccomment">   * @return visible</em>
-<a class="jxr_linenumber" name="L193" href="#L193">193</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L193" href="#L193">193</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>   @NotNull 
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>   @Schema(name = <span class="jxr_string">"visible"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>   @JsonProperty(<span class="jxr_string">"visible"</span>)
@@ -218,7 +218,7 @@
 <a class="jxr_linenumber" name="L210" href="#L210">210</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L211" href="#L211">211</a> <em class="jxr_javadoccomment">   * The opacity of the layer (in percentage, from 0-100, where 0 is \&quot;transparent\&quot; and 100 is \&quot;opaque\&quot;).</em>
 <a class="jxr_linenumber" name="L212" href="#L212">212</a> <em class="jxr_javadoccomment">   * @return opacity</em>
-<a class="jxr_linenumber" name="L213" href="#L213">213</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L213" href="#L213">213</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>   
 <a class="jxr_linenumber" name="L215" href="#L215">215</a>   @Schema(name = <span class="jxr_string">"opacity"</span>, description = <span class="jxr_string">"The opacity of the layer (in percentage, from 0-100, where 0 is \&quot;transparent\&quot; and 100 is \&quot;opaque\&quot;)."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L216" href="#L216">216</a>   @JsonProperty(<span class="jxr_string">"opacity"</span>)
@@ -238,7 +238,7 @@
 <a class="jxr_linenumber" name="L230" href="#L230">230</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L231" href="#L231">231</a> <em class="jxr_javadoccomment">   * Minimum scale at which this layer should be shown or is not blank. When absent there is no minimum. As reported by the service (ScaleHint or MinScaleDenominator).</em>
 <a class="jxr_linenumber" name="L232" href="#L232">232</a> <em class="jxr_javadoccomment">   * @return minScale</em>
-<a class="jxr_linenumber" name="L233" href="#L233">233</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L233" href="#L233">233</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>   
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>   @Schema(name = <span class="jxr_string">"minScale"</span>, description = <span class="jxr_string">"Minimum scale at which this layer should be shown or is not blank. When absent there is no minimum. As reported by the service (ScaleHint or MinScaleDenominator)."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L236" href="#L236">236</a>   @JsonProperty(<span class="jxr_string">"minScale"</span>)
@@ -258,7 +258,7 @@
 <a class="jxr_linenumber" name="L250" href="#L250">250</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L251" href="#L251">251</a> <em class="jxr_javadoccomment">   * Maximum scale denominator at which this layer should be shown or is not blank. When absent there is no maximum. As reported by the service (ScaleHint or MaxScaleDenominator).</em>
 <a class="jxr_linenumber" name="L252" href="#L252">252</a> <em class="jxr_javadoccomment">   * @return maxScale</em>
-<a class="jxr_linenumber" name="L253" href="#L253">253</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L253" href="#L253">253</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>   
 <a class="jxr_linenumber" name="L255" href="#L255">255</a>   @Schema(name = <span class="jxr_string">"maxScale"</span>, description = <span class="jxr_string">"Maximum scale denominator at which this layer should be shown or is not blank. When absent there is no maximum. As reported by the service (ScaleHint or MaxScaleDenominator)."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>   @JsonProperty(<span class="jxr_string">"maxScale"</span>)
@@ -278,7 +278,7 @@
 <a class="jxr_linenumber" name="L270" href="#L270">270</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L271" href="#L271">271</a> <em class="jxr_javadoccomment">   * URL to an image with the layer legend.</em>
 <a class="jxr_linenumber" name="L272" href="#L272">272</a> <em class="jxr_javadoccomment">   * @return legendImageUrl</em>
-<a class="jxr_linenumber" name="L273" href="#L273">273</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L273" href="#L273">273</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>   
 <a class="jxr_linenumber" name="L275" href="#L275">275</a>   @Schema(name = <span class="jxr_string">"legendImageUrl"</span>, description = <span class="jxr_string">"URL to an image with the layer legend."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>   @JsonProperty(<span class="jxr_string">"legendImageUrl"</span>)
@@ -298,7 +298,7 @@
 <a class="jxr_linenumber" name="L290" href="#L290">290</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L291" href="#L291">291</a> <em class="jxr_javadoccomment">   * Request a single tile for WMS (may result in errors when max size/mem exceeded)</em>
 <a class="jxr_linenumber" name="L292" href="#L292">292</a> <em class="jxr_javadoccomment">   * @return tilingDisabled</em>
-<a class="jxr_linenumber" name="L293" href="#L293">293</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L293" href="#L293">293</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L294" href="#L294">294</a>   
 <a class="jxr_linenumber" name="L295" href="#L295">295</a>   @Schema(name = <span class="jxr_string">"tilingDisabled"</span>, description = <span class="jxr_string">"Request a single tile for WMS (may result in errors when max size/mem exceeded)"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>   @JsonProperty(<span class="jxr_string">"tilingDisabled"</span>)
@@ -318,7 +318,7 @@
 <a class="jxr_linenumber" name="L310" href="#L310">310</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L311" href="#L311">311</a> <em class="jxr_javadoccomment">   * Gutter around tile to discard to avoid tile edge rendering artifacts</em>
 <a class="jxr_linenumber" name="L312" href="#L312">312</a> <em class="jxr_javadoccomment">   * @return tilingGutter</em>
-<a class="jxr_linenumber" name="L313" href="#L313">313</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L313" href="#L313">313</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>   
 <a class="jxr_linenumber" name="L315" href="#L315">315</a>   @Schema(name = <span class="jxr_string">"tilingGutter"</span>, description = <span class="jxr_string">"Gutter around tile to discard to avoid tile edge rendering artifacts"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>   @JsonProperty(<span class="jxr_string">"tilingGutter"</span>)
@@ -338,7 +338,7 @@
 <a class="jxr_linenumber" name="L330" href="#L330">330</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L331" href="#L331">331</a> <em class="jxr_javadoccomment">   * Whether the layer should not be rendered in high DPI when available</em>
 <a class="jxr_linenumber" name="L332" href="#L332">332</a> <em class="jxr_javadoccomment">   * @return hiDpiDisabled</em>
-<a class="jxr_linenumber" name="L333" href="#L333">333</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L333" href="#L333">333</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L334" href="#L334">334</a>   
 <a class="jxr_linenumber" name="L335" href="#L335">335</a>   @Schema(name = <span class="jxr_string">"hiDpiDisabled"</span>, description = <span class="jxr_string">"Whether the layer should not be rendered in high DPI when available"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L336" href="#L336">336</a>   @JsonProperty(<span class="jxr_string">"hiDpiDisabled"</span>)
@@ -358,7 +358,7 @@
 <a class="jxr_linenumber" name="L350" href="#L350">350</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L351" href="#L351">351</a> <em class="jxr_javadoccomment">   * Get hiDpiMode</em>
 <a class="jxr_linenumber" name="L352" href="#L352">352</a> <em class="jxr_javadoccomment">   * @return hiDpiMode</em>
-<a class="jxr_linenumber" name="L353" href="#L353">353</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L353" href="#L353">353</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>   @Valid 
 <a class="jxr_linenumber" name="L355" href="#L355">355</a>   @Schema(name = <span class="jxr_string">"hiDpiMode"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L356" href="#L356">356</a>   @JsonProperty(<span class="jxr_string">"hiDpiMode"</span>)
@@ -378,7 +378,7 @@
 <a class="jxr_linenumber" name="L370" href="#L370">370</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L371" href="#L371">371</a> <em class="jxr_javadoccomment">   * The layer name of this service to substitute when the device pixel ratio is higher</em>
 <a class="jxr_linenumber" name="L372" href="#L372">372</a> <em class="jxr_javadoccomment">   * @return hiDpiSubstituteLayer</em>
-<a class="jxr_linenumber" name="L373" href="#L373">373</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L373" href="#L373">373</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L374" href="#L374">374</a>   
 <a class="jxr_linenumber" name="L375" href="#L375">375</a>   @Schema(name = <span class="jxr_string">"hiDpiSubstituteLayer"</span>, description = <span class="jxr_string">"The layer name of this service to substitute when the device pixel ratio is higher"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L376" href="#L376">376</a>   @JsonProperty(<span class="jxr_string">"hiDpiSubstituteLayer"</span>)
@@ -398,7 +398,7 @@
 <a class="jxr_linenumber" name="L390" href="#L390">390</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L391" href="#L391">391</a> <em class="jxr_javadoccomment">   * Minimum zoom for XYZ layer</em>
 <a class="jxr_linenumber" name="L392" href="#L392">392</a> <em class="jxr_javadoccomment">   * @return minZoom</em>
-<a class="jxr_linenumber" name="L393" href="#L393">393</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L393" href="#L393">393</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L394" href="#L394">394</a>   
 <a class="jxr_linenumber" name="L395" href="#L395">395</a>   @Schema(name = <span class="jxr_string">"minZoom"</span>, description = <span class="jxr_string">"Minimum zoom for XYZ layer"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L396" href="#L396">396</a>   @JsonProperty(<span class="jxr_string">"minZoom"</span>)
@@ -418,7 +418,7 @@
 <a class="jxr_linenumber" name="L410" href="#L410">410</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L411" href="#L411">411</a> <em class="jxr_javadoccomment">   * Maximum zoom for XYZ layer</em>
 <a class="jxr_linenumber" name="L412" href="#L412">412</a> <em class="jxr_javadoccomment">   * @return maxZoom</em>
-<a class="jxr_linenumber" name="L413" href="#L413">413</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L413" href="#L413">413</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L414" href="#L414">414</a>   
 <a class="jxr_linenumber" name="L415" href="#L415">415</a>   @Schema(name = <span class="jxr_string">"maxZoom"</span>, description = <span class="jxr_string">"Maximum zoom for XYZ layer"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L416" href="#L416">416</a>   @JsonProperty(<span class="jxr_string">"maxZoom"</span>)
@@ -438,7 +438,7 @@
 <a class="jxr_linenumber" name="L430" href="#L430">430</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L431" href="#L431">431</a> <em class="jxr_javadoccomment">   * Tile size for XYZ layer</em>
 <a class="jxr_linenumber" name="L432" href="#L432">432</a> <em class="jxr_javadoccomment">   * @return tileSize</em>
-<a class="jxr_linenumber" name="L433" href="#L433">433</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L433" href="#L433">433</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L434" href="#L434">434</a>   
 <a class="jxr_linenumber" name="L435" href="#L435">435</a>   @Schema(name = <span class="jxr_string">"tileSize"</span>, description = <span class="jxr_string">"Tile size for XYZ layer"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L436" href="#L436">436</a>   @JsonProperty(<span class="jxr_string">"tileSize"</span>)
@@ -458,7 +458,7 @@
 <a class="jxr_linenumber" name="L450" href="#L450">450</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L451" href="#L451">451</a> <em class="jxr_javadoccomment">   * Get tileGridExtent</em>
 <a class="jxr_linenumber" name="L452" href="#L452">452</a> <em class="jxr_javadoccomment">   * @return tileGridExtent</em>
-<a class="jxr_linenumber" name="L453" href="#L453">453</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L453" href="#L453">453</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L454" href="#L454">454</a>   @Valid 
 <a class="jxr_linenumber" name="L455" href="#L455">455</a>   @Schema(name = <span class="jxr_string">"tileGridExtent"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L456" href="#L456">456</a>   @JsonProperty(<span class="jxr_string">"tileGridExtent"</span>)
@@ -478,7 +478,7 @@
 <a class="jxr_linenumber" name="L470" href="#L470">470</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L471" href="#L471">471</a> <em class="jxr_javadoccomment">   * Whether this layer has attributes that can be accessed eg. for feature info or attribute list</em>
 <a class="jxr_linenumber" name="L472" href="#L472">472</a> <em class="jxr_javadoccomment">   * @return hasAttributes</em>
-<a class="jxr_linenumber" name="L473" href="#L473">473</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L473" href="#L473">473</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L474" href="#L474">474</a>   @NotNull 
 <a class="jxr_linenumber" name="L475" href="#L475">475</a>   @Schema(name = <span class="jxr_string">"hasAttributes"</span>, description = <span class="jxr_string">"Whether this layer has attributes that can be accessed eg. for feature info or attribute list"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L476" href="#L476">476</a>   @JsonProperty(<span class="jxr_string">"hasAttributes"</span>)
@@ -498,7 +498,7 @@
 <a class="jxr_linenumber" name="L490" href="#L490">490</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L491" href="#L491">491</a> <em class="jxr_javadoccomment">   * Whether this layer can be edited.</em>
 <a class="jxr_linenumber" name="L492" href="#L492">492</a> <em class="jxr_javadoccomment">   * @return editable</em>
-<a class="jxr_linenumber" name="L493" href="#L493">493</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L493" href="#L493">493</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L494" href="#L494">494</a>   
 <a class="jxr_linenumber" name="L495" href="#L495">495</a>   @Schema(name = <span class="jxr_string">"editable"</span>, description = <span class="jxr_string">"Whether this layer can be edited."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L496" href="#L496">496</a>   @JsonProperty(<span class="jxr_string">"editable"</span>)
@@ -518,7 +518,7 @@
 <a class="jxr_linenumber" name="L510" href="#L510">510</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L511" href="#L511">511</a> <em class="jxr_javadoccomment">   * Attribution text to show for this layer.</em>
 <a class="jxr_linenumber" name="L512" href="#L512">512</a> <em class="jxr_javadoccomment">   * @return attribution</em>
-<a class="jxr_linenumber" name="L513" href="#L513">513</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L513" href="#L513">513</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L514" href="#L514">514</a>   
 <a class="jxr_linenumber" name="L515" href="#L515">515</a>   @Schema(name = <span class="jxr_string">"attribution"</span>, description = <span class="jxr_string">"Attribution text to show for this layer."</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L516" href="#L516">516</a>   @JsonProperty(<span class="jxr_string">"attribution"</span>)
@@ -538,7 +538,7 @@
 <a class="jxr_linenumber" name="L530" href="#L530">530</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L531" href="#L531">531</a> <em class="jxr_javadoccomment">   * Description text to show for this layer, may contain some links and images (see htmlify pipe)</em>
 <a class="jxr_linenumber" name="L532" href="#L532">532</a> <em class="jxr_javadoccomment">   * @return description</em>
-<a class="jxr_linenumber" name="L533" href="#L533">533</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L533" href="#L533">533</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L534" href="#L534">534</a>   
 <a class="jxr_linenumber" name="L535" href="#L535">535</a>   @Schema(name = <span class="jxr_string">"description"</span>, description = <span class="jxr_string">"Description text to show for this layer, may contain some links and images (see htmlify pipe)"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L536" href="#L536">536</a>   @JsonProperty(<span class="jxr_string">"description"</span>)
@@ -558,7 +558,7 @@
 <a class="jxr_linenumber" name="L550" href="#L550">550</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L551" href="#L551">551</a> <em class="jxr_javadoccomment">   * Automatically refresh the layer (in seconds)</em>
 <a class="jxr_linenumber" name="L552" href="#L552">552</a> <em class="jxr_javadoccomment">   * @return autoRefreshInSeconds</em>
-<a class="jxr_linenumber" name="L553" href="#L553">553</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L553" href="#L553">553</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L554" href="#L554">554</a>   
 <a class="jxr_linenumber" name="L555" href="#L555">555</a>   @Schema(name = <span class="jxr_string">"autoRefreshInSeconds"</span>, description = <span class="jxr_string">"Automatically refresh the layer (in seconds)"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L556" href="#L556">556</a>   @JsonProperty(<span class="jxr_string">"autoRefreshInSeconds"</span>)
@@ -578,7 +578,7 @@
 <a class="jxr_linenumber" name="L570" href="#L570">570</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L571" href="#L571">571</a> <em class="jxr_javadoccomment">   * Get searchIndex</em>
 <a class="jxr_linenumber" name="L572" href="#L572">572</a> <em class="jxr_javadoccomment">   * @return searchIndex</em>
-<a class="jxr_linenumber" name="L573" href="#L573">573</a> <em class="jxr_javadoccomment">  */</em>
+<a class="jxr_linenumber" name="L573" href="#L573">573</a> <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L574" href="#L574">574</a>   @Valid 
 <a class="jxr_linenumber" name="L575" href="#L575">575</a>   @Schema(name = <span class="jxr_string">"searchIndex"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L576" href="#L576">576</a>   @JsonProperty(<span class="jxr_string">"searchIndex"</span>)
