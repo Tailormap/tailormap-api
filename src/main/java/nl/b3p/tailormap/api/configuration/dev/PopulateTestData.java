@@ -1391,7 +1391,17 @@ public class PopulateTestData {
 
         SearchIndex wegdeelIndex = null;
         if (wegdeelFT != null) {
-          wegdeelIndex = new SearchIndex().setName("Wegdeel").setFeatureTypeId(wegdeelFT.getId());
+          wegdeelIndex =
+              new SearchIndex()
+                  .setName("Wegdeel")
+                  .setFeatureTypeId(wegdeelFT.getId())
+                  .setSearchFieldsUsed(
+                      List.of(
+                          "function_",
+                          "plus_fysiekvoorkomenwegdeel",
+                          "surfacematerial",
+                          "bronhouder"))
+                  .setSearchDisplayFieldsUsed(List.of("function_", "plus_fysiekvoorkomenwegdeel"));
           wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
           solrHelper.addFeatureTypeIndex(wegdeelIndex, wegdeelFT, featureSourceFactoryHelper);
           wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
