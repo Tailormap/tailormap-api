@@ -829,6 +829,8 @@ SPDX-License-Identifier: MIT
                                 <developerOrganizationUrl>${project.organization.url}</developerOrganizationUrl>
                                 <useJakartaEe>true</useJakartaEe>
                                 <useSpringBoot3>true</useSpringBoot3>
+                                <!-- Ignore properties which were removed from the model, so we don't have to write migration scripts for JSONB columns -->
+                                <additionalModelTypeAnnotations>@com.fasterxml.jackson.annotation.JsonIgnoreProperties(ignoreUnknown = true)</additionalModelTypeAnnotations>
                             </configOptions>
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>
