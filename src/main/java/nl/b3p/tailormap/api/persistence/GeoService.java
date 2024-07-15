@@ -23,10 +23,14 @@ import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+
 import nl.b3p.tailormap.api.persistence.helper.GeoServiceHelper;
 import nl.b3p.tailormap.api.persistence.json.AuthorizationRule;
 import nl.b3p.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
@@ -336,6 +340,45 @@ public class GeoService {
 
   public GeoServiceLayer findLayer(String name) {
     return getLayers().stream().filter(sl -> name.equals(sl.getName())).findFirst().orElse(null);
+  }
+
+  /**
+   * Get all layer parents up until the root, in order of the most direct parent.
+   * @param layer The layer for find all parents for
+   * @return The list of parents, or an empty list if layer is the root.
+   */
+  public List<GeoServiceLayer> getLayerParents(GeoServiceLayer layer) {
+    if (layer.getRoot()) {
+      return Collections.emptyList();
+    }
+
+    // TODO: technically a layer can be child of multiple layers (occur multiple times in WMS layer tree)
+    Function<GeoServiceLayer, /*Collection<*/GeoServiceLayer/*>*/> getParent = (GeoServiceLayer layerToGetParentOf) -> {
+      //Collection<GeoServiceLayer> parents = new ArrayList<>();
+      for(GeoServiceLayer otherLayer: getLayers()) {
+        if(otherLayer.getChildren().contains(layerToGetParentOf.getName())) {
+          //parents.add(otherLayer);
+          return otherLayer;
+        }
+      }
+      return null; //parents;
+    };
+
+    List<GeoServiceLayer> parents = new ArrayList<>();
+    GeoServiceLayer currentLayer = layer;
+    while(true) {
+//      Collection<GeoServiceLayer> thisLayerParents = getParents.apply(currentLayer);
+//      if (thisLayerParents.isEmpty()) {
+//        break;
+//      }
+      GeoServiceLayer thisLayerParent = getParent.apply(currentLayer);
+      if(thisLayerParent == null) {
+        break;
+      }
+      parents.add(thisLayerParent);
+      currentLayer = thisLayerParent;
+    }
+    return parents;
   }
 
   public GeoServiceLayerSettings getLayerSettings(String layerName) {
