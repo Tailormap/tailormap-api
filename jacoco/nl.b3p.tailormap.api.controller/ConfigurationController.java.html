@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConfigurationController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">nl.b3p.tailormap.api.controller</a> &gt; <span class="el_source">ConfigurationController.java</span></div><h1>ConfigurationController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2023 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package nl.b3p.tailormap.api.controller;
+
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
+import java.io.Serializable;
+import nl.b3p.tailormap.api.annotation.AppRestController;
+import nl.b3p.tailormap.api.persistence.Configuration;
+import nl.b3p.tailormap.api.repository.ConfigurationRepository;
+import nl.b3p.tailormap.api.viewer.model.ConfigResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.server.ResponseStatusException;
+
+/** Provides global configuration values which are available to viewers */
+@AppRestController
+public class ConfigurationController {
+
+  private final ConfigurationRepository configurationRepository;
+
+<span class="nc" id="L28">  public ConfigurationController(ConfigurationRepository configurationRepository) {</span>
+<span class="nc" id="L29">    this.configurationRepository = configurationRepository;</span>
+<span class="nc" id="L30">  }</span>
+
+  @GetMapping(
+      path = &quot;${tailormap-api.base-path}/config/{key}&quot;,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  @Timed(value = &quot;get_config_key&quot;, description = &quot;Get configuration value&quot;)
+  @Counted(value = &quot;get_config_key&quot;, description = &quot;Count of get configuration value&quot;)
+  public ResponseEntity&lt;Serializable&gt; getConfig(@PathVariable String key) {
+<span class="nc" id="L38">    Configuration config =</span>
+        configurationRepository
+<span class="nc" id="L40">            .getAvailableForViewer(key)</span>
+<span class="nc" id="L41">            .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND));</span>
+
+<span class="nc" id="L43">    ConfigResponse response = new ConfigResponse();</span>
+<span class="nc" id="L44">    response.setKey(key);</span>
+<span class="nc" id="L45">    response.setValue(config.getValue());</span>
+<span class="nc" id="L46">    response.setObject(config.getJsonValue());</span>
+<span class="nc" id="L47">    return ResponseEntity.status(HttpStatus.OK).body(response);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
