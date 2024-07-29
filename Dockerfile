@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MIT
 #
-FROM eclipse-temurin:17.0.11_9-jre
+FROM eclipse-temurin:17.0.12_7-jre
 
 ARG TAILORMAP_API_VERSION
 ARG BUILD_DATE
