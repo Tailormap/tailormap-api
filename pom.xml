@@ -1195,7 +1195,7 @@ SPDX-License-Identifier: MIT
                     <images>
                         <image>
                             <!-- deploy snapshot tag -->
-                            <name>${docker.deploy.repo}/b3partners/%a:snapshot</name>
+                            <name>${docker.deploy.repo}/tailormap/%a:snapshot</name>
                             <build>
                                 <dockerFile>${project.basedir}/Dockerfile</dockerFile>
                                 <args>
@@ -1465,7 +1465,7 @@ SPDX-License-Identifier: MIT
                             <imagePullPolicy>Always</imagePullPolicy>
                             <images>
                                 <image>
-                                    <name>${docker.deploy.repo}/b3partners/%a:%v</name>
+                                    <name>${docker.deploy.repo}/tailormap/%a:%v</name>
                                     <build>
                                         <dockerFile>${project.basedir}/Dockerfile</dockerFile>
                                         <tags>
@@ -1499,10 +1499,10 @@ SPDX-License-Identifier: MIT
                                     <verbose>true</verbose>
                                     <images>
                                         <image>
-                                            <name>${docker.deploy.repo}/b3partners/%a:%l</name>
+                                            <name>${docker.deploy.repo}/tailormap/%a:%l</name>
                                         </image>
                                         <image>
-                                            <name>${docker.deploy.repo}/b3partners/%a:latest</name>
+                                            <name>${docker.deploy.repo}/tailormap/%a:latest</name>
                                         </image>
                                     </images>
                                 </configuration>

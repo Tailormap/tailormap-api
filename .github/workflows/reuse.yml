@@ -8,9 +8,9 @@ jobs:
     name: Check compliance
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: REUSE Compliance Check
-      uses: fsfe/reuse-action@v4
-      with:
-        args: lint
+      - name: REUSE Compliance Check
+        uses: fsfe/reuse-action@v4
+        with:
+          args: lint

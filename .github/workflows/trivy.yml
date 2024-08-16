@@ -37,7 +37,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.24.0
         # docker run --rm -v trivy_cache:/root/.cache/ aquasec/trivy image ghcr.io/b3partners/tailormap-api:snapshot
         with:
-          image-ref: 'ghcr.io/b3partners/tailormap-api:snapshot'
+          image-ref: 'ghcr.io/tailormap/tailormap-api:snapshot'
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'HIGH,CRITICAL'
