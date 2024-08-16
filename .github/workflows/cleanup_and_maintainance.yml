@@ -10,31 +10,31 @@ concurrency: # More info: https://stackoverflow.com/a/68422069/253468
   cancel-in-progress: true
 
 jobs:
-#  dockercleanup:
-#    runs-on: ubuntu-latest
-#    name: "Pruning Untagged Images"
-#    steps:
-#      - name: "Older than 1 week"
-#        # https://github.com/marketplace/actions/ghcr-pruning
-#        uses: vlaurin/action-ghcr-prune@v0.6.0
-#        with:
-#          token: ${{ secrets.GHCR_CLEANUP_PAT }}
-#          organization: Tailormap
-#          container: tailormap-api
-#          dry-run: false
-#          keep-younger-than: 7
-#          keep-last: 1
-#          prune-untagged: true
-#      - name: "Older than 4 weeks"
-#        uses: vlaurin/action-ghcr-prune@v0.6.0
-#        with:
-#          token: ${{ secrets.GHCR_CLEANUP_PAT }}
-#          organization: Tailormap
-#          container: tailormap-api
-#          dry-run: false
-#          keep-younger-than: 28
-#          keep-last: 0
-#          prune-untagged: true
+  dockercleanup:
+    runs-on: ubuntu-latest
+    name: "Pruning Untagged Images"
+    steps:
+      - name: "Older than 1 week"
+        # https://github.com/marketplace/actions/ghcr-pruning
+        uses: vlaurin/action-ghcr-prune@v0.6.0
+        with:
+          token: ${{ secrets.GHCR_CLEANUP_PAT }}
+          organization: Tailormap
+          container: tailormap-api
+          dry-run: false
+          keep-younger-than: 7
+          keep-last: 1
+          prune-untagged: true
+      - name: "Older than 4 weeks"
+        uses: vlaurin/action-ghcr-prune@v0.6.0
+        with:
+          token: ${{ secrets.GHCR_CLEANUP_PAT }}
+          organization: Tailormap
+          container: tailormap-api
+          dry-run: false
+          keep-younger-than: 28
+          keep-last: 0
+          prune-untagged: true
 
   stale:
     runs-on: ubuntu-latest
