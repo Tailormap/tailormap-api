@@ -1,4 +1,4 @@
-name: 'Release Drafter'
+name: 'Release Drafter & Contributors'
 
 on:
   push:
@@ -13,3 +13,10 @@ jobs:
       - uses: release-drafter/release-drafter@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  contributors:
+    runs-on: ubuntu-latest
+    name: 'Update Contributors'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: JoshuaKGoldberg/all-contributors-auto-action@v0.5.0

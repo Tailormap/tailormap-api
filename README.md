@@ -4,7 +4,7 @@ Tailormap API provides the webserver and backend API for the Tailormap frontend.
 the Tailormap viewer and admin interfaces are written in Angular and developed in a separate
 repository.
 
-If you want to run Tailormap the best starting point is the [tailormap-viewer](https://github.com/B3Partners/tailormap-viewer/) 
+If you want to run Tailormap the best starting point is the [tailormap-viewer](https://github.com/Tailormap/tailormap-viewer/) 
 repository with the Angular frontends where you will find a Docker Compose stack which will run the 
 frontends, backend and PostgreSQL configuration database.
 
@@ -27,7 +27,7 @@ To build and run the project, you need to have the following installed:
 - Docker 20.10.x with buildx 0.9 or higher (this requirement may be skipped if you don't need to build
   the docker images or build release artifacts)
 
-The quickest way to start the PostgreSQL database is to check out the Docker Compose stack in [tailormap-viewer](https://github.com/B3Partners/tailormap-viewer/)
+The quickest way to start the PostgreSQL database is to check out the Docker Compose stack in [tailormap-viewer](https://github.com/Tailormap/tailormap-viewer/)
 and start the `db` container. This opens a port on localhost:5432. If you already have your own 
 database running locally, create a database, user and password all set to `tailormap` to use that.
 Beware that Tailormap is only developed and supported with the PostgreSQL version from the Docker 
@@ -62,7 +62,7 @@ You can then point your browser at http://localhost:8080/swagger-ui/index.html t
 API as described by the OpenAPI specification and use the admin backend enabled by Spring Data REST
 at http://localhost:8080/api/admin/ if you have activated the `hal-explorer` Maven profile.
 
-The easiest way to see the API in action is to run the [tailormap-viewer](https://github.com/B3Partners/tailormap-viewer/)
+The easiest way to see the API in action is to run the [tailormap-viewer](https://github.com/Tailormap/tailormap-viewer/)
 frontends locally. These can be run with a webpack dev server which will reverse proxy a locally 
 running `tailormap-api` if you start the frontends with the `PROXY_USE_LOCALHOST=true` environment
 variable. Using the frontends you can also use the login form to use the admin APIs, open

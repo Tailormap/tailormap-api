@@ -16,16 +16,14 @@ jobs:
     permissions:
       packages: write
     steps:
-      - name: 'Older than 1 week'
+      - name: 'Older than 5 days'
         uses: dataaxiom/ghcr-cleanup-action@v1.0.8
         with:
-          dry-run: true
           token: ${{ secrets.GITHUB_TOKEN }}
           delete-untagged: true
-          keep-n-untagged: 2
           delete-ghost-images: true
           delete-partial-images: true
-          #          older-than: 5
+          older-than: 5
           log-level: debug
 
   stale:
