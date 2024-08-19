@@ -118,6 +118,8 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
     needs: build
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
