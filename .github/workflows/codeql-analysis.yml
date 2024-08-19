@@ -1,4 +1,4 @@
-name: "CodeQL"
+name: 'CodeQL'
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
@@ -23,7 +23,7 @@ on:
 
 jobs:
   analyze:
-    name: "CodeQL Analyze"
+    name: 'CodeQL Analyze'
     runs-on: ubuntu-latest
     # don't run on pull request merges to main from dependabot as these will always fail
     if: ${{ github.actor != 'dependabot[bot]' && github.ref == 'refs/heads/main' }}
@@ -38,7 +38,7 @@ jobs:
         language: [ 'java', 'javascript' ]
 
     steps:
-      - name: "Checkout repository"
+      - name: 'Checkout repository'
         uses: actions/checkout@v4
 
       - name: 'Set up JDK'
@@ -53,18 +53,18 @@ jobs:
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
 
-      - name: "Initialize CodeQL"
+      - name: 'Initialize CodeQL'
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
 
-      - name: "Build with Maven"
+      - name: 'Build with Maven'
         run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Dmaven.javadoc.skip=true -Ddocker.skip=true install
 
-      - name: "Perform CodeQL Analysis"
+      - name: 'Perform CodeQL Analysis'
         uses: github/codeql-action/analyze@v3
 
-      - name: "Cleanup cached snapshots"
+      - name: 'Cleanup cached snapshots'
         run: |
           find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}
 

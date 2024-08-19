@@ -4,7 +4,7 @@ env:
   MAVEN_OPTS: -Djava.awt.headless=true
   MAVEN_VERSION: '3.9.8'
 
-concurrency: # More info: https://stackoverflow.com/a/68422069/253468
+concurrency:
   group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
   cancel-in-progress: true
 
@@ -13,8 +13,8 @@ on:
 
 jobs:
   build:
-    name: Build w/ Java 17
-    runs-on: macos-13
+    name: 'Build w/ Java 17'
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -25,7 +25,7 @@ jobs:
           restore-keys: |
             setup-java-Linux-maven-
 
-      - name: Set up JDK
+      - name: 'Set up JDK'
         uses: actions/setup-java@v4
         with:
           java-version: 17
@@ -36,18 +36,18 @@ jobs:
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
 
-      - name: Priming build with Maven
+      - name: 'Priming build with Maven'
         run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true install
 
-      - name: Build with Maven
+      - name: 'Build with Maven'
         run: |
           mvn -B -fae -e test
 
-      - name: Upload coverage to Codecov
+      - name: 'Upload coverage to Codecov'
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Cleanup snapshots
+      - name: 'Cleanup snapshots'
         run: |
           find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}

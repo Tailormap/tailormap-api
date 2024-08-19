@@ -1,44 +1,36 @@
-name: "Cleanup and Maintainance"
+name: 'Cleanup and Maintainance'
 
 on:
   workflow_dispatch:
   schedule:
     - cron: "19 23 * * 1"
 
-concurrency: # More info: https://stackoverflow.com/a/68422069/253468
+concurrency:
   group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
   cancel-in-progress: true
 
 jobs:
   dockercleanup:
+    name: 'Pruning Untagged Images'
     runs-on: ubuntu-latest
-    name: "Pruning Untagged Images"
+    permissions:
+      packages: write
     steps:
-      - name: "Older than 1 week"
-        # https://github.com/marketplace/actions/ghcr-pruning
-        uses: vlaurin/action-ghcr-prune@v0.6.0
+      - name: 'Older than 1 week'
+        uses: dataaxiom/ghcr-cleanup-action@v1.0.8
         with:
-          token: ${{ secrets.GHCR_CLEANUP_PAT }}
-          organization: Tailormap
-          container: tailormap-api
-          dry-run: false
-          keep-younger-than: 7
-          keep-last: 1
-          prune-untagged: true
-      - name: "Older than 4 weeks"
-        uses: vlaurin/action-ghcr-prune@v0.6.0
-        with:
-          token: ${{ secrets.GHCR_CLEANUP_PAT }}
-          organization: Tailormap
-          container: tailormap-api
-          dry-run: false
-          keep-younger-than: 28
-          keep-last: 0
-          prune-untagged: true
+          dry-run: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          delete-untagged: true
+          keep-n-untagged: 2
+          delete-ghost-images: true
+          delete-partial-images: true
+          #          older-than: 5
+          log-level: debug
 
   stale:
     runs-on: ubuntu-latest
-    name: Close Stale PRs
+    name: 'Close Stale PRs'
     permissions:
       pull-requests: write
     steps:
@@ -49,13 +41,12 @@ jobs:
 
   workflows:
     runs-on: ubuntu-latest
-    name: Cleanup old workflow runs
+    name: 'Cleanup old workflow runs'
     steps:
-      - name: Delete workflow runs
+      - name: 'Delete workflow runs'
         uses: Mattraks/delete-workflow-runs@v2
         with:
           token: ${{ github.token }}
           repository: ${{ github.repository }}
-          # same as "Artifact and log retention" in https://github.com/Tailormap/tailormap-api/settings/actions
           retain_days: 90
           keep_minimum_runs: 2

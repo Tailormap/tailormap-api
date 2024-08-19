@@ -1,11 +1,10 @@
-name: Windows Maven build
+name: 'Windows Maven build'
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
   MAVEN_VERSION: '3.9.8'
 
 concurrency:
-  # More info: https://stackoverflow.com/a/68422069/253468
   group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
   cancel-in-progress: true
 
@@ -14,12 +13,12 @@ on:
 
 jobs:
   build:
-    name: Build w/ Java 17
+    name: 'Build w/ Java 17'
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: 'Set up JDK'
         uses: actions/setup-java@v4
         with:
           java-version: 17
@@ -31,19 +30,19 @@ jobs:
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
 
-      - name: Priming build
+      - name: 'Priming build'
         run: |
           mvn --% install -DskipTests -DskipITs -B -V -fae
 
-      - name: Test with Maven
+      - name: 'Test with Maven'
         run: |
           mvn --% -e -fae -B clean test
 
-      - name: Upload coverage to Codecov
+      - name: 'Upload coverage to Codecov'
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Cleanup build artifacts and snapshots
+      - name: 'Cleanup build artifacts and snapshots'
         run: |
           cmd --% /c for /f %i in ('dir /a:d /s /b %userprofile%\*SNAPSHOT*') do rd /s /q %i
