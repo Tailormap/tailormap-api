@@ -17,7 +17,7 @@ SPDX-License-Identifier: MIT
     <packaging>jar</packaging>
     <name>Tailormap API</name>
     <description>Tailormap API provides the backend for Tailormap</description>
-    <url>https://github.com/B3Partners/tailormap-api/</url>
+    <url>https://github.com/Tailormap/tailormap-api/</url>
     <inceptionYear>2021</inceptionYear>
     <organization>
         <name>B3Partners B.V.</name>
@@ -26,13 +26,13 @@ SPDX-License-Identifier: MIT
     <licenses>
         <license>
             <name>MIT License</name>
-            <url>https://raw.githubusercontent.com/B3Partners/tailormap-api/main/LICENSES/MIT.txt</url>
+            <url>https://raw.githubusercontent.com/Tailormap/tailormap-api/main/LICENSES/MIT.txt</url>
             <distribution>repo</distribution>
             <comments>For the tailormap-api code.</comments>
         </license>
         <license>
             <name>CC0-1.0</name>
-            <url>https://raw.githubusercontent.com/B3Partners/tailormap-api/main/LICENSES/CC0-1.0.txt</url>
+            <url>https://raw.githubusercontent.com/Tailormap/tailormap-api/main/LICENSES/CC0-1.0.txt</url>
             <distribution>repo</distribution>
             <comments>For the tailormap-api documentation.</comments>
         </license>
@@ -61,10 +61,10 @@ SPDX-License-Identifier: MIT
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:git@github.com:B3Partners/tailormap-api.git</connection>
-        <developerConnection>scm:git:git@github.com:B3Partners/tailormap-api.git</developerConnection>
+        <connection>scm:git:git@github.com:Tailormap/tailormap-api.git</connection>
+        <developerConnection>scm:git:git@github.com:Tailormap/tailormap-api.git</developerConnection>
         <tag>tailormap-api-11.3.4</tag>
-        <url>https://github.com/B3Partners/tailormap-api/</url>
+        <url>https://github.com/Tailormap/tailormap-api/</url>
     </scm>
     <issueManagement>
         <system>Jira</system>
@@ -72,7 +72,7 @@ SPDX-License-Identifier: MIT
     </issueManagement>
     <ciManagement>
         <system>Github Actions</system>
-        <url>https://github.com/B3Partners/tailormap-api/actions</url>
+        <url>https://github.com/Tailormap/tailormap-api/actions</url>
     </ciManagement>
     <distributionManagement>
         <repository>
@@ -1195,7 +1195,7 @@ SPDX-License-Identifier: MIT
                     <images>
                         <image>
                             <!-- deploy snapshot tag -->
-                            <name>${docker.deploy.repo}/b3partners/%a:snapshot</name>
+                            <name>${docker.deploy.repo}/tailormap/%a:snapshot</name>
                             <build>
                                 <dockerFile>${project.basedir}/Dockerfile</dockerFile>
                                 <args>
@@ -1465,7 +1465,7 @@ SPDX-License-Identifier: MIT
                             <imagePullPolicy>Always</imagePullPolicy>
                             <images>
                                 <image>
-                                    <name>${docker.deploy.repo}/b3partners/%a:%v</name>
+                                    <name>${docker.deploy.repo}/tailormap/%a:%v</name>
                                     <build>
                                         <dockerFile>${project.basedir}/Dockerfile</dockerFile>
                                         <tags>
@@ -1499,10 +1499,10 @@ SPDX-License-Identifier: MIT
                                     <verbose>true</verbose>
                                     <images>
                                         <image>
-                                            <name>${docker.deploy.repo}/b3partners/%a:%l</name>
+                                            <name>${docker.deploy.repo}/tailormap/%a:%l</name>
                                         </image>
                                         <image>
-                                            <name>${docker.deploy.repo}/b3partners/%a:latest</name>
+                                            <name>${docker.deploy.repo}/tailormap/%a:latest</name>
                                         </image>
                                     </images>
                                 </configuration>

@@ -4,8 +4,7 @@ env:
   MAVEN_OPTS: -Djava.awt.headless=true
   MAVEN_VERSION: '3.9.8'
 
-concurrency:
-  # More info: https://stackoverflow.com/a/68422069/253468
+concurrency: # More info: https://stackoverflow.com/a/68422069/253468
   group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
   cancel-in-progress: true
 

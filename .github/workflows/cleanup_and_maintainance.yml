@@ -5,8 +5,7 @@ on:
   schedule:
     - cron: "19 23 * * 1"
 
-concurrency:
-  # More info: https://stackoverflow.com/a/68422069/253468
+concurrency: # More info: https://stackoverflow.com/a/68422069/253468
   group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
   cancel-in-progress: true
 
@@ -20,7 +19,7 @@ jobs:
         uses: vlaurin/action-ghcr-prune@v0.6.0
         with:
           token: ${{ secrets.GHCR_CLEANUP_PAT }}
-          organization: B3Partners
+          organization: Tailormap
           container: tailormap-api
           dry-run: false
           keep-younger-than: 7
@@ -30,7 +29,7 @@ jobs:
         uses: vlaurin/action-ghcr-prune@v0.6.0
         with:
           token: ${{ secrets.GHCR_CLEANUP_PAT }}
-          organization: B3Partners
+          organization: Tailormap
           container: tailormap-api
           dry-run: false
           keep-younger-than: 28
@@ -57,6 +56,6 @@ jobs:
         with:
           token: ${{ github.token }}
           repository: ${{ github.repository }}
-          # same as "Artifact and log retention" in https://github.com/B3Partners/tailormap-api/settings/actions
+          # same as "Artifact and log retention" in https://github.com/Tailormap/tailormap-api/settings/actions
           retain_days: 90
           keep_minimum_runs: 2
