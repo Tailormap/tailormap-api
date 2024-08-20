@@ -18,7 +18,7 @@ networks:
 services:
   postgres:
     container_name: postgres
-    image: postgres:15-alpine
+    image: postgres:16-alpine
     environment:
       POSTGRES_USER: tailormap
       POSTGRES_PASSWORD: tailormap
@@ -37,7 +37,7 @@ services:
 
   postgis:
     container_name: postgis
-    image: docker.b3p.nl/b3partners/tailormap-data_postgis:snapshot
+    image: docker.b3p.nl/tailormap/tailormap-data_postgis:snapshot
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fa6efb5b-075b-4b7b-aab0-96108cd77e76}
       GEODATA_PASSWORD: ${GEODATA_PASSWORD:-980f1c8A-25933b2}
@@ -57,7 +57,7 @@ services:
 
   sqlserver:
     container_name: sqlserver
-    image: docker.b3p.nl/b3partners/tailormap-data_sqlserver:snapshot
+    image: docker.b3p.nl/tailormap/tailormap-data_sqlserver:snapshot
     environment:
       SA_PASSWORD: ${SA_PASSWORD:-fa6efb5b-075b-4b7b-aab0-96108cd77e76}
       GEODATA_PASSWORD: ${GEODATA_PASSWORD:-980f1c8A-25933b2}
@@ -78,7 +78,7 @@ services:
 
   oracle:
     container_name: oracle
-    image: docker.b3p.nl/b3partners/tailormap-data_oracle:snapshot
+    image: docker.b3p.nl/tailormap/tailormap-data_oracle:snapshot
     environment: # Note Oracle has default maximum password length of 16!
       ORACLE_PASSWORD: ${ORACLE_PASSWORD:-fa6efb5b-075b-4b}
       # this user is created in FREEPDB1, not in XE
