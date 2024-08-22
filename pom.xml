@@ -837,6 +837,7 @@ SPDX-License-Identifier: MIT
                             <generateSupportingFiles>false</generateSupportingFiles>
                             <generateModelTests>false</generateModelTests>
                             <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+                            <inlineSchemaNameMappings>GeoServiceSettings_layerSettings_value=GeoServiceLayerSettings</inlineSchemaNameMappings>
                         </configuration>
                     </execution>
                     <execution>

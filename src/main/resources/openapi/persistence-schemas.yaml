@@ -312,7 +312,9 @@ components:
             - $ref: '#/components/schemas/Tileset3DLayerSettings'
           default:
         layerSettings:
-          title: GeoServiceLayerSettings
+          # this appears to be broken since org.openapitools:openapi-generator-maven-plugin:7.8.0 / PR #913
+          # it generates a class named GeoServiceLayerSettingsValue instead of GeoServiceLayerSettings
+          # title: GeoServiceLayerSettings
           type: object
           additionalProperties:
             anyOf:
