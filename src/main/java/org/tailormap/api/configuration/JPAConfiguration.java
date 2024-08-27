@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @since 0.1
  */
 @Configuration
-@EnableJpaRepositories(basePackages = {"nl.b3p.tailormap.api.repository"})
-@EntityScan(basePackages = {"nl.b3p.tailormap.api.persistence"})
+@EnableJpaRepositories(basePackages = {"org.tailormap.api.repository"})
+@EntityScan(basePackages = {"org.tailormap.api.persistence"})
 @EnableTransactionManagement
 @Profile("!test")
 public class JPAConfiguration {

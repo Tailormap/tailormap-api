@@ -29,7 +29,7 @@ import org.tailormap.api.security.ApiSecurityConfiguration;
       ActuatorSecurityConfiguration.class,
       ApiSecurityConfiguration.class,
     })
-@ComponentScan(basePackages = {"nl.b3p.tailormap.api"})
+@ComponentScan(basePackages = {"org.tailormap.api"})
 @EnableWebMvc
 @ActiveProfiles("postgresql")
 public @interface PostgresIntegrationTest {}

@@ -53,9 +53,9 @@ You can run this application in various ways:
 - Running the docker image as a container
   ```shell
   # using the defaults
-  docker run --rm -it --name tailormap-api -h tailormap-api --network host ghcr.io/b3partners/tailormap-api:snapshot  
+  docker run --rm -it --name tailormap-api -h tailormap-api --network host ghcr.io/tailormap/tailormap-api:snapshot  
   # using a different database URL
-  docker run --rm -it --name tailormap-api -h tailormap-api -e "SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5433/tailormaps" --network host ghcr.io/b3partners/tailormap-api:snapshot
+  docker run --rm -it --name tailormap-api -h tailormap-api -e "SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5433/tailormaps" --network host ghcr.io/tailormap/tailormap-api:snapshot
   ```
 
 You can then point your browser at http://localhost:8080/swagger-ui/index.html to see the frontend 

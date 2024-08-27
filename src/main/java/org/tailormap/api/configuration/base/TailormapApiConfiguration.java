@@ -10,6 +10,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan(basePackages = "nl.b3p.tailormap.api")
+@ComponentScan(basePackages = "org.tailormap.api")
 @ConditionalOnExpression("${tailormap-api.static-only:false} == false")
 public class TailormapApiConfiguration {}

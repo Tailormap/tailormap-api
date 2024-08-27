@@ -9,7 +9,7 @@ package org.tailormap.api;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = {"nl.b3p.tailormap.api.configuration.base"})
+@SpringBootApplication(scanBasePackages = {"org.tailormap.api.configuration.base"})
 public class TailormapApiApplication {
   public static void main(String[] args) {
     SpringApplication.run(TailormapApiApplication.class, args);
