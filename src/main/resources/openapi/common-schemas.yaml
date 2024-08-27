@@ -131,7 +131,7 @@ components:
 
     TMAttributeType:
       description: 'data type. eg "date" or "string".
-          see also: nl.tailormap.api.persistence.TMAttributeDescriptor'
+          see also: org.tailormap.api.persistence.TMAttributeDescriptor'
       type: string
       enum:
         - geometry

@@ -53,9 +53,9 @@ You can run this application in various ways:
 - Running the docker image as a container
   ```shell
   # using the defaults
-  docker run --rm -it --name tailormap-api -h tailormap-api --network host ghcr.io/b3partners/tailormap-api:snapshot  
+  docker run --rm -it --name tailormap-api -h tailormap-api --network host ghcr.io/tailormap/tailormap-api:snapshot  
   # using a different database URL
-  docker run --rm -it --name tailormap-api -h tailormap-api -e "SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5433/tailormaps" --network host ghcr.io/b3partners/tailormap-api:snapshot
+  docker run --rm -it --name tailormap-api -h tailormap-api -e "SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5433/tailormaps" --network host ghcr.io/tailormap/tailormap-api:snapshot
   ```
 
 You can then point your browser at http://localhost:8080/swagger-ui/index.html to see the frontend 
@@ -128,7 +128,7 @@ Other Spring profiles are useful during development:
  the JPA entities. Rename the generated Flyway script to the correct version and give it a
  meaningful name. The script may need to be modified. If you need to migrate using Java code you can
  use a Flyway callback (executed before the entity manager is initialized) or add code to 
- [TailormapDatabaseMigration.java](src%2Fmain%2Fjava%2Fnl%2Fb3p%2Ftailormap%2Fapi%2Fconfiguration%2FTailormapDatabaseMigration.java) 
+ [TailormapDatabaseMigration.java](src%2Fmain%2Fjava%2Forg%2Ftailormap%2Fapi%2Fconfiguration%2FTailormapDatabaseMigration.java) 
  if you can use the entity manager after all SQL migrations.
 * **[dev](src%2Fmain%2Fresources%2Fapplication-dev.properties)**  
  Use during development to:
@@ -144,7 +144,7 @@ Other Spring profiles are useful during development:
   connects to spatial databases which can be started using Docker Compose (see
   [Spatial database stack](#spatial-database-stack)).  
   The class which loads the testdata is 
-  [PopulateTestData.java](src%2Fmain%2Fjava%2Fnl%2Fb3p%2Ftailormap%2Fapi%2Fconfiguration%2Fdev%2FPopulateTestData.java).
+  [PopulateTestData.java](src%2Fmain%2Fjava%2Forg%2Ftailormap%2Fapi%2Fconfiguration%2Fdev%2FPopulateTestData.java).
   The default admin username and password is `tm-admin` instead of randomly generated 
   as in the default profile, but you can change it if you expose your environment publicly by 
   specifying a property.
