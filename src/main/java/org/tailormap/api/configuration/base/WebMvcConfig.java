@@ -33,7 +33,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry
         .addResourceHandler("/*/index.html")
-        .addResourceLocations(resourceLocations.split(",")[0])
+        .addResourceLocations(resourceLocations.split(",", -1)[0])
         // no-cache means the browser must revalidate index.html with a conditional HTTP request
         // using If-Modified-Since. This is needed to always have the latest frontend loaded in the
         // browser after deployment of a new release.
@@ -42,24 +42,21 @@ public class WebMvcConfig implements WebMvcConfigurer {
         .addTransformer(indexHtmlTransformer);
     registry
         .addResourceHandler("/version.json")
-        .addResourceLocations(resourceLocations.split(",")[0])
+        .addResourceLocations(resourceLocations.split(",", -1)[0])
         .setCacheControl(CacheControl.noStore());
     registry
         .addResourceHandler("/**")
-        .addResourceLocations(resourceLocations.split(",")[0])
+        .addResourceLocations(resourceLocations.split(",", -1)[0])
         .resourceChain(true)
         .addResolver(new EncodedResourceResolver());
   }
 
   @Override
   public void addFormatters(@NonNull FormatterRegistry registry) {
-    //    List<Class<? extends Enum>> enums =
     List.of(GeoServiceProtocol.class)
         .forEach(
             enumClass ->
                 registry.addConverter(
                     String.class, enumClass, new CaseInsensitiveEnumConverter<>(enumClass)));
-    //    enums.forEach(enumClass -> registry.addConverter(String.class, enumClass,
-    //            new CaseInsensitiveEnumConverter<>(enumClass)));
   }
 }
