@@ -148,8 +148,9 @@ public class GeoServiceProxyController {
               "LEGEND_OPTIONS", "fontAntiAliasing:true;labelMargin:0;forceLabels:on");
           break;
         case MAPSERVER:
+        case AUTO:
+        default:
           // no special options
-          break;
       }
       if (null != request.getParameterMap().get("SCALE")) {
         legendURI =
