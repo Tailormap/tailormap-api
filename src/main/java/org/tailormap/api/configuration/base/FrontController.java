@@ -69,7 +69,7 @@ public class FrontController {
         String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);
         app = applicationRepository.findByName(defaultAppName);
       } else if (path.startsWith("/app/")) {
-        String[] parts = path.split("/");
+        String[] parts = path.split("/", -1);
         if (parts.length > 2) {
           String appName = UriUtils.decode(parts[2], StandardCharsets.UTF_8);
           app = applicationRepository.findByName(appName);

@@ -37,9 +37,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.persistence.SearchIndex;
 import org.tailormap.api.persistence.TMFeatureType;
-import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.repository.FeatureTypeRepository;
-import org.tailormap.api.repository.GeoServiceRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.viewer.model.ErrorResponse;
@@ -57,21 +55,15 @@ public class SolrAdminController {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
 
-  private final FeatureSourceRepository featureSourceRepository;
   private final FeatureTypeRepository featureTypeRepository;
-  private final GeoServiceRepository geoServiceRepository;
   private final SearchIndexRepository searchIndexRepository;
 
   public SolrAdminController(
       FeatureSourceFactoryHelper featureSourceFactoryHelper,
-      FeatureSourceRepository featureSourceRepository,
       FeatureTypeRepository featureTypeRepository,
-      GeoServiceRepository geoServiceRepository,
       SearchIndexRepository searchIndexRepository) {
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
-    this.featureSourceRepository = featureSourceRepository;
     this.featureTypeRepository = featureTypeRepository;
-    this.geoServiceRepository = geoServiceRepository;
     this.searchIndexRepository = searchIndexRepository;
   }
 
