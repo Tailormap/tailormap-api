@@ -1,10 +1,6 @@
 name: 'CodeQL'
 
-env:
-  MAVEN_OPTS: -Djava.awt.headless=true
-  MAVEN_VERSION: '3.9.8'
-
-concurrency: # More info: https://stackoverflow.com/a/68422069/253468
+concurrency:
   group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
   cancel-in-progress: true
 
@@ -24,47 +20,35 @@ on:
 jobs:
   analyze:
     name: 'CodeQL Analyze'
-    runs-on: ubuntu-latest
+    runs-on: 'ubuntu-latest'
     # don't run on pull request merges to main from dependabot as these will always fail
     if: ${{ github.actor != 'dependabot[bot]' && github.ref == 'refs/heads/main' }}
     permissions:
       security-events: write
       actions: read
       contents: read
+      packages: read
 
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'java', 'javascript' ]
+        include:
+        - language: java-kotlin
+          build-mode: none
+        - language: javascript-typescript
+          build-mode: none
 
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
 
-      - name: 'Set up JDK'
-        uses: actions/setup-java@v4
-        with:
-          java-version: 17
-          distribution: 'temurin'
-          cache: 'maven'
-
-      - name: 'Set up Maven'
-        uses: stCarolas/setup-maven@v5
-        with:
-          maven-version: ${{ env.MAVEN_VERSION }}
-
       - name: 'Initialize CodeQL'
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
-
-      - name: 'Build with Maven'
-        run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Dmaven.javadoc.skip=true -Ddocker.skip=true install
+          build-mode: ${{ matrix.build-mode }}
 
       - name: 'Perform CodeQL Analysis'
         uses: github/codeql-action/analyze@v3
-
-      - name: 'Cleanup cached snapshots'
-        run: |
-          find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}
-
+        with:
+          category: "/language:${{matrix.language}}"
