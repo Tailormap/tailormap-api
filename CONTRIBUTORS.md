@@ -1,6 +1,6 @@
 ## Contributors
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 _In chronological order_
@@ -17,6 +17,7 @@ _In chronological order_
       <td align="center" valign="top" width="16.66%"><a href="https://github.com/matthijsln"><img src="https://avatars.githubusercontent.com/u/1926261?v=4?s=100" width="100px;" alt="Matthijs"/><br /><sub><b>Matthijs</b></sub></a><br /><a href="https://github.com/Tailormap/tailormap-api/commits?author=matthijsln" title="Code">💻</a> <a href="#infra-matthijsln" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/Tailormap/tailormap-api/pulls?q=is%3Apr+reviewed-by%3Amatthijsln" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/Tailormap/tailormap-api/issues?q=author%3Amatthijsln" title="Bug reports">🐛</a> <a href="#maintenance-matthijsln" title="Maintenance">🚧</a></td>
       <td align="center" valign="top" width="16.66%"><a href="https://github.com/puckipedia"><img src="https://avatars.githubusercontent.com/u/488734?v=4?s=100" width="100px;" alt="puckipedia"/><br /><sub><b>puckipedia</b></sub></a><br /><a href="https://github.com/Tailormap/tailormap-api/commits?author=puckipedia" title="Code">💻</a></td>
       <td align="center" valign="top" width="16.66%"><a href="https://github.com/features/security"><img src="https://avatars.githubusercontent.com/u/27347476?v=4?s=100" width="100px;" alt="Dependabot"/><br /><sub><b>Dependabot</b></sub></a><br /><a href="#maintenance-dependabot" title="Maintenance">🚧</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/steinkobben"><img src="https://avatars.githubusercontent.com/u/93925365?v=4?s=100" width="100px;" alt="steinkobben"/><br /><sub><b>steinkobben</b></sub></a><br /><a href="https://github.com/Tailormap/tailormap-api/commits?author=steinkobben" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
