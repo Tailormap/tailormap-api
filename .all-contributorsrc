@@ -1,6 +1,6 @@
 {
   "projectName": "tailormap-api",
-  "projectOwner": "B3Partners",
+  "projectOwner": "Tailormap",
   "imageSize": 100,
   "repoType": "github",
   "commit": true,
@@ -36,7 +36,8 @@
         "code",
         "infra",
         "review",
-        "bug"
+        "bug",
+        "maintenance"
       ]
     },
     {
