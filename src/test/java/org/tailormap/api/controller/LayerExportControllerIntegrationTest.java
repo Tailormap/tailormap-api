@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
 
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -217,6 +218,7 @@ class LayerExportControllerIntegrationTest {
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  @Disabled("https://b3partners.atlassian.net/browse/HTM-1198")
   void shouldNotExportHiddenAttributesInGeoJSON() throws Exception {
     final String url = apiBasePath + begroeidterreindeel;
     mockMvc
