@@ -198,7 +198,7 @@ class LayerExportControllerIntegrationTest {
 
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @Ignore("https://b3partners.atlassian.net/browse/HTM-1198")
+  @Disabled("https://b3partners.atlassian.net/browse/HTM-1198")
   void shouldNotExportHiddenAttributesInGeoJSONWhenRequested() throws Exception {
     final String url = apiBasePath + begroeidterreindeel;
     mockMvc
