@@ -1,11 +1,11 @@
-name: Ubuntu Maven build
+name: 'Ubuntu Maven build'
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
   MAVEN_VERSION: '3.9.8'
 
-concurrency: # More info: https://stackoverflow.com/a/68422069/253468
-  group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-master-{0}', github.sha) || format('ci-master-{0}', github.ref) }}
+concurrency:
+  group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
   cancel-in-progress: true
 
 on:
@@ -19,12 +19,12 @@ on:
 
 jobs:
   build:
-    name: Build w/ Java 17
+    name: 'Build w/ Java 17'
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: 'Set up JDK'
         uses: actions/setup-java@v4
         with:
           java-version: 17
@@ -36,32 +36,32 @@ jobs:
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
 
-      - name: Priming build with Maven
+      - name: 'Priming build with Maven'
         run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true install
 
-      - name: Test with Maven
+      - name: 'Test with Maven'
         run: |
           mvn -B -fae -e test
 
-      - name: Upload coverage to Codecov
+      - name: 'Upload coverage to Codecov'
         uses: codecov/codecov-action@v4
         with:
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Build javadoc
+      - name: 'Build javadoc'
         run: mvn javadoc:javadoc
 
 
   postgresql-test:
-    name: PostgreSQL verify
+    name: 'PostgreSQL verify'
     runs-on: ubuntu-latest
     if: ${{ github.author != 'dependabot[bot]' }}
     needs: build
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: 'Set up JDK'
         uses: actions/setup-java@v4
         with:
           java-version: 17
@@ -83,7 +83,7 @@ jobs:
       - name: 'Setup testdata databases'
         run: ./build/ci/testdata-setup.sh
 
-      - name: Test PostgreSQL with Maven
+      - name: 'Test PostgreSQL with Maven'
         run: mvn -B -fae -e -DskipQA=true -Pqa-skip -Ddocker.skip=true -Ppostgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true
 
       - name: 'Upload test results'
@@ -94,7 +94,7 @@ jobs:
           path: |
             target/failsafe-reports/TEST-*.xml       
 
-      - name: Upload coverage to Codecov
+      - name: 'Upload coverage to Codecov'
         uses: codecov/codecov-action@v4
         with:
           verbose: true
@@ -106,7 +106,7 @@ jobs:
     name: "Event File"
     runs-on: ubuntu-latest
     steps:
-      - name: Upload
+      - name: 'Upload'
         uses: actions/upload-artifact@v4
         with:
           name: Event File
@@ -118,10 +118,12 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
     needs: build
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: 'Set up JDK'
         uses: actions/setup-java@v4
         with:
           java-version: 17
@@ -146,7 +148,7 @@ jobs:
 
 
   publish:
-    name: Deploy artifacts
+    name: 'Deploy artifacts'
     runs-on: ubuntu-latest
     needs: build
     permissions:
@@ -156,7 +158,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: 'Set up JDK'
         uses: actions/setup-java@v4
         with:
           java-version: 17
@@ -168,7 +170,7 @@ jobs:
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
 
-      - name: Build and Push
+      - name: 'Build and Push'
         # no need to run any QC or tests
         # note deploy will deploy both Maven artifact as well as Docker image
         env:
@@ -190,20 +192,20 @@ jobs:
 
 
   deploy:
-    name: Deploy stack
+    name: 'Deploy stack'
     runs-on: ubuntu-latest
     needs: publish
     permissions:
       actions: write
     if: ${{ github.ref == 'refs/heads/main' }}
     steps:
-      - name: Deploy compose stack
+      - name: 'Deploy compose stack'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GHCR_CLEANUP_PAT }}
           script: |
             await github.rest.actions.createWorkflowDispatch({
-              owner: 'B3Partners',
+              owner: 'tailormap',
               repo: 'tailormap-viewer',
               workflow_id: 'test-and-deploy.yml',
               ref: 'main'
@@ -211,7 +213,7 @@ jobs:
 
 
   docker-test:
-    name: Test docker image
+    name: 'Test docker image'
     runs-on: ubuntu-latest
     needs: build
     if: ${{ github.event_name == 'pull_request' }}
@@ -228,7 +230,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: 'Set up JDK'
         uses: actions/setup-java@v4
         with:
           java-version: 17
@@ -240,12 +242,12 @@ jobs:
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
 
-      - name: Build docker image
+      - name: 'Build docker image'
         run: mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip package
 
-      - name: Try Created Docker image
+      - name: 'Try Created Docker image'
         run: |
-          docker run -d --name tailormap-api -h tailormap-api --network host ghcr.io/b3partners/tailormap-api:snapshot
+          docker run -d --name tailormap-api -h tailormap-api --network host ghcr.io/tailormap/tailormap-api:snapshot
           sleep 60
           docker logs tailormap-api
           curl http://localhost:8080/api/actuator/health
@@ -253,7 +255,7 @@ jobs:
 
 
   cleanup:
-    name: Maven cache cleanup
+    name: 'Maven cache cleanup'
     if: ${{ always() }}
     needs: [ build, publish, postgresql-test ]
     runs-on: ubuntu-latest
@@ -265,6 +267,6 @@ jobs:
           restore-keys: |
             setup-java-Linux-maven-
 
-      - name: Cleanup snapshot cache
+      - name: 'Cleanup snapshot cache'
         run: |
           find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}

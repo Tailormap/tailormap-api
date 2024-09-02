@@ -4,7 +4,7 @@ Tailormap API provides the webserver and backend API for the Tailormap frontend.
 the Tailormap viewer and admin interfaces are written in Angular and developed in a separate
 repository.
 
-If you want to run Tailormap the best starting point is the [tailormap-viewer](https://github.com/B3Partners/tailormap-viewer/) 
+If you want to run Tailormap the best starting point is the [tailormap-viewer](https://github.com/Tailormap/tailormap-viewer/) 
 repository with the Angular frontends where you will find a Docker Compose stack which will run the 
 frontends, backend and PostgreSQL configuration database.
 
@@ -27,7 +27,7 @@ To build and run the project, you need to have the following installed:
 - Docker 20.10.x with buildx 0.9 or higher (this requirement may be skipped if you don't need to build
   the docker images or build release artifacts)
 
-The quickest way to start the PostgreSQL database is to check out the Docker Compose stack in [tailormap-viewer](https://github.com/B3Partners/tailormap-viewer/)
+The quickest way to start the PostgreSQL database is to check out the Docker Compose stack in [tailormap-viewer](https://github.com/Tailormap/tailormap-viewer/)
 and start the `db` container. This opens a port on localhost:5432. If you already have your own 
 database running locally, create a database, user and password all set to `tailormap` to use that.
 Beware that Tailormap is only developed and supported with the PostgreSQL version from the Docker 
@@ -53,16 +53,16 @@ You can run this application in various ways:
 - Running the docker image as a container
   ```shell
   # using the defaults
-  docker run --rm -it --name tailormap-api -h tailormap-api --network host ghcr.io/b3partners/tailormap-api:snapshot  
+  docker run --rm -it --name tailormap-api -h tailormap-api --network host ghcr.io/tailormap/tailormap-api:snapshot  
   # using a different database URL
-  docker run --rm -it --name tailormap-api -h tailormap-api -e "SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5433/tailormaps" --network host ghcr.io/b3partners/tailormap-api:snapshot
+  docker run --rm -it --name tailormap-api -h tailormap-api -e "SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5433/tailormaps" --network host ghcr.io/tailormap/tailormap-api:snapshot
   ```
 
 You can then point your browser at http://localhost:8080/swagger-ui/index.html to see the frontend 
 API as described by the OpenAPI specification and use the admin backend enabled by Spring Data REST
 at http://localhost:8080/api/admin/ if you have activated the `hal-explorer` Maven profile.
 
-The easiest way to see the API in action is to run the [tailormap-viewer](https://github.com/B3Partners/tailormap-viewer/)
+The easiest way to see the API in action is to run the [tailormap-viewer](https://github.com/Tailormap/tailormap-viewer/)
 frontends locally. These can be run with a webpack dev server which will reverse proxy a locally 
 running `tailormap-api` if you start the frontends with the `PROXY_USE_LOCALHOST=true` environment
 variable. Using the frontends you can also use the login form to use the admin APIs, open
@@ -128,7 +128,7 @@ Other Spring profiles are useful during development:
  the JPA entities. Rename the generated Flyway script to the correct version and give it a
  meaningful name. The script may need to be modified. If you need to migrate using Java code you can
  use a Flyway callback (executed before the entity manager is initialized) or add code to 
- [TailormapDatabaseMigration.java](src%2Fmain%2Fjava%2Fnl%2Fb3p%2Ftailormap%2Fapi%2Fconfiguration%2FTailormapDatabaseMigration.java) 
+ [TailormapDatabaseMigration.java](src%2Fmain%2Fjava%2Forg%2Ftailormap%2Fapi%2Fconfiguration%2FTailormapDatabaseMigration.java) 
  if you can use the entity manager after all SQL migrations.
 * **[dev](src%2Fmain%2Fresources%2Fapplication-dev.properties)**  
  Use during development to:
@@ -144,7 +144,7 @@ Other Spring profiles are useful during development:
   connects to spatial databases which can be started using Docker Compose (see
   [Spatial database stack](#spatial-database-stack)).  
   The class which loads the testdata is 
-  [PopulateTestData.java](src%2Fmain%2Fjava%2Fnl%2Fb3p%2Ftailormap%2Fapi%2Fconfiguration%2Fdev%2FPopulateTestData.java).
+  [PopulateTestData.java](src%2Fmain%2Fjava%2Forg%2Ftailormap%2Fapi%2Fconfiguration%2Fdev%2FPopulateTestData.java).
   The default admin username and password is `tm-admin` instead of randomly generated 
   as in the default profile, but you can change it if you expose your environment publicly by 
   specifying a property.

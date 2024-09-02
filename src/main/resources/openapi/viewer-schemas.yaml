@@ -148,6 +148,8 @@ components:
           type: number
           format: double
           nullable: true
+        searchIndex:
+          $ref: '#/components/schemas/LayerSearchIndex'
 
 
     LayerTreeNode:
@@ -220,6 +222,15 @@ components:
       required:
         - id
         - serviceId
+
+    LayerSearchIndex:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
 
     LayerExportCapabilities:
       type: object

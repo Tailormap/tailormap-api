@@ -28,15 +28,27 @@ components:
   schemas:
     GeoServiceProtocol:
       type: string
+      description: Note that the values are case-insensitive and that `proxiedlegend` is a pseudo-protocol for proxied legend requests.
       enum:
         - wms
         - wmts
         - xyz
         - Tileset3D
+        - proxiedlegend
+      # force the enum variable names to be uppercase without underscores
+      # see:
+      #  https://github.com/OpenAPITools/openapi-generator/issues/19086
+      #  https://github.com/OpenAPITools/openapi-generator/issues/19066
+      x-enum-varnames:
+        - WMS
+        - WMTS
+        - XYZ
+        - TILESET3D
+        - PROXIEDLEGEND
+
     TileLayerHiDpiMode:
       type: string
-      enum:
-        # Tiles are DPI-independent, for example an orthofoto - just show the next zoom level at
+      enum: # Tiles are DPI-independent, for example an orthofoto - just show the next zoom level at
         # high DPI.
         - showNextZoomLevel
         # Substitute a layer which renders features larger (using more pixels for lines, labels,
@@ -45,6 +57,14 @@ components:
         # Show the same zoomlevel of the substituted layer but set tilePixelRatio to 2: the layer
         # must be a 2x sized tile compared to the size in the capabilities
         - substituteLayerTilePixelRatioOnly
+      # force the enum variable names to be uppercase without underscores
+      # see:
+      #  https://github.com/OpenAPITools/openapi-generator/issues/19086
+      #  https://github.com/OpenAPITools/openapi-generator/issues/19066
+      x-enum-varnames:
+        - SHOWNEXTZOOMLEVEL
+        - SUBSTITUTELAYERSHOWNEXTZOOMLEVEL
+        - SUBSTITUTELAYERTILEPIXELRATIOONLY
 
     Bounds:
       description: 'Bounds without the context of a coordinate reference system'
@@ -111,7 +131,7 @@ components:
 
     TMAttributeType:
       description: 'data type. eg "date" or "string".
-          see also: nl.tailormap.api.persistence.TMAttributeDescriptor'
+          see also: org.tailormap.api.persistence.TMAttributeDescriptor'
       type: string
       enum:
         - geometry

@@ -1,12 +1,11 @@
-name: OWASP
+name: 'OWASP'
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
   MAVEN_VERSION: '3.9.8'
 
-concurrency:
-  # More info: https://stackoverflow.com/a/68422069/253468
-  group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-master-{0}', github.sha) || format('ci-master-{0}', github.ref) }}
+concurrency: # More info: https://stackoverflow.com/a/68422069/253468
+  group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
   cancel-in-progress: true
 
 on:
@@ -17,12 +16,16 @@ on:
 
 jobs:
   build:
-    name: Dependency Check
+    name: 'Dependency Check'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: 'Set up JDK'
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -34,18 +37,25 @@ jobs:
         with:
           maven-version: ${{ env.MAVEN_VERSION }}
 
-      - name: OWASP Dependency Check
+      - name: 'OWASP Dependency Check'
         continue-on-error: true
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: mvn -U package -DskipTests -DskipITs -Ddocker.skip=true org.owasp:dependency-check-maven:check -fae -B -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN -DfailBuildOnCVSS=5
 
-      - name: Upload result to GitHub Code Scanning
+      - name: 'Check sarif file existence'
+        id: check_files
+        uses: andstor/file-existence-action@v3
+        with:
+          files: 'target/dependency-check-report.sarif'
+
+      - name: 'Upload result to GitHub Code Scanning'
         uses: github/codeql-action/upload-sarif@v3
+        if: steps.check_files.outputs.files_exists == 'true'
         with:
           sarif_file: target/dependency-check-report.sarif
 
-      - name: Cleanup snapshots
+      - name: 'Cleanup snapshots'
         if: always()
         run: |
           find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}

@@ -8,8 +8,9 @@ currently being supported with security updates.
 | Version                   | Supported          |
 |---------------------------|--------------------|
 | `main` development branch | :green_check_mark: |
+| 11.4.x                    | :green_check_mark: |
 | 11.3.x                    | :green_check_mark: |
-| 11.2.x                    | :green_check_mark: |
+| 11.2.x                    | :x:                |
 | 11.1.x                    | :x:                |
 | 11.0.x                    | :x:                |
 | 10.0.x                    | :x:                |

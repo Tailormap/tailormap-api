@@ -4,15 +4,15 @@ name: Process Test Results
 
 on:
   workflow_run:
-    workflows: ["Ubuntu Maven build"]
+    workflows: [ 'Ubuntu Maven build' ]
     types:
       - completed
 
-permissions: {}
+permissions: { }
 
 jobs:
   test-results:
-    name: Process Test Results
+    name: 'Process Test Results'
     runs-on: ubuntu-latest
     if: github.event.workflow_run.conclusion != 'skipped'
 
@@ -24,13 +24,13 @@ jobs:
       actions: read
 
     steps:
-      - name: Download and Extract Artifacts
-        uses: dawidd6/action-download-artifact@bf251b5aa9c2f7eeb574a96ee720e24f801b7c11
+      - name: 'Download and Extract Artifacts'
+        uses: dawidd6/action-download-artifact@v6
         with:
           run_id: ${{ github.event.workflow_run.id }}
           path: artifacts
 
-      - name: Publish Test Results
+      - name: 'Publish Test Results'
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           commit: ${{ github.event.workflow_run.head_sha }}
