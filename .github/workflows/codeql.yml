@@ -4,6 +4,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
   cancel-in-progress: true
 
+env:
+  MAVEN_OPTS: -Djava.awt.headless=true
+  MAVEN_VERSION: '3.9.9'
+
 on:
   push:
     branches: [ main ]
@@ -41,6 +45,14 @@ jobs:
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
+
+      - name: 'Set up Maven'
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: ${{ env.MAVEN_VERSION }}
+
+      - name: 'Generate sources with Maven'
+        run: mvn generate-sources
 
       - name: 'Initialize CodeQL'
         uses: github/codeql-action/init@v3
