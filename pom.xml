@@ -355,6 +355,11 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
+            <artifactId>gt-api</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
             <artifactId>gt-main</artifactId>
             <version>${geotools.version}</version>
         </dependency>
@@ -613,6 +618,10 @@ SPDX-License-Identifier: MIT
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>3.1.1</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.8.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
