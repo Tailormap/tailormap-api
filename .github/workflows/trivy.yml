@@ -2,7 +2,7 @@ name: 'Trivy Security Scan'
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
-  MAVEN_VERSION: '3.9.8'
+  MAVEN_VERSION: '3.9.9'
 
 on: # use pull request so this workflow dos not fail when triggered by dependabot PR's
   pull_request:
