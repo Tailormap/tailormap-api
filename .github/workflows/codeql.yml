@@ -26,7 +26,7 @@ jobs:
     name: 'CodeQL Analyze'
     runs-on: 'ubuntu-latest'
     # don't run on pull request merges to main from dependabot as these will always fail
-    if: ${{ (github.actor != 'dependabot[bot]' && github.ref == 'refs/heads/main') }}
+    if: ${{ github.actor != 'dependabot[bot]' }}
     permissions:
       security-events: write
       actions: read
