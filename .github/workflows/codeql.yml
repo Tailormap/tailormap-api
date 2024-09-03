@@ -46,6 +46,12 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
 
+      - name: 'Set up JDK'
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+
       - name: 'Set up Maven'
         uses: stCarolas/setup-maven@v5
         with:
