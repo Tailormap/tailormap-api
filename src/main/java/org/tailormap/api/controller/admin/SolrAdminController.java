@@ -186,6 +186,8 @@ public class SolrAdminController {
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Feature type not found"));
 
     if (TMFeatureSource.Protocol.WFS.equals(indexingFT.getFeatureSource().getProtocol())) {
+      // the search index should not exist for WFS feature types, but just in case
+      searchIndex.setStatus(SearchIndex.Status.ERROR).setComment("WFS indexing not supported");
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Layer does not have valid feature type for indexing");
     }
