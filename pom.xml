@@ -105,8 +105,8 @@ SPDX-License-Identifier: MIT
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <!-- solr and jetty versions may need to match to prevent errors such as
         Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener -->
-        <jetty.version>10.0.20</jetty.version>
-        <solr.version>9.6.1</solr.version>
+        <jetty.version>10.0.22</jetty.version>
+        <solr.version>9.7.0</solr.version>
         <!--
         Spring Boot version overrides.
         See org.springframework.boot:spring-boot-dependencies
