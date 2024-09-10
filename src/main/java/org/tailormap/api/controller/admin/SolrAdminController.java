@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.persistence.SearchIndex;
+import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.repository.FeatureTypeRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
@@ -149,6 +150,16 @@ public class SolrAdminController {
                   @Schema(
                       example = "{\"message\":\"Layer does not have feature type\",\"code\":404}")))
   @ApiResponse(
+      responseCode = "404",
+      description = "Indexing WFS feature types is not supported",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema =
+                  @Schema(
+                      example =
+                          "{\"message\":\"Layer does not have valid feature type for indexing\",\"code\":400}")))
+  @ApiResponse(
       responseCode = "500",
       description = "Error while indexing",
       content =
@@ -173,6 +184,11 @@ public class SolrAdminController {
             .findById(searchIndex.getFeatureTypeId())
             .orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Feature type not found"));
+
+    if (TMFeatureSource.Protocol.WFS.equals(indexingFT.getFeatureSource().getProtocol())) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Layer does not have valid feature type for indexing");
+    }
 
     boolean createNewIndex =
         (null == searchIndex.getLastIndexed()
