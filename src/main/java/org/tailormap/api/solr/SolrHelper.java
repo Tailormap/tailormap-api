@@ -190,7 +190,10 @@ public class SolrHelper implements AutoCloseable, Constants {
           docsBatch.clear();
         }
       }
+    } finally {
+      if (fs.getDataStore() != null) fs.getDataStore().dispose();
     }
+
     if (!docsBatch.isEmpty()) {
       updateResponse = solrClient.addBeans(docsBatch);
       logger.info("Added last {} documents of {} to index", docsBatch.size(), total);
