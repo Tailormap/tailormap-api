@@ -258,8 +258,8 @@ public class SolrHelper implements AutoCloseable, Constants {
     if (null == solrQuery || solrQuery.isBlank()) {
       solrQuery = "*";
     }
-    // TODO We could escape special/syntax characters, but that also prevents using keys like ~ and
-    // *
+    // TODO We could escape special/syntax characters, but that also prevents using
+    //      keys like ~ and *
     // solrQuery = ClientUtils.escapeQueryChars(solrQuery);
 
     final SolrQuery query =

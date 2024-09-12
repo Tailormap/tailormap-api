@@ -14,16 +14,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.NoSuchElementException;
-import java.util.concurrent.TimeUnit;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.ConcurrentUpdateHttp2SolrClient;
-import org.apache.solr.client.solrj.impl.Http2SolrClient;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.apache.solr.common.SolrException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,31 +37,29 @@ import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.repository.FeatureTypeRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.solr.SolrHelper;
+import org.tailormap.api.solr.SolrService;
 import org.tailormap.api.viewer.model.ErrorResponse;
 
 /** Admin controller for Solr. */
 @RestController
 public class SolrAdminController {
-  @Value("${tailormap-api.solr-url}")
-  private String solrUrl;
-
-  @Value("${tailormap-api.solr-core-name:tailormap}")
-  private String solrCoreName;
-
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
 
   private final FeatureTypeRepository featureTypeRepository;
   private final SearchIndexRepository searchIndexRepository;
+  private final SolrService solrService;
 
   public SolrAdminController(
       FeatureSourceFactoryHelper featureSourceFactoryHelper,
       FeatureTypeRepository featureTypeRepository,
-      SearchIndexRepository searchIndexRepository) {
+      SearchIndexRepository searchIndexRepository,
+      SolrService solrService) {
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
     this.featureTypeRepository = featureTypeRepository;
     this.searchIndexRepository = searchIndexRepository;
+    this.solrService = solrService;
   }
 
   /**
@@ -92,7 +86,7 @@ public class SolrAdminController {
       path = "${tailormap-api.admin.base-path}/index/ping",
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> pingSolr() {
-    try (SolrClient solrClient = getSolrClient()) {
+    try (SolrClient solrClient = solrService.getSolrClientForSearching()) {
       final SolrPingResponse ping = solrClient.ping();
       logger.info("Solr ping status {}", ping.getResponse().get("status"));
       return ResponseEntity.ok(
@@ -109,24 +103,6 @@ public class SolrAdminController {
                   .message(e.getLocalizedMessage())
                   .code(HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
-  }
-
-  /**
-   * Get a concurrent update Solr client for bulk operations.
-   *
-   * @return the Solr client
-   */
-  private SolrClient getSolrClient() {
-    return new ConcurrentUpdateHttp2SolrClient.Builder(
-            solrUrl + solrCoreName,
-            new Http2SolrClient.Builder()
-                .withFollowRedirects(true)
-                .withConnectionTimeout(10000, TimeUnit.MILLISECONDS)
-                .withRequestTimeout(60000, TimeUnit.MILLISECONDS)
-                .build())
-        .withQueueSize(SolrHelper.SOLR_BATCH_SIZE * 2)
-        .withThreadCount(10)
-        .build();
   }
 
   /**
@@ -195,7 +171,7 @@ public class SolrAdminController {
     boolean createNewIndex =
         (null == searchIndex.getLastIndexed()
             || searchIndex.getStatus() == SearchIndex.Status.INITIAL);
-    try (SolrClient solrClient = getSolrClient();
+    try (SolrClient solrClient = solrService.getSolrClientForIndexing();
         SolrHelper solrHelper = new SolrHelper(solrClient)) {
       solrHelper.addFeatureTypeIndex(searchIndex, indexingFT, featureSourceFactoryHelper);
       searchIndexRepository.save(searchIndex);
@@ -244,7 +220,7 @@ public class SolrAdminController {
       produces = MediaType.APPLICATION_JSON_VALUE)
   @Transactional
   public ResponseEntity<?> clearIndex(@PathVariable Long searchIndexId) {
-    try (SolrClient solrClient = getSolrClient();
+    try (SolrClient solrClient = solrService.getSolrClientForSearching();
         SolrHelper solrHelper = new SolrHelper(solrClient)) {
       solrHelper.clearIndexForLayer(searchIndexId);
       // do not delete the SearchIndex metadata object

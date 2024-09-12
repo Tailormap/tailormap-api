@@ -19,9 +19,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.concurrent.TimeUnit;
-import org.apache.solr.client.solrj.impl.ConcurrentUpdateHttp2SolrClient;
-import org.apache.solr.client.solrj.impl.Http2SolrClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,6 +74,7 @@ import org.tailormap.api.repository.UploadRepository;
 import org.tailormap.api.repository.UserRepository;
 import org.tailormap.api.security.InternalAdminAuthentication;
 import org.tailormap.api.solr.SolrHelper;
+import org.tailormap.api.solr.SolrService;
 import org.tailormap.api.viewer.model.AppStyling;
 import org.tailormap.api.viewer.model.Component;
 import org.tailormap.api.viewer.model.ComponentConfig;
@@ -107,15 +105,13 @@ public class PopulateTestData {
   @Value("${MAP5_URL:#{null}}")
   private String map5url;
 
-  @Value("${tailormap-api.solr-core-name:tailormap}")
-  private String solrCoreName;
-
   private final ApplicationContext appContext;
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
   private final CatalogRepository catalogRepository;
   private final GeoServiceRepository geoServiceRepository;
   private final GeoServiceHelper geoServiceHelper;
+  private final SolrService solrService;
 
   private final FeatureSourceRepository featureSourceRepository;
   private final ApplicationRepository applicationRepository;
@@ -131,6 +127,7 @@ public class PopulateTestData {
       CatalogRepository catalogRepository,
       GeoServiceRepository geoServiceRepository,
       GeoServiceHelper geoServiceHelper,
+      SolrService solrService,
       FeatureSourceRepository featureSourceRepository,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository,
@@ -143,6 +140,7 @@ public class PopulateTestData {
     this.catalogRepository = catalogRepository;
     this.geoServiceRepository = geoServiceRepository;
     this.geoServiceHelper = geoServiceHelper;
+    this.solrService = solrService;
     this.featureSourceRepository = featureSourceRepository;
     this.applicationRepository = applicationRepository;
     this.configurationRepository = configurationRepository;
@@ -1344,24 +1342,9 @@ public class PopulateTestData {
       logger.info("Creating Solr index");
       @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
       final String solrUrl =
-          "http://"
-              + (connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "solr")
-              + ":8983/solr/"
-              + solrCoreName;
-      SolrHelper solrHelper =
-          new SolrHelper(
-              new ConcurrentUpdateHttp2SolrClient.Builder(
-                      solrUrl,
-                      new Http2SolrClient.Builder()
-                          .useHttp1_1(true)
-                          .withFollowRedirects(true)
-                          .withConnectionTimeout(10000, TimeUnit.MILLISECONDS)
-                          .withRequestTimeout(60000, TimeUnit.MILLISECONDS)
-                          .build())
-                  .withQueueSize(SolrHelper.SOLR_BATCH_SIZE * 2)
-                  .withThreadCount(10)
-                  .build());
-
+          "http://" + (connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "solr") + ":8983/solr/";
+      this.solrService.setSolrUrl(solrUrl);
+      SolrHelper solrHelper = new SolrHelper(this.solrService.getSolrClientForIndexing());
       GeoService geoService = geoServiceRepository.findById("snapshot-geoserver").orElseThrow();
       Application defaultApp = applicationRepository.findByName("default");
 
