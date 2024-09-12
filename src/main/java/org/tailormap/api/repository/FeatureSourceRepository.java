@@ -51,4 +51,14 @@ public interface FeatureSourceRepository extends JpaRepository<TMFeatureSource, 
   @PreAuthorize("permitAll()")
   @Query("from TMFeatureSource fs where id not in :ids")
   List<TMFeatureSource> getAllExcludingIds(@Param("ids") List<Long> ids);
+
+  /**
+   * Find a feature-source by title. This is a non-deterministic operation since the title is not
+   * unique. Useful for testing.
+   *
+   * @param title The title of the feature-source
+   * @return The feature-source
+   */
+  @PreAuthorize(value = "permitAll()")
+  Optional<TMFeatureSource> getByTitle(String title);
 }
