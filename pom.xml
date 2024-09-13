@@ -1259,6 +1259,7 @@ SPDX-License-Identifier: MIT
                     <generateSitemap>true</generateSitemap>
                     <attach>false</attach>
                     <outputEncoding>${project.build.sourceEncoding}</outputEncoding>
+                    <relativizeSiteLinks>false</relativizeSiteLinks>
                 </configuration>
                 <dependencies>
                     <dependency>
