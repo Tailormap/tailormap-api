@@ -246,12 +246,12 @@ components:
           minLength: 0
           items:
             $ref: './viewer-schemas.yaml#/components/schemas/ColumnMetadata'
-      example:
-        total: 400
-        page: 5
-        pageSize: 100
-        features: [ ]
-        columnMetadata: [ ]
+      examples:
+        - total: 400
+          page: 5
+          pageSize: 100
+          features: [ ]
+          columnMetadata: [ ]
 
     UniqueValuesResponse:
       description: 'A -possibly empty- list of unique values of the requested attributes.'
@@ -271,9 +271,9 @@ components:
           # so allow any non-null value, we don't need to worry about mixed types as the data comes from a
           # typed datasource (database table or WFS)
           items: { }
-      example:
-        filterApplied: false
-        values: [ "value 1", "value 2" ]
+      examples:
+        - filterApplied: false
+          values: [ "value 1", "value 2" ]
 
     SearchResponse:
       description: 'A -possibly empty- list of search documents that fulfill the requested conditions and some metadata.'
@@ -302,10 +302,11 @@ components:
           minLength: 0
           items:
             $ref: '#/components/schemas/SearchDocument'
-      example: { "total": 2,
-                 "start": 10,
-                 "maxScore": null,
-                 "documents": [ { "fid": "fid1","geometry": "POINT(1 2)","displayValues": [ "value 1","value 2" ] } ] }
+      examples:
+        - { "total": 2,
+            "start": 10,
+            "maxScore": null,
+            "documents": [ { "fid": "fid1","geometry": "POINT(1 2)","displayValues": [ "value 1","value 2" ] } ] }
 
     SearchDocument:
       description: 'A search result document'
@@ -326,9 +327,10 @@ components:
             - 'null'
           items:
             type: string
-      example: { "fid": "fid1",
-                 "geometry": "POINT(1 2)",
-                 "displayValues": [ "value 1", "value 2" ] }
+      examples:
+        - { "fid": "fid1",
+            "geometry": "POINT(1 2)",
+            "displayValues": [ "value 1", "value 2" ] }
 
 
 paths:
@@ -376,7 +378,8 @@ paths:
               schema:
                 type: string
                 # TODO need to set 'SameSite' and 'Secure'
-                example: JSESSIONID=abcde12345; Path=/; HttpOnly
+                examples:
+                  - JSESSIONID=abcde12345; Path=/; HttpOnly
         '403':
           description: 'Authentication failed'
   /login/configuration:
@@ -1029,9 +1032,9 @@ paths:
           additionalProperties: true
         style: form
         explode: true
-        example:
-          LAYER: mylayer
-          BBOX: 1,2,3,4
+        examples:
+          - LAYER: mylayer
+            BBOX: 1,2,3,4
     get:
       operationId: 'proxy'
       description: 'Proxy a WMS/WMTS request to a map service. Useful for accessing a map service requiring authentication
@@ -1094,9 +1097,9 @@ paths:
               description: OGC and vendor-specific parameters too large for the URL.
               type: object
               additionalProperties: true
-              example:
-                CQL_FILTER: INTERSECTS(geom, BUFFER(POINT(1 2), 10))
-                SLD_BODY: ...
+              examples:
+                - CQL_FILTER: INTERSECTS(geom, BUFFER(POINT(1 2), 10))
+                  SLD_BODY: ...
       responses:
         '200':
           description: 'OK'

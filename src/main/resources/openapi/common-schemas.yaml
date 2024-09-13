@@ -94,11 +94,11 @@ components:
         - minx
         - maxy
         - maxx
-      example:
-        miny: 400000
-        minx: 105000
-        maxy: 530000
-        maxx: 275000
+      examples:
+        - miny: 400000
+          minx: 105000
+          maxy: 530000
+          maxx: 275000
 
     # XXX: currently unused
     BoundsWithCRS:
@@ -111,12 +111,12 @@ components:
             crs:
               description: '(EPSG) code of the projection'
               type: string
-      example:
-        miny: 400000
-        minx: 105000
-        maxy: 530000
-        maxx: 275000
-        crs: 'EPSG:28992'
+      examples:
+        - miny: 400000
+          minx: 105000
+          maxy: 530000
+          maxx: 275000
+          crs: 'EPSG:28992'
 
     TMGeometryType:
       type: string

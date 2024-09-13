@@ -38,10 +38,10 @@ components:
           description: 'redirect url'
           type: string
           default: '/login'
-      example:
-        code: 401
-        message: 'login required'
-        url: '/login'
+      examples:
+        - code: 401
+          message: 'login required'
+          url: '/login'
 
 
     ErrorResponse:
@@ -61,6 +61,6 @@ components:
           description: 'diagnostic message'
           type: string
           default: 'Internal server error'
-      example:
-        code: 500
-        message: 'Internal server error'
+      examples:
+        - code: 500
+          message: 'Internal server error'

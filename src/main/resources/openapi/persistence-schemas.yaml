@@ -233,8 +233,8 @@ components:
           type: object
           additionalProperties:
             type: string
-            example:
-              connectionOptions: ';encrypt=false'
+            examples:
+              - connectionOptions: ';encrypt=false'
 
     FeatureTypeSettings:
       required:
@@ -321,13 +321,13 @@ components:
               - $ref: '#/components/schemas/WMTSLayerSettings'
               - $ref: '#/components/schemas/XYZLayerSettings'
               - $ref: '#/components/schemas/Tileset3DLayerSettings'
-          example:
-            'begroeidterreindeel':
-              title: laag 1
-            'begroeidterreindeel_2':
-              title: laag 2
-            'otherLayer':
-              hiDpiDisabled: true
+          examples:
+            - 'begroeidterreindeel':
+                title: laag 1
+            - 'begroeidterreindeel_2':
+                title: laag 2
+            - 'otherLayer':
+                hiDpiDisabled: true
         xyzCrs:
           type:
             - string
