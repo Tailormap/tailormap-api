@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MIT
 #
-openapi: 3.0.3
+openapi: 3.1.0
 
 info:
   title: 'persistence-schemas'
@@ -17,12 +17,12 @@ components:
   schemas:
     AuthorizationRuleDecision:
       type: string
-      enum: ['allow', 'deny']
+      enum: [ 'allow', 'deny' ]
 
     AuthorizationRule:
       description: A single authorization rule.
       type: object
-      required: ['groupName', 'decisions']
+      required: [ 'groupName', 'decisions' ]
       properties:
         groupName:
           description: Name of the group.
@@ -57,7 +57,7 @@ components:
             properties:
               kind:
                 type: string
-                enum: ['geo-service', 'feature-source', 'app']
+                enum: [ 'geo-service', 'feature-source', 'app' ]
               id:
                 type: string
 
@@ -66,7 +66,7 @@ components:
       properties:
         corsAllowOrigin:
           description: Value of the 'Access-Control-Allow-Origin' header from the GetCapabilities request. This may be
-            null when it wasn't returned (no CORS support), '*' when CORS is enabled for all origins, or contain a 
+            null when it wasn't returned (no CORS support), '*' when CORS is enabled for all origins, or contain a
             specific origin (usually when credentials are used).
           type: string
         serviceInfo:
@@ -189,8 +189,9 @@ components:
         defaultValue:
           description: 'Default value for this attribute. It can be coerced to the type of the
             attribute using the `type` field.'
-          nullable: true
-          type: string
+          type:
+            - string
+            - 'null'
 
 
     ServiceAuthentication:
@@ -217,7 +218,6 @@ components:
           type: string
         port:
           type: integer
-          nullable: false
         host:
           type: string
         schema:
@@ -284,11 +284,9 @@ components:
             - disabled
             - geoserver
             - mapserver
-          nullable: false
           default: auto
         useProxy:
           type: boolean
-          nullable: false
           default: false
         publishing:
           title: ServicePublishingSettings
@@ -311,8 +309,7 @@ components:
             - $ref: '#/components/schemas/WMTSLayerSettings'
             - $ref: '#/components/schemas/Tileset3DLayerSettings'
           default:
-        layerSettings:
-          # this appears to be broken since org.openapitools:openapi-generator-maven-plugin:7.8.0 / PR #913
+        layerSettings: # this appears to be broken since org.openapitools:openapi-generator-maven-plugin:7.8.0 / PR #913
           # it generates a class named GeoServiceLayerSettingsValue instead of GeoServiceLayerSettings
           # title: GeoServiceLayerSettings
           type: object
@@ -331,63 +328,69 @@ components:
             'otherLayer':
               hiDpiDisabled: true
         xyzCrs:
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
 
     LayerSettings:
       description: Settings applying to any kind of layer of a GeoService.
       properties:
         title:
           description: Override default title, null if not overridden.
-          nullable: true
-          type: string
+          type:
+            - string
+            - 'null'
         hiDpiDisabled:
-          nullable: true
-          type: boolean
+          type:
+            - boolean
+            - 'null'
         featureType:
           $ref: '#/components/schemas/FeatureTypeRef'
         attribution:
           description: 'Attribution to show for this layer.'
-          nullable: true
-          type: string
+          type:
+            - string
+            - 'null'
         description:
           description: 'Description to show for this layer.'
-          nullable: true
-          type: string
+          type:
+            - string
+            - 'null'
         legendImageId:
           description: 'ID of uploaded legend image'
-          nullable: true
-          type: string
+          type:
+            - string
+            - 'null'
         authorizationRules:
           type: array
           items:
             $ref: '#/components/schemas/AuthorizationRule'
 
     FeatureTypeRef:
-      required: [featureSourceId, featureTypeName]
+      required: [ featureSourceId, featureTypeName ]
       properties:
         featureSourceId:
           type: integer
           format: int64
-          nullable: false
         featureTypeName:
           type: string
-          nullable: false
 
     WMSLayerSettings:
       description: Settings applying to a WMS layer.
       allOf:
         - $ref: '#/components/schemas/LayerSettings'
         - type: object
-          required: [tilingDisabled, tilingGutter]
+          required: [ tilingDisabled, tilingGutter ]
           properties:
             tilingDisabled:
-              nullable: true
-              type: boolean
+              type:
+                - boolean
+                - 'null'
               default: false
             tilingGutter:
-              nullable: true
-              type: integer
+              type:
+                - integer
+                - 'null'
               # TODO: set global default here or in frontend?
 
     WMTSLayerSettings:
@@ -399,9 +402,10 @@ components:
             hiDpiMode:
               $ref: './common-schemas.yaml#/components/schemas/TileLayerHiDpiMode'
             hiDpiSubstituteLayer:
-              nullable: true
               description: Layer name of this service to substitute when rendering at high dpi.
-              type: string
+              type:
+                - string
+                - 'null'
 
     XYZLayerSettings:
       description: Settings applying to a XYZ layer.
@@ -410,27 +414,32 @@ components:
         - type: object
           properties:
             minZoom:
-              nullable: true
-              type: integer
               description: minZoom property of OpenLayers XYZ source
+              type:
+                - integer
+                - 'null'
             maxZoom:
-              nullable: true
-              type: integer
               description: maxZoom property of OpenLayers XYZ source
+              type:
+                - integer
+                - 'null'
             tileSize:
-              nullable: true
-              type: integer
               description: 'tile size property of OpenLayers XYZ source'
+              type:
+                - integer
+                - 'null'
             tileGridExtent:
-              nullable: true
-              $ref: './common-schemas.yaml#/components/schemas/Bounds'
               description: 'tile grid bounds property of OpenLayers XYZ source'
+              anyOf:
+                - $ref: './common-schemas.yaml#/components/schemas/Bounds'
+                - type: 'null'
             hiDpiMode:
               $ref: './common-schemas.yaml#/components/schemas/TileLayerHiDpiMode'
             hiDpiSubstituteLayer:
-              nullable: true
               description: Alternate URL template to use when rendering at high dpi (using 'layer' instead of 'url' in the name for ease of use).
-              type: string
+              type:
+                - string
+                - 'null'
 
     Tileset3DLayerSettings:
       description: Settings applying to a 3D Tileset layer.
@@ -439,7 +448,7 @@ components:
 
     GeoServiceLayer:
       description: Layer of a service which can be an OGC WMS/WMTS service or from XYZ/ArcGIS REST.
-      required: [id, name, root, virtual, children]
+      required: [ id, name, root, virtual, children ]
       properties:
         id:
           type: string
@@ -453,7 +462,7 @@ components:
           type: string
         virtual:
           type: boolean
-          description: A virtual layer has no name and can't be used in GetMap requests and is only used for tree 
+          description: A virtual layer has no name and can't be used in GetMap requests and is only used for tree
             structure.
         maxScale:
           type: number
@@ -479,8 +488,7 @@ components:
           type: string
         children:
           type: array
-          items:
-            # layer name
+          items: # layer name
             type: string
 
     AppTreeNode:
@@ -534,14 +542,12 @@ components:
           type: string
         layerName:
           type: string
-          nullable: false
         description:
           description: Description for this node entered by application admin.
           type: string
         visible:
           type: boolean
           description: Whether this layer should be shown on the map on startup.
-          nullable: false
           default: true
       required:
         - serviceId
@@ -576,31 +582,36 @@ components:
     AppLayerSettings:
       properties:
         title:
-          nullable: true
-          type: string
+          type:
+            - string
+            - 'null'
         opacity:
           type: integer
-          nullable: false
           default: 100
         attribution:
           description: 'Attribution to show for this layer.'
-          nullable: true
-          type: string
+          type:
+            - string
+            - 'null'
         description:
           description: 'Description to show for this layer.'
-          nullable: true
-          type: string
+          type:
+            - string
+            - 'null'
         editable:
-          type: boolean
-          nullable: true
+          type:
+            - boolean
+            - 'null'
           default: false
         formId:
-          type: integer
-          nullable: true
+          type:
+            - integer
+            - 'null'
           format: int64
         searchIndexId:
-          type: integer
-          nullable: true
+          type:
+            - integer
+            - 'null'
           format: int64
         hideAttributes:
           description: List of attribute names that should be hidden (in addition to attributes already hidden by the
@@ -616,9 +627,10 @@ components:
             type: string
         autoRefreshInSeconds:
           description: Auto refresh layer in seconds
-          type: number
+          type:
+            - number
+            - 'null'
           format: double
-          nullable: true
         # TODO add properties for selected WMS style, feature info popup template, etc.
 
     FormOptions:
@@ -636,9 +648,7 @@ components:
       properties:
         key:
           type: string
-          nullable: false
         isPublic:
           type: boolean
-          nullable: false
         value:
           type: object

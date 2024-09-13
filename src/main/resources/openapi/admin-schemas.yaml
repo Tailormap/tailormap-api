@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MIT
 #
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: 'admin-models'
   description: 'Tailormap admin API models'
@@ -22,7 +22,7 @@ components:
         eventType:
           type: string
           description: 'Type of event'
-          enum: ['keep-alive', 'entity-created', 'entity-deleted', 'entity-updated']
+          enum: [ 'keep-alive', 'entity-created', 'entity-deleted', 'entity-updated' ]
         details:
           type: object
 

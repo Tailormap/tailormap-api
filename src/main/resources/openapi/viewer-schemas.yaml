@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MIT
 #
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: 'models'
   description: 'Tailormap API models has all the models for the Tailormap API.'
@@ -36,12 +36,14 @@ components:
           example: PROJCS["Amersfoort / RD New", GEOGCS["Amersfoort", DATUM["Amersfoort", SPHEROID["Bessel 1841", 6377397.155, 299.1528128, AUTHORITY["EPSG","7004"]], TOWGS84[565.2369, 50.0087, 465.658, -0.40685733032239757, -0.3507326765425626, 1.8703473836067956, 4.0812], AUTHORITY["EPSG","6289"]], PRIMEM["Greenwich", 0.0, AUTHORITY["EPSG","8901"]], UNIT["degree", 0.017453292519943295], AXIS["Geodetic latitude", NORTH], AXIS["Geodetic longitude", EAST], AUTHORITY["EPSG","4289"]], PROJECTION["Oblique_Stereographic", AUTHORITY["EPSG","9809"]], PARAMETER["central_meridian", 5.387638888888891], PARAMETER["latitude_of_origin", 52.15616055555556], PARAMETER["scale_factor", 0.9999079], PARAMETER["false_easting", 155000.0], PARAMETER["false_northing", 463000.0], UNIT["m", 1.0], AXIS["Easting", EAST], AXIS["Northing", NORTH], AUTHORITY["EPSG","28992"]]
         bounds:
           description: 'Area of validity of this CRS'
-          nullable: true
-          $ref: './common-schemas.yaml#/components/schemas/Bounds'
+          anyOf:
+            - $ref: './common-schemas.yaml#/components/schemas/Bounds'
+            - type: 'null'
         unit:
           description: 'The unit if all axis use the same unit, null otherwise'
-          nullable: true
-          type: string
+          type:
+            - string
+            - 'null'
           example: 'm'
       required:
         - code
@@ -49,12 +51,10 @@ components:
       example:
         code: 'EPSG:28992'
         definition: '+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs'
-        bounds: {
-          miny: 646.36,
-          minx: 308975.28,
-          maxy: 276050.82,
-          maxx: 636456.31
-        }
+        bounds: { miny: 646.36,
+                  minx: 308975.28,
+                  maxy: 276050.82,
+                  maxx: 636456.31 }
         unit: 'm'
 
 
@@ -113,7 +113,6 @@ components:
         hiDpiDisabled:
           description: Whether the layer should not be rendered in high DPI when available
           type: boolean
-          nullable: false
         hiDpiMode:
           $ref: './common-schemas.yaml#/components/schemas/TileLayerHiDpiMode'
         hiDpiSubstituteLayer:
@@ -145,9 +144,10 @@ components:
           type: string
         autoRefreshInSeconds:
           description: 'Automatically refresh the layer (in seconds)'
-          type: number
+          type:
+            - number
+            - 'null'
           format: double
-          nullable: true
         searchIndex:
           $ref: '#/components/schemas/LayerSearchIndex'
 
@@ -201,8 +201,9 @@ components:
           type: boolean
           default: false
         form:
-          type: object
-          nullable: true
+          type:
+            - object
+            - 'null'
           properties:
             options:
               $ref: './common-schemas.yaml#/components/schemas/FormOptions'
@@ -234,10 +235,9 @@ components:
 
     LayerExportCapabilities:
       type: object
-      required: [exportable]
+      required: [ exportable ]
       properties:
         exportable:
-          nullable: false
           type: boolean
         outputFormats:
           type: array
@@ -246,7 +246,7 @@ components:
 
     Attribute:
       type: object
-      required: [name]
+      required: [ name ]
       properties:
         featureType:
           type: integer
@@ -262,8 +262,9 @@ components:
           type: boolean
         defaultValue:
           description: 'Default value for this attribute. The value may need to be coerced to the correct type.'
-          nullable: true
-          type: string
+          type:
+            - string
+            - 'null'
         nullable:
           description: 'Whether the attribute can be null.'
           type: boolean
@@ -311,8 +312,9 @@ components:
           description: 'Name of the attribute.'
           type: string
         alias:
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
         type:
           $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
       example:
@@ -323,26 +325,23 @@ components:
     Service:
       description: 'A service provides one or more layers used in a viewer'
       type: object
-      required: [id, title, url, protocol, capabilities, serverType]
+      required: [ id, title, url, protocol, capabilities, serverType ]
       properties:
         id:
           type: string
-          nullable: false
         title:
           type: string
-          nullable: false
         url:
           type: string
-          nullable: false
         protocol:
           $ref: './common-schemas.yaml#/components/schemas/GeoServiceProtocol'
         capabilities:
           description: 'capabilities document of the service - currently only for WMTS'
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
         serverType:
           type: string
-          nullable: false
           enum:
             - generic
             - geoserver
@@ -356,7 +355,6 @@ components:
         type:
           description: 'component type eg. featurereport or print'
           type: string
-          nullable: false
         config:
           description: 'component specific configuration'
           title: 'componentConfig'
@@ -388,12 +386,14 @@ components:
       properties:
         primaryColor:
           description: 'the primary color for an application'
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
         logo:
           description: 'application logo'
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
       example:
         primaryColor: '#6236ff'
         logo: '<<base64 string>> | <<url>>'
@@ -406,6 +406,5 @@ components:
       properties:
         key:
           type: string
-          nullable: false
         value:
           type: object
