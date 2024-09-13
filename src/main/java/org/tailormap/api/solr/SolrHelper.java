@@ -190,7 +190,10 @@ public class SolrHelper implements AutoCloseable, Constants {
           docsBatch.clear();
         }
       }
+    } finally {
+      if (fs.getDataStore() != null) fs.getDataStore().dispose();
     }
+
     if (!docsBatch.isEmpty()) {
       updateResponse = solrClient.addBeans(docsBatch);
       logger.info("Added last {} documents of {} to index", docsBatch.size(), total);
@@ -258,8 +261,8 @@ public class SolrHelper implements AutoCloseable, Constants {
     if (null == solrQuery || solrQuery.isBlank()) {
       solrQuery = "*";
     }
-    // TODO We could escape special/syntax characters, but that also prevents using keys like ~ and
-    // *
+    // TODO We could escape special/syntax characters, but that also prevents using
+    //      keys like ~ and *
     // solrQuery = ClientUtils.escapeQueryChars(solrQuery);
 
     final SolrQuery query =
