@@ -1468,6 +1468,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Get bounds</div>
 </dd>
+<dt><a href="org/tailormap/api/repository/FeatureSourceRepository.html#getByTitle(java.lang.String)" class="member-name-link">getByTitle(String)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/FeatureSourceRepository.html" title="interface in org.tailormap.api.repository">FeatureSourceRepository</a></dt>
+<dd>
+<div class="block">Find a feature-source by title.</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/GeoService.html#getCapabilities()" class="member-name-link">getCapabilities()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMServiceCaps.html#getCapabilities()" class="member-name-link">getCapabilities()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMServiceCaps.html" title="class in org.tailormap.api.persistence.json">TMServiceCaps</a></dt>
@@ -2735,6 +2739,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Get showForViewer</div>
 </dd>
+<dt><a href="org/tailormap/api/solr/SolrService.html#getSolrClientForIndexing()" class="member-name-link">getSolrClientForIndexing()</a> - Method in class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a></dt>
+<dd>
+<div class="block">Get a concurrent update Solr client for bulk operations.</div>
+</dd>
+<dt><a href="org/tailormap/api/solr/SolrService.html#getSolrClientForSearching()" class="member-name-link">getSolrClientForSearching()</a> - Method in class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a></dt>
+<dd>
+<div class="block">Get a Solr client for searching.</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html#getSource()" class="member-name-link">getSource()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html" title="class in org.tailormap.api.persistence.json">TMFeatureTypeInfo</a></dt>
 <dd>
 <div class="block">Get source</div>
@@ -2917,6 +2929,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/persistence/GeoService.html#getTitleWithSettingsOverrides(java.lang.String)" class="member-name-link">getTitleWithSettingsOverrides(String)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/repository/FeatureTypeRepository.html#getTMFeatureTypeByNameAndFeatureSource(java.lang.String,org.tailormap.api.persistence.TMFeatureSource)" class="member-name-link">getTMFeatureTypeByNameAndFeatureSource(String, TMFeatureSource)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/FeatureTypeRepository.html" title="interface in org.tailormap.api.repository">FeatureTypeRepository</a></dt>
+<dd>
+<div class="block">Get a feature type by name and feature source.</div>
+</dd>
 <dt><a href="org/tailormap/api/viewer/model/FeaturesResponse.html#getTotal()" class="member-name-link">getTotal()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/FeaturesResponse.html" title="class in org.tailormap.api.viewer.model">FeaturesResponse</a></dt>
 <dd>
 <div class="block">the total number of available features, can be an estimated value.</div>
@@ -3923,7 +3939,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Populates entities to add services and applications to demo functionality, support development
  and use in integration tests with a common set of test data.</div>
 </dd>
-<dt><a href="org/tailormap/api/configuration/dev/PopulateTestData.html#%3Cinit%3E(org.springframework.context.ApplicationContext,org.tailormap.api.repository.UserRepository,org.tailormap.api.repository.GroupRepository,org.tailormap.api.repository.CatalogRepository,org.tailormap.api.repository.GeoServiceRepository,org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.repository.FeatureSourceRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.UploadRepository)" class="member-name-link">PopulateTestData(ApplicationContext, UserRepository, GroupRepository, CatalogRepository, GeoServiceRepository, GeoServiceHelper, FeatureSourceRepository, ApplicationRepository, ConfigurationRepository, FeatureSourceFactoryHelper, SearchIndexRepository, UploadRepository)</a> - Constructor for class org.tailormap.api.configuration.dev.<a href="org/tailormap/api/configuration/dev/PopulateTestData.html" title="class in org.tailormap.api.configuration.dev">PopulateTestData</a></dt>
+<dt><a href="org/tailormap/api/configuration/dev/PopulateTestData.html#%3Cinit%3E(org.springframework.context.ApplicationContext,org.tailormap.api.repository.UserRepository,org.tailormap.api.repository.GroupRepository,org.tailormap.api.repository.CatalogRepository,org.tailormap.api.repository.GeoServiceRepository,org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.solr.SolrService,org.tailormap.api.repository.FeatureSourceRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.UploadRepository)" class="member-name-link">PopulateTestData(ApplicationContext, UserRepository, GroupRepository, CatalogRepository, GeoServiceRepository, GeoServiceHelper, SolrService, FeatureSourceRepository, ApplicationRepository, ConfigurationRepository, FeatureSourceFactoryHelper, SearchIndexRepository, UploadRepository)</a> - Constructor for class org.tailormap.api.configuration.dev.<a href="org/tailormap/api/configuration/dev/PopulateTestData.html" title="class in org.tailormap.api.configuration.dev">PopulateTestData</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/AppRestControllerAdvice.html#populateViewerKind(jakarta.servlet.http.HttpServletRequest)" class="member-name-link">populateViewerKind(HttpServletRequest)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/AppRestControllerAdvice.html" title="class in org.tailormap.api.controller">AppRestControllerAdvice</a></dt>
 <dd>&nbsp;</dd>
@@ -4066,7 +4082,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/SearchController.html" class="type-name-link" title="class in org.tailormap.api.controller">SearchController</a> - Class in <a href="org/tailormap/api/controller/package-summary.html">org.tailormap.api.controller</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/controller/SearchController.html#%3Cinit%3E(org.tailormap.api.repository.SearchIndexRepository)" class="member-name-link">SearchController(SearchIndexRepository)</a> - Constructor for class org.tailormap.api.controller.<a href="org/tailormap/api/controller/SearchController.html" title="class in org.tailormap.api.controller">SearchController</a></dt>
+<dt><a href="org/tailormap/api/controller/SearchController.html#%3Cinit%3E(org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.solr.SolrService)" class="member-name-link">SearchController(SearchIndexRepository, SolrService)</a> - Constructor for class org.tailormap.api.controller.<a href="org/tailormap/api/controller/SearchController.html" title="class in org.tailormap.api.controller">SearchController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/SearchDocument.html" class="type-name-link" title="class in org.tailormap.api.viewer.model">SearchDocument</a> - Class in <a href="org/tailormap/api/viewer/model/package-summary.html">org.tailormap.api.viewer.model</a></dt>
 <dd>
@@ -4919,6 +4935,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/LoginConfigurationSsoLinksInner.html#setShowForViewer(java.lang.Boolean)" class="member-name-link">setShowForViewer(Boolean)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LoginConfigurationSsoLinksInner.html" title="class in org.tailormap.api.viewer.model">LoginConfigurationSsoLinksInner</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/solr/SolrService.html#setSolrUrl(java.lang.String)" class="member-name-link">setSolrUrl(String)</a> - Method in class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html#setSource(java.net.URI)" class="member-name-link">setSource(URI)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html" title="class in org.tailormap.api.persistence.json">TMFeatureTypeInfo</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMServiceInfo.html#setSource(java.net.URI)" class="member-name-link">setSource(URI)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMServiceInfo.html" title="class in org.tailormap.api.persistence.json">TMServiceInfo</a></dt>
@@ -5145,7 +5163,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Admin controller for Solr.</div>
 </dd>
-<dt><a href="org/tailormap/api/controller/admin/SolrAdminController.html#%3Cinit%3E(org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.repository.SearchIndexRepository)" class="member-name-link">SolrAdminController(FeatureSourceFactoryHelper, FeatureTypeRepository, SearchIndexRepository)</a> - Constructor for class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/SolrAdminController.html" title="class in org.tailormap.api.controller.admin">SolrAdminController</a></dt>
+<dt><a href="org/tailormap/api/controller/admin/SolrAdminController.html#%3Cinit%3E(org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.solr.SolrService)" class="member-name-link">SolrAdminController(FeatureSourceFactoryHelper, FeatureTypeRepository, SearchIndexRepository, SolrService)</a> - Constructor for class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/SolrAdminController.html" title="class in org.tailormap.api.controller.admin">SolrAdminController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/solr/SolrHelper.html" class="type-name-link" title="class in org.tailormap.api.solr">SolrHelper</a> - Class in <a href="org/tailormap/api/solr/package-summary.html">org.tailormap.api.solr</a></dt>
 <dd>
@@ -5155,6 +5173,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Constructor</div>
 </dd>
+<dt><a href="org/tailormap/api/solr/SolrService.html" class="type-name-link" title="class in org.tailormap.api.solr">SolrService</a> - Class in <a href="org/tailormap/api/solr/package-summary.html">org.tailormap.api.solr</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/solr/SolrService.html#%3Cinit%3E()" class="member-name-link">SolrService()</a> - Constructor for class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html#source(java.net.URI)" class="member-name-link">source(URI)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html" title="class in org.tailormap.api.persistence.json">TMFeatureTypeInfo</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMServiceInfo.html#source(java.net.URI)" class="member-name-link">source(URI)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMServiceInfo.html" title="class in org.tailormap.api.persistence.json">TMServiceInfo</a></dt>
