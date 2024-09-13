@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MIT
 #
-$schema: "https://spec.openapis.org/oas/3.1/dialect/base"
+#$schema: 'https://spec.openapis.org/oas/3.1/dialect/base'
 openapi: 3.1.0
 
 info:

@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MIT
 #
-$schema: "https://spec.openapis.org/oas/3.1/dialect/base"
+#$schema: 'https://spec.openapis.org/oas/3.1/dialect/base'
 openapi: 3.1.0
 
 info:
@@ -120,7 +120,7 @@ components:
           anyOf:
             - $ref: './common-schemas.yaml#/components/schemas/Bounds'
             - type: 'null'
-        services: # TODO in the current implementation this is an object with the id of a service as elemnt
+        services: # TODO in the current implementation this is an object with the id of a service as element
           #      eg. "1": {"protocol": "tiled", "matrixSets":[], "id": 1
           #      an array seems the better option
           # TODO Not sure we actually/still need this...
@@ -1025,16 +1025,17 @@ paths:
           type: string
         required: false
       - name: free-form
-        description: Additional OGC and vendor-specific parameters.
-        in: query
+        description: 'Additional OGC and vendor-specific parameters.'
         schema:
           type: object
           additionalProperties: true
+        in: query
         style: form
         explode: true
-        examples:
-          - LAYER: mylayer
-            BBOX: 1,2,3,4
+#       TODO re-instate examples
+#        examples:
+#          - LAYER: mylayer
+#            BBOX: 1,2,3,4
     get:
       operationId: 'proxy'
       description: 'Proxy a WMS/WMTS request to a map service. Useful for accessing a map service requiring authentication
@@ -1097,9 +1098,10 @@ paths:
               description: OGC and vendor-specific parameters too large for the URL.
               type: object
               additionalProperties: true
-              examples:
-                - CQL_FILTER: INTERSECTS(geom, BUFFER(POINT(1 2), 10))
-                  SLD_BODY: ...
+#              TODO: re-instate examples
+#              examples:
+#                - CQL_FILTER: INTERSECTS(geom, BUFFER(POINT(1 2), 10))
+#                  SLD_BODY: ...
       responses:
         '200':
           description: 'OK'
