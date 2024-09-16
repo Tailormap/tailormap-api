@@ -49,6 +49,12 @@ jobs:
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
+      - name: 'Upload test results to Codecov'
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: 'Build javadoc'
         run: mvn javadoc:javadoc
 
@@ -98,6 +104,12 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: 'Upload test results to Codecov'
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
   # Upload event file so test results can be processed for the PR
