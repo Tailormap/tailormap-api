@@ -129,7 +129,7 @@ SPDX-License-Identifier: MIT
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
         <oracle-database.version>23.5.0.24.07</oracle-database.version>
         <postgresql.version>42.7.4</postgresql.version>
-        <spring-data-bom.version>2024.0.3</spring-data-bom.version>
+        <spring-data-bom.version>2024.0.4</spring-data-bom.version>
         <spring-hateoas.version>2.3.3</spring-hateoas.version>
         <spring-security.version>6.3.3</spring-security.version>
         <webjars-locator-core.version>0.59</webjars-locator-core.version>
