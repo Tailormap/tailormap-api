@@ -28,6 +28,7 @@ components:
       login required response, but can also be used for other response that require redirection.
       Does not include a HTTP header to force redirection, but a url that the client can use.
       '
+      title: RedirectResponse
       type: object
       properties:
         code:
@@ -51,6 +52,7 @@ components:
       Error codes are defined in the [HTTP status code](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) standard, 
       and can range from 400 to 599.
       '
+      title: ErrorResponse
       type: object
       properties:
         code:

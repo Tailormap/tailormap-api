@@ -72,6 +72,7 @@ components:
       description: 'Bounds without the context of a coordinate reference system'
       type: object
       x-class-extra-annotation: '@jakarta.persistence.Embeddable'
+      title: Bounds
       properties:
         miny:
           description: 'lower bottom'
@@ -103,6 +104,7 @@ components:
     # XXX: currently unused
     BoundsWithCRS:
       description: 'Bounds within the context of a coordinate reference system'
+      title: BoundsWithCRS
       allOf:
         - $ref: '#/components/schemas/Bounds'
         - type: object
