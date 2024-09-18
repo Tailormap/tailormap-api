@@ -354,6 +354,7 @@ public class PopulateTestData {
                                 "osm",
                                 new GeoServiceLayerSettings()
                                     .title("Openbasiskaart")
+                                    .hiDpiDisabled(false)
                                     .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
                                     .hiDpiSubstituteLayer("osm-hq")))),
             new GeoService()
@@ -378,6 +379,7 @@ public class PopulateTestData {
                             Map.of(
                                 "osm",
                                 new GeoServiceLayerSettings()
+                                    .hiDpiDisabled(false)
                                     .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
                                     .hiDpiSubstituteLayer("osm-hq")))),
             new GeoService()
@@ -397,6 +399,7 @@ public class PopulateTestData {
                                 new GeoServiceLayerSettings()
                                     .maxZoom(15)
                                     .tileGridExtent(rdTileGridExtent)
+                                    .hiDpiDisabled(false)
                                     .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERTILEPIXELRATIOONLY)
                                     .hiDpiSubstituteLayer(
                                         "https://openbasiskaart.nl/mapcache/tms/1.0.0/osm-hq@rd-hq/{z}/{x}/{-y}.png")))),
@@ -512,7 +515,12 @@ public class PopulateTestData {
                                           "&copy; <a href=\"https://beeldmateriaal.nl/\">Beeldmateriaal.nl</a>, "
                                               + osmAttribution),
                               "luforoadslabels", osmAttr,
-                              "map5topo", map5Attr,
+                              "map5topo",
+                                  new GeoServiceLayerSettings()
+                                      .attribution(map5Attr.getAttribution())
+                                      .hiDpiDisabled(false)
+                                      .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
+                                      .hiDpiSubstituteLayer("map5topo_hq"),
                               "map5topo_gray", map5Attr,
                               "map5topo_simple", map5Attr,
                               "map5topo_simple_gray", map5Attr,
@@ -1048,12 +1056,21 @@ public class PopulateTestData {
     if (map5url != null) {
       AppTreeLevelNode root = (AppTreeLevelNode) app.getContentRoot().getBaseLayerNodes().get(0);
       List<String> childrenIds = new ArrayList<>(root.getChildrenIds());
+      childrenIds.add("lyr:map5:map5topo");
       childrenIds.add("lyr:map5:map5topo_simple");
       childrenIds.add("lvl:luchtfoto-labels");
       root.setChildrenIds(childrenIds);
       app.getSettings()
-          .putLayerSettingsItem("lyr:map5:map5topo_simple", new AppLayerSettings().title("Map5"));
+          .putLayerSettingsItem("lyr:map5:map5topo", new AppLayerSettings().title("Map5"))
+          .putLayerSettingsItem("lyr:map5:map5topo_simple", new AppLayerSettings().title("Map5 simple"));
       app.getContentRoot()
+          .addBaseLayerNodesItem(
+              new AppTreeLayerNode()
+                  .objectType("AppTreeLayerNode")
+                  .id("lyr:map5:map5topo")
+                  .serviceId("map5")
+                  .layerName("map5topo")
+                  .visible(false))
           .addBaseLayerNodesItem(
               new AppTreeLayerNode()
                   .objectType("AppTreeLayerNode")
