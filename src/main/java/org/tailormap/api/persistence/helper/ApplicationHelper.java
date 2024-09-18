@@ -314,7 +314,7 @@ public class ApplicationHelper {
           ObjectUtils.firstNonNull(
               serviceLayerSettings.getHiDpiDisabled(),
               defaultLayerSettings.getHiDpiDisabled(),
-              false);
+              true);
       TileLayerHiDpiMode hiDpiMode =
           ObjectUtils.firstNonNull(
               serviceLayerSettings.getHiDpiMode(), defaultLayerSettings.getHiDpiMode(), null);
