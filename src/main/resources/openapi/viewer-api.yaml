@@ -244,6 +244,10 @@ components:
           minLength: 0
           items:
             $ref: './viewer-schemas.yaml#/components/schemas/ColumnMetadata'
+        template:
+          description: Template/description for a feature. Will replace placeholders by attribute values in the viewer
+          type: string
+          nullable: true
       example:
         total: 400
         page: 5

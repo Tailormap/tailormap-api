@@ -275,6 +275,7 @@ class FeaturesControllerIntegrationTest {
       jsonPath("$.features[0].attributes.fuuid").doesNotExist(),
       jsonPath("$.columnMetadata").isArray(),
       jsonPath("$.columnMetadata").isNotEmpty(),
+      jsonPath("$.template").isEmpty(),
       jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"),
       jsonPath("$.columnMetadata[?(@.key == 'identificatie')].key").isEmpty(),
       jsonPath("$.columnMetadata[?(@.key == 'ligtInLandCode')].key").isEmpty(),
