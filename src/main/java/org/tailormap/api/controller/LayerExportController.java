@@ -34,6 +34,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,36 +78,38 @@ public class LayerExportController {
   public ResponseEntity<Serializable> capabilities(
       @ModelAttribute GeoService service, @ModelAttribute GeoServiceLayer layer) throws Exception {
 
-    final LayerExportCapabilities capabilities = new LayerExportCapabilities();
+    final LayerExportCapabilities capabilities = new LayerExportCapabilities().exportable(false);
 
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
-    WFSSearchResult wfsSearchResult = findWFSFeatureType(service, layer, tmft);
 
-    if (!wfsSearchResult.found()) {
-      capabilities.setOutputFormats(null);
-    } else {
-      try {
-        List<String> outputFormats =
-            SimpleWFSHelper.getOutputFormats(
-                wfsSearchResult.wfsUrl(),
-                wfsSearchResult.typeName(),
-                wfsSearchResult.username(),
-                wfsSearchResult.password());
-        capabilities.setOutputFormats(outputFormats);
-      } catch (Exception e) {
-        String msg =
-            String.format("Error getting capabilities for WFS \"%s\"", wfsSearchResult.wfsUrl());
-        if (logger.isTraceEnabled()) {
-          logger.trace(msg, e);
-        } else {
-          logger.warn("{}: {}: {}", msg, e.getClass(), e.getMessage());
+    if (tmft != null) {
+      WFSTypeNameDescriptor wfsTypeNameDescriptor = findWFSFeatureType(service, layer, tmft);
+
+      if (wfsTypeNameDescriptor != null) {
+        try {
+          List<String> outputFormats =
+              SimpleWFSHelper.getOutputFormats(
+                  wfsTypeNameDescriptor.wfsUrl(),
+                  wfsTypeNameDescriptor.typeName(),
+                  wfsTypeNameDescriptor.username(),
+                  wfsTypeNameDescriptor.password());
+          capabilities.setOutputFormats(outputFormats);
+        } catch (Exception e) {
+          String msg =
+              String.format(
+                  "Error getting capabilities for WFS \"%s\"", wfsTypeNameDescriptor.wfsUrl());
+          if (logger.isTraceEnabled()) {
+            logger.trace(msg, e);
+          } else {
+            logger.warn("{}: {}: {}", msg, e.getClass(), e.getMessage());
+          }
+          capabilities.setOutputFormats(null);
         }
-        capabilities.setOutputFormats(null);
       }
+      capabilities.setExportable(
+          capabilities.getOutputFormats() != null && !capabilities.getOutputFormats().isEmpty());
     }
 
-    capabilities.setExportable(
-        capabilities.getOutputFormats() != null && !capabilities.getOutputFormats().isEmpty());
     return ResponseEntity.status(HttpStatus.OK).body(capabilities);
   }
 
@@ -131,44 +134,62 @@ public class LayerExportController {
 
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
-    WFSSearchResult wfsSearchResult = findWFSFeatureType(service, layer, tmft);
 
-    if (!wfsSearchResult.found()) {
+    if (tmft == null) {
+      logger.debug("Layer export requested for layer without feature type");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    // Find a WFS feature type either because it is configured in Tailormap or by a SLD DescribeLayer request
+    WFSTypeNameDescriptor wfsTypeNameDescriptor = findWFSFeatureType(service, layer, tmft);
+
+    if (wfsTypeNameDescriptor == null) {
       throw new ResponseStatusException(
           HttpStatus.SERVICE_UNAVAILABLE, "No suitable WFS available for layer export");
-    } else {
-      // Get attributes in configured or original order
-      Set<String> nonHiddenAttributes = getConfiguredAttributes(tmft, appLayerSettings).keySet();
-
-      if (attributes == null) {
-        attributes = Collections.emptyList();
-      }
-      if (!attributes.isEmpty()) {
-        // Try to only export non-hidden property names. Note that hiding attributes is not a
-        // security feature. TM does not try to hide the original WMS URL (even when proxying).
-        // Secret attributes should not be exposed by the WFS service discoverable through the WMS
-        // because all property names are exported when we don't know the default geometry property
-        // name. But a user can also do a DescribeLayer request himself on the original WMS and do a
-        // GetFeature request to get all attributes.
-        if (!nonHiddenAttributes.containsAll(attributes)) {
-          throw new ResponseStatusException(
-              HttpStatus.BAD_REQUEST,
-              "One or more requested attributes are not available on the feature type");
-        }
-      } else if (!tmft.getSettings().getHideAttributes().isEmpty()) {
-        // Only specify specific propNames if there are hidden attributes. Having no propNames
-        // request parameter to request all propNames is less error-prone than specifiying the ones
-        // we have saved in the feature type
-        attributes = new ArrayList<>(nonHiddenAttributes);
-      }
-
-      return downloadFromWFS(
-          wfsSearchResult, outputFormat, attributes, filter, sortBy, sortOrder, crs, request);
     }
+
+    if (attributes == null) {
+      attributes = new ArrayList<>();
+    }
+
+    // Get attributes in configured or original order
+    Set<String> nonHiddenAttributes = getConfiguredAttributes(tmft, appLayerSettings).keySet();
+
+    if (!attributes.isEmpty()) {
+      // Only export non-hidden property names
+      if (!nonHiddenAttributes.containsAll(attributes)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "One or more requested attributes are not available on the feature type");
+      }
+    } else if (!tmft.getSettings().getHideAttributes().isEmpty()) {
+      // Only specify specific propNames if there are hidden attributes. Having no propNames
+      // request parameter to request all propNames is less error-prone than specifying the ones
+      // we have saved in the feature type
+      attributes = new ArrayList<>(nonHiddenAttributes);
+    }
+
+    // Empty attributes means we won't specify propNames in GetFeature request, but if we do select only some property names we need the geometry attribute which is not in the 'attributes' request param so spatial export formats don't have the geometry missing.
+    if (!attributes.isEmpty() && tmft.getDefaultGeometryAttribute() != null) {
+      attributes.add(tmft.getDefaultGeometryAttribute());
+    }
+
+    // Remove attributes which the WFS does not expose. This can be the case when using the 'customize attributes' feature in GeoServer but when TM has been configured with a JDBC feature type with all the attributes. Requesting a non-existing attribute will return an error.
+    try {
+      List<String> wfsAttributeNames = getWFSAttributeNames(wfsTypeNameDescriptor);
+      attributes.retainAll(wfsAttributeNames);
+    } catch (IOException e) {
+      logger.error("Error getting WFS feature type", e);
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("Error getting WFS feature type");
+    }
+
+    return downloadFromWFS(
+        wfsTypeNameDescriptor, outputFormat, attributes, filter, sortBy, sortOrder, crs, request);
   }
 
   private ResponseEntity<?> downloadFromWFS(
-      WFSSearchResult wfsSearchResult,
+      WFSTypeNameDescriptor wfsTypeName,
       String outputFormat,
       List<String> attributes,
       String filter,
@@ -179,7 +200,7 @@ public class LayerExportController {
 
     MultiValueMap<String, String> getFeatureParameters = new LinkedMultiValueMap<>();
     // A layer could have more than one featureType as source, currently we assume it's just one
-    getFeatureParameters.add("typeNames", wfsSearchResult.typeName());
+    getFeatureParameters.add("typeNames", wfsTypeName.typeName());
     getFeatureParameters.add("outputFormat", outputFormat);
     if (filter != null) {
       // GeoServer vendor-specific
@@ -189,25 +210,7 @@ public class LayerExportController {
     if (crs != null) {
       getFeatureParameters.add("srsName", crs);
     }
-    if (attributes != null && !attributes.isEmpty()) {
-      // If the WFS was discovered by a WMS DescribeLayer, we haven't loaded the entire feature type
-      // XML schema (because this can be very slow and error-prone) and we don't know the name of
-      // the geometry attribute so do not specify the propertyNames parameter to include all
-      // propertyNames. If the geometry attribute is known, add it to the propertyNames otherwise
-      // the result won't have geometries.
-      if (wfsSearchResult.geometryAttribute() != null) {
-        attributes.add(wfsSearchResult.geometryAttribute());
-      }
-      try {
-        // filter out any attributes that are not in the WFS featuretype
-        List<String> wfsAttributeNames = getWFSAttributeNames(wfsSearchResult);
-        attributes =
-            attributes.stream().filter(wfsAttributeNames::contains).collect(Collectors.toList());
-      } catch (IOException e) {
-        logger.error("Error getting WFS featuretype", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body("Error getting WFS featuretype");
-      }
+    if (!CollectionUtils.isEmpty(attributes)) {
       getFeatureParameters.add("propertyName", String.join(",", attributes));
     }
     if (sortBy != null) {
@@ -215,14 +218,14 @@ public class LayerExportController {
     }
     URI wfsGetFeature =
         SimpleWFSHelper.getWFSRequestURL(
-            wfsSearchResult.wfsUrl(), "GetFeature", getFeatureParameters);
+            wfsTypeName.wfsUrl(), "GetFeature", getFeatureParameters);
 
-    logger.info("Layer download {}, proxying WFS GetFeature request {}", null, wfsGetFeature);
+    logger.info("Layer download, proxying WFS GetFeature request {}", wfsGetFeature);
     try {
       // TODO: close JPA connection before proxying
       HttpResponse<InputStream> response =
           WFSProxy.proxyWfsRequest(
-              wfsGetFeature, wfsSearchResult.username(), wfsSearchResult.password(), request);
+              wfsGetFeature, wfsTypeName.username(), wfsTypeName.password(), request);
 
       logger.info(
           "Layer download response code: {}, content type: {}, disposition: {}",
@@ -247,61 +250,17 @@ public class LayerExportController {
     }
   }
 
-  /**
-   * Get the (exposed) attribute names of the WFS feature type.
-   *
-   * @param wfsSearchResult provides the WFS feature type to get the attribute names for
-   * @return a list of attribute names for the WFS feature type
-   * @throws IOException if there were any problems setting up (creating or connecting) the
-   *     datasource.
-   */
-  private static List<String> getWFSAttributeNames(WFSSearchResult wfsSearchResult)
-      throws IOException {
-    Map<String, Object> connectionParameters = new HashMap<>();
-    connectionParameters.put(
-        "WFSDataStoreFactory:GET_CAPABILITIES_URL",
-        wfsSearchResult.wfsUrl() + "REQUEST=GetCapabilities&VERSION=1.1.0");
-    connectionParameters.put("WFSDataStoreFactory:PROTOCOL", Boolean.FALSE);
-    connectionParameters.put("WFSDataStoreFactory:WFS_STRATEGY", "geoserver");
-    connectionParameters.put("WFSDataStoreFactory:LENIENT", Boolean.TRUE);
-    // the default timeout is 3000ms
-    connectionParameters.put("WFSDataStoreFactory:TIMEOUT", 2000);
-    if (wfsSearchResult.username() != null) {
-      connectionParameters.put("WFSDataStoreFactory.USERNAME", wfsSearchResult.username());
-      connectionParameters.put("WFSDataStoreFactory.PASSWORD", wfsSearchResult.password());
-    }
-
-    WFSDataStore wfs = new WFSDataStoreFactory().createDataStore(connectionParameters);
-    List<String> attributeNames =
-        wfs
-            .getFeatureSource(wfsSearchResult.typeName())
-            .getSchema()
-            .getAttributeDescriptors()
-            .stream()
-            .map(AttributeDescriptor::getLocalName)
-            .toList();
-
-    wfs.dispose();
-    return attributeNames;
+  private record WFSTypeNameDescriptor(
+      String wfsUrl, String typeName, String username, String password) {
   }
 
-  private record WFSSearchResult(
-      String wfsUrl, String typeName, String geometryAttribute, String username, String password) {
-
-    public boolean found() {
-      return wfsUrl != null && typeName != null;
-    }
-    // </editor-fold>
-  }
-
-  private WFSSearchResult findWFSFeatureType(
+  private WFSTypeNameDescriptor findWFSFeatureType(
       GeoService service, GeoServiceLayer layer, TMFeatureType tmft) {
 
     String wfsUrl = null;
     String typeName = null;
     String username = null;
     String password = null;
-    String geometryAttribute = null;
     ServiceAuthentication auth = null;
 
     if (tmft != null) {
@@ -311,7 +270,6 @@ public class LayerExportController {
         wfsUrl = featureSource.getUrl();
         typeName = tmft.getName();
         auth = featureSource.getAuthentication();
-        geometryAttribute = tmft.getDefaultGeometryAttribute();
       }
     }
 
@@ -320,9 +278,10 @@ public class LayerExportController {
       auth = service.getAuthentication();
 
       SimpleWFSLayerDescription wfsLayerDescription =
-          getWFSLayerDescriptionForWMS(service, layer.getName() /*, tags*/);
-      if (wfsLayerDescription != null) {
+          getWFSLayerDescriptionForWMS(service, layer.getName());
+      if (wfsLayerDescription != null && wfsLayerDescription.getWfsUrl() != null && wfsLayerDescription.getFirstTypeName() != null) {
         wfsUrl = wfsLayerDescription.getWfsUrl();
+        // Ignores possibly multiple feature types associated with the layer (a group layer for instance)
         typeName = wfsLayerDescription.getFirstTypeName();
         auth = service.getAuthentication();
       }
@@ -332,11 +291,16 @@ public class LayerExportController {
       username = auth.getUsername();
       password = auth.getPassword();
     }
-    return new WFSSearchResult(wfsUrl, typeName, geometryAttribute, username, password /*, tags*/);
+
+    if (wfsUrl != null && typeName != null) {
+      return new WFSTypeNameDescriptor(wfsUrl, typeName, username, password);
+    } else {
+      return null;
+    }
   }
 
   private SimpleWFSLayerDescription getWFSLayerDescriptionForWMS(
-      GeoService wmsService, String layerName /*, Tags tags*/) {
+      GeoService wmsService, String layerName) {
     String username = null;
     String password = null;
     if (wmsService.getAuthentication() != null
@@ -358,5 +322,42 @@ public class LayerExportController {
       return wfsLayerDescription;
     }
     return null;
+  }
+
+  /**
+   * Get the (exposed) attribute names of the WFS feature type.
+   *
+   * @param wfsTypeNameDescriptor provides the WFS feature type to get the attribute names for
+   * @return a list of attribute names for the WFS feature type
+   * @throws IOException if there were any problems setting up (creating or connecting) the
+   *     datasource.
+   */
+  private static List<String> getWFSAttributeNames(WFSTypeNameDescriptor wfsTypeNameDescriptor)
+      throws IOException {
+    Map<String, Object> connectionParameters = new HashMap<>();
+    connectionParameters.put(
+        "WFSDataStoreFactory:GET_CAPABILITIES_URL",
+        wfsTypeNameDescriptor.wfsUrl() + "REQUEST=GetCapabilities&VERSION=1.1.0");
+    connectionParameters.put("WFSDataStoreFactory:PROTOCOL", Boolean.FALSE);
+    connectionParameters.put("WFSDataStoreFactory:WFS_STRATEGY", "geoserver");
+    connectionParameters.put("WFSDataStoreFactory:LENIENT", Boolean.TRUE);
+    connectionParameters.put("WFSDataStoreFactory:TIMEOUT", SimpleWFSHelper.TIMEOUT);
+    if (wfsTypeNameDescriptor.username() != null) {
+      connectionParameters.put("WFSDataStoreFactory.USERNAME", wfsTypeNameDescriptor.username());
+      connectionParameters.put("WFSDataStoreFactory.PASSWORD", wfsTypeNameDescriptor.password());
+    }
+
+    WFSDataStore wfs = new WFSDataStoreFactory().createDataStore(connectionParameters);
+    List<String> attributeNames =
+        wfs
+            .getFeatureSource(wfsTypeNameDescriptor.typeName())
+            .getSchema()
+            .getAttributeDescriptors()
+            .stream()
+            .map(AttributeDescriptor::getLocalName)
+            .toList();
+
+    wfs.dispose();
+    return attributeNames;
   }
 }
