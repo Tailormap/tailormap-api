@@ -519,7 +519,8 @@ public class PopulateTestData {
                                   new GeoServiceLayerSettings()
                                       .attribution(map5Attr.getAttribution())
                                       .hiDpiDisabled(false)
-                                      .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
+                                      .hiDpiMode(
+                                          TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
                                       .hiDpiSubstituteLayer("map5topo_hq"),
                               "map5topo_gray", map5Attr,
                               "map5topo_simple", map5Attr,
@@ -1062,7 +1063,8 @@ public class PopulateTestData {
       root.setChildrenIds(childrenIds);
       app.getSettings()
           .putLayerSettingsItem("lyr:map5:map5topo", new AppLayerSettings().title("Map5"))
-          .putLayerSettingsItem("lyr:map5:map5topo_simple", new AppLayerSettings().title("Map5 simple"));
+          .putLayerSettingsItem(
+              "lyr:map5:map5topo_simple", new AppLayerSettings().title("Map5 simple"));
       app.getContentRoot()
           .addBaseLayerNodesItem(
               new AppTreeLayerNode()
