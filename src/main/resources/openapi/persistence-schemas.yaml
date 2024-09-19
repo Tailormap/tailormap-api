@@ -242,6 +242,8 @@ components:
         - attributeSettings
         - readOnlyAttributes
       properties:
+        template:
+          $ref: '#/components/schemas/FeatureTypeTemplate'
         attributeOrder:
           description: Reordering of the attributes by attribute names. Attributes in the feature
             type that are not in this array should still be shown; either after the attribute that
@@ -265,6 +267,17 @@ components:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/AttributeSettings'
+
+    FeatureTypeTemplate:
+      type: object
+      description: Template/description for a feature. Will replace placeholders by attribute values in the viewer
+      properties:
+        template:
+          type: string
+        markupLanguage:
+          type: string
+        templateLanguage:
+          type: string
 
     AttributeSettings:
       properties:
