@@ -19,12 +19,10 @@ import java.net.URI;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.geotools.api.feature.type.AttributeDescriptor;
 import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.wfs.WFSDataStoreFactory;
@@ -140,7 +138,8 @@ public class LayerExportController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    // Find a WFS feature type either because it is configured in Tailormap or by a SLD DescribeLayer request
+    // Find a WFS feature type either because it is configured in Tailormap or by a SLD
+    // DescribeLayer request
     WFSTypeNameDescriptor wfsTypeNameDescriptor = findWFSFeatureType(service, layer, tmft);
 
     if (wfsTypeNameDescriptor == null) {
@@ -169,12 +168,17 @@ public class LayerExportController {
       attributes = new ArrayList<>(nonHiddenAttributes);
     }
 
-    // Empty attributes means we won't specify propNames in GetFeature request, but if we do select only some property names we need the geometry attribute which is not in the 'attributes' request param so spatial export formats don't have the geometry missing.
+    // Empty attributes means we won't specify propNames in GetFeature request, but if we do select
+    // only some property names we need the geometry attribute which is not in the 'attributes'
+    // request param so spatial export formats don't have the geometry missing.
     if (!attributes.isEmpty() && tmft.getDefaultGeometryAttribute() != null) {
       attributes.add(tmft.getDefaultGeometryAttribute());
     }
 
-    // Remove attributes which the WFS does not expose. This can be the case when using the 'customize attributes' feature in GeoServer but when TM has been configured with a JDBC feature type with all the attributes. Requesting a non-existing attribute will return an error.
+    // Remove attributes which the WFS does not expose. This can be the case when using the
+    // 'customize attributes' feature in GeoServer but when TM has been configured with a JDBC
+    // feature type with all the attributes. Requesting a non-existing attribute will return an
+    // error.
     try {
       List<String> wfsAttributeNames = getWFSAttributeNames(wfsTypeNameDescriptor);
       attributes.retainAll(wfsAttributeNames);
@@ -217,8 +221,7 @@ public class LayerExportController {
       getFeatureParameters.add("sortBy", sortBy + ("asc".equals(sortOrder) ? " A" : " D"));
     }
     URI wfsGetFeature =
-        SimpleWFSHelper.getWFSRequestURL(
-            wfsTypeName.wfsUrl(), "GetFeature", getFeatureParameters);
+        SimpleWFSHelper.getWFSRequestURL(wfsTypeName.wfsUrl(), "GetFeature", getFeatureParameters);
 
     logger.info("Layer download, proxying WFS GetFeature request {}", wfsGetFeature);
     try {
@@ -251,8 +254,7 @@ public class LayerExportController {
   }
 
   private record WFSTypeNameDescriptor(
-      String wfsUrl, String typeName, String username, String password) {
-  }
+      String wfsUrl, String typeName, String username, String password) {}
 
   private WFSTypeNameDescriptor findWFSFeatureType(
       GeoService service, GeoServiceLayer layer, TMFeatureType tmft) {
@@ -279,9 +281,12 @@ public class LayerExportController {
 
       SimpleWFSLayerDescription wfsLayerDescription =
           getWFSLayerDescriptionForWMS(service, layer.getName());
-      if (wfsLayerDescription != null && wfsLayerDescription.getWfsUrl() != null && wfsLayerDescription.getFirstTypeName() != null) {
+      if (wfsLayerDescription != null
+          && wfsLayerDescription.getWfsUrl() != null
+          && wfsLayerDescription.getFirstTypeName() != null) {
         wfsUrl = wfsLayerDescription.getWfsUrl();
-        // Ignores possibly multiple feature types associated with the layer (a group layer for instance)
+        // Ignores possibly multiple feature types associated with the layer (a group layer for
+        // instance)
         typeName = wfsLayerDescription.getFirstTypeName();
         auth = service.getAuthentication();
       }
