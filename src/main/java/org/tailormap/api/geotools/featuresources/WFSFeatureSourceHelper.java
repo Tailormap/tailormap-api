@@ -14,6 +14,7 @@ import org.geotools.api.data.ResourceInfo;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.data.wfs.internal.FeatureTypeInfo;
+import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.tailormap.api.geotools.wfs.SimpleWFSHelper;
 import org.tailormap.api.persistence.TMFeatureSource;
@@ -30,11 +31,13 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
       params.put(WFSDataStoreFactory.TIMEOUT.key, timeout);
     }
 
-    String version =
+    LinkedCaseInsensitiveMap<String> wfsUrlParams = new LinkedCaseInsensitiveMap<>();
+    wfsUrlParams.putAll(
         UriComponentsBuilder.fromHttpUrl(tmfs.getUrl())
             .build()
             .getQueryParams()
-            .getFirst("VERSION");
+            .toSingleValueMap());
+    String version = wfsUrlParams.get("VERSION");
     if (!"2.0.0".equals(version)) {
       version = SimpleWFSHelper.DEFAULT_WFS_VERSION;
     }
