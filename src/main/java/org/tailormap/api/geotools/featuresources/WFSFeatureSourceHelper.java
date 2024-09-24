@@ -14,6 +14,7 @@ import org.geotools.api.data.ResourceInfo;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.data.wfs.internal.FeatureTypeInfo;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.tailormap.api.geotools.wfs.SimpleWFSHelper;
 import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
@@ -29,12 +30,17 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
       params.put(WFSDataStoreFactory.TIMEOUT.key, timeout);
     }
 
-    // This sets the VERSION parameter to the default WFS version
-    // (SimpleWFSHelper.DEFAULT_WFS_VERSION), which cannot be overridden by configuring a URL with
-    // VERSION=2.0.0 parameter
+    String version =
+        UriComponentsBuilder.fromHttpUrl(tmfs.getUrl())
+            .build()
+            .getQueryParams()
+            .getFirst("VERSION");
+    if (!"2.0.0".equals(version)) {
+      version = SimpleWFSHelper.DEFAULT_WFS_VERSION;
+    }
     params.put(
         WFSDataStoreFactory.URL.key,
-        SimpleWFSHelper.getWFSRequestURL(tmfs.getUrl(), "GetCapabilities").toURL());
+        SimpleWFSHelper.getWFSRequestURL(tmfs.getUrl(), "GetCapabilities", version, null).toURL());
 
     ServiceAuthentication authentication = tmfs.getAuthentication();
     if (authentication != null) {
