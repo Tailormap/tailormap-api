@@ -51,6 +51,8 @@ public class SimpleWFSHelper {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   public static final int TIMEOUT = 5000;
 
+  public static final String DEFAULT_WFS_VERSION = "1.1.0";
+
   private static HttpClient getDefaultHttpClient() {
     return HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).build();
   }
@@ -61,7 +63,7 @@ public class SimpleWFSHelper {
 
   public static URI getWFSRequestURL(
       String wfsUrl, String request, MultiValueMap<String, String> parameters) {
-    return getWFSRequestURL(wfsUrl, request, "1.1.0", parameters);
+    return getWFSRequestURL(wfsUrl, request, DEFAULT_WFS_VERSION, parameters);
   }
 
   public static URI getWFSRequestURL(

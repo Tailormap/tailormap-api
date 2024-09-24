@@ -7,7 +7,6 @@ package org.tailormap.api.geotools.featuresources;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import org.geotools.api.data.DataStore;
@@ -15,6 +14,9 @@ import org.geotools.api.data.ResourceInfo;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.data.wfs.internal.FeatureTypeInfo;
+import org.springframework.util.LinkedCaseInsensitiveMap;
+import org.springframework.web.util.UriComponentsBuilder;
+import org.tailormap.api.geotools.wfs.SimpleWFSHelper;
 import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.helper.GeoToolsHelper;
@@ -29,17 +31,19 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
       params.put(WFSDataStoreFactory.TIMEOUT.key, timeout);
     }
 
-    // Params which can not be overridden below
-    String wfsUrl = tmfs.getUrl();
-    if (!wfsUrl.endsWith("&") && !wfsUrl.endsWith("?")) {
-      wfsUrl += wfsUrl.contains("?") ? "&" : "?";
+    LinkedCaseInsensitiveMap<String> wfsUrlParams = new LinkedCaseInsensitiveMap<>();
+    wfsUrlParams.putAll(
+        UriComponentsBuilder.fromHttpUrl(tmfs.getUrl())
+            .build()
+            .getQueryParams()
+            .toSingleValueMap());
+    String version = wfsUrlParams.get("VERSION");
+    if (!"2.0.0".equals(version)) {
+      version = SimpleWFSHelper.DEFAULT_WFS_VERSION;
     }
-    wfsUrl = wfsUrl + "REQUEST=GetCapabilities&SERVICE=WFS";
-    if (!wfsUrl.toUpperCase(Locale.ROOT).contains("VERSION")) {
-      wfsUrl += "&VERSION=1.1.0";
-    }
-
-    params.put(WFSDataStoreFactory.URL.key, wfsUrl);
+    params.put(
+        WFSDataStoreFactory.URL.key,
+        SimpleWFSHelper.getWFSRequestURL(tmfs.getUrl(), "GetCapabilities", version, null).toURL());
 
     ServiceAuthentication authentication = tmfs.getAuthentication();
     if (authentication != null) {
