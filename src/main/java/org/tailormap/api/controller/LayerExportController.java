@@ -341,16 +341,16 @@ public class LayerExportController {
       throws IOException {
     Map<String, Object> connectionParameters = new HashMap<>();
     connectionParameters.put(
-        "WFSDataStoreFactory:GET_CAPABILITIES_URL",
+        WFSDataStoreFactory.URL.key,
         SimpleWFSHelper.getWFSRequestURL(wfsTypeNameDescriptor.wfsUrl(), "GetCapabilities")
             .toURL());
-    connectionParameters.put("WFSDataStoreFactory:PROTOCOL", Boolean.FALSE);
-    connectionParameters.put("WFSDataStoreFactory:WFS_STRATEGY", "geoserver");
-    connectionParameters.put("WFSDataStoreFactory:LENIENT", Boolean.TRUE);
-    connectionParameters.put("WFSDataStoreFactory:TIMEOUT", SimpleWFSHelper.TIMEOUT);
+    connectionParameters.put(WFSDataStoreFactory.PROTOCOL.key, Boolean.FALSE);
+    connectionParameters.put(WFSDataStoreFactory.WFS_STRATEGY.key, "geoserver");
+    connectionParameters.put(WFSDataStoreFactory.LENIENT.key, Boolean.TRUE);
+    connectionParameters.put(WFSDataStoreFactory.TIMEOUT.key, SimpleWFSHelper.TIMEOUT);
     if (wfsTypeNameDescriptor.username() != null) {
-      connectionParameters.put("WFSDataStoreFactory.USERNAME", wfsTypeNameDescriptor.username());
-      connectionParameters.put("WFSDataStoreFactory.PASSWORD", wfsTypeNameDescriptor.password());
+      connectionParameters.put(WFSDataStoreFactory.USERNAME.key, wfsTypeNameDescriptor.username());
+      connectionParameters.put(WFSDataStoreFactory.PASSWORD.key, wfsTypeNameDescriptor.password());
     }
 
     WFSDataStore wfs = new WFSDataStoreFactory().createDataStore(connectionParameters);
