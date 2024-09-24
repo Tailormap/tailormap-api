@@ -397,7 +397,7 @@ components:
             tilingDisabled:
               nullable: true
               type: boolean
-              default: false
+              default: true
             tilingGutter:
               nullable: true
               type: integer
