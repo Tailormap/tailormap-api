@@ -306,7 +306,7 @@ public class ApplicationHelper {
           ObjectUtils.firstNonNull(
               serviceLayerSettings.getTilingDisabled(),
               defaultLayerSettings.getTilingDisabled(),
-              false);
+              true);
       Integer tilingGutter =
           ObjectUtils.firstNonNull(
               serviceLayerSettings.getTilingGutter(), defaultLayerSettings.getTilingGutter(), 0);
