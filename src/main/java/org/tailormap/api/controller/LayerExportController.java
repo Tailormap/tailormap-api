@@ -342,7 +342,8 @@ public class LayerExportController {
     Map<String, Object> connectionParameters = new HashMap<>();
     connectionParameters.put(
         "WFSDataStoreFactory:GET_CAPABILITIES_URL",
-        wfsTypeNameDescriptor.wfsUrl() + "REQUEST=GetCapabilities&VERSION=1.1.0");
+        SimpleWFSHelper.getWFSRequestURL(wfsTypeNameDescriptor.wfsUrl(), "GetCapabilities")
+            .toURL());
     connectionParameters.put("WFSDataStoreFactory:PROTOCOL", Boolean.FALSE);
     connectionParameters.put("WFSDataStoreFactory:WFS_STRATEGY", "geoserver");
     connectionParameters.put("WFSDataStoreFactory:LENIENT", Boolean.TRUE);
