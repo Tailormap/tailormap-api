@@ -105,13 +105,13 @@ components:
           description: URL to an image with the layer legend.
           type: string
         tilingDisabled:
-          description: Request a single tile for WMS (may result in errors when max size/mem exceeded)
+          description: Set to true to request a single tile for WMS (may result in errors when max size/mem exceeded)
           type: boolean
         tilingGutter:
           description: Gutter around tile to discard to avoid tile edge rendering artifacts
           type: integer
         hiDpiDisabled:
-          description: Whether the layer should not be rendered in high DPI when available
+          description: Set to true to *not* render in high DPI when available
           type: boolean
           nullable: false
         hiDpiMode:

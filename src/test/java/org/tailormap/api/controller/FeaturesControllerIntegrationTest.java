@@ -271,14 +271,13 @@ class FeaturesControllerIntegrationTest {
     return new ResultMatcher[] {
       jsonPath("$.features[0].attributes.identificatie").doesNotExist(),
       jsonPath("$.features[0].attributes.ligtInLandCode").doesNotExist(),
-      jsonPath("$.features[0].attributes.ligtInLandNaam").doesNotExist(),
       jsonPath("$.features[0].attributes.fuuid").doesNotExist(),
       jsonPath("$.columnMetadata").isArray(),
       jsonPath("$.columnMetadata").isNotEmpty(),
+      jsonPath("$.template").isNotEmpty(),
       jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"),
       jsonPath("$.columnMetadata[?(@.key == 'identificatie')].key").isEmpty(),
       jsonPath("$.columnMetadata[?(@.key == 'ligtInLandCode')].key").isEmpty(),
-      jsonPath("$.columnMetadata[?(@.key == 'ligtInLandNaam')].key").isEmpty(),
       jsonPath("$.columnMetadata[?(@.key == 'fuuid')].key").isEmpty(),
     };
   }

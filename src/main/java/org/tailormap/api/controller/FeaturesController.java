@@ -60,6 +60,7 @@ import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.json.AppLayerSettings;
 import org.tailormap.api.persistence.json.AppTreeLayerNode;
 import org.tailormap.api.persistence.json.AttributeSettings;
+import org.tailormap.api.persistence.json.FeatureTypeTemplate;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.json.TMAttributeDescriptor;
 import org.tailormap.api.persistence.json.TMAttributeType;
@@ -459,6 +460,10 @@ public class FeaturesController implements Constants {
       }
     } finally {
       featureSource.getDataStore().dispose();
+    }
+    FeatureTypeTemplate ftt = tmFeatureType.getSettings().getTemplate();
+    if (ftt != null) {
+      featuresResponse.setTemplate(ftt.getTemplate());
     }
     if (addFields) {
       configuredAttributes.values().stream()

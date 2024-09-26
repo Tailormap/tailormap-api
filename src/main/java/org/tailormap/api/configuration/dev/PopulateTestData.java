@@ -56,6 +56,7 @@ import org.tailormap.api.persistence.json.AuthorizationRuleDecision;
 import org.tailormap.api.persistence.json.Bounds;
 import org.tailormap.api.persistence.json.CatalogNode;
 import org.tailormap.api.persistence.json.FeatureTypeRef;
+import org.tailormap.api.persistence.json.FeatureTypeTemplate;
 import org.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import org.tailormap.api.persistence.json.GeoServiceSettings;
@@ -519,7 +520,8 @@ public class PopulateTestData {
                                   new GeoServiceLayerSettings()
                                       .attribution(map5Attr.getAttribution())
                                       .hiDpiDisabled(false)
-                                      .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
+                                      .hiDpiMode(
+                                          TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
                                       .hiDpiSubstituteLayer("map5topo_hq"),
                               "map5topo_gray", map5Attr,
                               "map5topo_simple", map5Attr,
@@ -755,10 +757,24 @@ public class PopulateTestData {
             ft -> {
               ft.getSettings().addHideAttributesItem("identificatie");
               ft.getSettings().addHideAttributesItem("ligtInLandCode");
-              ft.getSettings().addHideAttributesItem("ligtInLandNaam");
               ft.getSettings().addHideAttributesItem("fuuid");
               ft.getSettings()
                   .putAttributeSettingsItem("naam", new AttributeSettings().title("Naam"));
+              ft.getSettings()
+                  .setTemplate(
+                      new FeatureTypeTemplate()
+                          .templateLanguage("simple")
+                          .markupLanguage("markdown")
+                          .template(
+                              """
+### Provincie
+Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
+
+| Attribuut | Waarde             |
+| --------- | ------------------ |
+| `code`    | {{code}}           |
+| `naam`    | {{naam}}           |
+| `ligt in` | {{ligtInLandNaam}} |"""));
             });
 
     featureSources.get("postgis").getFeatureTypes().stream()
@@ -1062,7 +1078,8 @@ public class PopulateTestData {
       root.setChildrenIds(childrenIds);
       app.getSettings()
           .putLayerSettingsItem("lyr:map5:map5topo", new AppLayerSettings().title("Map5"))
-          .putLayerSettingsItem("lyr:map5:map5topo_simple", new AppLayerSettings().title("Map5 simple"));
+          .putLayerSettingsItem(
+              "lyr:map5:map5topo_simple", new AppLayerSettings().title("Map5 simple"));
       app.getContentRoot()
           .addBaseLayerNodesItem(
               new AppTreeLayerNode()
