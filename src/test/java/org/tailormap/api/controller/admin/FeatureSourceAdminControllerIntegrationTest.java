@@ -117,6 +117,7 @@ class FeatureSourceAdminControllerIntegrationTest {
       try {
         new JdbcTemplate(dataSource).execute("drop table test");
       } catch (Exception ignored) {
+        // tell the compiler we want to ignore any exceptions
       }
     }
 
