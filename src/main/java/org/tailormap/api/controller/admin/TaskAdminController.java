@@ -8,12 +8,20 @@ package org.tailormap.api.controller.admin;
 import static java.net.HttpURLConnection.HTTP_ACCEPTED;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatusCode;
@@ -36,6 +44,12 @@ public class TaskAdminController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  private final Scheduler scheduler;
+
+  public TaskAdminController(Scheduler scheduler) {
+    this.scheduler = scheduler;
+  }
+
   @Operation(
       summary = "List all tasks, optionally filtered by type",
       description = "This will return a list of all tasks, optionally filtered by job type")
@@ -44,7 +58,7 @@ public class TaskAdminController {
       produces = MediaType.APPLICATION_JSON_VALUE)
   @ApiResponse(
       responseCode = "200",
-      description = "List of all tasks",
+      description = "List of all tasks, this list may be empty",
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -52,26 +66,38 @@ public class TaskAdminController {
                   @Schema(
                       example =
                           "{\"tasks\":[{\"uuid\":\"6308d26e-fe1e-4268-bb28-20db2cd06914\",\"type\":\"TestJob\"},{\"uuid\":\"d5ce9152-e90e-4b5a-b129-3b2366cabca8\",\"type\":\"label\"}]}")))
-  public ResponseEntity<?> list(@RequestParam(required = false) String type) {
+  public ResponseEntity<?> list(@RequestParam(required = false) String type)
+      throws SchedulerException {
     logger.debug("Listing all tasks (optional type filter: {})", (null == type ? "all" : type));
+    List<ObjectNode> tasks = new ArrayList<>();
+
+    GroupMatcher<JobKey> groupMatcher =
+        (null == type ? GroupMatcher.anyGroup() : GroupMatcher.groupEquals(type));
+    scheduler.getJobKeys(groupMatcher).stream()
+        .map(
+            jobKey -> {
+              try {
+                return scheduler.getJobDetail(jobKey);
+              } catch (SchedulerException e) {
+                logger.error("Error getting job detail", e);
+                return null;
+              }
+            })
+        .filter(Objects::nonNull)
+        .forEach(
+            jobDetail -> {
+              logger.debug("Job: {}", jobDetail.getKey());
+              tasks.add(
+                  new ObjectMapper()
+                      .createObjectNode()
+                      .put("uuid", jobDetail.getKey().getName())
+                      .put("type", jobDetail.getJobDataMap().getString("type")));
+            });
 
     return ResponseEntity.ok(
         new ObjectMapper()
             .createObjectNode()
-            .set(
-                "tasks",
-                new ObjectMapper()
-                    .createArrayNode()
-                    .add(
-                        new ObjectMapper()
-                            .createObjectNode()
-                            .put("uuid", "6308d26e-fe1e-4268-bb28-20db2cd06914")
-                            .put("type", "dummy"))
-                    .add(
-                        new ObjectMapper()
-                            .createObjectNode()
-                            .put("uuid", "d5ce9152-e90e-4b5a-b129-3b2366cabca8")
-                            .put("type", "dummy"))));
+            .set("tasks", new ObjectMapper().createArrayNode().addAll(tasks)));
   }
 
   @Operation(

@@ -5,13 +5,17 @@
  */
 package org.tailormap.api.controller.admin;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.jayway.jsonpath.JsonPath;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -22,6 +26,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
@@ -47,33 +52,69 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void listAllTasks() throws Exception {
-    mockMvc
-        .perform(get(adminBasePath + "/tasks").accept(MediaType.APPLICATION_JSON))
-        //                .andDo(print())
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.tasks").isArray())
-        .andExpect(jsonPath("$.tasks.length()").value(2));
+    MvcResult result =
+        mockMvc
+            .perform(get(adminBasePath + "/tasks").accept(MediaType.APPLICATION_JSON))
+            // .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.tasks").isArray())
+            .andExpect(jsonPath("$.tasks.length()").value(2))
+            .andExpect(jsonPath("$.tasks[0].type").value("dummy"))
+            .andExpect(jsonPath("$.tasks[1].type").value("dummy"))
+            .andReturn();
+    final String body = result.getResponse().getContentAsString();
+    String validUUID = JsonPath.read(body, "$.tasks[0].uuid");
+    assertEquals(UUID.fromString(validUUID).toString(), validUUID);
+
+    validUUID = JsonPath.read(body, "$.tasks[1].uuid");
+    assertEquals(UUID.fromString(validUUID).toString(), validUUID);
   }
 
   @Test
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void listTasksForType() throws Exception {
+  void listTasksForExistingDummyType() throws Exception {
+    MvcResult result =
+        mockMvc
+            .perform(
+                get(adminBasePath + "/tasks")
+                    .queryParam("type", "dummy")
+                    .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.tasks").isArray())
+            .andExpect(jsonPath("$.tasks.length()").value(2))
+            .andExpect(jsonPath("$.tasks[0].type").value("dummy"))
+            .andExpect(jsonPath("$.tasks[1].type").value("dummy"))
+            .andReturn();
+
+    final String body = result.getResponse().getContentAsString();
+    String validUUID = JsonPath.read(body, "$.tasks[0].uuid");
+    assertEquals(UUID.fromString(validUUID).toString(), validUUID);
+
+    validUUID = JsonPath.read(body, "$.tasks[1].uuid");
+    assertEquals(UUID.fromString(validUUID).toString(), validUUID);
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {Group.ADMIN})
+  void listTasksForNonExistentType() throws Exception {
     mockMvc
         .perform(
             get(adminBasePath + "/tasks")
-                .queryParam("type", "dummy")
+                .queryParam("type", "does-not-exist")
                 .accept(MediaType.APPLICATION_JSON))
-        // .andDo(print())
+        .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
-        .andExpect(jsonPath("$.tasks.length()").value(2));
+        .andExpect(jsonPath("$.tasks.length()").value(0));
   }
 
   @Test
@@ -86,7 +127,7 @@ class TaskAdminControllerIntegrationTest {
         .perform(
             get(adminBasePath + "/tasks/{uuid}", "6308d26e-fe1e-4268-bb28-20db2cd06914")
                 .accept(MediaType.APPLICATION_JSON))
-        //                .andDo(print())
+        // .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.uuid").value("6308d26e-fe1e-4268-bb28-20db2cd06914"))
