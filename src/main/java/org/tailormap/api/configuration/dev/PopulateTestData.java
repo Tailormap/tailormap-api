@@ -74,8 +74,8 @@ import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.repository.UploadRepository;
 import org.tailormap.api.repository.UserRepository;
-import org.tailormap.api.scheduling.DummyJob;
 import org.tailormap.api.scheduling.JobCreator;
+import org.tailormap.api.scheduling.PocTask;
 import org.tailormap.api.security.InternalAdminAuthentication;
 import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.solr.SolrService;
@@ -170,7 +170,7 @@ public class PopulateTestData {
       } catch (Exception e) {
         logger.error("Exception creating Solr Index for testdata (continuing)", e);
       }
-      createDummyJobs();
+      createPocTasks();
     } finally {
       InternalAdminAuthentication.clearSecurityContextAuthentication();
     }
@@ -1462,24 +1462,23 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     }
   }
 
-  private void createDummyJobs() {
-    logger.info("Creating dummy jobs");
+  private void createPocTasks() {
+    logger.info("Creating POC tasks");
     try {
       logger.info(
-          "Created minutely job with key: {}",
+          "Created minutely task with key: {}",
           jobCreator.createJob(
-              DummyJob.class,
-              Map.of("type", "dummy", "foo", "bar", "when", "every minute"), /* run every minute */
+              PocTask.class,
+              Map.of("type", "poc", "foo", "bar", "when", "every minute"), /* run every minute */
               "0 0/1 * 1/1 * ? *"));
       logger.info(
-          "Created hourly job with key: {}",
+          "Created hourly task with key: {}",
           jobCreator.createJob(
-              DummyJob.class,
-              Map.of("type", "dummy", "foo", "bar", "when", "every hour"), /* run every hour */
+              PocTask.class,
+              Map.of("type", "poc", "foo", "bar", "when", "every hour"), /* run every hour */
               "0 0 0/1 1/1 * ? *"));
-
     } catch (SchedulerException e) {
-      logger.error("Error creating dummy job", e);
+      logger.error("Error creating scheduling poc tasks", e);
     }
   }
 }

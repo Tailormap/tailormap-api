@@ -44,7 +44,7 @@ class TaskAdminControllerIntegrationTest {
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
 
-  private static final String taskType = "dummy";
+  private static final String taskType = "poc";
 
   @BeforeAll
   void initialize() {
@@ -79,7 +79,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void listTasksForExistingDummyType() throws Exception {
+  void listTasksForExistingType() throws Exception {
     MvcResult result =
         mockMvc
             .perform(

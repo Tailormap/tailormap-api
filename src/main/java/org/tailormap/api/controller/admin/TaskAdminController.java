@@ -15,9 +15,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -131,13 +133,13 @@ public class TaskAdminController {
                           """
                           {
                             "uuid":"6308d26e-fe1e-4268-bb28-20db2cd06914",
-                            "type":"dummy",
-                            "description":"This is a dummy task",
+                            "type":"poc",
+                            "description":"This is a poc task",
                             "startTime":"2024-06-06T12:00:00Z",
                             "nextTime":"2024-06-06T12:00:00Z",
                             "jobData":{
-                              "type":"dummy",
-                              "description":"This is a dummy task"
+                              "type":"poc",
+                              "description":"This is a poc task"
                             },
                             "status":"TODO",
                             "progress":"TODO",
@@ -154,6 +156,7 @@ public class TaskAdminController {
 
     /* there should be only one */
     Trigger trigger = scheduler.getTriggersOfJob(details.getKey()).get(0);
+    CronTrigger cron = ((CronTrigger) trigger);
 
     return ResponseEntity.ok(
         new ObjectMapper()
@@ -164,8 +167,13 @@ public class TaskAdminController {
             // Date fields
             .putPOJO("startTime", trigger.getStartTime())
             .putPOJO("nextTime", trigger.getStartTime())
+            .putPOJO("lastTime", trigger.getPreviousFireTime())
+            // Cron fields
+            .put("cronExpression", cron.getCronExpression())
+            .putPOJO("nextFireTimes", getFireTimes(cron, 5))
+
+            // TODO add status, progress, result and message etc. from jobDataMap
             .putPOJO("jobData", jobDataMap)
-            // TODO add status, progress, result and message etc.
             .put("status", "TODO")
             .put("progress", "TODO")
             .put("result", "TODO")
@@ -266,5 +274,19 @@ public class TaskAdminController {
         .filter(jobkey -> jobkey.getName().equals(uuid.toString()))
         .findFirst()
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+  }
+
+  private List<Date> getFireTimes(CronTrigger trigger, int count) {
+    List<Date> fireTimes = new ArrayList<>(count);
+    Date startTime = trigger.getStartTime();
+    for (int i = 0; i < count; i++) {
+      Date nextFireTime = trigger.getFireTimeAfter(startTime);
+      if (nextFireTime == null) {
+        break;
+      }
+      fireTimes.add(nextFireTime);
+      startTime = nextFireTime;
+    }
+    return fireTimes;
   }
 }
