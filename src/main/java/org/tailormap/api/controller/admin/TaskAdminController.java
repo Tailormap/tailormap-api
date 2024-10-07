@@ -18,9 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.Trigger;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +57,7 @@ public class TaskAdminController {
 
   @Operation(
       summary = "List all tasks, optionally filtered by type",
-      description = "This will return a list of all tasks, optionally filtered by job type")
+      description = "This will return a list of all tasks, optionally filtered by task type")
   @GetMapping(
       path = "${tailormap-api.admin.base-path}/tasks",
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -81,7 +84,7 @@ public class TaskAdminController {
               try {
                 return scheduler.getJobDetail(jobKey);
               } catch (SchedulerException e) {
-                logger.error("Error getting job detail", e);
+                logger.error("Error getting task detail", e);
                 return null;
               }
             })
@@ -103,11 +106,11 @@ public class TaskAdminController {
   }
 
   @Operation(
-      summary = "List all details for a given job",
+      summary = "List all details for a given task",
       description =
-          "This will return the details of the job, including the status, progress, result and any message")
+          "This will return the details of the task, including the status, progress, result and any message")
   @GetMapping(
-      path = "${tailormap-api.admin.base-path}/tasks/{uuid}",
+      path = "${tailormap-api.admin.base-path}/tasks/{type}/{uuid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
   @ApiResponse(
       responseCode = "404",
@@ -118,33 +121,62 @@ public class TaskAdminController {
               schema = @Schema(example = "{\"message\":\"Job does not exist\",\"code\":404}")))
   @ApiResponse(
       responseCode = "200",
-      description = "Details of the job",
+      description = "Details of the task",
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema =
                   @Schema(
                       example =
-                          "{\"uuid\":\"6308d26e-fe1e-4268-bb28-20db2cd06914\",\"type\":\"TestJob\", \"status\":\"running\", \"progress\":0.5, \"result\":\"\", message:\"something is happening\"}")))
-  public ResponseEntity<?> details(@PathVariable UUID uuid) {
-    logger.debug("Getting job details for {}", uuid);
+                          """
+                          {
+                            "uuid":"6308d26e-fe1e-4268-bb28-20db2cd06914",
+                            "type":"dummy",
+                            "description":"This is a dummy task",
+                            "startTime":"2024-06-06T12:00:00Z",
+                            "nextTime":"2024-06-06T12:00:00Z",
+                            "jobData":{
+                              "type":"dummy",
+                              "description":"This is a dummy task"
+                            },
+                            "status":"TODO",
+                            "progress":"TODO",
+                            "result":"TODO",
+                            "message":"TODO something is happening"
+                          }
+                          """)))
+  public ResponseEntity<?> details(@PathVariable String type, @PathVariable UUID uuid)
+      throws SchedulerException {
+    logger.debug("Getting task details for {}:{}", type, uuid);
+
+    JobDetail details = scheduler.getJobDetail(getJobKey(type, uuid));
+    JobDataMap jobDataMap = details.getJobDataMap();
+
+    /* there should be only one */
+    Trigger trigger = scheduler.getTriggersOfJob(details.getKey()).get(0);
 
     return ResponseEntity.ok(
         new ObjectMapper()
             .createObjectNode()
-            .put("uuid", "6308d26e-fe1e-4268-bb28-20db2cd06914")
-            .put("type", "dummy")
-            .put("status", "running")
-            .put("progress", 0.5)
-            .put("result", "")
-            .put("message", "something is happening"));
+            .put("uuid", details.getKey().getName())
+            .put("type", jobDataMap.getString("type"))
+            .put("description", jobDataMap.getString("description"))
+            // Date fields
+            .putPOJO("startTime", trigger.getStartTime())
+            .putPOJO("nextTime", trigger.getStartTime())
+            .putPOJO("jobData", jobDataMap)
+            // TODO add status, progress, result and message etc.
+            .put("status", "TODO")
+            .put("progress", "TODO")
+            .put("result", "TODO")
+            .put("message", "TODO something is happening"));
   }
 
   @Operation(
-      summary = "Start a job",
-      description = "This will start the job if it is not already running")
+      summary = "Start a task",
+      description = "This will start the task if it is not already running")
   @PutMapping(
-      path = "${tailormap-api.admin.base-path}/tasks/{uuid}/start",
+      path = "${tailormap-api.admin.base-path}/tasks/{type}/{uuid}/start",
       produces = MediaType.APPLICATION_JSON_VALUE)
   @ApiResponse(
       responseCode = "404",
@@ -160,18 +192,18 @@ public class TaskAdminController {
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(example = "{\"message\":\"Job starting accepted\",\"code\":202}")))
-  public ResponseEntity<?> startJob(@PathVariable UUID uuid) {
-    logger.debug("Starting job {}", uuid);
+  public ResponseEntity<?> startJob(@PathVariable String type, @PathVariable UUID uuid) {
+    logger.debug("Starting task {}:{}", type, uuid);
 
     return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_ACCEPTED))
         .body(new ObjectMapper().createObjectNode().put("message", "Job starting accepted"));
   }
 
   @Operation(
-      summary = "Stop a job",
-      description = "This will stop the job, if the job is not running, nothing will happen")
+      summary = "Stop a task",
+      description = "This will stop the task, if the task is not running, nothing will happen")
   @PutMapping(
-      path = "${tailormap-api.admin.base-path}/tasks/{uuid}/stop",
+      path = "${tailormap-api.admin.base-path}/tasks/{type}/{uuid}/stop",
       produces = MediaType.APPLICATION_JSON_VALUE)
   @ApiResponse(
       responseCode = "404",
@@ -187,17 +219,17 @@ public class TaskAdminController {
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(example = "{\"message\":\"Job stopping accepted\"}")))
-  public ResponseEntity<?> stopJob(@PathVariable UUID uuid) {
-    logger.debug("Stopping job {}", uuid);
+  public ResponseEntity<?> stopJob(@PathVariable String type, @PathVariable UUID uuid) {
+    logger.debug("Stopping task {}:{}", type, uuid);
 
     return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_ACCEPTED))
         .body(new ObjectMapper().createObjectNode().put("message", "Job stopping accepted"));
   }
 
   @Operation(
-      summary = "Delete a job",
+      summary = "Delete a task",
       description =
-          "This will remove the job from the scheduler and delete all information about the job")
+          "This will remove the task from the scheduler and delete all information about the task")
   @DeleteMapping(
       path = "${tailormap-api.admin.base-path}/tasks/{type}/{uuid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -212,15 +244,27 @@ public class TaskAdminController {
   public ResponseEntity<?> delete(@PathVariable String type, @PathVariable UUID uuid)
       throws SchedulerException {
 
-    JobKey jobKey =
-        scheduler.getJobKeys(GroupMatcher.groupEquals(type)).stream()
-            .filter(jobkey -> jobkey.getName().equals(uuid.toString()))
-            .findFirst()
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-    boolean succes = scheduler.deleteJob(jobKey);
+    boolean succes = scheduler.deleteJob(getJobKey(type, uuid));
     logger.info("Job {}:{} deletion {}", type, uuid, (succes ? "succeeded" : "failed"));
 
     return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Get the job key for a given type and uuid.
+   *
+   * @param type the type of the job
+   * @param uuid the uuid of the job
+   * @return the job key
+   * @throws SchedulerException when the scheduler cannot be reached
+   * @throws ResponseStatusException when the job does not exist
+   */
+  private JobKey getJobKey(String type, UUID uuid)
+      throws SchedulerException, ResponseStatusException {
+    logger.debug("Finding job key for task {}:{}", type, uuid);
+    return scheduler.getJobKeys(GroupMatcher.groupEquals(type)).stream()
+        .filter(jobkey -> jobkey.getName().equals(uuid.toString()))
+        .findFirst()
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
   }
 }
