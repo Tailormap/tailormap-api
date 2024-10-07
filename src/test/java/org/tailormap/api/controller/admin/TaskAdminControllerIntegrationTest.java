@@ -104,6 +104,7 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void listTasksForNonExistentType() throws Exception {
     mockMvc
         .perform(
@@ -169,10 +170,42 @@ class TaskAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void deleteTask() throws Exception {
+  void deleteNonExistentTask() throws Exception {
     mockMvc
         .perform(
-            delete(adminBasePath + "/tasks/{uuid}", "6308d26e-fe1e-4268-bb28-20db2cd06914")
+            delete(
+                    adminBasePath + "/tasks/dummy/{uuid}", /*does not exist*/
+                    "6308d26e-fe1e-4268-bb28-20db2cd06914")
+                .accept(MediaType.APPLICATION_JSON))
+        //                .andDo(print())
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {Group.ADMIN})
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void deleteTask() throws Exception {
+    MvcResult result =
+        mockMvc
+            .perform(
+                get(adminBasePath + "/tasks")
+                    .queryParam("type", "dummy")
+                    .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.tasks").isArray())
+            .andExpect(jsonPath("$.tasks.length()").value(2))
+            .andReturn();
+
+    final String validUUID =
+        JsonPath.read(result.getResponse().getContentAsString(), "$.tasks[0].uuid");
+
+    mockMvc
+        .perform(
+            delete(adminBasePath + "/tasks/dummy/{uuid}", /*does not exist*/ validUUID)
                 .accept(MediaType.APPLICATION_JSON))
         //                .andDo(print())
         .andExpect(status().isNoContent());

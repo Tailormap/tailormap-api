@@ -24,6 +24,7 @@ import org.quartz.SchedulerException;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Admin controller for controlling the task scheduler. Not to be used to create new tasks, adding
@@ -197,7 +199,7 @@ public class TaskAdminController {
       description =
           "This will remove the job from the scheduler and delete all information about the job")
   @DeleteMapping(
-      path = "${tailormap-api.admin.base-path}/tasks/{uuid}",
+      path = "${tailormap-api.admin.base-path}/tasks/{type}/{uuid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
   @ApiResponse(
       responseCode = "404",
@@ -207,8 +209,17 @@ public class TaskAdminController {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(example = "{\"message\":\"Job does not exist\"}")))
   @ApiResponse(responseCode = "204", description = "Job is deleted")
-  public ResponseEntity<?> delete(@PathVariable UUID uuid) {
-    logger.debug("Deleted job {}", uuid);
+  public ResponseEntity<?> delete(@PathVariable String type, @PathVariable UUID uuid)
+      throws SchedulerException {
+
+    JobKey jobKey =
+        scheduler.getJobKeys(GroupMatcher.groupEquals(type)).stream()
+            .filter(jobkey -> jobkey.getName().equals(uuid.toString()))
+            .findFirst()
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+    boolean succes = scheduler.deleteJob(jobKey);
+    logger.info("Job {}:{} deletion {}", type, uuid, (succes ? "succeeded" : "failed"));
 
     return ResponseEntity.noContent().build();
   }
