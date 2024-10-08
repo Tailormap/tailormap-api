@@ -21,10 +21,10 @@ To develop the backend this Spring Boot application can be run locally.
 
 To build and run the project, you need to have the following installed:
 
-- Java 11 JDK
+- Java 17 JDK
 - Maven 3.9.5 or higher
 - PostgreSQL configuration database
-- Docker 20.10.x with buildx 0.9 or higher (this requirement may be skipped if you don't need to build
+- Docker 27.x with buildx 0.17 or higher (this requirement may be skipped if you don't need to build
   the docker images or build release artifacts)
 
 The quickest way to start the PostgreSQL database is to check out the Docker Compose stack in [tailormap-viewer](https://github.com/Tailormap/tailormap-viewer/)
@@ -179,7 +179,7 @@ Some quick points of attention:
 * PMD checks are enforced. Run `mvn pmd:check` to verify your code.  
 * The ErrorProne compiler is used
 * A current release of Maven is required
-* Java 11
+* Java 17
 * JUnit 4 is forbidden
 * Code is reviewed before merge to the main branch
 * Javadoc must be valid
