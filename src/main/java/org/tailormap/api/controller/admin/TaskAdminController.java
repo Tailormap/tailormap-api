@@ -98,7 +98,8 @@ public class TaskAdminController {
                   new ObjectMapper()
                       .createObjectNode()
                       .put("uuid", jobDetail.getKey().getName())
-                      .put("type", jobDetail.getJobDataMap().getString("type")));
+                      .put("type", jobDetail.getKey().getGroup())
+                      .put("description", jobDetail.getJobDataMap().getString("description")));
             });
 
     return ResponseEntity.ok(
@@ -141,7 +142,7 @@ public class TaskAdminController {
                               "type":"poc",
                               "description":"This is a poc task"
                             },
-                            "status":"TODO",
+                            "status":"NORMAL",
                             "progress":"TODO",
                             "result":"TODO",
                             "message":"TODO something is happening"
@@ -162,19 +163,18 @@ public class TaskAdminController {
         new ObjectMapper()
             .createObjectNode()
             .put("uuid", details.getKey().getName())
-            .put("type", jobDataMap.getString("type"))
+            .put("type", details.getKey().getGroup())
             .put("description", jobDataMap.getString("description"))
+            .put("status", jobDataMap.getString("status"))
             // Date fields
             .putPOJO("startTime", trigger.getStartTime())
             .putPOJO("nextTime", trigger.getStartTime())
             .putPOJO("lastTime", trigger.getPreviousFireTime())
             // Cron fields
             .put("cronExpression", cron.getCronExpression())
-            .putPOJO("nextFireTimes", getFireTimes(cron, 5))
-
-            // TODO add status, progress, result and message etc. from jobDataMap
+            .putPOJO("nextFireTimes", getFireTimes(cron))
             .putPOJO("jobData", jobDataMap)
-            .put("status", "TODO")
+            // TODO add  progress, result and message etc. from jobDataMap
             .put("progress", "TODO")
             .put("result", "TODO")
             .put("message", "TODO something is happening"));
@@ -276,10 +276,10 @@ public class TaskAdminController {
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
   }
 
-  private List<Date> getFireTimes(CronTrigger trigger, int count) {
-    List<Date> fireTimes = new ArrayList<>(count);
+  private List<Date> getFireTimes(CronTrigger trigger) {
+    List<Date> fireTimes = new ArrayList<>(5);
     Date startTime = trigger.getStartTime();
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < 5; i++) {
       Date nextFireTime = trigger.getFireTimeAfter(startTime);
       if (nextFireTime == null) {
         break;

@@ -6,11 +6,9 @@
 package org.tailormap.api.scheduling;
 
 import java.lang.invoke.MethodHandles;
-import java.util.Map;
 import java.util.UUID;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
-import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -22,38 +20,40 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 
 @Service
-public class JobCreator {
+public class TaskCreator {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final Scheduler scheduler;
 
-  public JobCreator(Scheduler scheduler) {
+  public TaskCreator(@Autowired Scheduler scheduler) {
     this.scheduler = scheduler;
   }
 
   /**
    * Create a job and schedule it with a cron expression.
    *
-   * @param job the job to create
-   * @param jobData a map with job data, the "type" key is mandatory
+   * @param job the job class to create
+   * @param jobData a map with job data, the {@code type} and {@code description} keys are mandatory
    * @param cronExpression the cron expression
    * @return the job name
    * @throws SchedulerException if the job could not be scheduled
    */
-  public String createJob(Class<? extends Job> job, Map<?, ?> jobData, String cronExpression)
+  public String createTask(
+      Class<? extends QuartzJobBean> job, TMJobDataMap jobData, String cronExpression)
       throws SchedulerException {
 
     // Create a job
     JobDetail jobDetail =
-        JobBuilder.newJob()
+        JobBuilder.newJob(job)
             .withIdentity(new JobKey(UUID.randomUUID().toString(), jobData.get("type").toString()))
-            .withDescription(/* TODO add parameter of get from jobData */ job.getSimpleName())
+            .withDescription(jobData.getDescription())
             .usingJobData(new JobDataMap(jobData))
-            .ofType(job)
             .build();
 
     // Create a trigger

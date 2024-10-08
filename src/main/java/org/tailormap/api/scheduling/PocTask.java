@@ -11,6 +11,7 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.PersistJobDataAfterExecution;
+import org.quartz.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -25,8 +26,14 @@ public class PocTask extends QuartzJobBean {
 
   @Override
   protected void executeInternal(@NonNull JobExecutionContext context) {
+    logger.info(
+        "POC task {}:{} executing, details follow:",
+        context.getJobDetail().getKey().getGroup(),
+        context.getJobDetail().getKey().getName());
+
     // NOTE: This immutable map is a snapshot of the job data maps at the time of the job execution.
     JobDataMap mergedJobDataMap = context.getMergedJobDataMap();
+
     // NOTE: This map is mutable and can be used to store job data.
     JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
 
@@ -34,11 +41,8 @@ public class PocTask extends QuartzJobBean {
     jobDataMap.put("executions", i);
     jobDataMap.put("lastExecutionFinished", Instant.now());
     context.setResult("POC task executed successfully");
+    jobDataMap.put("status", Trigger.TriggerState.NORMAL);
 
-    logger.info(
-        "POC task {}:{} executing, details follow:",
-        context.getJobDetail().getKey().getGroup(),
-        context.getJobDetail().getKey().getName());
     mergedJobDataMap.forEach((key, value) -> logger.info("   {}: {}", key, value));
   }
 }
