@@ -17,121 +17,121 @@
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.databind.ObjectMapper;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> java.time.OffsetDateTime;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> java.time.ZoneId;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.util.Collection;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.util.List;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.util.NoSuchElementException;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.quartz.SchedulerException;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.SpringApplication;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.context.event.ApplicationReadyEvent;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.ApplicationContext;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.event.EventListener;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.springframework.core.io.ClassPathResource;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.springframework.transaction.annotation.Transactional;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Application;
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Catalog;
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Configuration;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.GeoService;
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Group;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.SearchIndex;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureSource;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureType;
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Upload;
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.User;
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.helper.GeoServiceHelper;
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AdminAdditionalProperty;
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppContent;
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppLayerSettings;
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppSettings;
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppTreeLayerNode;
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppTreeLevelNode;
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppTreeNode;
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AttributeSettings;
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AuthorizationRule;
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AuthorizationRuleDecision;
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.Bounds;
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.CatalogNode;
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.FeatureTypeRef;
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.FeatureTypeTemplate;
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.GeoServiceLayerSettings;
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.GeoServiceSettings;
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.JDBCConnectionProperties;
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.ServiceAuthentication;
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.TailormapObjectRef;
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.TileLayerHiDpiMode;
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.ApplicationRepository;
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.CatalogRepository;
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.ConfigurationRepository;
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.FeatureSourceRepository;
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.GeoServiceRepository;
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.GroupRepository;
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.SearchIndexRepository;
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.UploadRepository;
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.UserRepository;
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.scheduling.JobCreator;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.util.Constants.TEST_TASK_TYPE;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> com.fasterxml.jackson.databind.ObjectMapper;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> java.time.OffsetDateTime;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.time.ZoneId;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.util.Collection;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.util.NoSuchElementException;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.quartz.SchedulerException;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.SpringApplication;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.context.event.ApplicationReadyEvent;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.ApplicationContext;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.event.EventListener;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.springframework.core.io.ClassPathResource;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.springframework.transaction.annotation.Transactional;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Application;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Catalog;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Configuration;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.GeoService;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Group;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.SearchIndex;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureSource;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureType;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Upload;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.User;
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.helper.GeoServiceHelper;
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AdminAdditionalProperty;
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppContent;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppLayerSettings;
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppSettings;
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppTreeLayerNode;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppTreeLevelNode;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppTreeNode;
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AttributeSettings;
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AuthorizationRule;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AuthorizationRuleDecision;
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.Bounds;
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.CatalogNode;
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.FeatureTypeRef;
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.FeatureTypeTemplate;
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.GeoServiceLayerSettings;
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.GeoServiceSettings;
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.JDBCConnectionProperties;
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.ServiceAuthentication;
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.TailormapObjectRef;
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.TileLayerHiDpiMode;
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.ApplicationRepository;
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.CatalogRepository;
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.ConfigurationRepository;
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.FeatureSourceRepository;
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.GeoServiceRepository;
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.GroupRepository;
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.SearchIndexRepository;
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.UploadRepository;
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.UserRepository;
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.scheduling.PocTask;
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.security.InternalAdminAuthentication;
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.solr.SolrHelper;
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.solr.SolrService;
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.AppStyling;
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.Component;
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.ComponentConfig;
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>  <em class="jxr_javadoccomment"> * Populates entities to add services and applications to demo functionality, support development</em>
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>  <em class="jxr_javadoccomment"> * and use in integration tests with a common set of test data. See README.md for usage details.</em>
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>  @org.springframework.context.annotation.Configuration
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>  @ConditionalOnProperty(name = <span class="jxr_string">"tailormap-api.database.populate-testdata"</span>, havingValue = <span class="jxr_string">"true"</span>)
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="PopulateTestData" href="../../../../../org/tailormap/api/configuration/dev/PopulateTestData.html#PopulateTestData">PopulateTestData</a> {
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>  
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>    @Value(<span class="jxr_string">"${spatial.dbs.connect:false}"</span>)
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> connectToSpatialDbs;
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>  
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>   @Value(<span class="jxr_string">"${spatial.dbs.localhost:true}"</span>)
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> connectToSpatialDbsAtLocalhost;
-<a class="jxr_linenumber" name="L102" href="#L102">102</a> 
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>   @Value(<span class="jxr_string">"${tailormap-api.database.populate-testdata.admin-hashed-password}"</span>)
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>   <strong class="jxr_keyword">private</strong> String adminHashedPassword;
-<a class="jxr_linenumber" name="L105" href="#L105">105</a> 
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>   @Value(<span class="jxr_string">"${tailormap-api.database.populate-testdata.exit:false}"</span>)
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> exit;
-<a class="jxr_linenumber" name="L108" href="#L108">108</a> 
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>   @Value(<span class="jxr_string">"${MAP5_URL:#{null}}"</span>)
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>   <strong class="jxr_keyword">private</strong> String map5url;
-<a class="jxr_linenumber" name="L111" href="#L111">111</a> 
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> ApplicationContext appContext;
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="UserRepository" href="../../../../../org/tailormap/api/repository/UserRepository.html#UserRepository">UserRepository</a> userRepository;
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="GroupRepository" href="../../../../../org/tailormap/api/repository/GroupRepository.html#GroupRepository">GroupRepository</a> groupRepository;
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="CatalogRepository" href="../../../../../org/tailormap/api/repository/CatalogRepository.html#CatalogRepository">CatalogRepository</a> catalogRepository;
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="GeoServiceRepository" href="../../../../../org/tailormap/api/repository/GeoServiceRepository.html#GeoServiceRepository">GeoServiceRepository</a> geoServiceRepository;
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="GeoServiceHelper" href="../../../../../org/tailormap/api/persistence/helper/GeoServiceHelper.html#GeoServiceHelper">GeoServiceHelper</a> geoServiceHelper;
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="SolrService" href="../../../../../org/tailormap/api/solr/SolrService.html#SolrService">SolrService</a> solrService;
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="JobCreator" href="../../../../../org/tailormap/api/scheduling/JobCreator.html#JobCreator">JobCreator</a> jobCreator;
-<a class="jxr_linenumber" name="L120" href="#L120">120</a> 
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="FeatureSourceRepository" href="../../../../../org/tailormap/api/repository/FeatureSourceRepository.html#FeatureSourceRepository">FeatureSourceRepository</a> featureSourceRepository;
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="ApplicationRepository" href="../../../../../org/tailormap/api/repository/ApplicationRepository.html#ApplicationRepository">ApplicationRepository</a> applicationRepository;
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="ConfigurationRepository" href="../../../../../org/tailormap/api/repository/ConfigurationRepository.html#ConfigurationRepository">ConfigurationRepository</a> configurationRepository;
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="SearchIndexRepository" href="../../../../../org/tailormap/api/repository/SearchIndexRepository.html#SearchIndexRepository">SearchIndexRepository</a> searchIndexRepository;
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="FeatureSourceFactoryHelper" href="../../../../../org/tailormap/api/geotools/featuresources/FeatureSourceFactoryHelper.html#FeatureSourceFactoryHelper">FeatureSourceFactoryHelper</a> featureSourceFactoryHelper;
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="UploadRepository" href="../../../../../org/tailormap/api/repository/UploadRepository.html#UploadRepository">UploadRepository</a> uploadRepository;
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.scheduling.TMJobDataMap;
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.scheduling.TaskCreator;
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.security.InternalAdminAuthentication;
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.solr.SolrHelper;
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.solr.SolrService;
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.AppStyling;
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.Component;
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.ComponentConfig;
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment"> * Populates entities to add services and applications to demo functionality, support development</em>
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment"> * and use in integration tests with a common set of test data. See README.md for usage details.</em>
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>  @org.springframework.context.annotation.Configuration
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  @ConditionalOnProperty(name = <span class="jxr_string">"tailormap-api.database.populate-testdata"</span>, havingValue = <span class="jxr_string">"true"</span>)
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="PopulateTestData" href="../../../../../org/tailormap/api/configuration/dev/PopulateTestData.html#PopulateTestData">PopulateTestData</a> {
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> ApplicationContext appContext;
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="UserRepository" href="../../../../../org/tailormap/api/repository/UserRepository.html#UserRepository">UserRepository</a> userRepository;
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="GroupRepository" href="../../../../../org/tailormap/api/repository/GroupRepository.html#GroupRepository">GroupRepository</a> groupRepository;
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="CatalogRepository" href="../../../../../org/tailormap/api/repository/CatalogRepository.html#CatalogRepository">CatalogRepository</a> catalogRepository;
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="GeoServiceRepository" href="../../../../../org/tailormap/api/repository/GeoServiceRepository.html#GeoServiceRepository">GeoServiceRepository</a> geoServiceRepository;
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="GeoServiceHelper" href="../../../../../org/tailormap/api/persistence/helper/GeoServiceHelper.html#GeoServiceHelper">GeoServiceHelper</a> geoServiceHelper;
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="SolrService" href="../../../../../org/tailormap/api/solr/SolrService.html#SolrService">SolrService</a> solrService;
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="TaskCreator" href="../../../../../org/tailormap/api/scheduling/TaskCreator.html#TaskCreator">TaskCreator</a> taskCreator;
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="FeatureSourceRepository" href="../../../../../org/tailormap/api/repository/FeatureSourceRepository.html#FeatureSourceRepository">FeatureSourceRepository</a> featureSourceRepository;
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="ApplicationRepository" href="../../../../../org/tailormap/api/repository/ApplicationRepository.html#ApplicationRepository">ApplicationRepository</a> applicationRepository;
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="ConfigurationRepository" href="../../../../../org/tailormap/api/repository/ConfigurationRepository.html#ConfigurationRepository">ConfigurationRepository</a> configurationRepository;
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="SearchIndexRepository" href="../../../../../org/tailormap/api/repository/SearchIndexRepository.html#SearchIndexRepository">SearchIndexRepository</a> searchIndexRepository;
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="FeatureSourceFactoryHelper" href="../../../../../org/tailormap/api/geotools/featuresources/FeatureSourceFactoryHelper.html#FeatureSourceFactoryHelper">FeatureSourceFactoryHelper</a> featureSourceFactoryHelper;
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="UploadRepository" href="../../../../../org/tailormap/api/repository/UploadRepository.html#UploadRepository">UploadRepository</a> uploadRepository;
+<a class="jxr_linenumber" name="L112" href="#L112">112</a> 
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>   @Value(<span class="jxr_string">"${spatial.dbs.connect:false}"</span>)
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> connectToSpatialDbs;
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> 
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>   @Value(<span class="jxr_string">"${spatial.dbs.localhost:true}"</span>)
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> connectToSpatialDbsAtLocalhost;
+<a class="jxr_linenumber" name="L118" href="#L118">118</a> 
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>   @Value(<span class="jxr_string">"${tailormap-api.database.populate-testdata.admin-hashed-password}"</span>)
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>   <strong class="jxr_keyword">private</strong> String adminHashedPassword;
+<a class="jxr_linenumber" name="L121" href="#L121">121</a> 
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>   @Value(<span class="jxr_string">"${tailormap-api.database.populate-testdata.exit:false}"</span>)
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> exit;
+<a class="jxr_linenumber" name="L124" href="#L124">124</a> 
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>   @Value(<span class="jxr_string">"${MAP5_URL:#{null}}"</span>)
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>   <strong class="jxr_keyword">private</strong> String map5url;
 <a class="jxr_linenumber" name="L127" href="#L127">127</a> 
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>   <strong class="jxr_keyword">public</strong> <a name="PopulateTestData" href="../../../../../org/tailormap/api/configuration/dev/PopulateTestData.html#PopulateTestData">PopulateTestData</a>(
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>       ApplicationContext appContext,
@@ -141,7 +141,7 @@
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>       <a name="GeoServiceRepository" href="../../../../../org/tailormap/api/repository/GeoServiceRepository.html#GeoServiceRepository">GeoServiceRepository</a> geoServiceRepository,
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>       <a name="GeoServiceHelper" href="../../../../../org/tailormap/api/persistence/helper/GeoServiceHelper.html#GeoServiceHelper">GeoServiceHelper</a> geoServiceHelper,
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>       <a name="SolrService" href="../../../../../org/tailormap/api/solr/SolrService.html#SolrService">SolrService</a> solrService,
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>       <a name="JobCreator" href="../../../../../org/tailormap/api/scheduling/JobCreator.html#JobCreator">JobCreator</a> jobCreator,
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>       <a name="TaskCreator" href="../../../../../org/tailormap/api/scheduling/TaskCreator.html#TaskCreator">TaskCreator</a> taskCreator,
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>       <a name="FeatureSourceRepository" href="../../../../../org/tailormap/api/repository/FeatureSourceRepository.html#FeatureSourceRepository">FeatureSourceRepository</a> featureSourceRepository,
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>       <a name="ApplicationRepository" href="../../../../../org/tailormap/api/repository/ApplicationRepository.html#ApplicationRepository">ApplicationRepository</a> applicationRepository,
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>       <a name="ConfigurationRepository" href="../../../../../org/tailormap/api/repository/ConfigurationRepository.html#ConfigurationRepository">ConfigurationRepository</a> configurationRepository,
@@ -155,7 +155,7 @@
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>     <strong class="jxr_keyword">this</strong>.geoServiceRepository = geoServiceRepository;
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>     <strong class="jxr_keyword">this</strong>.geoServiceHelper = geoServiceHelper;
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>     <strong class="jxr_keyword">this</strong>.solrService = solrService;
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>     <strong class="jxr_keyword">this</strong>.jobCreator = jobCreator;
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>     <strong class="jxr_keyword">this</strong>.taskCreator = taskCreator;
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>     <strong class="jxr_keyword">this</strong>.featureSourceRepository = featureSourceRepository;
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>     <strong class="jxr_keyword">this</strong>.applicationRepository = applicationRepository;
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>     <strong class="jxr_keyword">this</strong>.configurationRepository = configurationRepository;
@@ -1475,21 +1475,32 @@
 <a class="jxr_linenumber" name="L1467" href="#L1467">1467</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1468" href="#L1468">1468</a>       logger.info(
 <a class="jxr_linenumber" name="L1469" href="#L1469">1469</a>           <span class="jxr_string">"Created minutely task with key: {}"</span>,
-<a class="jxr_linenumber" name="L1470" href="#L1470">1470</a>           jobCreator.createJob(
+<a class="jxr_linenumber" name="L1470" href="#L1470">1470</a>           taskCreator.createTask(
 <a class="jxr_linenumber" name="L1471" href="#L1471">1471</a>               PocTask.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L1472" href="#L1472">1472</a>               Map.of(<span class="jxr_string">"type"</span>, <span class="jxr_string">"poc"</span>, <span class="jxr_string">"foo"</span>, <span class="jxr_string">"bar"</span>, <span class="jxr_string">"when"</span>, <span class="jxr_string">"every minute"</span>), <em class="jxr_comment">/* run every minute */</em>
-<a class="jxr_linenumber" name="L1473" href="#L1473">1473</a>               <span class="jxr_string">"0 0/1 * 1/1 * ? *"</span>));
-<a class="jxr_linenumber" name="L1474" href="#L1474">1474</a>       logger.info(
-<a class="jxr_linenumber" name="L1475" href="#L1475">1475</a>           <span class="jxr_string">"Created hourly task with key: {}"</span>,
-<a class="jxr_linenumber" name="L1476" href="#L1476">1476</a>           jobCreator.createJob(
-<a class="jxr_linenumber" name="L1477" href="#L1477">1477</a>               PocTask.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L1478" href="#L1478">1478</a>               Map.of(<span class="jxr_string">"type"</span>, <span class="jxr_string">"poc"</span>, <span class="jxr_string">"foo"</span>, <span class="jxr_string">"bar"</span>, <span class="jxr_string">"when"</span>, <span class="jxr_string">"every hour"</span>), <em class="jxr_comment">/* run every hour */</em>
-<a class="jxr_linenumber" name="L1479" href="#L1479">1479</a>               <span class="jxr_string">"0 0 0/1 1/1 * ? *"</span>));
-<a class="jxr_linenumber" name="L1480" href="#L1480">1480</a>     } <strong class="jxr_keyword">catch</strong> (SchedulerException e) {
-<a class="jxr_linenumber" name="L1481" href="#L1481">1481</a>       logger.error(<span class="jxr_string">"Error creating scheduling poc tasks"</span>, e);
-<a class="jxr_linenumber" name="L1482" href="#L1482">1482</a>     }
-<a class="jxr_linenumber" name="L1483" href="#L1483">1483</a>   }
-<a class="jxr_linenumber" name="L1484" href="#L1484">1484</a> }
+<a class="jxr_linenumber" name="L1472" href="#L1472">1472</a>               <strong class="jxr_keyword">new</strong> <a name="TMJobDataMap" href="../../../../../org/tailormap/api/scheduling/TMJobDataMap.html#TMJobDataMap">TMJobDataMap</a>(
+<a class="jxr_linenumber" name="L1473" href="#L1473">1473</a>                   Map.of(
+<a class="jxr_linenumber" name="L1474" href="#L1474">1474</a>                       <span class="jxr_string">"type"</span>, TEST_TASK_TYPE,
+<a class="jxr_linenumber" name="L1475" href="#L1475">1475</a>                       <span class="jxr_string">"foo"</span>, <span class="jxr_string">"bar"</span>,
+<a class="jxr_linenumber" name="L1476" href="#L1476">1476</a>                       <span class="jxr_string">"description"</span>, <span class="jxr_string">"POC task that runs every minute"</span>)),
+<a class="jxr_linenumber" name="L1477" href="#L1477">1477</a>               <em class="jxr_comment">/* run every minute */</em> <span class="jxr_string">"0 0/1 * 1/1 * ? *"</span>));
+<a class="jxr_linenumber" name="L1478" href="#L1478">1478</a>       logger.info(
+<a class="jxr_linenumber" name="L1479" href="#L1479">1479</a>           <span class="jxr_string">"Created hourly task with key: {}"</span>,
+<a class="jxr_linenumber" name="L1480" href="#L1480">1480</a>           taskCreator.createTask(
+<a class="jxr_linenumber" name="L1481" href="#L1481">1481</a>               PocTask.<strong class="jxr_keyword">class</strong>,
+<a class="jxr_linenumber" name="L1482" href="#L1482">1482</a>               <strong class="jxr_keyword">new</strong> <a name="TMJobDataMap" href="../../../../../org/tailormap/api/scheduling/TMJobDataMap.html#TMJobDataMap">TMJobDataMap</a>(
+<a class="jxr_linenumber" name="L1483" href="#L1483">1483</a>                   Map.of(
+<a class="jxr_linenumber" name="L1484" href="#L1484">1484</a>                       <span class="jxr_string">"type"</span>,
+<a class="jxr_linenumber" name="L1485" href="#L1485">1485</a>                       TEST_TASK_TYPE,
+<a class="jxr_linenumber" name="L1486" href="#L1486">1486</a>                       <span class="jxr_string">"foo"</span>,
+<a class="jxr_linenumber" name="L1487" href="#L1487">1487</a>                       <span class="jxr_string">"bar"</span>,
+<a class="jxr_linenumber" name="L1488" href="#L1488">1488</a>                       <span class="jxr_string">"description"</span>,
+<a class="jxr_linenumber" name="L1489" href="#L1489">1489</a>                       <span class="jxr_string">"POC task that runs every hour"</span>)),
+<a class="jxr_linenumber" name="L1490" href="#L1490">1490</a>               <em class="jxr_comment">/* run every hour */</em> <span class="jxr_string">"0 0 0/1 1/1 * ? *"</span>));
+<a class="jxr_linenumber" name="L1491" href="#L1491">1491</a>     } <strong class="jxr_keyword">catch</strong> (SchedulerException e) {
+<a class="jxr_linenumber" name="L1492" href="#L1492">1492</a>       logger.error(<span class="jxr_string">"Error creating scheduling poc tasks"</span>, e);
+<a class="jxr_linenumber" name="L1493" href="#L1493">1493</a>     }
+<a class="jxr_linenumber" name="L1494" href="#L1494">1494</a>   }
+<a class="jxr_linenumber" name="L1495" href="#L1495">1495</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
