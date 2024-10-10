@@ -6,7 +6,6 @@
 package org.tailormap.api.util;
 
 public interface Constants {
-  int DEFAULT_MAX_FEATURES = 10;
   String FID = "__fid";
   String ID = "id";
   String NAME_REGEX = "^[a-zA-Z0-9-_]+";
