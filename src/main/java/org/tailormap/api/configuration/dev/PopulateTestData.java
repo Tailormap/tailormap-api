@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,6 +74,8 @@ import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.repository.UploadRepository;
 import org.tailormap.api.repository.UserRepository;
+import org.tailormap.api.scheduling.JobCreator;
+import org.tailormap.api.scheduling.PocTask;
 import org.tailormap.api.security.InternalAdminAuthentication;
 import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.solr.SolrService;
@@ -113,6 +116,7 @@ public class PopulateTestData {
   private final GeoServiceRepository geoServiceRepository;
   private final GeoServiceHelper geoServiceHelper;
   private final SolrService solrService;
+  private final JobCreator jobCreator;
 
   private final FeatureSourceRepository featureSourceRepository;
   private final ApplicationRepository applicationRepository;
@@ -129,6 +133,7 @@ public class PopulateTestData {
       GeoServiceRepository geoServiceRepository,
       GeoServiceHelper geoServiceHelper,
       SolrService solrService,
+      JobCreator jobCreator,
       FeatureSourceRepository featureSourceRepository,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository,
@@ -142,6 +147,7 @@ public class PopulateTestData {
     this.geoServiceRepository = geoServiceRepository;
     this.geoServiceHelper = geoServiceHelper;
     this.solrService = solrService;
+    this.jobCreator = jobCreator;
     this.featureSourceRepository = featureSourceRepository;
     this.applicationRepository = applicationRepository;
     this.configurationRepository = configurationRepository;
@@ -164,6 +170,7 @@ public class PopulateTestData {
       } catch (Exception e) {
         logger.error("Exception creating Solr Index for testdata (continuing)", e);
       }
+      createPocTasks();
     } finally {
       InternalAdminAuthentication.clearSecurityContextAuthentication();
     }
@@ -1452,6 +1459,26 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
 
         applicationRepository.save(defaultApp);
       }
+    }
+  }
+
+  private void createPocTasks() {
+    logger.info("Creating POC tasks");
+    try {
+      logger.info(
+          "Created minutely task with key: {}",
+          jobCreator.createJob(
+              PocTask.class,
+              Map.of("type", "poc", "foo", "bar", "when", "every minute"), /* run every minute */
+              "0 0/1 * 1/1 * ? *"));
+      logger.info(
+          "Created hourly task with key: {}",
+          jobCreator.createJob(
+              PocTask.class,
+              Map.of("type", "poc", "foo", "bar", "when", "every hour"), /* run every hour */
+              "0 0 0/1 1/1 * ? *"));
+    } catch (SchedulerException e) {
+      logger.error("Error creating scheduling poc tasks", e);
     }
   }
 }

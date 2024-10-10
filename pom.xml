@@ -213,6 +213,14 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
@@ -1175,6 +1183,8 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.springframework.boot:spring-boot-starter-validation</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-security</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-oauth2-client</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-quartz</exclude>
+                                        <exclude>org.quartz-scheduler:quartz</exclude>
                                         <exclude>org.springframework.security:spring-security-test</exclude>
                                         <exclude>io.hypersistence:hypersistence-utils-hibernate-63</exclude>
                                         <exclude>org.webjars:webjars-locator-core</exclude>

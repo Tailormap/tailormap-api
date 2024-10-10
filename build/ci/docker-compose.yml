@@ -18,7 +18,7 @@ networks:
 services:
   postgres:
     container_name: postgres
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     environment:
       POSTGRES_USER: tailormap
       POSTGRES_PASSWORD: tailormap

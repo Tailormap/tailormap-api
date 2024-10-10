@@ -14,7 +14,7 @@ _WAIT=0;
 printf "Waiting for databases to be ready...\n"
 while :
 do
-  printf " $_WAIT"
+  printf " %d" "$_WAIT"
   if [ "$POSTGIS_HEALTHY" == "healthy" ] && [ "$ORACLE_HEALTHY" == "healthy" ] && [ "$SQLSERVER_HEALTHY" == "healthy" ]; then
     printf "\nDone waiting for databases to be ready\n"
     break
