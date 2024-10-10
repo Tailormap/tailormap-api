@@ -38,10 +38,10 @@ public class TaskCreator {
   /**
    * Create a job and schedule it with a cron expression.
    *
-   * @param job the job class to create
+   * @param job the task class to create
    * @param jobData a map with job data, the {@code type} and {@code description} keys are mandatory
    * @param cronExpression the cron expression
-   * @return the job name
+   * @return the task name, a UUID
    * @throws SchedulerException if the job could not be scheduled
    */
   public String createTask(

@@ -17,7 +17,7 @@ class TMJobDataMapTest {
   /** Test the creation using a map with missing required parameters. */
   @Test
   void testInvalidMap() {
-    assertThrows(NullPointerException.class, () -> new TMJobDataMap(Map.of("type", "test")));
+    assertThrows(IllegalArgumentException.class, () -> new TMJobDataMap(Map.of("type", "test")));
   }
 
   /** Test the creation using a map with missing required parameters. */

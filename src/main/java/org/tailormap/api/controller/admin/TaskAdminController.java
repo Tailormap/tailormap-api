@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -26,7 +25,9 @@ import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.quartz.TriggerUtils;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.quartz.spi.OperableTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -93,7 +94,6 @@ public class TaskAdminController {
         .filter(Objects::nonNull)
         .forEach(
             jobDetail -> {
-              logger.debug("Job: {}", jobDetail.getKey());
               tasks.add(
                   new ObjectMapper()
                       .createObjectNode()
@@ -152,32 +152,53 @@ public class TaskAdminController {
       throws SchedulerException {
     logger.debug("Getting task details for {}:{}", type, uuid);
 
-    JobDetail details = scheduler.getJobDetail(getJobKey(type, uuid));
-    JobDataMap jobDataMap = details.getJobDataMap();
+    JobDetail jobDetail = scheduler.getJobDetail(getJobKey(type, uuid));
+    JobDataMap jobDataMap = jobDetail.getJobDataMap();
 
     /* there should be only one */
-    Trigger trigger = scheduler.getTriggersOfJob(details.getKey()).get(0);
+    Trigger trigger = scheduler.getTriggersOfJob(jobDetail.getKey()).get(0);
     CronTrigger cron = ((CronTrigger) trigger);
+
+    final Object[] result = new Object[1];
+    scheduler.getCurrentlyExecutingJobs().stream()
+        .filter(Objects::nonNull)
+        .forEach(
+            jobExecutionContext -> {
+              logger.debug(
+                  "currently executing job {} with trigger {}.",
+                  jobExecutionContext.getJobDetail().getKey(),
+                  jobExecutionContext.getTrigger().getKey());
+
+              result[0] = jobExecutionContext.getResult();
+              //
+              //              jobDataMap=  jobExecutionContext.getMergedJobDataMap();
+            });
 
     return ResponseEntity.ok(
         new ObjectMapper()
             .createObjectNode()
-            .put("uuid", details.getKey().getName())
-            .put("type", details.getKey().getGroup())
+            // immutable uuid, type and description
+            .put("uuid", jobDetail.getKey().getName())
+            .put("type", jobDetail.getKey().getGroup())
             .put("description", jobDataMap.getString("description"))
-            .put("status", jobDataMap.getString("status"))
-            // Date fields
-            .putPOJO("startTime", trigger.getStartTime())
-            .putPOJO("nextTime", trigger.getStartTime())
-            .putPOJO("lastTime", trigger.getPreviousFireTime())
-            // Cron fields
             .put("cronExpression", cron.getCronExpression())
-            .putPOJO("nextFireTimes", getFireTimes(cron))
-            .putPOJO("jobData", jobDataMap)
-            // TODO add  progress, result and message etc. from jobDataMap
-            .put("progress", "TODO")
-            .put("result", "TODO")
-            .put("message", "TODO something is happening"));
+            // TODO / XXX we could add a human-readable description of the cron expression using eg.
+            //   com.cronutils:cron-utils like:
+            //     CronParser cronParser = new
+            //         CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+            //     CronDescriptor.instance(locale).describe(cronParser.parse(cronExpression));
+            //   this could also be done front-end using eg. https://www.npmjs.com/package/cronstrue
+            //   which has the advantage of knowing the required locale for the human
+            // .put("cronDescription", cron.getCronExpression())
+            .put("timezone", cron.getTimeZone().getID())
+            .putPOJO("startTime", trigger.getStartTime())
+            .putPOJO("lastTime", trigger.getPreviousFireTime())
+            .putPOJO(
+                "nextFireTimes", TriggerUtils.computeFireTimes((OperableTrigger) cron, null, 5))
+            .putPOJO("status", scheduler.getTriggerState(trigger.getKey()))
+            .putPOJO("progress", result[0])
+            .put("lastResult", jobDataMap.getString("lastResult"))
+            .putPOJO("jobData", jobDataMap));
   }
 
   @Operation(
@@ -274,19 +295,5 @@ public class TaskAdminController {
         .filter(jobkey -> jobkey.getName().equals(uuid.toString()))
         .findFirst()
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-  }
-
-  private List<Date> getFireTimes(CronTrigger trigger) {
-    List<Date> fireTimes = new ArrayList<>(5);
-    Date startTime = trigger.getStartTime();
-    for (int i = 0; i < 5; i++) {
-      Date nextFireTime = trigger.getFireTimeAfter(startTime);
-      if (nextFireTime == null) {
-        break;
-      }
-      fireTimes.add(nextFireTime);
-      startTime = nextFireTime;
-    }
-    return fireTimes;
   }
 }

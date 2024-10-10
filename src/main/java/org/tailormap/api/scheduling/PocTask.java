@@ -9,40 +9,66 @@ import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.PersistJobDataAfterExecution;
-import org.quartz.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-/** POC task for testing purposes. This will only log messages and keep a counter. */
+/** POC task for testing purposes. */
 @DisallowConcurrentExecution
 @PersistJobDataAfterExecution
 public class PocTask extends QuartzJobBean {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  private String foo;
+
   @Override
   protected void executeInternal(@NonNull JobExecutionContext context) {
-    logger.info(
-        "POC task {}:{} executing, details follow:",
-        context.getJobDetail().getKey().getGroup(),
-        context.getJobDetail().getKey().getName());
+    final JobDetail jobDetail = context.getJobDetail();
 
     // NOTE: This immutable map is a snapshot of the job data maps at the time of the job execution.
-    JobDataMap mergedJobDataMap = context.getMergedJobDataMap();
+    final JobDataMap mergedJobDataMap = context.getMergedJobDataMap();
 
     // NOTE: This map is mutable and can be used to store job data.
-    JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
+    final JobDataMap jobDataMap = jobDetail.getJobDataMap();
 
-    int i = 1 + (int) mergedJobDataMap.getOrDefault("executions", 0);
-    jobDataMap.put("executions", i);
+    // this.foo is set through QuartzJobBean
+    logger.debug("foo: {}", getFoo());
+
+    logger.debug(
+        "executing POC task {}:{}, details: {}",
+        jobDetail.getKey().getGroup(),
+        jobDetail.getKey().getName(),
+        mergedJobDataMap.getWrappedMap());
+
+    try {
+      for (int i = 0; i < 110; i += 10) {
+        // Simulate some work for a random period of time
+        long workingTime = (long) (Math.random() * 5000);
+        logger.debug("Working for {} ms", workingTime);
+        Thread.sleep(workingTime);
+        logger.debug("POC task is at {}%", i);
+        context.setResult(String.format("POC task is at %d%%", i));
+      }
+    } catch (InterruptedException e) {
+      logger.error("Thread interrupted", e);
+    }
+
+    jobDataMap.put("executions", (1 + (int) mergedJobDataMap.getOrDefault("executions", 0)));
     jobDataMap.put("lastExecutionFinished", Instant.now());
+    jobDataMap.put("lastResult", "POC task executed successfully");
     context.setResult("POC task executed successfully");
-    jobDataMap.put("status", Trigger.TriggerState.NORMAL);
+  }
 
-    mergedJobDataMap.forEach((key, value) -> logger.info("   {}: {}", key, value));
+  public String getFoo() {
+    return foo;
+  }
+
+  public void setFoo(String foo) {
+    this.foo = foo;
   }
 }
