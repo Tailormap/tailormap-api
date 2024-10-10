@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>PocTask xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../apidocs/org/tailormap/api/scheduling/PocTask.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * Copyright (C) 2024 B3Partners B.V.</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * SPDX-License-Identifier: MIT</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> */</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">package</strong> org.tailormap.api.scheduling;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> java.time.Instant;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> org.quartz.DisallowConcurrentExecution;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.quartz.JobDataMap;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.quartz.JobExecutionContext;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.quartz.PersistJobDataAfterExecution;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.springframework.lang.NonNull;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.springframework.scheduling.quartz.QuartzJobBean;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment">/** POC task for testing purposes. This will only log messages and keep a counter. */</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  @DisallowConcurrentExecution
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  @PersistJobDataAfterExecution
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="PocTask" href="../../../../org/tailormap/api/scheduling/PocTask.html#PocTask">PocTask</a> <strong class="jxr_keyword">extends</strong> QuartzJobBean {
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>    @Override
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>    <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> executeInternal(@NonNull JobExecutionContext context) {
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      <em class="jxr_comment">// NOTE: This immutable map is a snapshot of the job data maps at the time of the job execution.</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>      JobDataMap mergedJobDataMap = context.getMergedJobDataMap();
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <em class="jxr_comment">// NOTE: This map is mutable and can be used to store job data.</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">int</strong> i = 1 + (<strong class="jxr_keyword">int</strong>) mergedJobDataMap.getOrDefault(<span class="jxr_string">"executions"</span>, 0);
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      jobDataMap.put(<span class="jxr_string">"executions"</span>, i);
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      jobDataMap.put(<span class="jxr_string">"lastExecutionFinished"</span>, Instant.now());
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>      context.setResult(<span class="jxr_string">"POC task executed successfully"</span>);
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      logger.info(
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>          <span class="jxr_string">"POC task {}:{} executing, details follow:"</span>,
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>          context.getJobDetail().getKey().getGroup(),
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>          context.getJobDetail().getKey().getName());
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      mergedJobDataMap.forEach((key, value) -&gt; logger.info(<span class="jxr_string">"   {}: {}"</span>, key, value));
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>    }
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  }
+</pre>
+<hr/>
+<div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
+</body>
+</html>

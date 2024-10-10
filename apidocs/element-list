@@ -19,6 +19,7 @@ org.tailormap.api.persistence.projections
 org.tailormap.api.repository
 org.tailormap.api.repository.events
 org.tailormap.api.repository.validation
+org.tailormap.api.scheduling
 org.tailormap.api.security
 org.tailormap.api.security.annotation
 org.tailormap.api.solr
