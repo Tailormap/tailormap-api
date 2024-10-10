@@ -1486,7 +1486,9 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                       "foo",
                       "bar",
                       "description",
-                      "POC task that runs every hour")),
+                      "POC task that runs every hour",
+                      "priority",
+                      10)),
               /* run every hour */ "0 0 0/1 1/1 * ? *"));
     } catch (SchedulerException e) {
       logger.error("Error creating scheduling poc tasks", e);
