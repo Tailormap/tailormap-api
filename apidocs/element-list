@@ -22,6 +22,7 @@ org.tailormap.api.repository.validation
 org.tailormap.api.scheduling
 org.tailormap.api.security
 org.tailormap.api.security.annotation
+org.tailormap.api.security.events
 org.tailormap.api.solr
 org.tailormap.api.util
 org.tailormap.api.viewer.model

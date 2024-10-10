@@ -75,6 +75,7 @@ loadScripts(document, 'script');</script>
 <li><a href="org/tailormap/api/scheduling/package-tree.html">org.tailormap.api.scheduling</a>, </li>
 <li><a href="org/tailormap/api/security/package-tree.html">org.tailormap.api.security</a>, </li>
 <li><a href="org/tailormap/api/security/annotation/package-tree.html">org.tailormap.api.security.annotation</a>, </li>
+<li><a href="org/tailormap/api/security/events/package-tree.html">org.tailormap.api.security.events</a>, </li>
 <li><a href="org/tailormap/api/solr/package-tree.html">org.tailormap.api.solr</a>, </li>
 <li><a href="org/tailormap/api/util/package-tree.html">org.tailormap.api.util</a>, </li>
 <li><a href="org/tailormap/api/viewer/model/package-tree.html">org.tailormap.api.viewer.model</a></li>
@@ -105,6 +106,7 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AppUiSettings.html" class="type-name-link" title="class in org.tailormap.api.persistence.json">AppUiSettings</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)</li>
 <li class="circle">org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Attribute.html" class="type-name-link" title="class in org.tailormap.api.viewer.model">Attribute</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)</li>
 <li class="circle">org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AttributeSettings.html" class="type-name-link" title="class in org.tailormap.api.persistence.json">AttributeSettings</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)</li>
+<li class="circle">org.tailormap.api.security.<a href="org/tailormap/api/security/AuthenticationEvents.html" class="type-name-link" title="class in org.tailormap.api.security">AuthenticationEvents</a></li>
 <li class="circle">org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AuthorizationRule.html" class="type-name-link" title="class in org.tailormap.api.persistence.json">AuthorizationRule</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)</li>
 <li class="circle">org.tailormap.api.security.<a href="org/tailormap/api/security/AuthorizationService.html" class="type-name-link" title="class in org.tailormap.api.security">AuthorizationService</a></li>
 <li class="circle">org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/Bounds.html" class="type-name-link" title="class in org.tailormap.api.persistence.json">Bounds</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)</li>
@@ -122,6 +124,24 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/EntityEvent.html" class="type-name-link" title="class in org.tailormap.api.admin.model">EntityEvent</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)</li>
 <li class="circle">org.tailormap.api.persistence.listener.<a href="org/tailormap/api/persistence/listener/EntityEventPublisher.html" class="type-name-link" title="class in org.tailormap.api.persistence.listener">EntityEventPublisher</a></li>
 <li class="circle">org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ErrorResponse.html" class="type-name-link" title="class in org.tailormap.api.viewer.model">ErrorResponse</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)</li>
+<li class="circle">java.util.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/EventObject.html" class="type-name-link external-link" title="class or interface in java.util">EventObject</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)
+<ul>
+<li class="circle">org.springframework.context.ApplicationEvent
+<ul>
+<li class="circle">org.springframework.security.authentication.event.AbstractAuthenticationEvent
+<ul>
+<li class="circle">org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent
+<ul>
+<li class="circle">org.tailormap.api.security.events.<a href="org/tailormap/api/security/events/DefaultAuthenticationFailureEvent.html" class="type-name-link" title="class in org.tailormap.api.security.events">DefaultAuthenticationFailureEvent</a></li>
+<li class="circle">org.tailormap.api.security.events.<a href="org/tailormap/api/security/events/OAuth2AuthenticationFailureEvent.html" class="type-name-link" title="class in org.tailormap.api.security.events">OAuth2AuthenticationFailureEvent</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="circle">org.tailormap.api.configuration.ddl.<a href="org/tailormap/api/configuration/ddl/ExitAfterCreatingDDL.html" class="type-name-link" title="class in org.tailormap.api.configuration.ddl">ExitAfterCreatingDDL</a></li>
 <li class="circle">org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Feature.html" class="type-name-link" title="class in org.tailormap.api.viewer.model">Feature</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)</li>
 <li class="circle">org.tailormap.api.solr.<a href="org/tailormap/api/solr/FeatureIndexingDocument.html" class="type-name-link" title="class in org.tailormap.api.solr">FeatureIndexingDocument</a> (implements org.tailormap.api.util.<a href="org/tailormap/api/util/Constants.html" title="interface in org.tailormap.api.util">Constants</a>)</li>
