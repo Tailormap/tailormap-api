@@ -9,6 +9,7 @@ import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static org.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
+import static org.tailormap.api.util.Constants.TEST_TASK_TYPE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.invoke.MethodHandles;
@@ -74,8 +75,9 @@ import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.repository.UploadRepository;
 import org.tailormap.api.repository.UserRepository;
-import org.tailormap.api.scheduling.JobCreator;
 import org.tailormap.api.scheduling.PocTask;
+import org.tailormap.api.scheduling.TMJobDataMap;
+import org.tailormap.api.scheduling.TaskCreator;
 import org.tailormap.api.security.InternalAdminAuthentication;
 import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.solr.SolrService;
@@ -93,6 +95,20 @@ public class PopulateTestData {
 
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private final ApplicationContext appContext;
+  private final UserRepository userRepository;
+  private final GroupRepository groupRepository;
+  private final CatalogRepository catalogRepository;
+  private final GeoServiceRepository geoServiceRepository;
+  private final GeoServiceHelper geoServiceHelper;
+  private final SolrService solrService;
+  private final TaskCreator taskCreator;
+  private final FeatureSourceRepository featureSourceRepository;
+  private final ApplicationRepository applicationRepository;
+  private final ConfigurationRepository configurationRepository;
+  private final SearchIndexRepository searchIndexRepository;
+  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
+  private final UploadRepository uploadRepository;
 
   @Value("${spatial.dbs.connect:false}")
   private boolean connectToSpatialDbs;
@@ -109,22 +125,6 @@ public class PopulateTestData {
   @Value("${MAP5_URL:#{null}}")
   private String map5url;
 
-  private final ApplicationContext appContext;
-  private final UserRepository userRepository;
-  private final GroupRepository groupRepository;
-  private final CatalogRepository catalogRepository;
-  private final GeoServiceRepository geoServiceRepository;
-  private final GeoServiceHelper geoServiceHelper;
-  private final SolrService solrService;
-  private final JobCreator jobCreator;
-
-  private final FeatureSourceRepository featureSourceRepository;
-  private final ApplicationRepository applicationRepository;
-  private final ConfigurationRepository configurationRepository;
-  private final SearchIndexRepository searchIndexRepository;
-  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
-  private final UploadRepository uploadRepository;
-
   public PopulateTestData(
       ApplicationContext appContext,
       UserRepository userRepository,
@@ -133,7 +133,7 @@ public class PopulateTestData {
       GeoServiceRepository geoServiceRepository,
       GeoServiceHelper geoServiceHelper,
       SolrService solrService,
-      JobCreator jobCreator,
+      TaskCreator taskCreator,
       FeatureSourceRepository featureSourceRepository,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository,
@@ -147,7 +147,7 @@ public class PopulateTestData {
     this.geoServiceRepository = geoServiceRepository;
     this.geoServiceHelper = geoServiceHelper;
     this.solrService = solrService;
-    this.jobCreator = jobCreator;
+    this.taskCreator = taskCreator;
     this.featureSourceRepository = featureSourceRepository;
     this.applicationRepository = applicationRepository;
     this.configurationRepository = configurationRepository;
@@ -1467,16 +1467,27 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     try {
       logger.info(
           "Created minutely task with key: {}",
-          jobCreator.createJob(
+          taskCreator.createTask(
               PocTask.class,
-              Map.of("type", "poc", "foo", "bar", "when", "every minute"), /* run every minute */
-              "0 0/1 * 1/1 * ? *"));
+              new TMJobDataMap(
+                  Map.of(
+                      "type", TEST_TASK_TYPE,
+                      "foo", "bar",
+                      "description", "POC task that runs every minute")),
+              /* run every minute */ "0 0/1 * 1/1 * ? *"));
       logger.info(
           "Created hourly task with key: {}",
-          jobCreator.createJob(
+          taskCreator.createTask(
               PocTask.class,
-              Map.of("type", "poc", "foo", "bar", "when", "every hour"), /* run every hour */
-              "0 0 0/1 1/1 * ? *"));
+              new TMJobDataMap(
+                  Map.of(
+                      "type",
+                      TEST_TASK_TYPE,
+                      "foo",
+                      "bar",
+                      "description",
+                      "POC task that runs every hour")),
+              /* run every hour */ "0 0 0/1 1/1 * ? *"));
     } catch (SchedulerException e) {
       logger.error("Error creating scheduling poc tasks", e);
     }

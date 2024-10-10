@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.util.Constants.TEST_TASK_TYPE;
 
 import com.jayway.jsonpath.JsonPath;
 import java.util.UUID;
@@ -44,8 +45,6 @@ class TaskAdminControllerIntegrationTest {
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
 
-  private static final String taskType = "poc";
-
   @BeforeAll
   void initialize() {
     mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
@@ -64,8 +63,8 @@ class TaskAdminControllerIntegrationTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.tasks").isArray())
             .andExpect(jsonPath("$.tasks.length()").value(2))
-            .andExpect(jsonPath("$.tasks[0].type").value(taskType))
-            .andExpect(jsonPath("$.tasks[1].type").value(taskType))
+            .andExpect(jsonPath("$.tasks[0].type").value(TEST_TASK_TYPE))
+            .andExpect(jsonPath("$.tasks[1].type").value(TEST_TASK_TYPE))
             .andReturn();
     final String body = result.getResponse().getContentAsString();
     String validUUID = JsonPath.read(body, "$.tasks[0].uuid");
@@ -84,15 +83,15 @@ class TaskAdminControllerIntegrationTest {
         mockMvc
             .perform(
                 get(adminBasePath + "/tasks")
-                    .queryParam("type", taskType)
+                    .queryParam("type", TEST_TASK_TYPE)
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.tasks").isArray())
             .andExpect(jsonPath("$.tasks.length()").value(2))
-            .andExpect(jsonPath("$.tasks[0].type").value(taskType))
-            .andExpect(jsonPath("$.tasks[1].type").value(taskType))
+            .andExpect(jsonPath("$.tasks[0].type").value(TEST_TASK_TYPE))
+            .andExpect(jsonPath("$.tasks[1].type").value(TEST_TASK_TYPE))
             .andReturn();
 
     final String body = result.getResponse().getContentAsString();
@@ -165,7 +164,7 @@ class TaskAdminControllerIntegrationTest {
         .perform(
             put(
                     adminBasePath + "/tasks/{type}/{uuid}/start",
-                    taskType,
+                    TEST_TASK_TYPE,
                     "6308d26e-fe1e-4268-bb28-20db2cd06914")
                 .accept(MediaType.APPLICATION_JSON))
         // .andDo(print())
@@ -182,7 +181,7 @@ class TaskAdminControllerIntegrationTest {
         .perform(
             put(
                     adminBasePath + "/tasks/{type}/{uuid}/stop",
-                    taskType,
+                    TEST_TASK_TYPE,
                     "6308d26e-fe1e-4268-bb28-20db2cd06914")
                 .accept(MediaType.APPLICATION_JSON))
         //                .andDo(print())
@@ -199,7 +198,7 @@ class TaskAdminControllerIntegrationTest {
         .perform(
             delete(
                     adminBasePath + "/tasks/{type}/{uuid}",
-                    taskType,
+                    TEST_TASK_TYPE,
                     /* this uuid does not exist */ "6308d26e-fe1e-4268-bb28-20db2cd06914")
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
@@ -216,7 +215,7 @@ class TaskAdminControllerIntegrationTest {
         mockMvc
             .perform(
                 get(adminBasePath + "/tasks")
-                    .queryParam("type", taskType)
+                    .queryParam("type", TEST_TASK_TYPE)
                     .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -229,7 +228,7 @@ class TaskAdminControllerIntegrationTest {
 
     mockMvc
         .perform(
-            delete(adminBasePath + "/tasks/{type}/{uuid}", taskType, /*does not exist*/ deleteUUID)
+            delete(adminBasePath + "/tasks/{type}/{uuid}", TEST_TASK_TYPE, deleteUUID)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
