@@ -393,6 +393,10 @@ public class ApplicationHelper {
         return Triple.of(null, null, null);
       }
 
+      if (authorizationService.mustDenyAccessForSecuredProxy(app, service)) {
+        return Triple.of(null, null, null);
+      }
+
       GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());
 
       if (serviceLayer == null) {

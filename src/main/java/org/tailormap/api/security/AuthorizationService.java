@@ -140,12 +140,15 @@ public class AuthorizationService {
    * @param geoService The geo service
    * @return Whether to allow proxying this service for the application
    */
-  public boolean allowProxyAccess(Application application, GeoService geoService) {
+  public boolean mustDenyAccessForSecuredProxy(Application application, GeoService geoService) {
+    if (!Boolean.TRUE.equals(geoService.getSettings().getUseProxy())) {
+      return false;
+    }
     if (geoService.getAuthentication() == null) {
-      return true;
+      return false;
     }
     return application.getAuthorizationRules().stream()
-        .noneMatch(
+        .anyMatch(
             rule ->
                 Group.ANONYMOUS.equals(rule.getGroupName())
                     && AuthorizationRuleDecision.ALLOW.equals(
