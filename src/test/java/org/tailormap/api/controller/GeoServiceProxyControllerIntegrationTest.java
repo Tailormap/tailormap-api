@@ -56,7 +56,8 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 @Execution(ExecutionMode.CONCURRENT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GeoServiceProxyControllerIntegrationTest {
-  private final String begroeidterreindeelUrl = layerBegroeidTerreindeelPostgis + "/proxy/wms";
+  private final String begroeidterreindeelUrl =
+      "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wms";
 
   private final String begroeidterreindeelLegendUrl =
       "/app/secured/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/proxiedlegend";
