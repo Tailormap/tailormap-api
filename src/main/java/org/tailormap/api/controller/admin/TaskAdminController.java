@@ -73,7 +73,7 @@ public class TaskAdminController {
               schema =
                   @Schema(
                       example =
-                          "{\"tasks\":[{\"uuid\":\"6308d26e-fe1e-4268-bb28-20db2cd06914\",\"type\":\"TestJob\"},{\"uuid\":\"d5ce9152-e90e-4b5a-b129-3b2366cabca8\",\"type\":\"label\"}]}")))
+                          "{\"tasks\":[{\"uuid\":\"6308d26e-fe1e-4268-bb28-20db2cd06914\",\"type\":\"poc\"},{\"uuid\":\"d5ce9152-e90e-4b5a-b129-3b2366cabca8\",\"type\":\"poc\"}]}")))
   public ResponseEntity<?> list(@RequestParam(required = false) String type)
       throws SchedulerException {
     logger.debug("Listing all tasks (optional type filter: {})", (null == type ? "all" : type));
@@ -117,11 +117,11 @@ public class TaskAdminController {
       produces = MediaType.APPLICATION_JSON_VALUE)
   @ApiResponse(
       responseCode = "404",
-      description = "Job does not exist",
+      description = "Task does not exist",
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(example = "{\"message\":\"Job does not exist\",\"code\":404}")))
+              schema = @Schema(example = "{\"message\":\"Task does not exist\",\"code\":404}")))
   @ApiResponse(
       responseCode = "200",
       description = "Details of the task",
@@ -171,7 +171,7 @@ public class TaskAdminController {
 
               result[0] = jobExecutionContext.getResult();
               //
-              //              jobDataMap=  jobExecutionContext.getMergedJobDataMap();
+              // jobDataMap=  jobExecutionContext.getMergedJobDataMap();
             });
 
     return ResponseEntity.ok(
@@ -209,23 +209,23 @@ public class TaskAdminController {
       produces = MediaType.APPLICATION_JSON_VALUE)
   @ApiResponse(
       responseCode = "404",
-      description = "Job does not exist",
+      description = "Task does not exist",
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(example = "{\"message\":\"Job does not exist\",\"code\":404}")))
+              schema = @Schema(example = "{\"message\":\"Task does not exist\",\"code\":404}")))
   @ApiResponse(
       responseCode = "202",
-      description = "Job is started",
+      description = "Task is started",
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(example = "{\"message\":\"Job starting accepted\",\"code\":202}")))
-  public ResponseEntity<?> startJob(@PathVariable String type, @PathVariable UUID uuid) {
+              schema = @Schema(example = "{\"message\":\"Task starting accepted\",\"code\":202}")))
+  public ResponseEntity<?> startTask(@PathVariable String type, @PathVariable UUID uuid) {
     logger.debug("Starting task {}:{}", type, uuid);
 
     return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_ACCEPTED))
-        .body(new ObjectMapper().createObjectNode().put("message", "Job starting accepted"));
+        .body(new ObjectMapper().createObjectNode().put("message", "TODO: Task starting accepted"));
   }
 
   @Operation(
@@ -236,23 +236,23 @@ public class TaskAdminController {
       produces = MediaType.APPLICATION_JSON_VALUE)
   @ApiResponse(
       responseCode = "404",
-      description = "Job does not exist",
+      description = "Task does not exist",
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(example = "{\"message\":\"Job does not exist\"}")))
+              schema = @Schema(example = "{\"message\":\"Task does not exist\"}")))
   @ApiResponse(
       responseCode = "202",
-      description = "Job is stopping",
+      description = "Task is stopping",
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(example = "{\"message\":\"Job stopping accepted\"}")))
-  public ResponseEntity<?> stopJob(@PathVariable String type, @PathVariable UUID uuid) {
+              schema = @Schema(example = "{\"message\":\"Task stopping accepted\"}")))
+  public ResponseEntity<?> stopTask(@PathVariable String type, @PathVariable UUID uuid) {
     logger.debug("Stopping task {}:{}", type, uuid);
 
     return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_ACCEPTED))
-        .body(new ObjectMapper().createObjectNode().put("message", "Job stopping accepted"));
+        .body(new ObjectMapper().createObjectNode().put("message", "TODO: Task stopping accepted"));
   }
 
   @Operation(
@@ -264,17 +264,17 @@ public class TaskAdminController {
       produces = MediaType.APPLICATION_JSON_VALUE)
   @ApiResponse(
       responseCode = "404",
-      description = "Job does not exist",
+      description = "Task does not exist",
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(example = "{\"message\":\"Job does not exist\"}")))
-  @ApiResponse(responseCode = "204", description = "Job is deleted")
+              schema = @Schema(example = "{\"message\":\"Task does not exist\"}")))
+  @ApiResponse(responseCode = "204", description = "Task is deleted")
   public ResponseEntity<?> delete(@PathVariable String type, @PathVariable UUID uuid)
       throws SchedulerException {
 
     boolean succes = scheduler.deleteJob(getJobKey(type, uuid));
-    logger.info("Job {}:{} deletion {}", type, uuid, (succes ? "succeeded" : "failed"));
+    logger.info("Task {}:{} deletion {}", type, uuid, (succes ? "succeeded" : "failed"));
 
     return ResponseEntity.noContent().build();
   }
