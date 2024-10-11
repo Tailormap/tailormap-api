@@ -218,6 +218,8 @@ class ViewerControllerIntegrationTest {
       authorities = {"Admin"})
   void should_return_data_for_configured_app() throws Exception {
     final String path = apiBasePath + "/app/default/map";
+    final String appLayerLufoPath =
+        "$.appLayers[?(@.id == 'lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR')]";
     mockMvc
         .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
@@ -230,15 +232,19 @@ class ViewerControllerIntegrationTest {
         // Note: if the testdata was created with MAP5_URL set, the appLayers array will have 4 more
         // layers
         .andExpect(jsonPath("$.appLayers.length()").value(13))
-        .andExpect(jsonPath("$.appLayers[0].hasAttributes").value(false))
-        .andExpect(jsonPath("$.appLayers[1].hasAttributes").value(false))
-        .andExpect(jsonPath("$.appLayers[4].legendImageUrl").isEmpty())
-        .andExpect(jsonPath("$.appLayers[4].visible").value(false))
-        .andExpect(jsonPath("$.appLayers[4].minScale").isEmpty())
-        .andExpect(jsonPath("$.appLayers[4].maxScale").isEmpty())
-        .andExpect(jsonPath("$.appLayers[4].id").value("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"))
-        .andExpect(jsonPath("$.appLayers[4].hiDpiMode").isEmpty())
-        .andExpect(jsonPath("$.appLayers[4].hiDpiSubstituteLayer").isEmpty())
+        .andExpect(
+            jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-tms:xyz')].hasAttributes")
+                .value(false))
+        .andExpect(
+            jsonPath("$.appLayers[?(@.id == 'lyr:b3p-mapproxy-luchtfoto:xyz')].hasAttributes")
+                .value(false))
+        .andExpect(jsonPath(appLayerLufoPath).exists())
+        .andExpect(jsonPath(appLayerLufoPath + ".legendImageUrl").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + ".visible").value(false))
+        .andExpect(jsonPath(appLayerLufoPath + ".minScale").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + ".maxScale").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + ".hiDpiMode").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + ".hiDpiSubstituteLayer").isEmpty())
         .andExpect(jsonPath("$.crs.code").value("EPSG:28992"));
   }
 
