@@ -61,6 +61,7 @@ public class TaskCreator {
         TriggerBuilder.newTrigger()
             .withIdentity(jobDetail.getKey().getName(), jobDetail.getKey().getGroup())
             .startAt(DateBuilder.futureDate(30, DateBuilder.IntervalUnit.SECOND))
+            .withPriority(jobData.getPriority())
             .withSchedule(
                 CronScheduleBuilder.cronSchedule(cronExpression)
                     .withMisfireHandlingInstructionFireAndProceed())

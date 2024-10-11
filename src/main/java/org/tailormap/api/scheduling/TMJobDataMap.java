@@ -23,10 +23,13 @@ public class TMJobDataMap extends HashMap<String, Object> {
   public TMJobDataMap(Map<String, Object> map) {
     this((String) map.get("type"), (String) map.get("description"));
     this.putAll(map);
+    // validate the priority
+    this.setPriority((Integer) map.getOrDefault("priority", Trigger.DEFAULT_PRIORITY));
   }
 
   /**
-   * Create a new instance of TMJobDataMap with a status of {@code Trigger.TriggerState.NONE}.
+   * Create a new instance of TMJobDataMap with a status of {@code Trigger.TriggerState.NONE} and a
+   * default priority.
    *
    * @param type the type of the job
    * @param description a description of the job
@@ -36,7 +39,7 @@ public class TMJobDataMap extends HashMap<String, Object> {
   }
 
   /**
-   * Create a new instance of TMJobDataMap.
+   * Create a new instance of TMJobDataMap with default priority.
    *
    * @param type the type of the job
    * @param description a description of the job
@@ -44,6 +47,22 @@ public class TMJobDataMap extends HashMap<String, Object> {
    */
   public TMJobDataMap(
       @NotNull String type, @NotNull String description, @NotNull Trigger.TriggerState status) {
+    this(type, description, status, Trigger.DEFAULT_PRIORITY);
+  }
+
+  /**
+   * Create a new instance of TMJobDataMap.
+   *
+   * @param type the type of the job
+   * @param description a description of the job
+   * @param status the status of the job
+   * @param priority the priority of the job, an integer value equal or greater than 0
+   */
+  public TMJobDataMap(
+      @NotNull String type,
+      @NotNull String description,
+      @NotNull Trigger.TriggerState status,
+      int priority) {
     super();
     // Check if the map contains the required parameters
     Assert.notNull(type, "type must not be null");
@@ -52,6 +71,7 @@ public class TMJobDataMap extends HashMap<String, Object> {
     super.put("type", type);
     super.put("description", description);
     super.put("status", status);
+    setPriority(priority);
   }
 
   @NotNull
@@ -74,5 +94,21 @@ public class TMJobDataMap extends HashMap<String, Object> {
       status = Trigger.TriggerState.NONE;
     }
     super.put("status", status);
+  }
+
+  /**
+   * Set the priority of the job.
+   *
+   * @param priority the priority of the job, an integer value equal or greater than 0
+   */
+  public void setPriority(int priority) {
+    if (priority < 0) {
+      priority = 0;
+    }
+    super.put("priority", priority);
+  }
+
+  public int getPriority() {
+    return (int) super.get("priority");
   }
 }
