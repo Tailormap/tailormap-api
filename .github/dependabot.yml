@@ -27,10 +27,10 @@ updates:
         versions:
           - '>= 7'
 
-  - package-ecosystem: "github-actions"
+  - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: weekly
       day: monday
       time: "21:00"
       timezone: Europe/Amsterdam
