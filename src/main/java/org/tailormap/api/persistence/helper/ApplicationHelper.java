@@ -261,10 +261,10 @@ public class ApplicationHelper {
       // from layer level, from default layer setting or the default.
 
       // An empty (blank) string means it is not set. To explicitly clear a layer level string
-      // setting for an app, an admin should set the app layer setting to a spaces.
+      // setting for an app, an admin should set the app layer setting to spaces.
 
       // The JSON wrapper classes have "null" values as defaults which means not-set. The defaults
-      // (such as tilingDisabled being false) are applied below although the frontend would also
+      // (such as tilingDisabled being true) are applied below although the frontend would also
       // treat null as non-truthy.
 
       // When default layer settings or settings for a specific layer are missing, construct new
