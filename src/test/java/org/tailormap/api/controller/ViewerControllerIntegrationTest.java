@@ -12,7 +12,6 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -221,7 +220,6 @@ class ViewerControllerIntegrationTest {
     final String path = apiBasePath + "/app/default/map";
     mockMvc
         .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
-        .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.initialExtent").isMap())
@@ -229,7 +227,9 @@ class ViewerControllerIntegrationTest {
         .andExpect(jsonPath("$.services").isArray())
         .andExpect(jsonPath("$.appLayers").isArray())
         .andExpect(jsonPath("$.appLayers[0]").isMap())
-        .andExpect(jsonPath("$.appLayers.length()").value(19))
+        // Note: if the testdata was created with MAP5_URL set, the appLayers array will have 4 more
+        // layers
+        .andExpect(jsonPath("$.appLayers.length()").value(15))
         .andExpect(jsonPath("$.appLayers[0].hasAttributes").value(false))
         .andExpect(jsonPath("$.appLayers[1].hasAttributes").value(false))
         .andExpect(jsonPath("$.appLayers[4].legendImageUrl").isEmpty())

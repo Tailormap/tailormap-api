@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -45,9 +47,7 @@ class LayerDescriptionControllerIntegrationTest {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void public_app() throws Exception {
-    final String path =
-        apiBasePath
-            + "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/describe";
+    final String path = apiBasePath + layerBegroeidTerreindeelPostgis + "/describe";
     mockMvc
         .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
@@ -179,5 +179,14 @@ class LayerDescriptionControllerIntegrationTest {
     mockMvc
         .perform(get(bgtPath).accept(MediaType.APPLICATION_JSON).with(setServletPath(bgtPath)))
         .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void test_wms_secured_proxy_not_in_public_app() throws Exception {
+    final String path = apiBasePath + layerProxiedWithAuthInPublicApp + "/describe";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isForbidden());
   }
 }

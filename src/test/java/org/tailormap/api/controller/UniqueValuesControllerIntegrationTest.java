@@ -13,6 +13,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+import static org.tailormap.api.controller.TestUrls.layerProvinciesWfs;
+import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
+import static org.tailormap.api.controller.TestUrls.layerWaterdeelOracle;
+import static org.tailormap.api.controller.TestUrls.layerWegdeelSqlServer;
 
 import com.jayway.jsonpath.JsonPath;
 import java.nio.charset.StandardCharsets;
@@ -48,17 +53,14 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 @Stopwatch
 @Order(1)
 class UniqueValuesControllerIntegrationTest {
-  private static final String provinciesWFSUrl =
-      "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/unique/naam";
-  private static final String begroeidterreindeelPostgisUrl =
-      "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/unique/bronhouder";
-  private static final String waterdeelOracleUrl =
-      "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/BRONHOUDER";
-  private static final String wegdeelSqlserverUrl =
-      "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/unique/bronhouder";
-
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
+
+  private static final String provinciesWfsUrl = layerProvinciesWfs + "/unique/naam";
+  private static final String begroeidterreindeelPostgisUrl =
+      layerBegroeidTerreindeelPostgis + "/unique/bronhouder";
+  private static final String waterdeelOracleUrl = layerWaterdeelOracle + "/unique/BRONHOUDER";
+  private static final String wegdeelSqlServerUrl = layerWegdeelSqlServer + "/unique/bronhouder";
 
   @Autowired private MockMvc mockMvc;
 
@@ -71,7 +73,7 @@ class UniqueValuesControllerIntegrationTest {
         arguments(
             waterdeelOracleUrl,
             new String[] {"W0636", "P0026", "L0002", "W0155", "G1904", "G0344", "L0004"}),
-        arguments(wegdeelSqlserverUrl, new String[] {"P0026", "G0344", "G1904", "L0004", "L0002"}));
+        arguments(wegdeelSqlServerUrl, new String[] {"P0026", "G0344", "G1904", "L0004", "L0002"}));
   }
 
   @ParameterizedTest(name = "#{index}: should return all unique values from database: {0}")
@@ -198,7 +200,7 @@ class UniqueValuesControllerIntegrationTest {
   @RetryingTest(2)
   // https://b3partners.atlassian.net/browse/HTM-758
   void unique_values_from_wfs() throws Exception {
-    final String url = apiBasePath + provinciesWFSUrl;
+    final String url = apiBasePath + provinciesWfsUrl;
     MvcResult result =
         mockMvc
             .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -239,7 +241,7 @@ class UniqueValuesControllerIntegrationTest {
 
   @RetryingTest(2)
   void unique_values_from_wfs_with_filter_on_same() throws Exception {
-    final String url = apiBasePath + provinciesWFSUrl;
+    final String url = apiBasePath + provinciesWfsUrl;
     final String cqlFilter = "naam='Utrecht'";
     mockMvc
         .perform(
@@ -258,7 +260,7 @@ class UniqueValuesControllerIntegrationTest {
   @RetryingTest(2)
   void unique_values_from_wfs_with_filter_on_different() throws Exception {
     String cqlFilter = "naam like '%Holland'";
-    final String url = apiBasePath + provinciesWFSUrl;
+    final String url = apiBasePath + provinciesWfsUrl;
     mockMvc
         .perform(
             get(url)
@@ -313,5 +315,14 @@ class UniqueValuesControllerIntegrationTest {
         .andExpect(jsonPath("$.filterApplied").value(false))
         .andExpect(jsonPath("$.values").isArray())
         .andExpect(jsonPath("$.values").isNotEmpty());
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void test_wms_secured_proxy_not_in_public_app() throws Exception {
+    final String testUrl = apiBasePath + layerProxiedWithAuthInPublicApp + "/unique/naam";
+    mockMvc
+        .perform(get(testUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(testUrl)))
+        .andExpect(status().isForbidden());
   }
 }
