@@ -231,7 +231,7 @@ class ViewerControllerIntegrationTest {
         .andExpect(jsonPath("$.appLayers[0]").isMap())
         // Note: if the testdata was created with MAP5_URL set, the appLayers array will have 4 more
         // layers
-        .andExpect(jsonPath("$.appLayers.length()").value(13))
+        .andExpect(jsonPath("$.appLayers.length()").value(17))
         .andExpect(
             jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-tms:xyz')].hasAttributes")
                 .value(false))
@@ -239,12 +239,12 @@ class ViewerControllerIntegrationTest {
             jsonPath("$.appLayers[?(@.id == 'lyr:b3p-mapproxy-luchtfoto:xyz')].hasAttributes")
                 .value(false))
         .andExpect(jsonPath(appLayerLufoPath).exists())
-        .andExpect(jsonPath(appLayerLufoPath + ".legendImageUrl").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + "[0].legendImageUrl").isEmpty())
         .andExpect(jsonPath(appLayerLufoPath + ".visible").value(false))
-        .andExpect(jsonPath(appLayerLufoPath + ".minScale").isEmpty())
-        .andExpect(jsonPath(appLayerLufoPath + ".maxScale").isEmpty())
-        .andExpect(jsonPath(appLayerLufoPath + ".hiDpiMode").isEmpty())
-        .andExpect(jsonPath(appLayerLufoPath + ".hiDpiSubstituteLayer").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + "[0].minScale").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + "[0].maxScale").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + "[0].hiDpiMode").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + "[0].hiDpiSubstituteLayer").isEmpty())
         .andExpect(jsonPath("$.crs.code").value("EPSG:28992"));
   }
 
