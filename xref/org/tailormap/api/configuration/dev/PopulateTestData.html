@@ -1494,13 +1494,15 @@
 <a class="jxr_linenumber" name="L1486" href="#L1486">1486</a>                       <span class="jxr_string">"foo"</span>,
 <a class="jxr_linenumber" name="L1487" href="#L1487">1487</a>                       <span class="jxr_string">"bar"</span>,
 <a class="jxr_linenumber" name="L1488" href="#L1488">1488</a>                       <span class="jxr_string">"description"</span>,
-<a class="jxr_linenumber" name="L1489" href="#L1489">1489</a>                       <span class="jxr_string">"POC task that runs every hour"</span>)),
-<a class="jxr_linenumber" name="L1490" href="#L1490">1490</a>               <em class="jxr_comment">/* run every hour */</em> <span class="jxr_string">"0 0 0/1 1/1 * ? *"</span>));
-<a class="jxr_linenumber" name="L1491" href="#L1491">1491</a>     } <strong class="jxr_keyword">catch</strong> (SchedulerException e) {
-<a class="jxr_linenumber" name="L1492" href="#L1492">1492</a>       logger.error(<span class="jxr_string">"Error creating scheduling poc tasks"</span>, e);
-<a class="jxr_linenumber" name="L1493" href="#L1493">1493</a>     }
-<a class="jxr_linenumber" name="L1494" href="#L1494">1494</a>   }
-<a class="jxr_linenumber" name="L1495" href="#L1495">1495</a> }
+<a class="jxr_linenumber" name="L1489" href="#L1489">1489</a>                       <span class="jxr_string">"POC task that runs every hour"</span>,
+<a class="jxr_linenumber" name="L1490" href="#L1490">1490</a>                       <span class="jxr_string">"priority"</span>,
+<a class="jxr_linenumber" name="L1491" href="#L1491">1491</a>                       10)),
+<a class="jxr_linenumber" name="L1492" href="#L1492">1492</a>               <em class="jxr_comment">/* run every hour */</em> <span class="jxr_string">"0 0 0/1 1/1 * ? *"</span>));
+<a class="jxr_linenumber" name="L1493" href="#L1493">1493</a>     } <strong class="jxr_keyword">catch</strong> (SchedulerException e) {
+<a class="jxr_linenumber" name="L1494" href="#L1494">1494</a>       logger.error(<span class="jxr_string">"Error creating scheduling poc tasks"</span>, e);
+<a class="jxr_linenumber" name="L1495" href="#L1495">1495</a>     }
+<a class="jxr_linenumber" name="L1496" href="#L1496">1496</a>   }
+<a class="jxr_linenumber" name="L1497" href="#L1497">1497</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

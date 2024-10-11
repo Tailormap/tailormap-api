@@ -2631,6 +2631,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/security/InternalAdminAuthentication.html#getPrincipal()" class="member-name-link">getPrincipal()</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/InternalAdminAuthentication.html" title="class in org.tailormap.api.security">InternalAdminAuthentication</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/TMJobDataMap.html#getPriority()" class="member-name-link">getPriority()</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/ServicePublishingSettings.html#getProjections()" class="member-name-link">getProjections()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/ServicePublishingSettings.html" title="class in org.tailormap.api.persistence.json">ServicePublishingSettings</a></dt>
 <dd>
 <div class="block">Get projections</div>
@@ -4959,6 +4961,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/JDBCConnectionProperties.html#setPrimaryKeyMetadataTable(java.lang.String)" class="member-name-link">setPrimaryKeyMetadataTable(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/JDBCConnectionProperties.html" title="class in org.tailormap.api.persistence.json">JDBCConnectionProperties</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/TMJobDataMap.html#setPriority(int)" class="member-name-link">setPriority(int)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a></dt>
+<dd>
+<div class="block">Set the priority of the job.</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/json/ServicePublishingSettings.html#setProjections(java.util.List)" class="member-name-link">setProjections(List&lt;String&gt;)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/ServicePublishingSettings.html" title="class in org.tailormap.api.persistence.json">ServicePublishingSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ViewerResponse.html#setProjections(java.util.List)" class="member-name-link">setProjections(List&lt;String&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></dt>
@@ -5565,9 +5571,14 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/scheduling/TMJobDataMap.html#%3Cinit%3E(java.lang.String,java.lang.String)" class="member-name-link">TMJobDataMap(String, String)</a> - Constructor for class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a></dt>
 <dd>
-<div class="block">Create a new instance of TMJobDataMap with a status of <code>Trigger.TriggerState.NONE</code>.</div>
+<div class="block">Create a new instance of TMJobDataMap with a status of <code>Trigger.TriggerState.NONE</code> and a
+ default priority.</div>
 </dd>
 <dt><a href="org/tailormap/api/scheduling/TMJobDataMap.html#%3Cinit%3E(java.lang.String,java.lang.String,org.quartz.Trigger.TriggerState)" class="member-name-link">TMJobDataMap(String, String, Trigger.TriggerState)</a> - Constructor for class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a></dt>
+<dd>
+<div class="block">Create a new instance of TMJobDataMap with default priority.</div>
+</dd>
+<dt><a href="org/tailormap/api/scheduling/TMJobDataMap.html#%3Cinit%3E(java.lang.String,java.lang.String,org.quartz.Trigger.TriggerState,int)" class="member-name-link">TMJobDataMap(String, String, Trigger.TriggerState, int)</a> - Constructor for class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a></dt>
 <dd>
 <div class="block">Create a new instance of TMJobDataMap.</div>
 </dd>
