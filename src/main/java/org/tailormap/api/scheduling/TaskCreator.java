@@ -5,6 +5,8 @@
  */
 package org.tailormap.api.scheduling;
 
+import static io.sentry.quartz.SentryJobListener.SENTRY_SLUG_KEY;
+
 import java.lang.invoke.MethodHandles;
 import java.util.UUID;
 import org.quartz.CronScheduleBuilder;
@@ -62,6 +64,7 @@ public class TaskCreator {
             .withIdentity(jobDetail.getKey().getName(), jobDetail.getKey().getGroup())
             .startAt(DateBuilder.futureDate(30, DateBuilder.IntervalUnit.SECOND))
             .withPriority(jobData.getPriority())
+            .usingJobData(SENTRY_SLUG_KEY, "monitor_slug_cron_trigger_" + jobData.get("type"))
             .withSchedule(
                 CronScheduleBuilder.cronSchedule(cronExpression)
                     .withMisfireHandlingInstructionFireAndProceed())

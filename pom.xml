@@ -501,6 +501,11 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>io.sentry</groupId>
+            <artifactId>sentry-quartz</artifactId>
+            <version>${sentry.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.sentry</groupId>
             <artifactId>sentry</artifactId>
             <version>${sentry.version}</version>
         </dependency>
