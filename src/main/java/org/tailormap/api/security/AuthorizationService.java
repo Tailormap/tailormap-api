@@ -138,7 +138,7 @@ public class AuthorizationService {
    *
    * @param application The application
    * @param geoService The geo service
-   * @return Whether to allow proxying this service for the application
+   * @return Whether to deny proxying this service for the application
    */
   public boolean mustDenyAccessForSecuredProxy(Application application, GeoService geoService) {
     if (!Boolean.TRUE.equals(geoService.getSettings().getUseProxy())) {
