@@ -22,7 +22,7 @@ components:
         eventType:
           type: string
           description: 'Type of event'
-          enum: ['keep-alive', 'entity-created', 'entity-deleted', 'entity-updated']
+          enum: [ 'keep-alive', 'entity-created', 'entity-deleted', 'entity-updated' ]
         details:
           type: object
 
@@ -36,3 +36,23 @@ components:
         object:
           description: 'The entity in JSON, only included in created and updated events.'
           type: object
+
+    TaskSchedule:
+      type: object
+      required:
+        - cronExpression
+      properties:
+        uuid:
+          description: 'UUID of the task; this is the unique identifier of the task'
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        description:
+          description: 'Human-readable description of the task.'
+          type: string
+          nullable: true
+        cronExpression:
+          description: 'Cron expression for the task'
+          type: string
+          nullable: false
