@@ -1406,7 +1406,7 @@ SPDX-License-Identifier: MIT
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>taglist-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.1</version>
                 <configuration>
                     <tagListOptions>
                         <tagClasses>
