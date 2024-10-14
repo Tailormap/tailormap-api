@@ -269,10 +269,10 @@
 <a class="jxr_linenumber" name="L261" href="#L261">261</a>       <em class="jxr_comment">// from layer level, from default layer setting or the default.</em>
 <a class="jxr_linenumber" name="L262" href="#L262">262</a> 
 <a class="jxr_linenumber" name="L263" href="#L263">263</a>       <em class="jxr_comment">// An empty (blank) string means it is not set. To explicitly clear a layer level string</em>
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>       <em class="jxr_comment">// setting for an app, an admin should set the app layer setting to a spaces.</em>
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>       <em class="jxr_comment">// setting for an app, an admin should set the app layer setting to spaces.</em>
 <a class="jxr_linenumber" name="L265" href="#L265">265</a> 
 <a class="jxr_linenumber" name="L266" href="#L266">266</a>       <em class="jxr_comment">// The JSON wrapper classes have "null" values as defaults which means not-set. The defaults</em>
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>       <em class="jxr_comment">// (such as tilingDisabled being false) are applied below although the frontend would also</em>
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>       <em class="jxr_comment">// (such as tilingDisabled being true) are applied below although the frontend would also</em>
 <a class="jxr_linenumber" name="L268" href="#L268">268</a>       <em class="jxr_comment">// treat null as non-truthy.</em>
 <a class="jxr_linenumber" name="L269" href="#L269">269</a> 
 <a class="jxr_linenumber" name="L270" href="#L270">270</a>       <em class="jxr_comment">// When default layer settings or settings for a specific layer are missing, construct new</em>
@@ -401,35 +401,39 @@
 <a class="jxr_linenumber" name="L393" href="#L393">393</a>         <strong class="jxr_keyword">return</strong> Triple.of(<strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L394" href="#L394">394</a>       }
 <a class="jxr_linenumber" name="L395" href="#L395">395</a> 
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>       GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());
-<a class="jxr_linenumber" name="L397" href="#L397">397</a> 
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>       <strong class="jxr_keyword">if</strong> (serviceLayer == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>         logger.warn(
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>             <span class="jxr_string">"App {} references layer \&quot;{}\&quot; not found in capabilities of service {}"</span>,
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>             app.getId(),
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>             layerRef.getLayerName(),
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>             service.getId());
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>         <strong class="jxr_keyword">return</strong> Triple.of(<strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>       }
-<a class="jxr_linenumber" name="L406" href="#L406">406</a> 
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>       <strong class="jxr_keyword">if</strong> (!authorizationService.mayUserRead(service, serviceLayer)) {
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>       <strong class="jxr_keyword">if</strong> (authorizationService.mustDenyAccessForSecuredProxy(app, service)) {
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>         <strong class="jxr_keyword">return</strong> Triple.of(<strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>       }
+<a class="jxr_linenumber" name="L399" href="#L399">399</a> 
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>       GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());
+<a class="jxr_linenumber" name="L401" href="#L401">401</a> 
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>       <strong class="jxr_keyword">if</strong> (serviceLayer == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>         logger.warn(
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>             <span class="jxr_string">"App {} references layer \&quot;{}\&quot; not found in capabilities of service {}"</span>,
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>             app.getId(),
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>             layerRef.getLayerName(),
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>             service.getId());
 <a class="jxr_linenumber" name="L408" href="#L408">408</a>         <strong class="jxr_keyword">return</strong> Triple.of(<strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L409" href="#L409">409</a>       }
 <a class="jxr_linenumber" name="L410" href="#L410">410</a> 
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>       serviceLayerServiceIds.put(serviceLayer, service.getId());
-<a class="jxr_linenumber" name="L412" href="#L412">412</a> 
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>       <strong class="jxr_keyword">if</strong> (mr.getServices().stream()
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>           .filter(s -&gt; s.getId().equals(service.getId()))
-<a class="jxr_linenumber" name="L415" href="#L415">415</a>           .findAny()
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>           .isEmpty()) {
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>         mr.addServicesItem(service.toJsonPojo(geoServiceHelper));
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>       }
-<a class="jxr_linenumber" name="L419" href="#L419">419</a> 
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>       GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>       <strong class="jxr_keyword">return</strong> Triple.of(service, serviceLayer, layerSettings);
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>     }
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>   }
-<a class="jxr_linenumber" name="L424" href="#L424">424</a> }
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>       <strong class="jxr_keyword">if</strong> (!authorizationService.mayUserRead(service, serviceLayer)) {
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>         <strong class="jxr_keyword">return</strong> Triple.of(<strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>       }
+<a class="jxr_linenumber" name="L414" href="#L414">414</a> 
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>       serviceLayerServiceIds.put(serviceLayer, service.getId());
+<a class="jxr_linenumber" name="L416" href="#L416">416</a> 
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>       <strong class="jxr_keyword">if</strong> (mr.getServices().stream()
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>           .filter(s -&gt; s.getId().equals(service.getId()))
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>           .findAny()
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>           .isEmpty()) {
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>         mr.addServicesItem(service.toJsonPojo(geoServiceHelper));
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>       }
+<a class="jxr_linenumber" name="L423" href="#L423">423</a> 
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>       GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>       <strong class="jxr_keyword">return</strong> Triple.of(service, serviceLayer, layerSettings);
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>     }
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>   }
+<a class="jxr_linenumber" name="L428" href="#L428">428</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

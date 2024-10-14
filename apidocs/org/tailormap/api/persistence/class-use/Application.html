@@ -162,24 +162,28 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color"><span class="type-name-label">AppRestControllerAdvice.</span><code><a href="../../controller/AppRestControllerAdvice.html#populateAppTreeLayerNode(org.tailormap.api.persistence.Application,java.lang.String)" class="member-name-link">populateAppTreeLayerNode</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;app,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;appLayerId)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>org.springframework.http.ResponseEntity&lt;?&gt;</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">GeoServiceProxyController.</span><code><a href="../../controller/GeoServiceProxyController.html#proxy(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.json.GeoServiceProtocol,jakarta.servlet.http.HttpServletRequest)" class="member-name-link">proxy</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+<div class="col-first odd-row-color"><code><a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AppRestControllerAdvice.</span><code><a href="../../controller/AppRestControllerAdvice.html#populateGeoService(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.json.AppTreeLayerNode)" class="member-name-link">populateGeoService</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;app,
+ <a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>org.springframework.http.ResponseEntity&lt;?&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GeoServiceProxyController.</span><code><a href="../../controller/GeoServiceProxyController.html#proxy(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.json.GeoServiceProtocol,jakarta.servlet.http.HttpServletRequest)" class="member-name-link">proxy</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
  <a href="../json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer,
  <a href="../json/GeoServiceProtocol.html" title="enum class in org.tailormap.api.persistence.json">GeoServiceProtocol</a>&nbsp;protocol,
  jakarta.servlet.http.HttpServletRequest&nbsp;request)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">SearchController.</span><code><a href="../../controller/SearchController.html#search(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.Application,java.lang.String,java.lang.Integer)" class="member-name-link">search</a><wbr>(<a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SearchController.</span><code><a href="../../controller/SearchController.html#search(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.Application,java.lang.String,java.lang.Integer)" class="member-name-link">search</a><wbr>(<a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
  <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
  <a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrQuery,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;start)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code><a href="../../viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">ViewerController.</span><code><a href="../../controller/ViewerController.html#viewer(org.tailormap.api.persistence.Application,org.tailormap.api.viewer.model.ViewerResponse.KindEnum)" class="member-name-link">viewer</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;app,
- <a href="../../viewer/model/ViewerResponse.KindEnum.html" title="enum class in org.tailormap.api.viewer.model">ViewerResponse.KindEnum</a>&nbsp;viewerKind)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="../../viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ViewerController.</span><code><a href="../../controller/ViewerController.html#viewer(org.tailormap.api.persistence.Application,org.tailormap.api.viewer.model.ViewerResponse.KindEnum)" class="member-name-link">viewer</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;app,
+ <a href="../../viewer/model/ViewerResponse.KindEnum.html" title="enum class in org.tailormap.api.viewer.model">ViewerResponse.KindEnum</a>&nbsp;viewerKind)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -329,16 +333,16 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>boolean</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">AuthorizationService.</span><code><a href="../../security/AuthorizationService.html#allowProxyAccess(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService)" class="member-name-link">allowProxyAccess</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
- <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AuthorizationService.</span><code><a href="../../security/AuthorizationService.html#mayUserRead(org.tailormap.api.persistence.Application)" class="member-name-link">mayUserRead</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
 <div class="col-last even-row-color">
-<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo
- service when the application is public (accessible by anonymous users).</div>
+<div class="block">Verifies that this user may read this Application.</div>
 </div>
 <div class="col-first odd-row-color"><code>boolean</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">AuthorizationService.</span><code><a href="../../security/AuthorizationService.html#mayUserRead(org.tailormap.api.persistence.Application)" class="member-name-link">mayUserRead</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AuthorizationService.</span><code><a href="../../security/AuthorizationService.html#mustDenyAccessForSecuredProxy(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService)" class="member-name-link">mustDenyAccessForSecuredProxy</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+ <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Verifies that this user may read this Application.</div>
+<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo
+ service when the application is public (accessible by anonymous users).</div>
 </div>
 </div>
 </section>

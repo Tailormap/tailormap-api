@@ -146,20 +146,23 @@
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> <em class="jxr_javadoccomment">   * @param application The application</em>
 <a class="jxr_linenumber" name="L140" href="#L140">140</a> <em class="jxr_javadoccomment">   * @param geoService The geo service</em>
-<a class="jxr_linenumber" name="L141" href="#L141">141</a> <em class="jxr_javadoccomment">   * @return Whether to allow proxying this service for the application</em>
+<a class="jxr_linenumber" name="L141" href="#L141">141</a> <em class="jxr_javadoccomment">   * @return Whether to deny proxying this service for the application</em>
 <a class="jxr_linenumber" name="L142" href="#L142">142</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> allowProxyAccess(<a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application, <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>     <strong class="jxr_keyword">if</strong> (geoService.getAuthentication() == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> mustDenyAccessForSecuredProxy(<a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application, <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>     <strong class="jxr_keyword">if</strong> (!Boolean.TRUE.equals(geoService.getSettings().getUseProxy())) {
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>       <strong class="jxr_keyword">return</strong> false;
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>     }
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>     <strong class="jxr_keyword">return</strong> application.getAuthorizationRules().stream()
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>         .noneMatch(
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>             rule -&gt;
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>                 Group.ANONYMOUS.equals(rule.getGroupName())
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>                     &amp;&amp; AuthorizationRuleDecision.ALLOW.equals(
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>                         rule.getDecisions().get(ACCESS_TYPE_READ)));
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>   }
-<a class="jxr_linenumber" name="L154" href="#L154">154</a> }
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>     <strong class="jxr_keyword">if</strong> (geoService.getAuthentication() == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>       <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>     }
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>     <strong class="jxr_keyword">return</strong> application.getAuthorizationRules().stream()
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>         .anyMatch(
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>             rule -&gt;
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>                 Group.ANONYMOUS.equals(rule.getGroupName())
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>                     &amp;&amp; AuthorizationRuleDecision.ALLOW.equals(
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>                         rule.getDecisions().get(ACCESS_TYPE_READ)));
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>   }
+<a class="jxr_linenumber" name="L157" href="#L157">157</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

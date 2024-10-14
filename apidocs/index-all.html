@@ -214,11 +214,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AuthorizationRuleDecision.html#ALLOW" class="member-name-link">ALLOW</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AuthorizationRuleDecision.html" title="enum class in org.tailormap.api.persistence.json">AuthorizationRuleDecision</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/security/AuthorizationService.html#allowProxyAccess(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService)" class="member-name-link">allowProxyAccess(Application, GeoService)</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/AuthorizationService.html" title="class in org.tailormap.api.security">AuthorizationService</a></dt>
-<dd>
-<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo
- service when the application is public (accessible by anonymous users).</div>
-</dd>
 <dt><a href="org/tailormap/api/persistence/json/FormField.html#allowValueListOnly(java.lang.Boolean)" class="member-name-link">allowValueListOnly(Boolean)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/Group.html#ANONYMOUS" class="member-name-link">ANONYMOUS</a> - Static variable in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Group.html" title="class in org.tailormap.api.persistence">Group</a></dt>
@@ -3839,6 +3834,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMGeometryType.html#MULTIPOLYGON" class="member-name-link">MULTIPOLYGON</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMGeometryType.html" title="enum class in org.tailormap.api.persistence.json">TMGeometryType</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/security/AuthorizationService.html#mustDenyAccessForSecuredProxy(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService)" class="member-name-link">mustDenyAccessForSecuredProxy(Application, GeoService)</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/AuthorizationService.html" title="class in org.tailormap.api.security">AuthorizationService</a></dt>
+<dd>
+<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo
+ service when the application is public (accessible by anonymous users).</div>
+</dd>
 </dl>
 <h2 class="title" id="I:N">N</h2>
 <dl class="index">
@@ -4036,7 +4036,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/AppRestControllerAdvice.html#populateAppTreeLayerNode(org.tailormap.api.persistence.Application,java.lang.String)" class="member-name-link">populateAppTreeLayerNode(Application, String)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/AppRestControllerAdvice.html" title="class in org.tailormap.api.controller">AppRestControllerAdvice</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/controller/AppRestControllerAdvice.html#populateGeoService(org.tailormap.api.persistence.json.AppTreeLayerNode)" class="member-name-link">populateGeoService(AppTreeLayerNode)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/AppRestControllerAdvice.html" title="class in org.tailormap.api.controller">AppRestControllerAdvice</a></dt>
+<dt><a href="org/tailormap/api/controller/AppRestControllerAdvice.html#populateGeoService(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.json.AppTreeLayerNode)" class="member-name-link">populateGeoService(Application, AppTreeLayerNode)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/AppRestControllerAdvice.html" title="class in org.tailormap.api.controller">AppRestControllerAdvice</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/AppRestControllerAdvice.html#populateGeoServiceLayer(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.GeoService)" class="member-name-link">populateGeoServiceLayer(AppTreeLayerNode, GeoService)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/AppRestControllerAdvice.html" title="class in org.tailormap.api.controller">AppRestControllerAdvice</a></dt>
 <dd>&nbsp;</dd>

@@ -18,35 +18,35 @@
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.TestRequestProcessor.setServletPath;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.hamcrest.Matchers;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.MethodOrderer;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.TestMethodOrder;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.parallel.Execution;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.parallel.ExecutionMode;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.junitpioneer.jupiter.Stopwatch;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.MediaType;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.web.servlet.MockMvc;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.annotation.PostgresIntegrationTest;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  @PostgresIntegrationTest
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  @AutoConfigureMockMvc
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  @Execution(ExecutionMode.CONCURRENT)
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  @Stopwatch
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  @TestMethodOrder(MethodOrderer.OrderAnnotation.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">class</strong> <a name="LayerExportControllerIntegrationTest" href="../../../../org/tailormap/api/controller/LayerExportControllerIntegrationTest.html#LayerExportControllerIntegrationTest">LayerExportControllerIntegrationTest</a> {
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String waterdeelUrlOracle =
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>        <span class="jxr_string">"/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/export/download"</span>;
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String pdokProvincies =
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>        <span class="jxr_string">"/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/export/download"</span>;
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String begroeidterreindeel =
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>        <span class="jxr_string">"/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/export/download"</span>;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.controller.TestUrls.layerProvinciesWfs;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.controller.TestUrls.layerWaterdeel;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.hamcrest.Matchers;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.MethodOrderer;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.TestMethodOrder;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.parallel.Execution;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.parallel.ExecutionMode;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.junitpioneer.jupiter.Stopwatch;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.MediaType;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.web.servlet.MockMvc;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.annotation.PostgresIntegrationTest;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  @PostgresIntegrationTest
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  @AutoConfigureMockMvc
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  @Execution(ExecutionMode.CONCURRENT)
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  @Stopwatch
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  @TestMethodOrder(MethodOrderer.OrderAnnotation.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">class</strong> <a name="LayerExportControllerIntegrationTest" href="../../../../org/tailormap/api/controller/LayerExportControllerIntegrationTest.html#LayerExportControllerIntegrationTest">LayerExportControllerIntegrationTest</a> {
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String downloadPath = <span class="jxr_string">"/export/download"</span>;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String capabilitiesPath = <span class="jxr_string">"/export/capabilities"</span>;
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>    @Autowired <strong class="jxr_keyword">private</strong> MockMvc mockMvc;
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  
@@ -56,7 +56,7 @@
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>    @Test
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>    @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>    <strong class="jxr_keyword">void</strong> shouldReturnExportCapabilitiesWithJDBCFeatureSource() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath + waterdeelUrlOracle.replace(<span class="jxr_string">"download"</span>, <span class="jxr_string">"capabilities"</span>);
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerWaterdeel + capabilitiesPath;
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      mockMvc
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>          .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>          .andExpect(status().isOk())
@@ -95,7 +95,7 @@
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>    @Test
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>    @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>    <strong class="jxr_keyword">void</strong> shouldReturnExportCapabilitiesWithWFSFeatureSource() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath + pdokProvincies.replace(<span class="jxr_string">"download"</span>, <span class="jxr_string">"capabilities"</span>);
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerProvinciesWfs + capabilitiesPath;
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>      mockMvc
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>          .perform(get(url).with(setServletPath(url)).accept(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>          .andExpect(status().isOk())
@@ -114,7 +114,7 @@
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>   @Test
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>   <strong class="jxr_keyword">void</strong> shouldExportGeoJSON() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + pdokProvincies;
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerProvinciesWfs + downloadPath;
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>     mockMvc
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         .perform(
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>             get(url)
@@ -133,7 +133,7 @@
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>   @Test
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>   <strong class="jxr_keyword">void</strong> shouldExportGeoPackage() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + waterdeelUrlOracle;
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerWaterdeel + downloadPath;
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>     mockMvc
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>         .perform(
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>             get(url)
@@ -147,7 +147,7 @@
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>   @Test
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>   <strong class="jxr_keyword">void</strong> shouldExportGeoJSONWithFilter() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + waterdeelUrlOracle;
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerWaterdeel + downloadPath;
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>     mockMvc
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>         .perform(
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>             get(url)
@@ -167,7 +167,7 @@
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>   @Test
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>   <strong class="jxr_keyword">void</strong> shouldExportGeoJSONWithFilterAndSort() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + waterdeelUrlOracle;
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerWaterdeel + downloadPath;
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>     mockMvc
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>         .perform(
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>             get(url)
@@ -206,7 +206,7 @@
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>   @Test
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>   <strong class="jxr_keyword">void</strong> shouldNotExportHiddenAttributesInGeoJSONWhenRequested() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + begroeidterreindeel;
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath;
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>     mockMvc
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>         .perform(
 <a class="jxr_linenumber" name="L204" href="#L204">204</a>             get(url)
@@ -226,7 +226,7 @@
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>   @Test
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>   <strong class="jxr_keyword">void</strong> shouldNotExportHiddenAttributesInGeoJSON() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + begroeidterreindeel;
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath;
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>     mockMvc
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>         .perform(
 <a class="jxr_linenumber" name="L224" href="#L224">224</a>             get(url)
@@ -244,7 +244,20 @@
 <a class="jxr_linenumber" name="L236" href="#L236">236</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].properties.terminationdate"</span>).doesNotExist())
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>         .andExpect(jsonPath(<span class="jxr_string">"$.features[0].properties.geom_kruinlijn"</span>).doesNotExist());
 <a class="jxr_linenumber" name="L238" href="#L238">238</a>   }
-<a class="jxr_linenumber" name="L239" href="#L239">239</a> }
+<a class="jxr_linenumber" name="L239" href="#L239">239</a> 
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>   @Test
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>   @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>   <strong class="jxr_keyword">void</strong> test_wms_secured_proxy_not_in_<strong class="jxr_keyword">public</strong>_app() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>     <strong class="jxr_keyword">final</strong> String testUrl = apiBasePath + layerProxiedWithAuthInPublicApp + <span class="jxr_string">"/export/download"</span>;
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>     mockMvc
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>         .perform(
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>             get(testUrl)
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>                 .accept(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>                 .with(setServletPath(testUrl))
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>                 .param(<span class="jxr_string">"outputFormat"</span>, <span class="jxr_string">"application/json"</span>))
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>         .andExpect(status().isForbidden());
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>   }
+<a class="jxr_linenumber" name="L252" href="#L252">252</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
