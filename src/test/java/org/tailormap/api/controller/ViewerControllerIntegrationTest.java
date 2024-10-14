@@ -146,13 +146,54 @@ class ViewerControllerIntegrationTest {
       username = "tm-admin",
       authorities = {"admin"})
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void should_not_contain_proxied_secured_service_layer() throws Exception {
+  void should_contain_proxied_secured_service_layer() throws Exception {
     final String path = apiBasePath + "/app/secured/map";
     mockMvc
         .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.services[?(@.title == 'Openbasiskaart (proxied)')]").exists());
+        .andExpect(jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-proxied:osm')]").exists())
+        .andExpect(jsonPath("$.services[?(@.id == 'openbasiskaart-proxied')]").exists());
+  }
+
+  @Test
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void should_not_contain_proxied_secured_service_layer_on_public_app() throws Exception {
+    final String path = apiBasePath + "/app/default/map";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(
+            jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-proxied:osm')]").doesNotExist())
+        .andExpect(jsonPath("$.services[?(@.id == 'openbasiskaart-proxied')]").doesNotExist())
+        .andExpect(
+            jsonPath("$.appLayers[?(@.id == 'lyr:bestuurlijkegebieden-proxied:Provinciegebied')]")
+                .doesNotExist())
+        .andExpect(
+            jsonPath("$.services[?(@.id == 'bestuurlijkegebieden-proxied')]").doesNotExist());
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void should_not_contain_proxied_secured_service_layer_on_public_app_even_when_authorized()
+      throws Exception {
+    final String path = apiBasePath + "/app/default/map";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(
+            jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-proxied:osm')]").doesNotExist())
+        .andExpect(jsonPath("$.services[?(@.id == 'openbasiskaart-proxied')]").doesNotExist())
+        .andExpect(
+            jsonPath("$.appLayers[?(@.id == 'lyr:bestuurlijkegebieden-proxied:Provinciegebied')]")
+                .doesNotExist())
+        .andExpect(
+            jsonPath("$.services[?(@.id == 'bestuurlijkegebieden-proxied')]").doesNotExist());
   }
 
   @Test
@@ -177,6 +218,8 @@ class ViewerControllerIntegrationTest {
       authorities = {"Admin"})
   void should_return_data_for_configured_app() throws Exception {
     final String path = apiBasePath + "/app/default/map";
+    final String appLayerLufoPath =
+        "$.appLayers[?(@.id == 'lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR')]";
     mockMvc
         .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
@@ -186,16 +229,22 @@ class ViewerControllerIntegrationTest {
         .andExpect(jsonPath("$.services").isArray())
         .andExpect(jsonPath("$.appLayers").isArray())
         .andExpect(jsonPath("$.appLayers[0]").isMap())
-        .andExpect(jsonPath("$.appLayers.length()").value(14))
-        .andExpect(jsonPath("$.appLayers[0].hasAttributes").value(false))
-        .andExpect(jsonPath("$.appLayers[1].hasAttributes").value(false))
-        .andExpect(jsonPath("$.appLayers[4].legendImageUrl").isEmpty())
-        .andExpect(jsonPath("$.appLayers[4].visible").value(false))
-        .andExpect(jsonPath("$.appLayers[4].minScale").isEmpty())
-        .andExpect(jsonPath("$.appLayers[4].maxScale").isEmpty())
-        .andExpect(jsonPath("$.appLayers[4].id").value("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"))
-        .andExpect(jsonPath("$.appLayers[4].hiDpiMode").isEmpty())
-        .andExpect(jsonPath("$.appLayers[4].hiDpiSubstituteLayer").isEmpty())
+        // Note: if the testdata was created with MAP5_URL set, the appLayers array will have 4 more
+        // layers
+        .andExpect(jsonPath("$.appLayers.length()").value(13))
+        .andExpect(
+            jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-tms:xyz')].hasAttributes")
+                .value(false))
+        .andExpect(
+            jsonPath("$.appLayers[?(@.id == 'lyr:b3p-mapproxy-luchtfoto:xyz')].hasAttributes")
+                .value(false))
+        .andExpect(jsonPath(appLayerLufoPath).exists())
+        .andExpect(jsonPath(appLayerLufoPath + "[0].legendImageUrl").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + ".visible").value(false))
+        .andExpect(jsonPath(appLayerLufoPath + "[0].minScale").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + "[0].maxScale").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + "[0].hiDpiMode").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + "[0].hiDpiSubstituteLayer").isEmpty())
         .andExpect(jsonPath("$.crs.code").value("EPSG:28992"));
   }
 

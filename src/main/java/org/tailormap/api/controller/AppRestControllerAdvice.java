@@ -154,7 +154,8 @@ public class AppRestControllerAdvice {
   }
 
   @ModelAttribute
-  public GeoService populateGeoService(@ModelAttribute AppTreeLayerNode appTreeLayerNode) {
+  public GeoService populateGeoService(
+      @ModelAttribute Application app, @ModelAttribute AppTreeLayerNode appTreeLayerNode) {
     if (appTreeLayerNode == null) {
       // No binding
       return null;
@@ -167,6 +168,11 @@ public class AppRestControllerAdvice {
     if (service != null && !authorizationService.mayUserRead(service)) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
+
+    if (service != null && authorizationService.mustDenyAccessForSecuredProxy(app, service)) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+    }
+
     return service;
   }
 

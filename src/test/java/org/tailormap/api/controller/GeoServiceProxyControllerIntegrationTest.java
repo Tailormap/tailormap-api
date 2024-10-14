@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
 
 import com.github.romankh3.image.comparison.ImageComparison;
 import com.github.romankh3.image.comparison.ImageComparisonUtil;
@@ -279,6 +280,15 @@ class GeoServiceProxyControllerIntegrationTest {
         .andExpect(status().isForbidden())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Forbidden"));
+
+    final String path2 = apiBasePath + layerProxiedWithAuthInPublicApp + "/proxy/wms";
+    mockMvc
+        .perform(
+            get(path2)
+                .param("REQUEST", "GetCapabilities")
+                .param("VERSION", "1.1.0")
+                .with(setServletPath(path2)))
+        .andExpect(status().isForbidden());
   }
 
   private ResultActions performLoggedInRequiredAppLayerProxyRequest() throws Exception {

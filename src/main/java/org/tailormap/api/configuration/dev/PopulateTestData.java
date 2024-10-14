@@ -493,7 +493,28 @@ public class PopulateTestData {
                             "Gemeentegebied",
                             new GeoServiceLayerSettings().legendImageId(legend.getId().toString())))
                 .setPublished(true)
-                .setTitle("PDOK Kadaster bestuurlijke gebieden")
+                .setTitle("PDOK Kadaster bestuurlijke gebieden"),
+            new GeoService()
+                .setId("bestuurlijkegebieden-proxied")
+                .setProtocol(WMS)
+                .setUrl(
+                    "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
+                .setAuthorizationRules(rule)
+                // The service actually doesn't require authentication, but also doesn't mind it
+                // Just for testing that proxied services with auth are not available in public
+                // apps (even when logged in), in any controllers (map, proxy, features)
+                .setAuthentication(
+                    new ServiceAuthentication()
+                        .method(ServiceAuthentication.MethodEnum.PASSWORD)
+                        .username("test")
+                        .password("test"))
+                .setSettings(
+                    new GeoServiceSettings()
+                        // No attribution required: service is CC0
+                        .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)
+                        .useProxy(true))
+                .setPublished(true)
+                .setTitle("Bestuurlijke gebieden (proxied met auth)")
             // TODO MapServer WMS "https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk"
             );
 
@@ -674,6 +695,27 @@ public class PopulateTestData {
                                           .getId())
                                   .featureTypeName("bestuurlijkegebieden:Provinciegebied"))
                           .title("Provinciegebied (WFS)"));
+              geoServiceRepository.save(geoService);
+            });
+
+    geoServiceRepository
+        .findById("bestuurlijkegebieden-proxied")
+        .ifPresent(
+            geoService -> {
+              geoService
+                  .getSettings()
+                  .getLayerSettings()
+                  .put(
+                      "Provinciegebied",
+                      new GeoServiceLayerSettings()
+                          .featureType(
+                              new FeatureTypeRef()
+                                  .featureSourceId(
+                                      featureSources
+                                          .get("pdok-kadaster-bestuurlijkegebieden")
+                                          .getId())
+                                  .featureTypeName("bestuurlijkegebieden:Provinciegebied"))
+                          .title("Provinciegebied (WFS, proxied met auth)"));
               geoServiceRepository.save(geoService);
             });
 
@@ -938,6 +980,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                             .childrenIds(
                                 List.of(
                                     "lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied",
+                                    "lyr:bestuurlijkegebieden-proxied:Provinciegebied",
                                     "lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied",
                                     "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
                                     "lyr:snapshot-geoserver:sqlserver:wegdeel",
@@ -953,6 +996,16 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                             .serviceId("pdok-kadaster-bestuurlijkegebieden")
                             .layerName("Provinciegebied")
                             .visible(true))
+                    // This is a layer from proxied service with auth that should also not be
+                    // visible, but it has a feature source attached, should also be denied for
+                    // features access and not be included in TOC
+                    .addLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:bestuurlijkegebieden-proxied:Provinciegebied")
+                            .serviceId("bestuurlijkegebieden-proxied")
+                            .layerName("Provinciegebied")
+                            .visible(false))
                     .addLayerNodesItem(
                         new AppTreeLayerNode()
                             .objectType("AppTreeLayerNode")

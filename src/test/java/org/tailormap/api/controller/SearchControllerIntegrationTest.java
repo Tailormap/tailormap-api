@@ -16,6 +16,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+import static org.tailormap.api.controller.TestUrls.layerWaterdeelOracle;
+import static org.tailormap.api.controller.TestUrls.layerWegdeelSqlServer;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -42,9 +45,7 @@ class SearchControllerIntegrationTest implements Constants {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void searchPostgis() throws Exception {
-    final String url =
-        apiBasePath
-            + "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/search";
+    final String url = apiBasePath + layerBegroeidTerreindeelPostgis + "/search";
 
     mockMvc
         .perform(
@@ -71,9 +72,7 @@ class SearchControllerIntegrationTest implements Constants {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void searchPostgisGroen() throws Exception {
-    final String url =
-        apiBasePath
-            + "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/search";
+    final String url = apiBasePath + layerBegroeidTerreindeelPostgis + "/search";
 
     mockMvc
         .perform(
@@ -101,8 +100,7 @@ class SearchControllerIntegrationTest implements Constants {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void searchSQLServerStartAtItem10() throws Exception {
-    final String url =
-        apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/search";
+    final String url = apiBasePath + layerWegdeelSqlServer + "/search";
 
     mockMvc
         .perform(
@@ -130,8 +128,7 @@ class SearchControllerIntegrationTest implements Constants {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void searchOracleLayerWithoutIndex() throws Exception {
-    final String url =
-        apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/search";
+    final String url = apiBasePath + layerWaterdeelOracle + "/search";
 
     mockMvc
         .perform(
@@ -180,9 +177,7 @@ class SearchControllerIntegrationTest implements Constants {
   @Test
   @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testBadRequestQuery() throws Exception {
-    final String url =
-        apiBasePath
-            + "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/search";
+    final String url = apiBasePath + layerBegroeidTerreindeelPostgis + "/search";
 
     mockMvc
         .perform(
