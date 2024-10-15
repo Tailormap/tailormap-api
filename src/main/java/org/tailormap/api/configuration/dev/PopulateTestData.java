@@ -79,7 +79,8 @@ import org.tailormap.api.repository.UserRepository;
 import org.tailormap.api.scheduling.IndexTask;
 import org.tailormap.api.scheduling.PocTask;
 import org.tailormap.api.scheduling.TMJobDataMap;
-import org.tailormap.api.scheduling.TaskCreator;
+import org.tailormap.api.scheduling.Task;
+import org.tailormap.api.scheduling.TaskManagerService;
 import org.tailormap.api.security.InternalAdminAuthentication;
 import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.solr.SolrService;
@@ -104,7 +105,7 @@ public class PopulateTestData {
   private final GeoServiceRepository geoServiceRepository;
   private final GeoServiceHelper geoServiceHelper;
   private final SolrService solrService;
-  private final TaskCreator taskCreator;
+  private final TaskManagerService taskManagerService;
   private final FeatureSourceRepository featureSourceRepository;
   private final ApplicationRepository applicationRepository;
   private final ConfigurationRepository configurationRepository;
@@ -135,7 +136,7 @@ public class PopulateTestData {
       GeoServiceRepository geoServiceRepository,
       GeoServiceHelper geoServiceHelper,
       SolrService solrService,
-      TaskCreator taskCreator,
+      TaskManagerService taskManagerService,
       FeatureSourceRepository featureSourceRepository,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository,
@@ -149,7 +150,7 @@ public class PopulateTestData {
     this.geoServiceRepository = geoServiceRepository;
     this.geoServiceHelper = geoServiceHelper;
     this.solrService = solrService;
-    this.taskCreator = taskCreator;
+    this.taskManagerService = taskManagerService;
     this.featureSourceRepository = featureSourceRepository;
     this.applicationRepository = applicationRepository;
     this.configurationRepository = configurationRepository;
@@ -1525,27 +1526,30 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
       logger.info("Creating POC tasks");
       logger.info(
           "Created minutely task with key: {}",
-          taskCreator.createTask(
+          taskManagerService.createTask(
               PocTask.class,
               new TMJobDataMap(
                   Map.of(
-                      "type", PocTask.TYPE,
-                      "foo", "bar",
-                      "description", "POC task that runs every minute")),
-              /* run every 15 minutes */ "0 0/15 * 1/1 * ? *"));
-      logger.info(
-          "Created hourly task with key: {}",
-          taskCreator.createTask(
-              PocTask.class,
-              new TMJobDataMap(
-                  Map.of(
-                      "type",
+                      Task.TYPE_KEY,
                       PocTask.TYPE,
                       "foo",
                       "bar",
-                      "description",
+                      Task.DESCRIPTION_KEY,
+                      "POC task that runs every minute")),
+              /* run every 15 minutes */ "0 0/15 * 1/1 * ? *"));
+      logger.info(
+          "Created hourly task with key: {}",
+          taskManagerService.createTask(
+              PocTask.class,
+              new TMJobDataMap(
+                  Map.of(
+                      Task.TYPE_KEY,
+                      PocTask.TYPE,
+                      "foo",
+                      "bar",
+                      Task.DESCRIPTION_KEY,
                       "POC task that runs every hour",
-                      "priority",
+                      Task.PRIORITY_KEY,
                       10)),
               /* run every hour */ "0 0 0/1 1/1 * ? *"));
     } catch (SchedulerException e) {
@@ -1566,17 +1570,17 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                       .description("Update Solr index \"Begroeidterreindeel\" every time"));
               try {
                 final UUID uuid =
-                    taskCreator.createTask(
+                    taskManagerService.createTask(
                         IndexTask.class,
                         new TMJobDataMap(
                             Map.of(
-                                "type",
+                                Task.TYPE_KEY,
                                 IndexTask.TYPE,
-                                "description",
+                                Task.DESCRIPTION_KEY,
                                 index.getSchedule().getDescription(),
-                                "index",
+                                IndexTask.INDEX_KEY,
                                 index.getId().toString(),
-                                "priority",
+                                Task.PRIORITY_KEY,
                                 10)),
                         index.getSchedule().getCronExpression());
 
