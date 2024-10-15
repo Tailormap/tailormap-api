@@ -20,20 +20,22 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TaskCreator {
+public class TaskManagerService {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final Scheduler scheduler;
 
-  public TaskCreator(@Autowired Scheduler scheduler) {
+  public TaskManagerService(@Autowired Scheduler scheduler) {
     this.scheduler = scheduler;
   }
 
@@ -53,7 +55,8 @@ public class TaskCreator {
     // Create a job
     JobDetail jobDetail =
         JobBuilder.newJob(job)
-            .withIdentity(new JobKey(UUID.randomUUID().toString(), jobData.get("type").toString()))
+            .withIdentity(
+                new JobKey(UUID.randomUUID().toString(), jobData.get(Task.TYPE_KEY).toString()))
             .withDescription(jobData.getDescription())
             .usingJobData(new JobDataMap(jobData))
             .build();
@@ -64,7 +67,8 @@ public class TaskCreator {
             .withIdentity(jobDetail.getKey().getName(), jobDetail.getKey().getGroup())
             .startAt(DateBuilder.futureDate(90, DateBuilder.IntervalUnit.SECOND))
             .withPriority(jobData.getPriority())
-            .usingJobData(SENTRY_SLUG_KEY, "monitor_slug_cron_trigger_" + jobData.get("type"))
+            .usingJobData(
+                SENTRY_SLUG_KEY, "monitor_slug_cron_trigger_" + jobData.get(Task.TYPE_KEY))
             .withSchedule(
                 CronScheduleBuilder.cronSchedule(cronExpression)
                     .withMisfireHandlingInstructionFireAndProceed())
@@ -81,5 +85,59 @@ public class TaskCreator {
     }
 
     return UUID.fromString(jobDetail.getKey().getName());
+  }
+
+  /**
+   * Reschedule a task using updated job data.
+   *
+   * @param jobKey the job key
+   * @param newJobData the new job data
+   * @throws SchedulerException if the job could not be rescheduled
+   */
+  public void updateTask(JobKey jobKey, TMJobDataMap newJobData) throws SchedulerException {
+
+    if (scheduler.checkExists(jobKey)) {
+      // there should only ever be one trigger for a job in TM
+      Trigger oldTrigger = scheduler.getTriggersOfJob(jobKey).get(0);
+
+      if (scheduler.checkExists(oldTrigger.getKey())) {
+
+        JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+        JobDataMap jobDataMap = jobDetail.getJobDataMap();
+        jobDataMap.putAll(newJobData);
+
+        Trigger newTrigger =
+            TriggerBuilder.newTrigger()
+                .withIdentity(jobKey.getName(), jobKey.getGroup())
+                .startAt(DateBuilder.futureDate(90, DateBuilder.IntervalUnit.SECOND))
+                .withPriority(jobDataMap.getInt(Task.PRIORITY_KEY))
+                .usingJobData(
+                    SENTRY_SLUG_KEY,
+                    "monitor_slug_cron_trigger_" + jobDataMap.getString(Task.TYPE_KEY))
+                .withSchedule(
+                    CronScheduleBuilder.cronSchedule(jobDataMap.getString(Task.CRON_EXPRESSION_KEY))
+                        .withMisfireHandlingInstructionFireAndProceed())
+                .build();
+
+        scheduler.rescheduleJob(oldTrigger.getKey(), newTrigger);
+      }
+    }
+  }
+
+  /**
+   * Get the job key for a given type and uuid.
+   *
+   * @param jobType the type of the job
+   * @param uuid the uuid of the job
+   * @return the job key
+   * @throws SchedulerException when the scheduler cannot be reached
+   */
+  @Nullable
+  public JobKey getJobKey(String jobType, UUID uuid) throws SchedulerException {
+    logger.debug("Finding job key for task {}:{}", jobType, uuid);
+    return scheduler.getJobKeys(GroupMatcher.groupEquals(jobType)).stream()
+        .filter(jobkey -> jobkey.getName().equals(uuid.toString()))
+        .findFirst()
+        .orElse(null);
   }
 }

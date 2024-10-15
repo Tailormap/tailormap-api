@@ -33,6 +33,7 @@ import org.tailormap.api.solr.SolrService;
 @PersistJobDataAfterExecution
 public class IndexTask extends QuartzJobBean implements Task {
   public static final String TYPE = "index";
+  public static final String INDEX_KEY = "indexId";
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
@@ -40,7 +41,7 @@ public class IndexTask extends QuartzJobBean implements Task {
   private final FeatureTypeRepository featureTypeRepository;
   private final SearchIndexRepository searchIndexRepository;
 
-  private long index;
+  private long indexId;
 
   public IndexTask(
       @Autowired SearchIndexRepository searchIndexRepository,
@@ -59,13 +60,13 @@ public class IndexTask extends QuartzJobBean implements Task {
       throws JobExecutionException {
 
     final JobDataMap persistedJobData = context.getJobDetail().getJobDataMap();
-    // final long searchIndexId = persistedJobData.getLong("index");
+    // final long indexId = persistedJobData.getLong(INDEX_KEY);
     logger.debug(
-        "Start Executing IndexTask {} for index {}", context.getJobDetail().getKey(), getIndex());
+        "Start Executing IndexTask {} for index {}", context.getJobDetail().getKey(), getIndexId());
 
     SearchIndex searchIndex =
         searchIndexRepository
-            .findById(getIndex())
+            .findById(getIndexId())
             .orElseThrow(() -> new JobExecutionException("Search index not found"));
 
     TMFeatureType indexingFT =
@@ -102,11 +103,11 @@ public class IndexTask extends QuartzJobBean implements Task {
     return TYPE;
   }
 
-  public long getIndex() {
-    return index;
+  public long getIndexId() {
+    return indexId;
   }
 
-  public void setIndex(long index) {
-    this.index = index;
+  public void setIndexId(long indexId) {
+    this.indexId = indexId;
   }
 }
