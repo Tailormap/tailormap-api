@@ -46,7 +46,7 @@ public class TaskCreator {
    * @return the task name, a UUID
    * @throws SchedulerException if the job could not be scheduled
    */
-  public String createTask(
+  public UUID createTask(
       Class<? extends QuartzJobBean> job, TMJobDataMap jobData, String cronExpression)
       throws SchedulerException {
 
@@ -62,7 +62,7 @@ public class TaskCreator {
     Trigger trigger =
         TriggerBuilder.newTrigger()
             .withIdentity(jobDetail.getKey().getName(), jobDetail.getKey().getGroup())
-            .startAt(DateBuilder.futureDate(30, DateBuilder.IntervalUnit.SECOND))
+            .startAt(DateBuilder.futureDate(90, DateBuilder.IntervalUnit.SECOND))
             .withPriority(jobData.getPriority())
             .usingJobData(SENTRY_SLUG_KEY, "monitor_slug_cron_trigger_" + jobData.get("type"))
             .withSchedule(
@@ -80,6 +80,6 @@ public class TaskCreator {
       return null;
     }
 
-    return jobDetail.getKey().getName();
+    return UUID.fromString(jobDetail.getKey().getName());
   }
 }

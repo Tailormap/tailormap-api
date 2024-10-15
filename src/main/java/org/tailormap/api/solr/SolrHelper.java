@@ -37,6 +37,7 @@ import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
 import org.tailormap.api.persistence.SearchIndex;
 import org.tailormap.api.persistence.TMFeatureType;
+import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.util.Constants;
 import org.tailormap.api.viewer.model.SearchDocument;
 import org.tailormap.api.viewer.model.SearchResponse;
@@ -71,26 +72,32 @@ public class SolrHelper implements AutoCloseable, Constants {
    *
    * @param searchIndex the search index config
    * @param tmFeatureType the feature type
-   * @throws UnsupportedOperationException if the operation is not supported, possibly because not
-   *     search field shave been defined
+   * @param featureSourceFactoryHelper the feature source factory helper
+   * @param searchIndexRepository the search index repository, so we can save the {@code
+   *     searchIndex}
    * @throws IOException if an I/O error occurs
    * @throws SolrServerException if a Solr error occurs
+   * @return the possibly updated {@code searchIndex} object
    */
   @SuppressWarnings("FromTemporalAccessor")
-  public void addFeatureTypeIndex(
+  public SearchIndex addFeatureTypeIndex(
       @NotNull SearchIndex searchIndex,
       @NotNull TMFeatureType tmFeatureType,
-      @NotNull FeatureSourceFactoryHelper featureSourceFactoryHelper)
-      throws UnsupportedOperationException, IOException, SolrServerException {
+      @NotNull FeatureSourceFactoryHelper featureSourceFactoryHelper,
+      @NotNull SearchIndexRepository searchIndexRepository)
+      throws IOException, SolrServerException {
 
     createSchemaIfNotExists();
 
     final Instant start = Instant.now();
 
     if (null == searchIndex.getSearchFieldsUsed()) {
-      logger.warn("No search fields configured for search index: {}", searchIndex.getName());
-      throw new UnsupportedOperationException(
-          "No search fields configured for search index: %s".formatted(searchIndex.getName()));
+      logger.warn(
+          "No search fields configured for search index: {}, bailing out.", searchIndex.getName());
+      return searchIndexRepository.save(
+          searchIndex
+              .setStatus(SearchIndex.Status.ERROR)
+              .setComment("No search fields configured"));
     }
 
     // set fields while filtering out hidden fields
@@ -103,14 +110,14 @@ public class SolrHelper implements AutoCloseable, Constants {
             .filter(s -> !tmFeatureType.getSettings().getHideAttributes().contains(s))
             .toList();
 
-    searchIndex.setStatus(SearchIndex.Status.INDEXING);
-
     if (searchFields.isEmpty()) {
-      logger.info("No valid search fields configured for featuretype: {}", tmFeatureType.getName());
-      searchIndex.setStatus(SearchIndex.Status.ERROR);
-      throw new UnsupportedOperationException(
-          "No valid search fields configured for featuretype: %s"
-              .formatted(tmFeatureType.getName()));
+      logger.warn(
+          "No valid search fields configured for featuretype: {}, bailing out.",
+          tmFeatureType.getName());
+      return searchIndexRepository.save(
+          searchIndex
+              .setStatus(SearchIndex.Status.ERROR)
+              .setComment("No search fields configured"));
     }
 
     // add search and display properties to query
@@ -131,6 +138,8 @@ public class SolrHelper implements AutoCloseable, Constants {
         "Indexing started for index id: {}, feature type: {}",
         searchIndex.getId(),
         tmFeatureType.getName());
+    searchIndex = searchIndexRepository.save(searchIndex.setStatus(SearchIndex.Status.INDEXING));
+
     // collect features to index
     SimpleFeatureSource fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
     Query q = new Query(fs.getName().toString());
@@ -207,15 +216,14 @@ public class SolrHelper implements AutoCloseable, Constants {
         tmFeatureType.getName(),
         end,
         processTime);
-    searchIndex.setComment(
-        "Indexed %s features in %s.%s seconds, started at %s"
-            .formatted(total, processTime.getSeconds(), processTime.getNano(), start));
-
-    searchIndex.setLastIndexed(end.atOffset(ZoneId.systemDefault().getRules().getOffset(end)));
-    searchIndex.setStatus(SearchIndex.Status.INDEXED);
-
     updateResponse = this.solrClient.commit();
     logger.debug("Update response status: {}", updateResponse.getStatus());
+    return searchIndex
+        .setComment(
+            "Indexed %s features in %s.%s seconds, started at %s"
+                .formatted(total, processTime.getSeconds(), processTime.getNano(), start))
+        .setLastIndexed(end.atOffset(ZoneId.systemDefault().getRules().getOffset(end)))
+        .setStatus(SearchIndex.Status.INDEXED);
   }
 
   /**

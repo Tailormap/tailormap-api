@@ -62,7 +62,7 @@ class TaskAdminControllerIntegrationTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.tasks").isArray())
-            .andExpect(jsonPath("$.tasks.length()").value(2))
+            .andExpect(jsonPath("$.tasks.length()").value(3))
             .andExpect(jsonPath("$.tasks[0].type").value(TEST_TASK_TYPE))
             .andExpect(jsonPath("$.tasks[1].type").value(TEST_TASK_TYPE))
             .andReturn();
@@ -128,11 +128,14 @@ class TaskAdminControllerIntegrationTest {
   void detailsOfTask() throws Exception {
     MvcResult result =
         mockMvc
-            .perform(get(adminBasePath + "/tasks").accept(MediaType.APPLICATION_JSON))
+            .perform(
+                get(adminBasePath + "/tasks")
+                    .queryParam("type", TEST_TASK_TYPE)
+                    .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.tasks").isArray())
-            .andExpect(jsonPath("$.tasks.length()").value(2))
+            .andExpect(jsonPath("$.tasks.length()").value(3))
             .andReturn();
 
     final String detailsUUID =
