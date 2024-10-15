@@ -146,8 +146,9 @@ public class SearchIndex implements Serializable {
     return schedule;
   }
 
-  public void setSchedule(@Valid TaskSchedule schedule) {
+  public SearchIndex setSchedule(@Valid TaskSchedule schedule) {
     this.schedule = schedule;
+    return this;
   }
 
   public enum Status {
