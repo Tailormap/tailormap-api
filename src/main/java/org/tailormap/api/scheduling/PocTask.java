@@ -27,6 +27,7 @@ public class PocTask extends QuartzJobBean implements Task {
   public static final String TYPE = "poc";
 
   private String foo;
+  private String description;
 
   @Override
   protected void executeInternal(@NonNull JobExecutionContext context) {
@@ -60,12 +61,16 @@ public class PocTask extends QuartzJobBean implements Task {
       logger.error("Thread interrupted", e);
     }
 
-    jobDataMap.put("executions", (1 + (int) mergedJobDataMap.getOrDefault("executions", 0)));
+    int executions = (1 + (int) mergedJobDataMap.getOrDefault("executions", 0));
+    jobDataMap.put("executions", executions);
     jobDataMap.put("lastExecutionFinished", Instant.now());
     jobDataMap.put("lastResult", "POC task executed successfully");
     context.setResult("POC task executed successfully");
+
+    setFoo("foo executed: " + executions);
   }
 
+  // <editor-fold desc="Getters and Setters">
   public String getFoo() {
     return foo;
   }
@@ -78,4 +83,15 @@ public class PocTask extends QuartzJobBean implements Task {
   public String getType() {
     return TYPE;
   }
+
+  @Override
+  public String getDescription() {
+    return description;
+  }
+
+  @Override
+  public void setDescription(String description) {
+    this.description = description;
+  }
+  // </editor-fold>
 }

@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.scheduling;
 
+import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
@@ -33,6 +34,7 @@ import org.tailormap.api.solr.SolrService;
 @PersistJobDataAfterExecution
 public class IndexTask extends QuartzJobBean implements Task {
   public static final String TYPE = "index";
+  public static final String INDEX_KEY = "indexId";
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
@@ -40,7 +42,8 @@ public class IndexTask extends QuartzJobBean implements Task {
   private final FeatureTypeRepository featureTypeRepository;
   private final SearchIndexRepository searchIndexRepository;
 
-  private long index;
+  private long indexId;
+  private String description;
 
   public IndexTask(
       @Autowired SearchIndexRepository searchIndexRepository,
@@ -54,18 +57,22 @@ public class IndexTask extends QuartzJobBean implements Task {
     this.searchIndexRepository = searchIndexRepository;
   }
 
+  @Timed(value = "indexTask", description = "Time taken to execute index task")
   @Override
   protected void executeInternal(@NonNull JobExecutionContext context)
       throws JobExecutionException {
 
     final JobDataMap persistedJobData = context.getJobDetail().getJobDataMap();
-    // final long searchIndexId = persistedJobData.getLong("index");
-    logger.debug(
-        "Start Executing IndexTask {} for index {}", context.getJobDetail().getKey(), getIndex());
+    // final long indexId = persistedJobData.getLong(INDEX_KEY);
+    logger.info(
+        "Start Executing IndexTask {} for index {}, described with '{}'",
+        context.getJobDetail().getKey(),
+        getIndexId(),
+        getDescription());
 
     SearchIndex searchIndex =
         searchIndexRepository
-            .findById(getIndex())
+            .findById(getIndexId())
             .orElseThrow(() -> new JobExecutionException("Search index not found"));
 
     TMFeatureType indexingFT =
@@ -91,22 +98,34 @@ public class IndexTask extends QuartzJobBean implements Task {
       context.setResult("Index task executed successfully");
     } catch (UnsupportedOperationException | IOException | SolrServerException | SolrException e) {
       logger.error("Error indexing", e);
-      searchIndex.setStatus(SearchIndex.Status.ERROR);
+      searchIndex.setStatus(SearchIndex.Status.ERROR).setComment(e.getMessage());
       searchIndexRepository.save(searchIndex);
       throw new JobExecutionException("Error indexing", e);
     }
   }
 
+  // <editor-fold desc="Getters and Setters">
   @Override
   public String getType() {
     return TYPE;
   }
 
-  public long getIndex() {
-    return index;
+  public long getIndexId() {
+    return indexId;
   }
 
-  public void setIndex(long index) {
-    this.index = index;
+  public void setIndexId(long indexId) {
+    this.indexId = indexId;
   }
+
+  @Override
+  public String getDescription() {
+    return description;
+  }
+
+  @Override
+  public void setDescription(String description) {
+    this.description = description;
+  }
+  // </editor-fold>
 }
