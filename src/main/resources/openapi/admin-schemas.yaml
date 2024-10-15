@@ -56,3 +56,7 @@ components:
           description: 'Cron expression for the task'
           type: string
           nullable: false
+        priority:
+          description: 'Priority of the task'
+          type: integer
+          nullable: true
