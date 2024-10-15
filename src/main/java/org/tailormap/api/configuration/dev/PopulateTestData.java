@@ -9,7 +9,6 @@ import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static org.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
-import static org.tailormap.api.util.Constants.TEST_TASK_TYPE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.invoke.MethodHandles;
@@ -20,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +31,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.annotation.Transactional;
+import org.tailormap.api.admin.model.TaskSchedule;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
 import org.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
@@ -75,6 +76,7 @@ import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.repository.UploadRepository;
 import org.tailormap.api.repository.UserRepository;
+import org.tailormap.api.scheduling.IndexTask;
 import org.tailormap.api.scheduling.PocTask;
 import org.tailormap.api.scheduling.TMJobDataMap;
 import org.tailormap.api.scheduling.TaskCreator;
@@ -1457,8 +1459,12 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                   .setSearchFieldsUsed(List.of("class", "plus_fysiekvoorkomen", "bronhouder"))
                   .setSearchDisplayFieldsUsed(List.of("class", "plus_fysiekvoorkomen"));
           begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
-          solrHelper.addFeatureTypeIndex(
-              begroeidterreindeelIndex, begroeidterreindeelFT, featureSourceFactoryHelper);
+          begroeidterreindeelIndex =
+              solrHelper.addFeatureTypeIndex(
+                  begroeidterreindeelIndex,
+                  begroeidterreindeelFT,
+                  featureSourceFactoryHelper,
+                  searchIndexRepository);
           begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
         }
 
@@ -1476,7 +1482,9 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                           "bronhouder"))
                   .setSearchDisplayFieldsUsed(List.of("function_", "plus_fysiekvoorkomenwegdeel"));
           wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
-          solrHelper.addFeatureTypeIndex(wegdeelIndex, wegdeelFT, featureSourceFactoryHelper);
+          wegdeelIndex =
+              solrHelper.addFeatureTypeIndex(
+                  wegdeelIndex, wegdeelFT, featureSourceFactoryHelper, searchIndexRepository);
           wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
         }
 
@@ -1512,18 +1520,19 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
   }
 
   private void createPocTasks() {
-    logger.info("Creating POC tasks");
+
     try {
+      logger.info("Creating POC tasks");
       logger.info(
           "Created minutely task with key: {}",
           taskCreator.createTask(
               PocTask.class,
               new TMJobDataMap(
                   Map.of(
-                      "type", TEST_TASK_TYPE,
+                      "type", PocTask.TYPE,
                       "foo", "bar",
                       "description", "POC task that runs every minute")),
-              /* run every minute */ "0 0/1 * 1/1 * ? *"));
+              /* run every 15 minutes */ "0 0/15 * 1/1 * ? *"));
       logger.info(
           "Created hourly task with key: {}",
           taskCreator.createTask(
@@ -1531,7 +1540,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
               new TMJobDataMap(
                   Map.of(
                       "type",
-                      TEST_TASK_TYPE,
+                      PocTask.TYPE,
                       "foo",
                       "bar",
                       "description",
@@ -1540,7 +1549,44 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                       10)),
               /* run every hour */ "0 0 0/1 1/1 * ? *"));
     } catch (SchedulerException e) {
-      logger.error("Error creating scheduling poc tasks", e);
+      logger.error("Error creating scheduled poc tasks", e);
     }
+
+    logger.info("Creating INDEX task");
+    searchIndexRepository
+        .findByName("Begroeidterreindeel")
+        .ifPresent(
+            index -> {
+              index.setSchedule(
+                  new TaskSchedule()
+                      /* hour */
+                      .cronExpression("0 0 0/1 1/1 * ? *")
+                      //                      /* 15 min */
+                      //                      .cronExpression("0 0/15 * 1/1 * ? *")
+                      .description("Update Solr index \"Begroeidterreindeel\" every time"));
+              try {
+                final UUID uuid =
+                    taskCreator.createTask(
+                        IndexTask.class,
+                        new TMJobDataMap(
+                            Map.of(
+                                "type",
+                                IndexTask.TYPE,
+                                "description",
+                                index.getSchedule().getDescription(),
+                                "index",
+                                index.getId().toString(),
+                                "priority",
+                                10)),
+                        index.getSchedule().getCronExpression());
+
+                index.getSchedule().setUuid(uuid);
+                searchIndexRepository.save(index);
+
+                logger.info("Created task to update Solr index with key: {}", uuid);
+              } catch (SchedulerException e) {
+                logger.error("Error creating scheduled solr index task", e);
+              }
+            });
   }
 }
