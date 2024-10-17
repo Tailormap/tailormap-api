@@ -422,8 +422,7 @@ public class PopulateTestData {
                     new GeoServiceSettings()
                         .defaultLayerSettings(
                             new GeoServiceDefaultLayerSettings()
-                                .attribution(
-                                    "© [Beeldmateriaal.nl](https://beeldmateriaal.nl)")
+                                .attribution("© [Beeldmateriaal.nl](https://beeldmateriaal.nl)")
                                 .hiDpiDisabled(false))
                         .putLayerSettingsItem(
                             "Actueel_orthoHR", new GeoServiceLayerSettings().title("Luchtfoto"))),
@@ -439,8 +438,7 @@ public class PopulateTestData {
                         .xyzCrs("EPSG:28992")
                         .defaultLayerSettings(
                             new GeoServiceDefaultLayerSettings()
-                                .attribution(
-                                    "© [Beeldmateriaal.nl](https://beeldmateriaal.nl)")
+                                .attribution("© [Beeldmateriaal.nl](https://beeldmateriaal.nl)")
                                 .hiDpiDisabled(false))
                         .layerSettings(
                             Map.of(
@@ -460,8 +458,7 @@ public class PopulateTestData {
                     new GeoServiceSettings()
                         .defaultLayerSettings(
                             new GeoServiceDefaultLayerSettings()
-                                .attribution(
-                                    "© [basemap.at](https://basemap.at)")
+                                .attribution("© [basemap.at](https://basemap.at)")
                                 .hiDpiDisabled(true))
                         .layerSettings(
                             Map.of(
@@ -522,8 +519,7 @@ public class PopulateTestData {
       GeoServiceLayerSettings osmAttr = new GeoServiceLayerSettings().attribution(osmAttribution);
       GeoServiceLayerSettings map5Attr =
           new GeoServiceLayerSettings()
-              .attribution(
-                  "Kaarten: [Map5.nl](https://map5.nl), data: " + osmAttribution);
+              .attribution("Kaarten: [Map5.nl](https://map5.nl), data: " + osmAttribution);
       services = new ArrayList<>(services);
       services.add(
           new GeoService()
