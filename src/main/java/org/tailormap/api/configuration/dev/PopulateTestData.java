@@ -259,7 +259,7 @@ public class PopulateTestData {
                 .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)));
 
     String osmAttribution =
-        "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors";
+        "© [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors";
 
     Bounds rdTileGridExtent =
         new Bounds().minx(-285401.92).maxx(595401.92).miny(22598.08).maxy(903401.92);
@@ -423,7 +423,7 @@ public class PopulateTestData {
                         .defaultLayerSettings(
                             new GeoServiceDefaultLayerSettings()
                                 .attribution(
-                                    "&copy; <a href=\"https://beeldmateriaal.nl/\">Beeldmateriaal.nl</a>")
+                                    "© [Beeldmateriaal.nl](https://beeldmateriaal.nl)")
                                 .hiDpiDisabled(false))
                         .putLayerSettingsItem(
                             "Actueel_orthoHR", new GeoServiceLayerSettings().title("Luchtfoto"))),
@@ -440,7 +440,7 @@ public class PopulateTestData {
                         .defaultLayerSettings(
                             new GeoServiceDefaultLayerSettings()
                                 .attribution(
-                                    "&copy; <a href=\"https://beeldmateriaal.nl/\">Beeldmateriaal.nl</a>")
+                                    "© [Beeldmateriaal.nl](https://beeldmateriaal.nl)")
                                 .hiDpiDisabled(false))
                         .layerSettings(
                             Map.of(
@@ -461,7 +461,7 @@ public class PopulateTestData {
                         .defaultLayerSettings(
                             new GeoServiceDefaultLayerSettings()
                                 .attribution(
-                                    "&copy; <a href=\"https://basemap.at/\">basemap.at</a>")
+                                    "© [basemap.at](https://basemap.at)")
                                 .hiDpiDisabled(true))
                         .layerSettings(
                             Map.of(
@@ -523,7 +523,7 @@ public class PopulateTestData {
       GeoServiceLayerSettings map5Attr =
           new GeoServiceLayerSettings()
               .attribution(
-                  "Kaarten: <a href=\"https://map5.nl\">Map5.nl</a>, data: " + osmAttribution);
+                  "Kaarten: [Map5.nl](https://map5.nl), data: " + osmAttribution);
       services = new ArrayList<>(services);
       services.add(
           new GeoService()
@@ -541,7 +541,7 @@ public class PopulateTestData {
                               "openlufo",
                                   new GeoServiceLayerSettings()
                                       .attribution(
-                                          "&copy; <a href=\"https://beeldmateriaal.nl/\">Beeldmateriaal.nl</a>, "
+                                          "© [Beeldmateriaal.nl](https://beeldmateriaal.nl), "
                                               + osmAttribution),
                               "luforoadslabels", osmAttr,
                               "map5topo",
@@ -772,7 +772,7 @@ public class PopulateTestData {
                               "sqlserver:wegdeel",
                               new GeoServiceLayerSettings()
                                   .attribution(
-                                      "CC BY 4.0 <a href=\"https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\">BGT/Kadaster</a>")
+                                      "CC BY 4.0 [BGT/Kadaster](https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319)")
                                   .description(
                                       """
                                                   This layer shows data from [MS SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/spatial/spatial-data-sql-server).
@@ -1102,7 +1102,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                             .description(
                                 "This is the layer description from the app layer setting.")
                             .attribution(
-                                "CC BY 4.0 <a href=\"https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\">BGT/Kadaster</a>"))
+                                "CC BY 4.0 [BGT/Kadaster](https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319)"))
                     .putLayerSettingsItem(
                         "lyr:snapshot-geoserver:postgis:osm_polygon",
                         new AppLayerSettings()
@@ -1111,7 +1111,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                             .editable(true)
                             .title("OSM Polygon (EPSG:3857)")
                             .attribution(
-                                "© <a href=\"https://www.openstreetmap.org/copyright/\">OpenStreetMap</a> contributors"))
+                                "© [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors"))
                     .putLayerSettingsItem(
                         "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
                         new AppLayerSettings()
