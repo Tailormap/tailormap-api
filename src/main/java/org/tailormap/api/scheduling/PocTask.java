@@ -20,9 +20,11 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 /** POC task for testing purposes. */
 @DisallowConcurrentExecution
 @PersistJobDataAfterExecution
-public class PocTask extends QuartzJobBean {
+public class PocTask extends QuartzJobBean implements Task {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  public static final String TYPE = "poc";
 
   private String foo;
 
@@ -52,7 +54,7 @@ public class PocTask extends QuartzJobBean {
         logger.debug("Working for {} ms", workingTime);
         Thread.sleep(workingTime);
         logger.debug("POC task is at {}%", i);
-        context.setResult(String.format("POC task is at %d%%", i));
+        context.setResult("POC task is at %d%%".formatted(i));
       }
     } catch (InterruptedException e) {
       logger.error("Thread interrupted", e);
@@ -70,5 +72,10 @@ public class PocTask extends QuartzJobBean {
 
   public void setFoo(String foo) {
     this.foo = foo;
+  }
+
+  @Override
+  public String getType() {
+    return TYPE;
   }
 }

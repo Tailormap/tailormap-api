@@ -21,10 +21,10 @@ public class TMJobDataMap extends HashMap<String, Object> {
    *     {@code description}
    */
   public TMJobDataMap(Map<String, Object> map) {
-    this((String) map.get("type"), (String) map.get("description"));
+    this((String) map.get(Task.TYPE_KEY), (String) map.get(Task.DESCRIPTION_KEY));
     this.putAll(map);
     // validate the priority
-    this.setPriority((Integer) map.getOrDefault("priority", Trigger.DEFAULT_PRIORITY));
+    this.setPriority((Integer) map.getOrDefault(Task.PRIORITY_KEY, Trigger.DEFAULT_PRIORITY));
   }
 
   /**
@@ -43,11 +43,11 @@ public class TMJobDataMap extends HashMap<String, Object> {
    *
    * @param type the type of the job
    * @param description a description of the job
-   * @param status the status of the job
+   * @param state the state of the job
    */
   public TMJobDataMap(
-      @NotNull String type, @NotNull String description, @NotNull Trigger.TriggerState status) {
-    this(type, description, status, Trigger.DEFAULT_PRIORITY);
+      @NotNull String type, @NotNull String description, @NotNull Trigger.TriggerState state) {
+    this(type, description, state, Trigger.DEFAULT_PRIORITY);
   }
 
   /**
@@ -55,49 +55,50 @@ public class TMJobDataMap extends HashMap<String, Object> {
    *
    * @param type the type of the job
    * @param description a description of the job
-   * @param status the status of the job
+   * @param state the state of the job
    * @param priority the priority of the job, an integer value equal or greater than 0
    */
   public TMJobDataMap(
       @NotNull String type,
       @NotNull String description,
-      @NotNull Trigger.TriggerState status,
+      @NotNull Trigger.TriggerState state,
       int priority) {
     super();
     // Check if the map contains the required parameters
     Assert.notNull(type, "type must not be null");
     Assert.notNull(description, "description must not be null");
-    Assert.notNull(status, "status must not be null");
-    super.put("type", type);
-    super.put("description", description);
-    super.put("status", status);
+    Assert.notNull(state, "state must not be null");
+    super.put(Task.TYPE_KEY, type);
+    super.put(Task.DESCRIPTION_KEY, description);
+    super.put(Task.STATE_KEY, state);
     setPriority(priority);
   }
 
   @NotNull
   public String getType() {
-    return super.get("type").toString();
+    return super.get(Task.TYPE_KEY).toString();
   }
 
   @NotNull
   public String getDescription() {
-    return super.get("description").toString();
+    return super.get(Task.DESCRIPTION_KEY).toString();
   }
 
   @NotNull
-  public Trigger.TriggerState getStatus() {
-    return (Trigger.TriggerState) super.get("status");
+  public Trigger.TriggerState getState() {
+    return (Trigger.TriggerState) super.get(Task.STATE_KEY);
   }
 
-  public void setStatus(Trigger.TriggerState status) {
-    if (null == status) {
-      status = Trigger.TriggerState.NONE;
+  public void setState(Trigger.TriggerState state) {
+    if (null == state) {
+      state = Trigger.TriggerState.NONE;
     }
-    super.put("status", status);
+    super.put(Task.STATE_KEY, state);
   }
 
   /**
-   * Set the priority of the job.
+   * Set the priority of the job. Using this method will ensure that the priority is equal or
+   * greater than 0.
    *
    * @param priority the priority of the job, an integer value equal or greater than 0
    */
@@ -105,10 +106,10 @@ public class TMJobDataMap extends HashMap<String, Object> {
     if (priority < 0) {
       priority = 0;
     }
-    super.put("priority", priority);
+    super.put(Task.PRIORITY_KEY, priority);
   }
 
   public int getPriority() {
-    return (int) super.get("priority");
+    return (int) super.get(Task.PRIORITY_KEY);
   }
 }
