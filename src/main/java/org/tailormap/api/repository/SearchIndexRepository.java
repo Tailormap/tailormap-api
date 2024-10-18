@@ -6,6 +6,7 @@
 package org.tailormap.api.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.tailormap.api.persistence.SearchIndex;
@@ -16,4 +17,6 @@ import org.tailormap.api.persistence.SearchIndex;
     itemResourceRel = "search-index")
 public interface SearchIndexRepository extends JpaRepository<SearchIndex, Long> {
   List<SearchIndex> findByFeatureTypeId(Long featureTypeId);
+
+  Optional<SearchIndex> findByName(String name);
 }
