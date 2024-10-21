@@ -134,10 +134,11 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addFeatureTypeIndex(org.tailormap.api.persistence.SearchIndex,org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper)" class="member-name-link">addFeatureTypeIndex</a><wbr>(@NotNull <a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&nbsp;searchIndex,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addFeatureTypeIndex(org.tailormap.api.persistence.SearchIndex,org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository)" class="member-name-link">addFeatureTypeIndex</a><wbr>(@NotNull <a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&nbsp;searchIndex,
  @NotNull <a href="../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmFeatureType,
- @NotNull <a href="../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper)</code></div>
+ @NotNull <a href="../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
+ @NotNull <a href="../repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Add or update a feature type index for a layer.</div>
 </div>
@@ -219,25 +220,29 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="addFeatureTypeIndex(org.tailormap.api.persistence.SearchIndex,org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper)">
+<section class="detail" id="addFeatureTypeIndex(org.tailormap.api.persistence.SearchIndex,org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository)">
 <h3>addFeatureTypeIndex</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addFeatureTypeIndex</span><wbr><span class="parameters">(@NotNull
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></span>&nbsp;<span class="element-name">addFeatureTypeIndex</span><wbr><span class="parameters">(@NotNull
  @NotNull <a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&nbsp;searchIndex,
  @NotNull
  @NotNull <a href="../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmFeatureType,
  @NotNull
- @NotNull <a href="../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper)</span>
-                         throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/UnsupportedOperationException.html" title="class or interface in java.lang" class="external-link">UnsupportedOperationException</a>,
-<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a>,
+ @NotNull <a href="../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
+ @NotNull
+ @NotNull <a href="../repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository)</span>
+                                throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a>,
 org.apache.solr.client.solrj.SolrServerException</span></div>
 <div class="block">Add or update a feature type index for a layer.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>searchIndex</code> - the search index config</dd>
 <dd><code>tmFeatureType</code> - the feature type</dd>
+<dd><code>featureSourceFactoryHelper</code> - the feature source factory helper</dd>
+<dd><code>searchIndexRepository</code> - the search index repository, so we can save the <code>
+     searchIndex</code></dd>
+<dt>Returns:</dt>
+<dd>the possibly updated <code>searchIndex</code> object</dd>
 <dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/UnsupportedOperationException.html" title="class or interface in java.lang" class="external-link">UnsupportedOperationException</a></code> - if the operation is not supported, possibly because not
-     search field shave been defined</dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code> - if an I/O error occurs</dd>
 <dd><code>org.apache.solr.client.solrj.SolrServerException</code> - if a Solr error occurs</dd>
 </dl>

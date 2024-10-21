@@ -113,6 +113,41 @@ loadScripts(document, 'script');</script>
 </ul>
 </section>
 </li>
+<li>
+<section class="serialized-class-details" id="org.tailormap.api.admin.model.TaskSchedule">
+<h3>Class&nbsp;<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">org.tailormap.api.admin.model.TaskSchedule</a></h3>
+<div class="type-signature">class TaskSchedule extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>cronExpression</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> cronExpression</pre>
+</li>
+<li class="block-list">
+<h5>description</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> description</pre>
+</li>
+<li class="block-list">
+<h5>priority</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a> priority</pre>
+</li>
+<li class="block-list">
+<h5>uuid</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a> uuid</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
 </ul>
 </section>
 </li>
@@ -149,6 +184,10 @@ loadScripts(document, 'script');</script>
 <li class="block-list">
 <h5>name</h5>
 <pre>@NotNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> name</pre>
+</li>
+<li class="block-list">
+<h5>schedule</h5>
+<pre>@Valid <a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a> schedule</pre>
 </li>
 <li class="block-list">
 <h5>searchDisplayFieldsUsed</h5>

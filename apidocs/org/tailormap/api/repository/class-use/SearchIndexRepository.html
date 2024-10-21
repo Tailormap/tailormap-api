@@ -62,6 +62,10 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><a href="#org.tailormap.api.persistence.helper">org.tailormap.api.persistence.helper</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.scheduling">org.tailormap.api.scheduling</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.tailormap.api.solr">org.tailormap.api.solr</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -74,14 +78,14 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../configuration/dev/PopulateTestData.html#%3Cinit%3E(org.springframework.context.ApplicationContext,org.tailormap.api.repository.UserRepository,org.tailormap.api.repository.GroupRepository,org.tailormap.api.repository.CatalogRepository,org.tailormap.api.repository.GeoServiceRepository,org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.solr.SolrService,org.tailormap.api.scheduling.TaskCreator,org.tailormap.api.repository.FeatureSourceRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.UploadRepository)" class="member-name-link">PopulateTestData</a><wbr>(org.springframework.context.ApplicationContext&nbsp;appContext,
+<div class="col-second even-row-color"><code><a href="../../configuration/dev/PopulateTestData.html#%3Cinit%3E(org.springframework.context.ApplicationContext,org.tailormap.api.repository.UserRepository,org.tailormap.api.repository.GroupRepository,org.tailormap.api.repository.CatalogRepository,org.tailormap.api.repository.GeoServiceRepository,org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.solr.SolrService,org.tailormap.api.scheduling.TaskManagerService,org.tailormap.api.repository.FeatureSourceRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.UploadRepository)" class="member-name-link">PopulateTestData</a><wbr>(org.springframework.context.ApplicationContext&nbsp;appContext,
  <a href="../UserRepository.html" title="interface in org.tailormap.api.repository">UserRepository</a>&nbsp;userRepository,
  <a href="../GroupRepository.html" title="interface in org.tailormap.api.repository">GroupRepository</a>&nbsp;groupRepository,
  <a href="../CatalogRepository.html" title="interface in org.tailormap.api.repository">CatalogRepository</a>&nbsp;catalogRepository,
  <a href="../GeoServiceRepository.html" title="interface in org.tailormap.api.repository">GeoServiceRepository</a>&nbsp;geoServiceRepository,
  <a href="../../persistence/helper/GeoServiceHelper.html" title="class in org.tailormap.api.persistence.helper">GeoServiceHelper</a>&nbsp;geoServiceHelper,
  <a href="../../solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a>&nbsp;solrService,
- <a href="../../scheduling/TaskCreator.html" title="class in org.tailormap.api.scheduling">TaskCreator</a>&nbsp;taskCreator,
+ <a href="../../scheduling/TaskManagerService.html" title="class in org.tailormap.api.scheduling">TaskManagerService</a>&nbsp;taskManagerService,
  <a href="../FeatureSourceRepository.html" title="interface in org.tailormap.api.repository">FeatureSourceRepository</a>&nbsp;featureSourceRepository,
  <a href="../ApplicationRepository.html" title="interface in org.tailormap.api.repository">ApplicationRepository</a>&nbsp;applicationRepository,
  <a href="../ConfigurationRepository.html" title="interface in org.tailormap.api.repository">ConfigurationRepository</a>&nbsp;configurationRepository,
@@ -142,6 +146,42 @@ loadScripts(document, 'script');</script>
  <a href="../../security/AuthorizationService.html" title="class in org.tailormap.api.security">AuthorizationService</a>&nbsp;authorizationService,
  <a href="../SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.tailormap.api.scheduling">
+<h2>Uses of <a href="../SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a> in <a href="../../scheduling/package-summary.html">org.tailormap.api.scheduling</a></h2>
+<div class="caption"><span>Constructors in <a href="../../scheduling/package-summary.html">org.tailormap.api.scheduling</a> with parameters of type <a href="../SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier</div>
+<div class="table-header col-second">Constructor</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../../scheduling/IndexTask.html#%3Cinit%3E(org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.solr.SolrService)" class="member-name-link">IndexTask</a><wbr>(<a href="../SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
+ <a href="../FeatureTypeRepository.html" title="interface in org.tailormap.api.repository">FeatureTypeRepository</a>&nbsp;featureTypeRepository,
+ <a href="../../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
+ <a href="../../solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a>&nbsp;solrService)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.tailormap.api.solr">
+<h2>Uses of <a href="../SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a> in <a href="../../solr/package-summary.html">org.tailormap.api.solr</a></h2>
+<div class="caption"><span>Methods in <a href="../../solr/package-summary.html">org.tailormap.api.solr</a> with parameters of type <a href="../SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code><a href="../../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SolrHelper.</span><code><a href="../../solr/SolrHelper.html#addFeatureTypeIndex(org.tailormap.api.persistence.SearchIndex,org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository)" class="member-name-link">addFeatureTypeIndex</a><wbr>(@NotNull <a href="../../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&nbsp;searchIndex,
+ @NotNull <a href="../../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmFeatureType,
+ @NotNull <a href="../../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
+ @NotNull <a href="../SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Add or update a feature type index for a layer.</div>
+</div>
 </div>
 </section>
 </li>

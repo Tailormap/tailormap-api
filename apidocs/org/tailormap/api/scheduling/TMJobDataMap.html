@@ -126,13 +126,13 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String,org.quartz.Trigger.TriggerState)" class="member-name-link">TMJobDataMap</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type,
  @NotNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;description,
- org.quartz.Trigger.TriggerState&nbsp;status)</code></div>
+ org.quartz.Trigger.TriggerState&nbsp;state)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Create a new instance of TMJobDataMap with default priority.</div>
 </div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String,org.quartz.Trigger.TriggerState,int)" class="member-name-link">TMJobDataMap</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;type,
  @NotNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;description,
- org.quartz.Trigger.TriggerState&nbsp;status,
+ org.quartz.Trigger.TriggerState&nbsp;state,
  int&nbsp;priority)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Create a new instance of TMJobDataMap.</div>
@@ -162,7 +162,7 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPriority()" class="member-name-link">getPriority</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.quartz.Trigger.TriggerState</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStatus()" class="member-name-link">getStatus</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getState()" class="member-name-link">getState</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getType()" class="member-name-link">getType</a>()</code></div>
@@ -173,7 +173,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Set the priority of the job.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setStatus(org.quartz.Trigger.TriggerState)" class="member-name-link">setStatus</a><wbr>(org.quartz.Trigger.TriggerState&nbsp;status)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setState(org.quartz.Trigger.TriggerState)" class="member-name-link">setState</a><wbr>(org.quartz.Trigger.TriggerState&nbsp;state)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
@@ -237,13 +237,13 @@ loadScripts(document, 'script');</script>
  @NotNull
  @NotNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;description,
  @NotNull
- org.quartz.Trigger.TriggerState&nbsp;status)</span></div>
+ org.quartz.Trigger.TriggerState&nbsp;state)</span></div>
 <div class="block">Create a new instance of TMJobDataMap with default priority.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>type</code> - the type of the job</dd>
 <dd><code>description</code> - a description of the job</dd>
-<dd><code>status</code> - the status of the job</dd>
+<dd><code>state</code> - the state of the job</dd>
 </dl>
 </section>
 </li>
@@ -255,14 +255,14 @@ loadScripts(document, 'script');</script>
  @NotNull
  @NotNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;description,
  @NotNull
- org.quartz.Trigger.TriggerState&nbsp;status,
+ org.quartz.Trigger.TriggerState&nbsp;state,
  int&nbsp;priority)</span></div>
 <div class="block">Create a new instance of TMJobDataMap.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>type</code> - the type of the job</dd>
 <dd><code>description</code> - a description of the job</dd>
-<dd><code>status</code> - the status of the job</dd>
+<dd><code>state</code> - the state of the job</dd>
 <dd><code>priority</code> - the priority of the job, an integer value equal or greater than 0</dd>
 </dl>
 </section>
@@ -290,23 +290,24 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="getStatus()">
-<h3>getStatus</h3>
+<section class="detail" id="getState()">
+<h3>getState</h3>
 <div class="member-signature"><span class="annotations">@NotNull
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.quartz.Trigger.TriggerState</span>&nbsp;<span class="element-name">getStatus</span>()</div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.quartz.Trigger.TriggerState</span>&nbsp;<span class="element-name">getState</span>()</div>
 </section>
 </li>
 <li>
-<section class="detail" id="setStatus(org.quartz.Trigger.TriggerState)">
-<h3>setStatus</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setStatus</span><wbr><span class="parameters">(org.quartz.Trigger.TriggerState&nbsp;status)</span></div>
+<section class="detail" id="setState(org.quartz.Trigger.TriggerState)">
+<h3>setState</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setState</span><wbr><span class="parameters">(org.quartz.Trigger.TriggerState&nbsp;state)</span></div>
 </section>
 </li>
 <li>
 <section class="detail" id="setPriority(int)">
 <h3>setPriority</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setPriority</span><wbr><span class="parameters">(int&nbsp;priority)</span></div>
-<div class="block">Set the priority of the job.</div>
+<div class="block">Set the priority of the job. Using this method will ensure that the priority is equal or
+ greater than 0.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>priority</code> - the priority of the job, an integer value equal or greater than 0</dd>

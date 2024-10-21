@@ -79,18 +79,18 @@
 <td>@deprecated</td></tr>
 <tr class="a">
 <td><a href="#tag_class_1">Todo Work</a></td>
-<td>25</td>
+<td>26</td>
 <td>todo, @todo</td></tr></table>
 <p>Each tag is detailed below:</p><section><a id="tag_class_1"></a>
 <h2>Todo Work</h2>
-<p>Number of occurrences found in the code: 25</p>
+<p>Number of occurrences found in the code: 26</p>
 <table class="table table-striped">
 <tr class="a">
 <th>org.tailormap.api.configuration.dev.PopulateTestData</th>
 <th>Line</th></tr>
 <tr class="b">
 <td>MapServer WMS &quot;https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk&quot;</td>
-<td><a href="./xref/org/tailormap/api/configuration/dev/PopulateTestData.html#L515">515</a></td></tr>
+<td><a href="./xref/org/tailormap/api/configuration/dev/PopulateTestData.html#L520">520</a></td></tr>
 <tr class="a">
 <th>org.tailormap.api.controller.AppRestControllerAdvice</th>
 <th>Line</th></tr>
@@ -135,7 +135,7 @@
 <th>Line</th></tr>
 <tr class="a">
 <td>/ XXX we could add a human-readable description of the cron expression using eg. com.cronutils:cron-utils like: CronParser cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ)); CronDescriptor.instance(locale).describe(cronParser.parse(cronExpression)); this could also be done front-end using eg. https://www.npmjs.com/package/cronstrue which has the advantage of knowing the required locale for the human .put(&quot;cronDescription&quot;, cron.getCronExpression())</td>
-<td><a href="./xref/org/tailormap/api/controller/admin/TaskAdminController.html#L185">185</a></td></tr>
+<td><a href="./xref/org/tailormap/api/controller/admin/TaskAdminController.html#L232">232</a></td></tr>
 <tr class="b">
 <th>org.tailormap.api.geotools.featuresources.FeatureSourceHelper</th>
 <th>Line</th></tr>
@@ -176,6 +176,12 @@
 <td>in the future, check for authorizations on editing. Currently you only need to be logged in (the viewer frontend already checks this before showing editable layers so we don't need to check for an authenticated user here).</td>
 <td><a href="./xref/org/tailormap/api/persistence/helper/TMFeatureTypeHelper.html#L37">37</a></td></tr>
 <tr class="a">
+<th>org.tailormap.api.repository.events.SearchIndexEventHandler</th>
+<th>Line</th></tr>
+<tr class="b">
+<td>we don't handle the case where the schedule is null here; we would need to determine if a task exists that was associated with the search index before; this case can already be handled requesting a delete of the scheduled task instead</td>
+<td><a href="./xref/org/tailormap/api/repository/events/SearchIndexEventHandler.html#L83">83</a></td></tr>
+<tr class="a">
 <th>org.tailormap.api.security.OIDCRepository</th>
 <th>Line</th></tr>
 <tr class="b">
@@ -189,16 +195,16 @@
 <th>Line</th></tr>
 <tr class="a">
 <td>make maxFeatures configurable? perhaps for WFS sources? q.setMaxFeatures(Integer.MAX_VALUE);</td>
-<td><a href="./xref/org/tailormap/api/solr/SolrHelper.html#L141">141</a></td></tr>
+<td><a href="./xref/org/tailormap/api/solr/SolrHelper.html#L150">150</a></td></tr>
 <tr class="b">
 <td>this does not currently batch/page the feature source query, this doesn't seem to be an issue for now but could be if the feature source is very large or slow e.g. WFS</td>
-<td><a href="./xref/org/tailormap/api/solr/SolrHelper.html#L147">147</a></td></tr>
+<td><a href="./xref/org/tailormap/api/solr/SolrHelper.html#L156">156</a></td></tr>
 <tr class="a">
 <td>We could escape special/syntax characters, but that also prevents using keys like ~ and * solrQuery = ClientUtils.escapeQueryChars(solrQuery);</td>
-<td><a href="./xref/org/tailormap/api/solr/SolrHelper.html#L264">264</a></td></tr>
+<td><a href="./xref/org/tailormap/api/solr/SolrHelper.html#L272">272</a></td></tr>
 <tr class="b">
 <td>https://b3partners.atlassian.net/browse/HTM-1091 this should be a spatial field type using (&quot;type&quot;, &quot;location_rpt&quot;) but that requires some more work</td>
-<td><a href="./xref/org/tailormap/api/solr/SolrHelper.html#L347">347</a></td></tr></table></section></section>        </main>
+<td><a href="./xref/org/tailormap/api/solr/SolrHelper.html#L355">355</a></td></tr></table></section></section>        </main>
       </div>
     </div>
     <hr/>

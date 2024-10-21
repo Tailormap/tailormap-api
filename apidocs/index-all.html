@@ -119,7 +119,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/FeaturesResponse.html#addFeaturesItem(org.tailormap.api.viewer.model.Feature)" class="member-name-link">addFeaturesItem(Feature)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/FeaturesResponse.html" title="class in org.tailormap.api.viewer.model">FeaturesResponse</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/solr/SolrHelper.html#addFeatureTypeIndex(org.tailormap.api.persistence.SearchIndex,org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper)" class="member-name-link">addFeatureTypeIndex(SearchIndex, TMFeatureType, FeatureSourceFactoryHelper)</a> - Method in class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></dt>
+<dt><a href="org/tailormap/api/solr/SolrHelper.html#addFeatureTypeIndex(org.tailormap.api.persistence.SearchIndex,org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository)" class="member-name-link">addFeatureTypeIndex(SearchIndex, TMFeatureType, FeatureSourceFactoryHelper, SearchIndexRepository)</a> - Method in class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></dt>
 <dd>
 <div class="block">Add or update a feature type index for a layer.</div>
 </dd>
@@ -210,6 +210,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/controller/admin/AdminRepositoryRestExceptionHandler.html#%3Cinit%3E(org.springframework.context.MessageSource)" class="member-name-link">AdminRepositoryRestExceptionHandler(MessageSource)</a> - Constructor for class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/AdminRepositoryRestExceptionHandler.html" title="class in org.tailormap.api.controller.admin">AdminRepositoryRestExceptionHandler</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/repository/events/SearchIndexEventHandler.html#afterDeleteSearchIndexEventHandler(org.tailormap.api.persistence.SearchIndex)" class="member-name-link">afterDeleteSearchIndexEventHandler(SearchIndex)</a> - Method in class org.tailormap.api.repository.events.<a href="org/tailormap/api/repository/events/SearchIndexEventHandler.html" title="class in org.tailormap.api.repository.events">SearchIndexEventHandler</a></dt>
+<dd>
+<div class="block">Handle after delete.</div>
+</dd>
 <dt><a href="org/tailormap/api/viewer/model/ColumnMetadata.html#alias(java.lang.String)" class="member-name-link">alias(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ColumnMetadata.html" title="class in org.tailormap.api.viewer.model">ColumnMetadata</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AuthorizationRuleDecision.html#ALLOW" class="member-name-link">ALLOW</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AuthorizationRuleDecision.html" title="enum class in org.tailormap.api.persistence.json">AuthorizationRuleDecision</a></dt>
@@ -411,6 +415,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/MapResponse.html#baseLayerTreeNodes(java.util.List)" class="member-name-link">baseLayerTreeNodes(List&lt;LayerTreeNode&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/MapResponse.html" title="class in org.tailormap.api.viewer.model">MapResponse</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/repository/events/SearchIndexEventHandler.html#beforeSaveSearchIndexEventHandler(org.tailormap.api.persistence.SearchIndex)" class="member-name-link">beforeSaveSearchIndexEventHandler(SearchIndex)</a> - Method in class org.tailormap.api.repository.events.<a href="org/tailormap/api/repository/events/SearchIndexEventHandler.html" title="class in org.tailormap.api.repository.events">SearchIndexEventHandler</a></dt>
+<dd>
+<div class="block">Handle before save.</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/json/FormField.TypeEnum.html#BOOLEAN" class="member-name-link">BOOLEAN</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FormField.TypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FormField.TypeEnum</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMAttributeType.html#BOOLEAN" class="member-name-link">BOOLEAN</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMAttributeType.html" title="enum class in org.tailormap.api.persistence.json">TMAttributeType</a></dt>
@@ -564,13 +572,17 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/configuration/dev/PopulateTestData.html#createSolrIndex()" class="member-name-link">createSolrIndex()</a> - Method in class org.tailormap.api.configuration.dev.<a href="org/tailormap/api/configuration/dev/PopulateTestData.html" title="class in org.tailormap.api.configuration.dev">PopulateTestData</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/scheduling/TaskCreator.html#createTask(java.lang.Class,org.tailormap.api.scheduling.TMJobDataMap,java.lang.String)" class="member-name-link">createTask(Class&lt;? extends QuartzJobBean&gt;, TMJobDataMap, String)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskCreator.html" title="class in org.tailormap.api.scheduling">TaskCreator</a></dt>
+<dt><a href="org/tailormap/api/scheduling/TaskManagerService.html#createTask(java.lang.Class,org.tailormap.api.scheduling.TMJobDataMap,java.lang.String)" class="member-name-link">createTask(Class&lt;? extends QuartzJobBean&gt;, TMJobDataMap, String)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskManagerService.html" title="class in org.tailormap.api.scheduling">TaskManagerService</a></dt>
 <dd>
 <div class="block">Create a job and schedule it with a cron expression.</div>
 </dd>
 <dt><a href="org/tailormap/api/configuration/dev/PopulateTestData.html#createTestConfiguration()" class="member-name-link">createTestConfiguration()</a> - Method in class org.tailormap.api.configuration.dev.<a href="org/tailormap/api/configuration/dev/PopulateTestData.html" title="class in org.tailormap.api.configuration.dev">PopulateTestData</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/configuration/dev/PopulateTestData.html#createTestUsersAndGroups()" class="member-name-link">createTestUsersAndGroups()</a> - Method in class org.tailormap.api.configuration.dev.<a href="org/tailormap/api/configuration/dev/PopulateTestData.html" title="class in org.tailormap.api.configuration.dev">PopulateTestData</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/Task.html#CRON_EXPRESSION_KEY" class="member-name-link">CRON_EXPRESSION_KEY</a> - Static variable in interface org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/Task.html" title="interface in org.tailormap.api.scheduling">Task</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#cronExpression(java.lang.String)" class="member-name-link">cronExpression(String)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html#crs(java.lang.String)" class="member-name-link">crs(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html" title="class in org.tailormap.api.persistence.json">TMFeatureTypeInfo</a></dt>
 <dd>&nbsp;</dd>
@@ -640,7 +652,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/configuration/ddl/DeleteDDLScriptBeforeCreating.html#delete()" class="member-name-link">delete()</a> - Method in class org.tailormap.api.configuration.ddl.<a href="org/tailormap/api/configuration/ddl/DeleteDDLScriptBeforeCreating.html" title="class in org.tailormap.api.configuration.ddl">DeleteDDLScriptBeforeCreating</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html#delete(java.lang.String,java.util.UUID)" class="member-name-link">delete(String, UUID)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/TaskAdminController.html" title="class in org.tailormap.api.controller.admin">TaskAdminController</a></dt>
+<dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html#delete(org.tailormap.api.scheduling.TaskType,java.util.UUID)" class="member-name-link">delete(TaskType, UUID)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/TaskAdminController.html" title="class in org.tailormap.api.controller.admin">TaskAdminController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/ConfigurationRepository.html#deleteConfigurationByKey(java.lang.String)" class="member-name-link">deleteConfigurationByKey(String)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/ConfigurationRepository.html" title="interface in org.tailormap.api.repository">ConfigurationRepository</a></dt>
 <dd>&nbsp;</dd>
@@ -660,6 +672,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/geotools/wfs/SimpleWFSHelper.html#describeWMSLayer(java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">describeWMSLayer(String, String, String, String)</a> - Static method in class org.tailormap.api.geotools.wfs.<a href="org/tailormap/api/geotools/wfs/SimpleWFSHelper.html" title="class in org.tailormap.api.geotools.wfs">SimpleWFSHelper</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/wfs/SimpleWFSHelper.html#describeWMSLayers(java.lang.String,java.lang.String,java.lang.String,java.util.List)" class="member-name-link">describeWMSLayers(String, String, String, List&lt;String&gt;)</a> - Static method in class org.tailormap.api.geotools.wfs.<a href="org/tailormap/api/geotools/wfs/SimpleWFSHelper.html" title="class in org.tailormap.api.geotools.wfs">SimpleWFSHelper</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#description(java.lang.String)" class="member-name-link">description(String)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AppLayerSettings.html#description(java.lang.String)" class="member-name-link">description(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a></dt>
 <dd>&nbsp;</dd>
@@ -693,6 +707,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/LayerTreeNode.html#description(java.lang.String)" class="member-name-link">description(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerTreeNode.html" title="class in org.tailormap.api.viewer.model">LayerTreeNode</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/Task.html#DESCRIPTION_KEY" class="member-name-link">DESCRIPTION_KEY</a> - Static variable in interface org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/Task.html" title="interface in org.tailormap.api.scheduling">Task</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/util/TMPasswordDeserializer.html#deserialize(com.fasterxml.jackson.core.JsonParser,com.fasterxml.jackson.databind.DeserializationContext)" class="member-name-link">deserialize(JsonParser, DeserializationContext)</a> - Method in class org.tailormap.api.util.<a href="org/tailormap/api/util/TMPasswordDeserializer.html" title="class in org.tailormap.api.util">TMPasswordDeserializer</a></dt>
 <dd>
 <div class="block">When deserializing a JSON field containing a plaintext password validate it is strong enough
@@ -700,7 +716,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/admin/model/ServerSentEvent.html#details(java.lang.Object)" class="member-name-link">details(Object)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/ServerSentEvent.html" title="class in org.tailormap.api.admin.model">ServerSentEvent</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html#details(java.lang.String,java.util.UUID)" class="member-name-link">details(String, UUID)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/TaskAdminController.html" title="class in org.tailormap.api.controller.admin">TaskAdminController</a></dt>
+<dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html#details(org.tailormap.api.scheduling.TaskType,java.util.UUID)" class="member-name-link">details(TaskType, UUID)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/TaskAdminController.html" title="class in org.tailormap.api.controller.admin">TaskAdminController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FormField.html#disabled(java.lang.Boolean)" class="member-name-link">disabled(Boolean)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></dt>
 <dd>&nbsp;</dd>
@@ -766,6 +782,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/admin/model/EntityEvent.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/EntityEvent.html" title="class in org.tailormap.api.admin.model">EntityEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/ServerSentEvent.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/ServerSentEvent.html" title="class in org.tailormap.api.admin.model">ServerSentEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AdminAdditionalProperty.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AdminAdditionalProperty.html" title="class in org.tailormap.api.persistence.json">AdminAdditionalProperty</a></dt>
 <dd>&nbsp;</dd>
@@ -917,6 +935,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/configuration/JPAConfiguration.html#exceptionTranslation()" class="member-name-link">exceptionTranslation()</a> - Method in class org.tailormap.api.configuration.<a href="org/tailormap/api/configuration/JPAConfiguration.html" title="class in org.tailormap.api.configuration">JPAConfiguration</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/FailingPocTask.html#executeInternal(org.quartz.JobExecutionContext)" class="member-name-link">executeInternal(JobExecutionContext)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/FailingPocTask.html" title="class in org.tailormap.api.scheduling">FailingPocTask</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/IndexTask.html#executeInternal(org.quartz.JobExecutionContext)" class="member-name-link">executeInternal(JobExecutionContext)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/IndexTask.html" title="class in org.tailormap.api.scheduling">IndexTask</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/scheduling/PocTask.html#executeInternal(org.quartz.JobExecutionContext)" class="member-name-link">executeInternal(JobExecutionContext)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/PocTask.html" title="class in org.tailormap.api.scheduling">PocTask</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/UserRepository.html#existsByGroupsNameIn(java.util.Collection)" class="member-name-link">existsByGroupsNameIn(Collection&lt;String&gt;)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/UserRepository.html" title="interface in org.tailormap.api.repository">UserRepository</a></dt>
@@ -932,6 +954,14 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:F">F</h2>
 <dl class="index">
+<dt><a href="org/tailormap/api/scheduling/TaskType.html#FAILINGPOC" class="member-name-link">FAILINGPOC</a> - Enum constant in enum class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskType.html" title="enum class in org.tailormap.api.scheduling">TaskType</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/FailingPocTask.html" class="type-name-link" title="class in org.tailormap.api.scheduling">FailingPocTask</a> - Class in <a href="org/tailormap/api/scheduling/package-summary.html">org.tailormap.api.scheduling</a></dt>
+<dd>
+<div class="block">POC task for testing purposes.</div>
+</dd>
+<dt><a href="org/tailormap/api/scheduling/FailingPocTask.html#%3Cinit%3E()" class="member-name-link">FailingPocTask()</a> - Constructor for class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/FailingPocTask.html" title="class in org.tailormap.api.scheduling">FailingPocTask</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/Feature.html" class="type-name-link" title="class in org.tailormap.api.viewer.model">Feature</a> - Class in <a href="org/tailormap/api/viewer/model/package-summary.html">org.tailormap.api.viewer.model</a></dt>
 <dd>
 <div class="block">A possibly complete feature from the attribute source.</div>
@@ -1056,6 +1086,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/ApplicationRepository.html#findByName(java.lang.String)" class="member-name-link">findByName(String)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/ApplicationRepository.html" title="interface in org.tailormap.api.repository">ApplicationRepository</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/repository/SearchIndexRepository.html#findByName(java.lang.String)" class="member-name-link">findByName(String)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/security/OIDCRepository.html#findByRegistrationId(java.lang.String)" class="member-name-link">findByRegistrationId(String)</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/OIDCRepository.html" title="class in org.tailormap.api.security">OIDCRepository</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/FeatureSourceRepository.html#findByUrl(java.lang.String)" class="member-name-link">findByUrl(String)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/FeatureSourceRepository.html" title="interface in org.tailormap.api.repository">FeatureSourceRepository</a></dt>
@@ -1171,6 +1203,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/SearchIndex.Status.html#fromValue(java.lang.String)" class="member-name-link">fromValue(String)</a> - Static method in enum class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.Status.html" title="enum class in org.tailormap.api.persistence">SearchIndex.Status</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureSource.Protocol.html#fromValue(java.lang.String)" class="member-name-link">fromValue(String)</a> - Static method in enum class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureSource.Protocol.html" title="enum class in org.tailormap.api.persistence">TMFeatureSource.Protocol</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/TaskType.html#fromValue(java.lang.String)" class="member-name-link">fromValue(String)</a> - Static method in enum class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskType.html" title="enum class in org.tailormap.api.scheduling">TaskType</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/Service.ServerTypeEnum.html#fromValue(java.lang.String)" class="member-name-link">fromValue(String)</a> - Static method in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Service.ServerTypeEnum.html" title="enum class in org.tailormap.api.viewer.model">Service.ServerTypeEnum</a></dt>
 <dd>&nbsp;</dd>
@@ -1613,6 +1647,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/security/InternalAdminAuthentication.html#getCredentials()" class="member-name-link">getCredentials()</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/InternalAdminAuthentication.html" title="class in org.tailormap.api.security">InternalAdminAuthentication</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#getCronExpression()" class="member-name-link">getCronExpression()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
+<dd>
+<div class="block">Cron expression for the task</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/Application.html#getCrs()" class="member-name-link">getCrs()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/GeoServiceLayer.html#getCrs()" class="member-name-link">getCrs()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a></dt>
@@ -1679,6 +1717,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Get describeLayer</div>
 </dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#getDescription()" class="member-name-link">getDescription()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
+<dd>
+<div class="block">Human-readable description of the task.</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/Group.html#getDescription()" class="member-name-link">getDescription()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Group.html" title="class in org.tailormap.api.persistence">Group</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AppLayerSettings.html#getDescription()" class="member-name-link">getDescription()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a></dt>
@@ -1736,6 +1778,16 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/json/XYZLayerSettings.html#getDescription()" class="member-name-link">getDescription()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/XYZLayerSettings.html" title="class in org.tailormap.api.persistence.json">XYZLayerSettings</a></dt>
 <dd>
 <div class="block">Description to show for this layer.</div>
+</dd>
+<dt><a href="org/tailormap/api/scheduling/FailingPocTask.html#getDescription()" class="member-name-link">getDescription()</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/FailingPocTask.html" title="class in org.tailormap.api.scheduling">FailingPocTask</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/IndexTask.html#getDescription()" class="member-name-link">getDescription()</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/IndexTask.html" title="class in org.tailormap.api.scheduling">IndexTask</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/PocTask.html#getDescription()" class="member-name-link">getDescription()</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/PocTask.html" title="class in org.tailormap.api.scheduling">PocTask</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/Task.html#getDescription()" class="member-name-link">getDescription()</a> - Method in interface org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/Task.html" title="interface in org.tailormap.api.scheduling">Task</a></dt>
+<dd>
+<div class="block">Get the description of the task.</div>
 </dd>
 <dt><a href="org/tailormap/api/scheduling/TMJobDataMap.html#getDescription()" class="member-name-link">getDescription()</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a></dt>
 <dd>&nbsp;</dd>
@@ -2180,6 +2232,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/Upload.html#getImageWidth()" class="member-name-link">getImageWidth()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/IndexTask.html#getIndexId()" class="member-name-link">getIndexId()</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/IndexTask.html" title="class in org.tailormap.api.scheduling">IndexTask</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureType.html#getInfo()" class="member-name-link">getInfo()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/Application.html#getInitialExtent()" class="member-name-link">getInitialExtent()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a></dt>
@@ -2206,6 +2260,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureSource.html#getJdbcConnection()" class="member-name-link">getJdbcConnection()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/TaskManagerService.html#getJobKey(org.tailormap.api.scheduling.TaskType,java.util.UUID)" class="member-name-link">getJobKey(TaskType, UUID)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskManagerService.html" title="class in org.tailormap.api.scheduling">TaskManagerService</a></dt>
+<dd>
+<div class="block">Get the job key for a given type and uuid.</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/Configuration.html#getJsonValue()" class="member-name-link">getJsonValue()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Configuration.html" title="class in org.tailormap.api.persistence">Configuration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/Configuration.html#getKey()" class="member-name-link">getKey()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Configuration.html" title="class in org.tailormap.api.persistence">Configuration</a></dt>
@@ -2626,6 +2684,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/security/InternalAdminAuthentication.html#getPrincipal()" class="member-name-link">getPrincipal()</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/InternalAdminAuthentication.html" title="class in org.tailormap.api.security">InternalAdminAuthentication</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#getPriority()" class="member-name-link">getPriority()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
+<dd>
+<div class="block">Priority of the task</div>
+</dd>
 <dt><a href="org/tailormap/api/scheduling/TMJobDataMap.html#getPriority()" class="member-name-link">getPriority()</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/ServicePublishingSettings.html#getProjections()" class="member-name-link">getProjections()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/ServicePublishingSettings.html" title="class in org.tailormap.api.persistence.json">ServicePublishingSettings</a></dt>
@@ -2714,6 +2776,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Only a single node in a tree will have this set to true.</div>
 </dd>
+<dt><a href="org/tailormap/api/persistence/SearchIndex.html#getSchedule()" class="member-name-link">getSchedule()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/JDBCConnectionProperties.html#getSchema()" class="member-name-link">getSchema()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/JDBCConnectionProperties.html" title="class in org.tailormap.api.persistence.json">JDBCConnectionProperties</a></dt>
 <dd>
 <div class="block">Get schema</div>
@@ -2812,11 +2876,11 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">requested start point, this will allow the client to request the next or previous page by adding or removing 1 or more.</div>
 </dd>
+<dt><a href="org/tailormap/api/scheduling/TMJobDataMap.html#getState()" class="member-name-link">getState()</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/OIDCConfiguration.html#getStatus()" class="member-name-link">getStatus()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/SearchIndex.html#getStatus()" class="member-name-link">getStatus()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/scheduling/TMJobDataMap.html#getStatus()" class="member-name-link">getStatus()</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/GeoServiceLayer.html#getStyles()" class="member-name-link">getStyles()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a></dt>
 <dd>
@@ -3022,6 +3086,16 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Get type</div>
 </dd>
+<dt><a href="org/tailormap/api/scheduling/FailingPocTask.html#getType()" class="member-name-link">getType()</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/FailingPocTask.html" title="class in org.tailormap.api.scheduling">FailingPocTask</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/IndexTask.html#getType()" class="member-name-link">getType()</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/IndexTask.html" title="class in org.tailormap.api.scheduling">IndexTask</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/PocTask.html#getType()" class="member-name-link">getType()</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/PocTask.html" title="class in org.tailormap.api.scheduling">PocTask</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/Task.html#getType()" class="member-name-link">getType()</a> - Method in interface org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/Task.html" title="interface in org.tailormap.api.scheduling">Task</a></dt>
+<dd>
+<div class="block">Get the type of the task.</div>
+</dd>
 <dt><a href="org/tailormap/api/scheduling/TMJobDataMap.html#getType()" class="member-name-link">getType()</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/Attribute.html#getType()" class="member-name-link">getType()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Attribute.html" title="class in org.tailormap.api.viewer.model">Attribute</a></dt>
@@ -3116,6 +3190,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/persistence/OIDCConfiguration.html#getUserNameAttribute()" class="member-name-link">getUserNameAttribute()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#getUuid()" class="member-name-link">getUuid()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
+<dd>
+<div class="block">UUID of the task; this is the unique identifier of the task</div>
+</dd>
 <dt><a href="org/tailormap/api/configuration/TailormapPasswordStrengthConfig.html#getValidation()" class="member-name-link">getValidation()</a> - Static method in class org.tailormap.api.configuration.<a href="org/tailormap/api/configuration/TailormapPasswordStrengthConfig.html" title="class in org.tailormap.api.configuration">TailormapPasswordStrengthConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/projections/UserGroups.html#getValidUntil()" class="member-name-link">getValidUntil()</a> - Method in interface org.tailormap.api.persistence.projections.<a href="org/tailormap/api/persistence/projections/UserGroups.html" title="interface in org.tailormap.api.persistence.projections">UserGroups</a></dt>
@@ -3157,6 +3235,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/SearchIndex.Status.html#getValue()" class="member-name-link">getValue()</a> - Method in enum class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.Status.html" title="enum class in org.tailormap.api.persistence">SearchIndex.Status</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureSource.Protocol.html#getValue()" class="member-name-link">getValue()</a> - Method in enum class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureSource.Protocol.html" title="enum class in org.tailormap.api.persistence">TMFeatureSource.Protocol</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/TaskType.html#getValue()" class="member-name-link">getValue()</a> - Method in enum class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskType.html" title="enum class in org.tailormap.api.scheduling">TaskType</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AdditionalProperty.html#getValue()" class="member-name-link">getValue()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AdditionalProperty.html" title="class in org.tailormap.api.viewer.model">AdditionalProperty</a></dt>
 <dd>
@@ -3262,6 +3342,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/admin/model/EntityEvent.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/EntityEvent.html" title="class in org.tailormap.api.admin.model">EntityEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/ServerSentEvent.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/ServerSentEvent.html" title="class in org.tailormap.api.admin.model">ServerSentEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AdminAdditionalProperty.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AdminAdditionalProperty.html" title="class in org.tailormap.api.persistence.json">AdminAdditionalProperty</a></dt>
 <dd>&nbsp;</dd>
@@ -3492,9 +3574,13 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">(re-) Index a layer.</div>
 </dd>
+<dt><a href="org/tailormap/api/scheduling/TaskType.html#INDEX" class="member-name-link">INDEX</a> - Enum constant in enum class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskType.html" title="enum class in org.tailormap.api.scheduling">TaskType</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/util/Constants.html#INDEX_DISPLAY_FIELD" class="member-name-link">INDEX_DISPLAY_FIELD</a> - Static variable in interface org.tailormap.api.util.<a href="org/tailormap/api/util/Constants.html" title="interface in org.tailormap.api.util">Constants</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/util/Constants.html#INDEX_GEOM_FIELD" class="member-name-link">INDEX_GEOM_FIELD</a> - Static variable in interface org.tailormap.api.util.<a href="org/tailormap/api/util/Constants.html" title="interface in org.tailormap.api.util">Constants</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/IndexTask.html#INDEX_KEY" class="member-name-link">INDEX_KEY</a> - Static variable in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/IndexTask.html" title="class in org.tailormap.api.scheduling">IndexTask</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/util/Constants.html#INDEX_SEARCH_FIELD" class="member-name-link">INDEX_SEARCH_FIELD</a> - Static variable in interface org.tailormap.api.util.<a href="org/tailormap/api/util/Constants.html" title="interface in org.tailormap.api.util">Constants</a></dt>
 <dd>&nbsp;</dd>
@@ -3505,6 +3591,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/configuration/base/IndexHtmlTransformer.html#%3Cinit%3E()" class="member-name-link">IndexHtmlTransformer()</a> - Constructor for class org.tailormap.api.configuration.base.<a href="org/tailormap/api/configuration/base/IndexHtmlTransformer.html" title="class in org.tailormap.api.configuration.base">IndexHtmlTransformer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/SearchIndex.Status.html#INDEXING" class="member-name-link">INDEXING</a> - Enum constant in enum class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.Status.html" title="enum class in org.tailormap.api.persistence">SearchIndex.Status</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/IndexTask.html" class="type-name-link" title="class in org.tailormap.api.scheduling">IndexTask</a> - Class in <a href="org/tailormap/api/scheduling/package-summary.html">org.tailormap.api.scheduling</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/IndexTask.html#%3Cinit%3E(org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.solr.SolrService)" class="member-name-link">IndexTask(SearchIndexRepository, FeatureTypeRepository, FeatureSourceFactoryHelper, SolrService)</a> - Constructor for class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/IndexTask.html" title="class in org.tailormap.api.scheduling">IndexTask</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/AppRestControllerAdvice.html#initBinder(org.springframework.web.bind.WebDataBinder)" class="member-name-link">initBinder(WebDataBinder)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/AppRestControllerAdvice.html" title="class in org.tailormap.api.controller">AppRestControllerAdvice</a></dt>
 <dd>&nbsp;</dd>
@@ -4016,6 +4106,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/persistence/json/FormField.html#placeholder(java.lang.String)" class="member-name-link">placeholder(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/TaskType.html#POC" class="member-name-link">POC</a> - Enum constant in enum class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskType.html" title="enum class in org.tailormap.api.scheduling">TaskType</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/scheduling/PocTask.html" class="type-name-link" title="class in org.tailormap.api.scheduling">PocTask</a> - Class in <a href="org/tailormap/api/scheduling/package-summary.html">org.tailormap.api.scheduling</a></dt>
 <dd>
 <div class="block">POC task for testing purposes.</div>
@@ -4045,7 +4137,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Populates entities to add services and applications to demo functionality, support development
  and use in integration tests with a common set of test data.</div>
 </dd>
-<dt><a href="org/tailormap/api/configuration/dev/PopulateTestData.html#%3Cinit%3E(org.springframework.context.ApplicationContext,org.tailormap.api.repository.UserRepository,org.tailormap.api.repository.GroupRepository,org.tailormap.api.repository.CatalogRepository,org.tailormap.api.repository.GeoServiceRepository,org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.solr.SolrService,org.tailormap.api.scheduling.TaskCreator,org.tailormap.api.repository.FeatureSourceRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.UploadRepository)" class="member-name-link">PopulateTestData(ApplicationContext, UserRepository, GroupRepository, CatalogRepository, GeoServiceRepository, GeoServiceHelper, SolrService, TaskCreator, FeatureSourceRepository, ApplicationRepository, ConfigurationRepository, FeatureSourceFactoryHelper, SearchIndexRepository, UploadRepository)</a> - Constructor for class org.tailormap.api.configuration.dev.<a href="org/tailormap/api/configuration/dev/PopulateTestData.html" title="class in org.tailormap.api.configuration.dev">PopulateTestData</a></dt>
+<dt><a href="org/tailormap/api/configuration/dev/PopulateTestData.html#%3Cinit%3E(org.springframework.context.ApplicationContext,org.tailormap.api.repository.UserRepository,org.tailormap.api.repository.GroupRepository,org.tailormap.api.repository.CatalogRepository,org.tailormap.api.repository.GeoServiceRepository,org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.solr.SolrService,org.tailormap.api.scheduling.TaskManagerService,org.tailormap.api.repository.FeatureSourceRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.UploadRepository)" class="member-name-link">PopulateTestData(ApplicationContext, UserRepository, GroupRepository, CatalogRepository, GeoServiceRepository, GeoServiceHelper, SolrService, TaskManagerService, FeatureSourceRepository, ApplicationRepository, ConfigurationRepository, FeatureSourceFactoryHelper, SearchIndexRepository, UploadRepository)</a> - Constructor for class org.tailormap.api.configuration.dev.<a href="org/tailormap/api/configuration/dev/PopulateTestData.html" title="class in org.tailormap.api.configuration.dev">PopulateTestData</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/AppRestControllerAdvice.html#populateViewerKind(jakarta.servlet.http.HttpServletRequest)" class="member-name-link">populateViewerKind(HttpServletRequest)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/AppRestControllerAdvice.html" title="class in org.tailormap.api.controller">AppRestControllerAdvice</a></dt>
 <dd>&nbsp;</dd>
@@ -4068,6 +4160,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/viewer/model/AppStyling.html#primaryColor(java.lang.String)" class="member-name-link">primaryColor(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppStyling.html" title="class in org.tailormap.api.viewer.model">AppStyling</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/JDBCConnectionProperties.html#primaryKeyMetadataTable(java.lang.String)" class="member-name-link">primaryKeyMetadataTable(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/JDBCConnectionProperties.html" title="class in org.tailormap.api.persistence.json">JDBCConnectionProperties</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#priority(java.lang.Integer)" class="member-name-link">priority(Integer)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/Task.html#PRIORITY_KEY" class="member-name-link">PRIORITY_KEY</a> - Static variable in interface org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/Task.html" title="interface in org.tailormap.api.scheduling">Task</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/processing/GeometryProcessor.html#processGeometry(java.lang.Object,java.lang.Boolean,java.lang.Boolean,org.geotools.api.referencing.operation.MathTransform)" class="member-name-link">processGeometry(Object, Boolean, Boolean, MathTransform)</a> - Static method in class org.tailormap.api.geotools.processing.<a href="org/tailormap/api/geotools/processing/GeometryProcessor.html" title="class in org.tailormap.api.geotools.processing">GeometryProcessor</a></dt>
 <dd>
@@ -4209,6 +4305,13 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/SearchIndex.html#%3Cinit%3E()" class="member-name-link">SearchIndex()</a> - Constructor for class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/SearchIndex.Status.html" class="type-name-link" title="enum class in org.tailormap.api.persistence">SearchIndex.Status</a> - Enum Class in <a href="org/tailormap/api/persistence/package-summary.html">org.tailormap.api.persistence</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/repository/events/SearchIndexEventHandler.html" class="type-name-link" title="class in org.tailormap.api.repository.events">SearchIndexEventHandler</a> - Class in <a href="org/tailormap/api/repository/events/package-summary.html">org.tailormap.api.repository.events</a></dt>
+<dd>
+<div class="block">Event handler for Solr indexes; when a <code>SearchIndex</code> is created, updated or deleted a
+ <code>Task</code> is associated.</div>
+</dd>
+<dt><a href="org/tailormap/api/repository/events/SearchIndexEventHandler.html#%3Cinit%3E(org.quartz.Scheduler,org.tailormap.api.scheduling.TaskManagerService)" class="member-name-link">SearchIndexEventHandler(Scheduler, TaskManagerService)</a> - Constructor for class org.tailormap.api.repository.events.<a href="org/tailormap/api/repository/events/SearchIndexEventHandler.html" title="class in org.tailormap.api.repository.events">SearchIndexEventHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AppLayerSettings.html#searchIndexId(java.lang.Long)" class="member-name-link">searchIndexId(Long)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a></dt>
 <dd>&nbsp;</dd>
@@ -4434,6 +4537,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMServiceCaps.html#setCorsAllowOrigin(java.lang.String)" class="member-name-link">setCorsAllowOrigin(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMServiceCaps.html" title="class in org.tailormap.api.persistence.json">TMServiceCaps</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#setCronExpression(java.lang.String)" class="member-name-link">setCronExpression(String)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/Application.html#setCrs(java.lang.String)" class="member-name-link">setCrs(String)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html#setCrs(java.lang.String)" class="member-name-link">setCrs(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html" title="class in org.tailormap.api.persistence.json">TMFeatureTypeInfo</a></dt>
@@ -4468,6 +4573,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMServiceCapabilitiesRequest.html#setDescribeLayer(java.lang.Boolean)" class="member-name-link">setDescribeLayer(Boolean)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMServiceCapabilitiesRequest.html" title="class in org.tailormap.api.persistence.json">TMServiceCapabilitiesRequest</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#setDescription(java.lang.String)" class="member-name-link">setDescription(String)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/Group.html#setDescription(java.lang.String)" class="member-name-link">setDescription(String)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Group.html" title="class in org.tailormap.api.persistence">Group</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AppLayerSettings.html#setDescription(java.lang.String)" class="member-name-link">setDescription(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a></dt>
@@ -4498,6 +4605,16 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/XYZLayerSettings.html#setDescription(java.lang.String)" class="member-name-link">setDescription(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/XYZLayerSettings.html" title="class in org.tailormap.api.persistence.json">XYZLayerSettings</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/FailingPocTask.html#setDescription(java.lang.String)" class="member-name-link">setDescription(String)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/FailingPocTask.html" title="class in org.tailormap.api.scheduling">FailingPocTask</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/IndexTask.html#setDescription(java.lang.String)" class="member-name-link">setDescription(String)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/IndexTask.html" title="class in org.tailormap.api.scheduling">IndexTask</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/PocTask.html#setDescription(java.lang.String)" class="member-name-link">setDescription(String)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/PocTask.html" title="class in org.tailormap.api.scheduling">PocTask</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/Task.html#setDescription(java.lang.String)" class="member-name-link">setDescription(String)</a> - Method in interface org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/Task.html" title="interface in org.tailormap.api.scheduling">Task</a></dt>
+<dd>
+<div class="block">Set the description of the task.</div>
+</dd>
 <dt><a href="org/tailormap/api/viewer/model/AppLayer.html#setDescription(java.lang.String)" class="member-name-link">setDescription(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/LayerTreeNode.html#setDescription(java.lang.String)" class="member-name-link">setDescription(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerTreeNode.html" title="class in org.tailormap.api.viewer.model">LayerTreeNode</a></dt>
@@ -4725,6 +4842,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/Upload.html#setImageHeight(java.lang.Integer)" class="member-name-link">setImageHeight(Integer)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/Upload.html#setImageWidth(java.lang.Integer)" class="member-name-link">setImageWidth(Integer)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/IndexTask.html#setIndexId(long)" class="member-name-link">setIndexId(long)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/IndexTask.html" title="class in org.tailormap.api.scheduling">IndexTask</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureType.html#setInfo(org.tailormap.api.persistence.json.TMFeatureTypeInfo)" class="member-name-link">setInfo(TMFeatureTypeInfo)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a></dt>
 <dd>&nbsp;</dd>
@@ -4965,6 +5084,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Set the priority of the job.</div>
 </dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#setPriority(java.lang.Integer)" class="member-name-link">setPriority(Integer)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/ServicePublishingSettings.html#setProjections(java.util.List)" class="member-name-link">setProjections(List&lt;String&gt;)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/ServicePublishingSettings.html" title="class in org.tailormap.api.persistence.json">ServicePublishingSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ViewerResponse.html#setProjections(java.util.List)" class="member-name-link">setProjections(List&lt;String&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></dt>
@@ -5010,6 +5131,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/json/GeoServiceLayer.html#setRoot(java.lang.Boolean)" class="member-name-link">setRoot(Boolean)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/LayerTreeNode.html#setRoot(java.lang.Boolean)" class="member-name-link">setRoot(Boolean)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerTreeNode.html" title="class in org.tailormap.api.viewer.model">LayerTreeNode</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/persistence/SearchIndex.html#setSchedule(org.tailormap.api.admin.model.TaskSchedule)" class="member-name-link">setSchedule(TaskSchedule)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/JDBCConnectionProperties.html#setSchema(java.lang.String)" class="member-name-link">setSchema(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/JDBCConnectionProperties.html" title="class in org.tailormap.api.persistence.json">JDBCConnectionProperties</a></dt>
 <dd>&nbsp;</dd>
@@ -5063,9 +5186,9 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/SearchResponse.html#setStart(java.lang.Long)" class="member-name-link">setStart(Long)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/SearchResponse.html" title="class in org.tailormap.api.viewer.model">SearchResponse</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/persistence/OIDCConfiguration.html#setStatus(java.lang.String)" class="member-name-link">setStatus(String)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></dt>
+<dt><a href="org/tailormap/api/scheduling/TMJobDataMap.html#setState(org.quartz.Trigger.TriggerState)" class="member-name-link">setState(Trigger.TriggerState)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/scheduling/TMJobDataMap.html#setStatus(org.quartz.Trigger.TriggerState)" class="member-name-link">setStatus(Trigger.TriggerState)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a></dt>
+<dt><a href="org/tailormap/api/persistence/OIDCConfiguration.html#setStatus(java.lang.String)" class="member-name-link">setStatus(String)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/SearchIndex.html#setStatus(org.tailormap.api.persistence.SearchIndex.Status)" class="member-name-link">setStatus(SearchIndex.Status)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></dt>
 <dd>&nbsp;</dd>
@@ -5221,6 +5344,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/OIDCConfiguration.html#setUserNameAttribute(java.lang.String)" class="member-name-link">setUserNameAttribute(String)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/OIDCConfiguration.html" title="class in org.tailormap.api.persistence">OIDCConfiguration</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#setUuid(java.util.UUID)" class="member-name-link">setUuid(UUID)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/configuration/TailormapPasswordStrengthConfig.html#setValidation(boolean)" class="member-name-link">setValidation(boolean)</a> - Method in class org.tailormap.api.configuration.<a href="org/tailormap/api/configuration/TailormapPasswordStrengthConfig.html" title="class in org.tailormap.api.configuration">TailormapPasswordStrengthConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/User.html#setValidUntil(java.time.ZonedDateTime)" class="member-name-link">setValidUntil(ZonedDateTime)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/User.html" title="class in org.tailormap.api.persistence">User</a></dt>
@@ -5319,9 +5444,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/SearchResponse.html#start(java.lang.Long)" class="member-name-link">start(Long)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/SearchResponse.html" title="class in org.tailormap.api.viewer.model">SearchResponse</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html#startTask(java.lang.String,java.util.UUID)" class="member-name-link">startTask(String, UUID)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/TaskAdminController.html" title="class in org.tailormap.api.controller.admin">TaskAdminController</a></dt>
+<dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html#startTask(org.tailormap.api.scheduling.TaskType,java.util.UUID)" class="member-name-link">startTask(TaskType, UUID)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/TaskAdminController.html" title="class in org.tailormap.api.controller.admin">TaskAdminController</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html#stopTask(java.lang.String,java.util.UUID)" class="member-name-link">stopTask(String, UUID)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/TaskAdminController.html" title="class in org.tailormap.api.controller.admin">TaskAdminController</a></dt>
+<dt><a href="org/tailormap/api/scheduling/Task.html#STATE_KEY" class="member-name-link">STATE_KEY</a> - Static variable in interface org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/Task.html" title="interface in org.tailormap.api.scheduling">Task</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html#stopTask(org.tailormap.api.scheduling.TaskType,java.util.UUID)" class="member-name-link">stopTask(TaskType, UUID)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/TaskAdminController.html" title="class in org.tailormap.api.controller.admin">TaskAdminController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMAttributeType.html#STRING" class="member-name-link">STRING</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMAttributeType.html" title="enum class in org.tailormap.api.persistence.json">TMAttributeType</a></dt>
 <dd>&nbsp;</dd>
@@ -5395,15 +5522,25 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/security/TailormapUserDetailsService.html#%3Cinit%3E(org.tailormap.api.repository.UserRepository)" class="member-name-link">TailormapUserDetailsService(UserRepository)</a> - Constructor for class org.tailormap.api.security.<a href="org/tailormap/api/security/TailormapUserDetailsService.html" title="class in org.tailormap.api.security">TailormapUserDetailsService</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/Task.html" class="type-name-link" title="interface in org.tailormap.api.scheduling">Task</a> - Interface in <a href="org/tailormap/api/scheduling/package-summary.html">org.tailormap.api.scheduling</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html" class="type-name-link" title="class in org.tailormap.api.controller.admin">TaskAdminController</a> - Class in <a href="org/tailormap/api/controller/admin/package-summary.html">org.tailormap.api.controller.admin</a></dt>
 <dd>
 <div class="block">Admin controller for controlling the task scheduler.</div>
 </dd>
-<dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html#%3Cinit%3E(org.quartz.Scheduler)" class="member-name-link">TaskAdminController(Scheduler)</a> - Constructor for class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/TaskAdminController.html" title="class in org.tailormap.api.controller.admin">TaskAdminController</a></dt>
+<dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html#%3Cinit%3E(org.quartz.Scheduler,org.tailormap.api.scheduling.TaskManagerService)" class="member-name-link">TaskAdminController(Scheduler, TaskManagerService)</a> - Constructor for class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/TaskAdminController.html" title="class in org.tailormap.api.controller.admin">TaskAdminController</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/scheduling/TaskCreator.html" class="type-name-link" title="class in org.tailormap.api.scheduling">TaskCreator</a> - Class in <a href="org/tailormap/api/scheduling/package-summary.html">org.tailormap.api.scheduling</a></dt>
+<dt><a href="org/tailormap/api/scheduling/TaskManagerService.html" class="type-name-link" title="class in org.tailormap.api.scheduling">TaskManagerService</a> - Class in <a href="org/tailormap/api/scheduling/package-summary.html">org.tailormap.api.scheduling</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/scheduling/TaskCreator.html#%3Cinit%3E(org.quartz.Scheduler)" class="member-name-link">TaskCreator(Scheduler)</a> - Constructor for class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskCreator.html" title="class in org.tailormap.api.scheduling">TaskCreator</a></dt>
+<dt><a href="org/tailormap/api/scheduling/TaskManagerService.html#%3Cinit%3E(org.quartz.Scheduler)" class="member-name-link">TaskManagerService(Scheduler)</a> - Constructor for class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskManagerService.html" title="class in org.tailormap.api.scheduling">TaskManagerService</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html" class="type-name-link" title="class in org.tailormap.api.admin.model">TaskSchedule</a> - Class in <a href="org/tailormap/api/admin/model/package-summary.html">org.tailormap.api.admin.model</a></dt>
+<dd>
+<div class="block">TaskSchedule</div>
+</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#%3Cinit%3E()" class="member-name-link">TaskSchedule()</a> - Constructor for class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/TaskType.html" class="type-name-link" title="enum class in org.tailormap.api.scheduling">TaskType</a> - Enum Class in <a href="org/tailormap/api/scheduling/package-summary.html">org.tailormap.api.scheduling</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/ResponseTeeingHTTPClient.TeeHTTPResponseWrapper.html#%3Cinit%3E(org.geotools.http.HTTPResponse)" class="member-name-link">TeeHTTPResponseWrapper(HTTPResponse)</a> - Constructor for class org.tailormap.api.geotools.<a href="org/tailormap/api/geotools/ResponseTeeingHTTPClient.TeeHTTPResponseWrapper.html" title="class in org.tailormap.api.geotools">ResponseTeeingHTTPClient.TeeHTTPResponseWrapper</a></dt>
 <dd>&nbsp;</dd>
@@ -5642,6 +5779,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/ServerSentEvent.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/ServerSentEvent.html" title="class in org.tailormap.api.admin.model">ServerSentEvent</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AdminAdditionalProperty.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AdminAdditionalProperty.html" title="class in org.tailormap.api.persistence.json">AdminAdditionalProperty</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AppContent.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AppContent.html" title="class in org.tailormap.api.persistence.json">AppContent</a></dt>
@@ -5750,6 +5889,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureSource.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/TaskType.html#toString()" class="member-name-link">toString()</a> - Method in enum class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskType.html" title="enum class in org.tailormap.api.scheduling">TaskType</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AdditionalProperty.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AdditionalProperty.html" title="class in org.tailormap.api.viewer.model">AdditionalProperty</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AppLayer.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></dt>
@@ -5841,6 +5982,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ColumnMetadata.html#type(org.tailormap.api.persistence.json.TMAttributeType)" class="member-name-link">type(TMAttributeType)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ColumnMetadata.html" title="class in org.tailormap.api.viewer.model">ColumnMetadata</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/Task.html#TYPE_KEY" class="member-name-link">TYPE_KEY</a> - Static variable in interface org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/Task.html" title="interface in org.tailormap.api.scheduling">Task</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:U">U</h2>
 <dl class="index">
@@ -5880,6 +6023,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMServiceCapsCapabilities.html#updateSequence(java.lang.String)" class="member-name-link">updateSequence(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMServiceCapsCapabilities.html" title="class in org.tailormap.api.persistence.json">TMServiceCapsCapabilities</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/TaskManagerService.html#updateTask(org.quartz.JobKey,org.tailormap.api.scheduling.TMJobDataMap)" class="member-name-link">updateTask(JobKey, TMJobDataMap)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskManagerService.html" title="class in org.tailormap.api.scheduling">TaskManagerService</a></dt>
+<dd>
+<div class="block">Reschedule a task using updated job data.</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/Upload.html" class="type-name-link" title="class in org.tailormap.api.persistence">Upload</a> - Class in <a href="org/tailormap/api/persistence/package-summary.html">org.tailormap.api.persistence</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/Upload.html#%3Cinit%3E()" class="member-name-link">Upload()</a> - Constructor for class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Upload.html" title="class in org.tailormap.api.persistence">Upload</a></dt>
@@ -5929,6 +6076,10 @@ loadScripts(document, 'script');</script>
 <div class="block">Information about authentication status and user information</div>
 </dd>
 <dt><a href="org/tailormap/api/viewer/model/UserResponse.html#%3Cinit%3E()" class="member-name-link">UserResponse()</a> - Constructor for class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/UserResponse.html" title="class in org.tailormap.api.viewer.model">UserResponse</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/TaskSchedule.html#uuid(java.util.UUID)" class="member-name-link">uuid(UUID)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskSchedule.html" title="class in org.tailormap.api.admin.model">TaskSchedule</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/Task.html#UUID_KEY" class="member-name-link">UUID_KEY</a> - Static variable in interface org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/Task.html" title="interface in org.tailormap.api.scheduling">Task</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/util/Constants.html#UUID_REGEX" class="member-name-link">UUID_REGEX</a> - Static variable in interface org.tailormap.api.util.<a href="org/tailormap/api/util/Constants.html" title="interface in org.tailormap.api.util">Constants</a></dt>
 <dd>&nbsp;</dd>
@@ -6011,6 +6162,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the enum constant of this class with the specified name.</div>
 </dd>
+<dt><a href="org/tailormap/api/scheduling/TaskType.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskType.html" title="enum class in org.tailormap.api.scheduling">TaskType</a></dt>
+<dd>
+<div class="block">Returns the enum constant of this class with the specified name.</div>
+</dd>
 <dt><a href="org/tailormap/api/viewer/model/Service.ServerTypeEnum.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Service.ServerTypeEnum.html" title="enum class in org.tailormap.api.viewer.model">Service.ServerTypeEnum</a></dt>
 <dd>
 <div class="block">Returns the enum constant of this class with the specified name.</div>
@@ -6080,6 +6235,11 @@ the order they are declared.</div>
 the order they are declared.</div>
 </dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureSource.Protocol.html#values()" class="member-name-link">values()</a> - Static method in enum class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureSource.Protocol.html" title="enum class in org.tailormap.api.persistence">TMFeatureSource.Protocol</a></dt>
+<dd>
+<div class="block">Returns an array containing the constants of this enum class, in
+the order they are declared.</div>
+</dd>
+<dt><a href="org/tailormap/api/scheduling/TaskType.html#values()" class="member-name-link">values()</a> - Static method in enum class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskType.html" title="enum class in org.tailormap.api.scheduling">TaskType</a></dt>
 <dd>
 <div class="block">Returns an array containing the constants of this enum class, in
 the order they are declared.</div>
