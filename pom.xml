@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
+        <version>3.3.5</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -123,7 +123,6 @@ SPDX-License-Identifier: MIT
         <hibernate.version>6.5.3.Final</hibernate.version>
         <jackson-bom.version>2.17.2</jackson-bom.version>
         <junit-jupiter.version>5.11.3</junit-jupiter.version>
-        <!--        <logback.version>1.5.7</logback.version>-->
         <micrometer.version>1.13.6</micrometer.version>
         <mssql-jdbc.version>12.8.1.jre11</mssql-jdbc.version>
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
@@ -131,7 +130,7 @@ SPDX-License-Identifier: MIT
         <postgresql.version>42.7.4</postgresql.version>
         <spring-data-bom.version>2024.0.5</spring-data-bom.version>
         <spring-hateoas.version>2.3.3</spring-hateoas.version>
-        <spring-security.version>6.3.3</spring-security.version>
+        <!-- <spring-security.version>6.3.4</spring-security.version> -->
         <webjars-locator-core.version>0.59</webjars-locator-core.version>
         <xmlunit2.version>2.10.0</xmlunit2.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
