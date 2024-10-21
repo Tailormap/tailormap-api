@@ -24,6 +24,7 @@ import org.tailormap.api.scheduling.IndexTask;
 import org.tailormap.api.scheduling.TMJobDataMap;
 import org.tailormap.api.scheduling.Task;
 import org.tailormap.api.scheduling.TaskManagerService;
+import org.tailormap.api.scheduling.TaskType;
 
 /**
  * Event handler for Solr indexes; when a {@code SearchIndex} is created, updated or deleted a
@@ -54,7 +55,7 @@ public class SearchIndexEventHandler {
       throws SchedulerException {
     if (null != searchIndex.getSchedule()) {
       JobKey jobKey =
-          taskManagerService.getJobKey(IndexTask.TYPE, searchIndex.getSchedule().getUuid());
+          taskManagerService.getJobKey(TaskType.INDEX, searchIndex.getSchedule().getUuid());
 
       if (null != jobKey && scheduler.checkExists(jobKey)) {
         logger.info(
@@ -83,14 +84,14 @@ public class SearchIndexEventHandler {
     //   a task exists that was associated with the search index before;
     //   this case can already be handled requesting a delete of the scheduled task instead
     if (null != searchIndex.getSchedule()) {
-      if (searchIndex.getSchedule().getUuid() == null) {
+      if (null == searchIndex.getSchedule().getUuid()) {
         // no task exists yet, create one
         logger.info("Creating new task associated with search index: {}", searchIndex.getName());
         TMJobDataMap jobDataMap =
             new TMJobDataMap(
                 Map.of(
                     Task.TYPE_KEY,
-                    IndexTask.TYPE,
+                    TaskType.INDEX,
                     Task.DESCRIPTION_KEY,
                     searchIndex.getSchedule().getDescription(),
                     IndexTask.INDEX_KEY,
@@ -101,14 +102,14 @@ public class SearchIndexEventHandler {
                 IndexTask.class, jobDataMap, searchIndex.getSchedule().getCronExpression());
         searchIndex.getSchedule().setUuid(uuid);
       } else {
-        // task exists, update it
+        // UUID given, task should exist; update it
         logger.info(
             "Updating task {} associated with search index: {}",
             searchIndex.getSchedule().getUuid(),
             searchIndex.getName());
 
         JobKey jobKey =
-            taskManagerService.getJobKey(IndexTask.TYPE, searchIndex.getSchedule().getUuid());
+            taskManagerService.getJobKey(TaskType.INDEX, searchIndex.getSchedule().getUuid());
         if (null != jobKey && scheduler.checkExists(jobKey)) {
           // the only things that may have changed are the cron expression, priority and description
           JobDataMap jobDataMap = scheduler.getJobDetail(jobKey).getJobDataMap();

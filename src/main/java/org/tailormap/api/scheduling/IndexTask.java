@@ -33,7 +33,6 @@ import org.tailormap.api.solr.SolrService;
 @DisallowConcurrentExecution
 @PersistJobDataAfterExecution
 public class IndexTask extends QuartzJobBean implements Task {
-  public static final String TYPE = "index";
   public static final String INDEX_KEY = "indexId";
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -99,15 +98,19 @@ public class IndexTask extends QuartzJobBean implements Task {
     } catch (UnsupportedOperationException | IOException | SolrServerException | SolrException e) {
       logger.error("Error indexing", e);
       searchIndex.setStatus(SearchIndex.Status.ERROR).setComment(e.getMessage());
+      persistedJobData.put("lastExecutionFinished", null);
+      persistedJobData.put(
+          "lastResult", "Index task failed with " + e.getMessage() + ". Check logs for details");
       searchIndexRepository.save(searchIndex);
+      context.setResult("Error indexing. Check logs for details.");
       throw new JobExecutionException("Error indexing", e);
     }
   }
 
   // <editor-fold desc="Getters and Setters">
   @Override
-  public String getType() {
-    return TYPE;
+  public TaskType getType() {
+    return TaskType.INDEX;
   }
 
   public long getIndexId() {

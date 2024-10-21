@@ -76,11 +76,13 @@ import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.repository.UploadRepository;
 import org.tailormap.api.repository.UserRepository;
+import org.tailormap.api.scheduling.FailingPocTask;
 import org.tailormap.api.scheduling.IndexTask;
 import org.tailormap.api.scheduling.PocTask;
 import org.tailormap.api.scheduling.TMJobDataMap;
 import org.tailormap.api.scheduling.Task;
 import org.tailormap.api.scheduling.TaskManagerService;
+import org.tailormap.api.scheduling.TaskType;
 import org.tailormap.api.security.InternalAdminAuthentication;
 import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.solr.SolrService;
@@ -1531,9 +1533,9 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
               new TMJobDataMap(
                   Map.of(
                       Task.TYPE_KEY,
-                      PocTask.TYPE,
+                      TaskType.POC.getValue(),
                       "foo",
-                      "bar",
+                      "foobar",
                       Task.DESCRIPTION_KEY,
                       "POC task that runs every minute")),
               /* run every 15 minutes */ "0 0/15 * 1/1 * ? *"));
@@ -1544,13 +1546,27 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
               new TMJobDataMap(
                   Map.of(
                       Task.TYPE_KEY,
-                      PocTask.TYPE,
+                      TaskType.POC.getValue(),
                       "foo",
                       "bar",
                       Task.DESCRIPTION_KEY,
                       "POC task that runs every hour",
                       Task.PRIORITY_KEY,
                       10)),
+              /* run every hour */ "0 0 0/1 1/1 * ? *"));
+
+      logger.info(
+          "Created hourly failing task with key: {}",
+          taskManagerService.createTask(
+              FailingPocTask.class,
+              new TMJobDataMap(
+                  Map.of(
+                      Task.TYPE_KEY,
+                      TaskType.FAILINGPOC.getValue(),
+                      Task.DESCRIPTION_KEY,
+                      "POC task that fails every hour with low priority",
+                      Task.PRIORITY_KEY,
+                      100)),
               /* run every hour */ "0 0 0/1 1/1 * ? *"));
     } catch (SchedulerException e) {
       logger.error("Error creating scheduled poc tasks", e);
@@ -1565,8 +1581,8 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                   new TaskSchedule()
                       /* hour */
                       .cronExpression("0 0 0/1 1/1 * ? *")
-                      //                      /* 15 min */
-                      //                      .cronExpression("0 0/15 * 1/1 * ? *")
+                      // /* 15 min */
+                      // .cronExpression("0 0/15 * 1/1 * ? *")
                       .description("Update Solr index \"Begroeidterreindeel\" every time"));
               try {
                 final UUID uuid =
@@ -1575,7 +1591,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                         new TMJobDataMap(
                             Map.of(
                                 Task.TYPE_KEY,
-                                IndexTask.TYPE,
+                                TaskType.INDEX,
                                 Task.DESCRIPTION_KEY,
                                 index.getSchedule().getDescription(),
                                 IndexTask.INDEX_KEY,

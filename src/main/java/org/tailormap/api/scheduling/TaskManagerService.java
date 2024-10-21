@@ -133,9 +133,9 @@ public class TaskManagerService {
    * @throws SchedulerException when the scheduler cannot be reached
    */
   @Nullable
-  public JobKey getJobKey(String jobType, UUID uuid) throws SchedulerException {
+  public JobKey getJobKey(TaskType jobType, UUID uuid) throws SchedulerException {
     logger.debug("Finding job key for task {}:{}", jobType, uuid);
-    return scheduler.getJobKeys(GroupMatcher.groupEquals(jobType)).stream()
+    return scheduler.getJobKeys(GroupMatcher.groupEquals(jobType.getValue())).stream()
         .filter(jobkey -> jobkey.getName().equals(uuid.toString()))
         .findFirst()
         .orElse(null);

@@ -24,8 +24,6 @@ public class PocTask extends QuartzJobBean implements Task {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  public static final String TYPE = "poc";
-
   private String foo;
   private String description;
 
@@ -80,8 +78,8 @@ public class PocTask extends QuartzJobBean implements Task {
   }
 
   @Override
-  public String getType() {
-    return TYPE;
+  public TaskType getType() {
+    return TaskType.POC;
   }
 
   @Override

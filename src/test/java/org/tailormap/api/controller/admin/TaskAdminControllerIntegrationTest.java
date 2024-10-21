@@ -36,7 +36,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
-import org.tailormap.api.scheduling.IndexTask;
+import org.tailormap.api.scheduling.TaskType;
 
 @AutoConfigureMockMvc
 @Stopwatch
@@ -65,14 +65,36 @@ class TaskAdminControllerIntegrationTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.tasks").isArray())
-            .andExpect(jsonPath("$.tasks.length()").value(3))
+            .andExpect(jsonPath("$.tasks.length()").value(4))
             // value is either 'poc' or 'index'
             .andExpect(
-                jsonPath("$.tasks[0].type").value(anyOf(is(IndexTask.TYPE), is(TEST_TASK_TYPE))))
+                jsonPath("$.tasks[0].type")
+                    .value(
+                        anyOf(
+                            is(TaskType.INDEX.getValue()),
+                            is(TaskType.POC.getValue()),
+                            is(TaskType.FAILINGPOC.getValue()))))
             .andExpect(
-                jsonPath("$.tasks[1].type").value(anyOf(is(IndexTask.TYPE), is(TEST_TASK_TYPE))))
+                jsonPath("$.tasks[1].type")
+                    .value(
+                        anyOf(
+                            is(TaskType.INDEX.getValue()),
+                            is(TaskType.POC.getValue()),
+                            is(TaskType.FAILINGPOC.getValue()))))
             .andExpect(
-                jsonPath("$.tasks[2].type").value(anyOf(is(IndexTask.TYPE), is(TEST_TASK_TYPE))))
+                jsonPath("$.tasks[2].type")
+                    .value(
+                        anyOf(
+                            is(TaskType.INDEX.getValue()),
+                            is(TaskType.POC.getValue()),
+                            is(TaskType.FAILINGPOC.getValue()))))
+            .andExpect(
+                jsonPath("$.tasks[3].type")
+                    .value(
+                        anyOf(
+                            is(TaskType.INDEX.getValue()),
+                            is(TaskType.POC.getValue()),
+                            is(TaskType.FAILINGPOC.getValue()))))
             .andReturn();
     final String body = result.getResponse().getContentAsString();
     String validUUID = JsonPath.read(body, "$.tasks[0].uuid");
@@ -82,6 +104,9 @@ class TaskAdminControllerIntegrationTest {
     assertEquals(UUID.fromString(validUUID).toString(), validUUID);
 
     validUUID = JsonPath.read(body, "$.tasks[2].uuid");
+    assertEquals(UUID.fromString(validUUID).toString(), validUUID);
+
+    validUUID = JsonPath.read(body, "$.tasks[3].uuid");
     assertEquals(UUID.fromString(validUUID).toString(), validUUID);
   }
 
@@ -310,5 +335,40 @@ class TaskAdminControllerIntegrationTest {
             delete(adminBasePath + "/tasks/{type}/{uuid}", TEST_TASK_TYPE, deleteUUID)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {Group.ADMIN})
+  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void testFailingTaskDetails() throws Exception {
+    MvcResult result =
+        mockMvc
+            .perform(
+                get(adminBasePath + "/tasks")
+                    .queryParam(TYPE_KEY, TaskType.FAILINGPOC.getValue())
+                    .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.tasks").isArray())
+            .andExpect(jsonPath("$.tasks.length()").value(1))
+            .andExpect(jsonPath("$.tasks[0].type").value(TaskType.FAILINGPOC.getValue()))
+            .andReturn();
+
+    final String body = result.getResponse().getContentAsString();
+    String validUUID = JsonPath.read(body, "$.tasks[0].uuid");
+    assertEquals(UUID.fromString(validUUID).toString(), validUUID);
+
+    mockMvc
+        .perform(
+            get(adminBasePath + "/tasks/{type}/{uuid}", TaskType.FAILINGPOC, validUUID)
+                .accept(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.uuid").value(validUUID))
+        .andExpect(jsonPath("$.type").value(TaskType.FAILINGPOC.getValue()));
   }
 }

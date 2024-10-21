@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.scheduling.Task;
 import org.tailormap.api.scheduling.TaskManagerService;
+import org.tailormap.api.scheduling.TaskType;
 
 /**
  * Admin controller for controlling the task scheduler. Not to be used to create new tasks, adding
@@ -190,7 +191,7 @@ public class TaskAdminController {
                             "message":"TODO something is happening"
                           }
                           """)))
-  public ResponseEntity<Object> details(@PathVariable String type, @PathVariable UUID uuid)
+  public ResponseEntity<Object> details(@PathVariable TaskType type, @PathVariable UUID uuid)
       throws ResponseStatusException {
     logger.debug("Getting task details for {}:{}", type, uuid);
 
@@ -272,7 +273,7 @@ public class TaskAdminController {
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(example = "{\"message\":\"Task starting accepted\",\"code\":202}")))
-  public ResponseEntity<Object> startTask(@PathVariable String type, @PathVariable UUID uuid)
+  public ResponseEntity<Object> startTask(@PathVariable TaskType type, @PathVariable UUID uuid)
       throws ResponseStatusException {
     logger.debug("Starting task {}:{}", type, uuid);
 
@@ -311,7 +312,7 @@ public class TaskAdminController {
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(example = "{\"message\":\"Task stopping accepted\"}")))
-  public ResponseEntity<Object> stopTask(@PathVariable String type, @PathVariable UUID uuid)
+  public ResponseEntity<Object> stopTask(@PathVariable TaskType type, @PathVariable UUID uuid)
       throws ResponseStatusException {
     logger.debug("Stopping task {}:{}", type, uuid);
 
@@ -345,7 +346,7 @@ public class TaskAdminController {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(example = "{\"message\":\"Task not found\"}")))
   @ApiResponse(responseCode = "204", description = "Task is deleted")
-  public ResponseEntity<Object> delete(@PathVariable String type, @PathVariable UUID uuid)
+  public ResponseEntity<Object> delete(@PathVariable TaskType type, @PathVariable UUID uuid)
       throws ResponseStatusException {
 
     try {

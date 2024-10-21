@@ -21,7 +21,7 @@ public class TMJobDataMap extends HashMap<String, Object> {
    *     {@code description}
    */
   public TMJobDataMap(Map<String, Object> map) {
-    this((String) map.get(Task.TYPE_KEY), (String) map.get(Task.DESCRIPTION_KEY));
+    this(String.valueOf(map.get(Task.TYPE_KEY)), (String) map.get(Task.DESCRIPTION_KEY));
     this.putAll(map);
     // validate the priority
     this.setPriority((Integer) map.getOrDefault(Task.PRIORITY_KEY, Trigger.DEFAULT_PRIORITY));
@@ -66,6 +66,7 @@ public class TMJobDataMap extends HashMap<String, Object> {
     super();
     // Check if the map contains the required parameters
     Assert.notNull(type, "type must not be null");
+    Assert.doesNotContain(type, "null", "type must not be null");
     Assert.notNull(description, "description must not be null");
     Assert.notNull(state, "state must not be null");
     super.put(Task.TYPE_KEY, type);

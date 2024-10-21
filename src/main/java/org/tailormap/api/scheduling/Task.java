@@ -15,14 +15,12 @@ public interface Task {
   String STATE_KEY = "state";
 
   /**
-   * Get the type of the task. Implement this method to return a public static final String that is
-   * a key for the type of task. This must be a read-only property
+   * Get the type of the task. Implement this method to return the key for the type of task. This
+   * must be a read-only property.
    *
-   * @see org.tailormap.api.scheduling.PocTask#TYPE
-   * @see org.tailormap.api.scheduling.IndexTask#TYPE
    * @return the type of task
    */
-  String getType();
+  TaskType getType();
 
   /**
    * Get the description of the task.
