@@ -37,7 +37,8 @@ jobs:
         if: |
           (
             contains(steps.metadata.outputs.dependency-names, 'maven-') ||
-            contains(steps.metadata.outputs.dependency-names, 'action')
+            contains(steps.metadata.outputs.dependency-names, 'action') ||
+            contains(steps.metadata.outputs.dependency-names, 'error_prone_core')
           ) && (
             steps.metadata.outputs.update-type == 'version-update:semver-patch' || 
             steps.metadata.outputs.update-type == 'version-update:semver-minor'
