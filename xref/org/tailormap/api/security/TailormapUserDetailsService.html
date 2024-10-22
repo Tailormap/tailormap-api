@@ -42,7 +42,7 @@
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>      }
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>      <em class="jxr_comment">// This will usually log a {bcrypt}... password unless it was explicitly changed to {noop}...</em>
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>      <em class="jxr_comment">// So no plaintext passwords are logged</em>
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>      logger.trace(<span class="jxr_string">"Found user: "</span> + user.getUsername() + <span class="jxr_string">", password "</span> + user.getPassword());
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      logger.trace(<span class="jxr_string">"Found user: {}, password {}"</span>, user.getUsername(), user.getPassword());
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="TailormapUserDetails" href="../../../../org/tailormap/api/security/TailormapUserDetails.html#TailormapUserDetails">TailormapUserDetails</a>(user);
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>    }
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  }
