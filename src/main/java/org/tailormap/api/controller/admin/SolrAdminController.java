@@ -126,7 +126,7 @@ public class SolrAdminController {
                   @Schema(
                       example = "{\"message\":\"Layer does not have feature type\",\"code\":404}")))
   @ApiResponse(
-      responseCode = "404",
+      responseCode = "400",
       description = "Indexing WFS feature types is not supported",
       content =
           @Content(
@@ -173,7 +173,9 @@ public class SolrAdminController {
             || searchIndex.getStatus() == SearchIndex.Status.INITIAL);
     try (SolrClient solrClient = solrService.getSolrClientForIndexing();
         SolrHelper solrHelper = new SolrHelper(solrClient)) {
-      solrHelper.addFeatureTypeIndex(searchIndex, indexingFT, featureSourceFactoryHelper);
+      searchIndex =
+          solrHelper.addFeatureTypeIndex(
+              searchIndex, indexingFT, featureSourceFactoryHelper, searchIndexRepository);
       searchIndexRepository.save(searchIndex);
     } catch (UnsupportedOperationException | IOException | SolrServerException | SolrException e) {
       logger.error("Error indexing", e);

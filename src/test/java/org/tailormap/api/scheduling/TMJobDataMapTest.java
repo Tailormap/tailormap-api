@@ -17,15 +17,17 @@ class TMJobDataMapTest {
   /** Test the creation using a map with missing required parameters. */
   @Test
   void testInvalidMap() {
-    assertThrows(IllegalArgumentException.class, () -> new TMJobDataMap(Map.of("type", "test")));
+    assertThrows(
+        IllegalArgumentException.class, () -> new TMJobDataMap(Map.of(Task.TYPE_KEY, "test")));
   }
 
   /** Test the creation using a map with all required parameters. */
   @Test
   void testMap() {
-    TMJobDataMap jobDataMap = new TMJobDataMap(Map.of("type", "test", "description", "test"));
+    TMJobDataMap jobDataMap =
+        new TMJobDataMap(Map.of(Task.TYPE_KEY, "test", Task.DESCRIPTION_KEY, "test"));
     assertNotNull(jobDataMap);
-    assertEquals("NONE", jobDataMap.getStatus().name());
+    assertEquals("NONE", jobDataMap.getState().name());
     assertEquals(5, jobDataMap.getPriority());
   }
 
@@ -33,9 +35,10 @@ class TMJobDataMapTest {
   @Test
   void testMapWithPriority() {
     TMJobDataMap jobDataMap =
-        new TMJobDataMap(Map.of("type", "test", "description", "test", "priority", -1));
+        new TMJobDataMap(
+            Map.of(Task.TYPE_KEY, "test", Task.DESCRIPTION_KEY, "test", Task.PRIORITY_KEY, -1));
     assertNotNull(jobDataMap);
-    assertEquals("NONE", jobDataMap.getStatus().name());
+    assertEquals("NONE", jobDataMap.getState().name());
     assertEquals(0, jobDataMap.getPriority());
   }
 }

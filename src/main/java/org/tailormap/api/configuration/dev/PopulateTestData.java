@@ -9,7 +9,6 @@ import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static org.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
-import static org.tailormap.api.util.Constants.TEST_TASK_TYPE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.invoke.MethodHandles;
@@ -20,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +31,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.annotation.Transactional;
+import org.tailormap.api.admin.model.TaskSchedule;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
 import org.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
@@ -75,9 +76,13 @@ import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.repository.UploadRepository;
 import org.tailormap.api.repository.UserRepository;
+import org.tailormap.api.scheduling.FailingPocTask;
+import org.tailormap.api.scheduling.IndexTask;
 import org.tailormap.api.scheduling.PocTask;
 import org.tailormap.api.scheduling.TMJobDataMap;
-import org.tailormap.api.scheduling.TaskCreator;
+import org.tailormap.api.scheduling.Task;
+import org.tailormap.api.scheduling.TaskManagerService;
+import org.tailormap.api.scheduling.TaskType;
 import org.tailormap.api.security.InternalAdminAuthentication;
 import org.tailormap.api.solr.SolrHelper;
 import org.tailormap.api.solr.SolrService;
@@ -102,7 +107,7 @@ public class PopulateTestData {
   private final GeoServiceRepository geoServiceRepository;
   private final GeoServiceHelper geoServiceHelper;
   private final SolrService solrService;
-  private final TaskCreator taskCreator;
+  private final TaskManagerService taskManagerService;
   private final FeatureSourceRepository featureSourceRepository;
   private final ApplicationRepository applicationRepository;
   private final ConfigurationRepository configurationRepository;
@@ -133,7 +138,7 @@ public class PopulateTestData {
       GeoServiceRepository geoServiceRepository,
       GeoServiceHelper geoServiceHelper,
       SolrService solrService,
-      TaskCreator taskCreator,
+      TaskManagerService taskManagerService,
       FeatureSourceRepository featureSourceRepository,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository,
@@ -147,7 +152,7 @@ public class PopulateTestData {
     this.geoServiceRepository = geoServiceRepository;
     this.geoServiceHelper = geoServiceHelper;
     this.solrService = solrService;
-    this.taskCreator = taskCreator;
+    this.taskManagerService = taskManagerService;
     this.featureSourceRepository = featureSourceRepository;
     this.applicationRepository = applicationRepository;
     this.configurationRepository = configurationRepository;
@@ -1457,8 +1462,12 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                   .setSearchFieldsUsed(List.of("class", "plus_fysiekvoorkomen", "bronhouder"))
                   .setSearchDisplayFieldsUsed(List.of("class", "plus_fysiekvoorkomen"));
           begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
-          solrHelper.addFeatureTypeIndex(
-              begroeidterreindeelIndex, begroeidterreindeelFT, featureSourceFactoryHelper);
+          begroeidterreindeelIndex =
+              solrHelper.addFeatureTypeIndex(
+                  begroeidterreindeelIndex,
+                  begroeidterreindeelFT,
+                  featureSourceFactoryHelper,
+                  searchIndexRepository);
           begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
         }
 
@@ -1476,7 +1485,9 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                           "bronhouder"))
                   .setSearchDisplayFieldsUsed(List.of("function_", "plus_fysiekvoorkomenwegdeel"));
           wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
-          solrHelper.addFeatureTypeIndex(wegdeelIndex, wegdeelFT, featureSourceFactoryHelper);
+          wegdeelIndex =
+              solrHelper.addFeatureTypeIndex(
+                  wegdeelIndex, wegdeelFT, featureSourceFactoryHelper, searchIndexRepository);
           wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
         }
 
@@ -1512,35 +1523,90 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
   }
 
   private void createPocTasks() {
-    logger.info("Creating POC tasks");
+
     try {
+      logger.info("Creating POC tasks");
       logger.info(
           "Created minutely task with key: {}",
-          taskCreator.createTask(
+          taskManagerService.createTask(
               PocTask.class,
               new TMJobDataMap(
                   Map.of(
-                      "type", TEST_TASK_TYPE,
-                      "foo", "bar",
-                      "description", "POC task that runs every minute")),
-              /* run every minute */ "0 0/1 * 1/1 * ? *"));
+                      Task.TYPE_KEY,
+                      TaskType.POC.getValue(),
+                      "foo",
+                      "foobar",
+                      Task.DESCRIPTION_KEY,
+                      "POC task that runs every minute")),
+              /* run every 15 minutes */ "0 0/15 * 1/1 * ? *"));
       logger.info(
           "Created hourly task with key: {}",
-          taskCreator.createTask(
+          taskManagerService.createTask(
               PocTask.class,
               new TMJobDataMap(
                   Map.of(
-                      "type",
-                      TEST_TASK_TYPE,
+                      Task.TYPE_KEY,
+                      TaskType.POC.getValue(),
                       "foo",
                       "bar",
-                      "description",
+                      Task.DESCRIPTION_KEY,
                       "POC task that runs every hour",
-                      "priority",
+                      Task.PRIORITY_KEY,
                       10)),
               /* run every hour */ "0 0 0/1 1/1 * ? *"));
+
+      logger.info(
+          "Created hourly failing task with key: {}",
+          taskManagerService.createTask(
+              FailingPocTask.class,
+              new TMJobDataMap(
+                  Map.of(
+                      Task.TYPE_KEY,
+                      TaskType.FAILINGPOC.getValue(),
+                      Task.DESCRIPTION_KEY,
+                      "POC task that fails every hour with low priority",
+                      Task.PRIORITY_KEY,
+                      100)),
+              /* run every hour */ "0 0 0/1 1/1 * ? *"));
     } catch (SchedulerException e) {
-      logger.error("Error creating scheduling poc tasks", e);
+      logger.error("Error creating scheduled poc tasks", e);
     }
+
+    logger.info("Creating INDEX task");
+    searchIndexRepository
+        .findByName("Begroeidterreindeel")
+        .ifPresent(
+            index -> {
+              index.setSchedule(
+                  new TaskSchedule()
+                      /* hour */
+                      .cronExpression("0 0 0/1 1/1 * ? *")
+                      // /* 15 min */
+                      // .cronExpression("0 0/15 * 1/1 * ? *")
+                      .description("Update Solr index \"Begroeidterreindeel\" every time"));
+              try {
+                final UUID uuid =
+                    taskManagerService.createTask(
+                        IndexTask.class,
+                        new TMJobDataMap(
+                            Map.of(
+                                Task.TYPE_KEY,
+                                TaskType.INDEX,
+                                Task.DESCRIPTION_KEY,
+                                index.getSchedule().getDescription(),
+                                IndexTask.INDEX_KEY,
+                                index.getId().toString(),
+                                Task.PRIORITY_KEY,
+                                10)),
+                        index.getSchedule().getCronExpression());
+
+                index.getSchedule().setUuid(uuid);
+                searchIndexRepository.save(index);
+
+                logger.info("Created task to update Solr index with key: {}", uuid);
+              } catch (SchedulerException e) {
+                logger.error("Error creating scheduled solr index task", e);
+              }
+            });
   }
 }

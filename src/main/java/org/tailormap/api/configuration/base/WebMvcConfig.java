@@ -6,7 +6,6 @@
 
 package org.tailormap.api.configuration.base;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -17,13 +16,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.EncodedResourceResolver;
 import org.tailormap.api.configuration.CaseInsensitiveEnumConverter;
 import org.tailormap.api.persistence.json.GeoServiceProtocol;
+import org.tailormap.api.scheduling.TaskType;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+  private final IndexHtmlTransformer indexHtmlTransformer;
+
   @Value("${spring.web.resources.static-locations:file:/home/spring/static/}")
   private String resourceLocations;
-
-  private final IndexHtmlTransformer indexHtmlTransformer;
 
   public WebMvcConfig(IndexHtmlTransformer indexHtmlTransformer) {
     this.indexHtmlTransformer = indexHtmlTransformer;
@@ -53,10 +53,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
   @Override
   public void addFormatters(@NonNull FormatterRegistry registry) {
-    List.of(GeoServiceProtocol.class)
-        .forEach(
-            enumClass ->
-                registry.addConverter(
-                    String.class, enumClass, new CaseInsensitiveEnumConverter<>(enumClass)));
+    registry.addConverter(
+        String.class,
+        GeoServiceProtocol.class,
+        new CaseInsensitiveEnumConverter<>(GeoServiceProtocol.class));
+
+    registry.addConverter(
+        String.class, TaskType.class, new CaseInsensitiveEnumConverter<>(TaskType.class));
   }
 }
