@@ -347,7 +347,7 @@
 <a class="jxr_linenumber" name="L339" href="#L339">339</a>     }
 <a class="jxr_linenumber" name="L340" href="#L340">340</a> 
 <a class="jxr_linenumber" name="L341" href="#L341">341</a>     logger.info(<span class="jxr_string">"Creating Solr field type {}"</span>, SEARCH_LAYER);
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>     SchemaRequest.AddField schemaRequest =
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>     SchemaRequest.AddField searchLayerSchemaRequest =
 <a class="jxr_linenumber" name="L343" href="#L343">343</a>         <strong class="jxr_keyword">new</strong> SchemaRequest.AddField(
 <a class="jxr_linenumber" name="L344" href="#L344">344</a>             Map.of(
 <a class="jxr_linenumber" name="L345" href="#L345">345</a>                 <span class="jxr_string">"name"</span>, SEARCH_LAYER,
@@ -357,7 +357,7 @@
 <a class="jxr_linenumber" name="L349" href="#L349">349</a>                 <span class="jxr_string">"multiValued"</span>, false,
 <a class="jxr_linenumber" name="L350" href="#L350">350</a>                 <span class="jxr_string">"required"</span>, <strong class="jxr_keyword">true</strong>,
 <a class="jxr_linenumber" name="L351" href="#L351">351</a>                 <span class="jxr_string">"uninvertible"</span>, false));
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>     schemaRequest.process(solrClient);
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>     searchLayerSchemaRequest.process(solrClient);
 <a class="jxr_linenumber" name="L353" href="#L353">353</a> 
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>     logger.info(<span class="jxr_string">"Creating Solr field type {}"</span>, INDEX_GEOM_FIELD);
 <a class="jxr_linenumber" name="L355" href="#L355">355</a>     <em class="jxr_comment">// TODO https://b3partners.atlassian.net/browse/HTM-1091</em>
@@ -372,18 +372,44 @@
 <a class="jxr_linenumber" name="L364" href="#L364">364</a>                 <span class="jxr_string">"stored"</span>, <strong class="jxr_keyword">true</strong>,
 <a class="jxr_linenumber" name="L365" href="#L365">365</a>                 <span class="jxr_string">"multiValued"</span>, false));
 <a class="jxr_linenumber" name="L366" href="#L366">366</a>     schemaRequestGeom.process(solrClient);
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>   }
-<a class="jxr_linenumber" name="L368" href="#L368">368</a> 
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L370" href="#L370">370</a> <em class="jxr_javadoccomment">   * Close the wrapped Solr client.</em>
-<a class="jxr_linenumber" name="L371" href="#L371">371</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L372" href="#L372">372</a> <em class="jxr_javadoccomment">   * @throws IOException if an I/O error occurs</em>
-<a class="jxr_linenumber" name="L373" href="#L373">373</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L374" href="#L374">374</a>   @Override
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> close() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>     <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> != <strong class="jxr_keyword">this</strong>.solrClient) <strong class="jxr_keyword">this</strong>.solrClient.close();
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>   }
-<a class="jxr_linenumber" name="L378" href="#L378">378</a> }
+<a class="jxr_linenumber" name="L367" href="#L367">367</a> 
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>     logger.info(<span class="jxr_string">"Creating Solr field type {}"</span>, INDEX_DISPLAY_FIELD);
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>     SchemaRequest.AddField displayFieldSchemaRequest =
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>         <strong class="jxr_keyword">new</strong> SchemaRequest.AddField(
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>             Map.of(
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>                 <span class="jxr_string">"name"</span>, INDEX_DISPLAY_FIELD,
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>                 <span class="jxr_string">"type"</span>, <span class="jxr_string">"text_general"</span>,
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>                 <span class="jxr_string">"indexed"</span>, false,
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>                 <span class="jxr_string">"stored"</span>, <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>                 <span class="jxr_string">"multiValued"</span>, <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>                 <span class="jxr_string">"required"</span>, <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>                 <span class="jxr_string">"uninvertible"</span>, false));
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>     displayFieldSchemaRequest.process(solrClient);
+<a class="jxr_linenumber" name="L380" href="#L380">380</a> 
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>     logger.info(<span class="jxr_string">"Creating Solr field type {}"</span>, INDEX_SEARCH_FIELD);
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>     SchemaRequest.AddField indexFieldSchemaRequest =
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>         <strong class="jxr_keyword">new</strong> SchemaRequest.AddField(
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>             Map.of(
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>                 <span class="jxr_string">"name"</span>, INDEX_SEARCH_FIELD,
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>                 <span class="jxr_string">"type"</span>, <span class="jxr_string">"text_general"</span>,
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>                 <span class="jxr_string">"indexed"</span>, <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>                 <span class="jxr_string">"stored"</span>, <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>                 <span class="jxr_string">"multiValued"</span>, <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>                 <span class="jxr_string">"required"</span>, <strong class="jxr_keyword">true</strong>,
+<a class="jxr_linenumber" name="L391" href="#L391">391</a>                 <span class="jxr_string">"uninvertible"</span>, false));
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>     indexFieldSchemaRequest.process(solrClient);
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>   }
+<a class="jxr_linenumber" name="L394" href="#L394">394</a> 
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L396" href="#L396">396</a> <em class="jxr_javadoccomment">   * Close the wrapped Solr client.</em>
+<a class="jxr_linenumber" name="L397" href="#L397">397</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L398" href="#L398">398</a> <em class="jxr_javadoccomment">   * @throws IOException if an I/O error occurs</em>
+<a class="jxr_linenumber" name="L399" href="#L399">399</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>   @Override
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> close() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>     <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> != <strong class="jxr_keyword">this</strong>.solrClient) <strong class="jxr_keyword">this</strong>.solrClient.close();
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>   }
+<a class="jxr_linenumber" name="L404" href="#L404">404</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
