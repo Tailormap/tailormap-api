@@ -5,24 +5,11 @@
  */
 package org.tailormap.api.geotools.wfs;
 
-public class SimpleWFSLayerDescription {
-  private final String wfsUrl;
-  private final String[] typeNames;
+import java.util.List;
 
-  public SimpleWFSLayerDescription(String wfsUrl, String[] typeNames) {
-    this.wfsUrl = wfsUrl;
-    this.typeNames = typeNames;
-  }
-
-  public String getWfsUrl() {
-    return wfsUrl;
-  }
-
-  public String[] getTypeNames() {
-    return typeNames;
-  }
+public record SimpleWFSLayerDescription(String wfsUrl, List<String> typeNames) {
 
   public String getFirstTypeName() {
-    return typeNames[0];
+    return typeNames.get(0);
   }
 }

@@ -18,7 +18,6 @@ import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +73,7 @@ public class LayerExportController {
   @GetMapping(path = "capabilities")
   @Timed(value = "export_get_capabilities", description = "Get layer export capabilities")
   public ResponseEntity<Serializable> capabilities(
-      @ModelAttribute GeoService service, @ModelAttribute GeoServiceLayer layer) throws Exception {
+      @ModelAttribute GeoService service, @ModelAttribute GeoServiceLayer layer) {
 
     final LayerExportCapabilities capabilities = new LayerExportCapabilities().exportable(false);
 
@@ -127,8 +126,7 @@ public class LayerExportController {
       @RequestParam(required = false) String sortBy,
       @RequestParam(required = false) String sortOrder,
       @RequestParam(required = false) String crs,
-      HttpServletRequest request)
-      throws Exception {
+      HttpServletRequest request) {
 
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
@@ -282,9 +280,9 @@ public class LayerExportController {
       SimpleWFSLayerDescription wfsLayerDescription =
           getWFSLayerDescriptionForWMS(service, layer.getName());
       if (wfsLayerDescription != null
-          && wfsLayerDescription.getWfsUrl() != null
+          && wfsLayerDescription.wfsUrl() != null
           && wfsLayerDescription.getFirstTypeName() != null) {
-        wfsUrl = wfsLayerDescription.getWfsUrl();
+        wfsUrl = wfsLayerDescription.wfsUrl();
         // Ignores possibly multiple feature types associated with the layer (a group layer for
         // instance)
         typeName = wfsLayerDescription.getFirstTypeName();
@@ -316,12 +314,12 @@ public class LayerExportController {
     }
     SimpleWFSLayerDescription wfsLayerDescription =
         SimpleWFSHelper.describeWMSLayer(wmsService.getUrl(), username, password, layerName);
-    if (wfsLayerDescription != null && wfsLayerDescription.getTypeNames().length > 0) {
+    if (wfsLayerDescription != null && !wfsLayerDescription.typeNames().isEmpty()) {
       logger.info(
           "WMS described layer \"{}\" with typeNames \"{}\" of WFS \"{}\" for WMS \"{}\"",
           layerName,
-          Arrays.toString(wfsLayerDescription.getTypeNames()),
-          wfsLayerDescription.getWfsUrl(),
+          wfsLayerDescription.typeNames(),
+          wfsLayerDescription.wfsUrl(),
           wmsService.getUrl());
 
       return wfsLayerDescription;

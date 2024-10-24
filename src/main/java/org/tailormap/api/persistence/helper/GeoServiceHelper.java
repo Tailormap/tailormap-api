@@ -18,7 +18,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -256,8 +255,7 @@ public class GeoServiceHelper {
                                       .map(Objects::toString)
                                       .orElse(null));
                       try {
-                        @SuppressWarnings("unchecked")
-                        List legendURLs = gtStyle.getLegendURLs();
+                        List<?> legendURLs = gtStyle.getLegendURLs();
                         // GeoTools will replace invalid URLs with null in legendURLs
                         if (legendURLs != null
                             && !legendURLs.isEmpty()
@@ -420,9 +418,9 @@ public class GeoServiceHelper {
                   boolean noWhitespace = !n.contains("(.*?)\\s(.*?)");
                   if (!noWhitespace) {
                     logger.warn(
-                        String.format(
-                            "Not doing WFS DescribeLayer request for layer name with space: \"%s\" of WMS %s",
-                            n, geoService.getUrl()));
+                        "Not doing WFS DescribeLayer request for layer name with space: \"{}\" of WMS {}",
+                        n,
+                        geoService.getUrl());
                   }
                   return noWhitespace;
                 })
@@ -435,17 +433,17 @@ public class GeoServiceHelper {
     for (Map.Entry<String, SimpleWFSLayerDescription> entry : descriptions.entrySet()) {
       String layerName = entry.getKey();
       SimpleWFSLayerDescription description = entry.getValue();
-      if (description.getTypeNames().length == 1
-          && layerName.equals(description.getFirstTypeName())) {
+      if (description.typeNames().size() == 1 && layerName.equals(description.getFirstTypeName())) {
         logger.info(
-            String.format(
-                "layer \"%s\" linked to feature type with same name of WFS %s",
-                layerName, description.getWfsUrl()));
+            "layer \"{}\" linked to feature type with same name of WFS {}",
+            layerName,
+            description.wfsUrl());
       } else {
         logger.info(
-            String.format(
-                "layer \"%s\" -> feature type(s) %s of WFS %s",
-                layerName, Arrays.toString(description.getTypeNames()), description.getWfsUrl()));
+            "layer \"{}\" -> feature type(s) {} of WFS {}",
+            layerName,
+            description.typeNames(),
+            description.wfsUrl());
       }
     }
     return descriptions;
@@ -461,7 +459,7 @@ public class GeoServiceHelper {
     Map<String, SimpleWFSLayerDescription> wfsByLayer = this.findRelatedWFS(geoService);
 
     wfsByLayer.values().stream()
-        .map(SimpleWFSLayerDescription::getWfsUrl)
+        .map(SimpleWFSLayerDescription::wfsUrl)
         .distinct()
         .forEach(
             url -> {

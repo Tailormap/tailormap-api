@@ -339,7 +339,7 @@ public class SolrHelper implements AutoCloseable, Constants {
     }
 
     logger.info("Creating Solr field type {}", SEARCH_LAYER);
-    SchemaRequest.AddField schemaRequest =
+    SchemaRequest.AddField searchLayerSchemaRequest =
         new SchemaRequest.AddField(
             Map.of(
                 "name", SEARCH_LAYER,
@@ -349,7 +349,7 @@ public class SolrHelper implements AutoCloseable, Constants {
                 "multiValued", false,
                 "required", true,
                 "uninvertible", false));
-    schemaRequest.process(solrClient);
+    searchLayerSchemaRequest.process(solrClient);
 
     logger.info("Creating Solr field type {}", INDEX_GEOM_FIELD);
     // TODO https://b3partners.atlassian.net/browse/HTM-1091
@@ -364,6 +364,32 @@ public class SolrHelper implements AutoCloseable, Constants {
                 "stored", true,
                 "multiValued", false));
     schemaRequestGeom.process(solrClient);
+
+    logger.info("Creating Solr field type {}", INDEX_DISPLAY_FIELD);
+    SchemaRequest.AddField displayFieldSchemaRequest =
+        new SchemaRequest.AddField(
+            Map.of(
+                "name", INDEX_DISPLAY_FIELD,
+                "type", "text_general",
+                "indexed", false,
+                "stored", true,
+                "multiValued", true,
+                "required", true,
+                "uninvertible", false));
+    displayFieldSchemaRequest.process(solrClient);
+
+    logger.info("Creating Solr field type {}", INDEX_SEARCH_FIELD);
+    SchemaRequest.AddField indexFieldSchemaRequest =
+        new SchemaRequest.AddField(
+            Map.of(
+                "name", INDEX_SEARCH_FIELD,
+                "type", "text_general",
+                "indexed", true,
+                "stored", true,
+                "multiValued", true,
+                "required", true,
+                "uninvertible", false));
+    indexFieldSchemaRequest.process(solrClient);
   }
 
   /**

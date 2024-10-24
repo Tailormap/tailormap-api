@@ -8,8 +8,8 @@ package org.tailormap.api.security;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.PostConstruct;
-import jakarta.validation.constraints.NotNull;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -72,7 +72,8 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
   }
 
   @Override
-  public @NotNull Iterator<ClientRegistration> iterator() {
+  @Nonnull
+  public Iterator<ClientRegistration> iterator() {
     return registrations.values().iterator();
   }
 
@@ -129,7 +130,7 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
           oidcConfigurationRepository.save(configuration);
         }
       } catch (Exception e) {
-        logger.error("Failed to create OIDC client registration for ID " + id, e);
+        logger.error("Failed to create OIDC client registration for ID {}", id, e);
         configuration.setStatus(e.toString());
         oidcConfigurationRepository.save(configuration);
       }

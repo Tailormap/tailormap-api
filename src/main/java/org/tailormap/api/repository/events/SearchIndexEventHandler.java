@@ -7,11 +7,14 @@ package org.tailormap.api.repository.events;
 
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import org.quartz.JobDataMap;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +88,7 @@ public class SearchIndexEventHandler {
     //   this case can already be handled requesting a delete of the scheduled task instead
     if (null != searchIndex.getSchedule()) {
       if (null == searchIndex.getSchedule().getUuid()) {
+        validateNoTaskExistsForIndex(searchIndex);
         // no task exists yet, create one
         logger.info("Creating new task associated with search index: {}", searchIndex.getName());
         TMJobDataMap jobDataMap =
@@ -120,6 +124,38 @@ public class SearchIndexEventHandler {
           taskManagerService.updateTask(jobKey, new TMJobDataMap(jobDataMap));
         }
       }
+    }
+  }
+
+  /**
+   * Validate that no scheduled task exists for the given index.
+   *
+   * @param searchIndex the search index to validate for scheduling a task
+   * @throws SchedulerException if there is a task that is already associated with the given index
+   */
+  private void validateNoTaskExistsForIndex(SearchIndex searchIndex) throws SchedulerException {
+    Optional<JobDataMap> jobDataMapOptional =
+        scheduler.getJobKeys(GroupMatcher.groupEquals(TaskType.INDEX.getValue())).stream()
+            .map(
+                jobKey -> {
+                  try {
+                    return scheduler.getJobDetail(jobKey).getJobDataMap();
+                  } catch (SchedulerException e) {
+                    logger.error("Error getting task detail", e);
+                    return null;
+                  }
+                })
+            .filter(Objects::nonNull)
+            .filter(
+                jobDataMap ->
+                    searchIndex.getId().equals(jobDataMap.getLongValue(IndexTask.INDEX_KEY)))
+            .findFirst();
+
+    if (jobDataMapOptional.isPresent()) {
+      logger.warn("A scheduled task already exists for search index: {}", searchIndex.getName());
+      throw new SchedulerException(
+          "A scheduled task already exists for search index: '%s'"
+              .formatted(searchIndex.getName()));
     }
   }
 }

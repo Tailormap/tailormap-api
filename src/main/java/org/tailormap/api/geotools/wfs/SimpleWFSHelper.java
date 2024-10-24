@@ -220,7 +220,8 @@ public class SimpleWFSHelper {
         String wfsUrl = getWfsUrl(ld, wms);
 
         if (wfsUrl != null && ld.getQueries() != null && ld.getQueries().length != 0) {
-          descriptions.put(ld.getName(), new SimpleWFSLayerDescription(wfsUrl, ld.getQueries()));
+          descriptions.put(
+              ld.getName(), new SimpleWFSLayerDescription(wfsUrl, List.of(ld.getQueries())));
         }
       }
       return Collections.unmodifiableMap(descriptions);
@@ -232,7 +233,7 @@ public class SimpleWFSHelper {
       if (logger.isTraceEnabled()) {
         logger.trace(msg, e);
       } else {
-        logger.debug(msg + ". Set log level to TRACE for stacktrace.");
+        logger.debug("{}. Set log level to TRACE for stacktrace.", msg);
       }
     }
 
