@@ -144,7 +144,7 @@ SPDX-License-Identifier: MIT
         <maven-install-plugin.version>3.1.0</maven-install-plugin.version>
         <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
         <!-- end version overrides -->
-        <maven-pmd-plugin.version>3.25.0</maven-pmd-plugin.version>
+        <maven-pmd-plugin.version>3.26.0</maven-pmd-plugin.version>
         <versions-maven-plugin.version>2.17.1</versions-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <dependency-check-maven.version>11.0.0</dependency-check-maven.version>
@@ -530,6 +530,7 @@ SPDX-License-Identifier: MIT
             <url>https://repo.b3p.nl/nexus/repository/public/</url>
         </repository>
     </repositories>
+    <pluginRepositories />
     <build>
         <defaultGoal>install</defaultGoal>
         <!-- no version number on jar makes building docker image easier -->
@@ -1080,6 +1081,7 @@ SPDX-License-Identifier: MIT
                 </configuration>
                 <executions>
                     <execution>
+                        <id>default-cli</id>
                         <goals>
                             <goal>check</goal>
                         </goals>
