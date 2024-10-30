@@ -1066,8 +1066,7 @@ SPDX-License-Identifier: MIT
                 <configuration>
                     <skip>${skipQA}</skip>
                     <rulesets>
-                        <ruleset>${project.basedir}/build/qa/pmd-ruleset.xml</ruleset>
-                        <ruleset>${project.basedir}/build/qa/pmd-junit-ruleset.xml</ruleset>
+                        <ruleset>${project.basedir}/build/qa/PMD-ruleset_for_TM.xml</ruleset>
                     </rulesets>
                     <failurePriority>3</failurePriority>
                     <minimumPriority>3</minimumPriority>
@@ -1344,8 +1343,7 @@ SPDX-License-Identifier: MIT
                 <version>${maven-pmd-plugin.version}</version>
                 <configuration>
                     <rulesets>
-                        <ruleset>${project.basedir}/build/qa/pmd-ruleset.xml</ruleset>
-                        <ruleset>${project.basedir}/build/qa/pmd-junit-ruleset.xml</ruleset>
+                        <ruleset>${project.basedir}/build/qa/PMD-ruleset_for_TM.xml</ruleset>
                     </rulesets>
                     <linkXRef>true</linkXRef>
                     <includeTests>false</includeTests>

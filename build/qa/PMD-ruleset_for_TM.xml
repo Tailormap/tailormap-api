@@ -8,7 +8,9 @@ SPDX-License-Identifier: MIT
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          name="Maven PMD Plugin Ruleset"
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.net/ruleset_2_0_0.xsd">
-    <description>Maven PMD Plugin Ruleset for Tailormap. See https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html</description>
+    <description>Maven PMD Plugin Ruleset for Tailormap. See
+        https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html
+    </description>
     <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP"/>
     <rule ref="category/java/bestpractices.xml/CheckResultSet"/>
     <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/>
@@ -118,7 +120,11 @@ SPDX-License-Identifier: MIT
             </property>
         </properties>
     </rule>
-    <rule ref="category/java/bestpractices.xml/UnitTestShouldIncludeAssert"/>
+    <rule ref="category/java/bestpractices.xml/UnitTestShouldIncludeAssert">
+        <properties>
+            <property name="extraAssertMethodNames" value="andExpect"/>
+        </properties>
+    </rule>
     <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion"/>
     <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate"/>
     <rule ref="category/java/errorprone.xml/UnnecessaryBooleanAssertion"/>
