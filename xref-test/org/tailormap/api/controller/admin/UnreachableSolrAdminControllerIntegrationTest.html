@@ -67,47 +67,44 @@
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>        username = <span class="jxr_string">"tm-admin"</span>,
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>        authorities = {Group.ADMIN})
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>    @Order(1)
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>    @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>    <strong class="jxr_keyword">void</strong> failingPingTest() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      mockMvc
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>          .perform(get(adminBasePath + <span class="jxr_string">"/index/ping"</span>).accept(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>          .andExpect(status().isInternalServerError())
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>          .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(500))
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          .andExpect(jsonPath(<span class="jxr_string">"$.message"</span>).value(startsWith(<span class="jxr_string">"Server refused connection"</span>)));
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>    }
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>    @Test
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>    @WithMockUser(
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>        username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>        authorities = {Group.ADMIN})
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>    @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>    @Order(2)
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>    <strong class="jxr_keyword">void</strong> failClearingIndex() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>      mockMvc
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>          .perform(delete(adminBasePath + <span class="jxr_string">"/index/1"</span>).accept(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>          .andExpect(status().isInternalServerError())
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>          .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(500))
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>          .andExpect(jsonPath(<span class="jxr_string">"$.message"</span>).value(startsWith(<span class="jxr_string">"Server refused connection"</span>)));
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>    }
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>  
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>    @Test
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>    @WithMockUser(
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>        username = <span class="jxr_string">"tm-admin"</span>,
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>        authorities = {Group.ADMIN})
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>    @SuppressWarnings(<span class="jxr_string">"PMD.JUnitTestsShouldIncludeAssert"</span>)
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>    @Order(3)
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>    <strong class="jxr_keyword">void</strong> failRecreatingIndex() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>      mockMvc
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>          .perform(put(adminBasePath + <span class="jxr_string">"/index/1"</span>).accept(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>          .andDo(print())
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>          .andExpect(status().isInternalServerError())
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>          .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(500))
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>         .andExpect(jsonPath(<span class="jxr_string">"$.message"</span>).value(containsStringIgnoringCase(<span class="jxr_string">"connection refused"</span>)));
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>   }
-<a class="jxr_linenumber" name="L102" href="#L102">102</a> }
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>    <strong class="jxr_keyword">void</strong> failingPingTest() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>      mockMvc
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          .perform(get(adminBasePath + <span class="jxr_string">"/index/ping"</span>).accept(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          .andExpect(status().isInternalServerError())
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(500))
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          .andExpect(jsonPath(<span class="jxr_string">"$.message"</span>).value(startsWith(<span class="jxr_string">"Server refused connection"</span>)));
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>    }
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>    @Test
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>    @WithMockUser(
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>        username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>        authorities = {Group.ADMIN})
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>    @Order(2)
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>    <strong class="jxr_keyword">void</strong> failClearingIndex() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      mockMvc
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>          .perform(delete(adminBasePath + <span class="jxr_string">"/index/1"</span>).accept(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>          .andExpect(status().isInternalServerError())
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>          .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(500))
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>          .andExpect(jsonPath(<span class="jxr_string">"$.message"</span>).value(startsWith(<span class="jxr_string">"Server refused connection"</span>)));
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>    }
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>    @Test
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>    @WithMockUser(
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>        username = <span class="jxr_string">"tm-admin"</span>,
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>        authorities = {Group.ADMIN})
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>    @Order(3)
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>    <strong class="jxr_keyword">void</strong> failRecreatingIndex() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      mockMvc
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>          .perform(put(adminBasePath + <span class="jxr_string">"/index/1"</span>).accept(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>          .andDo(print())
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>          .andExpect(status().isInternalServerError())
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>          .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(500))
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>          .andExpect(jsonPath(<span class="jxr_string">"$.message"</span>).value(containsStringIgnoringCase(<span class="jxr_string">"connection refused"</span>)));
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>    }
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
