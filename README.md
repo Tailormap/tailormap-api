@@ -170,17 +170,18 @@ layers).
 
 Some quick points of attention:
 
-* [Google Java Style](https://google.github.io/styleguide/javaguide.html) formatting is enforced. This is the style of the Android Open Source Project 
-  (AOSP) with 2-space indent and different import ordering.  
-  Run the following command to reformat your code (an IntelliJ plugin is also available):
+* [Google Java Style](https://google.github.io/styleguide/javaguide.html) and pom formatting is enforced. 
+  This is the style of the Android Open Source Project (AOSP) with 2-space indent and different import ordering.  
+  Run the following command to reformat your code (an [IntelliJ plugin](https://plugins.jetbrains.com/plugin/8527-google-java-format) is also available) and pom file:
   ```
-  mvn com.spotify.fmt:fmt-maven-plugin:format
+  mvn fmt:format
+  mvn sortpom:sort
   ```
 * PMD checks are enforced. Run `mvn pmd:check` to verify your code.  
 * The ErrorProne compiler is used
 * A current release of Maven is required
 * Java 17
-* JUnit 4 is forbidden
+* JUnit 3 and 4 are forbidden
 * Code is reviewed before merge to the main branch
 * Javadoc must be valid
 
