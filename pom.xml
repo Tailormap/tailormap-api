@@ -215,6 +215,10 @@ SPDX-License-Identifier: MIT
             <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
         </dependency>
@@ -517,11 +521,6 @@ SPDX-License-Identifier: MIT
             <groupId>com.github.romankh3</groupId>
             <artifactId>image-comparison</artifactId>
             <version>4.4.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.jayway.jsonpath</groupId>
-            <artifactId>json-path</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
