@@ -73,7 +73,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_error_when_calling_with_nonexistent_id() throws Exception {
     final String path = apiBasePath + "/app/400/map";
     mockMvc
@@ -85,7 +84,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_not_find_when_called_without_id() throws Exception {
     final String path = apiBasePath + "/app/map";
     mockMvc
@@ -94,7 +92,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_contain_proxy_url() throws Exception {
     String path = apiBasePath + "/app/default/map";
     mockMvc
@@ -145,7 +142,6 @@ class ViewerControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_contain_proxied_secured_service_layer() throws Exception {
     final String path = apiBasePath + "/app/secured/map";
     mockMvc
@@ -157,7 +153,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_not_contain_proxied_secured_service_layer_on_public_app() throws Exception {
     final String path = apiBasePath + "/app/default/map";
     mockMvc
@@ -178,7 +173,6 @@ class ViewerControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_not_contain_proxied_secured_service_layer_on_public_app_even_when_authorized()
       throws Exception {
     final String path = apiBasePath + "/app/default/map";
@@ -197,7 +191,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_contain_description() throws Exception {
     final String path = apiBasePath + "/app/default/map";
     mockMvc
@@ -212,7 +205,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "admin",
       authorities = {"Admin"})
@@ -249,7 +241,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_deny_showing_secured_application() throws Exception {
     final String path = apiBasePath + "/app/secured/map";
     mockMvc
@@ -258,7 +249,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(username = "foo")
   void should_allow_showing_secured_application_authenticated() throws Exception {
     final String path = apiBasePath + "/app/secured/map";
@@ -268,7 +258,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo"})
@@ -280,7 +269,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-baz"})
@@ -292,7 +280,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo"})
@@ -314,7 +301,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo", "test-baz"})
@@ -335,7 +321,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"admin"})
@@ -355,7 +340,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-bar"})
@@ -372,7 +356,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_send_401_when_application_login_required() throws Exception {
     String path = apiBasePath + "/app/secured/map";
     mockMvc

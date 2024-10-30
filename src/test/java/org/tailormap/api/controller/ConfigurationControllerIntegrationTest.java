@@ -31,7 +31,6 @@ class ConfigurationControllerIntegrationTest {
   private String apiBasePath;
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testNotExist() throws Exception {
     mockMvc
         .perform(get(apiBasePath + "/config/doesNotExist"))
@@ -42,7 +41,6 @@ class ConfigurationControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testNotAvailableForViewer() throws Exception {
     mockMvc
         .perform(get(apiBasePath + "/config/default-app"))
@@ -53,7 +51,6 @@ class ConfigurationControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test() throws Exception {
     mockMvc
         .perform(get(apiBasePath + "/config/test"))

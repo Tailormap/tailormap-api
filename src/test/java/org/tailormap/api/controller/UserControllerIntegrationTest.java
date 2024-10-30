@@ -34,7 +34,6 @@ class UserControllerIntegrationTest {
   private String apiBasePath;
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testUnauthenticatedGetUser() throws Exception {
     assertNotNull(userController, "userController can not be `null` if Spring Boot works");
 
@@ -50,7 +49,6 @@ class UserControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN, "test-bar", "test-baz"})

@@ -43,7 +43,6 @@ class SearchControllerIntegrationTest implements Constants {
   @Autowired private MockMvc mockMvc;
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void searchPostgis() throws Exception {
     final String url = apiBasePath + layerBegroeidTerreindeelPostgis + "/search";
 
@@ -70,7 +69,6 @@ class SearchControllerIntegrationTest implements Constants {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void searchPostgisGroen() throws Exception {
     final String url = apiBasePath + layerBegroeidTerreindeelPostgis + "/search";
 
@@ -98,7 +96,6 @@ class SearchControllerIntegrationTest implements Constants {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void searchSQLServerStartAtItem10() throws Exception {
     final String url = apiBasePath + layerWegdeelSqlServer + "/search";
 
@@ -126,7 +123,6 @@ class SearchControllerIntegrationTest implements Constants {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void searchOracleLayerWithoutIndex() throws Exception {
     final String url = apiBasePath + layerWaterdeelOracle + "/search";
 
@@ -140,7 +136,6 @@ class SearchControllerIntegrationTest implements Constants {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testLayerDoesNotExist() throws Exception {
     final String url =
         apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:doesnotexist/search";
@@ -159,7 +154,6 @@ class SearchControllerIntegrationTest implements Constants {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testLayerWithoutFeatureType() throws Exception {
     final String url = apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:BGT/search";
 
@@ -175,7 +169,6 @@ class SearchControllerIntegrationTest implements Constants {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testBadRequestQuery() throws Exception {
     final String url = apiBasePath + layerBegroeidTerreindeelPostgis + "/search";
 

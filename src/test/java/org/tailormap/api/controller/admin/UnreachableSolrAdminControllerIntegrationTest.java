@@ -59,7 +59,6 @@ class UnreachableSolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(1)
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void failingPingTest() throws Exception {
     mockMvc
         .perform(get(adminBasePath + "/index/ping").accept(MediaType.APPLICATION_JSON))
@@ -73,7 +72,6 @@ class UnreachableSolrAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @Order(2)
   void failClearingIndex() throws Exception {
     mockMvc
@@ -88,7 +86,6 @@ class UnreachableSolrAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @Order(3)
   void failRecreatingIndex() throws Exception {
     mockMvc

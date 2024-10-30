@@ -157,7 +157,6 @@ class GeoServiceAdminControllerIntegrationTest {
    * exceptions to JSON.
    */
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
@@ -199,7 +198,6 @@ class GeoServiceAdminControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
@@ -257,7 +255,6 @@ class GeoServiceAdminControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
@@ -290,7 +287,6 @@ class GeoServiceAdminControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})

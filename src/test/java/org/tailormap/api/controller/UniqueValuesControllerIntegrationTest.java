@@ -99,7 +99,6 @@ class UniqueValuesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_hidden_attribute() throws Exception {
     final String url =
         apiBasePath
@@ -112,7 +111,6 @@ class UniqueValuesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void layer_without_featuretype() throws Exception {
     final String url =
         apiBasePath
@@ -125,7 +123,6 @@ class UniqueValuesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void attribute_name_required() throws Exception {
     final String url =
         apiBasePath
@@ -175,7 +172,6 @@ class UniqueValuesControllerIntegrationTest {
       name =
           "#{index}: should return no unique bronhouder from database with exclusion filter: {0}")
   @MethodSource("databaseArgumentsProvider")
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void bronhouder_with_filter_on_inonderzoek_unique_values_test(String url) throws Exception {
     url = apiBasePath + url;
     String cqlFilter = "inonderzoek=TRUE";
@@ -303,7 +299,6 @@ class UniqueValuesControllerIntegrationTest {
    */
   @Issue("https://b3partners.atlassian.net/browse/HTM-492")
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void unique_values_oracle_timestamp_HTM_492() throws Exception {
     final String testUrl =
         apiBasePath
@@ -318,7 +313,6 @@ class UniqueValuesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_wms_secured_proxy_not_in_public_app() throws Exception {
     final String testUrl = apiBasePath + layerProxiedWithAuthInPublicApp + "/unique/naam";
     mockMvc

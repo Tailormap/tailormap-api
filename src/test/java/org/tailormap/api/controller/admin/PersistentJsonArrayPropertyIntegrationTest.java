@@ -45,7 +45,6 @@ class PersistentJsonArrayPropertyIntegrationTest {
   private String adminBasePath;
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
