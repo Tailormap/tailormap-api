@@ -92,7 +92,6 @@ class ApplicationAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testCreateApplications() throws Exception {
 
     MvcResult result =
@@ -120,7 +119,6 @@ class ApplicationAdminControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testCantCreateApplicationWithDuplicateName() throws Exception {
     mockMvc
         .perform(
@@ -137,7 +135,6 @@ class ApplicationAdminControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testCantChangeApplicationNameToDuplicate() throws Exception {
     mockMvc
         .perform(
@@ -153,7 +150,6 @@ class ApplicationAdminControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testChangeApplicationName() throws Exception {
     mockMvc
         .perform(

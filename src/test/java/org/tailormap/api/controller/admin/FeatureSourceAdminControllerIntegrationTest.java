@@ -38,7 +38,6 @@ class FeatureSourceAdminControllerIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void refreshJdbcFeatureSourceCapabilities() throws Exception {
     MockMvc mockMvc =
         MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs

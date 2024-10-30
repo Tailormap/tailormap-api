@@ -34,7 +34,6 @@ class LayerDescriptionControllerIntegrationTest {
   private String apiBasePath;
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void app_not_found_404() throws Exception {
     final String path = apiBasePath + "/app/1234/layer/76/describe";
     mockMvc
@@ -45,7 +44,6 @@ class LayerDescriptionControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void public_app() throws Exception {
     final String path = apiBasePath + layerBegroeidTerreindeelPostgis + "/describe";
     mockMvc
@@ -68,7 +66,6 @@ class LayerDescriptionControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void appLayer_with_feature_type_but_no_editable_setting() throws Exception {
     final String path =
         apiBasePath
@@ -91,7 +88,6 @@ class LayerDescriptionControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_wms_secured_app_denied() throws Exception {
     final String path =
         apiBasePath
@@ -105,7 +101,6 @@ class LayerDescriptionControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -120,7 +115,6 @@ class LayerDescriptionControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo"})
@@ -134,7 +128,6 @@ class LayerDescriptionControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo"})
@@ -153,7 +146,6 @@ class LayerDescriptionControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo", "test-baz"})
@@ -168,7 +160,6 @@ class LayerDescriptionControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-bar"})
@@ -182,7 +173,6 @@ class LayerDescriptionControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_wms_secured_proxy_not_in_public_app() throws Exception {
     final String path = apiBasePath + layerProxiedWithAuthInPublicApp + "/describe";
     mockMvc

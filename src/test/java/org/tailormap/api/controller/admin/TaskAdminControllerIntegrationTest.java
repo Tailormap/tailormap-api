@@ -142,7 +142,6 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void listTasksForNonExistentType() throws Exception {
     mockMvc
         .perform(
@@ -160,7 +159,6 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void detailsOfTask() throws Exception {
     MvcResult result =
         mockMvc
@@ -194,7 +192,6 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void startNonExistentTask() throws Exception {
     mockMvc
         .perform(
@@ -213,7 +210,6 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void startTask() throws Exception {
     MvcResult result =
         mockMvc
@@ -245,7 +241,6 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void stopNonExistentTask() throws Exception {
     mockMvc
         .perform(
@@ -263,7 +258,6 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void stopTask() throws Exception {
     MvcResult result =
         mockMvc
@@ -294,7 +288,6 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void deleteNonExistentTask() throws Exception {
     mockMvc
         .perform(
@@ -312,7 +305,6 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @Order(Integer.MAX_VALUE)
   void deleteTask() throws Exception {
     MvcResult result =
@@ -341,7 +333,6 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testFailingTaskDetails() throws Exception {
     MvcResult result =
         mockMvc

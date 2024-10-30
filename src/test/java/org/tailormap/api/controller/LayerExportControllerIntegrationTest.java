@@ -46,7 +46,6 @@ class LayerExportControllerIntegrationTest {
   private String apiBasePath;
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldReturnExportCapabilitiesWithJDBCFeatureSource() throws Exception {
     final String url = apiBasePath + layerWaterdeel + capabilitiesPath;
     mockMvc
@@ -85,7 +84,6 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldReturnExportCapabilitiesWithWFSFeatureSource() throws Exception {
     final String url = apiBasePath + layerProvinciesWfs + capabilitiesPath;
     mockMvc
@@ -104,7 +102,6 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldExportGeoJSON() throws Exception {
     final String url = apiBasePath + layerProvinciesWfs + downloadPath;
     mockMvc
@@ -123,7 +120,6 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldExportGeoPackage() throws Exception {
     final String url = apiBasePath + layerWaterdeel + downloadPath;
     mockMvc
@@ -137,7 +133,6 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldExportGeoJSONWithFilter() throws Exception {
     final String url = apiBasePath + layerWaterdeel + downloadPath;
     mockMvc
@@ -157,7 +152,6 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldExportGeoJSONWithFilterAndSort() throws Exception {
     final String url = apiBasePath + layerWaterdeel + downloadPath;
     mockMvc
@@ -196,7 +190,6 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldNotExportHiddenAttributesInGeoJSONWhenRequested() throws Exception {
     final String url = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath;
     mockMvc
@@ -216,7 +209,6 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldNotExportHiddenAttributesInGeoJSON() throws Exception {
     final String url = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath;
     mockMvc
@@ -238,7 +230,6 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_wms_secured_proxy_not_in_public_app() throws Exception {
     final String testUrl = apiBasePath + layerProxiedWithAuthInPublicApp + "/export/download";
     mockMvc

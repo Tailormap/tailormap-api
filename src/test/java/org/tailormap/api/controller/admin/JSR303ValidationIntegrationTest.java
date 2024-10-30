@@ -33,7 +33,6 @@ class JSR303ValidationIntegrationTest {
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testUrlRequired() throws Exception {
     MockMvc mockMvc =
         MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs

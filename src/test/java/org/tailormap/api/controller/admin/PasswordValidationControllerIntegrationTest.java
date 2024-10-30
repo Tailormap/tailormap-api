@@ -52,7 +52,6 @@ class PasswordValidationControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test(String password, String expected) throws Exception {
     mockMvc
         .perform(

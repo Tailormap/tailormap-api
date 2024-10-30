@@ -51,7 +51,6 @@ class SolrAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void pingTest() throws Exception {
     mockMvc
         .perform(get(adminBasePath + "/index/ping").accept(MediaType.APPLICATION_JSON))
@@ -65,7 +64,6 @@ class SolrAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void deleteNonExistentIndex() throws Exception {
     mockMvc
         .perform(
@@ -78,7 +76,6 @@ class SolrAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @Order(1)
   void refreshIndex1() throws Exception {
     mockMvc
@@ -93,7 +90,6 @@ class SolrAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @Order(2)
   void clearIndex1() throws Exception {
     mockMvc
@@ -105,7 +101,6 @@ class SolrAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @Order(3)
   void recreateIndex1() throws Exception {
     mockMvc
@@ -118,7 +113,6 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(1)
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void indexWithoutSearchIndexConfigured() throws Exception {
     mockMvc
         .perform(

@@ -35,7 +35,6 @@ class ApiSecurityConfigurationIntegrationTest {
   private String apiBasePath;
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void anonymousSecuredAppTest() throws Exception {
     String path = apiBasePath + "/app/secured";
     mockMvc
@@ -50,7 +49,6 @@ class ApiSecurityConfigurationIntegrationTest {
   @WithMockUser(
       username = "user",
       authorities = {Group.AUTHENTICATED})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void authenticatedSecuredAppTest() throws Exception {
     String path = apiBasePath + "/app/secured";
     mockMvc

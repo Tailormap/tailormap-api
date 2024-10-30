@@ -251,7 +251,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -291,7 +290,6 @@ class FeaturesControllerIntegrationTest {
    * @throws Exception if any
    */
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -478,7 +476,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -546,7 +543,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -640,7 +636,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -697,7 +692,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -725,7 +719,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -754,7 +747,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -787,7 +779,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -1186,7 +1177,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @ParameterizedTest(name = "#{index} should return onlyGeometries for {0}, appLayer: {1}")
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @MethodSource("differentFeatureSourcesProvider")
   void onlyGeometries(String appLayerUrl) throws Exception {
 
@@ -1208,7 +1198,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @ParameterizedTest(name = "#{index} should return onlyGeometries for {0}, appLayer: {1}")
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @MethodSource("differentFeatureSourcesProvider")
   void ignore_skipGeometryOutput_with_onlyGeometries(String appLayerUrl) throws Exception {
     appLayerUrl = apiBasePath + appLayerUrl;
@@ -1229,7 +1218,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -1248,7 +1236,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -1270,7 +1257,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -1304,7 +1290,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -1318,7 +1303,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -1330,7 +1314,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_send_401_when_access_denied() throws Exception {
     final String url =
         apiBasePath
@@ -1348,7 +1331,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_send_403_for_layer_proxied_with_auth_in_public_app() throws Exception {
     final String url = apiBasePath + layerProxiedWithAuthInPublicApp + "/features";
     mockMvc
