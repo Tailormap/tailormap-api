@@ -36,7 +36,7 @@ jobs:
           GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
         if: |
           (
-            contains(steps.metadata.outputs.dependency-names, 'maven-') ||
+            contains(steps.metadata.outputs.dependency-names, 'maven') ||
             contains(steps.metadata.outputs.dependency-names, 'action') ||
             contains(steps.metadata.outputs.dependency-names, 'error_prone_core')
           ) && (
