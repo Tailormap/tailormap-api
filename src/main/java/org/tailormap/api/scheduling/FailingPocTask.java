@@ -39,7 +39,7 @@ public class FailingPocTask extends QuartzJobBean implements Task {
       throw new UnsupportedOperationException("Failing POC task failed.");
     } catch (Exception e) {
       logger.error("Failing POC task failed.", e);
-      jobDataMap.put("lastResult", "POC task executed unsuccessfully");
+      jobDataMap.put(Task.LAST_RESULT_KEY, "POC task executed unsuccessfully");
       context.setResult("POC task executed unsuccessfully");
       throw new JobExecutionException(e);
     }

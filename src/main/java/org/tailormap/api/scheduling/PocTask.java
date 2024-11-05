@@ -62,7 +62,7 @@ public class PocTask extends QuartzJobBean implements Task {
     int executions = (1 + (int) mergedJobDataMap.getOrDefault("executions", 0));
     jobDataMap.put("executions", executions);
     jobDataMap.put("lastExecutionFinished", Instant.now());
-    jobDataMap.put("lastResult", "POC task executed successfully");
+    jobDataMap.put(Task.LAST_RESULT_KEY, "POC task executed successfully");
     context.setResult("POC task executed successfully");
 
     setFoo("foo executed: " + executions);

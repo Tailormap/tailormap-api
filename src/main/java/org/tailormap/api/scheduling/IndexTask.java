@@ -100,7 +100,7 @@ public class IndexTask extends QuartzJobBean implements Task {
       searchIndex.setStatus(SearchIndex.Status.ERROR).setComment(e.getMessage());
       persistedJobData.put("lastExecutionFinished", null);
       persistedJobData.put(
-          "lastResult", "Index task failed with " + e.getMessage() + ". Check logs for details");
+          Task.LAST_RESULT_KEY, "Index task failed with " + e.getMessage() + ". Check logs for details");
       searchIndexRepository.save(searchIndex);
       context.setResult("Error indexing. Check logs for details.");
       throw new JobExecutionException("Error indexing", e);

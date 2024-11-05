@@ -247,7 +247,7 @@ public class TaskAdminController {
                   "nextFireTimes", TriggerUtils.computeFireTimes((OperableTrigger) cron, null, 5))
               .putPOJO(Task.STATE_KEY, scheduler.getTriggerState(trigger.getKey()))
               .putPOJO("progress", result[0])
-              .put("lastResult", jobDataMap.getString("lastResult"))
+              .put(Task.LAST_RESULT_KEY, jobDataMap.getString(Task.LAST_RESULT_KEY))
               .putPOJO("jobData", jobDataMap));
     } catch (SchedulerException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error getting task", e);
