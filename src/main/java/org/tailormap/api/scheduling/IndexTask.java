@@ -93,14 +93,15 @@ public class IndexTask extends QuartzJobBean implements Task {
       persistedJobData.put(
           "executions", (1 + (int) context.getMergedJobDataMap().getOrDefault("executions", 0)));
       persistedJobData.put("lastExecutionFinished", Instant.now());
-      persistedJobData.put("lastResult", "Index task executed successfully");
+      persistedJobData.put(Task.LAST_RESULT_KEY, "Index task executed successfully");
       context.setResult("Index task executed successfully");
     } catch (UnsupportedOperationException | IOException | SolrServerException | SolrException e) {
       logger.error("Error indexing", e);
       searchIndex.setStatus(SearchIndex.Status.ERROR).setComment(e.getMessage());
       persistedJobData.put("lastExecutionFinished", null);
       persistedJobData.put(
-          Task.LAST_RESULT_KEY, "Index task failed with " + e.getMessage() + ". Check logs for details");
+          Task.LAST_RESULT_KEY,
+          "Index task failed with " + e.getMessage() + ". Check logs for details");
       searchIndexRepository.save(searchIndex);
       context.setResult("Error indexing. Check logs for details.");
       throw new JobExecutionException("Error indexing", e);
