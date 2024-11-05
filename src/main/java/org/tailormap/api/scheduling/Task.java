@@ -13,6 +13,7 @@ public interface Task {
   String CRON_EXPRESSION_KEY = "cronExpression";
   String PRIORITY_KEY = "priority";
   String STATE_KEY = "state";
+  String LAST_RESULT_KEY = "lastResult";
 
   /**
    * Get the type of the task. Implement this method to return the key for the type of task. This

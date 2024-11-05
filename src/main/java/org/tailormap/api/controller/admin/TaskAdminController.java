@@ -136,7 +136,7 @@ public class TaskAdminController {
                         .put(
                             Task.DESCRIPTION_KEY,
                             jobDetail.getJobDataMap().getString(Task.DESCRIPTION_KEY))
-                        .put("lastResult", jobDetail.getJobDataMap().getString("lastResult"))
+                        .put(Task.LAST_RESULT_KEY, jobDetail.getJobDataMap().getString(Task.LAST_RESULT_KEY))
                         .putPOJO(Task.STATE_KEY, state));
               });
     } catch (SchedulerException e) {
