@@ -150,7 +150,7 @@ SPDX-License-Identifier: MIT
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <dependency-check-maven.version>11.1.0</dependency-check-maven.version>
         <modernizer-maven-plugin.version>2.9.0</modernizer-maven-plugin.version>
-        <maven-fluido-skin.version>2.0.0-M11</maven-fluido-skin.version>
+        <maven-fluido-skin.version>2.0.0</maven-fluido-skin.version>
         <swagger-ui.version>5.17.14</swagger-ui.version>
         <sentry.version>7.16.0</sentry.version>
         <errorProne.version>2.35.1</errorProne.version>
