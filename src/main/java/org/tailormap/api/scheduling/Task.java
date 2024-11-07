@@ -5,6 +5,8 @@
  */
 package org.tailormap.api.scheduling;
 
+import org.quartz.InterruptableJob;
+
 public interface Task {
 
   String TYPE_KEY = "type";
@@ -14,6 +16,7 @@ public interface Task {
   String PRIORITY_KEY = "priority";
   String STATE_KEY = "state";
   String LAST_RESULT_KEY = "lastResult";
+  String INTERRUPTABLE_KEY = "interruptable";
 
   /**
    * Get the type of the task. Implement this method to return the key for the type of task. This
@@ -36,4 +39,14 @@ public interface Task {
    * @param description the description
    */
   void setDescription(String description);
+
+  /**
+   * Determine if this task can be stopped on demand (implements {@code InterruptableJob}).
+   *
+   * @return {@code true} if the task can be stopped on demand, false otherwise
+   * @see InterruptableJob
+   */
+  default boolean isInterruptable() {
+    return InterruptableJob.class.isAssignableFrom(this.getClass());
+  }
 }

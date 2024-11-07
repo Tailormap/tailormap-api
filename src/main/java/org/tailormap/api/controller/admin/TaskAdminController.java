@@ -6,6 +6,7 @@
 package org.tailormap.api.controller.admin;
 
 import static java.net.HttpURLConnection.HTTP_ACCEPTED;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import org.quartz.CronTrigger;
+import org.quartz.InterruptableJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -89,11 +91,11 @@ public class TaskAdminController {
                       example =
                           """
                           {"tasks":[
-                          {"uuid":"6308d26e-fe1e-4268-bb28-20db2cd06914","type":"poc", "state":"NORMAL"},
-                          {"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca8","type":"poc", "state": "BLOCKED"},
-                          {"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca9","type":"poc", "state": "PAUSED"},
-                          {"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca2","type":"poc", "state": "COMPLETE"},
-                          {"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca3","type":"poc", "state": "ERROR"}
+                          {"uuid":"6308d26e-fe1e-4268-bb28-20db2cd06914","type":"index", "state":"NORMAL", "interruptable": false},
+                          {"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca8","type":"poc", "state": "BLOCKED", "interruptable": false},
+                          {"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca9","type":"poc", "state": "PAUSED", "interruptable": false},
+                          {"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca2","type":"poc", "state": "COMPLETE", "interruptable": false},
+                          {"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca3","type":"interuptablepoc", "state": "ERROR", "interruptable": true}
                           ]}
                           """)))
   public ResponseEntity<Object> list(@RequestParam(required = false) String type)
@@ -133,6 +135,9 @@ public class TaskAdminController {
                         .createObjectNode()
                         .put(Task.UUID_KEY, jobDetail.getKey().getName())
                         .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
+                        .put(
+                            Task.INTERRUPTABLE_KEY,
+                            InterruptableJob.class.isAssignableFrom(jobDetail.getJobClass()))
                         .put(
                             Task.DESCRIPTION_KEY,
                             jobDetail.getJobDataMap().getString(Task.DESCRIPTION_KEY))
@@ -181,6 +186,7 @@ public class TaskAdminController {
                           {
                             "uuid":"6308d26e-fe1e-4268-bb28-20db2cd06914",
                             "type":"poc",
+                            "interruptable":false,
                             "description":"This is a poc task",
                             "startTime":"2024-06-06T12:00:00Z",
                             "nextTime":"2024-06-06T12:00:00Z",
@@ -189,9 +195,9 @@ public class TaskAdminController {
                               "description":"This is a poc task"
                             },
                             "state":"NORMAL",
-                            "progress":"TODO",
-                            "result":"TODO",
-                            "message":"TODO something is happening"
+                            "progress":"...",
+                            "result":"...",
+                            "message":"something is happening"
                           }
                           """)))
   public ResponseEntity<Object> details(@PathVariable TaskType type, @PathVariable UUID uuid)
@@ -230,6 +236,9 @@ public class TaskAdminController {
               // immutable uuid, type and description
               .put(Task.UUID_KEY, jobDetail.getKey().getName())
               .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
+              .put(
+                  Task.INTERRUPTABLE_KEY,
+                  InterruptableJob.class.isAssignableFrom(jobDetail.getJobClass()))
               .put(Task.DESCRIPTION_KEY, jobDataMap.getString(Task.DESCRIPTION_KEY))
               .put(Task.CRON_EXPRESSION_KEY, cron.getCronExpression())
               // TODO / XXX we could add a human-readable description of the cron expression using
@@ -285,10 +294,9 @@ public class TaskAdminController {
       if (null == jobKey) {
         return handleTaskNotFound();
       }
-
+      scheduler.triggerJob(jobKey);
       return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_ACCEPTED))
-          .body(
-              new ObjectMapper().createObjectNode().put("message", "TODO: Task starting accepted"));
+          .body(new ObjectMapper().createObjectNode().put("message", "Task starting accepted"));
 
     } catch (SchedulerException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error getting task", e);
@@ -296,8 +304,14 @@ public class TaskAdminController {
   }
 
   @Operation(
-      summary = "Stop a task",
-      description = "This will stop the task, if the task is not running, nothing will happen")
+      summary = "Stop a task irrevocably",
+      description =
+          """
+              This will stop a running task, if the task is not running, nothing will happen.
+              This can leave the application in an inconsistent state.
+              A task that is not interruptable cannot be stopped.
+              A stopped task cannot be restarted, it fire again depending on the schedule.
+              """)
   @PutMapping(
       path = "${tailormap-api.admin.base-path}/tasks/{type}/{uuid}/stop",
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -314,7 +328,30 @@ public class TaskAdminController {
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(example = "{\"message\":\"Task stopping accepted\"}")))
+              schema =
+                  @Schema(
+                      example =
+                          """
+                                {
+                                "message":"Task stopping accepted".
+                                "succes":true
+                                }
+                              """)))
+  @ApiResponse(
+      responseCode = "400",
+      description =
+          "The task cannot be stopped as it does not implement the InterruptableJob interface.",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema =
+                  @Schema(
+                      example =
+                          """
+                                        {
+                                        "message":"Task cannot be stopped"
+                                        }
+                                      """)))
   public ResponseEntity<Object> stopTask(@PathVariable TaskType type, @PathVariable UUID uuid)
       throws ResponseStatusException {
     logger.debug("Stopping task {}:{}", type, uuid);
@@ -325,9 +362,22 @@ public class TaskAdminController {
         return handleTaskNotFound();
       }
 
-      return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_ACCEPTED))
-          .body(
-              new ObjectMapper().createObjectNode().put("message", "TODO: Task stopping accepted"));
+      if (InterruptableJob.class.isAssignableFrom(scheduler.getJobDetail(jobKey).getJobClass())) {
+        boolean interrupted = scheduler.interrupt(jobKey);
+        return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_ACCEPTED))
+            .body(
+                new ObjectMapper()
+                    .createObjectNode()
+                    .put("message", "Task stopping accepted")
+                    .put("succes", interrupted));
+      } else {
+        return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_BAD_REQUEST))
+            .body(
+                new ObjectMapper()
+                    .createObjectNode()
+                    .put("message", "Task cannot be stopped")
+                    .put("succes", false));
+      }
 
     } catch (SchedulerException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error getting task", e);

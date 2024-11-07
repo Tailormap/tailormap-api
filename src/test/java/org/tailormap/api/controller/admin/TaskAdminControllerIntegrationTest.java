@@ -65,7 +65,7 @@ class TaskAdminControllerIntegrationTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.tasks").isArray())
-            .andExpect(jsonPath("$.tasks.length()").value(4))
+            .andExpect(jsonPath("$.tasks.length()").value(5))
             // value is either 'poc' or 'index'
             .andExpect(
                 jsonPath("$.tasks[0].type")
@@ -73,28 +73,32 @@ class TaskAdminControllerIntegrationTest {
                         anyOf(
                             is(TaskType.INDEX.getValue()),
                             is(TaskType.POC.getValue()),
-                            is(TaskType.FAILINGPOC.getValue()))))
+                            is(TaskType.FAILINGPOC.getValue()),
+                            is(TaskType.INTERRUPTABLEPOC.getValue()))))
             .andExpect(
                 jsonPath("$.tasks[1].type")
                     .value(
                         anyOf(
                             is(TaskType.INDEX.getValue()),
                             is(TaskType.POC.getValue()),
-                            is(TaskType.FAILINGPOC.getValue()))))
+                            is(TaskType.FAILINGPOC.getValue()),
+                            is(TaskType.INTERRUPTABLEPOC.getValue()))))
             .andExpect(
                 jsonPath("$.tasks[2].type")
                     .value(
                         anyOf(
                             is(TaskType.INDEX.getValue()),
                             is(TaskType.POC.getValue()),
-                            is(TaskType.FAILINGPOC.getValue()))))
+                            is(TaskType.FAILINGPOC.getValue()),
+                            is(TaskType.INTERRUPTABLEPOC.getValue()))))
             .andExpect(
                 jsonPath("$.tasks[3].type")
                     .value(
                         anyOf(
                             is(TaskType.INDEX.getValue()),
                             is(TaskType.POC.getValue()),
-                            is(TaskType.FAILINGPOC.getValue()))))
+                            is(TaskType.FAILINGPOC.getValue()),
+                            is(TaskType.INTERRUPTABLEPOC.getValue()))))
             .andReturn();
     final String body = result.getResponse().getContentAsString();
     String validUUID = JsonPath.read(body, "$.tasks[0].uuid");
@@ -107,6 +111,9 @@ class TaskAdminControllerIntegrationTest {
     assertEquals(UUID.fromString(validUUID).toString(), validUUID);
 
     validUUID = JsonPath.read(body, "$.tasks[3].uuid");
+    assertEquals(UUID.fromString(validUUID).toString(), validUUID);
+
+    validUUID = JsonPath.read(body, "$.tasks[4].uuid");
     assertEquals(UUID.fromString(validUUID).toString(), validUUID);
   }
 
@@ -210,17 +217,18 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
+  @Order(5)
   void startTask() throws Exception {
     MvcResult result =
         mockMvc
             .perform(
                 get(adminBasePath + "/tasks")
-                    .queryParam(TYPE_KEY, TEST_TASK_TYPE)
+                    .queryParam(TYPE_KEY, TaskType.INTERRUPTABLEPOC.getValue())
                     .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.tasks").isArray())
-            .andExpect(jsonPath("$.tasks.length()").value(2))
+            .andExpect(jsonPath("$.tasks.length()").value(1))
             .andReturn();
 
     final String startUUID =
@@ -234,6 +242,8 @@ class TaskAdminControllerIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON))
         // .andDo(print())
         .andExpect(status().isAccepted())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Task starting accepted"))
         .andReturn();
   }
 
@@ -258,7 +268,40 @@ class TaskAdminControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
+  @Order(10)
   void stopTask() throws Exception {
+    MvcResult result =
+        mockMvc
+            .perform(
+                get(adminBasePath + "/tasks")
+                    .queryParam(TYPE_KEY, TaskType.INTERRUPTABLEPOC.getValue())
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.tasks").isArray())
+            .andExpect(jsonPath("$.tasks.length()").value(1))
+            .andReturn();
+
+    final String stopUUID =
+        JsonPath.read(result.getResponse().getContentAsString(), "$.tasks[0].uuid");
+    final String stopType =
+        JsonPath.read(result.getResponse().getContentAsString(), "$.tasks[0].type");
+
+    mockMvc
+        .perform(
+            put(adminBasePath + "/tasks/{type}/{uuid}/stop", stopType, stopUUID)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isAccepted())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Task stopping accepted"))
+        .andExpect(jsonPath("succes").value(true));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {Group.ADMIN})
+  void stopUnstoppableTask() throws Exception {
     MvcResult result =
         mockMvc
             .perform(
@@ -271,17 +314,18 @@ class TaskAdminControllerIntegrationTest {
             .andExpect(jsonPath("$.tasks.length()").value(2))
             .andReturn();
 
-    final String stopUUID =
+    final String unstoppableUUID =
         JsonPath.read(result.getResponse().getContentAsString(), "$.tasks[0].uuid");
-    final String stopType =
+    final String unstoppableType =
         JsonPath.read(result.getResponse().getContentAsString(), "$.tasks[0].type");
 
     mockMvc
         .perform(
-            put(adminBasePath + "/tasks/{type}/{uuid}/stop", stopType, stopUUID)
+            put(adminBasePath + "/tasks/{type}/{uuid}/stop", unstoppableType, unstoppableUUID)
                 .accept(MediaType.APPLICATION_JSON))
-        // .andDo(print())
-        .andExpect(status().isAccepted());
+        .andExpect(status().isBadRequest())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Task cannot be stopped"));
   }
 
   @Test

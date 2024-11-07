@@ -78,6 +78,7 @@ import org.tailormap.api.repository.UploadRepository;
 import org.tailormap.api.repository.UserRepository;
 import org.tailormap.api.scheduling.FailingPocTask;
 import org.tailormap.api.scheduling.IndexTask;
+import org.tailormap.api.scheduling.InterruptablePocTask;
 import org.tailormap.api.scheduling.PocTask;
 import org.tailormap.api.scheduling.TMJobDataMap;
 import org.tailormap.api.scheduling.Task;
@@ -1527,7 +1528,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     try {
       logger.info("Creating POC tasks");
       logger.info(
-          "Created minutely task with key: {}",
+          "Created 15 minutely task with key: {}",
           taskManagerService.createTask(
               PocTask.class,
               new TMJobDataMap(
@@ -1537,7 +1538,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                       "foo",
                       "foobar",
                       Task.DESCRIPTION_KEY,
-                      "POC task that runs every minute")),
+                      "POC task that runs every 15 minutes")),
               /* run every 15 minutes */ "0 0/15 * 1/1 * ? *"));
       logger.info(
           "Created hourly task with key: {}",
@@ -1568,8 +1569,21 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                       Task.PRIORITY_KEY,
                       100)),
               /* run every hour */ "0 0 0/1 1/1 * ? *"));
+      logger.info(
+          "Created daily task with key: {}",
+          taskManagerService.createTask(
+              InterruptablePocTask.class,
+              new TMJobDataMap(
+                  Map.of(
+                      Task.TYPE_KEY,
+                      TaskType.INTERRUPTABLEPOC.getValue(),
+                      Task.DESCRIPTION_KEY,
+                      "Interruptable POC task that runs every 15 minutes",
+                      Task.PRIORITY_KEY,
+                      5)),
+              /* run every 15 minutes */ "0 0/15 * 1/1 * ? *"));
     } catch (SchedulerException e) {
-      logger.error("Error creating scheduled poc tasks", e);
+      logger.error("Error creating scheduled one or more poc tasks", e);
     }
 
     logger.info("Creating INDEX task");
