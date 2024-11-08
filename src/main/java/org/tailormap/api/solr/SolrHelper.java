@@ -49,14 +49,12 @@ import org.tailormap.api.viewer.model.SearchResponse;
  * in a try-with-resources.
  */
 public class SolrHelper implements AutoCloseable, Constants {
-  private final SolrClient solrClient;
-
+  public static final int SOLR_BATCH_SIZE = 1000;
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  public static final int SOLR_BATCH_SIZE = 1000;
   // milliseconds
   private static final int SOLR_TIMEOUT = 7000;
+  private final SolrClient solrClient;
 
   /**
    * Constructor
@@ -89,7 +87,7 @@ public class SolrHelper implements AutoCloseable, Constants {
 
     createSchemaIfNotExists();
 
-    final Instant start = Instant.now();
+    final Instant startedAt = Instant.now();
 
     if (null == searchIndex.getSearchFieldsUsed()) {
       logger.warn(
@@ -127,8 +125,7 @@ public class SolrHelper implements AutoCloseable, Constants {
     propertyNames.add(tmFeatureType.getDefaultGeometryAttribute());
     propertyNames.addAll(searchFields);
 
-    final boolean hasDisplayFields = !displayFields.isEmpty();
-    if (hasDisplayFields) {
+    if (!displayFields.isEmpty()) {
       propertyNames.addAll(displayFields);
     }
 
@@ -147,17 +144,18 @@ public class SolrHelper implements AutoCloseable, Constants {
     tmFeatureType.getSettings().getHideAttributes().forEach(propertyNames::remove);
     q.setPropertyNames(List.copyOf(propertyNames));
     q.setStartIndex(0);
-    // TODO: make maxFeatures configurable? perhaps for WFS sources?
+    // TODO: make maxFeatures configurable?
     // q.setMaxFeatures(Integer.MAX_VALUE);
     logger.trace("Indexing query: {}", q);
     SimpleFeatureCollection simpleFeatureCollection = fs.getFeatures(q);
     final int total = simpleFeatureCollection.size();
     List<FeatureIndexingDocument> docsBatch = new ArrayList<>(SOLR_BATCH_SIZE);
     // TODO this does not currently batch/page the feature source query, this doesn't seem to be an
-    //   issue for now but could be if the feature source is very large or slow e.g. WFS
+    //   issue for now but could be if the feature source is very, very large or slow
     UpdateResponse updateResponse;
+    int indexCounter = 0;
+    int indexSkippedCounter = 0;
     try (SimpleFeatureIterator iterator = simpleFeatureCollection.features()) {
-      int indexCounter = 0;
       while (iterator.hasNext()) {
         indexCounter++;
         SimpleFeature feature = iterator.next();
@@ -170,30 +168,37 @@ public class SolrHelper implements AutoCloseable, Constants {
             propertyName -> {
               Object value = feature.getAttribute(propertyName);
               if (value != null) {
-                if (value instanceof Geometry) {
+                if (value instanceof Geometry
+                    && propertyName.equals(tmFeatureType.getDefaultGeometryAttribute())) {
                   doc.setGeometry(GeometryProcessor.processGeometry(value, true, true, null));
                 } else {
-                  // when display and/or search fields are configured, add the value to the search
-                  // and/or display field otherwise add the value to the search and display field
                   if (searchFields.contains(propertyName)) {
                     searchValues.add(value.toString());
                   }
-                  if (hasDisplayFields) {
-                    if (displayFields.contains(propertyName)) {
-                      displayValues.add(value.toString());
-                    }
+                  if (displayFields.contains(propertyName)) {
+                    displayValues.add(value.toString());
                   }
                 }
               }
             });
-        doc.setSearchFields(searchValues.toArray(new String[searchFields.size() + 2]));
-        doc.setDisplayFields(displayValues.toArray(new String[0]));
-        docsBatch.add(doc);
+        if (searchValues.isEmpty() || displayValues.isEmpty()) {
+          // this is a record/document that can either not be found or not be displayed
+          logger.trace(
+              "No search or display values found for feature: {} in featuretype: {}, skipped for indexing",
+              feature.getID(),
+              tmFeatureType.getName());
+          indexSkippedCounter++;
+        } else {
+          doc.setSearchFields(searchValues.toArray(new String[0]));
+          doc.setDisplayFields(displayValues.toArray(new String[0]));
+          docsBatch.add(doc);
+        }
+
         if (indexCounter % SOLR_BATCH_SIZE == 0) {
           updateResponse = solrClient.addBeans(docsBatch);
           logger.info(
               "Added {} documents of {} to index, result status: {}",
-              indexCounter,
+              indexCounter - indexSkippedCounter,
               total,
               updateResponse.getStatus());
           docsBatch.clear();
@@ -204,26 +209,45 @@ public class SolrHelper implements AutoCloseable, Constants {
     }
 
     if (!docsBatch.isEmpty()) {
-      updateResponse = solrClient.addBeans(docsBatch);
+      solrClient.addBeans(docsBatch);
       logger.info("Added last {} documents of {} to index", docsBatch.size(), total);
-      logger.debug("Update response status: {}", updateResponse.getStatus());
     }
-    final Instant end = Instant.now();
-    Duration processTime = Duration.between(start, end).abs();
+    final Instant finishedAt = Instant.now();
+    Duration processTime = Duration.between(startedAt, finishedAt).abs();
     logger.info(
         "Indexing finished for index id: {}, featuretype: {} at {} in {}",
         searchIndex.getId(),
         tmFeatureType.getName(),
-        end,
+        finishedAt,
         processTime);
     updateResponse = this.solrClient.commit();
-    logger.debug("Update response status: {}", updateResponse.getStatus());
-    return searchIndex
-        .setComment(
-            "Indexed %s features in %s.%s seconds, started at %s"
-                .formatted(total, processTime.getSeconds(), processTime.getNano(), start))
-        .setLastIndexed(end.atOffset(ZoneId.systemDefault().getRules().getOffset(end)))
-        .setStatus(SearchIndex.Status.INDEXED);
+    logger.debug("Update response commit status: {}", updateResponse.getStatus());
+
+    if (indexSkippedCounter > 0) {
+      logger.warn(
+          "{} features were skipped because no search or display values were found.",
+          indexSkippedCounter);
+      searchIndex =
+          searchIndex.setComment(
+              "Indexed %s features in %s.%s seconds, started at %s. %s features were skipped because no search or display values were found."
+                  .formatted(
+                      total,
+                      processTime.getSeconds(),
+                      processTime.getNano(),
+                      startedAt,
+                      indexSkippedCounter));
+    } else {
+      searchIndex =
+          searchIndex.setComment(
+              "Indexed %s features in %s.%s seconds, started at %s."
+                  .formatted(total, processTime.getSeconds(), processTime.getNano(), startedAt));
+    }
+
+    return searchIndexRepository.save(
+        searchIndex
+            .setLastIndexed(
+                finishedAt.atOffset(ZoneId.systemDefault().getRules().getOffset(finishedAt)))
+            .setStatus(SearchIndex.Status.INDEXED));
   }
 
   /**
@@ -241,9 +265,9 @@ public class SolrHelper implements AutoCloseable, Constants {
     if (response.getResults().getNumFound() > 0) {
       logger.info("Clearing index for searchLayer {}", searchLayerId);
       UpdateResponse updateResponse = solrClient.deleteByQuery(SEARCH_LAYER + ":" + searchLayerId);
-      logger.debug("Update response status: {}", updateResponse.getStatus());
+      logger.debug("Delete response status: {}", updateResponse.getStatus());
       updateResponse = solrClient.commit();
-      logger.debug("Update response status: {}", updateResponse.getStatus());
+      logger.debug("Commit response status: {}", updateResponse.getStatus());
     } else {
       logger.info("No index to clear for layer {}", searchLayerId);
     }
