@@ -121,7 +121,7 @@ SPDX-License-Identifier: MIT
         <commons-lang3.version>3.17.0</commons-lang3.version>
         <flyway.version>10.20.1</flyway.version>
         <hamcrest.version>3.0</hamcrest.version>
-        <hibernate.version>6.5.3.Final</hibernate.version>
+        <hibernate.version>6.6.2.Final</hibernate.version>
         <jackson-bom.version>2.17.2</jackson-bom.version>
         <junit-jupiter.version>5.11.3</junit-jupiter.version>
         <micrometer.version>1.13.6</micrometer.version>
