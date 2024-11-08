@@ -67,7 +67,10 @@ public class SearchController {
       @ModelAttribute GeoService service,
       @ModelAttribute Application application,
       @RequestParam(required = false, name = "q") final String solrQuery,
-      @RequestParam(required = false, defaultValue = "0") Integer start) {
+      @RequestParam(required = false, defaultValue = "0") Integer start,
+      @RequestParam(required = false, name = "fq") final String solrFilterQuery,
+      @RequestParam(required = false, name = "pt") final String solrPoint,
+      @RequestParam(required = false, name = "d") final Double solrDistance) {
 
     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
 
@@ -90,7 +93,14 @@ public class SearchController {
     try (SolrClient solrClient = solrService.getSolrClientForSearching();
         SolrHelper solrHelper = new SolrHelper(solrClient)) {
       final SearchResponse searchResponse =
-          solrHelper.findInIndex(searchIndex, solrQuery, start, numResultsToReturn);
+          solrHelper.findInIndex(
+              searchIndex,
+              solrQuery,
+              solrFilterQuery,
+              solrPoint,
+              solrDistance,
+              start,
+              numResultsToReturn);
       return (null == searchResponse.getDocuments() || searchResponse.getDocuments().isEmpty())
           ? ResponseEntity.noContent().build()
           : ResponseEntity.ok().body(searchResponse);

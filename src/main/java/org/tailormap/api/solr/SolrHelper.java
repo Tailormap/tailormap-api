@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import java.util.Set;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.request.schema.FieldTypeDefinition;
 import org.apache.solr.client.solrj.request.schema.SchemaRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
@@ -49,12 +51,22 @@ import org.tailormap.api.viewer.model.SearchResponse;
  * in a try-with-resources.
  */
 public class SolrHelper implements AutoCloseable, Constants {
-  public static final int SOLR_BATCH_SIZE = 1000;
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  // milliseconds
+
+  /**
+   * the number of documents that are submitted per batch to the Solr service: {@value
+   * #SOLR_BATCH_SIZE}.
+   */
+  public static final int SOLR_BATCH_SIZE = 1000;
+
+  /** {@value #SOLR_TIMEOUT} milliseconds. */
   private static final int SOLR_TIMEOUT = 7000;
+
   private final SolrClient solrClient;
+
+  /** the Solr field type name geometry fields: {@value #SOLR_SPATIAL_FIELDNAME}. */
+  private static final String SOLR_SPATIAL_FIELDNAME = "tm_geometry_rpt";
 
   /**
    * Constructor
@@ -170,6 +182,8 @@ public class SolrHelper implements AutoCloseable, Constants {
               if (value != null) {
                 if (value instanceof Geometry
                     && propertyName.equals(tmFeatureType.getDefaultGeometryAttribute())) {
+                  // We could use GeoJSON, but WKT is more compact and that would also incur a
+                  // change to the API
                   doc.setGeometry(GeometryProcessor.processGeometry(value, true, true, null));
                 } else {
                   if (searchFields.contains(propertyName)) {
@@ -280,6 +294,8 @@ public class SolrHelper implements AutoCloseable, Constants {
    * @param searchIndex the search index
    * @param solrQuery the query, when {@code null} or empty, the query is set to {@code *} (match
    *     all)
+   * @param solrPoint the point to search around, in (x y) format
+   * @param solrDistance the distance to search around the point in Solr distance units (kilometers)
    * @param start the start index, starting at 0
    * @param numResultsToReturn the number of results to return
    * @return the documents
@@ -287,8 +303,15 @@ public class SolrHelper implements AutoCloseable, Constants {
    * @throws SolrServerException if a Solr error occurs
    */
   public SearchResponse findInIndex(
-      @NotNull SearchIndex searchIndex, String solrQuery, int start, int numResultsToReturn)
+      @NotNull SearchIndex searchIndex,
+      String solrQuery,
+      String solrFilterQuery,
+      String solrPoint,
+      Double solrDistance,
+      int start,
+      int numResultsToReturn)
       throws IOException, SolrServerException, SolrException {
+
     logger.info("Find in index for {}", searchIndex.getId());
     if (null == solrQuery || solrQuery.isBlank()) {
       solrQuery = "*";
@@ -308,6 +331,17 @@ public class SolrHelper implements AutoCloseable, Constants {
             .addSort(SEARCH_ID_FIELD, SolrQuery.ORDER.asc)
             .setRows(numResultsToReturn)
             .setStart(start);
+
+    if (null != solrFilterQuery && !solrFilterQuery.isBlank()) {
+      query.addFilterQuery(solrFilterQuery);
+    }
+    if (null != solrPoint && null != solrDistance) {
+      if (null == solrFilterQuery || !solrFilterQuery.startsWith("{!geofilt")) {
+        query.addFilterQuery("{!geofilt sfield=" + INDEX_GEOM_FIELD + "}");
+      }
+      query.add("pt", solrPoint);
+      query.add("d", solrDistance.toString());
+    }
     query.set("q.op", "AND");
     logger.debug("Solr query: {}", query);
 
@@ -375,18 +409,47 @@ public class SolrHelper implements AutoCloseable, Constants {
                 "uninvertible", false));
     searchLayerSchemaRequest.process(solrClient);
 
-    logger.info("Creating Solr field type {}", INDEX_GEOM_FIELD);
-    // TODO https://b3partners.atlassian.net/browse/HTM-1091
-    //  this should be a spatial field type using ("type", "location_rpt")
-    //  but that requires some more work
+    logger.info("Creating Solr field type for {}", INDEX_GEOM_FIELD);
+    // see
+    // https://solr.apache.org/guide/solr/latest/query-guide/spatial-search.html#schema-configuration-for-rpt
+    FieldTypeDefinition spatialFieldTypeDef = new FieldTypeDefinition();
+    Map<String, Object> spatialFieldAttributes =
+        new HashMap<>(
+            Map.of(
+                "name", SOLR_SPATIAL_FIELDNAME,
+                "class", "solr.SpatialRecursivePrefixTreeFieldType",
+                "spatialContextFactory", "JTS",
+                "geo", false,
+                "distanceUnits", "kilometers",
+                "distCalculator", "cartesian",
+                "format", "WKT",
+                "autoIndex", true,
+                "distErrPct", "0.025",
+                "maxDistErr", "0.001"));
+    spatialFieldAttributes.putAll(
+        Map.of(
+            "prefixTree", "packedQuad",
+            // see
+            // https://locationtech.github.io/spatial4j/apidocs/org/locationtech/spatial4j/context/jts/ValidationRule.html
+            "validationRule", "repairBuffer0",
+            // NOTE THE ODDITY in coordinate order of "worldBounds",
+            // "ENVELOPE(minX, maxX, maxY, minY)"
+            "worldBounds",
+                // webmercator / EPSG:3857 projected bounds
+                "ENVELOPE(-20037508.34, 20037508.34, 20048966.1, -20048966.1)"
+            // Amersfoort/RD new / EPSG:28992 projected bounds
+            // "ENVELOPE(482.06, 284182.97, 637049.52, 306602.42)"
+            ));
+    spatialFieldTypeDef.setAttributes(spatialFieldAttributes);
+    SchemaRequest.AddFieldType spatialFieldType =
+        new SchemaRequest.AddFieldType(spatialFieldTypeDef);
+    spatialFieldType.process(solrClient);
+    solrClient.commit();
+
+    logger.info("Creating Solr field {}", INDEX_GEOM_FIELD);
     SchemaRequest.AddField schemaRequestGeom =
         new SchemaRequest.AddField(
-            Map.of(
-                "name", INDEX_GEOM_FIELD,
-                "type", "string",
-                "indexed", false,
-                "stored", true,
-                "multiValued", false));
+            Map.of("name", INDEX_GEOM_FIELD, "type", "tm_geometry_rpt", "stored", true));
     schemaRequestGeom.process(solrClient);
 
     logger.info("Creating Solr field type {}", INDEX_DISPLAY_FIELD);

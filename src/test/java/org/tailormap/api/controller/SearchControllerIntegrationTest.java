@@ -11,6 +11,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWithIgnoringCase;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -182,5 +183,32 @@ class SearchControllerIntegrationTest implements Constants {
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Error while searching with given query"));
+  }
+
+  @Test
+  void testSpatialQueryDistance() throws Exception {
+    final String url = apiBasePath + layerWegdeelSqlServer + "/search";
+
+    mockMvc
+        .perform(
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .param("q", "open")
+                .param("start", "0")
+                // added in backend
+                // .param("fq", "{!geofilt sfield=geometry}")
+                .param("pt", "133809 458811")
+                .param("d", "0.005"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.start").value(0))
+        .andExpect(jsonPath("$.total").value(2))
+        .andExpect(jsonPath("$.documents").isArray())
+        .andExpect(jsonPath("$.documents.length()").value(2))
+        .andExpect(jsonPath("$.documents[0].fid").isString())
+        .andExpect(jsonPath("$.documents[0].fid").value(startsWithIgnoringCase("wegdeel")))
+        .andExpect(jsonPath("$.documents[0].displayValues").isArray())
+        .andExpect(jsonPath("$.documents[0]." + INDEX_GEOM_FIELD).isString());
   }
 }

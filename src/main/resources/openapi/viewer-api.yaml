@@ -317,7 +317,7 @@ components:
           type: string
           nullable: false
         geometry:
-          description: 'The geometry of the feature (WKT'
+          description: 'The geometry of the feature (WKT)'
           type: string
           nullable: true
         displayValues:
@@ -1309,6 +1309,25 @@ paths:
           type: integer
           minimum: 0
           default: 0
+      - description: '(Solr) distance search term (kilometers)'
+        in: query
+        name: d
+        required: true
+        schema:
+          type: number
+          format: double
+      - description: '(Solr) search point term'
+        in: query
+        name: pt
+        required: false
+        schema:
+          type: string
+      - description: '(Solr) filter query term'
+        in: query
+        name: fq
+        required: false
+        schema:
+          type: string
     get:
       operationId: 'search'
       description: 'retrieve a limited list of search responses that fulfill the requested conditions (parameters).'
