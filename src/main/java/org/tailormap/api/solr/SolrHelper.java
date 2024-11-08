@@ -183,7 +183,7 @@ public class SolrHelper implements AutoCloseable, Constants {
             });
         if (searchValues.isEmpty() || displayValues.isEmpty()) {
           // this is a record/document that can either not be found or not be displayed
-          logger.warn(
+          logger.trace(
               "No search or display values found for feature: {} in featuretype: {}, skipped for indexing",
               feature.getID(),
               tmFeatureType.getName());
