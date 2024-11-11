@@ -107,7 +107,7 @@ services:
       - postgis
       - oracle
       - sqlserver
-    image: solr:latest
+    image: ghcr.io/tailormap/solr:9.7.0
     environment:
       TZ: Europe/Amsterdam
     volumes:
