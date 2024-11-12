@@ -13,7 +13,8 @@ SPDX-License-Identifier: MIT
         <vulnerabilityName>CVE-2022-41852</vulnerabilityName>
         <vulnerabilityName>CVE-2022-40159</vulnerabilityName>
         <vulnerabilityName>CVE-2022-40160</vulnerabilityName>
-    </suppress>    <suppress>
+    </suppress>
+    <suppress>
         <notes><![CDATA[
    Applies to Eclipse IDE only
    ]]></notes>
@@ -34,5 +35,12 @@ SPDX-License-Identifier: MIT
    ]]></notes>
         <packageUrl regex="true">^pkg:maven/org\.quartz-scheduler/quartz@.*$</packageUrl>
         <cve>CVE-2023-39017</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file names: jetty-io-10.0.24.jar / http2-client-10.0.24.jar
+   We have Jetty dependencies because SolrJ uses the Jetty http classes, but not the vulnerable `HttpURI` class
+   ]]></notes>
+        <cve>CVE-2024-6763</cve>
     </suppress>
 </suppressions>
