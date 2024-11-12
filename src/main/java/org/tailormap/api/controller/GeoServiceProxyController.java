@@ -164,6 +164,10 @@ public class GeoServiceProxyController {
   private URI buildWMSUrl(GeoService service, HttpServletRequest request) {
     final UriComponentsBuilder originalServiceUrl =
         UriComponentsBuilder.fromHttpUrl(service.getUrl());
+    // Validate the service URL against allowed domains
+    if (!isValidDomain(service.getUrl())) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid service URL");
+    }
     // request.getParameterMap() includes parameters from an application/x-www-form-urlencoded POST
     // body
     final MultiValueMap<String, String> requestParams =
@@ -262,6 +266,21 @@ public class GeoServiceProxyController {
       return ResponseEntity.status(response.statusCode()).headers(headers).body(body);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Bad Gateway");
+    }
+  }
+
+  private static final List<String> ALLOWED_DOMAINS = List.of(
+      "example.com",
+      "another-example.com"
+  );
+
+  private boolean isValidDomain(String url) {
+    try {
+      URI uri = new URI(url);
+      String host = uri.getHost();
+      return ALLOWED_DOMAINS.stream().anyMatch(host::endsWith);
+    } catch (Exception e) {
+      return false;
     }
   }
 }
