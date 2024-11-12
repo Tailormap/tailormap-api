@@ -27,6 +27,7 @@ import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +63,9 @@ import org.tailormap.api.viewer.model.LayerExportCapabilities;
 public class LayerExportController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Value("#{'${tailormap-api.export.allowed-outputformats}'.split(',')}")
+  private List<String> allowedOutputFormats;
 
   private final FeatureSourceRepository featureSourceRepository;
 
@@ -127,9 +131,6 @@ public class LayerExportController {
       @RequestParam(required = false) String sortOrder,
       @RequestParam(required = false) String crs,
       HttpServletRequest request) {
-
-    // Define allowed output formats
-    List<String> allowedOutputFormats = List.of("application/json", "text/xml", "application/gml+xml");
 
     // Validate outputFormat
     if (!allowedOutputFormats.contains(outputFormat)) {

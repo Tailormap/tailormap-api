@@ -109,7 +109,7 @@ class LayerExportControllerIntegrationTest {
             get(url)
                 .with(setServletPath(url))
                 .accept(MediaType.APPLICATION_JSON)
-                .param("outputFormat", "application/json")
+                .param("outputFormat", MediaType.APPLICATION_JSON_VALUE)
                 .param("attributes", "geom,naam,code"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -159,7 +159,7 @@ class LayerExportControllerIntegrationTest {
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(setServletPath(url))
-                .param("outputFormat", "application/json")
+                .param("outputFormat", MediaType.APPLICATION_JSON_VALUE)
                 .param("filter", "(BRONHOUDER IN ('G1904','L0002','L0004'))")
                 .param("sortBy", "CLASS")
                 .param("sortOrder", "asc"))
@@ -176,7 +176,7 @@ class LayerExportControllerIntegrationTest {
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(setServletPath(url))
-                .param("outputFormat", "application/json")
+                .param("outputFormat", MediaType.APPLICATION_JSON_VALUE)
                 .param("filter", "(BRONHOUDER IN ('G1904','L0002','L0004'))")
                 .param("sortBy", "CLASS")
                 .param("sortOrder", "desc"))
@@ -197,7 +197,7 @@ class LayerExportControllerIntegrationTest {
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(setServletPath(url))
-                .param("outputFormat", "application/json")
+                .param("outputFormat", MediaType.APPLICATION_JSON_VALUE)
                 // terminationdate,geom_kruinlijn are hidden attributes
                 .param(
                     "attributes", "identificatie,bronhouder,class,terminationdate,geom_kruinlijn"))
@@ -216,7 +216,7 @@ class LayerExportControllerIntegrationTest {
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(setServletPath(url))
-                .param("outputFormat", "application/json")
+                .param("outputFormat", MediaType.APPLICATION_JSON_VALUE)
                 .param("filter", "(bronhouder ILIKE 'L0001')"))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk())
@@ -237,7 +237,19 @@ class LayerExportControllerIntegrationTest {
             get(testUrl)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(setServletPath(testUrl))
-                .param("outputFormat", "application/json"))
+                .param("outputFormat", MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isForbidden());
+  }
+
+  @Test
+  void testInvalidOutputFormatNotAccepted() throws Exception {
+    final String testUrl = apiBasePath + layerBegroeidTerreindeelPostgis + "/export/download";
+    mockMvc
+        .perform(
+            get(testUrl)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(testUrl))
+                .param("outputFormat", "Invalid value!"))
+        .andExpect(status().isBadRequest());
   }
 }
