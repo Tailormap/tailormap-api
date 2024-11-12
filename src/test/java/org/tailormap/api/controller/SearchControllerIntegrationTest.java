@@ -211,4 +211,30 @@ class SearchControllerIntegrationTest implements Constants {
         .andExpect(jsonPath("$.documents[0].displayValues").isArray())
         .andExpect(jsonPath("$.documents[0]." + INDEX_GEOM_FIELD).isString());
   }
+
+  @Test
+  void testSpatialQueryDistanceWithBbox() throws Exception {
+    final String url = apiBasePath + layerWegdeelSqlServer + "/search";
+
+    mockMvc
+        .perform(
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .param("q", "open")
+                .param("start", "0")
+                .param("fq", "{!bbox sfield=geometry}")
+                .param("pt", "133809 458811")
+                .param("d", "0.5"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.start").value(0))
+        .andExpect(jsonPath("$.total").value(2))
+        .andExpect(jsonPath("$.documents").isArray())
+        .andExpect(jsonPath("$.documents.length()").value(2))
+        .andExpect(jsonPath("$.documents[0].fid").isString())
+        .andExpect(jsonPath("$.documents[0].fid").value(startsWithIgnoringCase("wegdeel")))
+        .andExpect(jsonPath("$.documents[0].displayValues").isArray())
+        .andExpect(jsonPath("$.documents[0]." + INDEX_GEOM_FIELD).isString());
+  }
 }
