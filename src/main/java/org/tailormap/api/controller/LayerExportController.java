@@ -128,6 +128,15 @@ public class LayerExportController {
       @RequestParam(required = false) String crs,
       HttpServletRequest request) {
 
+    // Define allowed output formats
+    List<String> allowedOutputFormats = List.of("application/json", "text/xml", "application/gml+xml");
+
+    // Validate outputFormat
+    if (!allowedOutputFormats.contains(outputFormat)) {
+      logger.warn("Invalid output format requested: {}", outputFormat);
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid output format");
+    }
+
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
 
