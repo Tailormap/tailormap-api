@@ -19,7 +19,9 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrResponse;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.BaseHttpSolrClient;
 import org.apache.solr.client.solrj.request.schema.FieldTypeDefinition;
 import org.apache.solr.client.solrj.request.schema.SchemaRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -51,22 +53,59 @@ import org.tailormap.api.viewer.model.SearchResponse;
  * in a try-with-resources.
  */
 public class SolrHelper implements AutoCloseable, Constants {
-  private static final Logger logger =
-      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
   /**
    * the number of documents that are submitted per batch to the Solr service: {@value
    * #SOLR_BATCH_SIZE}.
    */
   public static final int SOLR_BATCH_SIZE = 1000;
 
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   /** {@value #SOLR_TIMEOUT} milliseconds. */
   private static final int SOLR_TIMEOUT = 7000;
 
-  private final SolrClient solrClient;
-
   /** the Solr field type name geometry fields: {@value #SOLR_SPATIAL_FIELDNAME}. */
   private static final String SOLR_SPATIAL_FIELDNAME = "tm_geometry_rpt";
+
+  private final SolrClient solrClient;
+
+  /** the Solr search field definition requests for Tailormap. */
+  private final Map<String, SchemaRequest.AddField> solrSearchFields =
+      Map.of(
+          SEARCH_LAYER,
+              new SchemaRequest.AddField(
+                  Map.of(
+                      "name", SEARCH_LAYER,
+                      "type", "string",
+                      "indexed", true,
+                      "stored", true,
+                      "multiValued", false,
+                      "required", true,
+                      "uninvertible", false)),
+          INDEX_GEOM_FIELD,
+              new SchemaRequest.AddField(
+                  Map.of("name", INDEX_GEOM_FIELD, "type", SOLR_SPATIAL_FIELDNAME, "stored", true)),
+          INDEX_SEARCH_FIELD,
+              new SchemaRequest.AddField(
+                  Map.of(
+                      "name", INDEX_SEARCH_FIELD,
+                      "type", "text_general",
+                      "indexed", true,
+                      "stored", true,
+                      "multiValued", true,
+                      "required", true,
+                      "uninvertible", false)),
+          INDEX_DISPLAY_FIELD,
+              new SchemaRequest.AddField(
+                  Map.of(
+                      "name", INDEX_DISPLAY_FIELD,
+                      "type", "text_general",
+                      "indexed", false,
+                      "stored", true,
+                      "multiValued", true,
+                      "required", true,
+                      "uninvertible", false)));
 
   /**
    * Constructor
@@ -374,42 +413,81 @@ public class SolrHelper implements AutoCloseable, Constants {
   }
 
   /**
-   * Programmatically create (part of) the schema if it does not exist. Only checks for the
-   * existence of the search layer {@link Constants#SEARCH_LAYER}.
+   * Close the wrapped Solr client.
    *
+   * @throws IOException if an I/O error occurs
+   */
+  @Override
+  public void close() throws IOException {
+    if (null != this.solrClient) this.solrClient.close();
+  }
+
+  private boolean checkSchemaIfFieldExists(String fieldName) {
+    SchemaRequest.Field fieldCheck = new SchemaRequest.Field(fieldName);
+    try {
+      SchemaResponse.FieldResponse isField = fieldCheck.process(solrClient);
+      logger.debug("Field {} exists", isField.getField());
+      return true;
+    } catch (SolrServerException | BaseHttpSolrClient.RemoteSolrException e) {
+      logger.debug(
+          "Field {} does not exist or could not be retrieved. Assuming it does not exist.",
+          fieldName);
+    } catch (IOException e) {
+      logger.error("Tried getting field: {}, but failed.", fieldName, e);
+    }
+    return false;
+  }
+
+  /**
+   * @param fieldName the name of the field to create
    * @throws SolrServerException if a Solr error occurs
    * @throws IOException if an I/O error occurs
    */
-  private void createSchemaIfNotExists() throws SolrServerException, IOException {
-    SchemaRequest.Field fieldCheck = new SchemaRequest.Field(SEARCH_LAYER);
-    boolean schemaExists = true;
+  private void createSchemaFieldIfNotExists(String fieldName)
+      throws SolrServerException, IOException {
+    if (!checkSchemaIfFieldExists(fieldName)) {
+      logger.info("Creating Solr field {}.", fieldName);
+      SchemaRequest.AddField schemaRequest = solrSearchFields.get(fieldName);
+      SolrResponse response = schemaRequest.process(solrClient);
+      logger.debug("Field type {} created", response);
+      solrClient.commit();
+    }
+  }
+
+  /** Programmatically create the schema if it does not exist. */
+  private void createSchemaIfNotExists() {
+    solrSearchFields.forEach(
+        (key, value) -> {
+          try {
+            if (key.equals(INDEX_GEOM_FIELD)) {
+              createGeometryFieldTypeIfNotExists();
+            }
+            createSchemaFieldIfNotExists(key);
+          } catch (SolrServerException | IOException e) {
+            logger.error(
+                "Error creating schema field: {} indexing may fail. Details: {}",
+                key,
+                e.getLocalizedMessage(),
+                e);
+          }
+        });
+  }
+
+  private void createGeometryFieldTypeIfNotExists() throws SolrServerException, IOException {
+    SchemaRequest.FieldType fieldTypeCheck = new SchemaRequest.FieldType(SOLR_SPATIAL_FIELDNAME);
     try {
-      SchemaResponse.FieldResponse isField = fieldCheck.process(solrClient);
-      logger.debug("Field type {} exists", isField.getField());
-    } catch (Exception e) {
-      logger.debug(e.getLocalizedMessage());
-      logger.info("Field type {} does not exist, creating it", SEARCH_LAYER);
-      schemaExists = false;
-    }
-
-    if (schemaExists) {
+      SchemaResponse.FieldTypeResponse isFieldType = fieldTypeCheck.process(solrClient);
+      logger.debug("Field type {} exists", isFieldType.getFieldType());
       return;
+    } catch (SolrServerException | BaseHttpSolrClient.RemoteSolrException e) {
+      logger.debug(
+          "Field type {} does not exist or could not be retrieved. Assuming it does not exist.",
+          SOLR_SPATIAL_FIELDNAME);
+    } catch (IOException e) {
+      logger.error("Tried getting field type: {}, but failed.", SOLR_SPATIAL_FIELDNAME, e);
     }
 
-    logger.info("Creating Solr field type {}", SEARCH_LAYER);
-    SchemaRequest.AddField searchLayerSchemaRequest =
-        new SchemaRequest.AddField(
-            Map.of(
-                "name", SEARCH_LAYER,
-                "type", "string",
-                "indexed", true,
-                "stored", true,
-                "multiValued", false,
-                "required", true,
-                "uninvertible", false));
-    searchLayerSchemaRequest.process(solrClient);
-
-    logger.info("Creating Solr field type for {}", INDEX_GEOM_FIELD);
+    logger.info("Creating Solr field type for {}", SOLR_SPATIAL_FIELDNAME);
     // see
     // https://solr.apache.org/guide/solr/latest/query-guide/spatial-search.html#schema-configuration-for-rpt
     FieldTypeDefinition spatialFieldTypeDef = new FieldTypeDefinition();
@@ -428,15 +506,17 @@ public class SolrHelper implements AutoCloseable, Constants {
                 "maxDistErr", "0.001"));
     spatialFieldAttributes.putAll(
         Map.of(
-            "prefixTree", "packedQuad",
+            "prefixTree",
+            "packedQuad",
             // see
             // https://locationtech.github.io/spatial4j/apidocs/org/locationtech/spatial4j/context/jts/ValidationRule.html
-            "validationRule", "repairBuffer0",
+            "validationRule",
+            "repairBuffer0",
             // NOTE THE ODDITY in coordinate order of "worldBounds",
             // "ENVELOPE(minX, maxX, maxY, minY)"
             "worldBounds",
-                // webmercator / EPSG:3857 projected bounds
-                "ENVELOPE(-20037508.34, 20037508.34, 20048966.1, -20048966.1)"
+            // webmercator / EPSG:3857 projected bounds
+            "ENVELOPE(-20037508.34, 20037508.34, 20048966.1, -20048966.1)"
             // Amersfoort/RD new / EPSG:28992 projected bounds
             // "ENVELOPE(482.06, 284182.97, 637049.52, 306602.42)"
             ));
@@ -445,47 +525,5 @@ public class SolrHelper implements AutoCloseable, Constants {
         new SchemaRequest.AddFieldType(spatialFieldTypeDef);
     spatialFieldType.process(solrClient);
     solrClient.commit();
-
-    logger.info("Creating Solr field {}", INDEX_GEOM_FIELD);
-    SchemaRequest.AddField schemaRequestGeom =
-        new SchemaRequest.AddField(
-            Map.of("name", INDEX_GEOM_FIELD, "type", "tm_geometry_rpt", "stored", true));
-    schemaRequestGeom.process(solrClient);
-
-    logger.info("Creating Solr field type {}", INDEX_DISPLAY_FIELD);
-    SchemaRequest.AddField displayFieldSchemaRequest =
-        new SchemaRequest.AddField(
-            Map.of(
-                "name", INDEX_DISPLAY_FIELD,
-                "type", "text_general",
-                "indexed", false,
-                "stored", true,
-                "multiValued", true,
-                "required", true,
-                "uninvertible", false));
-    displayFieldSchemaRequest.process(solrClient);
-
-    logger.info("Creating Solr field type {}", INDEX_SEARCH_FIELD);
-    SchemaRequest.AddField indexFieldSchemaRequest =
-        new SchemaRequest.AddField(
-            Map.of(
-                "name", INDEX_SEARCH_FIELD,
-                "type", "text_general",
-                "indexed", true,
-                "stored", true,
-                "multiValued", true,
-                "required", true,
-                "uninvertible", false));
-    indexFieldSchemaRequest.process(solrClient);
-  }
-
-  /**
-   * Close the wrapped Solr client.
-   *
-   * @throws IOException if an I/O error occurs
-   */
-  @Override
-  public void close() throws IOException {
-    if (null != this.solrClient) this.solrClient.close();
   }
 }
