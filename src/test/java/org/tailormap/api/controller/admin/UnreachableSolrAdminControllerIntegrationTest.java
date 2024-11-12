@@ -94,6 +94,6 @@ class UnreachableSolrAdminControllerIntegrationTest {
         .andExpect(status().isInternalServerError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(500))
-        .andExpect(jsonPath("$.message").value(containsStringIgnoringCase("connection refused")));
+        .andExpect(jsonPath("$.message").value(containsStringIgnoringCase("refused connection")));
   }
 }
