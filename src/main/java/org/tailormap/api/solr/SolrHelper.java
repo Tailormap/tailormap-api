@@ -375,7 +375,8 @@ public class SolrHelper implements AutoCloseable, Constants {
       query.addFilterQuery(solrFilterQuery);
     }
     if (null != solrPoint && null != solrDistance) {
-      if (null == solrFilterQuery || !solrFilterQuery.startsWith("{!geofilt")) {
+      if (null == solrFilterQuery
+          || !(solrFilterQuery.startsWith("{!geofilt") || solrFilterQuery.startsWith("{!bbox"))) {
         query.addFilterQuery("{!geofilt sfield=" + INDEX_GEOM_FIELD + "}");
       }
       query.add("pt", solrPoint);
