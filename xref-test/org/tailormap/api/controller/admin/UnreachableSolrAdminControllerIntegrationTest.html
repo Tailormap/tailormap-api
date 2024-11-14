@@ -102,7 +102,7 @@
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>          .andExpect(status().isInternalServerError())
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>          .andExpect(jsonPath(<span class="jxr_string">"$.code"</span>).value(500))
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>          .andExpect(jsonPath(<span class="jxr_string">"$.message"</span>).value(containsStringIgnoringCase(<span class="jxr_string">"connection refused"</span>)));
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>          .andExpect(jsonPath(<span class="jxr_string">"$.message"</span>).value(containsStringIgnoringCase(<span class="jxr_string">"refused connection"</span>)));
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>    }
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>  }
 </pre>

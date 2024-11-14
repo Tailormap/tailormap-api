@@ -75,44 +75,54 @@
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>        @ModelAttribute <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service,
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>        @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>        @RequestParam(required = false, name = <span class="jxr_string">"q"</span>) <strong class="jxr_keyword">final</strong> String solrQuery,
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>        @RequestParam(required = false, defaultValue = <span class="jxr_string">"0"</span>) Integer start) {
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>      AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>      <strong class="jxr_keyword">if</strong> (appLayerSettings.getSearchIndexId() == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>            HttpStatus.NOT_FOUND,
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>            <span class="jxr_string">"Layer '%s' does not have a search index"</span>.formatted(appTreeLayerNode.getLayerName()));
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>      }
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>  
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">final</strong> <a name="SearchIndex" href="../../../../org/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> searchIndex =
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>          searchIndexRepository
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>              .findById(appLayerSettings.getSearchIndexId())
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>              .orElseThrow(
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>                  () -&gt;
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>                      <strong class="jxr_keyword">new</strong> ResponseStatusException(
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>                          HttpStatus.NOT_FOUND,
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>                          <span class="jxr_string">"Layer '%s' does not have a search index"</span>
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>                              .formatted(appTreeLayerNode.getLayerName())));
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>  
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">try</strong> (SolrClient solrClient = solrService.getSolrClientForSearching();
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>          <a name="SolrHelper" href="../../../../org/tailormap/api/solr/SolrHelper.html#SolrHelper">SolrHelper</a> solrHelper = <strong class="jxr_keyword">new</strong> <a name="SolrHelper" href="../../../../org/tailormap/api/solr/SolrHelper.html#SolrHelper">SolrHelper</a>(solrClient)) {
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>        <strong class="jxr_keyword">final</strong> SearchResponse searchResponse =
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>            solrHelper.findInIndex(searchIndex, solrQuery, start, numResultsToReturn);
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>        <strong class="jxr_keyword">return</strong> (<strong class="jxr_keyword">null</strong> == searchResponse.getDocuments() || searchResponse.getDocuments().isEmpty())
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>            ? ResponseEntity.noContent().build()
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>            : ResponseEntity.ok().body(searchResponse);
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>      } <strong class="jxr_keyword">catch</strong> (SolrServerException | IOException e) {
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>        logger.error(<span class="jxr_string">"Error while contacting Solr"</span>, e);
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>           HttpStatus.INTERNAL_SERVER_ERROR, <span class="jxr_string">"Error while searching"</span>, e);
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>     } <strong class="jxr_keyword">catch</strong> (SolrException e) {
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>       logger.error(<span class="jxr_string">"Error while searching"</span>, e);
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>           HttpStatus.BAD_REQUEST, <span class="jxr_string">"Error while searching with given query"</span>, e);
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>     }
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>   }
-<a class="jxr_linenumber" name="L107" href="#L107">107</a> }
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>        @RequestParam(required = false, defaultValue = <span class="jxr_string">"0"</span>) Integer start,
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>        @RequestParam(required = false, name = <span class="jxr_string">"fq"</span>) <strong class="jxr_keyword">final</strong> String solrFilterQuery,
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>        @RequestParam(required = false, name = <span class="jxr_string">"pt"</span>) <strong class="jxr_keyword">final</strong> String solrPoint,
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>        @RequestParam(required = false, name = <span class="jxr_string">"d"</span>) <strong class="jxr_keyword">final</strong> Double solrDistance) {
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>      AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      <strong class="jxr_keyword">if</strong> (appLayerSettings.getSearchIndexId() == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>            HttpStatus.NOT_FOUND,
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>            <span class="jxr_string">"Layer '%s' does not have a search index"</span>.formatted(appTreeLayerNode.getLayerName()));
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>      }
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      <strong class="jxr_keyword">final</strong> <a name="SearchIndex" href="../../../../org/tailormap/api/persistence/SearchIndex.html#SearchIndex">SearchIndex</a> searchIndex =
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          searchIndexRepository
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>              .findById(appLayerSettings.getSearchIndexId())
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>              .orElseThrow(
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>                  () -&gt;
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>                      <strong class="jxr_keyword">new</strong> ResponseStatusException(
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>                          HttpStatus.NOT_FOUND,
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>                          <span class="jxr_string">"Layer '%s' does not have a search index"</span>
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>                              .formatted(appTreeLayerNode.getLayerName())));
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>  
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">try</strong> (SolrClient solrClient = solrService.getSolrClientForSearching();
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>          <a name="SolrHelper" href="../../../../org/tailormap/api/solr/SolrHelper.html#SolrHelper">SolrHelper</a> solrHelper = <strong class="jxr_keyword">new</strong> <a name="SolrHelper" href="../../../../org/tailormap/api/solr/SolrHelper.html#SolrHelper">SolrHelper</a>(solrClient)) {
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>        <strong class="jxr_keyword">final</strong> SearchResponse searchResponse =
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>            solrHelper.findInIndex(
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>                searchIndex,
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>                solrQuery,
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>                solrFilterQuery,
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>               solrPoint,
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>               solrDistance,
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>               start,
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>               numResultsToReturn);
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>       <strong class="jxr_keyword">return</strong> (<strong class="jxr_keyword">null</strong> == searchResponse.getDocuments() || searchResponse.getDocuments().isEmpty())
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>           ? ResponseEntity.noContent().build()
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>           : ResponseEntity.ok().body(searchResponse);
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>     } <strong class="jxr_keyword">catch</strong> (SolrServerException | IOException e) {
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>       logger.error(<span class="jxr_string">"Error while contacting Solr"</span>, e);
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>           HttpStatus.INTERNAL_SERVER_ERROR, <span class="jxr_string">"Error while searching"</span>, e);
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>     } <strong class="jxr_keyword">catch</strong> (SolrException e) {
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>       logger.error(<span class="jxr_string">"Error while searching"</span>, e);
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>           HttpStatus.BAD_REQUEST, <span class="jxr_string">"Error while searching with given query"</span>, e);
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>     }
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>   }
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
