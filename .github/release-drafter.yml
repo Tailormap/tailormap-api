@@ -34,6 +34,7 @@ categories:
     labels:
       - tests
       - infrastructure
+    collapse-after: 10
   - title: 🔨 Dependency updates
     label: dependency
     collapse-after: 10
