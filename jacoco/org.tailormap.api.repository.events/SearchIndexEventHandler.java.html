@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SearchIndexEventHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.repository.events</a> &gt; <span class="el_source">SearchIndexEventHandler.java</span></div><h1>SearchIndexEventHandler.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2024 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.repository.events;
+
+import java.lang.invoke.MethodHandles;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import org.quartz.JobDataMap;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.matchers.GroupMatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.core.annotation.HandleAfterDelete;
+import org.springframework.data.rest.core.annotation.HandleBeforeSave;
+import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
+import org.springframework.stereotype.Component;
+import org.tailormap.api.persistence.SearchIndex;
+import org.tailormap.api.scheduling.IndexTask;
+import org.tailormap.api.scheduling.TMJobDataMap;
+import org.tailormap.api.scheduling.Task;
+import org.tailormap.api.scheduling.TaskManagerService;
+import org.tailormap.api.scheduling.TaskType;
+
+/**
+ * Event handler for Solr indexes; when a {@code SearchIndex} is created, updated or deleted a
+ * {@code Task} is associated.
+ */
+@Component
+@RepositoryEventHandler
+public class SearchIndexEventHandler {
+<span class="nc" id="L39">  private static final Logger logger =</span>
+<span class="nc" id="L40">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  private final Scheduler scheduler;
+  private final TaskManagerService taskManagerService;
+
+  public SearchIndexEventHandler(
+<span class="nc" id="L46">      @Autowired Scheduler scheduler, @Autowired TaskManagerService taskManagerService) {</span>
+<span class="nc" id="L47">    this.scheduler = scheduler;</span>
+<span class="nc" id="L48">    this.taskManagerService = taskManagerService;</span>
+<span class="nc" id="L49">  }</span>
+
+  /**
+   * Handle after delete. Delete any associated task.
+   *
+   * @param searchIndex the search index that was deleted
+   */
+  @HandleAfterDelete
+  public void afterDeleteSearchIndexEventHandler(SearchIndex searchIndex)
+      throws SchedulerException {
+<span class="nc bnc" id="L59" title="All 2 branches missed.">    if (null != searchIndex.getSchedule()) {</span>
+<span class="nc" id="L60">      JobKey jobKey =</span>
+<span class="nc" id="L61">          taskManagerService.getJobKey(TaskType.INDEX, searchIndex.getSchedule().getUuid());</span>
+
+<span class="nc bnc" id="L63" title="All 4 branches missed.">      if (null != jobKey &amp;&amp; scheduler.checkExists(jobKey)) {</span>
+<span class="nc" id="L64">        logger.info(</span>
+            &quot;Deleting index task {} associated with search index: {}&quot;,
+<span class="nc" id="L66">            searchIndex.getSchedule().getUuid(),</span>
+<span class="nc" id="L67">            searchIndex.getName());</span>
+<span class="nc" id="L68">        boolean succes = scheduler.deleteJob(jobKey);</span>
+<span class="nc" id="L69">        logger.info(</span>
+            &quot;Task {}:{} deletion {}&quot;,
+<span class="nc" id="L71">            jobKey.getGroup(),</span>
+<span class="nc" id="L72">            jobKey.getName(),</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">            (succes ? &quot;succeeded&quot; : &quot;failed&quot;));</span>
+      }
+    }
+<span class="nc" id="L76">  }</span>
+
+  /**
+   * Handle before save. Create or update the associated task.
+   *
+   * @param searchIndex the search index that was saved
+   * @throws SchedulerException if the task could not be created or updated
+   */
+  @HandleBeforeSave
+  public void beforeSaveSearchIndexEventHandler(SearchIndex searchIndex) throws SchedulerException {
+    // TODO we don't handle the case where the schedule is null here; we would need to determine if
+    //   a task exists that was associated with the search index before;
+    //   this case can already be handled requesting a delete of the scheduled task instead
+<span class="nc bnc" id="L89" title="All 2 branches missed.">    if (null != searchIndex.getSchedule()) {</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">      if (null == searchIndex.getSchedule().getUuid()) {</span>
+<span class="nc" id="L91">        validateNoTaskExistsForIndex(searchIndex);</span>
+        // no task exists yet, create one
+<span class="nc" id="L93">        logger.info(&quot;Creating new task associated with search index: {}&quot;, searchIndex.getName());</span>
+<span class="nc" id="L94">        TMJobDataMap jobDataMap =</span>
+            new TMJobDataMap(
+<span class="nc" id="L96">                Map.of(</span>
+                    Task.TYPE_KEY,
+                    TaskType.INDEX,
+                    Task.DESCRIPTION_KEY,
+<span class="nc" id="L100">                    searchIndex.getSchedule().getDescription(),</span>
+                    IndexTask.INDEX_KEY,
+<span class="nc" id="L102">                    searchIndex.getId().toString()));</span>
+<span class="nc" id="L103">        jobDataMap.setPriority(searchIndex.getSchedule().getPriority());</span>
+<span class="nc" id="L104">        final UUID uuid =</span>
+<span class="nc" id="L105">            taskManagerService.createTask(</span>
+<span class="nc" id="L106">                IndexTask.class, jobDataMap, searchIndex.getSchedule().getCronExpression());</span>
+<span class="nc" id="L107">        searchIndex.getSchedule().setUuid(uuid);</span>
+<span class="nc" id="L108">      } else {</span>
+        // UUID given, task should exist; update it
+<span class="nc" id="L110">        logger.info(</span>
+            &quot;Updating task {} associated with search index: {}&quot;,
+<span class="nc" id="L112">            searchIndex.getSchedule().getUuid(),</span>
+<span class="nc" id="L113">            searchIndex.getName());</span>
+
+<span class="nc" id="L115">        JobKey jobKey =</span>
+<span class="nc" id="L116">            taskManagerService.getJobKey(TaskType.INDEX, searchIndex.getSchedule().getUuid());</span>
+<span class="nc bnc" id="L117" title="All 4 branches missed.">        if (null != jobKey &amp;&amp; scheduler.checkExists(jobKey)) {</span>
+          // the only things that may have changed are the cron expression, priority and description
+<span class="nc" id="L119">          JobDataMap jobDataMap = scheduler.getJobDetail(jobKey).getJobDataMap();</span>
+<span class="nc" id="L120">          jobDataMap.put(Task.DESCRIPTION_KEY, searchIndex.getSchedule().getDescription());</span>
+<span class="nc" id="L121">          jobDataMap.put(Task.CRON_EXPRESSION_KEY, searchIndex.getSchedule().getCronExpression());</span>
+<span class="nc" id="L122">          jobDataMap.put(Task.PRIORITY_KEY, searchIndex.getSchedule().getPriority());</span>
+
+<span class="nc" id="L124">          taskManagerService.updateTask(jobKey, new TMJobDataMap(jobDataMap));</span>
+        }
+      }
+    }
+<span class="nc" id="L128">  }</span>
+
+  /**
+   * Validate that no scheduled task exists for the given index.
+   *
+   * @param searchIndex the search index to validate for scheduling a task
+   * @throws SchedulerException if there is a task that is already associated with the given index
+   */
+  private void validateNoTaskExistsForIndex(SearchIndex searchIndex) throws SchedulerException {
+<span class="nc" id="L137">    Optional&lt;JobDataMap&gt; jobDataMapOptional =</span>
+<span class="nc" id="L138">        scheduler.getJobKeys(GroupMatcher.groupEquals(TaskType.INDEX.getValue())).stream()</span>
+<span class="nc" id="L139">            .map(</span>
+                jobKey -&gt; {
+                  try {
+<span class="nc" id="L142">                    return scheduler.getJobDetail(jobKey).getJobDataMap();</span>
+<span class="nc" id="L143">                  } catch (SchedulerException e) {</span>
+<span class="nc" id="L144">                    logger.error(&quot;Error getting task detail&quot;, e);</span>
+<span class="nc" id="L145">                    return null;</span>
+                  }
+                })
+<span class="nc" id="L148">            .filter(Objects::nonNull)</span>
+<span class="nc" id="L149">            .filter(</span>
+                jobDataMap -&gt;
+<span class="nc" id="L151">                    searchIndex.getId().equals(jobDataMap.getLongValue(IndexTask.INDEX_KEY)))</span>
+<span class="nc" id="L152">            .findFirst();</span>
+
+<span class="nc bnc" id="L154" title="All 2 branches missed.">    if (jobDataMapOptional.isPresent()) {</span>
+<span class="nc" id="L155">      logger.warn(&quot;A scheduled task already exists for search index: {}&quot;, searchIndex.getName());</span>
+<span class="nc" id="L156">      throw new SchedulerException(</span>
+          &quot;A scheduled task already exists for search index: '%s'&quot;
+<span class="nc" id="L158">              .formatted(searchIndex.getName()));</span>
+    }
+<span class="nc" id="L160">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
