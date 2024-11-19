@@ -8,6 +8,7 @@ package org.tailormap.api.controller.admin;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -36,6 +37,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
+import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.scheduling.TaskType;
 
 @AutoConfigureMockMvc
@@ -44,6 +46,7 @@ import org.tailormap.api.scheduling.TaskType;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TaskAdminControllerIntegrationTest {
   @Autowired private WebApplicationContext context;
+  @Autowired private SearchIndexRepository searchIndexRepository;
   private MockMvc mockMvc;
 
   @Value("${tailormap-api.admin.base-path}")
@@ -405,5 +408,36 @@ class TaskAdminControllerIntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.uuid").value(validUUID))
         .andExpect(jsonPath("$.type").value(TaskType.FAILINGPOC.getValue()));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {Group.ADMIN})
+  @Order(Integer.MAX_VALUE)
+  void deleteSearchIndexTask() throws Exception {
+    MvcResult result =
+        mockMvc
+            .perform(
+                get(adminBasePath + "/tasks")
+                    .queryParam(TYPE_KEY, TaskType.INDEX.getValue())
+                    .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.tasks").isArray())
+            .andExpect(jsonPath("$.tasks.length()").value(1))
+            .andReturn();
+
+    final String deleteUUID =
+        JsonPath.read(result.getResponse().getContentAsString(), "$.tasks[0].uuid");
+
+    mockMvc
+        .perform(
+            delete(adminBasePath + "/tasks/{type}/{uuid}", TaskType.INDEX, deleteUUID)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
+
+    assertTrue(searchIndexRepository.findByTaskScheduleUuid(UUID.fromString(deleteUUID)).isEmpty());
   }
 }

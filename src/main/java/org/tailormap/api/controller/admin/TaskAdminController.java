@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.scheduling.Task;
 import org.tailormap.api.scheduling.TaskManagerService;
 import org.tailormap.api.scheduling.TaskType;
@@ -62,11 +63,15 @@ public class TaskAdminController {
 
   private final Scheduler scheduler;
   private final TaskManagerService taskManagerService;
+  private final SearchIndexRepository searchIndexRepository;
 
   public TaskAdminController(
-      @Autowired Scheduler scheduler, @Autowired TaskManagerService taskManagerService) {
+      @Autowired Scheduler scheduler,
+      @Autowired TaskManagerService taskManagerService,
+      @Autowired SearchIndexRepository searchIndexRepository) {
     this.scheduler = scheduler;
     this.taskManagerService = taskManagerService;
+    this.searchIndexRepository = searchIndexRepository;
   }
 
   @Operation(
@@ -410,11 +415,32 @@ public class TaskAdminController {
 
       boolean succes = scheduler.deleteJob(jobKey);
       logger.info("Task {}:{} deletion {}", type, uuid, (succes ? "succeeded" : "failed"));
-
+      // cleanup the schedule from the business objects
+      switch (type) {
+        case INDEX:
+          deleteScheduleFromSearchIndex(uuid);
+          break;
+        case FAILINGPOC:
+        case POC:
+        case INTERRUPTABLEPOC:
+        // no action required, as these are not managed in Tailormap
+        default:
+          break;
+      }
       return ResponseEntity.noContent().build();
     } catch (SchedulerException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error getting task", e);
     }
+  }
+
+  private void deleteScheduleFromSearchIndex(UUID uuid) {
+    searchIndexRepository
+        .findByTaskScheduleUuid(uuid)
+        .forEach(
+            searchIndex -> {
+              searchIndex.setSchedule(null);
+              searchIndexRepository.save(searchIndex);
+            });
   }
 
   private ResponseEntity<Object> handleTaskNotFound() {
