@@ -119,7 +119,10 @@ public class SearchIndexEventHandler {
           JobDataMap jobDataMap = scheduler.getJobDetail(jobKey).getJobDataMap();
           jobDataMap.put(Task.DESCRIPTION_KEY, searchIndex.getSchedule().getDescription());
           jobDataMap.put(Task.CRON_EXPRESSION_KEY, searchIndex.getSchedule().getCronExpression());
-          jobDataMap.put(Task.PRIORITY_KEY, searchIndex.getSchedule().getPriority());
+          if (null != searchIndex.getSchedule().getPriority()
+              && searchIndex.getSchedule().getPriority() > 0) {
+            jobDataMap.put(Task.PRIORITY_KEY, searchIndex.getSchedule().getPriority());
+          }
 
           taskManagerService.updateTask(jobKey, new TMJobDataMap(jobDataMap));
         }
