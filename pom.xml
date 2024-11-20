@@ -1299,7 +1299,6 @@ SPDX-License-Identifier: MIT
                                 <buildx>
                                     <platforms>
                                         <platform>linux/amd64</platform>
-                                        <platform>linux/arm64</platform>
                                     </platforms>
                                     <attestations>
                                         <provenance>false</provenance>
@@ -1573,7 +1572,6 @@ SPDX-License-Identifier: MIT
                                         <buildx>
                                             <platforms>
                                                 <platform>linux/amd64</platform>
-                                                <platform>linux/arm64</platform>
                                             </platforms>
                                             <attestations>
                                                 <provenance>false</provenance>
