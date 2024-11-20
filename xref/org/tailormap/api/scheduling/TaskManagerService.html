@@ -121,7 +121,7 @@
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>                 .withPriority(jobDataMap.getInt(Task.PRIORITY_KEY))
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>                 .usingJobData(
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>                     SENTRY_SLUG_KEY,
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>                     <span class="jxr_string">"monitor_slug_cron_trigger_"</span> + jobDataMap.getString(Task.TYPE_KEY))
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>                     <span class="jxr_string">"monitor_slug_cron_trigger_"</span> + jobDataMap.get(Task.TYPE_KEY).toString())
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>                 .withSchedule(
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>                     CronScheduleBuilder.cronSchedule(jobDataMap.getString(Task.CRON_EXPRESSION_KEY))
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>                         .withMisfireHandlingInstructionFireAndProceed())
