@@ -80,7 +80,7 @@ public class IndexTask extends QuartzJobBean implements Task {
             .orElseThrow(() -> new JobExecutionException("Feature type not found"));
 
     try (SolrClient solrClient = solrService.getSolrClientForIndexing();
-        SolrHelper solrHelper = new SolrHelper(solrClient)) {
+        SolrHelper solrHelper = new SolrHelper().withSolrClient(solrClient)) {
 
       searchIndex.setStatus(SearchIndex.Status.INDEXING);
       searchIndex = searchIndexRepository.save(searchIndex);

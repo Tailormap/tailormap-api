@@ -1440,7 +1440,8 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
       final String solrUrl =
           "http://" + (connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "solr") + ":8983/solr/";
       this.solrService.setSolrUrl(solrUrl);
-      SolrHelper solrHelper = new SolrHelper(this.solrService.getSolrClientForIndexing());
+      SolrHelper solrHelper =
+          new SolrHelper().withSolrClient(this.solrService.getSolrClientForIndexing());
       GeoService geoService = geoServiceRepository.findById("snapshot-geoserver").orElseThrow();
       Application defaultApp = applicationRepository.findByName("default");
 

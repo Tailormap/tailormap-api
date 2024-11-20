@@ -91,7 +91,7 @@ public class SearchController {
                             .formatted(appTreeLayerNode.getLayerName())));
 
     try (SolrClient solrClient = solrService.getSolrClientForSearching();
-        SolrHelper solrHelper = new SolrHelper(solrClient)) {
+        SolrHelper solrHelper = new SolrHelper().withSolrClient(solrClient)) {
       final SearchResponse searchResponse =
           solrHelper.findInIndex(
               searchIndex,

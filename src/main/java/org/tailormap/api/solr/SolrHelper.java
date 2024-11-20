@@ -37,6 +37,8 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.locationtech.jts.geom.Geometry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
 import org.tailormap.api.persistence.SearchIndex;
@@ -52,23 +54,24 @@ import org.tailormap.api.viewer.model.SearchResponse;
  * provides a method to close the Solr client as well as automatically closing the client when used
  * in a try-with-resources.
  */
+@Component
 public class SolrHelper implements AutoCloseable, Constants {
-  /**
-   * the number of documents that are submitted per batch to the Solr service: {@value
-   * #SOLR_BATCH_SIZE}.
-   */
-  public static final int SOLR_BATCH_SIZE = 1000;
+  @Value("${tailormap-api.solr-batch-size:1000}")
+  private int solrBatchSize;
 
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  /** {@value #SOLR_TIMEOUT} milliseconds. */
-  private static final int SOLR_TIMEOUT = 7000;
+  @Value("${tailormap-api.solr-query-timeout-millis:7000}")
+  private int solrQueryTimeout;
+
+  @Value("${tailormap-api.solr-geometry-validation-rule:repairBuffer0}")
+  private String solrGeometryValidationRule;
 
   /** the Solr field type name geometry fields: {@value #SOLR_SPATIAL_FIELDNAME}. */
   private static final String SOLR_SPATIAL_FIELDNAME = "tm_geometry_rpt";
 
-  private final SolrClient solrClient;
+  private SolrClient solrClient = null;
 
   /** the Solr search field definition requests for Tailormap. */
   private final Map<String, SchemaRequest.AddField> solrSearchFields =
@@ -107,13 +110,17 @@ public class SolrHelper implements AutoCloseable, Constants {
                       "required", true,
                       "uninvertible", false)));
 
+  public SolrHelper() {}
+
   /**
-   * Constructor
+   * Returns configured {@code SolrHelper} object.
    *
    * @param solrClient the Solr client, this will be closed when this class is closed
+   * @return configured {@code SolrHelper} object
    */
-  public SolrHelper(@NotNull SolrClient solrClient) {
+  public SolrHelper withSolrClient(@NotNull SolrClient solrClient) {
     this.solrClient = solrClient;
+    return this;
   }
 
   /**
@@ -136,6 +143,9 @@ public class SolrHelper implements AutoCloseable, Constants {
       @NotNull SearchIndexRepository searchIndexRepository)
       throws IOException, SolrServerException {
 
+    if (null == solrClient) {
+      throw new IllegalStateException("Solr client is not set.");
+    }
     createSchemaIfNotExists();
 
     final Instant startedAt = Instant.now();
@@ -200,7 +210,7 @@ public class SolrHelper implements AutoCloseable, Constants {
     logger.trace("Indexing query: {}", q);
     SimpleFeatureCollection simpleFeatureCollection = fs.getFeatures(q);
     final int total = simpleFeatureCollection.size();
-    List<FeatureIndexingDocument> docsBatch = new ArrayList<>(SOLR_BATCH_SIZE);
+    List<FeatureIndexingDocument> docsBatch = new ArrayList<>(solrBatchSize);
     // TODO this does not currently batch/page the feature source query, this doesn't seem to be an
     //   issue for now but could be if the feature source is very, very large or slow
     UpdateResponse updateResponse;
@@ -247,7 +257,7 @@ public class SolrHelper implements AutoCloseable, Constants {
           docsBatch.add(doc);
         }
 
-        if (indexCounter % SOLR_BATCH_SIZE == 0) {
+        if (indexCounter % solrBatchSize == 0) {
           updateResponse = solrClient.addBeans(docsBatch);
           logger.info(
               "Added {} documents of {} to index, result status: {}",
@@ -312,6 +322,9 @@ public class SolrHelper implements AutoCloseable, Constants {
    */
   public void clearIndexForLayer(@NotNull Long searchLayerId)
       throws IOException, SolrServerException {
+    if (null == solrClient) {
+      throw new IllegalStateException("Solr client is not set.");
+    }
     QueryResponse response =
         solrClient.query(
             new SolrQuery("exists(query(" + SEARCH_LAYER + ":" + searchLayerId + "))"));
@@ -350,7 +363,9 @@ public class SolrHelper implements AutoCloseable, Constants {
       int start,
       int numResultsToReturn)
       throws IOException, SolrServerException, SolrException {
-
+    if (null == solrClient) {
+      throw new IllegalStateException("Solr client is not set.");
+    }
     logger.info("Find in index for {}", searchIndex.getId());
     if (null == solrQuery || solrQuery.isBlank()) {
       solrQuery = "*";
@@ -362,7 +377,7 @@ public class SolrHelper implements AutoCloseable, Constants {
     final SolrQuery query =
         new SolrQuery(INDEX_SEARCH_FIELD + ":" + solrQuery)
             .setShowDebugInfo(logger.isDebugEnabled())
-            .setTimeAllowed(SOLR_TIMEOUT)
+            .setTimeAllowed(solrQueryTimeout)
             .setIncludeScore(true)
             .setFields(SEARCH_ID_FIELD, INDEX_DISPLAY_FIELD, INDEX_GEOM_FIELD)
             .addFilterQuery(SEARCH_LAYER + ":" + searchIndex.getId())
@@ -512,7 +527,7 @@ public class SolrHelper implements AutoCloseable, Constants {
             // see
             // https://locationtech.github.io/spatial4j/apidocs/org/locationtech/spatial4j/context/jts/ValidationRule.html
             "validationRule",
-            "repairBuffer0",
+            solrGeometryValidationRule,
             // NOTE THE ODDITY in coordinate order of "worldBounds",
             // "ENVELOPE(minX, maxX, maxY, minY)"
             "worldBounds",

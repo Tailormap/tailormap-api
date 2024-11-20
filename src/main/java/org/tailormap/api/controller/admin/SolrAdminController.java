@@ -172,7 +172,7 @@ public class SolrAdminController {
         (null == searchIndex.getLastIndexed()
             || searchIndex.getStatus() == SearchIndex.Status.INITIAL);
     try (SolrClient solrClient = solrService.getSolrClientForIndexing();
-        SolrHelper solrHelper = new SolrHelper(solrClient)) {
+        SolrHelper solrHelper = new SolrHelper().withSolrClient(solrClient)) {
       searchIndex =
           solrHelper.addFeatureTypeIndex(
               searchIndex, indexingFT, featureSourceFactoryHelper, searchIndexRepository);
@@ -223,7 +223,7 @@ public class SolrAdminController {
   @Transactional
   public ResponseEntity<?> clearIndex(@PathVariable Long searchIndexId) {
     try (SolrClient solrClient = solrService.getSolrClientForSearching();
-        SolrHelper solrHelper = new SolrHelper(solrClient)) {
+        SolrHelper solrHelper = new SolrHelper().withSolrClient(solrClient)) {
       solrHelper.clearIndexForLayer(searchIndexId);
       // do not delete the SearchIndex metadata object
       // searchIndexRepository.findById(searchIndexId).ifPresent(searchIndexRepository::delete);
