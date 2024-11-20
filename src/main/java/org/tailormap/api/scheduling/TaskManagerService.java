@@ -113,7 +113,7 @@ public class TaskManagerService {
                 .withPriority(jobDataMap.getInt(Task.PRIORITY_KEY))
                 .usingJobData(
                     SENTRY_SLUG_KEY,
-                    "monitor_slug_cron_trigger_" + jobDataMap.getString(Task.TYPE_KEY))
+                    "monitor_slug_cron_trigger_" + jobDataMap.get(Task.TYPE_KEY).toString())
                 .withSchedule(
                     CronScheduleBuilder.cronSchedule(jobDataMap.getString(Task.CRON_EXPRESSION_KEY))
                         .withMisfireHandlingInstructionFireAndProceed())

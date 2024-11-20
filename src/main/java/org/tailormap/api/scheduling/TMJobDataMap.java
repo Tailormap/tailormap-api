@@ -24,7 +24,11 @@ public class TMJobDataMap extends HashMap<String, Object> {
     this(String.valueOf(map.get(Task.TYPE_KEY)), (String) map.get(Task.DESCRIPTION_KEY));
     this.putAll(map);
     // validate the priority
-    this.setPriority((Integer) map.getOrDefault(Task.PRIORITY_KEY, Trigger.DEFAULT_PRIORITY));
+    if (map.containsKey(Task.PRIORITY_KEY)) {
+      this.setPriority((Integer) map.getOrDefault(Task.PRIORITY_KEY, Trigger.DEFAULT_PRIORITY));
+    } else {
+      this.setPriority(Trigger.DEFAULT_PRIORITY);
+    }
   }
 
   /**
