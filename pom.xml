@@ -859,6 +859,7 @@ SPDX-License-Identifier: MIT
                     <fork>true</fork>
                     <compilerArgs combine.children="append">
                         <arg>-XDcompilePolicy=simple</arg>
+                        <arg>--should-stop=ifError=FLOW</arg>
                         <arg>-Xplugin:ErrorProne -XepExcludedPaths:${errorProneExcludePaths} ${errorProneFlags}</arg>
                         <arg>-Xlint:${compiler.lint}</arg>
                         <arg>-Werror</arg>
