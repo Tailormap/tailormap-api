@@ -1096,6 +1096,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/security/OIDCRepository.html#findByRegistrationId(java.lang.String)" class="member-name-link">findByRegistrationId(String)</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/OIDCRepository.html" title="class in org.tailormap.api.security">OIDCRepository</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/repository/SearchIndexRepository.html#findByTaskScheduleUuid(java.util.UUID)" class="member-name-link">findByTaskScheduleUuid(UUID)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/FeatureSourceRepository.html#findByUrl(java.lang.String)" class="member-name-link">findByUrl(String)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/FeatureSourceRepository.html" title="interface in org.tailormap.api.repository">FeatureSourceRepository</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureSource.html#findFeatureTypeByName(java.lang.String)" class="member-name-link">findFeatureTypeByName(String)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></dt>
@@ -1111,6 +1113,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/GeoService.html#findLayer(java.lang.String)" class="member-name-link">findLayer(String)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/helper/GeoServiceHelper.html#findRelatedWFS(org.tailormap.api.persistence.GeoService)" class="member-name-link">findRelatedWFS(GeoService)</a> - Method in class org.tailormap.api.persistence.helper.<a href="org/tailormap/api/persistence/helper/GeoServiceHelper.html" title="class in org.tailormap.api.persistence.helper">GeoServiceHelper</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/repository/SearchIndexRepository.html#findSearchIndexById(java.lang.Long)" class="member-name-link">findSearchIndexById(Long)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/UploadRepository.html#findWithContentByIdAndCategory(java.util.UUID,java.lang.String)" class="member-name-link">findWithContentByIdAndCategory(UUID, String)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/UploadRepository.html" title="interface in org.tailormap.api.repository">UploadRepository</a></dt>
 <dd>&nbsp;</dd>
@@ -5558,7 +5562,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Admin controller for controlling the task scheduler.</div>
 </dd>
-<dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html#%3Cinit%3E(org.quartz.Scheduler,org.tailormap.api.scheduling.TaskManagerService)" class="member-name-link">TaskAdminController(Scheduler, TaskManagerService)</a> - Constructor for class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/TaskAdminController.html" title="class in org.tailormap.api.controller.admin">TaskAdminController</a></dt>
+<dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html#%3Cinit%3E(org.quartz.Scheduler,org.tailormap.api.scheduling.TaskManagerService,org.tailormap.api.repository.SearchIndexRepository)" class="member-name-link">TaskAdminController(Scheduler, TaskManagerService, SearchIndexRepository)</a> - Constructor for class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/TaskAdminController.html" title="class in org.tailormap.api.controller.admin">TaskAdminController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/scheduling/TaskManagerService.html" class="type-name-link" title="class in org.tailormap.api.scheduling">TaskManagerService</a> - Class in <a href="org/tailormap/api/scheduling/package-summary.html">org.tailormap.api.scheduling</a></dt>
 <dd>&nbsp;</dd>

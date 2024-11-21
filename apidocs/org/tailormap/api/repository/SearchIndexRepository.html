@@ -99,6 +99,12 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../per
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findByName(java.lang.String)" class="member-name-link">findByName</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findByTaskScheduleUuid(java.util.UUID)" class="member-name-link">findByTaskScheduleUuid</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;uuid)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#findSearchIndexById(java.lang.Long)" class="member-name-link">findSearchIndexById</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;id)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -141,6 +147,22 @@ extends org.springframework.data.jpa.repository.JpaRepository&lt;<a href="../per
 <section class="detail" id="findByName(java.lang.String)">
 <h3>findByName</h3>
 <div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&gt;</span>&nbsp;<span class="element-name">findByName</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="findByTaskScheduleUuid(java.util.UUID)">
+<h3>findByTaskScheduleUuid</h3>
+<div class="member-signature"><span class="annotations">@NonNull
+@Query(value="select * from search_index si, lateral jsonb_path_query(si.schedule, (\'$.uuid ? (@ == \"\'||:uuidToFind||\'\")\')::jsonpath)",
+       nativeQuery=true)
+</span><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&gt;</span>&nbsp;<span class="element-name">findByTaskScheduleUuid</span><wbr><span class="parameters">(@Param("uuidToFind") @NonNull
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;uuid)</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="findSearchIndexById(java.lang.Long)">
+<h3>findSearchIndexById</h3>
+<div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&gt;</span>&nbsp;<span class="element-name">findSearchIndexById</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;id)</span></div>
 </section>
 </li>
 </ul>
