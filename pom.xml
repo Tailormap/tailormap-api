@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.5</version>
+        <version>3.3.6</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -109,6 +109,7 @@ SPDX-License-Identifier: MIT
         <solr.version>9.7.0</solr.version>
         <!--
         Spring Boot version overrides.
+
         See org.springframework.boot:spring-boot-dependencies
         eg. https://search.maven.org/artifact/org.springframework.boot/spring-boot-dependencies
 
@@ -129,8 +130,7 @@ SPDX-License-Identifier: MIT
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
         <oracle-database.version>23.5.0.24.07</oracle-database.version>
         <postgresql.version>42.7.4</postgresql.version>
-        <!-- This version includes the fix for HTM-1333 / https://github.com/spring-projects/spring-data-rest/issues/2425 -->
-        <spring-data-bom.version>2024.0.6</spring-data-bom.version>
+        <!-- <spring-data-bom.version>2024.0.6</spring-data-bom.version> -->
         <!-- <spring-hateoas.version>2.3.3</spring-hateoas.version> -->
         <!-- <spring-security.version>6.3.4</spring-security.version> -->
         <quartz.version>2.5.0</quartz.version>
