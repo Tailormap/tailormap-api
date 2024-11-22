@@ -50,6 +50,9 @@ public class SearchController {
   private final SearchIndexRepository searchIndexRepository;
   private final SolrService solrService;
 
+  @Value("${tailormap-api.solr-query-timeout-seconds:7}")
+  private int solrQueryTimeout;
+
   @Value("${tailormap-api.pageSize:100}")
   private int numResultsToReturn;
 
@@ -91,7 +94,7 @@ public class SearchController {
                             .formatted(appTreeLayerNode.getLayerName())));
 
     try (SolrClient solrClient = solrService.getSolrClientForSearching();
-        SolrHelper solrHelper = new SolrHelper().withSolrClient(solrClient)) {
+        SolrHelper solrHelper = new SolrHelper(solrClient).withQueryTimeout(solrQueryTimeout)) {
       final SearchResponse searchResponse =
           solrHelper.findInIndex(
               searchIndex,

@@ -306,6 +306,10 @@ SPDX-License-Identifier: MIT
                     <groupId>org.apache.solr</groupId>
                     <artifactId>solr-solrj-zookeeper</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.solr</groupId>
+                    <artifactId>solr-solrj-streaming</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
