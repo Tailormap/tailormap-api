@@ -33,7 +33,7 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
 
     LinkedCaseInsensitiveMap<String> wfsUrlParams = new LinkedCaseInsensitiveMap<>();
     wfsUrlParams.putAll(
-        UriComponentsBuilder.fromHttpUrl(tmfs.getUrl())
+        UriComponentsBuilder.fromUriString(tmfs.getUrl())
             .build()
             .getQueryParams()
             .toSingleValueMap());
