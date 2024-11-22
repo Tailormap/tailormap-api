@@ -163,7 +163,7 @@ public class GeoServiceProxyController {
 
   private URI buildWMSUrl(GeoService service, HttpServletRequest request) {
     final UriComponentsBuilder originalServiceUrl =
-        UriComponentsBuilder.fromHttpUrl(service.getUrl());
+        UriComponentsBuilder.fromUriString(service.getUrl());
     // request.getParameterMap() includes parameters from an application/x-www-form-urlencoded POST
     // body
     final MultiValueMap<String, String> requestParams =

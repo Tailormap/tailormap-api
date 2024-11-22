@@ -12,7 +12,7 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.tailormap.api.StaticTestData;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.json.Bounds;
@@ -28,14 +28,14 @@ import org.tailormap.api.viewer.model.TMCoordinateReferenceSystem;
 @SpringBootTest(classes = ApplicationHelper.class)
 class ApplicationHelperTest {
 
-  @MockBean GeoServiceRepository geoServiceRepository;
-  @MockBean GeoServiceHelper geoServiceHelper;
-  @MockBean FeatureSourceRepository featureSourceRepository;
-  @MockBean ConfigurationRepository configurationRepository;
-  @MockBean ApplicationRepository applicationRepository;
-  @MockBean EntityManager entityManager;
-  @MockBean AuthorizationService authorizationService;
-  @MockBean SearchIndexRepository searchIndexRepository;
+  @MockitoBean GeoServiceRepository geoServiceRepository;
+  @MockitoBean GeoServiceHelper geoServiceHelper;
+  @MockitoBean FeatureSourceRepository featureSourceRepository;
+  @MockitoBean ConfigurationRepository configurationRepository;
+  @MockitoBean ApplicationRepository applicationRepository;
+  @MockitoBean EntityManager entityManager;
+  @MockitoBean AuthorizationService authorizationService;
+  @MockitoBean SearchIndexRepository searchIndexRepository;
   @Autowired ApplicationHelper applicationHelper;
 
   @Test

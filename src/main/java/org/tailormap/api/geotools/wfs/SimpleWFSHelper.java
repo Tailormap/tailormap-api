@@ -93,7 +93,7 @@ public class SimpleWFSHelper {
                   .collect(Collectors.toList()));
       params.addAll(parameters);
     }
-    return UriComponentsBuilder.fromHttpUrl(url).replaceQueryParams(params).build(true).toUri();
+    return UriComponentsBuilder.fromUriString(url).replaceQueryParams(params).build(true).toUri();
   }
 
   /**

@@ -34,8 +34,8 @@ import org.tailormap.api.persistence.Group;
 @TestPropertySource(
     properties = {
       "management.endpoints.web.exposure.include=health,prometheus",
-      "management.endpoint.health.enabled=true",
-      "management.endpoint.prometheus.enabled=true",
+      "management.endpoint.health.access=read_only",
+      "management.endpoint.prometheus.access=read_only",
       "management.prometheus.metrics.export.enabled=true",
       "management.prometheus.metrics.export.descriptions=true",
     })
