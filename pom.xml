@@ -173,6 +173,7 @@ SPDX-License-Identifier: MIT
         <skipQA>false</skipQA>
         <skipSBOM>false</skipSBOM>
         <skipJavaDoc>false</skipJavaDoc>
+        <dependencyCheckAutoUpdate>true</dependencyCheckAutoUpdate>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -1129,6 +1130,7 @@ SPDX-License-Identifier: MIT
                     <hintsFile>${project.basedir}/build/qa/owasp-hints.xml</hintsFile>
                     <format>ALL</format>
                     <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+                    <autoUpdate>${dependencyCheckAutoUpdate}</autoUpdate>
                 </configuration>
             </plugin>
             <plugin>
@@ -1547,6 +1549,7 @@ SPDX-License-Identifier: MIT
                 <configuration>
                     <name>OWASP Dependency Check</name>
                     <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+                    <autoUpdate>${dependencyCheckAutoUpdate}</autoUpdate>
                 </configuration>
             </plugin>
         </plugins>
@@ -1555,6 +1558,9 @@ SPDX-License-Identifier: MIT
         <profile>
             <!-- automagically activated during release with maven-release-plugin -->
             <id>release</id>
+            <properties>
+                <dependencyCheckAutoUpdate>false</dependencyCheckAutoUpdate>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
