@@ -455,7 +455,7 @@
 <a class="jxr_linenumber" name="L447" href="#L447">447</a>   <strong class="jxr_keyword">private</strong> String sanitiseUrl(String url) {
 <a class="jxr_linenumber" name="L448" href="#L448">448</a>     <strong class="jxr_keyword">if</strong> (url != <strong class="jxr_keyword">null</strong> &amp;&amp; url.contains(<span class="jxr_string">"?"</span>)) {
 <a class="jxr_linenumber" name="L449" href="#L449">449</a>       MultiValueMap&lt;String, String&gt; sanitisedParams = <strong class="jxr_keyword">new</strong> LinkedMultiValueMap&lt;&gt;();
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>       UriComponentsBuilder uri = UriComponentsBuilder.fromHttpUrl(url);
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>       UriComponentsBuilder uri = UriComponentsBuilder.fromUriString(url);
 <a class="jxr_linenumber" name="L451" href="#L451">451</a>       MultiValueMap&lt;String, String&gt; <em class="jxr_comment">/* unmodifiable */</em> requestParams = uri.build().getQueryParams();
 <a class="jxr_linenumber" name="L452" href="#L452">452</a>       <strong class="jxr_keyword">for</strong> (Map.Entry&lt;String, List&lt;String&gt;&gt; param : requestParams.entrySet()) {
 <a class="jxr_linenumber" name="L453" href="#L453">453</a>         <strong class="jxr_keyword">if</strong> (!REMOVE_PARAMS.contains(param.getKey().toUpperCase(Locale.ROOT))) {

@@ -171,7 +171,7 @@
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> 
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>   <strong class="jxr_keyword">private</strong> URI buildWMSUrl(<a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, HttpServletRequest request) {
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>     <strong class="jxr_keyword">final</strong> UriComponentsBuilder originalServiceUrl =
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>         UriComponentsBuilder.fromHttpUrl(service.getUrl());
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>         UriComponentsBuilder.fromUriString(service.getUrl());
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>     <em class="jxr_comment">// request.getParameterMap() includes parameters from an application/x-www-form-urlencoded POST</em>
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>     <em class="jxr_comment">// body</em>
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>     <strong class="jxr_keyword">final</strong> MultiValueMap&lt;String, String&gt; requestParams =
