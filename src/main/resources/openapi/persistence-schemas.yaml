@@ -639,6 +639,40 @@ components:
     FormField:
       $ref: './common-schemas.yaml#/components/schemas/FormField'
 
+    PageTile:
+      description: 'model for a page tile'
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        image:
+          type: string
+          nullable: true
+        applicationId:
+          type: integer
+          nullable: true
+          format: int64
+        pageId:
+          type: integer
+          nullable: true
+          format: int64
+        url:
+          type: string
+          nullable: true
+        className:
+          type: string
+          nullable: true
+        filterRequireAuthorization:
+          type: boolean
+          nullable: true
+        openInNewWindow:
+          type: boolean
+          nullable: true
+
     AdminAdditionalProperty:
       type: object
       title: AdminAdditionalProperty

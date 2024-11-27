@@ -409,3 +409,59 @@ components:
           nullable: false
         value:
           type: object
+
+    Page:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        type:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        content:
+          type: string
+          nullable: true
+        className:
+          type: string
+          nullable: true
+        tiles:
+          description: 'list of tiles'
+          type: array
+          minLength: 0
+          items:
+            $ref: '#/components/schemas/PageTile'
+
+    PageTile:
+      description: 'model for a page tile'
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        image:
+          type: string
+          nullable: true
+        applicationUrl:
+          type: string
+          nullable: true
+        pageUrl:
+          type: string
+          nullable: true
+        url:
+          type: string
+          nullable: true
+        className:
+          type: string
+          nullable: true
+        openInNewWindow:
+          type: boolean
+          nullable: true
