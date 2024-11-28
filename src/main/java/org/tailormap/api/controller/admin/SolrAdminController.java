@@ -20,6 +20,7 @@ import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.apache.solr.common.SolrException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +51,15 @@ public class SolrAdminController {
   private final FeatureTypeRepository featureTypeRepository;
   private final SearchIndexRepository searchIndexRepository;
   private final SolrService solrService;
+
+  @Value("${tailormap-api.solr-batch-size:1000}")
+  private int solrBatchSize;
+
+  @Value("${tailormap-api.solr-query-timeout-seconds:7}")
+  private int solrQueryTimeout;
+
+  @Value("${tailormap-api.solr-geometry-validation-rule:repairBuffer0}")
+  private String solrGeometryValidationRule;
 
   public SolrAdminController(
       FeatureSourceFactoryHelper featureSourceFactoryHelper,
@@ -172,7 +182,10 @@ public class SolrAdminController {
         (null == searchIndex.getLastIndexed()
             || searchIndex.getStatus() == SearchIndex.Status.INITIAL);
     try (SolrClient solrClient = solrService.getSolrClientForIndexing();
-        SolrHelper solrHelper = new SolrHelper(solrClient)) {
+        SolrHelper solrHelper =
+            new SolrHelper(solrClient)
+                .withBatchSize(solrBatchSize)
+                .withGeometryValidationRule(solrGeometryValidationRule)) {
       searchIndex =
           solrHelper.addFeatureTypeIndex(
               searchIndex, indexingFT, featureSourceFactoryHelper, searchIndexRepository);
@@ -223,7 +236,7 @@ public class SolrAdminController {
   @Transactional
   public ResponseEntity<?> clearIndex(@PathVariable Long searchIndexId) {
     try (SolrClient solrClient = solrService.getSolrClientForSearching();
-        SolrHelper solrHelper = new SolrHelper(solrClient)) {
+        SolrHelper solrHelper = new SolrHelper(solrClient).withQueryTimeout(solrQueryTimeout)) {
       solrHelper.clearIndexForLayer(searchIndexId);
       // do not delete the SearchIndex metadata object
       // searchIndexRepository.findById(searchIndexId).ifPresent(searchIndexRepository::delete);

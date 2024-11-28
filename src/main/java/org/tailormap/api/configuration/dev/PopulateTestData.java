@@ -131,6 +131,12 @@ public class PopulateTestData {
   @Value("${MAP5_URL:#{null}}")
   private String map5url;
 
+  @Value("${tailormap-api.solr-batch-size:1000}")
+  private int solrBatchSize;
+
+  @Value("${tailormap-api.solr-geometry-validation-rule:repairBuffer0}")
+  private String solrGeometryValidationRule;
+
   public PopulateTestData(
       ApplicationContext appContext,
       UserRepository userRepository,
@@ -1440,7 +1446,10 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
       final String solrUrl =
           "http://" + (connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "solr") + ":8983/solr/";
       this.solrService.setSolrUrl(solrUrl);
-      SolrHelper solrHelper = new SolrHelper(this.solrService.getSolrClientForIndexing());
+      SolrHelper solrHelper =
+          new SolrHelper(this.solrService.getSolrClientForIndexing())
+              .withBatchSize(solrBatchSize)
+              .withGeometryValidationRule(solrGeometryValidationRule);
       GeoService geoService = geoServiceRepository.findById("snapshot-geoserver").orElseThrow();
       Application defaultApp = applicationRepository.findByName("default");
 
