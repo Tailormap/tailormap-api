@@ -6,6 +6,7 @@
 package org.tailormap.api.solr;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
@@ -37,6 +38,7 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.locationtech.jts.geom.Geometry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
 import org.tailormap.api.persistence.SearchIndex;
@@ -53,17 +55,8 @@ import org.tailormap.api.viewer.model.SearchResponse;
  * in a try-with-resources.
  */
 public class SolrHelper implements AutoCloseable, Constants {
-  /**
-   * the number of documents that are submitted per batch to the Solr service: {@value
-   * #SOLR_BATCH_SIZE}.
-   */
-  public static final int SOLR_BATCH_SIZE = 1000;
-
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  /** {@value #SOLR_TIMEOUT} milliseconds. */
-  private static final int SOLR_TIMEOUT = 7000;
 
   /** the Solr field type name geometry fields: {@value #SOLR_SPATIAL_FIELDNAME}. */
   private static final String SOLR_SPATIAL_FIELDNAME = "tm_geometry_rpt";
@@ -107,13 +100,60 @@ public class SolrHelper implements AutoCloseable, Constants {
                       "required", true,
                       "uninvertible", false)));
 
+  private int solrQueryTimeout = 7000;
+  private int solrBatchSize = 1000;
+  private String solrGeometryValidationRule = "repairBuffer0";
+
   /**
-   * Constructor
+   * Create a configured {@code SolrHelper} object.
    *
    * @param solrClient the Solr client, this will be closed when this class is closed
    */
   public SolrHelper(@NotNull SolrClient solrClient) {
     this.solrClient = solrClient;
+  }
+
+  /**
+   * Configure this {@code SolrHelper} with a query timeout .
+   *
+   * @param solrQueryTimeout the query timeout in seconds
+   */
+  public SolrHelper withQueryTimeout(
+      @Positive(message = "Must use a positive integer for query timeout") int solrQueryTimeout) {
+    this.solrQueryTimeout = solrQueryTimeout * 1000;
+    return this;
+  }
+
+  /**
+   * Configure this {@code SolrHelper} with a batch size for submitting documents to the Solr
+   * instance.
+   *
+   * @param solrBatchSize the batch size for indexing, must be greater than 0
+   */
+  public SolrHelper withBatchSize(
+      @Positive(message = "Must use a positive integer for batching") int solrBatchSize) {
+    this.solrBatchSize = solrBatchSize;
+    return this;
+  }
+
+  /**
+   * Configure this {@code SolrHelper} to create a geometry field in Solr using the specified
+   * validation rule.
+   *
+   * @see <a
+   *     href="https://locationtech.github.io/spatial4j/apidocs/org/locationtech/spatial4j/context/jts/ValidationRule.html">ValidationRule</a>
+   * @param solrGeometryValidationRule any of {@code "error", "none", "repairBuffer0",
+   *     "repairConvexHull"}
+   */
+  public SolrHelper withGeometryValidationRule(@NonNull String solrGeometryValidationRule) {
+    if (List.of("error", "none", "repairBuffer0", "repairConvexHull")
+        .contains(solrGeometryValidationRule)) {
+      logger.trace(
+          "Setting geometry validation rule for Solr geometry field to {}",
+          solrGeometryValidationRule);
+      this.solrGeometryValidationRule = solrGeometryValidationRule;
+    }
+    return this;
   }
 
   /**
@@ -200,7 +240,7 @@ public class SolrHelper implements AutoCloseable, Constants {
     logger.trace("Indexing query: {}", q);
     SimpleFeatureCollection simpleFeatureCollection = fs.getFeatures(q);
     final int total = simpleFeatureCollection.size();
-    List<FeatureIndexingDocument> docsBatch = new ArrayList<>(SOLR_BATCH_SIZE);
+    List<FeatureIndexingDocument> docsBatch = new ArrayList<>(solrBatchSize);
     // TODO this does not currently batch/page the feature source query, this doesn't seem to be an
     //   issue for now but could be if the feature source is very, very large or slow
     UpdateResponse updateResponse;
@@ -247,8 +287,8 @@ public class SolrHelper implements AutoCloseable, Constants {
           docsBatch.add(doc);
         }
 
-        if (indexCounter % SOLR_BATCH_SIZE == 0) {
-          updateResponse = solrClient.addBeans(docsBatch);
+        if (indexCounter % solrBatchSize == 0) {
+          updateResponse = solrClient.addBeans(docsBatch, solrQueryTimeout);
           logger.info(
               "Added {} documents of {} to index, result status: {}",
               indexCounter - indexSkippedCounter,
@@ -262,7 +302,7 @@ public class SolrHelper implements AutoCloseable, Constants {
     }
 
     if (!docsBatch.isEmpty()) {
-      solrClient.addBeans(docsBatch);
+      solrClient.addBeans(docsBatch, solrQueryTimeout);
       logger.info("Added last {} documents of {} to index", docsBatch.size(), total);
     }
     final Instant finishedAt = Instant.now();
@@ -312,6 +352,7 @@ public class SolrHelper implements AutoCloseable, Constants {
    */
   public void clearIndexForLayer(@NotNull Long searchLayerId)
       throws IOException, SolrServerException {
+
     QueryResponse response =
         solrClient.query(
             new SolrQuery("exists(query(" + SEARCH_LAYER + ":" + searchLayerId + "))"));
@@ -362,7 +403,7 @@ public class SolrHelper implements AutoCloseable, Constants {
     final SolrQuery query =
         new SolrQuery(INDEX_SEARCH_FIELD + ":" + solrQuery)
             .setShowDebugInfo(logger.isDebugEnabled())
-            .setTimeAllowed(SOLR_TIMEOUT)
+            .setTimeAllowed(solrQueryTimeout)
             .setIncludeScore(true)
             .setFields(SEARCH_ID_FIELD, INDEX_DISPLAY_FIELD, INDEX_GEOM_FIELD)
             .addFilterQuery(SEARCH_LAYER + ":" + searchIndex.getId())
@@ -488,9 +529,10 @@ public class SolrHelper implements AutoCloseable, Constants {
       logger.error("Tried getting field type: {}, but failed.", SOLR_SPATIAL_FIELDNAME, e);
     }
 
-    logger.info("Creating Solr field type for {}", SOLR_SPATIAL_FIELDNAME);
-    // see
-    // https://solr.apache.org/guide/solr/latest/query-guide/spatial-search.html#schema-configuration-for-rpt
+    logger.info(
+        "Creating Solr field type for {} with validation rule {}",
+        SOLR_SPATIAL_FIELDNAME,
+        solrGeometryValidationRule);
     FieldTypeDefinition spatialFieldTypeDef = new FieldTypeDefinition();
     Map<String, Object> spatialFieldAttributes =
         new HashMap<>(
@@ -512,7 +554,7 @@ public class SolrHelper implements AutoCloseable, Constants {
             // see
             // https://locationtech.github.io/spatial4j/apidocs/org/locationtech/spatial4j/context/jts/ValidationRule.html
             "validationRule",
-            "repairBuffer0",
+            this.solrGeometryValidationRule,
             // NOTE THE ODDITY in coordinate order of "worldBounds",
             // "ENVELOPE(minX, maxX, maxY, minY)"
             "worldBounds",

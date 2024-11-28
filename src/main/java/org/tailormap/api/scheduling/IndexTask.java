@@ -20,6 +20,7 @@ import org.quartz.PersistJobDataAfterExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
@@ -37,9 +38,15 @@ public class IndexTask extends QuartzJobBean implements Task {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
-  private final SolrService solrService;
   private final FeatureTypeRepository featureTypeRepository;
   private final SearchIndexRepository searchIndexRepository;
+  private final SolrService solrService;
+
+  @Value("${tailormap-api.solr-batch-size:1000}")
+  private int solrBatchSize;
+
+  @Value("${tailormap-api.solr-geometry-validation-rule:repairBuffer0}")
+  private String solrGeometryValidationRule;
 
   private long indexId;
   private String description;
@@ -80,7 +87,10 @@ public class IndexTask extends QuartzJobBean implements Task {
             .orElseThrow(() -> new JobExecutionException("Feature type not found"));
 
     try (SolrClient solrClient = solrService.getSolrClientForIndexing();
-        SolrHelper solrHelper = new SolrHelper(solrClient)) {
+        SolrHelper solrHelper =
+            new SolrHelper(solrClient)
+                .withBatchSize(solrBatchSize)
+                .withGeometryValidationRule(solrGeometryValidationRule)) {
 
       searchIndex.setStatus(SearchIndex.Status.INDEXING);
       searchIndex = searchIndexRepository.save(searchIndex);

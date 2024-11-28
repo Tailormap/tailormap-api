@@ -100,7 +100,10 @@ public class SearchIndexEventHandler {
                     searchIndex.getSchedule().getDescription(),
                     IndexTask.INDEX_KEY,
                     searchIndex.getId().toString()));
-        jobDataMap.setPriority(searchIndex.getSchedule().getPriority());
+        if (null != searchIndex.getSchedule().getPriority()
+            && searchIndex.getSchedule().getPriority() > 0) {
+          jobDataMap.put(Task.PRIORITY_KEY, searchIndex.getSchedule().getPriority());
+        }
         final UUID uuid =
             taskManagerService.createTask(
                 IndexTask.class, jobDataMap, searchIndex.getSchedule().getCronExpression());

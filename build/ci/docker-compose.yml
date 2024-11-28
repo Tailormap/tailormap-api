@@ -110,6 +110,8 @@ services:
     image: ghcr.io/tailormap/solr:9.7.0
     environment:
       TZ: Europe/Amsterdam
+      SOLR_OPTS: '$SOLR_OPTS -Dsolr.environment=dev,label=Tailormap+Development,color=#6236FF'
+      SOLR_DELETE_UNKNOWN_CORES: true
     volumes:
       - solr-data:/var/solr
     ports:
