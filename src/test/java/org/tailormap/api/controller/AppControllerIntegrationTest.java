@@ -57,7 +57,7 @@ class AppControllerIntegrationTest {
   }
 
   @Test
-  /* this test changes database content */
+  /* this test changes database content but reverses it after the test */
   @Transactional
   void not_found_when_no_default() throws Exception {
     Configuration defaultApp =
@@ -69,7 +69,10 @@ class AppControllerIntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
         .andExpect(jsonPath("$.message").value("Not Found"));
-    entityManager.persist(defaultApp);
+    Configuration defaultAppConfig = new Configuration();
+    defaultAppConfig.setKey(Configuration.DEFAULT_APP);
+    defaultAppConfig.setValue(defaultApp.getValue());
+    entityManager.persist(defaultAppConfig);
   }
 
   @Test
