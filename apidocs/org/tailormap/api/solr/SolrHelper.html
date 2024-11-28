@@ -51,7 +51,7 @@ loadScripts(document, 'script');</script>
 </ul>
 <ul class="sub-nav-list">
 <li>Detail:&nbsp;</li>
-<li><a href="#field-detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor-detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method-detail">Method</a></li>
 </ul>
@@ -94,17 +94,6 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <li>
 <section class="field-summary" id="field-summary">
 <h2>Field Summary</h2>
-<div class="caption"><span>Fields</span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier and Type</div>
-<div class="table-header col-second">Field</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>static final int</code></div>
-<div class="col-second even-row-color"><code><a href="#SOLR_BATCH_SIZE" class="member-name-link">SOLR_BATCH_SIZE</a></code></div>
-<div class="col-last even-row-color">
-<div class="block">the number of documents that are submitted per batch to the Solr service: 1000.</div>
-</div>
-</div>
 <div class="inherited-list">
 <h3 id="fields-inherited-from-class-org.tailormap.api.util.Constants">Fields inherited from interface&nbsp;org.tailormap.api.util.<a href="../util/Constants.html" title="interface in org.tailormap.api.util">Constants</a></h3>
 <code><a href="../util/Constants.html#FID">FID</a>, <a href="../util/Constants.html#ID">ID</a>, <a href="../util/Constants.html#INDEX_DISPLAY_FIELD">INDEX_DISPLAY_FIELD</a>, <a href="../util/Constants.html#INDEX_GEOM_FIELD">INDEX_GEOM_FIELD</a>, <a href="../util/Constants.html#INDEX_SEARCH_FIELD">INDEX_SEARCH_FIELD</a>, <a href="../util/Constants.html#NAME_REGEX">NAME_REGEX</a>, <a href="../util/Constants.html#NAME_REGEX_INVALID_MESSAGE">NAME_REGEX_INVALID_MESSAGE</a>, <a href="../util/Constants.html#SEARCH_ID_FIELD">SEARCH_ID_FIELD</a>, <a href="../util/Constants.html#SEARCH_LAYER">SEARCH_LAYER</a>, <a href="../util/Constants.html#TEST_TASK_TYPE">TEST_TASK_TYPE</a>, <a href="../util/Constants.html#UUID_REGEX">UUID_REGEX</a></code></div>
@@ -120,7 +109,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.apache.solr.client.solrj.SolrClient)" class="member-name-link">SolrHelper</a><wbr>(@NotNull org.apache.solr.client.solrj.SolrClient&nbsp;solrClient)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Constructor</div>
+<div class="block">Create a configured <code>SolrHelper</code> object.</div>
 </div>
 </div>
 </section>
@@ -165,6 +154,23 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Search in the index for a layer.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withBatchSize(int)" class="member-name-link">withBatchSize</a><wbr>(@jakarta.validation.constraints.Positive(message="Must use a positive integer for batching") int&nbsp;solrBatchSize)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Configure this <code>SolrHelper</code> with a batch size for submitting documents to the Solr
+ instance.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withGeometryValidationRule(java.lang.String)" class="member-name-link">withGeometryValidationRule</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrGeometryValidationRule)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Configure this <code>SolrHelper</code> to create a geometry field in Solr using the specified
+ validation rule.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withQueryTimeout(int)" class="member-name-link">withQueryTimeout</a><wbr>(@jakarta.validation.constraints.Positive(message="Must use a positive integer for query timeout") int&nbsp;solrQueryTimeout)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Configure this <code>SolrHelper</code> with a query timeout .</div>
+</div>
 </div>
 </div>
 </div>
@@ -177,29 +183,6 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 </section>
 <section class="details">
 <ul class="details-list">
-<!-- ============ FIELD DETAIL =========== -->
-<li>
-<section class="field-details" id="field-detail">
-<h2>Field Details</h2>
-<ul class="member-list">
-<li>
-<section class="detail" id="SOLR_BATCH_SIZE">
-<h3>SOLR_BATCH_SIZE</h3>
-<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">SOLR_BATCH_SIZE</span></div>
-<div class="block">the number of documents that are submitted per batch to the Solr service: 1000.</div>
-<dl class="notes">
-<dt>See Also:</dt>
-<dd>
-<ul class="see-list">
-<li><a href="../../../../constant-values.html#org.tailormap.api.solr.SolrHelper.SOLR_BATCH_SIZE">Constant Field Values</a></li>
-</ul>
-</dd>
-</dl>
-</section>
-</li>
-</ul>
-</section>
-</li>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <li>
 <section class="constructor-details" id="constructor-detail">
@@ -210,7 +193,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <h3>SolrHelper</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">SolrHelper</span><wbr><span class="parameters">(@NotNull
  @NotNull org.apache.solr.client.solrj.SolrClient&nbsp;solrClient)</span></div>
-<div class="block">Constructor</div>
+<div class="block">Create a configured <code>SolrHelper</code> object.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>solrClient</code> - the Solr client, this will be closed when this class is closed</dd>
@@ -225,6 +208,51 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="withQueryTimeout(int)">
+<h3>withQueryTimeout</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></span>&nbsp;<span class="element-name">withQueryTimeout</span><wbr><span class="parameters">(@Positive(message="Must use a positive integer for query timeout")
+ @jakarta.validation.constraints.Positive(message="Must use a positive integer for query timeout") int&nbsp;solrQueryTimeout)</span></div>
+<div class="block">Configure this <code>SolrHelper</code> with a query timeout .</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>solrQueryTimeout</code> - the query timeout in seconds</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="withBatchSize(int)">
+<h3>withBatchSize</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></span>&nbsp;<span class="element-name">withBatchSize</span><wbr><span class="parameters">(@Positive(message="Must use a positive integer for batching")
+ @jakarta.validation.constraints.Positive(message="Must use a positive integer for batching") int&nbsp;solrBatchSize)</span></div>
+<div class="block">Configure this <code>SolrHelper</code> with a batch size for submitting documents to the Solr
+ instance.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>solrBatchSize</code> - the batch size for indexing, must be greater than 0</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="withGeometryValidationRule(java.lang.String)">
+<h3>withGeometryValidationRule</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></span>&nbsp;<span class="element-name">withGeometryValidationRule</span><wbr><span class="parameters">(@NonNull
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrGeometryValidationRule)</span></div>
+<div class="block">Configure this <code>SolrHelper</code> to create a geometry field in Solr using the specified
+ validation rule.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>solrGeometryValidationRule</code> - any of <code>"error", "none", "repairBuffer0",
+     "repairConvexHull"</code></dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="https://locationtech.github.io/spatial4j/apidocs/org/locationtech/spatial4j/context/jts/ValidationRule.html">ValidationRule</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
 <li>
 <section class="detail" id="addFeatureTypeIndex(org.tailormap.api.persistence.SearchIndex,org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository)">
 <h3>addFeatureTypeIndex</h3>

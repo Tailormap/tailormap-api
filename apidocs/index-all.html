@@ -5442,10 +5442,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Creates an instance of a <code>SimpleWFSLayerDescription</code> record class.</div>
 </dd>
-<dt><a href="org/tailormap/api/solr/SolrHelper.html#SOLR_BATCH_SIZE" class="member-name-link">SOLR_BATCH_SIZE</a> - Static variable in class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></dt>
-<dd>
-<div class="block">the number of documents that are submitted per batch to the Solr service: 1000.</div>
-</dd>
 <dt><a href="org/tailormap/api/controller/admin/SolrAdminController.html" class="type-name-link" title="class in org.tailormap.api.controller.admin">SolrAdminController</a> - Class in <a href="org/tailormap/api/controller/admin/package-summary.html">org.tailormap.api.controller.admin</a></dt>
 <dd>
 <div class="block">Admin controller for Solr.</div>
@@ -5458,7 +5454,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/solr/SolrHelper.html#%3Cinit%3E(org.apache.solr.client.solrj.SolrClient)" class="member-name-link">SolrHelper(SolrClient)</a> - Constructor for class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></dt>
 <dd>
-<div class="block">Constructor</div>
+<div class="block">Create a configured <code>SolrHelper</code> object.</div>
 </dd>
 <dt><a href="org/tailormap/api/solr/SolrService.html" class="type-name-link" title="class in org.tailormap.api.solr">SolrService</a> - Class in <a href="org/tailormap/api/solr/package-summary.html">org.tailormap.api.solr</a></dt>
 <dd>&nbsp;</dd>
@@ -6347,6 +6343,20 @@ the order they are declared.</div>
 </dd>
 <dt><a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html#wgs84BoundingBox(org.tailormap.api.persistence.json.Bounds)" class="member-name-link">wgs84BoundingBox(Bounds)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html" title="class in org.tailormap.api.persistence.json">TMFeatureTypeInfo</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/solr/SolrHelper.html#withBatchSize(int)" class="member-name-link">withBatchSize(int)</a> - Method in class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></dt>
+<dd>
+<div class="block">Configure this <code>SolrHelper</code> with a batch size for submitting documents to the Solr
+ instance.</div>
+</dd>
+<dt><a href="org/tailormap/api/solr/SolrHelper.html#withGeometryValidationRule(java.lang.String)" class="member-name-link">withGeometryValidationRule(String)</a> - Method in class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></dt>
+<dd>
+<div class="block">Configure this <code>SolrHelper</code> to create a geometry field in Solr using the specified
+ validation rule.</div>
+</dd>
+<dt><a href="org/tailormap/api/solr/SolrHelper.html#withQueryTimeout(int)" class="member-name-link">withQueryTimeout(int)</a> - Method in class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></dt>
+<dd>
+<div class="block">Configure this <code>SolrHelper</code> with a query timeout .</div>
+</dd>
 <dt><a href="org/tailormap/api/geotools/processing/GeometryProcessor.html#wktToGeometry(java.lang.String)" class="member-name-link">wktToGeometry(String)</a> - Static method in class org.tailormap.api.geotools.processing.<a href="org/tailormap/api/geotools/processing/GeometryProcessor.html" title="class in org.tailormap.api.geotools.processing">GeometryProcessor</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/GeoServiceProtocol.html#WMS" class="member-name-link">WMS</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GeoServiceProtocol.html" title="enum class in org.tailormap.api.persistence.json">GeoServiceProtocol</a></dt>
