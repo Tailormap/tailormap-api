@@ -1230,6 +1230,13 @@ SPDX-License-Identifier: MIT
             </plugin>
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>de.skuzzle.enforcer</groupId>
+                        <artifactId>restrict-imports-enforcer-rule</artifactId>
+                        <version>2.6.0</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>
@@ -1248,15 +1255,33 @@ SPDX-License-Identifier: MIT
                                     <message>Requires Java ${java.version} or higher</message>
                                 </requireJavaVersion>
                                 <bannedDependencies>
+                                    <message>Do not use banned dependencies</message>
                                     <excludes>
                                         <exclude>junit:junit</exclude>
                                         <exclude>org.hamcrest:hamcrest-core</exclude>
                                         <exclude>org.hamcrest:hamcrest-all</exclude>
+                                        <!-- slf4j should be used instead -->
                                         <exclude>log4j:log4j</exclude>
+                                        <exclude>commons-logging:commons-logging</exclude>
+                                        <exclude>commons-logging:commons-logging-api</exclude>
+                                        <exclude>org.apache.logging.log4j:log4j-core</exclude>
+                                        <exclude>org.slf4j:slf4j-simple</exclude>
                                         <exclude>joda-time:joda-time</exclude>
                                         <exclude>org.assertj:assertj-core</exclude>
                                     </excludes>
                                 </bannedDependencies>
+                                <RestrictImports>
+                                    <reason>Use SLF4j for logging</reason>
+                                    <bannedImports>
+                                        <bannedImport>java.util.logging.**</bannedImport>
+                                        <bannedImport>org.apache.commons.logging.**</bannedImport>
+                                        <bannedImport>org.apache.logging.log4j.**</bannedImport>
+                                    </bannedImports>
+                                </RestrictImports>
+                                <RestrictImports>
+                                    <reason>Use JUnit 5 instead of JUnit 4 or older</reason>
+                                    <bannedImport>org.junit.Assert.*</bannedImport>
+                                </RestrictImports>
                                 <banTransitiveDependencies>
                                     <excludes>
                                         <exclude>org.springframework.boot:spring-boot-starter-web</exclude>
