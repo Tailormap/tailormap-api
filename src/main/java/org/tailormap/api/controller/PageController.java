@@ -92,7 +92,8 @@ public class PageController {
                     && (!tile.getFilterRequireAuthorization()
                         || authorizationService.mayUserRead(application))) {
                   pageTile.applicationUrl("/app/" + application.getName());
-                  pageTile.setApplicationRequiresLogin(!authorizationService.mayUserRead(application));
+                  pageTile.setApplicationRequiresLogin(
+                      !authorizationService.mayUserRead(application));
                   pageTiles.add(pageTile);
                 }
               } else if (tile.getPageId() != null) {
