@@ -233,234 +233,235 @@
 <a class="jxr_linenumber" name="L225" href="#L225">225</a>       <strong class="jxr_keyword">final</strong> Object[] result = <strong class="jxr_keyword">new</strong> Object[1];
 <a class="jxr_linenumber" name="L226" href="#L226">226</a>       scheduler.getCurrentlyExecutingJobs().stream()
 <a class="jxr_linenumber" name="L227" href="#L227">227</a>           .filter(Objects::nonNull)
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>           .forEach(
-<a class="jxr_linenumber" name="L229" href="#L229">229</a>               jobExecutionContext -&gt; {
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>                 logger.debug(
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>                     <span class="jxr_string">"currently executing job {} with trigger {}."</span>,
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>                     jobExecutionContext.getJobDetail().getKey(),
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>                     jobExecutionContext.getTrigger().getKey());
-<a class="jxr_linenumber" name="L234" href="#L234">234</a> 
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>                 result[0] = jobExecutionContext.getResult();
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>               });
-<a class="jxr_linenumber" name="L237" href="#L237">237</a> 
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.ok(
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>           <strong class="jxr_keyword">new</strong> ObjectMapper()
-<a class="jxr_linenumber" name="L240" href="#L240">240</a>               .createObjectNode()
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>               <em class="jxr_comment">// immutable uuid, type and description</em>
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>               .put(Task.UUID_KEY, jobDetail.getKey().getName())
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>               .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>               .put(
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>                   Task.INTERRUPTABLE_KEY,
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>                   InterruptableJob.<strong class="jxr_keyword">class</strong>.isAssignableFrom(jobDetail.getJobClass()))
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>               .put(Task.DESCRIPTION_KEY, jobDataMap.getString(Task.DESCRIPTION_KEY))
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>               .put(Task.CRON_EXPRESSION_KEY, cron.getCronExpression())
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>               <em class="jxr_comment">// TODO / XXX we could add a human-readable description of the cron expression using</em>
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>               <em class="jxr_comment">// eg.</em>
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>               <em class="jxr_comment">//   com.cronutils:cron-utils like:</em>
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>               <em class="jxr_comment">//     CronParser cronParser = new</em>
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>               <em class="jxr_comment">//         CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));</em>
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>               <em class="jxr_comment">//     CronDescriptor.instance(locale).describe(cronParser.parse(cronExpression));</em>
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>               <em class="jxr_comment">//   this could also be done front-end using eg.</em>
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>               <em class="jxr_comment">// https://www.npmjs.com/package/cronstrue</em>
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>               <em class="jxr_comment">//   which has the advantage of knowing the required locale for the human</em>
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>               <em class="jxr_comment">// .put("cronDescription", cron.getCronExpression())</em>
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>               .put(<span class="jxr_string">"timezone"</span>, cron.getTimeZone().getID())
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>               .putPOJO(<span class="jxr_string">"startTime"</span>, trigger.getStartTime())
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>               .putPOJO(<span class="jxr_string">"lastTime"</span>, trigger.getPreviousFireTime())
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>               .putPOJO(
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>                   <span class="jxr_string">"nextFireTimes"</span>, TriggerUtils.computeFireTimes((OperableTrigger) cron, <strong class="jxr_keyword">null</strong>, 5))
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>               .putPOJO(Task.STATE_KEY, scheduler.getTriggerState(trigger.getKey()))
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>               .putPOJO(<span class="jxr_string">"progress"</span>, result[0])
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>               .put(Task.LAST_RESULT_KEY, jobDataMap.getString(Task.LAST_RESULT_KEY))
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>               .putPOJO(<span class="jxr_string">"jobData"</span>, jobDataMap));
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>     } <strong class="jxr_keyword">catch</strong> (SchedulerException e) {
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, <span class="jxr_string">"Error getting task"</span>, e);
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>     }
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>   }
-<a class="jxr_linenumber" name="L272" href="#L272">272</a> 
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>   @Operation(
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>       summary = <span class="jxr_string">"Start a task"</span>,
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>       description = <span class="jxr_string">"This will start the task if it is not already running"</span>)
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>   @PutMapping(
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>       path = <span class="jxr_string">"${tailormap-api.admin.base-path}/tasks/{type}/{uuid}/start"</span>,
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>       produces = MediaType.APPLICATION_JSON_VALUE)
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>   @ApiResponse(
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>       responseCode = <span class="jxr_string">"404"</span>,
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>       description = <span class="jxr_string">"Task not found"</span>,
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>       content =
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>           @Content(
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>               mediaType = MediaType.APPLICATION_JSON_VALUE,
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>               schema = @Schema(example = <span class="jxr_string">"{\&quot;message\&quot;:\&quot;Task not found\&quot;,\&quot;code\&quot;:404}"</span>)))
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>   @ApiResponse(
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>       responseCode = <span class="jxr_string">"202"</span>,
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>       description = <span class="jxr_string">"Task is started"</span>,
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>       content =
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>           @Content(
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>               mediaType = MediaType.APPLICATION_JSON_VALUE,
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>               schema = @Schema(example = <span class="jxr_string">"{\&quot;message\&quot;:\&quot;Task starting accepted\&quot;,\&quot;code\&quot;:202}"</span>)))
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>   <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Object&gt; startTask(@PathVariable <a name="TaskType" href="../../../../../org/tailormap/api/scheduling/TaskType.html#TaskType">TaskType</a> type, @PathVariable UUID uuid)
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>       <strong class="jxr_keyword">throws</strong> ResponseStatusException {
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>     logger.debug(<span class="jxr_string">"Starting task {}:{}"</span>, type, uuid);
-<a class="jxr_linenumber" name="L296" href="#L296">296</a> 
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>       JobKey jobKey = taskManagerService.getJobKey(type, uuid);
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>       <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> == jobKey) {
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>         <strong class="jxr_keyword">return</strong> handleTaskNotFound();
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>       }
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>       scheduler.triggerJob(jobKey);
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatusCode.valueOf(HTTP_ACCEPTED))
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>           .body(<strong class="jxr_keyword">new</strong> ObjectMapper().createObjectNode().put(<span class="jxr_string">"message"</span>, <span class="jxr_string">"Task starting accepted"</span>));
-<a class="jxr_linenumber" name="L305" href="#L305">305</a> 
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>     } <strong class="jxr_keyword">catch</strong> (SchedulerException e) {
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, <span class="jxr_string">"Error getting task"</span>, e);
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>     }
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>   }
-<a class="jxr_linenumber" name="L310" href="#L310">310</a> 
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>   @Operation(
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>       summary = <span class="jxr_string">"Stop a task irrevocably"</span>,
-<a class="jxr_linenumber" name="L313" href="#L313">313</a>       description =
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>           <span class="jxr_string">""</span><span class="jxr_string">"
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>               This will stop a running task, <strong class="jxr_keyword">if</strong> the task is not running, nothing will happen.
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>               This can leave the application in an inconsistent state.
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>               A task that is not interruptable cannot be stopped.
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>               A stopped task cannot be restarted, it fire again depending on the schedule.
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>               <span class="jxr_string">""</span><span class="jxr_string">")
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>   @PutMapping(
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>       path = <span class="jxr_string">"${tailormap-api.admin.base-path}/tasks/{type}/{uuid}/stop"</span>,
-<a class="jxr_linenumber" name="L322" href="#L322">322</a>       produces = MediaType.APPLICATION_JSON_VALUE)
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>   @ApiResponse(
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>       responseCode = <span class="jxr_string">"404"</span>,
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>       description = <span class="jxr_string">"Task not found"</span>,
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>       content =
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>           @Content(
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>               mediaType = MediaType.APPLICATION_JSON_VALUE,
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>               schema = @Schema(example = <span class="jxr_string">"{\&quot;message\&quot;:\&quot;Task not found\&quot;, \&quot;code\&quot;:404}"</span>)))
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>   @ApiResponse(
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>       responseCode = <span class="jxr_string">"202"</span>,
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>       description = <span class="jxr_string">"Task is stopping"</span>,
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>       content =
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>           @Content(
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>               mediaType = MediaType.APPLICATION_JSON_VALUE,
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>               schema =
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>                   @Schema(
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>                       example =
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>                           <span class="jxr_string">""</span><span class="jxr_string">"
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>                                 {
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>                                 <span class="jxr_string">"message"</span>:<span class="jxr_string">"Task stopping accepted"</span>.
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>                                 <span class="jxr_string">"succes"</span>:<strong class="jxr_keyword">true</strong>
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>                                 }
-<a class="jxr_linenumber" name="L344" href="#L344">344</a>                               <span class="jxr_string">""</span><span class="jxr_string">")))
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>   @ApiResponse(
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>       responseCode = <span class="jxr_string">"400"</span>,
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>       description =
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>           <span class="jxr_string">"The task cannot be stopped as it does not implement the InterruptableJob interface."</span>,
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>       content =
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>           @Content(
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>               mediaType = MediaType.APPLICATION_JSON_VALUE,
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>               schema =
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>                   @Schema(
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>                       example =
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>                           <span class="jxr_string">""</span><span class="jxr_string">"
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>                                         {
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>                                         <span class="jxr_string">"message"</span>:<span class="jxr_string">"Task cannot be stopped"</span>
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>                                         }
-<a class="jxr_linenumber" name="L359" href="#L359">359</a>                                       <span class="jxr_string">""</span><span class="jxr_string">")))
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>   <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Object&gt; stopTask(@PathVariable <a name="TaskType" href="../../../../../org/tailormap/api/scheduling/TaskType.html#TaskType">TaskType</a> type, @PathVariable UUID uuid)
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>       <strong class="jxr_keyword">throws</strong> ResponseStatusException {
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>     logger.debug(<span class="jxr_string">"Stopping task {}:{}"</span>, type, uuid);
-<a class="jxr_linenumber" name="L363" href="#L363">363</a> 
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>       JobKey jobKey = taskManagerService.getJobKey(type, uuid);
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>       <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> == jobKey) {
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>         <strong class="jxr_keyword">return</strong> handleTaskNotFound();
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>       }
-<a class="jxr_linenumber" name="L369" href="#L369">369</a> 
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>       <strong class="jxr_keyword">if</strong> (InterruptableJob.<strong class="jxr_keyword">class</strong>.isAssignableFrom(scheduler.getJobDetail(jobKey).getJobClass())) {
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>         <strong class="jxr_keyword">boolean</strong> interrupted = scheduler.interrupt(jobKey);
-<a class="jxr_linenumber" name="L372" href="#L372">372</a>         <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatusCode.valueOf(HTTP_ACCEPTED))
-<a class="jxr_linenumber" name="L373" href="#L373">373</a>             .body(
-<a class="jxr_linenumber" name="L374" href="#L374">374</a>                 <strong class="jxr_keyword">new</strong> ObjectMapper()
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>                     .createObjectNode()
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>                     .put(<span class="jxr_string">"message"</span>, <span class="jxr_string">"Task stopping accepted"</span>)
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>                     .put(<span class="jxr_string">"succes"</span>, interrupted));
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>       } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>         <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatusCode.valueOf(HTTP_BAD_REQUEST))
-<a class="jxr_linenumber" name="L380" href="#L380">380</a>             .body(
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>                 <strong class="jxr_keyword">new</strong> ObjectMapper()
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>                     .createObjectNode()
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>                     .put(<span class="jxr_string">"message"</span>, <span class="jxr_string">"Task cannot be stopped"</span>)
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>                     .put(<span class="jxr_string">"succes"</span>, false));
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>       }
-<a class="jxr_linenumber" name="L386" href="#L386">386</a> 
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>     } <strong class="jxr_keyword">catch</strong> (SchedulerException e) {
-<a class="jxr_linenumber" name="L388" href="#L388">388</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, <span class="jxr_string">"Error getting task"</span>, e);
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>     }
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>   }
-<a class="jxr_linenumber" name="L391" href="#L391">391</a> 
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>   @Operation(
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>       summary = <span class="jxr_string">"Delete a task"</span>,
-<a class="jxr_linenumber" name="L394" href="#L394">394</a>       description =
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>           <span class="jxr_string">"This will remove the task from the scheduler and delete all information about the task"</span>)
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>   @DeleteMapping(
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>       path = <span class="jxr_string">"${tailormap-api.admin.base-path}/tasks/{type}/{uuid}"</span>,
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>       produces = MediaType.APPLICATION_JSON_VALUE)
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>   @ApiResponse(
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>       responseCode = <span class="jxr_string">"404"</span>,
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>       description = <span class="jxr_string">"Task not found"</span>,
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>       content =
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>           @Content(
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>               mediaType = MediaType.APPLICATION_JSON_VALUE,
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>               schema = @Schema(example = <span class="jxr_string">"{\&quot;message\&quot;:\&quot;Task not found\&quot;}"</span>)))
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>   @ApiResponse(responseCode = <span class="jxr_string">"204"</span>, description = <span class="jxr_string">"Task is deleted"</span>)
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>   <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Object&gt; delete(@PathVariable <a name="TaskType" href="../../../../../org/tailormap/api/scheduling/TaskType.html#TaskType">TaskType</a> type, @PathVariable UUID uuid)
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>       <strong class="jxr_keyword">throws</strong> ResponseStatusException {
-<a class="jxr_linenumber" name="L409" href="#L409">409</a> 
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>       JobKey jobKey = taskManagerService.getJobKey(type, uuid);
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>       <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> == jobKey) {
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>         <strong class="jxr_keyword">return</strong> handleTaskNotFound();
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>       }
-<a class="jxr_linenumber" name="L415" href="#L415">415</a> 
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>       <strong class="jxr_keyword">boolean</strong> succes = scheduler.deleteJob(jobKey);
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>       logger.info(<span class="jxr_string">"Task {}:{} deletion {}"</span>, type, uuid, (succes ? <span class="jxr_string">"succeeded"</span> : <span class="jxr_string">"failed"</span>));
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>       <em class="jxr_comment">// cleanup the schedule from the business objects</em>
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>       <strong class="jxr_keyword">switch</strong> (type) {
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>         <strong class="jxr_keyword">case</strong> INDEX:
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>           deleteScheduleFromSearchIndex(uuid);
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>           <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>         <strong class="jxr_keyword">case</strong> FAILINGPOC:
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>         <strong class="jxr_keyword">case</strong> POC:
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>         <strong class="jxr_keyword">case</strong> INTERRUPTABLEPOC:
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>         <em class="jxr_comment">// no action required, as these are not managed in Tailormap</em>
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>         <strong class="jxr_keyword">default</strong>:
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>           <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L429" href="#L429">429</a>       }
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.noContent().build();
-<a class="jxr_linenumber" name="L431" href="#L431">431</a>     } <strong class="jxr_keyword">catch</strong> (SchedulerException e) {
-<a class="jxr_linenumber" name="L432" href="#L432">432</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, <span class="jxr_string">"Error getting task"</span>, e);
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>     }
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>   }
-<a class="jxr_linenumber" name="L435" href="#L435">435</a> 
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> deleteScheduleFromSearchIndex(UUID uuid) {
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>     searchIndexRepository
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>         .findByTaskScheduleUuid(uuid)
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>         .forEach(
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>             searchIndex -&gt; {
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>               searchIndex.setSchedule(<strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>               searchIndexRepository.save(searchIndex);
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>             });
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>   }
-<a class="jxr_linenumber" name="L445" href="#L445">445</a> 
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>   <strong class="jxr_keyword">private</strong> ResponseEntity&lt;Object&gt; handleTaskNotFound() {
-<a class="jxr_linenumber" name="L447" href="#L447">447</a>     <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatusCode.valueOf(HTTP_NOT_FOUND))
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>         .contentType(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>         .body(
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>             <strong class="jxr_keyword">new</strong> ObjectMapper()
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>                 .createObjectNode()
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>                 .put(<span class="jxr_string">"message"</span>, <span class="jxr_string">"Task not found"</span>)
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>                 .put(<span class="jxr_string">"code"</span>, HTTP_NOT_FOUND));
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>   }
-<a class="jxr_linenumber" name="L455" href="#L455">455</a> }
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>           .filter(jobExecutionContext -&gt; jobExecutionContext.getJobDetail().getKey().equals(jobKey))
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>           .forEach(
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>               jobExecutionContext -&gt; {
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>                 logger.debug(
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>                     <span class="jxr_string">"currently executing job {} with trigger {}."</span>,
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>                     jobExecutionContext.getJobDetail().getKey(),
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>                     jobExecutionContext.getTrigger().getKey());
+<a class="jxr_linenumber" name="L235" href="#L235">235</a> 
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>                 result[0] = jobExecutionContext.getResult();
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>               });
+<a class="jxr_linenumber" name="L238" href="#L238">238</a> 
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.ok(
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>           <strong class="jxr_keyword">new</strong> ObjectMapper()
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>               .createObjectNode()
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>               <em class="jxr_comment">// immutable uuid, type and description</em>
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>               .put(Task.UUID_KEY, jobDetail.getKey().getName())
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>               .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>               .put(
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>                   Task.INTERRUPTABLE_KEY,
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>                   InterruptableJob.<strong class="jxr_keyword">class</strong>.isAssignableFrom(jobDetail.getJobClass()))
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>               .put(Task.DESCRIPTION_KEY, jobDataMap.getString(Task.DESCRIPTION_KEY))
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>               .put(Task.CRON_EXPRESSION_KEY, cron.getCronExpression())
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>               <em class="jxr_comment">// TODO / XXX we could add a human-readable description of the cron expression using</em>
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>               <em class="jxr_comment">// eg.</em>
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>               <em class="jxr_comment">//   com.cronutils:cron-utils like:</em>
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>               <em class="jxr_comment">//     CronParser cronParser = new</em>
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>               <em class="jxr_comment">//         CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));</em>
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>               <em class="jxr_comment">//     CronDescriptor.instance(locale).describe(cronParser.parse(cronExpression));</em>
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>               <em class="jxr_comment">//   this could also be done front-end using eg.</em>
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>               <em class="jxr_comment">// https://www.npmjs.com/package/cronstrue</em>
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>               <em class="jxr_comment">//   which has the advantage of knowing the required locale for the human</em>
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>               <em class="jxr_comment">// .put("cronDescription", cron.getCronExpression())</em>
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>               .put(<span class="jxr_string">"timezone"</span>, cron.getTimeZone().getID())
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>               .putPOJO(<span class="jxr_string">"startTime"</span>, trigger.getStartTime())
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>               .putPOJO(<span class="jxr_string">"lastTime"</span>, trigger.getPreviousFireTime())
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>               .putPOJO(
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>                   <span class="jxr_string">"nextFireTimes"</span>, TriggerUtils.computeFireTimes((OperableTrigger) cron, <strong class="jxr_keyword">null</strong>, 5))
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>               .putPOJO(Task.STATE_KEY, scheduler.getTriggerState(trigger.getKey()))
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>               .putPOJO(<span class="jxr_string">"progress"</span>, result[0])
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>               .put(Task.LAST_RESULT_KEY, jobDataMap.getString(Task.LAST_RESULT_KEY))
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>               .putPOJO(<span class="jxr_string">"jobData"</span>, jobDataMap));
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>     } <strong class="jxr_keyword">catch</strong> (SchedulerException e) {
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, <span class="jxr_string">"Error getting task"</span>, e);
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>     }
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>   }
+<a class="jxr_linenumber" name="L273" href="#L273">273</a> 
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>   @Operation(
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>       summary = <span class="jxr_string">"Start a task"</span>,
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>       description = <span class="jxr_string">"This will start the task if it is not already running"</span>)
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>   @PutMapping(
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>       path = <span class="jxr_string">"${tailormap-api.admin.base-path}/tasks/{type}/{uuid}/start"</span>,
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>       produces = MediaType.APPLICATION_JSON_VALUE)
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>   @ApiResponse(
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>       responseCode = <span class="jxr_string">"404"</span>,
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>       description = <span class="jxr_string">"Task not found"</span>,
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>       content =
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>           @Content(
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>               mediaType = MediaType.APPLICATION_JSON_VALUE,
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>               schema = @Schema(example = <span class="jxr_string">"{\&quot;message\&quot;:\&quot;Task not found\&quot;,\&quot;code\&quot;:404}"</span>)))
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>   @ApiResponse(
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>       responseCode = <span class="jxr_string">"202"</span>,
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>       description = <span class="jxr_string">"Task is started"</span>,
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>       content =
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>           @Content(
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>               mediaType = MediaType.APPLICATION_JSON_VALUE,
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>               schema = @Schema(example = <span class="jxr_string">"{\&quot;message\&quot;:\&quot;Task starting accepted\&quot;,\&quot;code\&quot;:202}"</span>)))
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>   <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Object&gt; startTask(@PathVariable <a name="TaskType" href="../../../../../org/tailormap/api/scheduling/TaskType.html#TaskType">TaskType</a> type, @PathVariable UUID uuid)
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>       <strong class="jxr_keyword">throws</strong> ResponseStatusException {
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>     logger.debug(<span class="jxr_string">"Starting task {}:{}"</span>, type, uuid);
+<a class="jxr_linenumber" name="L297" href="#L297">297</a> 
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>       JobKey jobKey = taskManagerService.getJobKey(type, uuid);
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>       <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> == jobKey) {
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>         <strong class="jxr_keyword">return</strong> handleTaskNotFound();
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>       }
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>       scheduler.triggerJob(jobKey);
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatusCode.valueOf(HTTP_ACCEPTED))
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>           .body(<strong class="jxr_keyword">new</strong> ObjectMapper().createObjectNode().put(<span class="jxr_string">"message"</span>, <span class="jxr_string">"Task starting accepted"</span>));
+<a class="jxr_linenumber" name="L306" href="#L306">306</a> 
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>     } <strong class="jxr_keyword">catch</strong> (SchedulerException e) {
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, <span class="jxr_string">"Error getting task"</span>, e);
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>     }
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>   }
+<a class="jxr_linenumber" name="L311" href="#L311">311</a> 
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>   @Operation(
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>       summary = <span class="jxr_string">"Stop a task irrevocably"</span>,
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>       description =
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>           <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>               This will stop a running task, <strong class="jxr_keyword">if</strong> the task is not running, nothing will happen.
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>               This can leave the application in an inconsistent state.
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>               A task that is not interruptable cannot be stopped.
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>               A stopped task cannot be restarted, it fire again depending on the schedule.
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>               <span class="jxr_string">""</span><span class="jxr_string">")
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>   @PutMapping(
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>       path = <span class="jxr_string">"${tailormap-api.admin.base-path}/tasks/{type}/{uuid}/stop"</span>,
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>       produces = MediaType.APPLICATION_JSON_VALUE)
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>   @ApiResponse(
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>       responseCode = <span class="jxr_string">"404"</span>,
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>       description = <span class="jxr_string">"Task not found"</span>,
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>       content =
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>           @Content(
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>               mediaType = MediaType.APPLICATION_JSON_VALUE,
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>               schema = @Schema(example = <span class="jxr_string">"{\&quot;message\&quot;:\&quot;Task not found\&quot;, \&quot;code\&quot;:404}"</span>)))
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>   @ApiResponse(
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>       responseCode = <span class="jxr_string">"202"</span>,
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>       description = <span class="jxr_string">"Task is stopping"</span>,
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>       content =
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>           @Content(
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>               mediaType = MediaType.APPLICATION_JSON_VALUE,
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>               schema =
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>                   @Schema(
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>                       example =
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>                           <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>                                 {
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>                                 <span class="jxr_string">"message"</span>:<span class="jxr_string">"Task stopping accepted"</span>.
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>                                 <span class="jxr_string">"succes"</span>:<strong class="jxr_keyword">true</strong>
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>                                 }
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>                               <span class="jxr_string">""</span><span class="jxr_string">")))
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>   @ApiResponse(
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>       responseCode = <span class="jxr_string">"400"</span>,
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>       description =
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>           <span class="jxr_string">"The task cannot be stopped as it does not implement the InterruptableJob interface."</span>,
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>       content =
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>           @Content(
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>               mediaType = MediaType.APPLICATION_JSON_VALUE,
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>               schema =
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>                   @Schema(
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>                       example =
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>                           <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>                                         {
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>                                         <span class="jxr_string">"message"</span>:<span class="jxr_string">"Task cannot be stopped"</span>
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>                                         }
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>                                       <span class="jxr_string">""</span><span class="jxr_string">")))
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>   <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Object&gt; stopTask(@PathVariable <a name="TaskType" href="../../../../../org/tailormap/api/scheduling/TaskType.html#TaskType">TaskType</a> type, @PathVariable UUID uuid)
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>       <strong class="jxr_keyword">throws</strong> ResponseStatusException {
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>     logger.debug(<span class="jxr_string">"Stopping task {}:{}"</span>, type, uuid);
+<a class="jxr_linenumber" name="L364" href="#L364">364</a> 
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>       JobKey jobKey = taskManagerService.getJobKey(type, uuid);
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>       <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> == jobKey) {
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>         <strong class="jxr_keyword">return</strong> handleTaskNotFound();
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>       }
+<a class="jxr_linenumber" name="L370" href="#L370">370</a> 
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>       <strong class="jxr_keyword">if</strong> (InterruptableJob.<strong class="jxr_keyword">class</strong>.isAssignableFrom(scheduler.getJobDetail(jobKey).getJobClass())) {
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>         <strong class="jxr_keyword">boolean</strong> interrupted = scheduler.interrupt(jobKey);
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>         <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatusCode.valueOf(HTTP_ACCEPTED))
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>             .body(
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>                 <strong class="jxr_keyword">new</strong> ObjectMapper()
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>                     .createObjectNode()
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>                     .put(<span class="jxr_string">"message"</span>, <span class="jxr_string">"Task stopping accepted"</span>)
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>                     .put(<span class="jxr_string">"succes"</span>, interrupted));
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>       } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>         <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatusCode.valueOf(HTTP_BAD_REQUEST))
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>             .body(
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>                 <strong class="jxr_keyword">new</strong> ObjectMapper()
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>                     .createObjectNode()
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>                     .put(<span class="jxr_string">"message"</span>, <span class="jxr_string">"Task cannot be stopped"</span>)
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>                     .put(<span class="jxr_string">"succes"</span>, false));
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>       }
+<a class="jxr_linenumber" name="L387" href="#L387">387</a> 
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>     } <strong class="jxr_keyword">catch</strong> (SchedulerException e) {
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, <span class="jxr_string">"Error getting task"</span>, e);
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>     }
+<a class="jxr_linenumber" name="L391" href="#L391">391</a>   }
+<a class="jxr_linenumber" name="L392" href="#L392">392</a> 
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>   @Operation(
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>       summary = <span class="jxr_string">"Delete a task"</span>,
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>       description =
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>           <span class="jxr_string">"This will remove the task from the scheduler and delete all information about the task"</span>)
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>   @DeleteMapping(
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>       path = <span class="jxr_string">"${tailormap-api.admin.base-path}/tasks/{type}/{uuid}"</span>,
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>       produces = MediaType.APPLICATION_JSON_VALUE)
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>   @ApiResponse(
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>       responseCode = <span class="jxr_string">"404"</span>,
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>       description = <span class="jxr_string">"Task not found"</span>,
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>       content =
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>           @Content(
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>               mediaType = MediaType.APPLICATION_JSON_VALUE,
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>               schema = @Schema(example = <span class="jxr_string">"{\&quot;message\&quot;:\&quot;Task not found\&quot;}"</span>)))
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>   @ApiResponse(responseCode = <span class="jxr_string">"204"</span>, description = <span class="jxr_string">"Task is deleted"</span>)
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>   <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Object&gt; delete(@PathVariable <a name="TaskType" href="../../../../../org/tailormap/api/scheduling/TaskType.html#TaskType">TaskType</a> type, @PathVariable UUID uuid)
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>       <strong class="jxr_keyword">throws</strong> ResponseStatusException {
+<a class="jxr_linenumber" name="L410" href="#L410">410</a> 
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>       JobKey jobKey = taskManagerService.getJobKey(type, uuid);
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>       <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> == jobKey) {
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>         <strong class="jxr_keyword">return</strong> handleTaskNotFound();
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>       }
+<a class="jxr_linenumber" name="L416" href="#L416">416</a> 
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>       <strong class="jxr_keyword">boolean</strong> succes = scheduler.deleteJob(jobKey);
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>       logger.info(<span class="jxr_string">"Task {}:{} deletion {}"</span>, type, uuid, (succes ? <span class="jxr_string">"succeeded"</span> : <span class="jxr_string">"failed"</span>));
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>       <em class="jxr_comment">// cleanup the schedule from the business objects</em>
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>       <strong class="jxr_keyword">switch</strong> (type) {
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>         <strong class="jxr_keyword">case</strong> INDEX:
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>           deleteScheduleFromSearchIndex(uuid);
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>           <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>         <strong class="jxr_keyword">case</strong> FAILINGPOC:
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>         <strong class="jxr_keyword">case</strong> POC:
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>         <strong class="jxr_keyword">case</strong> INTERRUPTABLEPOC:
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>         <em class="jxr_comment">// no action required, as these are not managed in Tailormap</em>
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>         <strong class="jxr_keyword">default</strong>:
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>           <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>       }
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>       <strong class="jxr_keyword">return</strong> ResponseEntity.noContent().build();
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>     } <strong class="jxr_keyword">catch</strong> (SchedulerException e) {
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, <span class="jxr_string">"Error getting task"</span>, e);
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>     }
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>   }
+<a class="jxr_linenumber" name="L436" href="#L436">436</a> 
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> deleteScheduleFromSearchIndex(UUID uuid) {
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>     searchIndexRepository
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>         .findByTaskScheduleUuid(uuid)
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>         .forEach(
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>             searchIndex -&gt; {
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>               searchIndex.setSchedule(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>               searchIndexRepository.save(searchIndex);
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>             });
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>   }
+<a class="jxr_linenumber" name="L446" href="#L446">446</a> 
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>   <strong class="jxr_keyword">private</strong> ResponseEntity&lt;Object&gt; handleTaskNotFound() {
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>     <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatusCode.valueOf(HTTP_NOT_FOUND))
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>         .contentType(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>         .body(
+<a class="jxr_linenumber" name="L451" href="#L451">451</a>             <strong class="jxr_keyword">new</strong> ObjectMapper()
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>                 .createObjectNode()
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>                 .put(<span class="jxr_string">"message"</span>, <span class="jxr_string">"Task not found"</span>)
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>                 .put(<span class="jxr_string">"code"</span>, HTTP_NOT_FOUND));
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>   }
+<a class="jxr_linenumber" name="L456" href="#L456">456</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
