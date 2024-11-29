@@ -119,6 +119,7 @@ public class TaskManagerService {
                         .withMisfireHandlingInstructionFireAndProceed())
                 .build();
 
+        scheduler.addJob(jobDetail, true, true);
         scheduler.rescheduleJob(oldTrigger.getKey(), newTrigger);
       }
     }
