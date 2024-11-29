@@ -330,6 +330,8 @@ components:
                  "geometry": "POINT(1 2)",
                  "displayValues": [ "value 1", "value 2" ] }
 
+    PageResponse:
+      $ref: './viewer-schemas.yaml#/components/schemas/Page'
 
 paths:
   /unauthorized:
@@ -1356,6 +1358,46 @@ paths:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
         '500':
           description: 'Internal server error. Something went wrong while processing the search request, maybe search index is down.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
+  /page:
+    summary: 'Use this endpoint to get the home page'
+    get:
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponse'
+        '404':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
+  /page/{name}:
+    summary: 'Use this endpoint to get a page'
+    parameters:
+      - in: path
+        name: name
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponse'
+        '404':
+          description: 'Unauthorized'
           content:
             application/json:
               schema:

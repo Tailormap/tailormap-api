@@ -639,6 +639,49 @@ components:
     FormField:
       $ref: './common-schemas.yaml#/components/schemas/FormField'
 
+    PageTile:
+      description: 'model for a page tile'
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+          description: page tile title
+        content:
+          type: string
+          description: page tile contents
+        image:
+          type: string
+          nullable: true
+          description: image to show on the tile
+        applicationId:
+          type: integer
+          nullable: true
+          format: int64
+          description: linked application
+        pageId:
+          type: integer
+          nullable: true
+          format: int64
+          description: linked page
+        url:
+          type: string
+          nullable: true
+          description: link to an other domain / website
+        className:
+          type: string
+          nullable: true
+          description: optional css classname for styling
+        filterRequireAuthorization:
+          type: boolean
+          nullable: true
+          description: indicates if this tile should be filtered from the list if an application id is set for which the user does not have access
+        openInNewWindow:
+          type: boolean
+          nullable: true
+          description: indicates whether the link should be opened in a new window
+
     AdminAdditionalProperty:
       type: object
       title: AdminAdditionalProperty

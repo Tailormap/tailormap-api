@@ -409,3 +409,75 @@ components:
           nullable: false
         value:
           type: object
+
+    Page:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        type:
+          type: string
+          nullable: true
+          description: define the type of the page which can be used to switch between layouts for example
+        name:
+          type: string
+          nullable: true
+          description: name of the page which will be used for the url
+        title:
+          type: string
+          nullable: true
+          description: page title
+        content:
+          type: string
+          nullable: true
+        className:
+          type: string
+          nullable: true
+          description: page body content
+        tiles:
+          description: list of tiles, tiles are used to link to applications or other pages
+          type: array
+          minLength: 0
+          items:
+            $ref: '#/components/schemas/ViewerPageTile'
+
+    ViewerPageTile:
+      description: model for a page tile as returned by the api for the viewer
+      type: object
+      properties:
+        title:
+          type: string
+          description: page tile title
+        content:
+          type: string
+          description: page tile contents
+        image:
+          type: string
+          nullable: true
+          description: image to show on the tile
+        applicationUrl:
+          type: string
+          nullable: true
+          description: link to the application
+        pageUrl:
+          type: string
+          nullable: true
+          description: link to another page
+        url:
+          type: string
+          nullable: true
+          description: link to an other domain / website
+        className:
+          type: string
+          nullable: true
+          description: optional css classname for styling
+        applicationRequiresLogin:
+          type: boolean
+          nullable: true
+          description: indicates if the user will need to login for the linked application
+        openInNewWindow:
+          type: boolean
+          nullable: true
+          description: indicates whether the link should be opened in a new window
