@@ -42,21 +42,19 @@ public class PageController {
     this.authorizationService = authorizationService;
   }
 
+  private ResponseStatusException notFound() {
+    return new ResponseStatusException(HttpStatus.NOT_FOUND);
+  }
+
   @GetMapping(path = "${tailormap-api.base-path}/page")
   public PageResponse homePage() {
-    Page page = null;
-    try {
-      String homePage = configurationRepository.get(Configuration.HOME_PAGE);
-      if (homePage != null && !homePage.isEmpty()) {
-        Long homePageId = Long.parseLong(homePage);
-        page = pageRepository.findById(homePageId).orElse(null);
-      }
-    } catch (NumberFormatException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-    }
-    if (page == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-    }
+    Page page =
+        configurationRepository
+            .findByKey(Configuration.HOME_PAGE)
+            .map(Configuration::getValue)
+            .map(Long::parseLong)
+            .flatMap(pageRepository::findById)
+            .orElseThrow(this::notFound);
     return getPageResponse(page);
   }
 
@@ -65,11 +63,7 @@ public class PageController {
         "${tailormap-api.base-path}/page/{name}",
       })
   public PageResponse page(@PathVariable(required = false) String name) {
-    Page page = pageRepository.findByName(name);
-    if (page == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-    }
-    return getPageResponse(page);
+    return pageRepository.findByName(name).map(this::getPageResponse).orElseThrow(this::notFound);
   }
 
   private PageResponse getPageResponse(Page page) {
