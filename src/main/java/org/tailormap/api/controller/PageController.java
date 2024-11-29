@@ -6,22 +6,23 @@
 
 package org.tailormap.api.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
-import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.Configuration;
 import org.tailormap.api.persistence.Page;
+import org.tailormap.api.persistence.json.PageTile;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
 import org.tailormap.api.repository.PageRepository;
 import org.tailormap.api.security.AuthorizationService;
 import org.tailormap.api.viewer.model.PageResponse;
-import org.tailormap.api.viewer.model.PageTile;
+import org.tailormap.api.viewer.model.ViewerPageTile;
 
 @AppRestController
 public class PageController {
@@ -58,50 +59,56 @@ public class PageController {
     return getPageResponse(page);
   }
 
-  @GetMapping(
-      path = {
-        "${tailormap-api.base-path}/page/{name}",
-      })
+  @GetMapping(path = {"${tailormap-api.base-path}/page/{name}"})
   public PageResponse page(@PathVariable(required = false) String name) {
     return pageRepository.findByName(name).map(this::getPageResponse).orElseThrow(this::notFound);
   }
 
   private PageResponse getPageResponse(Page page) {
-    PageResponse pageResponse = page.getPageResponse();
-    List<PageTile> pageTiles = new ArrayList<>();
-    page.getTiles()
-        .forEach(
-            tile -> {
-              PageTile pageTile =
-                  new PageTile()
-                      .title(tile.getTitle())
-                      .content(tile.getContent())
-                      .image(tile.getImage())
-                      .className(tile.getClassName())
-                      .openInNewWindow(tile.getOpenInNewWindow());
-              if (tile.getApplicationId() != null) {
-                Application application =
-                    applicationRepository.findById(tile.getApplicationId()).orElse(null);
-                if (application != null
-                    && (!tile.getFilterRequireAuthorization()
-                        || authorizationService.mayUserRead(application))) {
-                  pageTile.applicationUrl("/app/" + application.getName());
-                  pageTile.setApplicationRequiresLogin(
-                      !authorizationService.mayUserRead(application));
-                  pageTiles.add(pageTile);
-                }
-              } else if (tile.getPageId() != null) {
-                Page linkedPage = pageRepository.findById(tile.getPageId()).orElse(null);
-                if (linkedPage != null) {
-                  pageTile.pageUrl("/page/" + linkedPage.getName());
-                  pageTiles.add(pageTile);
-                }
-              } else {
-                pageTile.url(tile.getUrl());
-                pageTiles.add(pageTile);
-              }
-            });
-    pageResponse.tiles(pageTiles);
+    PageResponse pageResponse = new PageResponse();
+    BeanUtils.copyProperties(page, pageResponse);
+    pageResponse.tiles(
+        page.getTiles().stream().map(this::convert).filter(Objects::nonNull).toList());
     return pageResponse;
+  }
+
+  /**
+   * @param tile The page tile configuration
+   * @return A page tile for the viewer, or null if the tile should not be shown (filtered).
+   */
+  private ViewerPageTile convert(PageTile tile) {
+    ViewerPageTile viewerPageTile = new ViewerPageTile();
+    BeanUtils.copyProperties(tile, viewerPageTile);
+
+    if (tile.getApplicationId() != null) {
+      return Optional.ofNullable(tile.getApplicationId())
+          .flatMap(applicationRepository::findById)
+          .filter(
+              application ->
+                  !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
+                      || authorizationService.mayUserRead(application))
+          .map(
+              application -> {
+                viewerPageTile.applicationUrl("/app/" + application.getName());
+                viewerPageTile.setApplicationRequiresLogin(
+                    !authorizationService.mayUserRead(application));
+                return viewerPageTile;
+              })
+          .orElse(null);
+    }
+
+    if (tile.getPageId() != null) {
+      return Optional.ofNullable(tile.getPageId())
+          .flatMap(pageRepository::findById)
+          .map(
+              linkedPage -> {
+                viewerPageTile.pageUrl("/page/" + linkedPage.getName());
+                return viewerPageTile;
+              })
+          .orElse(null);
+    }
+
+    // No application or page, just manual (external) url
+    return viewerPageTile;
   }
 }

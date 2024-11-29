@@ -441,10 +441,10 @@ components:
           type: array
           minLength: 0
           items:
-            $ref: '#/components/schemas/PageTile'
+            $ref: '#/components/schemas/ViewerPageTile'
 
-    PageTile:
-      description: model for a page tile
+    ViewerPageTile:
+      description: model for a page tile as returned by the api for the viewer
       type: object
       properties:
         title:

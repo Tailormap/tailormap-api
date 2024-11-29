@@ -6,7 +6,6 @@
 
 package org.tailormap.api.persistence;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -20,7 +19,6 @@ import java.util.List;
 import org.hibernate.annotations.Type;
 import org.tailormap.api.persistence.json.PageTile;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
-import org.tailormap.api.viewer.model.PageResponse;
 
 @Entity
 @EntityListeners(EntityEventPublisher.class)
@@ -111,16 +109,5 @@ public class Page {
 
   public void setTiles(List<PageTile> tiles) {
     this.tiles = tiles;
-  }
-
-  @JsonIgnore
-  public PageResponse getPageResponse() {
-    return new PageResponse()
-        .id(getId())
-        .type(getType())
-        .name(getName())
-        .title(getTitle())
-        .content(getContent())
-        .className(getClassName());
   }
 }
