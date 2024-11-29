@@ -40,6 +40,7 @@ public class Page {
 
   private String title;
 
+  @Column(columnDefinition = "text")
   private String content;
 
   private String className;
