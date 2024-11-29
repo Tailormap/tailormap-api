@@ -225,6 +225,7 @@ public class TaskAdminController {
       final Object[] result = new Object[1];
       scheduler.getCurrentlyExecutingJobs().stream()
           .filter(Objects::nonNull)
+          .filter(jobExecutionContext -> jobExecutionContext.getJobDetail().getKey().equals(jobKey))
           .forEach(
               jobExecutionContext -> {
                 logger.debug(
