@@ -11,6 +11,7 @@ import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static org.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1462,7 +1464,6 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
               geoService.findLayer("sqlserver:wegdeel"), featureSourceRepository);
 
       try (solrHelper) {
-
         SearchIndex begroeidterreindeelIndex = null;
         if (begroeidterreindeelFT != null) {
           begroeidterreindeelIndex =
@@ -1499,6 +1500,32 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
               solrHelper.addFeatureTypeIndex(
                   wegdeelIndex, wegdeelFT, featureSourceFactoryHelper, searchIndexRepository);
           wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
+
+          featureSourceRepository
+              .getByTitle("PostGIS")
+              .flatMap(
+                  fs ->
+                      fs.getFeatureTypes().stream()
+                          .filter(ft -> ft.getName().equals("bak"))
+                          .findFirst())
+              .ifPresent(
+                  ft -> {
+                    SearchIndex bak =
+                        new SearchIndex()
+                            .setName("bak")
+                            .setFeatureTypeId(ft.getId())
+                            .setSearchFieldsUsed(List.of("gmlid", "identificatie", "plus_type"))
+                            .setSearchDisplayFieldsUsed(List.of("gmlid", "plus_type"));
+                    searchIndexRepository.save(bak);
+                    try {
+                      bak =
+                          solrHelper.addFeatureTypeIndex(
+                              bak, ft, featureSourceFactoryHelper, searchIndexRepository);
+                      searchIndexRepository.save(bak);
+                    } catch (IOException | SolrServerException e) {
+                      throw new RuntimeException(e);
+                    }
+                  });
         }
 
         AppTreeLayerNode begroeidTerreindeelLayerNode =
