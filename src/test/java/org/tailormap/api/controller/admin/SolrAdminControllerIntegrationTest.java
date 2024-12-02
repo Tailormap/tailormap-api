@@ -39,6 +39,8 @@ class SolrAdminControllerIntegrationTest {
   @Autowired private WebApplicationContext context;
   private MockMvc mockMvc;
 
+  private final int waitForIndexRefreshMillis = 10000;
+
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
 
@@ -84,6 +86,8 @@ class SolrAdminControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted());
+    // after submitting the request, wait for the index to be refreshed
+    Thread.sleep(waitForIndexRefreshMillis);
   }
 
   @Test
@@ -105,7 +109,9 @@ class SolrAdminControllerIntegrationTest {
   void recreateIndex1() throws Exception {
     mockMvc
         .perform(put(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isCreated());
+        .andExpect(status().isAccepted());
+    // after submitting the request, wait for the index to be refreshed
+    Thread.sleep(waitForIndexRefreshMillis);
   }
 
   @Test
@@ -120,5 +126,18 @@ class SolrAdminControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {Group.ADMIN})
+  void indexWithoutSchedule() throws Exception {
+    mockMvc
+        .perform(put(adminBasePath + "/index/3").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isAccepted());
+
+    // after submitting the request, wait for the index to be refreshed in the scheduler
+    Thread.sleep(waitForIndexRefreshMillis);
   }
 }
