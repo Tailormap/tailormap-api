@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
@@ -138,7 +139,13 @@ public class SolrAdminController {
       summary = "Create or update a feature type index",
       description =
           "Create or update a feature type index for a layer, will erase existing index if present")
-  @ApiResponse(responseCode = "202", description = "Index create or update request accepted")
+  @ApiResponse(
+      responseCode = "202",
+      description = "Index create or update request accepted",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(example = "{\"taskName\":\"\",\"code\":202}")))
   @ApiResponse(
       responseCode = "404",
       description = "Layer does not have feature type",
@@ -186,11 +193,13 @@ public class SolrAdminController {
     boolean hasSchedule =
         (null != searchIndex.getSchedule() && null != searchIndex.getSchedule().getUuid());
 
+    UUID taskUuid;
     try {
       if (hasSchedule) {
+        taskUuid = searchIndex.getSchedule().getUuid();
         startScheduledJobIndexing(searchIndex);
       } else {
-        startOneTimeJobIndexing(searchIndex);
+        taskUuid = startOneTimeJobIndexing(searchIndex);
       }
       searchIndexRepository.save(searchIndex);
     } catch (UnsupportedOperationException
@@ -204,18 +213,17 @@ public class SolrAdminController {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
-    if (createNewIndex) {
-      logger.info("Started creation of new index for search index {}", searchIndex.getName());
-      return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-    } else {
-      logger.info("Started update of index for search index {}", searchIndex.getName());
-      return ResponseEntity.accepted().build();
-    }
+    logger.info(
+        "Scheduled {} index for search index {}",
+        (createNewIndex ? "creation of a new" : "update of"),
+        searchIndex.getName());
+    return ResponseEntity.accepted()
+        .body(Map.of("status", 202, "taskName", taskUuid, "message", "Indexing scheduled"));
   }
 
-  private void startOneTimeJobIndexing(SearchIndex searchIndex)
+  private UUID startOneTimeJobIndexing(SearchIndex searchIndex)
       throws SolrServerException, IOException, SchedulerException {
-    String taskName =
+    UUID taskName =
         taskManagerService.createTask(
             IndexTask.class,
             new TMJobDataMap(
@@ -229,6 +237,7 @@ public class SolrAdminController {
                     Task.PRIORITY_KEY,
                     0)));
     logger.info("One-time indexing job with UUID {} started", taskName);
+    return taskName;
   }
 
   private void startScheduledJobIndexing(SearchIndex searchIndex) throws SchedulerException {

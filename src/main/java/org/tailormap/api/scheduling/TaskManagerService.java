@@ -10,7 +10,6 @@ import static io.sentry.quartz.SentryJobListener.SENTRY_SLUG_KEY;
 import java.lang.invoke.MethodHandles;
 import java.util.Set;
 import java.util.UUID;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
 import org.quartz.JobBuilder;
@@ -49,12 +48,12 @@ public class TaskManagerService {
    * @return the task name, a hash of the description
    * @throws SchedulerException if the job could not be scheduled
    */
-  public String createTask(Class<? extends QuartzJobBean> job, TMJobDataMap jobData)
+  public UUID createTask(Class<? extends QuartzJobBean> job, TMJobDataMap jobData)
       throws SchedulerException {
-    final String taskName = DigestUtils.md5Hex(jobData.getDescription());
     JobDetail jobDetail =
         JobBuilder.newJob(job)
-            .withIdentity(new JobKey(taskName, jobData.get(Task.TYPE_KEY).toString()))
+            .withIdentity(
+                new JobKey(UUID.randomUUID().toString(), jobData.get(Task.TYPE_KEY).toString()))
             .withDescription(jobData.getDescription())
             .usingJobData(new JobDataMap(jobData))
             .storeDurably(false)
@@ -71,7 +70,7 @@ public class TaskManagerService {
             .build();
 
     scheduler.scheduleJob(jobDetail, Set.of(trigger), true);
-    return taskName;
+    return UUID.fromString(jobDetail.getKey().getName());
   }
 
   /**
