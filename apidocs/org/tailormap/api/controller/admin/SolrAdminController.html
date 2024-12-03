@@ -91,10 +91,11 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.solr.SolrService)" class="member-name-link">SolrAdminController</a><wbr>(<a href="../../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
- <a href="../../repository/FeatureTypeRepository.html" title="interface in org.tailormap.api.repository">FeatureTypeRepository</a>&nbsp;featureTypeRepository,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.solr.SolrService,org.quartz.Scheduler,org.tailormap.api.scheduling.TaskManagerService)" class="member-name-link">SolrAdminController</a><wbr>(<a href="../../repository/FeatureTypeRepository.html" title="interface in org.tailormap.api.repository">FeatureTypeRepository</a>&nbsp;featureTypeRepository,
  <a href="../../repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
- <a href="../../solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a>&nbsp;solrService)</code></div>
+ <a href="../../solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a>&nbsp;solrService,
+ org.quartz.Scheduler&nbsp;scheduler,
+ <a href="../../scheduling/TaskManagerService.html" title="class in org.tailormap.api.scheduling">TaskManagerService</a>&nbsp;taskManagerService)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -116,13 +117,16 @@ loadScripts(document, 'script');</script>
 <div class="block">Clear an index; does not remove the <a href="../../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence"><code>SearchIndex</code></a> metadata.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity&lt;?&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#index(java.lang.Long)" class="member-name-link">index</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;searchIndexId)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#handleException(org.springframework.web.server.ResponseStatusException)" class="member-name-link">handleException</a><wbr>(org.springframework.web.server.ResponseStatusException&nbsp;ex)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity&lt;?&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#index(java.lang.Long)" class="member-name-link">index</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;searchIndexId)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">(re-) Index a layer.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity&lt;?&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#pingSolr()" class="member-name-link">pingSolr</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity&lt;?&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#pingSolr()" class="member-name-link">pingSolr</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Ping solr.</div>
 </div>
 </div>
@@ -143,12 +147,18 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.solr.SolrService)">
+<section class="detail" id="&lt;init&gt;(org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.solr.SolrService,org.quartz.Scheduler,org.tailormap.api.scheduling.TaskManagerService)">
 <h3>SolrAdminController</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">SolrAdminController</span><wbr><span class="parameters">(<a href="../../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">SolrAdminController</span><wbr><span class="parameters">(@Autowired
  <a href="../../repository/FeatureTypeRepository.html" title="interface in org.tailormap.api.repository">FeatureTypeRepository</a>&nbsp;featureTypeRepository,
+ @Autowired
  <a href="../../repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
- <a href="../../solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a>&nbsp;solrService)</span></div>
+ @Autowired
+ <a href="../../solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a>&nbsp;solrService,
+ @Autowired
+ org.quartz.Scheduler&nbsp;scheduler,
+ @Autowired
+ <a href="../../scheduling/TaskManagerService.html" title="class in org.tailormap.api.scheduling">TaskManagerService</a>&nbsp;taskManagerService)</span></div>
 </section>
 </li>
 </ul>
@@ -159,6 +169,13 @@ loadScripts(document, 'script');</script>
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="handleException(org.springframework.web.server.ResponseStatusException)">
+<h3>handleException</h3>
+<div class="member-signature"><span class="annotations">@ExceptionHandler(org.springframework.web.server.ResponseStatusException.class)
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;?&gt;</span>&nbsp;<span class="element-name">handleException</span><wbr><span class="parameters">(org.springframework.web.server.ResponseStatusException&nbsp;ex)</span></div>
+</section>
+</li>
 <li>
 <section class="detail" id="pingSolr()">
 <h3>pingSolr</h3>

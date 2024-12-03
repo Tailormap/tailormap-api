@@ -68,16 +68,22 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">TaskManagerService.</span><code><a href="../TaskManagerService.html#createTask(java.lang.Class,org.tailormap.api.scheduling.TMJobDataMap,java.lang.String)" class="member-name-link">createTask</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.springframework.scheduling.quartz.QuartzJobBean&gt;&nbsp;job,
+<div class="col-second even-row-color"><span class="type-name-label">TaskManagerService.</span><code><a href="../TaskManagerService.html#createTask(java.lang.Class,org.tailormap.api.scheduling.TMJobDataMap)" class="member-name-link">createTask</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.springframework.scheduling.quartz.QuartzJobBean&gt;&nbsp;job,
+ <a href="../TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a>&nbsp;jobData)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Create a one-time job and schedule it to start immediately.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">TaskManagerService.</span><code><a href="../TaskManagerService.html#createTask(java.lang.Class,org.tailormap.api.scheduling.TMJobDataMap,java.lang.String)" class="member-name-link">createTask</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.springframework.scheduling.quartz.QuartzJobBean&gt;&nbsp;job,
  <a href="../TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a>&nbsp;jobData,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;cronExpression)</code></div>
-<div class="col-last even-row-color">
+<div class="col-last odd-row-color">
 <div class="block">Create a job and schedule it with a cron expression.</div>
 </div>
-<div class="col-first odd-row-color"><code>void</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">TaskManagerService.</span><code><a href="../TaskManagerService.html#updateTask(org.quartz.JobKey,org.tailormap.api.scheduling.TMJobDataMap)" class="member-name-link">updateTask</a><wbr>(org.quartz.JobKey&nbsp;jobKey,
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">TaskManagerService.</span><code><a href="../TaskManagerService.html#updateTask(org.quartz.JobKey,org.tailormap.api.scheduling.TMJobDataMap)" class="member-name-link">updateTask</a><wbr>(org.quartz.JobKey&nbsp;jobKey,
  <a href="../TMJobDataMap.html" title="class in org.tailormap.api.scheduling">TMJobDataMap</a>&nbsp;newJobData)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">Reschedule a task using updated job data.</div>
 </div>
 </div>

@@ -598,6 +598,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/configuration/dev/PopulateTestData.html#createSolrIndex()" class="member-name-link">createSolrIndex()</a> - Method in class org.tailormap.api.configuration.dev.<a href="org/tailormap/api/configuration/dev/PopulateTestData.html" title="class in org.tailormap.api.configuration.dev">PopulateTestData</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/scheduling/TaskManagerService.html#createTask(java.lang.Class,org.tailormap.api.scheduling.TMJobDataMap)" class="member-name-link">createTask(Class&lt;? extends QuartzJobBean&gt;, TMJobDataMap)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskManagerService.html" title="class in org.tailormap.api.scheduling">TaskManagerService</a></dt>
+<dd>
+<div class="block">Create a one-time job and schedule it to start immediately.</div>
+</dd>
 <dt><a href="org/tailormap/api/scheduling/TaskManagerService.html#createTask(java.lang.Class,org.tailormap.api.scheduling.TMJobDataMap,java.lang.String)" class="member-name-link">createTask(Class&lt;? extends QuartzJobBean&gt;, TMJobDataMap, String)</a> - Method in class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskManagerService.html" title="class in org.tailormap.api.scheduling">TaskManagerService</a></dt>
 <dd>
 <div class="block">Create a job and schedule it with a cron expression.</div>
@@ -3531,6 +3535,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/RestExceptionHandler.html#handleException(org.springframework.http.converter.HttpMessageNotReadableException,org.springframework.web.context.request.WebRequest)" class="member-name-link">handleException(HttpMessageNotReadableException, WebRequest)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/RestExceptionHandler.html" title="class in org.tailormap.api.controller.admin">RestExceptionHandler</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/controller/admin/SolrAdminController.html#handleException(org.springframework.web.server.ResponseStatusException)" class="member-name-link">handleException(ResponseStatusException)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/SolrAdminController.html" title="class in org.tailormap.api.controller.admin">SolrAdminController</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/AppRestControllerAdvice.html#handleResponseStatusException(org.springframework.web.server.ResponseStatusException)" class="member-name-link">handleResponseStatusException(ResponseStatusException)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/AppRestControllerAdvice.html" title="class in org.tailormap.api.controller">AppRestControllerAdvice</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AppLayer.html#hasAttributes(java.lang.Boolean)" class="member-name-link">hasAttributes(Boolean)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></dt>
@@ -5778,7 +5784,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Admin controller for Solr.</div>
 </dd>
-<dt><a href="org/tailormap/api/controller/admin/SolrAdminController.html#%3Cinit%3E(org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.solr.SolrService)" class="member-name-link">SolrAdminController(FeatureSourceFactoryHelper, FeatureTypeRepository, SearchIndexRepository, SolrService)</a> - Constructor for class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/SolrAdminController.html" title="class in org.tailormap.api.controller.admin">SolrAdminController</a></dt>
+<dt><a href="org/tailormap/api/controller/admin/SolrAdminController.html#%3Cinit%3E(org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.solr.SolrService,org.quartz.Scheduler,org.tailormap.api.scheduling.TaskManagerService)" class="member-name-link">SolrAdminController(FeatureTypeRepository, SearchIndexRepository, SolrService, Scheduler, TaskManagerService)</a> - Constructor for class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/SolrAdminController.html" title="class in org.tailormap.api.controller.admin">SolrAdminController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/solr/SolrHelper.html" class="type-name-link" title="class in org.tailormap.api.solr">SolrHelper</a> - Class in <a href="org/tailormap/api/solr/package-summary.html">org.tailormap.api.solr</a></dt>
 <dd>
