@@ -22,7 +22,7 @@ components:
         eventType:
           type: string
           description: 'Type of event'
-          enum: [ 'keep-alive', 'entity-created', 'entity-deleted', 'entity-updated' ]
+          enum: [ 'keep-alive', 'entity-created', 'entity-deleted', 'entity-updated', 'job-progress' ]
         details:
           type: object
 
@@ -36,6 +36,19 @@ components:
         object:
           description: 'The entity in JSON, only included in created and updated events.'
           type: object
+
+    JobProgressEvent:
+      type: object
+      properties:
+        jobName:
+          type: string
+        # job started at, type, etc (ook op te halen op basis van jobName)
+        total:
+          type: number
+        progress:
+          type: number
+
+    # TODO: add type for SearchIndex entity status instead of abusing comment property
 
     TaskSchedule:
       type: object

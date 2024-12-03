@@ -49,6 +49,8 @@ public class EntityEventPublisher {
       ServerSentEvent.EventTypeEnum eventTypeEnum, Object entity, boolean serializeEntity) {
     Object id = null;
 
+    // TODO: updates to SearchIndex from a Quartz Job have no request context so updates don't get
+    // published
     if (RequestContextHolder.getRequestAttributes() == null) {
       // No current request -- do not send events / serialize entities during app startup
       return;
