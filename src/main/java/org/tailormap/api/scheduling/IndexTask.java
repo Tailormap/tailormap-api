@@ -5,6 +5,13 @@
  */
 package org.tailormap.api.scheduling;
 
+import static ch.rasc.sse.eventbus.SseEvent.DEFAULT_EVENT;
+import static org.tailormap.api.admin.model.ServerSentEvent.EventTypeEnum.JOB_PROGRESS;
+
+import ch.rasc.sse.eventbus.SseEvent;
+import ch.rasc.sse.eventbus.SseEventBus;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -23,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.tailormap.api.admin.model.JobProgressEvent;
+import org.tailormap.api.admin.model.ServerSentEvent;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.persistence.SearchIndex;
 import org.tailormap.api.persistence.TMFeatureType;
@@ -41,6 +50,8 @@ public class IndexTask extends QuartzJobBean implements Task {
   private final FeatureTypeRepository featureTypeRepository;
   private final SearchIndexRepository searchIndexRepository;
   private final SolrService solrService;
+  private final SseEventBus eventBus;
+  private final ObjectMapper objectMapper;
 
   @Value("${tailormap-api.solr-batch-size:1000}")
   private int solrBatchSize;
@@ -55,12 +66,26 @@ public class IndexTask extends QuartzJobBean implements Task {
       @Autowired SearchIndexRepository searchIndexRepository,
       @Autowired FeatureTypeRepository featureTypeRepository,
       @Autowired FeatureSourceFactoryHelper featureSourceFactoryHelper,
-      @Autowired SolrService solrService) {
+      @Autowired SolrService solrService,
+      SseEventBus eventBus,
+      ObjectMapper objectMapper) {
 
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
     this.solrService = solrService;
     this.featureTypeRepository = featureTypeRepository;
     this.searchIndexRepository = searchIndexRepository;
+    this.eventBus = eventBus;
+    this.objectMapper = objectMapper;
+  }
+
+  private void jobProgress(JobProgressEvent details) {
+    ServerSentEvent event = new ServerSentEvent().eventType(JOB_PROGRESS).details(details);
+
+    try {
+      this.eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(event)));
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Timed(value = "indexTask", description = "Time taken to execute index task")
@@ -97,7 +122,11 @@ public class IndexTask extends QuartzJobBean implements Task {
 
       searchIndex =
           solrHelper.addFeatureTypeIndex(
-              searchIndex, indexingFT, featureSourceFactoryHelper, searchIndexRepository);
+              searchIndex,
+              indexingFT,
+              featureSourceFactoryHelper,
+              searchIndexRepository,
+              this::jobProgress);
       searchIndex = searchIndex.setStatus(SearchIndex.Status.INDEXED);
       searchIndexRepository.save(searchIndex);
       persistedJobData.put(

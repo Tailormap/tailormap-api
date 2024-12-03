@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -18,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrResponse;
@@ -39,6 +41,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
+import org.tailormap.api.admin.model.JobProgressEvent;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
 import org.tailormap.api.persistence.SearchIndex;
@@ -156,6 +159,16 @@ public class SolrHelper implements AutoCloseable, Constants {
     return this;
   }
 
+  public SearchIndex addFeatureTypeIndex(
+      @NotNull SearchIndex searchIndex,
+      @NotNull TMFeatureType tmFeatureType,
+      @NotNull FeatureSourceFactoryHelper featureSourceFactoryHelper,
+      @NotNull SearchIndexRepository searchIndexRepository)
+      throws IOException, SolrServerException {
+    return this.addFeatureTypeIndex(
+        searchIndex, tmFeatureType, featureSourceFactoryHelper, searchIndexRepository, null);
+  }
+
   /**
    * Add or update a feature type index for a layer.
    *
@@ -173,7 +186,8 @@ public class SolrHelper implements AutoCloseable, Constants {
       @NotNull SearchIndex searchIndex,
       @NotNull TMFeatureType tmFeatureType,
       @NotNull FeatureSourceFactoryHelper featureSourceFactoryHelper,
-      @NotNull SearchIndexRepository searchIndexRepository)
+      @NotNull SearchIndexRepository searchIndexRepository,
+      Consumer<JobProgressEvent> progressListener)
       throws IOException, SolrServerException {
 
     createSchemaIfNotExists();
@@ -295,6 +309,13 @@ public class SolrHelper implements AutoCloseable, Constants {
               total,
               updateResponse.getStatus());
           docsBatch.clear();
+          if (progressListener != null) {
+            progressListener.accept(
+                new JobProgressEvent()
+                    .jobName("test")
+                    .total(BigDecimal.valueOf(total))
+                    .progress(BigDecimal.valueOf(indexCounter - indexSkippedCounter)));
+          }
         }
       }
     } finally {
@@ -320,6 +341,7 @@ public class SolrHelper implements AutoCloseable, Constants {
       logger.warn(
           "{} features were skipped because no search or display values were found.",
           indexSkippedCounter);
+      // TODO: set these properties in a POJO defined in admin-schemas.yaml, saved in jsonb column
       searchIndex =
           searchIndex.setComment(
               "Indexed %s features in %s.%s seconds, started at %s. %s features were skipped because no search or display values were found."

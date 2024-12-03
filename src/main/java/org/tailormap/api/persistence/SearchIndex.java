@@ -8,6 +8,7 @@ package org.tailormap.api.persistence;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -23,10 +24,12 @@ import java.util.List;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.tailormap.api.admin.model.TaskSchedule;
+import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
 /** SearchIndex is a table that stores the metadata for search indexes for a feature type. */
 @Entity
 @Table(name = "search_index")
+@EntityListeners(EntityEventPublisher.class)
 public class SearchIndex implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
