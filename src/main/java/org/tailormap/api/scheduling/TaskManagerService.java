@@ -8,6 +8,7 @@ package org.tailormap.api.scheduling;
 import static io.sentry.quartz.SentryJobListener.SENTRY_SLUG_KEY;
 
 import java.lang.invoke.MethodHandles;
+import java.util.Set;
 import java.util.UUID;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
@@ -37,6 +38,39 @@ public class TaskManagerService {
 
   public TaskManagerService(@Autowired Scheduler scheduler) {
     this.scheduler = scheduler;
+  }
+
+  /**
+   * Create a one-time job and schedule it to start immediately.
+   *
+   * @param job the task class to create
+   * @param jobData a map with job data, the {@code type} and {@code description} keys are mandatory
+   * @return the task name, a hash of the description
+   * @throws SchedulerException if the job could not be scheduled
+   */
+  public UUID createTask(Class<? extends QuartzJobBean> job, TMJobDataMap jobData)
+      throws SchedulerException {
+    JobDetail jobDetail =
+        JobBuilder.newJob(job)
+            .withIdentity(
+                new JobKey(UUID.randomUUID().toString(), jobData.get(Task.TYPE_KEY).toString()))
+            .withDescription(jobData.getDescription())
+            .usingJobData(new JobDataMap(jobData))
+            .storeDurably(false)
+            .build();
+
+    Trigger trigger =
+        TriggerBuilder.newTrigger()
+            .withIdentity(jobDetail.getKey().getName(), jobDetail.getKey().getGroup())
+            .startNow()
+            .withPriority(jobData.getPriority())
+            .usingJobData(
+                SENTRY_SLUG_KEY, "monitor_slug_simple_trigger_" + jobData.get(Task.TYPE_KEY))
+            .forJob(jobDetail)
+            .build();
+
+    scheduler.scheduleJob(jobDetail, Set.of(trigger), true);
+    return UUID.fromString(jobDetail.getKey().getName());
   }
 
   /**
