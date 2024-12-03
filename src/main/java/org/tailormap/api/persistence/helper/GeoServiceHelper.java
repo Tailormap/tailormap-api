@@ -6,6 +6,7 @@
 package org.tailormap.api.persistence.helper;
 
 import static org.tailormap.api.persistence.TMFeatureSource.Protocol.WFS;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.QUANTIZEDMESH;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.TILESET3D;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
@@ -106,6 +107,11 @@ public class GeoServiceHelper {
       return;
     }
 
+    if (geoService.getProtocol() == QUANTIZEDMESH) {
+      setQuantizedMeshCapabilities(geoService);
+      return;
+    }
+
     ResponseTeeingHTTPClient client =
         new ResponseTeeingHTTPClient(
             HTTPClientFinder.createClient(), null, Set.of("Access-Control-Allow-Origin"));
@@ -180,6 +186,18 @@ public class GeoServiceHelper {
                 .id("0")
                 .root(true)
                 .name("Tileset3D")
+                .title(geoService.getTitle())
+                .virtual(false)
+                .queryable(false)));
+  }
+
+  private static void setQuantizedMeshCapabilities(GeoService geoService) {
+    geoService.setLayers(
+        List.of(
+            new GeoServiceLayer()
+                .id("0")
+                .root(true)
+                .name("quantizedmesh")
                 .title(geoService.getTitle())
                 .virtual(false)
                 .queryable(false)));
