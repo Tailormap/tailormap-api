@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.tailormap.api.admin.model.TaskSchedule;
 
 /** SearchIndex is a table that stores the metadata for search indexes for a feature type. */
 @Entity
@@ -58,35 +59,11 @@ public class SearchIndex implements Serializable {
   @JsonProperty("lastIndexed")
   private OffsetDateTime lastIndexed;
 
-  public enum Status {
-    INITIAL("initial"),
-    INDEXING("indexing"),
-    INDEXED("indexed"),
-    ERROR("error");
-    private final String value;
-
-    Status(String value) {
-      this.value = value;
-    }
-
-    public String getValue() {
-      return value;
-    }
-
-    @Override
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static SearchIndex.Status fromValue(String value) {
-      for (SearchIndex.Status status : SearchIndex.Status.values()) {
-        if (status.value.equals(value)) {
-          return status;
-        }
-      }
-      throw new IllegalArgumentException("Unexpected value '%s'".formatted(value));
-    }
-  }
+  @Valid
+  @JsonProperty("schedule")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @Column(columnDefinition = "jsonb")
+  private TaskSchedule schedule;
 
   @Enumerated(EnumType.STRING)
   @NotNull
@@ -163,5 +140,44 @@ public class SearchIndex implements Serializable {
   public SearchIndex setStatus(Status status) {
     this.status = status;
     return this;
+  }
+
+  public @Valid TaskSchedule getSchedule() {
+    return schedule;
+  }
+
+  public SearchIndex setSchedule(@Valid TaskSchedule schedule) {
+    this.schedule = schedule;
+    return this;
+  }
+
+  public enum Status {
+    INITIAL("initial"),
+    INDEXING("indexing"),
+    INDEXED("indexed"),
+    ERROR("error");
+    private final String value;
+
+    Status(String value) {
+      this.value = value;
+    }
+
+    public static SearchIndex.Status fromValue(String value) {
+      for (SearchIndex.Status status : SearchIndex.Status.values()) {
+        if (status.value.equals(value)) {
+          return status;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '%s'".formatted(value));
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
   }
 }

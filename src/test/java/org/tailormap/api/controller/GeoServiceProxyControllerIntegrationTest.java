@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
 
 import com.github.romankh3.image.comparison.ImageComparison;
 import com.github.romankh3.image.comparison.ImageComparisonUtil;
@@ -85,7 +86,6 @@ class GeoServiceProxyControllerIntegrationTest {
   private String apiBasePath;
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_proxied_legend_from_capabilities_unauthorized() throws Exception {
     final String path = apiBasePath + begroeidterreindeelLegendUrl;
     mockMvc
@@ -150,7 +150,6 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void app_not_found_404() throws Exception {
     final String path = apiBasePath + "/app/1234/layer/76/proxy/wms";
     mockMvc
@@ -161,7 +160,6 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void deny_non_proxied_service() throws Exception {
     final String path = apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:BGT/proxy/wms";
     mockMvc
@@ -171,7 +169,6 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void deny_wrong_protocol() throws Exception {
     final String path =
         apiBasePath
@@ -183,7 +180,6 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void allow_http_post() throws Exception {
     final String path = apiBasePath + begroeidterreindeelUrl;
     mockMvc
@@ -192,7 +188,6 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void allow_http_get() throws Exception {
     final String path = apiBasePath + begroeidterreindeelUrl;
     mockMvc
@@ -201,7 +196,6 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_pdok_wms_GetCapabilities() throws Exception {
     final String path = apiBasePath + pdokWmsGemeentegebiedUrl;
     mockMvc
@@ -220,7 +214,6 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_pdok_wms_GetMap() throws Exception {
     final String path = apiBasePath + pdokWmsGemeentegebiedUrl;
     mockMvc
@@ -246,7 +239,6 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_pdok_wms_GetLegendGraphic() throws Exception {
     final String path = apiBasePath + pdokWmsGemeentegebiedUrl;
     mockMvc
@@ -266,7 +258,6 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_wms_secured_proxy_not_in_public_app() throws Exception {
     final String path =
         apiBasePath + "/app/default/layer/lyr:openbasiskaart-proxied:osm/proxy/wmts";
@@ -279,6 +270,15 @@ class GeoServiceProxyControllerIntegrationTest {
         .andExpect(status().isForbidden())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Forbidden"));
+
+    final String path2 = apiBasePath + layerProxiedWithAuthInPublicApp + "/proxy/wms";
+    mockMvc
+        .perform(
+            get(path2)
+                .param("REQUEST", "GetCapabilities")
+                .param("VERSION", "1.1.0")
+                .with(setServletPath(path2)))
+        .andExpect(status().isForbidden());
   }
 
   private ResultActions performLoggedInRequiredAppLayerProxyRequest() throws Exception {
@@ -293,7 +293,6 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_wms_secured_app_denied() throws Exception {
     performLoggedInRequiredAppLayerProxyRequest()
         .andExpect(status().isUnauthorized())
@@ -303,7 +302,6 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(username = "user")
   void test_wms_secured_app_granted() throws Exception {
     performLoggedInRequiredAppLayerProxyRequest()
@@ -314,7 +312,6 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   @WithMockUser(username = "user")
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_obk_wmts_GetCapabilities() throws Exception {
     final String path = apiBasePath + obkUrl;
     mockMvc
@@ -331,7 +328,6 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   @WithMockUser(username = "user")
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_obk_wmts_GetTile() throws Exception {
     final String path = apiBasePath + obkUrl;
     mockMvc
@@ -356,7 +352,6 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   @WithMockUser(username = "user")
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test_obk_wmts_GetTile_Conditional() throws Exception {
     final String path = apiBasePath + obkUrl;
 

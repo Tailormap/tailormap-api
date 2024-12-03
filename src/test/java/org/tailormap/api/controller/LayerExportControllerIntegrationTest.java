@@ -10,9 +10,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+import static org.tailormap.api.controller.TestUrls.layerProvinciesWfs;
+import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
+import static org.tailormap.api.controller.TestUrls.layerWaterdeel;
 
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -34,12 +37,8 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class LayerExportControllerIntegrationTest {
 
-  private static final String waterdeelUrlOracle =
-      "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/export/download";
-  private static final String pdokProvincies =
-      "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/export/download";
-  private static final String begroeidterreindeel =
-      "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/export/download";
+  private static final String downloadPath = "/export/download";
+  private static final String capabilitiesPath = "/export/capabilities";
 
   @Autowired private MockMvc mockMvc;
 
@@ -47,9 +46,8 @@ class LayerExportControllerIntegrationTest {
   private String apiBasePath;
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldReturnExportCapabilitiesWithJDBCFeatureSource() throws Exception {
-    final String url = apiBasePath + waterdeelUrlOracle.replace("download", "capabilities");
+    final String url = apiBasePath + layerWaterdeel + capabilitiesPath;
     mockMvc
         .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isOk())
@@ -86,9 +84,8 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldReturnExportCapabilitiesWithWFSFeatureSource() throws Exception {
-    final String url = apiBasePath + pdokProvincies.replace("download", "capabilities");
+    final String url = apiBasePath + layerProvinciesWfs + capabilitiesPath;
     mockMvc
         .perform(get(url).with(setServletPath(url)).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -105,15 +102,14 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldExportGeoJSON() throws Exception {
-    final String url = apiBasePath + pdokProvincies;
+    final String url = apiBasePath + layerProvinciesWfs + downloadPath;
     mockMvc
         .perform(
             get(url)
                 .with(setServletPath(url))
                 .accept(MediaType.APPLICATION_JSON)
-                .param("outputFormat", "application/json")
+                .param("outputFormat", MediaType.APPLICATION_JSON_VALUE)
                 .param("attributes", "geom,naam,code"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -124,9 +120,8 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldExportGeoPackage() throws Exception {
-    final String url = apiBasePath + waterdeelUrlOracle;
+    final String url = apiBasePath + layerWaterdeel + downloadPath;
     mockMvc
         .perform(
             get(url)
@@ -138,9 +133,8 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldExportGeoJSONWithFilter() throws Exception {
-    final String url = apiBasePath + waterdeelUrlOracle;
+    final String url = apiBasePath + layerWaterdeel + downloadPath;
     mockMvc
         .perform(
             get(url)
@@ -158,15 +152,14 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldExportGeoJSONWithFilterAndSort() throws Exception {
-    final String url = apiBasePath + waterdeelUrlOracle;
+    final String url = apiBasePath + layerWaterdeel + downloadPath;
     mockMvc
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(setServletPath(url))
-                .param("outputFormat", "application/json")
+                .param("outputFormat", MediaType.APPLICATION_JSON_VALUE)
                 .param("filter", "(BRONHOUDER IN ('G1904','L0002','L0004'))")
                 .param("sortBy", "CLASS")
                 .param("sortOrder", "asc"))
@@ -183,7 +176,7 @@ class LayerExportControllerIntegrationTest {
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(setServletPath(url))
-                .param("outputFormat", "application/json")
+                .param("outputFormat", MediaType.APPLICATION_JSON_VALUE)
                 .param("filter", "(BRONHOUDER IN ('G1904','L0002','L0004'))")
                 .param("sortBy", "CLASS")
                 .param("sortOrder", "desc"))
@@ -197,15 +190,14 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void shouldNotExportHiddenAttributesInGeoJSONWhenRequested() throws Exception {
-    final String url = apiBasePath + begroeidterreindeel;
+    final String url = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath;
     mockMvc
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(setServletPath(url))
-                .param("outputFormat", "application/json")
+                .param("outputFormat", MediaType.APPLICATION_JSON_VALUE)
                 // terminationdate,geom_kruinlijn are hidden attributes
                 .param(
                     "attributes", "identificatie,bronhouder,class,terminationdate,geom_kruinlijn"))
@@ -217,16 +209,14 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  @Disabled("https://b3partners.atlassian.net/browse/HTM-1198")
   void shouldNotExportHiddenAttributesInGeoJSON() throws Exception {
-    final String url = apiBasePath + begroeidterreindeel;
+    final String url = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath;
     mockMvc
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(setServletPath(url))
-                .param("outputFormat", "application/json")
+                .param("outputFormat", MediaType.APPLICATION_JSON_VALUE)
                 .param("filter", "(bronhouder ILIKE 'L0001')"))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk())
@@ -237,5 +227,29 @@ class LayerExportControllerIntegrationTest {
         // terminationdate,geom_kruinlijn are hidden attributes
         .andExpect(jsonPath("$.features[0].properties.terminationdate").doesNotExist())
         .andExpect(jsonPath("$.features[0].properties.geom_kruinlijn").doesNotExist());
+  }
+
+  @Test
+  void test_wms_secured_proxy_not_in_public_app() throws Exception {
+    final String testUrl = apiBasePath + layerProxiedWithAuthInPublicApp + "/export/download";
+    mockMvc
+        .perform(
+            get(testUrl)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(testUrl))
+                .param("outputFormat", MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
+  void testInvalidOutputFormatNotAccepted() throws Exception {
+    final String testUrl = apiBasePath + layerBegroeidTerreindeelPostgis + "/export/download";
+    mockMvc
+        .perform(
+            get(testUrl)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(testUrl))
+                .param("outputFormat", "Invalid value!"))
+        .andExpect(status().isBadRequest());
   }
 }

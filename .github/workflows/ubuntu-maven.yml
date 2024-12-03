@@ -2,7 +2,7 @@ name: 'Ubuntu Maven build'
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
-  MAVEN_VERSION: '3.9.8'
+  MAVEN_VERSION: '3.9.9'
 
 concurrency:
   group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
@@ -20,7 +20,7 @@ on:
 jobs:
   build:
     name: 'Build w/ Java 17'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -44,10 +44,18 @@ jobs:
           mvn -B -fae -e test
 
       - name: 'Upload coverage to Codecov'
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: 'Upload test results to Codecov'
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: target/surefire-reports/TEST-*.xml
 
       - name: 'Build javadoc'
         run: mvn javadoc:javadoc
@@ -95,10 +103,17 @@ jobs:
             target/failsafe-reports/TEST-*.xml       
 
       - name: 'Upload coverage to Codecov'
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: 'Upload test results to Codecov'
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: target/failsafe-reports/TEST-*.xml
 
   # Upload event file so test results can be processed for the PR
   # https://github.com/EnricoMi/publish-unit-test-result-action#support-fork-repositories-and-dependabot-branches
@@ -179,7 +194,6 @@ jobs:
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker run --privileged --rm tonistiigi/binfmt --install arm64
           mvn -B -V -fae -DskipTests -DskipITs -DskipQA=true -Pqa-skip clean deploy --settings .github/maven-settings.xml
 
       - name: 'Publish SBOM'

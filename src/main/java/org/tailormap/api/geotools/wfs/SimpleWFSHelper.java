@@ -7,7 +7,6 @@ package org.tailormap.api.geotools.wfs;
 
 import static org.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHeader;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
@@ -31,7 +30,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 import org.geotools.http.HTTPClient;
 import org.geotools.http.SimpleHttpClient;
-import org.geotools.ows.ServiceException;
 import org.geotools.ows.wms.LayerDescription;
 import org.geotools.ows.wms.WMS1_1_1;
 import org.geotools.ows.wms.WebMapServer;
@@ -48,15 +46,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/**
- * Lightweight WFS client helper with a fault-tolerant 'be liberal in what you accept' design - no
- * complete WFS XML mapping for capabilities and XML feature type schemas such as the heavyweight
- * GeoTools WFS DataStore.
- */
 public class SimpleWFSHelper {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   public static final int TIMEOUT = 5000;
+
+  public static final String DEFAULT_WFS_VERSION = "1.1.0";
 
   private static HttpClient getDefaultHttpClient() {
     return HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).build();
@@ -68,7 +63,7 @@ public class SimpleWFSHelper {
 
   public static URI getWFSRequestURL(
       String wfsUrl, String request, MultiValueMap<String, String> parameters) {
-    return getWFSRequestURL(wfsUrl, request, "1.1.0", parameters);
+    return getWFSRequestURL(wfsUrl, request, DEFAULT_WFS_VERSION, parameters);
   }
 
   public static URI getWFSRequestURL(
@@ -98,13 +93,18 @@ public class SimpleWFSHelper {
                   .collect(Collectors.toList()));
       params.addAll(parameters);
     }
-    return UriComponentsBuilder.fromHttpUrl(url).replaceQueryParams(params).build(true).toUri();
+    return UriComponentsBuilder.fromUriString(url).replaceQueryParams(params).build(true).toUri();
   }
 
   /**
-   * Just get the list of supported output formats for the typename. If there are no specific output
-   * formats for the type, the generally supported output formats are returned. Requests WFS 1.1.0
-   * but also handles WFS 2.0.0 responses.
+   * Get a list of GetFeature output formats for a WFS feature type.
+   *
+   * <p>If there are no specific output formats for the type, the generally supported output formats
+   * are returned. Requests WFS 1.1.0 but also handles WFS 2.0.0 responses.
+   *
+   * <p>Uses a 'lightweight' WFS implementation parsing only the XML WFS capabilities to extract the
+   * output formats using XPath, instead of using a heavyweight GeoTools WFS DataStore which is much
+   * slower.
    */
   public static List<String> getOutputFormats(
       String wfsUrl, String typeName, String username, String password) throws Exception {
@@ -190,16 +190,6 @@ public class SimpleWFSHelper {
     return outputFormats;
   }
 
-  public static WebMapServer getWebMapServer(String url, String username, String password)
-      throws IOException, ServiceException {
-    HTTPClient client = new SimpleHttpClient();
-    client.setUser(username);
-    client.setPassword(password);
-    client.setConnectTimeout(TIMEOUT);
-    client.setReadTimeout(TIMEOUT);
-    return new WebMapServer(new URL(url), client);
-  }
-
   public static SimpleWFSLayerDescription describeWMSLayer(
       String url, String username, String password, String layerName) {
     return describeWMSLayers(url, username, password, List.of(layerName)).get(layerName);
@@ -208,7 +198,12 @@ public class SimpleWFSHelper {
   public static Map<String, SimpleWFSLayerDescription> describeWMSLayers(
       String url, String username, String password, List<String> layers) {
     try {
-      WebMapServer wms = getWebMapServer(url, username, password);
+      HTTPClient client = new SimpleHttpClient();
+      client.setUser(username);
+      client.setPassword(password);
+      client.setConnectTimeout(TIMEOUT);
+      client.setReadTimeout(TIMEOUT);
+      WebMapServer wms = new WebMapServer(new URL(url), client);
       // Directly create WMS 1.1.1 request. Creating it from WebMapServer errors with GeoServer
       // about unsupported request in capabilities unless we override WebMapServer to set up
       // specifications.
@@ -225,7 +220,8 @@ public class SimpleWFSHelper {
         String wfsUrl = getWfsUrl(ld, wms);
 
         if (wfsUrl != null && ld.getQueries() != null && ld.getQueries().length != 0) {
-          descriptions.put(ld.getName(), new SimpleWFSLayerDescription(wfsUrl, ld.getQueries()));
+          descriptions.put(
+              ld.getName(), new SimpleWFSLayerDescription(wfsUrl, List.of(ld.getQueries())));
         }
       }
       return Collections.unmodifiableMap(descriptions);
@@ -237,7 +233,7 @@ public class SimpleWFSHelper {
       if (logger.isTraceEnabled()) {
         logger.trace(msg, e);
       } else {
-        logger.debug(msg + ". Set log level to TRACE for stacktrace.");
+        logger.debug("{}. Set log level to TRACE for stacktrace.", msg);
       }
     }
 

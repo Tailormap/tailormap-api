@@ -22,27 +22,34 @@ public class ValidationConfiguration implements RepositoryRestConfigurer {
 
   private final ApplicationValidator applicationValidator;
 
+  private final SearchIndexValidator searchIndexValidator;
+
   public ValidationConfiguration(
       LocalValidatorFactoryBean localValidatorFactoryBean,
       GeoServiceValidator geoServiceValidator,
       FeatureSourceValidator featureSourceValidator,
-      ApplicationValidator applicationValidator) {
+      ApplicationValidator applicationValidator,
+      SearchIndexValidator searchIndexValidator) {
     this.localValidatorFactoryBean = localValidatorFactoryBean;
     this.geoServiceValidator = geoServiceValidator;
     this.featureSourceValidator = featureSourceValidator;
     this.applicationValidator = applicationValidator;
+    this.searchIndexValidator = searchIndexValidator;
   }
 
   @Override
   public void configureValidatingRepositoryEventListener(
       ValidatingRepositoryEventListener validatingListener) {
-    validatingListener.addValidator("beforeCreate", localValidatorFactoryBean);
-    validatingListener.addValidator("beforeSave", localValidatorFactoryBean);
-    validatingListener.addValidator("beforeCreate", geoServiceValidator);
-    validatingListener.addValidator("beforeSave", geoServiceValidator);
-    validatingListener.addValidator("beforeCreate", featureSourceValidator);
-    validatingListener.addValidator("beforeSave", featureSourceValidator);
-    validatingListener.addValidator("beforeCreate", applicationValidator);
-    validatingListener.addValidator("beforeSave", applicationValidator);
+    validatingListener
+        .addValidator("beforeCreate", localValidatorFactoryBean)
+        .addValidator("beforeSave", localValidatorFactoryBean)
+        .addValidator("beforeCreate", geoServiceValidator)
+        .addValidator("beforeSave", geoServiceValidator)
+        .addValidator("beforeCreate", featureSourceValidator)
+        .addValidator("beforeSave", featureSourceValidator)
+        .addValidator("beforeCreate", applicationValidator)
+        .addValidator("beforeSave", applicationValidator)
+        .addValidator("beforeCreate", searchIndexValidator)
+        .addValidator("beforeSave", searchIndexValidator);
   }
 }

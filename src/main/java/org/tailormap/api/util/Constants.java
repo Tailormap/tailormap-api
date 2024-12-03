@@ -6,7 +6,6 @@
 package org.tailormap.api.util;
 
 public interface Constants {
-  int DEFAULT_MAX_FEATURES = 10;
   String FID = "__fid";
   String ID = "id";
   String NAME_REGEX = "^[a-zA-Z0-9-_]+";
@@ -19,4 +18,6 @@ public interface Constants {
   String INDEX_GEOM_FIELD = "geometry";
 
   String UUID_REGEX = "(?i)^[\\da-f]{8}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{12}$";
+
+  String TEST_TASK_TYPE = "poc";
 }

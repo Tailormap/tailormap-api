@@ -11,11 +11,15 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWithIgnoringCase;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+import static org.tailormap.api.controller.TestUrls.layerWaterdeelOracle;
+import static org.tailormap.api.controller.TestUrls.layerWegdeelSqlServer;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -40,11 +44,8 @@ class SearchControllerIntegrationTest implements Constants {
   @Autowired private MockMvc mockMvc;
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void searchPostgis() throws Exception {
-    final String url =
-        apiBasePath
-            + "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/search";
+    final String url = apiBasePath + layerBegroeidTerreindeelPostgis + "/search";
 
     mockMvc
         .perform(
@@ -69,11 +70,8 @@ class SearchControllerIntegrationTest implements Constants {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void searchPostgisGroen() throws Exception {
-    final String url =
-        apiBasePath
-            + "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/search";
+    final String url = apiBasePath + layerBegroeidTerreindeelPostgis + "/search";
 
     mockMvc
         .perform(
@@ -99,10 +97,8 @@ class SearchControllerIntegrationTest implements Constants {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void searchSQLServerStartAtItem10() throws Exception {
-    final String url =
-        apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/search";
+    final String url = apiBasePath + layerWegdeelSqlServer + "/search";
 
     mockMvc
         .perform(
@@ -128,10 +124,8 @@ class SearchControllerIntegrationTest implements Constants {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void searchOracleLayerWithoutIndex() throws Exception {
-    final String url =
-        apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/search";
+    final String url = apiBasePath + layerWaterdeelOracle + "/search";
 
     mockMvc
         .perform(
@@ -143,7 +137,6 @@ class SearchControllerIntegrationTest implements Constants {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testLayerDoesNotExist() throws Exception {
     final String url =
         apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:doesnotexist/search";
@@ -162,7 +155,6 @@ class SearchControllerIntegrationTest implements Constants {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testLayerWithoutFeatureType() throws Exception {
     final String url = apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:BGT/search";
 
@@ -178,11 +170,8 @@ class SearchControllerIntegrationTest implements Constants {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testBadRequestQuery() throws Exception {
-    final String url =
-        apiBasePath
-            + "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/search";
+    final String url = apiBasePath + layerBegroeidTerreindeelPostgis + "/search";
 
     mockMvc
         .perform(
@@ -194,5 +183,58 @@ class SearchControllerIntegrationTest implements Constants {
         .andExpect(status().isBadRequest())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Error while searching with given query"));
+  }
+
+  @Test
+  void testSpatialQueryDistance() throws Exception {
+    final String url = apiBasePath + layerWegdeelSqlServer + "/search";
+
+    mockMvc
+        .perform(
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .param("q", "open")
+                .param("start", "0")
+                // added in backend
+                // .param("fq", "{!geofilt sfield=geometry}")
+                .param("pt", "133809 458811")
+                .param("d", "0.005"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.start").value(0))
+        .andExpect(jsonPath("$.total").value(2))
+        .andExpect(jsonPath("$.documents").isArray())
+        .andExpect(jsonPath("$.documents.length()").value(2))
+        .andExpect(jsonPath("$.documents[0].fid").isString())
+        .andExpect(jsonPath("$.documents[0].fid").value(startsWithIgnoringCase("wegdeel")))
+        .andExpect(jsonPath("$.documents[0].displayValues").isArray())
+        .andExpect(jsonPath("$.documents[0]." + INDEX_GEOM_FIELD).isString());
+  }
+
+  @Test
+  void testSpatialQueryDistanceWithBbox() throws Exception {
+    final String url = apiBasePath + layerWegdeelSqlServer + "/search";
+
+    mockMvc
+        .perform(
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .param("q", "open")
+                .param("start", "0")
+                .param("fq", "{!bbox sfield=geometry}")
+                .param("pt", "133809 458811")
+                .param("d", "0.5"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.start").value(0))
+        .andExpect(jsonPath("$.total").value(2))
+        .andExpect(jsonPath("$.documents").isArray())
+        .andExpect(jsonPath("$.documents.length()").value(2))
+        .andExpect(jsonPath("$.documents[0].fid").isString())
+        .andExpect(jsonPath("$.documents[0].fid").value(startsWithIgnoringCase("wegdeel")))
+        .andExpect(jsonPath("$.documents[0].displayValues").isArray())
+        .andExpect(jsonPath("$.documents[0]." + INDEX_GEOM_FIELD).isString());
   }
 }

@@ -244,6 +244,10 @@ components:
           minLength: 0
           items:
             $ref: './viewer-schemas.yaml#/components/schemas/ColumnMetadata'
+        template:
+          description: Template/description for a feature. Will replace placeholders by attribute values in the viewer
+          type: string
+          nullable: true
       example:
         total: 400
         page: 5
@@ -313,7 +317,7 @@ components:
           type: string
           nullable: false
         geometry:
-          description: 'The geometry of the feature (WKT'
+          description: 'The geometry of the feature (WKT)'
           type: string
           nullable: true
         displayValues:
@@ -326,6 +330,8 @@ components:
                  "geometry": "POINT(1 2)",
                  "displayValues": [ "value 1", "value 2" ] }
 
+    PageResponse:
+      $ref: './viewer-schemas.yaml#/components/schemas/Page'
 
 paths:
   /unauthorized:
@@ -1305,6 +1311,25 @@ paths:
           type: integer
           minimum: 0
           default: 0
+      - description: '(Solr) distance search term (kilometers)'
+        in: query
+        name: d
+        required: true
+        schema:
+          type: number
+          format: double
+      - description: '(Solr) search point term'
+        in: query
+        name: pt
+        required: false
+        schema:
+          type: string
+      - description: '(Solr) filter query term'
+        in: query
+        name: fq
+        required: false
+        schema:
+          type: string
     get:
       operationId: 'search'
       description: 'retrieve a limited list of search responses that fulfill the requested conditions (parameters).'
@@ -1333,6 +1358,46 @@ paths:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
         '500':
           description: 'Internal server error. Something went wrong while processing the search request, maybe search index is down.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
+  /page:
+    summary: 'Use this endpoint to get the home page'
+    get:
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponse'
+        '404':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
+  /page/{name}:
+    summary: 'Use this endpoint to get a page'
+    parameters:
+      - in: path
+        name: name
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponse'
+        '404':
+          description: 'Unauthorized'
           content:
             application/json:
               schema:

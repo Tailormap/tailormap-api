@@ -36,7 +36,6 @@ class AppControllerIntegrationTest {
   private String basePath;
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void returns_default_when_no_arguments() throws Exception {
     mockMvc
         .perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
@@ -58,9 +57,8 @@ class AppControllerIntegrationTest {
   }
 
   @Test
-  /* this test changes database content */
+  /* this test changes database content but reverses it after the test */
   @Transactional
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void not_found_when_no_default() throws Exception {
     Configuration defaultApp =
         configurationRepository.findByKey(Configuration.DEFAULT_APP).orElseThrow();
@@ -71,13 +69,15 @@ class AppControllerIntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
         .andExpect(jsonPath("$.message").value("Not Found"));
-    entityManager.persist(defaultApp);
+    Configuration defaultAppConfig = new Configuration();
+    defaultAppConfig.setKey(Configuration.DEFAULT_APP);
+    defaultAppConfig.setValue(defaultApp.getValue());
+    entityManager.persist(defaultAppConfig);
   }
 
   @Test
   /* this test changes database content */
   @Transactional
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void not_found_when_default_not_exists() throws Exception {
     Configuration defaultApp =
         configurationRepository.findByKey(Configuration.DEFAULT_APP).orElseThrow();
@@ -92,7 +92,6 @@ class AppControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void finds_by_name() throws Exception {
     String path = basePath + "/app/default";
     mockMvc
@@ -104,7 +103,6 @@ class AppControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void not_found_by_name() throws Exception {
     String path = basePath + "/app/waldo";
     mockMvc
@@ -115,7 +113,6 @@ class AppControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void finds_service_viewer() throws Exception {
     String path = basePath + "/service/snapshot-geoserver";
     mockMvc
@@ -128,7 +125,6 @@ class AppControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void not_found_unpublished_service_viewer() throws Exception {
     String path = basePath + "/service/openbasiskaart";
     mockMvc
@@ -140,7 +136,6 @@ class AppControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_send_401_when_application_configured() throws Exception {
     String path = basePath + "/app/secured";
     mockMvc

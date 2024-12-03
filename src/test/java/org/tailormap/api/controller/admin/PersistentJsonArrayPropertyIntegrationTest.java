@@ -45,7 +45,6 @@ class PersistentJsonArrayPropertyIntegrationTest {
   private String adminBasePath;
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "admin",
       authorities = {Group.ADMIN})
@@ -152,7 +151,7 @@ class PersistentJsonArrayPropertyIntegrationTest {
     ObjectNode node = objectMapper.createObjectNode();
     node.set("components", objectMapper.convertValue(app, JsonNode.class).get("components"));
     String patchBody = objectMapper.writeValueAsString(node);
-    logger.info("PATCH body: " + patchBody);
+    logger.info("PATCH body: {}", patchBody);
     return patchBody;
   }
 }

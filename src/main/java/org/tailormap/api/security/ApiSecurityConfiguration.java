@@ -9,14 +9,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.Cookie;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationEventPublisher;
+import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,6 +28,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -37,6 +42,8 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.tailormap.api.persistence.Group;
 import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.repository.OIDCConfigurationRepository;
+import org.tailormap.api.security.events.DefaultAuthenticationFailureEvent;
+import org.tailormap.api.security.events.OAuth2AuthenticationFailureEvent;
 
 @Configuration
 @EnableWebSecurity
@@ -67,6 +74,22 @@ public class ApiSecurityConfiguration {
           }
         });
     return csrfTokenRepository;
+  }
+
+  @Bean
+  public AuthenticationEventPublisher authenticationEventPublisher(
+      ApplicationEventPublisher applicationEventPublisher) {
+    DefaultAuthenticationEventPublisher authenticationEventPublisher =
+        new DefaultAuthenticationEventPublisher(applicationEventPublisher);
+
+    authenticationEventPublisher.setAdditionalExceptionMappings(
+        Collections.singletonMap(
+            OAuth2AuthenticationException.class, OAuth2AuthenticationFailureEvent.class));
+
+    authenticationEventPublisher.setDefaultAuthenticationFailureEvent(
+        DefaultAuthenticationFailureEvent.class);
+
+    return authenticationEventPublisher;
   }
 
   @Bean

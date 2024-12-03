@@ -19,9 +19,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.concurrent.TimeUnit;
-import org.apache.solr.client.solrj.impl.ConcurrentUpdateHttp2SolrClient;
-import org.apache.solr.client.solrj.impl.Http2SolrClient;
+import java.util.UUID;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +31,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.annotation.Transactional;
+import org.tailormap.api.admin.model.TaskSchedule;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
 import org.tailormap.api.geotools.featuresources.WFSFeatureSourceHelper;
@@ -59,6 +59,7 @@ import org.tailormap.api.persistence.json.AuthorizationRuleDecision;
 import org.tailormap.api.persistence.json.Bounds;
 import org.tailormap.api.persistence.json.CatalogNode;
 import org.tailormap.api.persistence.json.FeatureTypeRef;
+import org.tailormap.api.persistence.json.FeatureTypeTemplate;
 import org.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import org.tailormap.api.persistence.json.GeoServiceSettings;
@@ -75,8 +76,17 @@ import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.repository.UploadRepository;
 import org.tailormap.api.repository.UserRepository;
+import org.tailormap.api.scheduling.FailingPocTask;
+import org.tailormap.api.scheduling.IndexTask;
+import org.tailormap.api.scheduling.InterruptablePocTask;
+import org.tailormap.api.scheduling.PocTask;
+import org.tailormap.api.scheduling.TMJobDataMap;
+import org.tailormap.api.scheduling.Task;
+import org.tailormap.api.scheduling.TaskManagerService;
+import org.tailormap.api.scheduling.TaskType;
 import org.tailormap.api.security.InternalAdminAuthentication;
 import org.tailormap.api.solr.SolrHelper;
+import org.tailormap.api.solr.SolrService;
 import org.tailormap.api.viewer.model.AppStyling;
 import org.tailormap.api.viewer.model.Component;
 import org.tailormap.api.viewer.model.ComponentConfig;
@@ -91,6 +101,20 @@ public class PopulateTestData {
 
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private final ApplicationContext appContext;
+  private final UserRepository userRepository;
+  private final GroupRepository groupRepository;
+  private final CatalogRepository catalogRepository;
+  private final GeoServiceRepository geoServiceRepository;
+  private final GeoServiceHelper geoServiceHelper;
+  private final SolrService solrService;
+  private final TaskManagerService taskManagerService;
+  private final FeatureSourceRepository featureSourceRepository;
+  private final ApplicationRepository applicationRepository;
+  private final ConfigurationRepository configurationRepository;
+  private final SearchIndexRepository searchIndexRepository;
+  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
+  private final UploadRepository uploadRepository;
 
   @Value("${spatial.dbs.connect:false}")
   private boolean connectToSpatialDbs;
@@ -107,22 +131,11 @@ public class PopulateTestData {
   @Value("${MAP5_URL:#{null}}")
   private String map5url;
 
-  @Value("${tailormap-api.solr-core-name:tailormap}")
-  private String solrCoreName;
+  @Value("${tailormap-api.solr-batch-size:1000}")
+  private int solrBatchSize;
 
-  private final ApplicationContext appContext;
-  private final UserRepository userRepository;
-  private final GroupRepository groupRepository;
-  private final CatalogRepository catalogRepository;
-  private final GeoServiceRepository geoServiceRepository;
-  private final GeoServiceHelper geoServiceHelper;
-
-  private final FeatureSourceRepository featureSourceRepository;
-  private final ApplicationRepository applicationRepository;
-  private final ConfigurationRepository configurationRepository;
-  private final SearchIndexRepository searchIndexRepository;
-  private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
-  private final UploadRepository uploadRepository;
+  @Value("${tailormap-api.solr-geometry-validation-rule:repairBuffer0}")
+  private String solrGeometryValidationRule;
 
   public PopulateTestData(
       ApplicationContext appContext,
@@ -131,6 +144,8 @@ public class PopulateTestData {
       CatalogRepository catalogRepository,
       GeoServiceRepository geoServiceRepository,
       GeoServiceHelper geoServiceHelper,
+      SolrService solrService,
+      TaskManagerService taskManagerService,
       FeatureSourceRepository featureSourceRepository,
       ApplicationRepository applicationRepository,
       ConfigurationRepository configurationRepository,
@@ -143,6 +158,8 @@ public class PopulateTestData {
     this.catalogRepository = catalogRepository;
     this.geoServiceRepository = geoServiceRepository;
     this.geoServiceHelper = geoServiceHelper;
+    this.solrService = solrService;
+    this.taskManagerService = taskManagerService;
     this.featureSourceRepository = featureSourceRepository;
     this.applicationRepository = applicationRepository;
     this.configurationRepository = configurationRepository;
@@ -165,6 +182,7 @@ public class PopulateTestData {
       } catch (Exception e) {
         logger.error("Exception creating Solr Index for testdata (continuing)", e);
       }
+      createPocTasks();
     } finally {
       InternalAdminAuthentication.clearSecurityContextAuthentication();
     }
@@ -253,7 +271,7 @@ public class PopulateTestData {
                 .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)));
 
     String osmAttribution =
-        "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors";
+        "© [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors";
 
     Bounds rdTileGridExtent =
         new Bounds().minx(-285401.92).maxx(595401.92).miny(22598.08).maxy(903401.92);
@@ -356,6 +374,7 @@ public class PopulateTestData {
                                 "osm",
                                 new GeoServiceLayerSettings()
                                     .title("Openbasiskaart")
+                                    .hiDpiDisabled(false)
                                     .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
                                     .hiDpiSubstituteLayer("osm-hq")))),
             new GeoService()
@@ -380,6 +399,7 @@ public class PopulateTestData {
                             Map.of(
                                 "osm",
                                 new GeoServiceLayerSettings()
+                                    .hiDpiDisabled(false)
                                     .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
                                     .hiDpiSubstituteLayer("osm-hq")))),
             new GeoService()
@@ -399,6 +419,7 @@ public class PopulateTestData {
                                 new GeoServiceLayerSettings()
                                     .maxZoom(15)
                                     .tileGridExtent(rdTileGridExtent)
+                                    .hiDpiDisabled(false)
                                     .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERTILEPIXELRATIOONLY)
                                     .hiDpiSubstituteLayer(
                                         "https://openbasiskaart.nl/mapcache/tms/1.0.0/osm-hq@rd-hq/{z}/{x}/{-y}.png")))),
@@ -413,8 +434,7 @@ public class PopulateTestData {
                     new GeoServiceSettings()
                         .defaultLayerSettings(
                             new GeoServiceDefaultLayerSettings()
-                                .attribution(
-                                    "&copy; <a href=\"https://beeldmateriaal.nl/\">Beeldmateriaal.nl</a>")
+                                .attribution("© [Beeldmateriaal.nl](https://beeldmateriaal.nl)")
                                 .hiDpiDisabled(false))
                         .putLayerSettingsItem(
                             "Actueel_orthoHR", new GeoServiceLayerSettings().title("Luchtfoto"))),
@@ -430,8 +450,7 @@ public class PopulateTestData {
                         .xyzCrs("EPSG:28992")
                         .defaultLayerSettings(
                             new GeoServiceDefaultLayerSettings()
-                                .attribution(
-                                    "&copy; <a href=\"https://beeldmateriaal.nl/\">Beeldmateriaal.nl</a>")
+                                .attribution("© [Beeldmateriaal.nl](https://beeldmateriaal.nl)")
                                 .hiDpiDisabled(false))
                         .layerSettings(
                             Map.of(
@@ -451,8 +470,7 @@ public class PopulateTestData {
                     new GeoServiceSettings()
                         .defaultLayerSettings(
                             new GeoServiceDefaultLayerSettings()
-                                .attribution(
-                                    "&copy; <a href=\"https://basemap.at/\">basemap.at</a>")
+                                .attribution("© [basemap.at](https://basemap.at)")
                                 .hiDpiDisabled(true))
                         .layerSettings(
                             Map.of(
@@ -484,7 +502,28 @@ public class PopulateTestData {
                             "Gemeentegebied",
                             new GeoServiceLayerSettings().legendImageId(legend.getId().toString())))
                 .setPublished(true)
-                .setTitle("PDOK Kadaster bestuurlijke gebieden")
+                .setTitle("PDOK Kadaster bestuurlijke gebieden"),
+            new GeoService()
+                .setId("bestuurlijkegebieden-proxied")
+                .setProtocol(WMS)
+                .setUrl(
+                    "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
+                .setAuthorizationRules(rule)
+                // The service actually doesn't require authentication, but also doesn't mind it
+                // Just for testing that proxied services with auth are not available in public
+                // apps (even when logged in), in any controllers (map, proxy, features)
+                .setAuthentication(
+                    new ServiceAuthentication()
+                        .method(ServiceAuthentication.MethodEnum.PASSWORD)
+                        .username("test")
+                        .password("test"))
+                .setSettings(
+                    new GeoServiceSettings()
+                        // No attribution required: service is CC0
+                        .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)
+                        .useProxy(true))
+                .setPublished(true)
+                .setTitle("Bestuurlijke gebieden (proxied met auth)")
             // TODO MapServer WMS "https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk"
             );
 
@@ -492,8 +531,7 @@ public class PopulateTestData {
       GeoServiceLayerSettings osmAttr = new GeoServiceLayerSettings().attribution(osmAttribution);
       GeoServiceLayerSettings map5Attr =
           new GeoServiceLayerSettings()
-              .attribution(
-                  "Kaarten: <a href=\"https://map5.nl\">Map5.nl</a>, data: " + osmAttribution);
+              .attribution("Kaarten: [Map5.nl](https://map5.nl), data: " + osmAttribution);
       services = new ArrayList<>(services);
       services.add(
           new GeoService()
@@ -511,10 +549,16 @@ public class PopulateTestData {
                               "openlufo",
                                   new GeoServiceLayerSettings()
                                       .attribution(
-                                          "&copy; <a href=\"https://beeldmateriaal.nl/\">Beeldmateriaal.nl</a>, "
+                                          "© [Beeldmateriaal.nl](https://beeldmateriaal.nl), "
                                               + osmAttribution),
                               "luforoadslabels", osmAttr,
-                              "map5topo", map5Attr,
+                              "map5topo",
+                                  new GeoServiceLayerSettings()
+                                      .attribution(map5Attr.getAttribution())
+                                      .hiDpiDisabled(false)
+                                      .hiDpiMode(
+                                          TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
+                                      .hiDpiSubstituteLayer("map5topo_hq"),
                               "map5topo_gray", map5Attr,
                               "map5topo_simple", map5Attr,
                               "map5topo_simple_gray", map5Attr,
@@ -662,6 +706,27 @@ public class PopulateTestData {
               geoServiceRepository.save(geoService);
             });
 
+    geoServiceRepository
+        .findById("bestuurlijkegebieden-proxied")
+        .ifPresent(
+            geoService -> {
+              geoService
+                  .getSettings()
+                  .getLayerSettings()
+                  .put(
+                      "Provinciegebied",
+                      new GeoServiceLayerSettings()
+                          .featureType(
+                              new FeatureTypeRef()
+                                  .featureSourceId(
+                                      featureSources
+                                          .get("pdok-kadaster-bestuurlijkegebieden")
+                                          .getId())
+                                  .featureTypeName("bestuurlijkegebieden:Provinciegebied"))
+                          .title("Provinciegebied (WFS, proxied met auth)"));
+              geoServiceRepository.save(geoService);
+            });
+
     CatalogNode featureSourceCatalogNode =
         new CatalogNode().id("feature_sources").title("Test feature sources");
     rootCatalogNode.addChildrenItem(featureSourceCatalogNode.getId());
@@ -715,7 +780,7 @@ public class PopulateTestData {
                               "sqlserver:wegdeel",
                               new GeoServiceLayerSettings()
                                   .attribution(
-                                      "CC BY 4.0 <a href=\"https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\">BGT/Kadaster</a>")
+                                      "CC BY 4.0 [BGT/Kadaster](https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319)")
                                   .description(
                                       """
                                                   This layer shows data from [MS SQL Server](https://learn.microsoft.com/en-us/sql/relational-databases/spatial/spatial-data-sql-server).
@@ -749,10 +814,24 @@ public class PopulateTestData {
             ft -> {
               ft.getSettings().addHideAttributesItem("identificatie");
               ft.getSettings().addHideAttributesItem("ligtInLandCode");
-              ft.getSettings().addHideAttributesItem("ligtInLandNaam");
               ft.getSettings().addHideAttributesItem("fuuid");
               ft.getSettings()
                   .putAttributeSettingsItem("naam", new AttributeSettings().title("Naam"));
+              ft.getSettings()
+                  .setTemplate(
+                      new FeatureTypeTemplate()
+                          .templateLanguage("simple")
+                          .markupLanguage("markdown")
+                          .template(
+                              """
+### Provincie
+Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
+
+| Attribuut | Waarde             |
+| --------- | ------------------ |
+| `code`    | {{code}}           |
+| `naam`    | {{naam}}           |
+| `ligt in` | {{ligtInLandNaam}} |"""));
             });
 
     featureSources.get("postgis").getFeatureTypes().stream()
@@ -909,6 +988,7 @@ public class PopulateTestData {
                             .childrenIds(
                                 List.of(
                                     "lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied",
+                                    "lyr:bestuurlijkegebieden-proxied:Provinciegebied",
                                     "lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied",
                                     "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
                                     "lyr:snapshot-geoserver:sqlserver:wegdeel",
@@ -924,6 +1004,16 @@ public class PopulateTestData {
                             .serviceId("pdok-kadaster-bestuurlijkegebieden")
                             .layerName("Provinciegebied")
                             .visible(true))
+                    // This is a layer from proxied service with auth that should also not be
+                    // visible, but it has a feature source attached, should also be denied for
+                    // features access and not be included in TOC
+                    .addLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:bestuurlijkegebieden-proxied:Provinciegebied")
+                            .serviceId("bestuurlijkegebieden-proxied")
+                            .layerName("Provinciegebied")
+                            .visible(false))
                     .addLayerNodesItem(
                         new AppTreeLayerNode()
                             .objectType("AppTreeLayerNode")
@@ -1020,7 +1110,7 @@ public class PopulateTestData {
                             .description(
                                 "This is the layer description from the app layer setting.")
                             .attribution(
-                                "CC BY 4.0 <a href=\"https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319\">BGT/Kadaster</a>"))
+                                "CC BY 4.0 [BGT/Kadaster](https://www.nationaalgeoregister.nl/geonetwork/srv/api/records/2cb4769c-b56e-48fa-8685-c48f61b9a319)"))
                     .putLayerSettingsItem(
                         "lyr:snapshot-geoserver:postgis:osm_polygon",
                         new AppLayerSettings()
@@ -1029,7 +1119,7 @@ public class PopulateTestData {
                             .editable(true)
                             .title("OSM Polygon (EPSG:3857)")
                             .attribution(
-                                "© <a href=\"https://www.openstreetmap.org/copyright/\">OpenStreetMap</a> contributors"))
+                                "© [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors"))
                     .putLayerSettingsItem(
                         "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
                         new AppLayerSettings()
@@ -1050,12 +1140,22 @@ public class PopulateTestData {
     if (map5url != null) {
       AppTreeLevelNode root = (AppTreeLevelNode) app.getContentRoot().getBaseLayerNodes().get(0);
       List<String> childrenIds = new ArrayList<>(root.getChildrenIds());
+      childrenIds.add("lyr:map5:map5topo");
       childrenIds.add("lyr:map5:map5topo_simple");
       childrenIds.add("lvl:luchtfoto-labels");
       root.setChildrenIds(childrenIds);
       app.getSettings()
-          .putLayerSettingsItem("lyr:map5:map5topo_simple", new AppLayerSettings().title("Map5"));
+          .putLayerSettingsItem("lyr:map5:map5topo", new AppLayerSettings().title("Map5"))
+          .putLayerSettingsItem(
+              "lyr:map5:map5topo_simple", new AppLayerSettings().title("Map5 simple"));
       app.getContentRoot()
+          .addBaseLayerNodesItem(
+              new AppTreeLayerNode()
+                  .objectType("AppTreeLayerNode")
+                  .id("lyr:map5:map5topo")
+                  .serviceId("map5")
+                  .layerName("map5topo")
+                  .visible(false))
           .addBaseLayerNodesItem(
               new AppTreeLayerNode()
                   .objectType("AppTreeLayerNode")
@@ -1344,24 +1444,12 @@ public class PopulateTestData {
       logger.info("Creating Solr index");
       @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
       final String solrUrl =
-          "http://"
-              + (connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "solr")
-              + ":8983/solr/"
-              + solrCoreName;
+          "http://" + (connectToSpatialDbsAtLocalhost ? "127.0.0.1" : "solr") + ":8983/solr/";
+      this.solrService.setSolrUrl(solrUrl);
       SolrHelper solrHelper =
-          new SolrHelper(
-              new ConcurrentUpdateHttp2SolrClient.Builder(
-                      solrUrl,
-                      new Http2SolrClient.Builder()
-                          .useHttp1_1(true)
-                          .withFollowRedirects(true)
-                          .withConnectionTimeout(10000, TimeUnit.MILLISECONDS)
-                          .withRequestTimeout(60000, TimeUnit.MILLISECONDS)
-                          .build())
-                  .withQueueSize(SolrHelper.SOLR_BATCH_SIZE * 2)
-                  .withThreadCount(10)
-                  .build());
-
+          new SolrHelper(this.solrService.getSolrClientForIndexing())
+              .withBatchSize(solrBatchSize)
+              .withGeometryValidationRule(solrGeometryValidationRule);
       GeoService geoService = geoServiceRepository.findById("snapshot-geoserver").orElseThrow();
       Application defaultApp = applicationRepository.findByName("default");
 
@@ -1384,8 +1472,12 @@ public class PopulateTestData {
                   .setSearchFieldsUsed(List.of("class", "plus_fysiekvoorkomen", "bronhouder"))
                   .setSearchDisplayFieldsUsed(List.of("class", "plus_fysiekvoorkomen"));
           begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
-          solrHelper.addFeatureTypeIndex(
-              begroeidterreindeelIndex, begroeidterreindeelFT, featureSourceFactoryHelper);
+          begroeidterreindeelIndex =
+              solrHelper.addFeatureTypeIndex(
+                  begroeidterreindeelIndex,
+                  begroeidterreindeelFT,
+                  featureSourceFactoryHelper,
+                  searchIndexRepository);
           begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
         }
 
@@ -1403,7 +1495,9 @@ public class PopulateTestData {
                           "bronhouder"))
                   .setSearchDisplayFieldsUsed(List.of("function_", "plus_fysiekvoorkomenwegdeel"));
           wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
-          solrHelper.addFeatureTypeIndex(wegdeelIndex, wegdeelFT, featureSourceFactoryHelper);
+          wegdeelIndex =
+              solrHelper.addFeatureTypeIndex(
+                  wegdeelIndex, wegdeelFT, featureSourceFactoryHelper, searchIndexRepository);
           wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
         }
 
@@ -1436,5 +1530,106 @@ public class PopulateTestData {
         applicationRepository.save(defaultApp);
       }
     }
+  }
+
+  private void createPocTasks() {
+
+    try {
+      logger.info("Creating POC tasks");
+      logger.info(
+          "Created 15 minutely task with key: {}",
+          taskManagerService.createTask(
+              PocTask.class,
+              new TMJobDataMap(
+                  Map.of(
+                      Task.TYPE_KEY,
+                      TaskType.POC.getValue(),
+                      "foo",
+                      "foobar",
+                      Task.DESCRIPTION_KEY,
+                      "POC task that runs every 15 minutes")),
+              /* run every 15 minutes */ "0 0/15 * 1/1 * ? *"));
+      logger.info(
+          "Created hourly task with key: {}",
+          taskManagerService.createTask(
+              PocTask.class,
+              new TMJobDataMap(
+                  Map.of(
+                      Task.TYPE_KEY,
+                      TaskType.POC.getValue(),
+                      "foo",
+                      "bar",
+                      Task.DESCRIPTION_KEY,
+                      "POC task that runs every hour",
+                      Task.PRIORITY_KEY,
+                      10)),
+              /* run every hour */ "0 0 0/1 1/1 * ? *"));
+
+      logger.info(
+          "Created hourly failing task with key: {}",
+          taskManagerService.createTask(
+              FailingPocTask.class,
+              new TMJobDataMap(
+                  Map.of(
+                      Task.TYPE_KEY,
+                      TaskType.FAILINGPOC.getValue(),
+                      Task.DESCRIPTION_KEY,
+                      "POC task that fails every hour with low priority",
+                      Task.PRIORITY_KEY,
+                      100)),
+              /* run every hour */ "0 0 0/1 1/1 * ? *"));
+      logger.info(
+          "Created daily task with key: {}",
+          taskManagerService.createTask(
+              InterruptablePocTask.class,
+              new TMJobDataMap(
+                  Map.of(
+                      Task.TYPE_KEY,
+                      TaskType.INTERRUPTABLEPOC.getValue(),
+                      Task.DESCRIPTION_KEY,
+                      "Interruptable POC task that runs every 15 minutes",
+                      Task.PRIORITY_KEY,
+                      5)),
+              /* run every 15 minutes */ "0 0/15 * 1/1 * ? *"));
+    } catch (SchedulerException e) {
+      logger.error("Error creating scheduled one or more poc tasks", e);
+    }
+
+    logger.info("Creating INDEX task");
+    searchIndexRepository
+        .findByName("Begroeidterreindeel")
+        .ifPresent(
+            index -> {
+              index.setSchedule(
+                  new TaskSchedule()
+                      /* hour */
+                      .cronExpression("0 0 0/1 1/1 * ? *")
+                      // /* 15 min */
+                      // .cronExpression("0 0/15 * 1/1 * ? *")
+                      .description("Update Solr index \"Begroeidterreindeel\" every time"));
+              try {
+                final UUID uuid =
+                    taskManagerService.createTask(
+                        IndexTask.class,
+                        new TMJobDataMap(
+                            Map.of(
+                                Task.TYPE_KEY,
+                                TaskType.INDEX,
+                                Task.DESCRIPTION_KEY,
+                                index.getSchedule().getDescription(),
+                                IndexTask.INDEX_KEY,
+                                index.getId().toString(),
+                                Task.PRIORITY_KEY,
+                                10)),
+                        index.getSchedule().getCronExpression());
+
+                index.getSchedule().setUuid(uuid);
+                searchIndexRepository.save(index);
+
+                logger.info("Created task to update Solr index with key: {}", uuid);
+              } catch (SchedulerException e) {
+                logger.error("Error creating scheduled solr index task", e);
+              }
+            });
   }
 }

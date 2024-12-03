@@ -73,7 +73,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_error_when_calling_with_nonexistent_id() throws Exception {
     final String path = apiBasePath + "/app/400/map";
     mockMvc
@@ -85,7 +84,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_not_find_when_called_without_id() throws Exception {
     final String path = apiBasePath + "/app/map";
     mockMvc
@@ -94,7 +92,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_contain_proxy_url() throws Exception {
     String path = apiBasePath + "/app/default/map";
     mockMvc
@@ -145,18 +142,55 @@ class ViewerControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void should_not_contain_proxied_secured_service_layer() throws Exception {
+  void should_contain_proxied_secured_service_layer() throws Exception {
     final String path = apiBasePath + "/app/secured/map";
     mockMvc
         .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.services[?(@.title == 'Openbasiskaart (proxied)')]").exists());
+        .andExpect(jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-proxied:osm')]").exists())
+        .andExpect(jsonPath("$.services[?(@.id == 'openbasiskaart-proxied')]").exists());
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+  void should_not_contain_proxied_secured_service_layer_on_public_app() throws Exception {
+    final String path = apiBasePath + "/app/default/map";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(
+            jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-proxied:osm')]").doesNotExist())
+        .andExpect(jsonPath("$.services[?(@.id == 'openbasiskaart-proxied')]").doesNotExist())
+        .andExpect(
+            jsonPath("$.appLayers[?(@.id == 'lyr:bestuurlijkegebieden-proxied:Provinciegebied')]")
+                .doesNotExist())
+        .andExpect(
+            jsonPath("$.services[?(@.id == 'bestuurlijkegebieden-proxied')]").doesNotExist());
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {"admin"})
+  void should_not_contain_proxied_secured_service_layer_on_public_app_even_when_authorized()
+      throws Exception {
+    final String path = apiBasePath + "/app/default/map";
+    mockMvc
+        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(
+            jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-proxied:osm')]").doesNotExist())
+        .andExpect(jsonPath("$.services[?(@.id == 'openbasiskaart-proxied')]").doesNotExist())
+        .andExpect(
+            jsonPath("$.appLayers[?(@.id == 'lyr:bestuurlijkegebieden-proxied:Provinciegebied')]")
+                .doesNotExist())
+        .andExpect(
+            jsonPath("$.services[?(@.id == 'bestuurlijkegebieden-proxied')]").doesNotExist());
+  }
+
+  @Test
   void should_contain_description() throws Exception {
     final String path = apiBasePath + "/app/default/map";
     mockMvc
@@ -171,12 +205,13 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "admin",
       authorities = {"Admin"})
   void should_return_data_for_configured_app() throws Exception {
     final String path = apiBasePath + "/app/default/map";
+    final String appLayerLufoPath =
+        "$.appLayers[?(@.id == 'lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR')]";
     mockMvc
         .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
@@ -186,21 +221,26 @@ class ViewerControllerIntegrationTest {
         .andExpect(jsonPath("$.services").isArray())
         .andExpect(jsonPath("$.appLayers").isArray())
         .andExpect(jsonPath("$.appLayers[0]").isMap())
-        .andExpect(jsonPath("$.appLayers.length()").value(14))
-        .andExpect(jsonPath("$.appLayers[0].hasAttributes").value(false))
-        .andExpect(jsonPath("$.appLayers[1].hasAttributes").value(false))
-        .andExpect(jsonPath("$.appLayers[4].legendImageUrl").isEmpty())
-        .andExpect(jsonPath("$.appLayers[4].visible").value(false))
-        .andExpect(jsonPath("$.appLayers[4].minScale").isEmpty())
-        .andExpect(jsonPath("$.appLayers[4].maxScale").isEmpty())
-        .andExpect(jsonPath("$.appLayers[4].id").value("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR"))
-        .andExpect(jsonPath("$.appLayers[4].hiDpiMode").isEmpty())
-        .andExpect(jsonPath("$.appLayers[4].hiDpiSubstituteLayer").isEmpty())
+        // Note: if the testdata was created with MAP5_URL set, the appLayers array will have 4 more
+        // layers
+        .andExpect(jsonPath("$.appLayers.length()").value(13))
+        .andExpect(
+            jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-tms:xyz')].hasAttributes")
+                .value(false))
+        .andExpect(
+            jsonPath("$.appLayers[?(@.id == 'lyr:b3p-mapproxy-luchtfoto:xyz')].hasAttributes")
+                .value(false))
+        .andExpect(jsonPath(appLayerLufoPath).exists())
+        .andExpect(jsonPath(appLayerLufoPath + "[0].legendImageUrl").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + ".visible").value(false))
+        .andExpect(jsonPath(appLayerLufoPath + "[0].minScale").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + "[0].maxScale").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + "[0].hiDpiMode").isEmpty())
+        .andExpect(jsonPath(appLayerLufoPath + "[0].hiDpiSubstituteLayer").isEmpty())
         .andExpect(jsonPath("$.crs.code").value("EPSG:28992"));
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_deny_showing_secured_application() throws Exception {
     final String path = apiBasePath + "/app/secured/map";
     mockMvc
@@ -209,7 +249,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(username = "foo")
   void should_allow_showing_secured_application_authenticated() throws Exception {
     final String path = apiBasePath + "/app/secured/map";
@@ -219,7 +258,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo"})
@@ -231,7 +269,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-baz"})
@@ -243,7 +280,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo"})
@@ -265,7 +301,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-foo", "test-baz"})
@@ -286,7 +321,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"admin"})
@@ -306,7 +340,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "foo",
       authorities = {"test-bar"})
@@ -323,7 +356,6 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void should_send_401_when_application_login_required() throws Exception {
     String path = apiBasePath + "/app/secured/map";
     mockMvc

@@ -42,7 +42,6 @@ class UploadsControllerIntegrationTest {
   private static MvcResult logoResult;
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void test404() throws Exception {
     mockMvc
         .perform(
@@ -51,7 +50,6 @@ class UploadsControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testBadRequest() throws Exception {
     mockMvc
         .perform(get(apiBasePath + "/uploads/something/not-a-uuid/file.txt"))
@@ -60,7 +58,6 @@ class UploadsControllerIntegrationTest {
 
   @Test
   @Order(1)
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @Transactional
   void testExists() throws Exception {
     Upload logo = uploadRepository.findByCategory(Upload.CATEGORY_APP_LOGO).get(0);
@@ -77,7 +74,6 @@ class UploadsControllerIntegrationTest {
 
   @Test
   @Order(2)
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testConditionalNotModified() throws Exception {
     mockMvc
         .perform(
@@ -88,7 +84,6 @@ class UploadsControllerIntegrationTest {
 
   @Test
   @Order(3)
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testConditionalModified() throws Exception {
     mockMvc
         .perform(get(logoUrl).header("If-Modified-Since", "Wed, 12 Jun 2001 09:48:38 GMT"))

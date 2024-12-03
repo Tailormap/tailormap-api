@@ -11,6 +11,7 @@ import static org.geotools.jdbc.JDBCDataStoreFactory.DBTYPE;
 import static org.geotools.jdbc.JDBCDataStoreFactory.EXPOSE_PK;
 import static org.geotools.jdbc.JDBCDataStoreFactory.FETCHSIZE;
 import static org.geotools.jdbc.JDBCDataStoreFactory.HOST;
+import static org.geotools.jdbc.JDBCDataStoreFactory.MAXWAIT;
 import static org.geotools.jdbc.JDBCDataStoreFactory.PASSWD;
 import static org.geotools.jdbc.JDBCDataStoreFactory.PK_METADATA_TABLE;
 import static org.geotools.jdbc.JDBCDataStoreFactory.PORT;
@@ -68,6 +69,7 @@ public class JDBCFeatureSourceHelper extends FeatureSourceHelper {
     params.put(FETCHSIZE.key, c.getFetchSize());
     params.put(EXPOSE_PK.key, true);
     params.put(PK_METADATA_TABLE.key, c.getPrimaryKeyMetadataTable());
+    params.put(MAXWAIT.key, timeout);
     if (c.getDbtype() != JDBCConnectionProperties.DbtypeEnum.ORACLE) {
       // this key is available in ao. Oracle and MS SQL datastore factories, but not in the common
       // parent...

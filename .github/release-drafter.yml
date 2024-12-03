@@ -4,7 +4,7 @@ name-template: v$NEXT_PATCH_VERSION 🎁
 version-template: "$MAJOR.$MINOR.$PATCH"
 
 template: |
-  ## What’s Changed
+  ## Uncategorised changes
 
   $CHANGES
   
@@ -13,6 +13,8 @@ categories:
     labels:
       - enhancement
       - feature
+  - title: ⛓️‍💥 Breaking changes
+    label: breaking
   - title: 🔨 Security fixes en updates
     labels:
       - security
@@ -32,8 +34,10 @@ categories:
     labels:
       - tests
       - infrastructure
+    collapse-after: 10
   - title: 🔨 Dependency updates
     label: dependency
+    collapse-after: 10
 
 replacers:
   - search: '/CVE-(\d{4})-(\d+)/g'

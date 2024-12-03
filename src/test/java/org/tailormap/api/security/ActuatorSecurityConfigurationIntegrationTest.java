@@ -34,8 +34,8 @@ import org.tailormap.api.persistence.Group;
 @TestPropertySource(
     properties = {
       "management.endpoints.web.exposure.include=health,prometheus",
-      "management.endpoint.health.enabled=true",
-      "management.endpoint.prometheus.enabled=true",
+      "management.endpoint.health.access=read_only",
+      "management.endpoint.prometheus.access=read_only",
       "management.prometheus.metrics.export.enabled=true",
       "management.prometheus.metrics.export.descriptions=true",
     })
@@ -46,7 +46,6 @@ class ActuatorSecurityConfigurationIntegrationTest {
   private String basePath;
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testUnAuthenticatedHealth() throws Exception {
     mockMvc
         .perform(get(basePath + "/health").accept(MediaType.APPLICATION_JSON))
@@ -59,7 +58,6 @@ class ActuatorSecurityConfigurationIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testAuthenticatedHealth() throws Exception {
     mockMvc
         .perform(get(basePath + "/health").accept(MediaType.APPLICATION_JSON))
@@ -69,7 +67,6 @@ class ActuatorSecurityConfigurationIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testUnAuthenticatedPrometheus() throws Exception {
     mockMvc
         .perform(get(basePath + "/prometheus").accept(MediaType.TEXT_PLAIN))
@@ -80,7 +77,6 @@ class ActuatorSecurityConfigurationIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testAuthenticatedPrometheus() throws Exception {
     mockMvc
         .perform(get(basePath + "/prometheus").accept(MediaType.TEXT_PLAIN))

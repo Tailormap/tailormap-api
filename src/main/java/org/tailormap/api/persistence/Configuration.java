@@ -21,6 +21,8 @@ public class Configuration {
 
   public static final String DEFAULT_BASE_APP = "default-base-app";
 
+  public static final String HOME_PAGE = "home-page";
+
   @Id private String key;
 
   @Version private Long version;

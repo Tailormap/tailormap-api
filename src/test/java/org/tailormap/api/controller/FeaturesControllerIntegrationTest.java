@@ -13,6 +13,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
+import static org.tailormap.api.controller.TestUrls.layerOsmPolygonPostgis;
+import static org.tailormap.api.controller.TestUrls.layerProvinciesWfs;
+import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
+import static org.tailormap.api.controller.TestUrls.layerWaterdeelOracle;
+import static org.tailormap.api.controller.TestUrls.layerWegdeelSqlServer;
 
 import com.jayway.jsonpath.JsonPath;
 import java.lang.invoke.MethodHandles;
@@ -55,18 +61,14 @@ class FeaturesControllerIntegrationTest {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  /** bestuurlijke gebieden WFS; provincies . */
-  private static final String provinciesWFS =
-      "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/features";
+  private static final String controllerPath = "/features";
 
-  private static final String osm_polygonUrlPostgis =
-      "/app/default/layer/lyr:snapshot-geoserver:postgis:osm_polygon/features";
+  private static final String provinciesWfs = layerProvinciesWfs + controllerPath;
+  private static final String osm_polygonUrlPostgis = layerOsmPolygonPostgis + controllerPath;
   private static final String begroeidterreindeelUrlPostgis =
-      "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel/features";
-  private static final String waterdeelUrlOracle =
-      "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/features";
-  private static final String wegdeelUrlSqlserver =
-      "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel/features";
+      layerBegroeidTerreindeelPostgis + controllerPath;
+  private static final String waterdeelUrlOracle = layerWaterdeelOracle + controllerPath;
+  private static final String wegdeelUrlSqlserver = layerWegdeelSqlServer + controllerPath;
 
   /**
    * note that for WFS 2.0.0 this is -1 and for WFS 1.0.0 this is 12! depending on the value of
@@ -101,7 +103,7 @@ class FeaturesControllerIntegrationTest {
 
   static Stream<Arguments> differentFeatureSourcesProvider() {
     return Stream.of(
-        arguments(provinciesWFS),
+        arguments(provinciesWfs),
         arguments(begroeidterreindeelUrlPostgis),
         arguments(waterdeelUrlOracle),
         arguments(wegdeelUrlSqlserver),
@@ -123,8 +125,8 @@ class FeaturesControllerIntegrationTest {
             1),
         arguments(waterdeelUrlOracle, "IDENTIFICATIE='W0636.729e31bc9e154f2c9fb72a9c733e7d64'", 1),
         arguments(wegdeelUrlSqlserver, "identificatie='G0344.9cbe9a54d127406087e76c102c6ddc45'", 1),
-        arguments(provinciesWFS, "naam='Noord-Holland'", 1),
-        arguments(provinciesWFS, "code='26'", 1),
+        arguments(provinciesWfs, "naam='Noord-Holland'", 1),
+        arguments(provinciesWfs, "code='26'", 1),
         // greater than
         arguments(begroeidterreindeelUrlPostgis, "relatievehoogteligging > 0", 2),
         arguments(waterdeelUrlOracle, "RELATIEVEHOOGTELIGGING > 0", 0),
@@ -244,17 +246,16 @@ class FeaturesControllerIntegrationTest {
             begroeidterreindeelTotalCount - 85),
         arguments(waterdeelUrlOracle, "CLASS like '%vlakte'", 16),
         arguments(wegdeelUrlSqlserver, "surfacematerial like '%verhard'", 106),
-        arguments(provinciesWFS, "naam like '%-Holland'", 2),
-        arguments(provinciesWFS, "naam ilike '%-holland'", 2));
+        arguments(provinciesWfs, "naam like '%-Holland'", 2),
+        arguments(provinciesWfs, "naam ilike '%-holland'", 2));
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
   void broken_filter_not_supported() throws Exception {
-    final String url = apiBasePath + provinciesWFS;
+    final String url = apiBasePath + provinciesWfs;
     mockMvc
         .perform(
             get(url)
@@ -271,14 +272,13 @@ class FeaturesControllerIntegrationTest {
     return new ResultMatcher[] {
       jsonPath("$.features[0].attributes.identificatie").doesNotExist(),
       jsonPath("$.features[0].attributes.ligtInLandCode").doesNotExist(),
-      jsonPath("$.features[0].attributes.ligtInLandNaam").doesNotExist(),
       jsonPath("$.features[0].attributes.fuuid").doesNotExist(),
       jsonPath("$.columnMetadata").isArray(),
       jsonPath("$.columnMetadata").isNotEmpty(),
+      jsonPath("$.template").isNotEmpty(),
       jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"),
       jsonPath("$.columnMetadata[?(@.key == 'identificatie')].key").isEmpty(),
       jsonPath("$.columnMetadata[?(@.key == 'ligtInLandCode')].key").isEmpty(),
-      jsonPath("$.columnMetadata[?(@.key == 'ligtInLandNaam')].key").isEmpty(),
       jsonPath("$.columnMetadata[?(@.key == 'fuuid')].key").isEmpty(),
     };
   }
@@ -290,12 +290,11 @@ class FeaturesControllerIntegrationTest {
    * @throws Exception if any
    */
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
   void should_produce_for_valid_input_pdok_betuurlijkegebieden() throws Exception {
-    final String url = apiBasePath + provinciesWFS;
+    final String url = apiBasePath + provinciesWfs;
     mockMvc
         .perform(
             get(url)
@@ -322,7 +321,7 @@ class FeaturesControllerIntegrationTest {
       authorities = {"admin"})
   void should_produce_for_valid_input_pdok_betuurlijkegebieden_without_simplifying()
       throws Exception {
-    final String url = apiBasePath + provinciesWFS;
+    final String url = apiBasePath + provinciesWfs;
     MvcResult result =
         mockMvc
             .perform(
@@ -365,7 +364,7 @@ class FeaturesControllerIntegrationTest {
   void should_return_non_empty_featurecollections_for_valid_page_from_wfs() throws Exception {
     // bestuurlijke gebieden WFS; provincies
     // page 1
-    final String url = apiBasePath + provinciesWFS;
+    final String url = apiBasePath + provinciesWfs;
     MvcResult result =
         mockMvc
             .perform(
@@ -453,7 +452,7 @@ class FeaturesControllerIntegrationTest {
   void should_return_empty_featurecollection_for_out_of_range_page_from_wfs() throws Exception {
     // bestuurlijke gebieden WFS; provincies
     // page 3
-    final String url = apiBasePath + provinciesWFS;
+    final String url = apiBasePath + provinciesWfs;
     MvcResult result =
         mockMvc
             .perform(
@@ -477,14 +476,13 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
   void should_return_default_sorted_featurecollections_for_no_or_invalid_sorting_from_wfs()
       throws Exception {
     // page 1, sort by naam, no direction
-    final String url = apiBasePath + provinciesWFS;
+    final String url = apiBasePath + provinciesWfs;
     mockMvc
         .perform(
             get(url)
@@ -545,14 +543,13 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
   void should_return_sorted_featurecollections_for_valid_sorting_from_wfs() throws Exception {
     // bestuurlijke gebieden WFS; provincies
     // page 1, sort ascending by naam
-    final String url = apiBasePath + provinciesWFS;
+    final String url = apiBasePath + provinciesWfs;
     mockMvc
         .perform(
             get(url)
@@ -639,7 +636,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -696,7 +692,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -724,7 +719,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -753,7 +747,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -763,7 +756,7 @@ class FeaturesControllerIntegrationTest {
     // alternatively this test could be written to use the wfs service to first get Utrecht
     // feature by naam and then do the fid test.
     final String utrecht__fid = StaticTestData.get("utrecht__fid");
-    final String url = apiBasePath + provinciesWFS;
+    final String url = apiBasePath + provinciesWfs;
 
     mockMvc
         .perform(
@@ -786,7 +779,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -796,7 +788,7 @@ class FeaturesControllerIntegrationTest {
     // alternatively this test could be written to use the wfs service to first get Utrecht
     // feature by naam and then do the fid test.
     final String utrecht__fid = StaticTestData.get("utrecht__fid");
-    final String url = apiBasePath + provinciesWFS;
+    final String url = apiBasePath + provinciesWfs;
 
     mockMvc
         .perform(
@@ -983,7 +975,7 @@ class FeaturesControllerIntegrationTest {
     final String expectedNaam = "Utrecht";
     final String expectedCode = "26";
     final String expectedFid = StaticTestData.get("utrecht__fid");
-    final String url = apiBasePath + provinciesWFS;
+    final String url = apiBasePath + provinciesWfs;
 
     MvcResult result =
         mockMvc
@@ -1153,7 +1145,7 @@ class FeaturesControllerIntegrationTest {
   @DefaultTimeZone("Europe/Amsterdam")
   void filterTest(String appLayerUrl, String filterCQL, int totalCount) throws Exception {
     int listSize = Math.min(pageSize, totalCount);
-    if (!exactWfsCounts && appLayerUrl.equals(provinciesWFS)) {
+    if (!exactWfsCounts && appLayerUrl.equals(provinciesWfs)) {
       // see #extractWfsCount and property 'tailormap-api.features.wfs_count_exact'
       totalCount = -1;
     }
@@ -1185,7 +1177,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @ParameterizedTest(name = "#{index} should return onlyGeometries for {0}, appLayer: {1}")
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @MethodSource("differentFeatureSourcesProvider")
   void onlyGeometries(String appLayerUrl) throws Exception {
 
@@ -1207,7 +1198,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @ParameterizedTest(name = "#{index} should return onlyGeometries for {0}, appLayer: {1}")
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @MethodSource("differentFeatureSourcesProvider")
   void ignore_skipGeometryOutput_with_onlyGeometries(String appLayerUrl) throws Exception {
     appLayerUrl = apiBasePath + appLayerUrl;
@@ -1228,12 +1218,11 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
   void only_filter_not_supported() throws Exception {
-    final String url = apiBasePath + provinciesWFS;
+    final String url = apiBasePath + provinciesWfs;
     mockMvc
         .perform(
             get(url)
@@ -1247,12 +1236,11 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
   void givenOnly_XorY_shouldError() throws Exception {
-    final String url = apiBasePath + provinciesWFS;
+    final String url = apiBasePath + provinciesWfs;
     mockMvc
         .perform(
             get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)).param("x", "3"))
@@ -1269,12 +1257,11 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
   void given_distance_NotGreaterThanZero() throws Exception {
-    final String url = apiBasePath + provinciesWFS;
+    final String url = apiBasePath + provinciesWfs;
     mockMvc
         .perform(
             get(url)
@@ -1303,7 +1290,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -1317,7 +1303,6 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -1329,8 +1314,7 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-  void should_send_403_when_access_denied() throws Exception {
+  void should_send_401_when_access_denied() throws Exception {
     final String url =
         apiBasePath
             + "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/features";
@@ -1344,5 +1328,17 @@ class FeaturesControllerIntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))
         .andExpect(jsonPath("$.url").value("/login"));
+  }
+
+  @Test
+  void should_send_403_for_layer_proxied_with_auth_in_public_app() throws Exception {
+    final String url = apiBasePath + layerProxiedWithAuthInPublicApp + "/features";
+    mockMvc
+        .perform(
+            get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .param("page", "1"))
+        .andExpect(status().isForbidden());
   }
 }

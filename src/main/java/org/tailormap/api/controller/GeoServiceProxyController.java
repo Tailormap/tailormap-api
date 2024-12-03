@@ -106,17 +106,15 @@ public class GeoServiceProxyController {
           HttpStatus.FORBIDDEN, "Proxy not enabled for requested service");
     }
 
-    if (service.getAuthentication() != null) {
-      if (!authorizationService.allowProxyAccess(application, service)) {
-        logger.warn(
-            "App {} (\"{}\") is using layer \"{}\" from proxied secured service URL {} (username \"{}\"), but app is publicly accessible. Denying proxy, even if user is authenticated.",
-            application.getId(),
-            application.getName(),
-            layer.getName(),
-            service.getUrl(),
-            service.getAuthentication().getUsername());
-        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-      }
+    if (authorizationService.mustDenyAccessForSecuredProxy(application, service)) {
+      logger.warn(
+          "App {} (\"{}\") is using layer \"{}\" from proxied secured service URL {} (username \"{}\"), but app is publicly accessible. Denying proxy, even if user is authenticated.",
+          application.getId(),
+          application.getName(),
+          layer.getName(),
+          service.getUrl(),
+          service.getAuthentication().getUsername());
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
     switch (protocol) {
@@ -165,7 +163,7 @@ public class GeoServiceProxyController {
 
   private URI buildWMSUrl(GeoService service, HttpServletRequest request) {
     final UriComponentsBuilder originalServiceUrl =
-        UriComponentsBuilder.fromHttpUrl(service.getUrl());
+        UriComponentsBuilder.fromUriString(service.getUrl());
     // request.getParameterMap() includes parameters from an application/x-www-form-urlencoded POST
     // body
     final MultiValueMap<String, String> requestParams =

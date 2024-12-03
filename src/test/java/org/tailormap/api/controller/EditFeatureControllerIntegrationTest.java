@@ -82,7 +82,6 @@ class EditFeatureControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testUnAuthenticatedDelete() throws Exception {
     final String url =
         apiBasePath
@@ -98,7 +97,6 @@ class EditFeatureControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testUnAuthenticatedPost() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
 
@@ -116,7 +114,6 @@ class EditFeatureControllerIntegrationTest {
   }
 
   @Test
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testUnAuthenticatedPatch() throws Exception {
     final String url =
         apiBasePath
@@ -140,7 +137,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testNonEditablePatch() throws Exception {
     final String url =
         apiBasePath
@@ -169,7 +165,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPatchNonExistentAttribute() throws Exception {
     final String url =
         apiBasePath
@@ -196,7 +191,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPatchHiddenAttribute() throws Exception {
     final String url =
         apiBasePath
@@ -231,7 +225,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPatchHiddenAttributeInAppLayerSettings() throws Exception {
     final String url =
         apiBasePath
@@ -265,7 +258,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPatchReadOnlyAttribute() throws Exception {
     final String url =
         apiBasePath
@@ -300,7 +292,6 @@ class EditFeatureControllerIntegrationTest {
       username = "tm-admin",
       authorities = {ADMIN})
   @Order(1)
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPostPG() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
     final String gmlid =
@@ -357,7 +348,6 @@ class EditFeatureControllerIntegrationTest {
       username = "tm-admin",
       authorities = {ADMIN})
   @Order(10)
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testDuplicatePrimaryKeyPG() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
     final String gmlid =
@@ -403,7 +393,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPostMsSql() throws Exception {
     final String url = apiBasePath + wegdeelUrlSqlserver;
     final String gmlid =
@@ -460,7 +449,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPostOrcl() throws Exception {
     final String url = apiBasePath + waterdeelUrlOracle;
     final String gmlid =
@@ -512,7 +500,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPatchPG() throws Exception {
     final String url =
         apiBasePath
@@ -625,7 +612,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPatchOrcl() throws Exception {
     final String url =
         apiBasePath + waterdeelUrlOracle + "/" + StaticTestData.get("waterdeel__fid_edit");
@@ -652,7 +638,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPatchMsSql() throws Exception {
     final String url =
         apiBasePath + wegdeelUrlSqlserver + "/" + StaticTestData.get("wegdeel__fid_edit");
@@ -679,7 +664,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPatchWFS() throws Exception {
     final String url = apiBasePath + provinciesWFS + "/" + StaticTestData.get("utrecht__fid");
     mockMvc
@@ -696,7 +680,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testGetIsUnsupported() throws Exception {
     final String url =
         apiBasePath
@@ -713,7 +696,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testPutIsUnsupported() throws Exception {
     final String url =
         apiBasePath
@@ -730,7 +712,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testDeleteWhenLayerDoesNotExist() throws Exception {
     final String url =
         apiBasePath + "/app/default/layer/lyr:doesnotexist:doesnotexist/edit/feature/does.not.1";
@@ -744,7 +725,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testDeleteNonExistentFeature() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis + "/" + "xxxxxx";
     // geotools does not report back that the feature does not exist, nor the number of deleted
@@ -759,7 +739,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testDeleteExistingFeatureMsSql() throws Exception {
     final String url =
         apiBasePath + wegdeelUrlSqlserver + "/" + StaticTestData.get("wegdeel__fid_delete");
@@ -773,7 +752,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testDeleteExistingFeaturePG() throws Exception {
     final String url =
         apiBasePath
@@ -790,7 +768,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testDeleteExistingFeatureOrcl() throws Exception {
     final String url =
         apiBasePath + waterdeelUrlOracle + "/" + StaticTestData.get("waterdeel__fid_delete");
@@ -804,7 +781,6 @@ class EditFeatureControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
   void testDeleteExistingFeatureWFS() throws Exception {
     final String url = apiBasePath + provinciesWFS + StaticTestData.get("utrecht__fid");
     mockMvc
