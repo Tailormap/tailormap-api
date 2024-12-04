@@ -578,6 +578,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AppTreeNode'
+        terrainNodes:
+          nullable: true
+          type: array
+          items:
+            $ref: '#/components/schemas/AppTreeNode'
 
     AppSettings:
       description: Settings applying to a viewer application.
