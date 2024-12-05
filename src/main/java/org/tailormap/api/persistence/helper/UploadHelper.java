@@ -25,11 +25,14 @@ public class UploadHelper {
   }
 
   public String getUrlForImage(String imageId, String category) {
-    if (imageId == null || !imageId.matches(UUID_REGEX)) {
-      return null;
+    UUID imageUuid;
+    try {
+        imageUuid = UUID.fromString(imageId);
+    } catch (IllegalArgumentException e) {
+        return null;
     }
     return uploadRepository
-        .findByIdAndCategory(UUID.fromString(imageId), category)
+        .findByIdAndCategory(imageUuid, category)
         .map(
             upload ->
                 linkTo(
