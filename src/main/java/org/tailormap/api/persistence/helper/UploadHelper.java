@@ -9,6 +9,7 @@ package org.tailormap.api.persistence.helper;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.tailormap.api.controller.UploadsController;
@@ -24,14 +25,9 @@ public class UploadHelper {
   }
 
   public String getUrlForImage(String imageId, String category) {
-    UUID imageUuid;
-    try {
-      imageUuid = UUID.fromString(imageId);
-    } catch (IllegalArgumentException e) {
-      return null;
-    }
-    return uploadRepository
-        .findByIdAndCategory(imageUuid, category)
+    return Optional.ofNullable(imageId)
+        .map(UUID::fromString)
+        .flatMap(imageUuid -> uploadRepository.findByIdAndCategory(imageUuid, category))
         .map(
             upload ->
                 linkTo(
