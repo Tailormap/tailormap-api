@@ -7,7 +7,6 @@
 package org.tailormap.api.persistence.helper;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.tailormap.api.util.Constants.UUID_REGEX;
 
 import java.util.Map;
 import java.util.UUID;
@@ -27,9 +26,9 @@ public class UploadHelper {
   public String getUrlForImage(String imageId, String category) {
     UUID imageUuid;
     try {
-        imageUuid = UUID.fromString(imageId);
+      imageUuid = UUID.fromString(imageId);
     } catch (IllegalArgumentException e) {
-        return null;
+      return null;
     }
     return uploadRepository
         .findByIdAndCategory(imageUuid, category)
