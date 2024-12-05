@@ -578,7 +578,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AppTreeNode'
-        terrainNodes:
+        terrainLayerNodes:
           nullable: true
           type: array
           items:
