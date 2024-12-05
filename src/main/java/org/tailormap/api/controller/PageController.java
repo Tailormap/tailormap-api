@@ -87,7 +87,7 @@ public class PageController {
 
   /**
    * @param tile The page tile configuration
-   * @return A page tile for the viewer, or null if the tile should not be shown (filtered).
+   * @return A page tile for the viewer with a boolean set to whether the tile should not be shown (filtered).
    */
   private ViewerPageTileResult convert(PageTile tile) {
     ViewerPageTile viewerPageTile = new ViewerPageTile();
