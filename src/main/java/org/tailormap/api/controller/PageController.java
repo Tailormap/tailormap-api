@@ -96,19 +96,21 @@ public class PageController {
     result.shouldBeFiltered = false;
     BeanUtils.copyProperties(tile, viewerPageTile);
 
-    Optional.ofNullable(tile.getApplicationId())
-        .flatMap(applicationRepository::findById)
-        .filter(
-            application ->
-                !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
-                    || authorizationService.mayUserRead(application))
-        .ifPresentOrElse(
-            application -> {
-              viewerPageTile.applicationUrl("/app/" + application.getName());
-              viewerPageTile.setApplicationRequiresLogin(
-                  !authorizationService.mayUserRead(application));
-            },
-            () -> result.shouldBeFiltered = true);
+    if (tile.getApplicationId() != null) {
+      Optional.ofNullable(tile.getApplicationId())
+          .flatMap(applicationRepository::findById)
+          .filter(
+              application ->
+                  !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
+                      || authorizationService.mayUserRead(application))
+          .ifPresentOrElse(
+              application -> {
+                viewerPageTile.applicationUrl("/app/" + application.getName());
+                viewerPageTile.setApplicationRequiresLogin(
+                    !authorizationService.mayUserRead(application));
+              },
+              () -> result.shouldBeFiltered = true);
+    }
 
     Optional.ofNullable(tile.getPageId())
         .flatMap(pageRepository::findById)
