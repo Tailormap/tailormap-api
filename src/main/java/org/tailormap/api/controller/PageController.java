@@ -120,7 +120,6 @@ public class PageController {
     viewerPageTile.image(
         uploadHelper.getUrlForImage(tile.getImage(), Upload.CATEGORY_PORTAL_IMAGE));
 
-    // No application or page, just manual (external) url
     return result;
   }
 }
