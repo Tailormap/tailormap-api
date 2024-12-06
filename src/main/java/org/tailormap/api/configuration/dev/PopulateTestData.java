@@ -1785,12 +1785,12 @@ from [B3Partners](https://www.b3partners.nl)!
 
     List<MenuItem> globalMenuItems =
         List.of(
-            new MenuItem().pageId(about.getId().intValue()).label("About").openInNewWindow(false),
+            new MenuItem().pageId(about.getId()).label("About").openInNewWindow(false),
             new MenuItem()
                 .label("B3Partners website")
                 .url("https://www.b3partners.nl/")
                 .openInNewWindow(true)
-                .exclusiveOnPageId(about.getId().intValue()));
+                .exclusiveOnPageId(about.getId()));
     c = new Configuration();
     c.setKey(PORTAL_MENU);
     c.setJsonValue(new ObjectMapper().valueToTree(globalMenuItems));

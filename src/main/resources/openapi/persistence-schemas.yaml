@@ -647,8 +647,10 @@ components:
           properties:
             pageId:
               type: integer
+              format: int64
             exclusiveOnPageId:
               type: integer
+              format: int64
 
     PageTile:
       description: 'model for a page tile'

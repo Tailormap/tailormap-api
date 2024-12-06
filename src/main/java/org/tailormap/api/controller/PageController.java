@@ -113,13 +113,12 @@ public class PageController {
             .filter(
                 menuItem ->
                     menuItem.getExclusiveOnPageId() == null
-                        || menuItem.getExclusiveOnPageId().longValue() == page.getId())
+                        || menuItem.getExclusiveOnPageId().equals(page.getId()))
             .map(
                 menuItem -> {
                   ViewerMenuItem viewerMenuItem = new ViewerMenuItem();
                   copyProperties(menuItem, viewerMenuItem);
                   Optional.ofNullable(menuItem.getPageId())
-                      .map(Integer::longValue)
                       .flatMap(pageRepository::findById)
                       .ifPresent(
                           linkedPage -> viewerMenuItem.pageUrl("/page/" + linkedPage.getName()));
