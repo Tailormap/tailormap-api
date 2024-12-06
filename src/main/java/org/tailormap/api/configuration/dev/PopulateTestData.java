@@ -10,6 +10,7 @@ import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static org.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -20,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.UUID;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.quartz.SchedulerException;
@@ -121,6 +123,9 @@ public class PopulateTestData {
   @Value("${spatial.dbs.connect:false}")
   private boolean connectToSpatialDbs;
 
+  @Value("#{'${tailormap-api.database.populate-testdata.categories}'.split(',')}")
+  private Set<String> categories;
+
   @Value("${spatial.dbs.localhost:true}")
   private boolean connectToSpatialDbsAtLocalhost;
 
@@ -178,13 +183,24 @@ public class PopulateTestData {
       // Used in conjunction with tailormap-api.database.clean=true so the database has been cleaned
       // and the latest schema re-created
       createTestUsersAndGroups();
-      createTestConfiguration();
-      try {
-        createSolrIndex();
-      } catch (Exception e) {
-        logger.error("Exception creating Solr Index for testdata (continuing)", e);
+      createConfigurationTestData();
+      if (categories.contains("catalog")) {
+        createCatalogTestData();
       }
-      createPocTasks();
+      if (categories.contains("apps")) {
+        createAppTestData();
+      }
+      if (categories.contains("search-index")) {
+        try {
+          createSolrIndex();
+        } catch (Exception e) {
+          logger.error("Exception creating Solr Index for testdata (continuing)", e);
+        }
+      }
+      if (categories.contains("tasks")) {
+        createPocTasks();
+      }
+      logger.info("Test entities created");
     } finally {
       InternalAdminAuthentication.clearSecurityContextAuthentication();
     }
@@ -251,26 +267,25 @@ public class PopulateTestData {
     userRepository.save(u);
   }
 
-  @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
-  public void createTestConfiguration() throws Exception {
+  private final List<AuthorizationRule> ruleAnonymousRead =
+      List.of(
+          new AuthorizationRule()
+              .groupName(Group.ANONYMOUS)
+              .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)));
 
+  private final List<AuthorizationRule> ruleLoggedIn =
+      List.of(
+          new AuthorizationRule()
+              .groupName(Group.AUTHENTICATED)
+              .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)));
+
+  @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
+  private void createCatalogTestData() throws Exception {
     Catalog catalog = catalogRepository.findById(Catalog.MAIN).orElseThrow();
     CatalogNode rootCatalogNode = catalog.getNodes().get(0);
     CatalogNode catalogNode = new CatalogNode().id("test").title("Test services");
     rootCatalogNode.addChildrenItem(catalogNode.getId());
     catalog.getNodes().add(catalogNode);
-
-    List<AuthorizationRule> rule =
-        List.of(
-            new AuthorizationRule()
-                .groupName(Group.ANONYMOUS)
-                .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)));
-
-    List<AuthorizationRule> ruleLoggedIn =
-        List.of(
-            new AuthorizationRule()
-                .groupName(Group.AUTHENTICATED)
-                .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)));
 
     String osmAttribution =
         "© [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors";
@@ -295,14 +310,14 @@ public class PopulateTestData {
                 .setProtocol(WMS)
                 .setTitle("Demo")
                 .setPublished(true)
-                .setAuthorizationRules(rule)
+                .setAuthorizationRules(ruleAnonymousRead)
                 .setUrl("https://demo.tailormap.com/geoserver/geodata/ows?SERVICE=WMS"),
             new GeoService()
                 .setId("osm")
                 .setProtocol(XYZ)
                 .setTitle("OSM")
                 .setUrl("https://tile.openstreetmap.org/{z}/{x}/{y}.png")
-                .setAuthorizationRules(rule)
+                .setAuthorizationRules(ruleAnonymousRead)
                 .setSettings(
                     new GeoServiceSettings()
                         .xyzCrs("EPSG:3857")
@@ -318,7 +333,7 @@ public class PopulateTestData {
                 .setProtocol(WMS)
                 .setTitle("Test GeoServer")
                 .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
-                .setAuthorizationRules(rule)
+                .setAuthorizationRules(ruleAnonymousRead)
                 .setPublished(true),
             new GeoService()
                 .setId("filtered-snapshot-geoserver")
@@ -359,14 +374,14 @@ public class PopulateTestData {
                 .setProtocol(WMS)
                 .setTitle("Test GeoServer (proxied)")
                 .setUrl("https://snapshot.tailormap.nl/geoserver/wms")
-                .setAuthorizationRules(rule)
+                .setAuthorizationRules(ruleAnonymousRead)
                 .setSettings(new GeoServiceSettings().useProxy(true)),
             new GeoService()
                 .setId("openbasiskaart")
                 .setProtocol(WMTS)
                 .setTitle("Openbasiskaart")
                 .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
-                .setAuthorizationRules(rule)
+                .setAuthorizationRules(ruleAnonymousRead)
                 .setSettings(
                     new GeoServiceSettings()
                         .defaultLayerSettings(
@@ -384,7 +399,7 @@ public class PopulateTestData {
                 .setProtocol(WMTS)
                 .setTitle("Openbasiskaart (proxied)")
                 .setUrl("https://www.openbasiskaart.nl/mapcache/wmts")
-                .setAuthorizationRules(rule)
+                .setAuthorizationRules(ruleAnonymousRead)
                 // The service actually doesn't require authentication, but also doesn't mind it
                 // Just for testing
                 .setAuthentication(
@@ -409,7 +424,7 @@ public class PopulateTestData {
                 .setProtocol(XYZ)
                 .setTitle("Openbasiskaart (TMS)")
                 .setUrl("https://openbasiskaart.nl/mapcache/tms/1.0.0/osm@rd/{z}/{x}/{-y}.png")
-                .setAuthorizationRules(rule)
+                .setAuthorizationRules(ruleAnonymousRead)
                 .setSettings(
                     new GeoServiceSettings()
                         .xyzCrs("EPSG:28992")
@@ -430,7 +445,7 @@ public class PopulateTestData {
                 .setProtocol(WMTS)
                 .setTitle("PDOK HWH luchtfoto")
                 .setUrl("https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0")
-                .setAuthorizationRules(rule)
+                .setAuthorizationRules(ruleAnonymousRead)
                 .setPublished(true)
                 .setSettings(
                     new GeoServiceSettings()
@@ -445,7 +460,7 @@ public class PopulateTestData {
                 .setProtocol(XYZ)
                 .setTitle("Luchtfoto (TMS)")
                 .setUrl("https://mapproxy.b3p.nl/tms/1.0.0/luchtfoto/EPSG28992/{z}/{x}/{-y}.jpeg")
-                .setAuthorizationRules(rule)
+                .setAuthorizationRules(ruleAnonymousRead)
                 .setPublished(true)
                 .setSettings(
                     new GeoServiceSettings()
@@ -466,7 +481,7 @@ public class PopulateTestData {
                 .setProtocol(WMTS)
                 .setTitle("basemap.at")
                 .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
-                .setAuthorizationRules(rule)
+                .setAuthorizationRules(ruleAnonymousRead)
                 .setPublished(true)
                 .setSettings(
                     new GeoServiceSettings()
@@ -491,7 +506,7 @@ public class PopulateTestData {
                 .setProtocol(WMS)
                 .setUrl(
                     "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
-                .setAuthorizationRules(rule)
+                .setAuthorizationRules(ruleAnonymousRead)
                 .setSettings(
                     new GeoServiceSettings()
                         .defaultLayerSettings(
@@ -510,7 +525,7 @@ public class PopulateTestData {
                 .setProtocol(WMS)
                 .setUrl(
                     "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?service=WMS")
-                .setAuthorizationRules(rule)
+                .setAuthorizationRules(ruleAnonymousRead)
                 // The service actually doesn't require authentication, but also doesn't mind it
                 // Just for testing that proxied services with auth are not available in public
                 // apps (even when logged in), in any controllers (map, proxy, features)
@@ -541,7 +556,7 @@ public class PopulateTestData {
               .setProtocol(WMTS)
               .setTitle("Map5")
               .setUrl(map5url)
-              .setAuthorizationRules(rule)
+              .setAuthorizationRules(ruleAnonymousRead)
               .setSettings(
                   new GeoServiceSettings()
                       .defaultLayerSettings(
@@ -549,25 +564,32 @@ public class PopulateTestData {
                       .layerSettings(
                           Map.of(
                               "openlufo",
-                                  new GeoServiceLayerSettings()
-                                      .attribution(
-                                          "© [Beeldmateriaal.nl](https://beeldmateriaal.nl), "
-                                              + osmAttribution),
-                              "luforoadslabels", osmAttr,
+                              new GeoServiceLayerSettings()
+                                  .attribution(
+                                      "© [Beeldmateriaal.nl](https://beeldmateriaal.nl), "
+                                          + osmAttribution),
+                              "luforoadslabels",
+                              osmAttr,
                               "map5topo",
-                                  new GeoServiceLayerSettings()
-                                      .attribution(map5Attr.getAttribution())
-                                      .hiDpiDisabled(false)
-                                      .hiDpiMode(
-                                          TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
-                                      .hiDpiSubstituteLayer("map5topo_hq"),
-                              "map5topo_gray", map5Attr,
-                              "map5topo_simple", map5Attr,
-                              "map5topo_simple_gray", map5Attr,
-                              "opensimpletopo", osmAttr,
-                              "opensimpletopo_gray", osmAttr,
-                              "opentopo", osmAttr,
-                              "opentopo_gray", osmAttr))));
+                              new GeoServiceLayerSettings()
+                                  .attribution(map5Attr.getAttribution())
+                                  .hiDpiDisabled(false)
+                                  .hiDpiMode(TileLayerHiDpiMode.SUBSTITUTELAYERSHOWNEXTZOOMLEVEL)
+                                  .hiDpiSubstituteLayer("map5topo_hq"),
+                              "map5topo_gray",
+                              map5Attr,
+                              "map5topo_simple",
+                              map5Attr,
+                              "map5topo_simple_gray",
+                              map5Attr,
+                              "opensimpletopo",
+                              osmAttr,
+                              "opensimpletopo_gray",
+                              osmAttr,
+                              "opentopo",
+                              osmAttr,
+                              "opentopo_gray",
+                              osmAttr))));
     }
 
     for (GeoService geoService : services) {
@@ -883,7 +905,9 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
               ft.getSettings().addAttributeOrderItem("bronhouder");
               ft.getSettings().addAttributeOrderItem("class");
             });
+  }
 
+  public void createAppTestData() throws Exception {
     Upload logo =
         new Upload()
             .setCategory(Upload.CATEGORY_APP_LOGO)
@@ -913,7 +937,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
             .setName("default")
             .setTitle("Tailormap demo")
             .setCrs("EPSG:28992")
-            .setAuthorizationRules(rule)
+            .setAuthorizationRules(ruleAnonymousRead)
             .setComponents(
                 List.of(
                     new Component().type("EDIT").config(new ComponentConfig().enabled(true)),
@@ -1195,7 +1219,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
             .setName("base")
             .setTitle("Service base app")
             .setCrs("EPSG:28992")
-            .setAuthorizationRules(rule)
+            .setAuthorizationRules(ruleAnonymousRead)
             .setContentRoot(
                 new AppContent()
                     .addBaseLayerNodesItem(
@@ -1351,7 +1375,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
         new Application()
             .setName("austria")
             .setCrs("EPSG:3857")
-            .setAuthorizationRules(rule)
+            .setAuthorizationRules(ruleAnonymousRead)
             .setTitle("Austria")
             .setInitialExtent(
                 new Bounds().minx(987982d).miny(5799551d).maxx(1963423d).maxy(6320708d))
@@ -1424,16 +1448,16 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     config.setKey(Configuration.DEFAULT_BASE_APP);
     config.setValue("base");
     configurationRepository.save(config);
+  }
 
-    config = new Configuration();
+  private void createConfigurationTestData() throws JsonProcessingException {
+    Configuration config = new Configuration();
     config.setKey("test");
     config.setAvailableForViewer(true);
     config.setValue("test value");
     config.setJsonValue(
         new ObjectMapper().readTree("{ \"someProperty\": 1, \"nestedObject\": { \"num\": 42 } }"));
     configurationRepository.save(config);
-
-    logger.info("Test entities created");
   }
 
   @Transactional
@@ -1622,41 +1646,43 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
       logger.error("Error creating scheduled one or more poc tasks", e);
     }
 
-    logger.info("Creating INDEX task");
-    searchIndexRepository
-        .findByName("Begroeidterreindeel")
-        .ifPresent(
-            index -> {
-              index.setSchedule(
-                  new TaskSchedule()
-                      /* hour */
-                      .cronExpression("0 0 0/1 1/1 * ? *")
-                      // /* 15 min */
-                      // .cronExpression("0 0/15 * 1/1 * ? *")
-                      .description("Update Solr index \"Begroeidterreindeel\" every time"));
-              try {
-                final UUID uuid =
-                    taskManagerService.createTask(
-                        IndexTask.class,
-                        new TMJobDataMap(
-                            Map.of(
-                                Task.TYPE_KEY,
-                                TaskType.INDEX,
-                                Task.DESCRIPTION_KEY,
-                                index.getSchedule().getDescription(),
-                                IndexTask.INDEX_KEY,
-                                index.getId().toString(),
-                                Task.PRIORITY_KEY,
-                                10)),
-                        index.getSchedule().getCronExpression());
+    if (categories.contains("search-index")) {
+      logger.info("Creating INDEX task");
+      searchIndexRepository
+          .findByName("Begroeidterreindeel")
+          .ifPresent(
+              index -> {
+                index.setSchedule(
+                    new TaskSchedule()
+                        /* hour */
+                        .cronExpression("0 0 0/1 1/1 * ? *")
+                        // /* 15 min */
+                        // .cronExpression("0 0/15 * 1/1 * ? *")
+                        .description("Update Solr index \"Begroeidterreindeel\" every time"));
+                try {
+                  final UUID uuid =
+                      taskManagerService.createTask(
+                          IndexTask.class,
+                          new TMJobDataMap(
+                              Map.of(
+                                  Task.TYPE_KEY,
+                                  TaskType.INDEX,
+                                  Task.DESCRIPTION_KEY,
+                                  index.getSchedule().getDescription(),
+                                  IndexTask.INDEX_KEY,
+                                  index.getId().toString(),
+                                  Task.PRIORITY_KEY,
+                                  10)),
+                          index.getSchedule().getCronExpression());
 
-                index.getSchedule().setUuid(uuid);
-                searchIndexRepository.save(index);
+                  index.getSchedule().setUuid(uuid);
+                  searchIndexRepository.save(index);
 
-                logger.info("Created task to update Solr index with key: {}", uuid);
-              } catch (SchedulerException e) {
-                logger.error("Error creating scheduled solr index task", e);
-              }
-            });
+                  logger.info("Created task to update Solr index with key: {}", uuid);
+                } catch (SchedulerException e) {
+                  logger.error("Error creating scheduled solr index task", e);
+                }
+              });
+    }
   }
 }
