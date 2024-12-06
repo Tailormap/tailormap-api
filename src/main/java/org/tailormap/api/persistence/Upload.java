@@ -24,6 +24,7 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 public class Upload {
   public static final String CATEGORY_APP_LOGO = "app-logo";
   public static final String CATEGORY_LEGEND = "legend";
+  public static final String CATEGORY_PORTAL_IMAGE = "portal-image";
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)

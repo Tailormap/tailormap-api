@@ -30,6 +30,10 @@ public class Page {
 
   @Version private Long version;
 
+  /**
+   * Used by the frontend that displays pages to determine how to show the page, a string like
+   * 'page'.
+   */
   private String type;
 
   @Column(unique = true)
@@ -38,9 +42,14 @@ public class Page {
 
   private String title;
 
+  /**
+   * Content of the page, interpreted by the page display frontend, can contain Markdown for
+   * example.
+   */
   @Column(columnDefinition = "text")
   private String content;
 
+  /** CSS class name to apply to the page. */
   private String className;
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)

@@ -6,7 +6,6 @@
 
 package org.tailormap.api.controller;
 
-import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
@@ -16,6 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
 import org.tailormap.api.persistence.Configuration;
 import org.tailormap.api.persistence.Page;
+import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.helper.UploadHelper;
 import org.tailormap.api.persistence.json.PageTile;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
@@ -31,16 +32,19 @@ public class PageController {
   private final ApplicationRepository applicationRepository;
   private final AuthorizationService authorizationService;
   private final PageRepository pageRepository;
+  private final UploadHelper uploadHelper;
 
   public PageController(
       ConfigurationRepository configurationRepository,
       ApplicationRepository applicationRepository,
       AuthorizationService authorizationService,
-      PageRepository pageRepository) {
+      PageRepository pageRepository,
+      UploadHelper uploadHelper) {
     this.configurationRepository = configurationRepository;
     this.applicationRepository = applicationRepository;
     this.pageRepository = pageRepository;
     this.authorizationService = authorizationService;
+    this.uploadHelper = uploadHelper;
   }
 
   private ResponseStatusException notFound() {
@@ -64,51 +68,58 @@ public class PageController {
     return pageRepository.findByName(name).map(this::getPageResponse).orElseThrow(this::notFound);
   }
 
+  private static class ViewerPageTileResult {
+    ViewerPageTile viewerPageTile;
+    boolean shouldBeFiltered;
+  }
+
   private PageResponse getPageResponse(Page page) {
     PageResponse pageResponse = new PageResponse();
     BeanUtils.copyProperties(page, pageResponse);
     pageResponse.tiles(
-        page.getTiles().stream().map(this::convert).filter(Objects::nonNull).toList());
+        page.getTiles().stream()
+            .map(this::convert)
+            .filter(viewerPageTileResult -> !viewerPageTileResult.shouldBeFiltered)
+            .map(viewerPageTileResult -> viewerPageTileResult.viewerPageTile)
+            .toList());
     return pageResponse;
   }
 
   /**
    * @param tile The page tile configuration
-   * @return A page tile for the viewer, or null if the tile should not be shown (filtered).
+   * @return A page tile for the viewer with a boolean set to whether the tile should not be shown
+   *     (filtered).
    */
-  private ViewerPageTile convert(PageTile tile) {
+  private ViewerPageTileResult convert(PageTile tile) {
     ViewerPageTile viewerPageTile = new ViewerPageTile();
+    ViewerPageTileResult result = new ViewerPageTileResult();
+    result.viewerPageTile = viewerPageTile;
+    result.shouldBeFiltered = false;
     BeanUtils.copyProperties(tile, viewerPageTile);
 
     if (tile.getApplicationId() != null) {
-      return Optional.ofNullable(tile.getApplicationId())
+      Optional.ofNullable(tile.getApplicationId())
           .flatMap(applicationRepository::findById)
           .filter(
               application ->
                   !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
                       || authorizationService.mayUserRead(application))
-          .map(
+          .ifPresentOrElse(
               application -> {
                 viewerPageTile.applicationUrl("/app/" + application.getName());
                 viewerPageTile.setApplicationRequiresLogin(
                     !authorizationService.mayUserRead(application));
-                return viewerPageTile;
-              })
-          .orElse(null);
+              },
+              () -> result.shouldBeFiltered = true);
     }
 
-    if (tile.getPageId() != null) {
-      return Optional.ofNullable(tile.getPageId())
-          .flatMap(pageRepository::findById)
-          .map(
-              linkedPage -> {
-                viewerPageTile.pageUrl("/page/" + linkedPage.getName());
-                return viewerPageTile;
-              })
-          .orElse(null);
-    }
+    Optional.ofNullable(tile.getPageId())
+        .flatMap(pageRepository::findById)
+        .ifPresent(linkedPage -> viewerPageTile.pageUrl("/page/" + linkedPage.getName()));
 
-    // No application or page, just manual (external) url
-    return viewerPageTile;
+    viewerPageTile.image(
+        uploadHelper.getUrlForImage(tile.getImage(), Upload.CATEGORY_PORTAL_IMAGE));
+
+    return result;
   }
 }

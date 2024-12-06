@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.configuration.dev;
 
+import static org.tailormap.api.persistence.Configuration.HOME_PAGE;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
@@ -21,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -44,6 +46,7 @@ import org.tailormap.api.persistence.Catalog;
 import org.tailormap.api.persistence.Configuration;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.Group;
+import org.tailormap.api.persistence.Page;
 import org.tailormap.api.persistence.SearchIndex;
 import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
@@ -68,6 +71,7 @@ import org.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import org.tailormap.api.persistence.json.GeoServiceSettings;
 import org.tailormap.api.persistence.json.JDBCConnectionProperties;
+import org.tailormap.api.persistence.json.PageTile;
 import org.tailormap.api.persistence.json.ServiceAuthentication;
 import org.tailormap.api.persistence.json.TailormapObjectRef;
 import org.tailormap.api.persistence.json.TileLayerHiDpiMode;
@@ -77,6 +81,7 @@ import org.tailormap.api.repository.ConfigurationRepository;
 import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.repository.GeoServiceRepository;
 import org.tailormap.api.repository.GroupRepository;
+import org.tailormap.api.repository.PageRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.repository.UploadRepository;
 import org.tailormap.api.repository.UserRepository;
@@ -119,6 +124,7 @@ public class PopulateTestData {
   private final SearchIndexRepository searchIndexRepository;
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
   private final UploadRepository uploadRepository;
+  private final PageRepository pageRepository;
 
   @Value("${spatial.dbs.connect:false}")
   private boolean connectToSpatialDbs;
@@ -158,7 +164,8 @@ public class PopulateTestData {
       ConfigurationRepository configurationRepository,
       FeatureSourceFactoryHelper featureSourceFactoryHelper,
       SearchIndexRepository searchIndexRepository,
-      UploadRepository uploadRepository) {
+      UploadRepository uploadRepository,
+      PageRepository pageRepository) {
     this.appContext = appContext;
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
@@ -173,6 +180,7 @@ public class PopulateTestData {
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
     this.searchIndexRepository = searchIndexRepository;
     this.uploadRepository = uploadRepository;
+    this.pageRepository = pageRepository;
   }
 
   @EventListener(ApplicationReadyEvent.class)
@@ -199,6 +207,9 @@ public class PopulateTestData {
       }
       if (categories.contains("tasks")) {
         createPocTasks();
+      }
+      if (categories.contains("pages")) {
+        createPages();
       }
       logger.info("Test entities created");
     } finally {
@@ -1684,5 +1695,90 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 }
               });
     }
+  }
+
+  private void createPages() throws IOException {
+    Upload logo =
+        new Upload()
+            .setCategory(Upload.CATEGORY_PORTAL_IMAGE)
+            .setFilename("gradient.svg")
+            .setMimeType("image/svg+xml")
+            .setContent(new ClassPathResource("test/gradient-logo.svg").getContentAsByteArray())
+            .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
+    uploadRepository.save(logo);
+
+    Page about = new Page();
+    about.setName("about");
+    about.setType("page");
+    about.setContent("About Tailormap");
+    about.setContent(
+        """
+# About Tailormap
+
+This is a page about *Tailormap*. It doesn't say much yet.
+""");
+    pageRepository.save(about);
+
+    Page page = new Page();
+    page.setName("home");
+    page.setType("page");
+    page.setTitle("Tailormap - Home");
+    page.setContent(
+        """
+# Welcome to Tailormap!
+
+This page is only visible when you implement a frontend to display pages, or get it (including a simple CMS)
+from [B3Partners](https://www.b3partners.nl)!
+""");
+    page.setClassName(null);
+    page.setTiles(
+        List.of(
+            new PageTile()
+                .id(UUID.randomUUID().toString())
+                .title("Default app")
+                .applicationId(
+                    Optional.ofNullable(applicationRepository.findByName("default"))
+                        .map(Application::getId)
+                        .orElse(null))
+                .image(logo.getId().toString())
+                .content("*Default app* tile content")
+                .filterRequireAuthorization(false)
+                .openInNewWindow(false),
+            new PageTile()
+                .id(UUID.randomUUID().toString())
+                .title("Secured app")
+                .applicationId(
+                    Optional.ofNullable(applicationRepository.findByName("secured"))
+                        .map(Application::getId)
+                        .orElse(null))
+                .filterRequireAuthorization(true)
+                .content("Secure app, only shown if user has authorization")
+                .openInNewWindow(false),
+            new PageTile()
+                .id(UUID.randomUUID().toString())
+                .title("Secured app (unfiltered)")
+                .applicationId(
+                    Optional.ofNullable(applicationRepository.findByName("secured"))
+                        .map(Application::getId)
+                        .orElse(null))
+                .filterRequireAuthorization(false)
+                .content("Secure app, tile shown to everyone")
+                .openInNewWindow(false),
+            new PageTile()
+                .id(UUID.randomUUID().toString())
+                .title("About")
+                .pageId(about.getId())
+                .openInNewWindow(false),
+            new PageTile()
+                .id(UUID.randomUUID().toString())
+                .title("B3Partners")
+                .url("https://www.b3partners.nl/")
+                .openInNewWindow(true)));
+    pageRepository.save(page);
+
+    Configuration c = new Configuration();
+    c.setKey(HOME_PAGE);
+    c.setValue(page.getId().toString());
+    configurationRepository.save(c);
   }
 }
