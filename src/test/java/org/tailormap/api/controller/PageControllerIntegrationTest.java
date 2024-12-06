@@ -80,4 +80,27 @@ class PageControllerIntegrationTest {
             jsonPath("$.tiles[?(@.applicationUrl == '/app/secured' && @.title == 'Secured app')]")
                 .exists());
   }
+
+  @Test
+  void testMenuItems() throws Exception {
+    final String url = apiBasePath + "/page/home";
+    String aboutItemJsonPath = "$.menu[?(@.label == 'About')].pageUrl";
+    String b3pWebsiteItemJsonPath = "$.menu[?(@.label == 'B3Partners website')]";
+    mockMvc
+        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath(aboutItemJsonPath).value("/page/about"))
+        .andExpect(jsonPath(b3pWebsiteItemJsonPath).doesNotExist());
+
+    mockMvc
+        .perform(
+            get(apiBasePath + "/page/about")
+                .accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath(aboutItemJsonPath).exists())
+        .andExpect(jsonPath(b3pWebsiteItemJsonPath).exists());
+  }
 }

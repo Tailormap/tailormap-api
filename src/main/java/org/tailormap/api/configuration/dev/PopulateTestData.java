@@ -6,6 +6,7 @@
 package org.tailormap.api.configuration.dev;
 
 import static org.tailormap.api.persistence.Configuration.HOME_PAGE;
+import static org.tailormap.api.persistence.Configuration.PORTAL_MENU;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
@@ -71,6 +72,7 @@ import org.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import org.tailormap.api.persistence.json.GeoServiceSettings;
 import org.tailormap.api.persistence.json.JDBCConnectionProperties;
+import org.tailormap.api.persistence.json.MenuItem;
 import org.tailormap.api.persistence.json.PageTile;
 import org.tailormap.api.persistence.json.ServiceAuthentication;
 import org.tailormap.api.persistence.json.TailormapObjectRef;
@@ -1779,6 +1781,19 @@ from [B3Partners](https://www.b3partners.nl)!
     Configuration c = new Configuration();
     c.setKey(HOME_PAGE);
     c.setValue(page.getId().toString());
+    configurationRepository.save(c);
+
+    List<MenuItem> globalMenuItems =
+        List.of(
+            new MenuItem().pageId(about.getId().intValue()).label("About").openInNewWindow(false),
+            new MenuItem()
+                .label("B3Partners website")
+                .url("https://www.b3partners.nl/")
+                .openInNewWindow(true)
+                .exclusiveOnPageId(about.getId().intValue()));
+    c = new Configuration();
+    c.setKey(PORTAL_MENU);
+    c.setJsonValue(new ObjectMapper().valueToTree(globalMenuItems));
     configurationRepository.save(c);
   }
 }

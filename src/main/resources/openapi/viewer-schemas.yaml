@@ -447,7 +447,7 @@ components:
           type: array
           minLength: 0
           items:
-            $ref: '#/components/schemas/ViewerPortalMenuItem'
+            $ref: '#/components/schemas/ViewerMenuItem'
 
     ViewerPageTile:
       description: model for a page tile as returned by the api for the viewer
@@ -488,8 +488,8 @@ components:
           nullable: true
           description: indicates whether the link should be opened in a new window
 
-    ViewerPortalMenuItem:
-      description: model for a menu item inside the portal
+    ViewerMenuItem:
+      description: model for a menu item for pages
       type: object
       properties:
         label:
