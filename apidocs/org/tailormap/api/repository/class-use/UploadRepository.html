@@ -58,6 +58,8 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><a href="#org.tailormap.api.controller">org.tailormap.api.controller</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="#org.tailormap.api.persistence.helper">org.tailormap.api.persistence.helper</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -70,7 +72,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../configuration/dev/PopulateTestData.html#%3Cinit%3E(org.springframework.context.ApplicationContext,org.tailormap.api.repository.UserRepository,org.tailormap.api.repository.GroupRepository,org.tailormap.api.repository.CatalogRepository,org.tailormap.api.repository.GeoServiceRepository,org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.solr.SolrService,org.tailormap.api.scheduling.TaskManagerService,org.tailormap.api.repository.FeatureSourceRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.UploadRepository)" class="member-name-link">PopulateTestData</a><wbr>(org.springframework.context.ApplicationContext&nbsp;appContext,
+<div class="col-second even-row-color"><code><a href="../../configuration/dev/PopulateTestData.html#%3Cinit%3E(org.springframework.context.ApplicationContext,org.tailormap.api.repository.UserRepository,org.tailormap.api.repository.GroupRepository,org.tailormap.api.repository.CatalogRepository,org.tailormap.api.repository.GeoServiceRepository,org.tailormap.api.persistence.helper.GeoServiceHelper,org.tailormap.api.solr.SolrService,org.tailormap.api.scheduling.TaskManagerService,org.tailormap.api.repository.FeatureSourceRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.UploadRepository,org.tailormap.api.repository.PageRepository)" class="member-name-link">PopulateTestData</a><wbr>(org.springframework.context.ApplicationContext&nbsp;appContext,
  <a href="../UserRepository.html" title="interface in org.tailormap.api.repository">UserRepository</a>&nbsp;userRepository,
  <a href="../GroupRepository.html" title="interface in org.tailormap.api.repository">GroupRepository</a>&nbsp;groupRepository,
  <a href="../CatalogRepository.html" title="interface in org.tailormap.api.repository">CatalogRepository</a>&nbsp;catalogRepository,
@@ -83,7 +85,8 @@ loadScripts(document, 'script');</script>
  <a href="../ConfigurationRepository.html" title="interface in org.tailormap.api.repository">ConfigurationRepository</a>&nbsp;configurationRepository,
  <a href="../../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
  <a href="../SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
- <a href="../UploadRepository.html" title="interface in org.tailormap.api.repository">UploadRepository</a>&nbsp;uploadRepository)</code></div>
+ <a href="../UploadRepository.html" title="interface in org.tailormap.api.repository">UploadRepository</a>&nbsp;uploadRepository,
+ <a href="../PageRepository.html" title="interface in org.tailormap.api.repository">PageRepository</a>&nbsp;pageRepository)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -99,13 +102,20 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
 <div class="col-second even-row-color"><code><a href="../../controller/UploadsController.html#%3Cinit%3E(org.tailormap.api.repository.UploadRepository)" class="member-name-link">UploadsController</a><wbr>(<a href="../UploadRepository.html" title="interface in org.tailormap.api.repository">UploadRepository</a>&nbsp;uploadRepository)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../../controller/ViewerController.html#%3Cinit%3E(org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.repository.ApplicationRepository,org.tailormap.api.persistence.helper.ApplicationHelper,org.tailormap.api.security.AuthorizationService,org.tailormap.api.repository.UploadRepository)" class="member-name-link">ViewerController</a><wbr>(<a href="../ConfigurationRepository.html" title="interface in org.tailormap.api.repository">ConfigurationRepository</a>&nbsp;configurationRepository,
- <a href="../ApplicationRepository.html" title="interface in org.tailormap.api.repository">ApplicationRepository</a>&nbsp;applicationRepository,
- <a href="../../persistence/helper/ApplicationHelper.html" title="class in org.tailormap.api.persistence.helper">ApplicationHelper</a>&nbsp;applicationHelper,
- <a href="../../security/AuthorizationService.html" title="class in org.tailormap.api.security">AuthorizationService</a>&nbsp;authorizationService,
- <a href="../UploadRepository.html" title="interface in org.tailormap.api.repository">UploadRepository</a>&nbsp;uploadRepository)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="org.tailormap.api.persistence.helper">
+<h2>Uses of <a href="../UploadRepository.html" title="interface in org.tailormap.api.repository">UploadRepository</a> in <a href="../../persistence/helper/package-summary.html">org.tailormap.api.persistence.helper</a></h2>
+<div class="caption"><span>Constructors in <a href="../../persistence/helper/package-summary.html">org.tailormap.api.persistence.helper</a> with parameters of type <a href="../UploadRepository.html" title="interface in org.tailormap.api.repository">UploadRepository</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier</div>
+<div class="table-header col-second">Constructor</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../../persistence/helper/UploadHelper.html#%3Cinit%3E(org.tailormap.api.repository.UploadRepository)" class="member-name-link">UploadHelper</a><wbr>(<a href="../UploadRepository.html" title="interface in org.tailormap.api.repository">UploadRepository</a>&nbsp;uploadRepository)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
