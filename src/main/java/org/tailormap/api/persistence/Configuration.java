@@ -23,6 +23,8 @@ public class Configuration {
 
   public static final String HOME_PAGE = "home-page";
 
+  public static final String PORTAL_MENU = "portal-menu";
+
   @Id private String key;
 
   @Version private Long version;
