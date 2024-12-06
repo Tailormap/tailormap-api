@@ -115,10 +115,7 @@ public class PageController {
 
     Optional.ofNullable(tile.getPageId())
         .flatMap(pageRepository::findById)
-        .ifPresent(
-            linkedPage -> {
-              viewerPageTile.pageUrl("/page/" + linkedPage.getName());
-            });
+        .ifPresent(linkedPage -> viewerPageTile.pageUrl("/page/" + linkedPage.getName()));
 
     viewerPageTile.image(
         uploadHelper.getUrlForImage(tile.getImage(), Upload.CATEGORY_PORTAL_IMAGE));
