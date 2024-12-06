@@ -442,6 +442,12 @@ components:
           minLength: 0
           items:
             $ref: '#/components/schemas/ViewerPageTile'
+        menu:
+          description: list of menu items for this page
+          type: array
+          minLength: 0
+          items:
+            $ref: '#/components/schemas/ViewerPortalMenuItem'
 
     ViewerPageTile:
       description: model for a page tile as returned by the api for the viewer
@@ -477,6 +483,26 @@ components:
           type: boolean
           nullable: true
           description: indicates if the user will need to login for the linked application
+        openInNewWindow:
+          type: boolean
+          nullable: true
+          description: indicates whether the link should be opened in a new window
+
+    ViewerPortalMenuItem:
+      description: model for a menu item inside the portal
+      type: object
+      properties:
+        label:
+          type: string
+          description: menu item label
+        pageUrl:
+          type: string
+          nullable: true
+          description: link to another page
+        url:
+          type: string
+          nullable: true
+          description: link to an other domain / website
         openInNewWindow:
           type: boolean
           nullable: true

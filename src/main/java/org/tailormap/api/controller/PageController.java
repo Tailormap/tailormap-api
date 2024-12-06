@@ -6,6 +6,10 @@
 
 package org.tailormap.api.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
@@ -24,6 +28,7 @@ import org.tailormap.api.repository.PageRepository;
 import org.tailormap.api.security.AuthorizationService;
 import org.tailormap.api.viewer.model.PageResponse;
 import org.tailormap.api.viewer.model.ViewerPageTile;
+import org.tailormap.api.viewer.model.ViewerPortalMenuItem;
 
 @AppRestController
 public class PageController {
@@ -82,6 +87,37 @@ public class PageController {
             .filter(viewerPageTileResult -> !viewerPageTileResult.shouldBeFiltered)
             .map(viewerPageTileResult -> viewerPageTileResult.viewerPageTile)
             .toList());
+
+    configurationRepository
+        .findByKey(Configuration.PORTAL_MENU)
+        .map(Configuration::getJsonValue)
+        .filter(JsonNode::isArray)
+        .ifPresent(
+            node -> {
+              Iterator<JsonNode> itr = node.iterator();
+              List<ViewerPortalMenuItem> menuItems = new ArrayList<>();
+              while (itr.hasNext()) {
+                JsonNode item = itr.next();
+                Long exclusiveOnPageId = item.get("exclusiveOnPageId").isNumber()
+                        ? item.get("exclusiveOnPageId").asLong()
+                        : null;
+                if (exclusiveOnPageId != null && !exclusiveOnPageId.equals(page.getId())) {
+                  return;
+                }
+                ViewerPortalMenuItem menuItem = new ViewerPortalMenuItem();
+                menuItem.setLabel(item.get("label").asText());
+                menuItem.setUrl(item.get("url").asText(null));
+                Optional.of(item.get("pageId").asLong())
+                    .flatMap(pageRepository::findById)
+                    .ifPresent(
+                        linkedPage -> {
+                          menuItem.pageUrl("/page/" + linkedPage.getName());
+                        });
+                menuItem.setOpenInNewWindow(item.get("openInNewWindow").asBoolean());
+                menuItems.add(menuItem);
+              }
+              pageResponse.setMenu(menuItems);
+            });
     return pageResponse;
   }
 
