@@ -1697,7 +1697,16 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     }
   }
 
-  private void createPages() {
+  private void createPages() throws IOException {
+    Upload logo =
+        new Upload()
+            .setCategory(Upload.CATEGORY_PORTAL_IMAGE)
+            .setFilename("gradient.svg")
+            .setMimeType("image/svg+xml")
+            .setContent(new ClassPathResource("test/gradient-logo.svg").getContentAsByteArray())
+            .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
+    uploadRepository.save(logo);
+
     Page about = new Page();
     about.setName("about");
     about.setType("page");
@@ -1731,12 +1740,7 @@ from [B3Partners](https://www.b3partners.nl)!
                     Optional.ofNullable(applicationRepository.findByName("default"))
                         .map(Application::getId)
                         .orElse(null))
-                .image(
-                    uploadRepository.findByCategory(Upload.CATEGORY_APP_LOGO).stream()
-                        .findFirst()
-                        .map(Upload::getId)
-                        .map(UUID::toString)
-                        .orElse(null))
+                .image(logo.getId().toString())
                 .content("*Default app* tile content")
                 .filterRequireAuthorization(false)
                 .openInNewWindow(false),
@@ -1744,7 +1748,7 @@ from [B3Partners](https://www.b3partners.nl)!
                 .id(UUID.randomUUID().toString())
                 .title("Secured app")
                 .applicationId(
-                    Optional.ofNullable(applicationRepository.findByName("secure"))
+                    Optional.ofNullable(applicationRepository.findByName("secured"))
                         .map(Application::getId)
                         .orElse(null))
                 .filterRequireAuthorization(true)
@@ -1754,7 +1758,7 @@ from [B3Partners](https://www.b3partners.nl)!
                 .id(UUID.randomUUID().toString())
                 .title("Secured app (unfiltered)")
                 .applicationId(
-                    Optional.ofNullable(applicationRepository.findByName("secure"))
+                    Optional.ofNullable(applicationRepository.findByName("secured"))
                         .map(Application::getId)
                         .orElse(null))
                 .filterRequireAuthorization(false)
