@@ -639,6 +639,19 @@ components:
     FormField:
       $ref: './common-schemas.yaml#/components/schemas/FormField'
 
+    MenuItem:
+      description: 'model for a menu items'
+      allOf:
+        - $ref: "./viewer-schemas.yaml#/components/schemas/ViewerMenuItem"
+        - type: object
+          properties:
+            pageId:
+              type: integer
+              format: int64
+            exclusiveOnPageId:
+              type: integer
+              format: int64
+
     PageTile:
       description: 'model for a page tile'
       type: object
