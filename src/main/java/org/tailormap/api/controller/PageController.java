@@ -103,7 +103,7 @@ public class PageController {
                     return Arrays.asList(
                         new ObjectMapper().treeToValue(jsonNode, MenuItem[].class));
                   } catch (IOException e) {
-                    throw new ResponseStatusException(HttpStatusCode.INTERNAL_SERVER_ERROR, null, e);
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, null, e);
                   }
                 })
             .orElse(Collections.emptyList());
