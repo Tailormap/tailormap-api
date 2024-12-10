@@ -136,6 +136,12 @@ components:
           type: array
           items:
             $ref: './viewer-schemas.yaml#/components/schemas/LayerTreeNode'
+        terrainLayerTreeNodes:
+          description: 'Unordered list of all tree nodes of terrain layers. Start with the node 
+            with root set to true and use the ordered children array property to order the tree.'
+          type: array
+          items:
+            $ref: './viewer-schemas.yaml#/components/schemas/LayerTreeNode'
         appLayers:
           description: 'Unordered list of all AppLayers referenced from baseLayerTreeNodes and layerTreeNodes. Note that
             you need to lookup these by id, but OpenAPI only supports a map by using strings as keys, so an array is 

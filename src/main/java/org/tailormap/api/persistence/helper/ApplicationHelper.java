@@ -203,6 +203,7 @@ public class ApplicationHelper {
       if (app.getContentRoot() != null) {
         buildBackgroundLayers();
         buildOverlayLayers();
+        buildTerrainLayers();
       }
     }
 
@@ -218,6 +219,14 @@ public class ApplicationHelper {
       if (app.getContentRoot().getLayerNodes() != null) {
         for (AppTreeNode node : app.getContentRoot().getLayerNodes()) {
           addAppTreeNodeItem(node, mr.getLayerTreeNodes());
+        }
+      }
+    }
+
+    private void buildTerrainLayers() {
+      if (app.getContentRoot().getTerrainLayerNodes() != null) {
+        for (AppTreeNode node : app.getContentRoot().getTerrainLayerNodes()) {
+          addAppTreeNodeItem(node, mr.getTerrainLayerTreeNodes());
         }
       }
     }
