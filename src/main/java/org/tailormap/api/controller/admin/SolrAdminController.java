@@ -145,7 +145,10 @@ public class SolrAdminController {
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(example = "{\"taskName\":\"\",\"code\":202}")))
+              schema =
+                  @Schema(
+                      example =
+                          "{\"type\":\"index\", \"uuid\":\"6308d26e-fe1e-4268-bb28-20db2cd06914\",\"code\":202}")))
   @ApiResponse(
       responseCode = "404",
       description = "Layer does not have feature type",
@@ -218,7 +221,16 @@ public class SolrAdminController {
         (createNewIndex ? "creation of a new" : "update of"),
         searchIndex.getName());
     return ResponseEntity.accepted()
-        .body(Map.of("status", 202, "taskName", taskUuid, "message", "Indexing scheduled"));
+        .body(
+            Map.of(
+                "code",
+                202,
+                Task.TYPE_KEY,
+                TaskType.INDEX.getValue(),
+                Task.UUID_KEY,
+                taskUuid,
+                "message",
+                "Indexing scheduled"));
   }
 
   private UUID startOneTimeJobIndexing(SearchIndex searchIndex)
