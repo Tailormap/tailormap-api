@@ -138,8 +138,8 @@ public class TaskAdminController {
                 tasks.add(
                     new ObjectMapper()
                         .createObjectNode()
-                        .put(Task.UUID_KEY, jobDetail.getKey().getName())
                         .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
+                        .put(Task.UUID_KEY, jobDetail.getKey().getName())
                         .put(
                             Task.INTERRUPTABLE_KEY,
                             InterruptableJob.class.isAssignableFrom(jobDetail.getJobClass()))
@@ -189,8 +189,8 @@ public class TaskAdminController {
                       example =
                           """
                           {
-                            "uuid":"6308d26e-fe1e-4268-bb28-20db2cd06914",
                             "type":"poc",
+                            "uuid":"6308d26e-fe1e-4268-bb28-20db2cd06914",
                             "interruptable":false,
                             "description":"This is a poc task",
                             "startTime":"2024-06-06T12:00:00Z",
@@ -240,8 +240,8 @@ public class TaskAdminController {
           new ObjectMapper()
               .createObjectNode()
               // immutable uuid, type and description
-              .put(Task.UUID_KEY, jobDetail.getKey().getName())
               .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
+              .put(Task.UUID_KEY, jobDetail.getKey().getName())
               .put(
                   Task.INTERRUPTABLE_KEY,
                   InterruptableJob.class.isAssignableFrom(jobDetail.getJobClass()))
