@@ -136,9 +136,10 @@ class SolrAdminControllerIntegrationTest {
     mockMvc
         .perform(put(adminBasePath + "/index/3").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted())
-        .andExpect(jsonPath("$.status").value(202))
+        .andExpect(jsonPath("$.code").value(202))
         .andExpect(jsonPath("$.message").value("Indexing scheduled"))
-        .andExpect(jsonPath("$.taskName").isNotEmpty());
+        .andExpect(jsonPath("$.uuid").isNotEmpty())
+        .andExpect(jsonPath("$.type").value("index"));
 
     // after submitting the request, wait for the index to be refreshed in the scheduler
     Thread.sleep(waitForIndexRefreshMillis);
