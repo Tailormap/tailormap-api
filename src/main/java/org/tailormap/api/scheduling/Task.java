@@ -6,6 +6,7 @@
 package org.tailormap.api.scheduling;
 
 import org.quartz.InterruptableJob;
+import org.tailormap.api.admin.model.TaskProgressEvent;
 
 public interface Task {
 
@@ -39,6 +40,16 @@ public interface Task {
    * @param description the description
    */
   void setDescription(String description);
+
+  /**
+   * Handle the task progress event. Override this method to handle the progress of the task, e.g.
+   * by emitting {@code ServerSentEvent}s. The default is a no-op.
+   *
+   * @param event the task progress event
+   */
+  default void taskProgress(TaskProgressEvent event) {
+    // no-op
+  }
 
   /**
    * Determine if this task can be stopped on demand (implements {@code InterruptableJob}).

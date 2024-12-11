@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.function.Consumer;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrResponse;
@@ -39,11 +42,14 @@ import org.locationtech.jts.geom.Geometry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+import org.tailormap.api.admin.model.TaskProgressEvent;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
 import org.tailormap.api.persistence.SearchIndex;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.repository.SearchIndexRepository;
+import org.tailormap.api.scheduling.TaskType;
 import org.tailormap.api.util.Constants;
 import org.tailormap.api.viewer.model.SearchDocument;
 import org.tailormap.api.viewer.model.SearchResponse;
@@ -175,10 +181,55 @@ public class SolrHelper implements AutoCloseable, Constants {
       @NotNull FeatureSourceFactoryHelper featureSourceFactoryHelper,
       @NotNull SearchIndexRepository searchIndexRepository)
       throws IOException, SolrServerException {
+    // use a dummy/logging listener when not given
+    Consumer<TaskProgressEvent> progressListener =
+        (event) -> {
+          logger.debug("Progress event: {}", event);
+        };
+
+    return this.addFeatureTypeIndex(
+        searchIndex,
+        tmFeatureType,
+        featureSourceFactoryHelper,
+        searchIndexRepository,
+        progressListener,
+        null);
+  }
+
+  /**
+   * Add or update a feature type index for a layer.
+   *
+   * @param searchIndex the search index config
+   * @param tmFeatureType the feature type
+   * @param featureSourceFactoryHelper the feature source factory helper
+   * @param searchIndexRepository the search index repository, so we can save the {@code
+   *     searchIndex}
+   * @param progressListener the progress listener callback
+   * @param taskUuid the task UUID, when {@code null} we will attempt to use the UUID from the
+   *     {@code searchIndex#getSchedule()}
+   * @throws IOException if an I/O error occurs
+   * @throws SolrServerException if a Solr error occurs
+   * @return the possibly updated {@code searchIndex} object
+   */
+  @SuppressWarnings("FromTemporalAccessor")
+  public SearchIndex addFeatureTypeIndex(
+      @NotNull SearchIndex searchIndex,
+      @NotNull TMFeatureType tmFeatureType,
+      @NotNull FeatureSourceFactoryHelper featureSourceFactoryHelper,
+      @NotNull SearchIndexRepository searchIndexRepository,
+      @NotNull Consumer<TaskProgressEvent> progressListener,
+      @Nullable UUID taskUuid)
+      throws IOException, SolrServerException {
 
     createSchemaIfNotExists();
 
     final Instant startedAt = Instant.now();
+    final OffsetDateTime startedAtOffset =
+        startedAt.atOffset(ZoneId.systemDefault().getRules().getOffset(startedAt));
+
+    if (null == taskUuid) {
+      taskUuid = searchIndex.getSchedule().getUuid();
+    }
 
     if (null == searchIndex.getSearchFieldsUsed()) {
       logger.warn(
@@ -188,6 +239,13 @@ public class SolrHelper implements AutoCloseable, Constants {
               .setStatus(SearchIndex.Status.ERROR)
               .setComment("No search fields configured"));
     }
+
+    progressListener.accept(
+        new TaskProgressEvent()
+            .type(TaskType.INDEX.getValue())
+            .uuid(taskUuid)
+            .startedAt(startedAtOffset)
+            .progress(0));
 
     // set fields while filtering out hidden fields
     List<String> searchFields =
@@ -294,6 +352,13 @@ public class SolrHelper implements AutoCloseable, Constants {
               indexCounter - indexSkippedCounter,
               total,
               updateResponse.getStatus());
+          progressListener.accept(
+              new TaskProgressEvent()
+                  .type(TaskType.INDEX.getValue())
+                  .uuid(taskUuid)
+                  .startedAt(startedAtOffset)
+                  .progress((indexCounter - indexSkippedCounter))
+                  .total(total));
           docsBatch.clear();
         }
       }
@@ -304,14 +369,23 @@ public class SolrHelper implements AutoCloseable, Constants {
     if (!docsBatch.isEmpty()) {
       solrClient.addBeans(docsBatch, solrQueryTimeout);
       logger.info("Added last {} documents of {} to index", docsBatch.size(), total);
+      progressListener.accept(
+          new TaskProgressEvent()
+              .type(TaskType.INDEX.getValue())
+              .uuid(taskUuid)
+              .startedAt(startedAtOffset)
+              .progress((indexCounter - indexSkippedCounter))
+              .total(total));
     }
     final Instant finishedAt = Instant.now();
+    final OffsetDateTime finishedAtOffset =
+        finishedAt.atOffset(ZoneId.systemDefault().getRules().getOffset(finishedAt));
     Duration processTime = Duration.between(startedAt, finishedAt).abs();
     logger.info(
         "Indexing finished for index id: {}, featuretype: {} at {} in {}",
         searchIndex.getId(),
         tmFeatureType.getName(),
-        finishedAt,
+        finishedAtOffset,
         processTime);
     updateResponse = this.solrClient.commit();
     logger.debug("Update response commit status: {}", updateResponse.getStatus());
@@ -327,20 +401,21 @@ public class SolrHelper implements AutoCloseable, Constants {
                       total,
                       processTime.getSeconds(),
                       processTime.getNano(),
-                      startedAt,
+                      startedAt.atOffset(ZoneId.systemDefault().getRules().getOffset(startedAt)),
                       indexSkippedCounter));
     } else {
       searchIndex =
           searchIndex.setComment(
               "Indexed %s features in %s.%s seconds, started at %s."
-                  .formatted(total, processTime.getSeconds(), processTime.getNano(), startedAt));
+                  .formatted(
+                      total,
+                      processTime.getSeconds(),
+                      processTime.getNano(),
+                      startedAt.atOffset(ZoneId.systemDefault().getRules().getOffset(startedAt))));
     }
 
     return searchIndexRepository.save(
-        searchIndex
-            .setLastIndexed(
-                finishedAt.atOffset(ZoneId.systemDefault().getRules().getOffset(finishedAt)))
-            .setStatus(SearchIndex.Status.INDEXED));
+        searchIndex.setLastIndexed(finishedAtOffset).setStatus(SearchIndex.Status.INDEXED));
   }
 
   /**
