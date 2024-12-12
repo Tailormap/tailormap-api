@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.tailormap.api.admin.model.SearchIndexSummary;
 import org.tailormap.api.admin.model.TaskSchedule;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
@@ -53,8 +54,11 @@ public class SearchIndex implements Serializable {
   @Valid
   private List<String> searchDisplayFieldsUsed = new ArrayList<>();
 
-  @Column(columnDefinition = "text")
-  private String comment;
+  @JsonProperty("summary")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @Column(columnDefinition = "jsonb")
+  @Valid
+  private SearchIndexSummary summary;
 
   /** Date and time of last index creation. */
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -118,15 +122,6 @@ public class SearchIndex implements Serializable {
     return this;
   }
 
-  public String getComment() {
-    return comment;
-  }
-
-  public SearchIndex setComment(String comment) {
-    this.comment = comment;
-    return this;
-  }
-
   public OffsetDateTime getLastIndexed() {
     return lastIndexed;
   }
@@ -151,6 +146,15 @@ public class SearchIndex implements Serializable {
 
   public SearchIndex setSchedule(@Valid TaskSchedule schedule) {
     this.schedule = schedule;
+    return this;
+  }
+
+  public SearchIndexSummary getSummary() {
+    return summary;
+  }
+
+  public SearchIndex setSummary(SearchIndexSummary summary) {
+    this.summary = summary;
     return this;
   }
 

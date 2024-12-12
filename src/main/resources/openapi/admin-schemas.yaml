@@ -100,3 +100,33 @@ components:
           description: 'Priority of the task'
           type: integer
           nullable: true
+
+    SearchIndexSummary:
+      description: 'Summary of a search index run. This is created/updated when the index is finished.'
+      type: object
+      properties:
+        total:
+          description: 'Total number of features counted for indexing. When 0 or null, the index was cleared.'
+          type: integer
+          format: int32
+          nullable: true
+        skippedCounter:
+          description: 'Number of features skipped during indexing.'
+          type: integer
+          format: int32
+          nullable: true
+        startedAt:
+          description: 'Zoned date-time when the task started.'
+          type: string
+          format: date-time
+          nullable: true
+          example: '2024-12-13T11:30:40.863829185+01:00'
+        duration:
+          description: 'Time taken to index the source in seconds.'
+          type: number
+          format: double
+          nullable: true
+        errorMessage:
+          description: 'Error message if the task failed. Check the status field of the search index.'
+          type: string
+          nullable: true
