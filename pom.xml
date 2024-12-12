@@ -182,7 +182,7 @@ SPDX-License-Identifier: MIT
                  our spring-boot parent provides this import -->
                 <groupId>org.eclipse.jetty.ee10</groupId>
                 <artifactId>jetty-ee10-bom</artifactId>
-                <version>12.0.15</version>
+                <version>12.0.16</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
