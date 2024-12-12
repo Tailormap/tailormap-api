@@ -5,8 +5,16 @@
  */
 package org.tailormap.api.scheduling;
 
+import static ch.rasc.sse.eventbus.SseEvent.DEFAULT_EVENT;
+import static org.tailormap.api.admin.model.ServerSentEvent.EventTypeEnum.TASK_PROGRESS;
+
+import ch.rasc.sse.eventbus.SseEvent;
+import ch.rasc.sse.eventbus.SseEventBus;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
+import java.util.UUID;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -16,6 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.tailormap.api.admin.model.ServerSentEvent;
+import org.tailormap.api.admin.model.TaskProgressEvent;
 
 /** POC task for testing purposes. */
 @DisallowConcurrentExecution
@@ -26,6 +36,13 @@ public class PocTask extends QuartzJobBean implements Task {
 
   private String foo;
   private String description;
+  private final SseEventBus eventBus;
+  private final ObjectMapper objectMapper;
+
+  public PocTask(SseEventBus eventBus, ObjectMapper objectMapper) {
+    this.eventBus = eventBus;
+    this.objectMapper = objectMapper;
+  }
 
   @Override
   protected void executeInternal(@NonNull JobExecutionContext context) {
@@ -54,6 +71,12 @@ public class PocTask extends QuartzJobBean implements Task {
         Thread.sleep(workingTime);
         logger.debug("POC task is at {}%", i);
         context.setResult("POC task is at %d%%".formatted(i));
+        taskProgress(
+            new TaskProgressEvent()
+                .type(TaskType.POC.getValue())
+                .uuid(UUID.fromString(jobDetail.getKey().getName()))
+                .progress(i)
+                .total(100));
       }
     } catch (InterruptedException e) {
       logger.error("Thread interrupted", e);
@@ -66,6 +89,17 @@ public class PocTask extends QuartzJobBean implements Task {
     context.setResult("POC task executed successfully");
 
     setFoo("foo executed: " + executions);
+  }
+
+  @Override
+  public void taskProgress(TaskProgressEvent event) {
+    ServerSentEvent serverSentEvent = new ServerSentEvent().eventType(TASK_PROGRESS).details(event);
+    try {
+      eventBus.handleEvent(
+          SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(serverSentEvent)));
+    } catch (JsonProcessingException e) {
+      logger.error("Error publishing poc task progress event", e);
+    }
   }
 
   // <editor-fold desc="Getters and Setters">

@@ -22,7 +22,7 @@ components:
         eventType:
           type: string
           description: 'Type of event'
-          enum: [ 'keep-alive', 'entity-created', 'entity-deleted', 'entity-updated' ]
+          enum: [ 'keep-alive', 'entity-created', 'entity-deleted', 'entity-updated', 'task-progress' ]
         details:
           type: object
 
@@ -36,6 +36,46 @@ components:
         object:
           description: 'The entity in JSON, only included in created and updated events.'
           type: object
+
+    TaskProgressEvent:
+      description: 'Task progress event. This event is sent when a _running_ task makes progress, including start/stop. 
+                    The fraction of the task that is done can be computed using `progress` and `total` (if not null).'
+      type: object
+      required:
+        - 'type'
+        - 'uuid'
+        - 'progress'
+      properties:
+        type:
+          description: 'Type of the task.'
+          type: string
+          nullable: false
+          example: 'index'
+        uuid:
+          description: 'UUID of the task; this, combined with type, is used to uniquely identify the task.'
+          type: string
+          format: uuid
+          nullable: false
+        total:
+          description: 'Total number of items to process. May be `null` or empty if unknown.'
+          type: integer
+          # note that this format is limited by the GeoTools API, which uses a Java int (32bits)
+          #  for the number of features in a feature collection
+          format: int32
+          nullable: true
+          example: 1200
+        progress:
+          description: 'Number of items processed so far.'
+          type: integer
+          format: int32
+          default: 0
+          example: 113
+        startedAt:
+          description: 'Zoned date-time when the task started.'
+          type: string
+          format: date-time
+          nullable: true
+          example: '2024-12-12T16:02:34.587142504+01:00'
 
     TaskSchedule:
       type: object
