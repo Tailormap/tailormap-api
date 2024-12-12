@@ -133,42 +133,52 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Add or update a feature type index for a layer.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clearIndexForLayer(java.lang.Long)" class="member-name-link">clearIndexForLayer</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;searchLayerId)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addFeatureTypeIndex(org.tailormap.api.persistence.SearchIndex,org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository,java.util.function.Consumer,java.util.UUID)" class="member-name-link">addFeatureTypeIndex</a><wbr>(@NotNull <a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&nbsp;searchIndex,
+ @NotNull <a href="../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmFeatureType,
+ @NotNull <a href="../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
+ @NotNull <a href="../repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
+ @NotNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../admin/model/TaskProgressEvent.html" title="class in org.tailormap.api.admin.model">TaskProgressEvent</a>&gt;&nbsp;progressListener,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;taskUuid)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Clear the index for a layer.</div>
+<div class="block">Add or update a feature type index for a layer.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#close()" class="member-name-link">close</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#clearIndexForLayer(java.lang.Long)" class="member-name-link">clearIndexForLayer</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Long.html" title="class or interface in java.lang" class="external-link">Long</a>&nbsp;searchLayerId)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Clear the index for a layer.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#close()" class="member-name-link">close</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Close the wrapped Solr client.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../viewer/model/SearchResponse.html" title="class in org.tailormap.api.viewer.model">SearchResponse</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#findInIndex(org.tailormap.api.persistence.SearchIndex,java.lang.String,java.lang.String,java.lang.String,java.lang.Double,int,int)" class="member-name-link">findInIndex</a><wbr>(@NotNull <a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&nbsp;searchIndex,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../viewer/model/SearchResponse.html" title="class in org.tailormap.api.viewer.model">SearchResponse</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#findInIndex(org.tailormap.api.persistence.SearchIndex,java.lang.String,java.lang.String,java.lang.String,java.lang.Double,int,int)" class="member-name-link">findInIndex</a><wbr>(@NotNull <a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&nbsp;searchIndex,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrQuery,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrFilterQuery,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrPoint,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a>&nbsp;solrDistance,
  int&nbsp;start,
  int&nbsp;numResultsToReturn)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Search in the index for a layer.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withBatchSize(int)" class="member-name-link">withBatchSize</a><wbr>(@jakarta.validation.constraints.Positive(message="Must use a positive integer for batching") int&nbsp;solrBatchSize)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withBatchSize(int)" class="member-name-link">withBatchSize</a><wbr>(@jakarta.validation.constraints.Positive(message="Must use a positive integer for batching") int&nbsp;solrBatchSize)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Configure this <code>SolrHelper</code> with a batch size for submitting documents to the Solr
  instance.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withGeometryValidationRule(java.lang.String)" class="member-name-link">withGeometryValidationRule</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrGeometryValidationRule)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withGeometryValidationRule(java.lang.String)" class="member-name-link">withGeometryValidationRule</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrGeometryValidationRule)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Configure this <code>SolrHelper</code> to create a geometry field in Solr using the specified
  validation rule.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withQueryTimeout(int)" class="member-name-link">withQueryTimeout</a><wbr>(@jakarta.validation.constraints.Positive(message="Must use a positive integer for query timeout") int&nbsp;solrQueryTimeout)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withQueryTimeout(int)" class="member-name-link">withQueryTimeout</a><wbr>(@jakarta.validation.constraints.Positive(message="Must use a positive integer for query timeout") int&nbsp;solrQueryTimeout)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Configure this <code>SolrHelper</code> with a query timeout .</div>
 </div>
 </div>
@@ -274,6 +284,42 @@ org.apache.solr.client.solrj.SolrServerException</span></div>
 <dd><code>featureSourceFactoryHelper</code> - the feature source factory helper</dd>
 <dd><code>searchIndexRepository</code> - the search index repository, so we can save the <code>
      searchIndex</code></dd>
+<dt>Returns:</dt>
+<dd>the possibly updated <code>searchIndex</code> object</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code> - if an I/O error occurs</dd>
+<dd><code>org.apache.solr.client.solrj.SolrServerException</code> - if a Solr error occurs</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="addFeatureTypeIndex(org.tailormap.api.persistence.SearchIndex,org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository,java.util.function.Consumer,java.util.UUID)">
+<h3>addFeatureTypeIndex</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></span>&nbsp;<span class="element-name">addFeatureTypeIndex</span><wbr><span class="parameters">(@NotNull
+ @NotNull <a href="../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&nbsp;searchIndex,
+ @NotNull
+ @NotNull <a href="../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmFeatureType,
+ @NotNull
+ @NotNull <a href="../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
+ @NotNull
+ @NotNull <a href="../repository/SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
+ @NotNull
+ @NotNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../admin/model/TaskProgressEvent.html" title="class in org.tailormap.api.admin.model">TaskProgressEvent</a>&gt;&nbsp;progressListener,
+ @Nullable
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;taskUuid)</span>
+                                throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a>,
+org.apache.solr.client.solrj.SolrServerException</span></div>
+<div class="block">Add or update a feature type index for a layer.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>searchIndex</code> - the search index config</dd>
+<dd><code>tmFeatureType</code> - the feature type</dd>
+<dd><code>featureSourceFactoryHelper</code> - the feature source factory helper</dd>
+<dd><code>searchIndexRepository</code> - the search index repository, so we can save the <code>
+     searchIndex</code></dd>
+<dd><code>progressListener</code> - the progress listener callback</dd>
+<dd><code>taskUuid</code> - the task UUID, when <code>null</code> we will attempt to use the UUID from the
+     <code>searchIndex#getSchedule()</code></dd>
 <dt>Returns:</dt>
 <dd>the possibly updated <code>searchIndex</code> object</dd>
 <dt>Throws:</dt>

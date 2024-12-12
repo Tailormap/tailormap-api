@@ -146,8 +146,8 @@
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>                 tasks.add(
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>                     <strong class="jxr_keyword">new</strong> ObjectMapper()
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>                         .createObjectNode()
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>                         .put(Task.UUID_KEY, jobDetail.getKey().getName())
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>                         .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>                         .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>                         .put(Task.UUID_KEY, jobDetail.getKey().getName())
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>                         .put(
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>                             Task.INTERRUPTABLE_KEY,
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>                             InterruptableJob.<strong class="jxr_keyword">class</strong>.isAssignableFrom(jobDetail.getJobClass()))
@@ -197,8 +197,8 @@
 <a class="jxr_linenumber" name="L189" href="#L189">189</a>                       example =
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>                           <span class="jxr_string">""</span><span class="jxr_string">"
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>                           {
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>                             <span class="jxr_string">"uuid"</span>:<span class="jxr_string">"6308d26e-fe1e-4268-bb28-20db2cd06914"</span>,
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>                             <span class="jxr_string">"type"</span>:<span class="jxr_string">"poc"</span>,
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>                             <span class="jxr_string">"type"</span>:<span class="jxr_string">"poc"</span>,
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>                             <span class="jxr_string">"uuid"</span>:<span class="jxr_string">"6308d26e-fe1e-4268-bb28-20db2cd06914"</span>,
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>                             <span class="jxr_string">"interruptable"</span>:false,
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>                             <span class="jxr_string">"description"</span>:<span class="jxr_string">"This is a poc task"</span>,
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>                             <span class="jxr_string">"startTime"</span>:<span class="jxr_string">"2024-06-06T12:00:00Z"</span>,
@@ -248,8 +248,8 @@
 <a class="jxr_linenumber" name="L240" href="#L240">240</a>           <strong class="jxr_keyword">new</strong> ObjectMapper()
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>               .createObjectNode()
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>               <em class="jxr_comment">// immutable uuid, type and description</em>
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>               .put(Task.UUID_KEY, jobDetail.getKey().getName())
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>               .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>               .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>               .put(Task.UUID_KEY, jobDetail.getKey().getName())
 <a class="jxr_linenumber" name="L245" href="#L245">245</a>               .put(
 <a class="jxr_linenumber" name="L246" href="#L246">246</a>                   Task.INTERRUPTABLE_KEY,
 <a class="jxr_linenumber" name="L247" href="#L247">247</a>                   InterruptableJob.<strong class="jxr_keyword">class</strong>.isAssignableFrom(jobDetail.getJobClass()))

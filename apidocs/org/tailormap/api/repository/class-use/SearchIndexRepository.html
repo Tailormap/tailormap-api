@@ -165,10 +165,12 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../scheduling/IndexTask.html#%3Cinit%3E(org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.solr.SolrService)" class="member-name-link">IndexTask</a><wbr>(<a href="../SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
+<div class="col-second even-row-color"><code><a href="../../scheduling/IndexTask.html#%3Cinit%3E(org.tailormap.api.repository.SearchIndexRepository,org.tailormap.api.repository.FeatureTypeRepository,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.solr.SolrService,ch.rasc.sse.eventbus.SseEventBus,com.fasterxml.jackson.databind.ObjectMapper)" class="member-name-link">IndexTask</a><wbr>(<a href="../SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
  <a href="../FeatureTypeRepository.html" title="interface in org.tailormap.api.repository">FeatureTypeRepository</a>&nbsp;featureTypeRepository,
  <a href="../../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
- <a href="../../solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a>&nbsp;solrService)</code></div>
+ <a href="../../solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a>&nbsp;solrService,
+ ch.rasc.sse.eventbus.SseEventBus&nbsp;eventBus,
+ com.fasterxml.jackson.databind.ObjectMapper&nbsp;objectMapper)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -187,6 +189,16 @@ loadScripts(document, 'script');</script>
  @NotNull <a href="../../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
  @NotNull <a href="../SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository)</code></div>
 <div class="col-last even-row-color">
+<div class="block">Add or update a feature type index for a layer.</div>
+</div>
+<div class="col-first odd-row-color"><code><a href="../../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SolrHelper.</span><code><a href="../../solr/SolrHelper.html#addFeatureTypeIndex(org.tailormap.api.persistence.SearchIndex,org.tailormap.api.persistence.TMFeatureType,org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper,org.tailormap.api.repository.SearchIndexRepository,java.util.function.Consumer,java.util.UUID)" class="member-name-link">addFeatureTypeIndex</a><wbr>(@NotNull <a href="../../persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a>&nbsp;searchIndex,
+ @NotNull <a href="../../persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a>&nbsp;tmFeatureType,
+ @NotNull <a href="../../geotools/featuresources/FeatureSourceFactoryHelper.html" title="class in org.tailormap.api.geotools.featuresources">FeatureSourceFactoryHelper</a>&nbsp;featureSourceFactoryHelper,
+ @NotNull <a href="../SearchIndexRepository.html" title="interface in org.tailormap.api.repository">SearchIndexRepository</a>&nbsp;searchIndexRepository,
+ @NotNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../../admin/model/TaskProgressEvent.html" title="class in org.tailormap.api.admin.model">TaskProgressEvent</a>&gt;&nbsp;progressListener,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html" title="class or interface in java.util" class="external-link">UUID</a>&nbsp;taskUuid)</code></div>
+<div class="col-last odd-row-color">
 <div class="block">Add or update a feature type index for a layer.</div>
 </div>
 </div>
