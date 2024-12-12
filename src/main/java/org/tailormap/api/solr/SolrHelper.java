@@ -227,7 +227,10 @@ public class SolrHelper implements AutoCloseable, Constants {
     final OffsetDateTime startedAtOffset =
         startedAt.atOffset(ZoneId.systemDefault().getRules().getOffset(startedAt));
 
-    if (null == taskUuid) {
+    if (null == taskUuid && null != searchIndex.getSchedule()) {
+      // this can be the case when this method is called directly such as when creating
+      // the test data. This in itself is not a big problem; it just means that the uuid
+      // in any progress events will be null (for that call).
       taskUuid = searchIndex.getSchedule().getUuid();
     }
 
