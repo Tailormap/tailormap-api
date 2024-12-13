@@ -293,7 +293,7 @@ components:
         attributes:
           description: 'feature attributes in key/value pairs'
           type: object
-          minItems: 1
+          minProperties: 1
           additionalProperties: true
       example:
         __fid: 1
@@ -439,13 +439,13 @@ components:
         tiles:
           description: list of tiles, tiles are used to link to applications or other pages
           type: array
-          minLength: 0
+          minItems: 0
           items:
             $ref: '#/components/schemas/ViewerPageTile'
         menu:
           description: list of menu items for this page
           type: array
-          minLength: 0
+          minItems: 0
           items:
             $ref: '#/components/schemas/ViewerMenuItem'
 
