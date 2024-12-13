@@ -1366,6 +1366,7 @@ paths:
   /page:
     summary: 'Use this endpoint to get the home page'
     get:
+      operationId: 'getHomePage'
       responses:
         '200':
           description: 'OK'
@@ -1389,6 +1390,7 @@ paths:
         schema:
           type: string
     get:
+      operationId: 'getPage'
       responses:
         '200':
           description: 'OK'
