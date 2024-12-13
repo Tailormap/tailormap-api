@@ -134,7 +134,7 @@
 <a class="jxr_linenumber" name="L126" href="#L126">126</a> <em class="jxr_javadoccomment">   * list of features. When the pagenumber*pagesize exceeds the number of features this list will be empty</em>
 <a class="jxr_linenumber" name="L127" href="#L127">127</a> <em class="jxr_javadoccomment">   * @return features</em>
 <a class="jxr_linenumber" name="L128" href="#L128">128</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>   @NotNull @Valid 
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>   @NotNull @Valid @Size(min = 0) 
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>   @Schema(name = <span class="jxr_string">"features"</span>, description = <span class="jxr_string">"list of features. When the pagenumber*pagesize exceeds the number of features this list will be empty"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>   @JsonProperty(<span class="jxr_string">"features"</span>)
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>   <strong class="jxr_keyword">public</strong> List&lt;@Valid Feature&gt; getFeatures() {
@@ -162,7 +162,7 @@
 <a class="jxr_linenumber" name="L154" href="#L154">154</a> <em class="jxr_javadoccomment">   * presentation metadata</em>
 <a class="jxr_linenumber" name="L155" href="#L155">155</a> <em class="jxr_javadoccomment">   * @return columnMetadata</em>
 <a class="jxr_linenumber" name="L156" href="#L156">156</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>   @NotNull @Valid 
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>   @NotNull @Valid @Size(min = 0) 
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>   @Schema(name = <span class="jxr_string">"columnMetadata"</span>, description = <span class="jxr_string">"presentation metadata"</span>, requiredMode = Schema.RequiredMode.REQUIRED)
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>   @JsonProperty(<span class="jxr_string">"columnMetadata"</span>)
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>   <strong class="jxr_keyword">public</strong> List&lt;@Valid ColumnMetadata&gt; getColumnMetadata() {

@@ -123,7 +123,7 @@
 <a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">   * list of search documents. When the pagenumber*pagesize exceeds the number of documents this list will be empty</em>
 <a class="jxr_linenumber" name="L116" href="#L116">116</a> <em class="jxr_javadoccomment">   * @return documents</em>
 <a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>   @Valid 
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>   @Valid @Size(min = 0) 
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>   @Schema(name = <span class="jxr_string">"documents"</span>, description = <span class="jxr_string">"list of search documents. When the pagenumber*pagesize exceeds the number of documents this list will be empty"</span>, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>   @JsonProperty(<span class="jxr_string">"documents"</span>)
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>   <strong class="jxr_keyword">public</strong> List&lt;@Valid SearchDocument&gt; getDocuments() {
