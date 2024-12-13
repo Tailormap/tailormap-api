@@ -225,8 +225,8 @@ class LayerExportControllerIntegrationTest {
         .andExpect(jsonPath("$.type").value("FeatureCollection"))
         .andExpect(jsonPath("$.features.length()").value(14))
         // terminationdate,geom_kruinlijn are hidden attributes
-        .andExpect(jsonPath("$.features[0].properties.terminationdate").doesNotExist())
-        .andExpect(jsonPath("$.features[0].properties.geom_kruinlijn").doesNotExist());
+        .andExpect(jsonPath("$.features[0].properties.terminationdate").doesNotHaveJsonPath())
+        .andExpect(jsonPath("$.features[0].properties.geom_kruinlijn").doesNotHaveJsonPath());
   }
 
   @Test
