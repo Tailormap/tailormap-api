@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.tailormap.api.admin.model.SearchIndexSummary;
 import org.tailormap.api.admin.model.ServerSentEvent;
 import org.tailormap.api.admin.model.TaskProgressEvent;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
@@ -108,8 +109,7 @@ public class IndexTask extends QuartzJobBean implements Task {
                 .withBatchSize(solrBatchSize)
                 .withGeometryValidationRule(solrGeometryValidationRule)) {
 
-      searchIndex.setStatus(SearchIndex.Status.INDEXING);
-      searchIndex = searchIndexRepository.save(searchIndex);
+      searchIndex = searchIndexRepository.save(searchIndex.setStatus(SearchIndex.Status.INDEXING));
 
       searchIndex =
           solrHelper.addFeatureTypeIndex(
@@ -119,8 +119,7 @@ public class IndexTask extends QuartzJobBean implements Task {
               searchIndexRepository,
               this::taskProgress,
               UUID.fromString(context.getTrigger().getJobKey().getName()));
-      searchIndex = searchIndex.setStatus(SearchIndex.Status.INDEXED);
-      searchIndexRepository.save(searchIndex);
+      searchIndex = searchIndexRepository.save(searchIndex.setStatus(SearchIndex.Status.INDEXED));
       persistedJobData.put(
           "executions", (1 + (int) context.getMergedJobDataMap().getOrDefault("executions", 0)));
       persistedJobData.put("lastExecutionFinished", Instant.now());
@@ -128,12 +127,14 @@ public class IndexTask extends QuartzJobBean implements Task {
       context.setResult("Index task executed successfully");
     } catch (UnsupportedOperationException | IOException | SolrServerException | SolrException e) {
       logger.error("Error indexing", e);
-      searchIndex.setStatus(SearchIndex.Status.ERROR).setComment(e.getMessage());
       persistedJobData.put("lastExecutionFinished", null);
       persistedJobData.put(
           Task.LAST_RESULT_KEY,
           "Index task failed with " + e.getMessage() + ". Check logs for details");
-      searchIndexRepository.save(searchIndex);
+      searchIndexRepository.save(
+          searchIndex
+              .setStatus(SearchIndex.Status.ERROR)
+              .setSummary(new SearchIndexSummary().errorMessage(e.getMessage())));
       context.setResult("Error indexing. Check logs for details.");
       throw new JobExecutionException("Error indexing", e);
     }

@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.tailormap.api.admin.model.SearchIndexSummary;
 import org.tailormap.api.persistence.SearchIndex;
 import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
@@ -291,7 +292,9 @@ public class SolrAdminController {
 
     if (TMFeatureSource.Protocol.WFS.equals(indexingFT.getFeatureSource().getProtocol())) {
       // the search index should not exist for WFS feature types, but test just in case
-      searchIndex.setStatus(SearchIndex.Status.ERROR).setComment("WFS indexing not supported");
+      searchIndex
+          .setStatus(SearchIndex.Status.ERROR)
+          .setSummary(new SearchIndexSummary().errorMessage("WFS indexing not supported"));
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "Layer does not have valid feature type for indexing");
     }
@@ -336,7 +339,7 @@ public class SolrAdminController {
       searchIndex
           .setLastIndexed(null)
           .setStatus(SearchIndex.Status.INITIAL)
-          .setComment("Index cleared");
+          .setSummary(new SearchIndexSummary().total(0));
       searchIndexRepository.save(searchIndex);
     } catch (IOException | SolrServerException | NoSuchElementException e) {
       logger.warn("Error clearing index", e);
