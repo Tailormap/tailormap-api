@@ -778,6 +778,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/LayerExportController.html#download(org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.Application,org.tailormap.api.persistence.json.AppTreeLayerNode,java.lang.String,java.util.List,java.lang.String,java.lang.String,java.lang.String,java.lang.String,jakarta.servlet.http.HttpServletRequest)" class="member-name-link">download(GeoService, GeoServiceLayer, Application, AppTreeLayerNode, String, List&lt;String&gt;, String, String, String, String, HttpServletRequest)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/LayerExportController.html" title="class in org.tailormap.api.controller">LayerExportController</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#duration(java.lang.Double)" class="member-name-link">duration(Double)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:E">E</h2>
 <dl class="index">
@@ -820,6 +822,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/admin/model/EntityEvent.html#entityName(java.lang.String)" class="member-name-link">entityName(String)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/EntityEvent.html" title="class in org.tailormap.api.admin.model">EntityEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/EntityEvent.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/EntityEvent.html" title="class in org.tailormap.api.admin.model">EntityEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/ServerSentEvent.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/ServerSentEvent.html" title="class in org.tailormap.api.admin.model">ServerSentEvent</a></dt>
 <dd>&nbsp;</dd>
@@ -984,6 +988,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/viewer/model/ViewerResponse.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/SearchIndex.Status.html#ERROR" class="member-name-link">ERROR</a> - Enum constant in enum class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.Status.html" title="enum class in org.tailormap.api.persistence">SearchIndex.Status</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#errorMessage(java.lang.String)" class="member-name-link">errorMessage(String)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ErrorResponse.html" class="type-name-link" title="class in org.tailormap.api.viewer.model">ErrorResponse</a> - Class in <a href="org/tailormap/api/viewer/model/package-summary.html">org.tailormap.api.viewer.model</a></dt>
 <dd>
@@ -1707,8 +1713,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Comment from the source, if available (such as database comment) [TODO]</div>
 </dd>
-<dt><a href="org/tailormap/api/persistence/SearchIndex.html#getComment()" class="member-name-link">getComment()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureType.html#getComment()" class="member-name-link">getComment()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/Application.html#getComponents()" class="member-name-link">getComponents()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a></dt>
@@ -1939,6 +1943,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">list of search documents.</div>
 </dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#getDuration()" class="member-name-link">getDuration()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
+<dd>
+<div class="block">Time taken to index the source in seconds.</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/json/AppLayerSettings.html#getEditable()" class="member-name-link">getEditable()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a></dt>
 <dd>
 <div class="block">Get editable</div>
@@ -1970,6 +1978,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/admin/model/EntityEvent.html#getEntityName()" class="member-name-link">getEntityName()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/EntityEvent.html" title="class in org.tailormap.api.admin.model">EntityEvent</a></dt>
 <dd>
 <div class="block">Get entityName</div>
+</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#getErrorMessage()" class="member-name-link">getErrorMessage()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
+<dd>
+<div class="block">Error message if the task failed.</div>
 </dd>
 <dt><a href="org/tailormap/api/admin/model/ServerSentEvent.html#getEventType()" class="member-name-link">getEventType()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/ServerSentEvent.html" title="class in org.tailormap.api.admin.model">ServerSentEvent</a></dt>
 <dd>
@@ -3080,6 +3092,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Get showForViewer</div>
 </dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#getSkippedCounter()" class="member-name-link">getSkippedCounter()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
+<dd>
+<div class="block">Number of features skipped during indexing.</div>
+</dd>
 <dt><a href="org/tailormap/api/solr/SolrService.html#getSolrClientForIndexing()" class="member-name-link">getSolrClientForIndexing()</a> - Method in class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a></dt>
 <dd>
 <div class="block">Get a concurrent update Solr client for bulk operations.</div>
@@ -3106,6 +3122,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">requested start point, this will allow the client to request the next or previous page by adding or removing 1 or more.</div>
 </dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#getStartedAt()" class="member-name-link">getStartedAt()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
+<dd>
+<div class="block">Zoned date-time when the task started.</div>
+</dd>
 <dt><a href="org/tailormap/api/admin/model/TaskProgressEvent.html#getStartedAt()" class="member-name-link">getStartedAt()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskProgressEvent.html" title="class in org.tailormap.api.admin.model">TaskProgressEvent</a></dt>
 <dd>
 <div class="block">Zoned date-time when the task started.</div>
@@ -3126,6 +3146,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Get styling</div>
 </dd>
+<dt><a href="org/tailormap/api/persistence/SearchIndex.html#getSummary()" class="member-name-link">getSummary()</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FormField.html#getTab()" class="member-name-link">getTab()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></dt>
 <dd>
 <div class="block">Get tab</div>
@@ -3323,6 +3345,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/repository/FeatureTypeRepository.html#getTMFeatureTypeByNameAndFeatureSource(java.lang.String,org.tailormap.api.persistence.TMFeatureSource)" class="member-name-link">getTMFeatureTypeByNameAndFeatureSource(String, TMFeatureSource)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/FeatureTypeRepository.html" title="interface in org.tailormap.api.repository">FeatureTypeRepository</a></dt>
 <dd>
 <div class="block">Get a feature type by name and feature source.</div>
+</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#getTotal()" class="member-name-link">getTotal()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
+<dd>
+<div class="block">Total number of features counted for indexing.</div>
 </dd>
 <dt><a href="org/tailormap/api/admin/model/TaskProgressEvent.html#getTotal()" class="member-name-link">getTotal()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskProgressEvent.html" title="class in org.tailormap.api.admin.model">TaskProgressEvent</a></dt>
 <dd>
@@ -3648,6 +3674,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/viewer/model/AppLayer.html#hasAttributes(java.lang.Boolean)" class="member-name-link">hasAttributes(Boolean)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/EntityEvent.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/EntityEvent.html" title="class in org.tailormap.api.admin.model">EntityEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/ServerSentEvent.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/ServerSentEvent.html" title="class in org.tailormap.api.admin.model">ServerSentEvent</a></dt>
 <dd>&nbsp;</dd>
@@ -4749,6 +4777,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/SearchIndexRepository.html" class="type-name-link" title="interface in org.tailormap.api.repository">SearchIndexRepository</a> - Interface in <a href="org/tailormap/api/repository/package-summary.html">org.tailormap.api.repository</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html" class="type-name-link" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a> - Class in <a href="org/tailormap/api/admin/model/package-summary.html">org.tailormap.api.admin.model</a></dt>
+<dd>
+<div class="block">Summary of a search index run.</div>
+</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#%3Cinit%3E()" class="member-name-link">SearchIndexSummary()</a> - Constructor for class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/validation/SearchIndexValidator.html" class="type-name-link" title="class in org.tailormap.api.repository.validation">SearchIndexValidator</a> - Class in <a href="org/tailormap/api/repository/validation/package-summary.html">org.tailormap.api.repository.validation</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/validation/SearchIndexValidator.html#%3Cinit%3E(org.tailormap.api.repository.FeatureTypeRepository)" class="member-name-link">SearchIndexValidator(FeatureTypeRepository)</a> - Constructor for class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/SearchIndexValidator.html" title="class in org.tailormap.api.repository.validation">SearchIndexValidator</a></dt>
@@ -4967,8 +5001,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMAttributeDescriptor.html#setComment(java.lang.String)" class="member-name-link">setComment(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMAttributeDescriptor.html" title="class in org.tailormap.api.persistence.json">TMAttributeDescriptor</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/persistence/SearchIndex.html#setComment(java.lang.String)" class="member-name-link">setComment(String)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureType.html#setComment(java.lang.String)" class="member-name-link">setComment(String)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureType.html" title="class in org.tailormap.api.persistence">TMFeatureType</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ViewerResponse.html#setComponents(java.util.List)" class="member-name-link">setComponents(List&lt;Component&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></dt>
@@ -5089,6 +5121,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/SearchResponse.html#setDocuments(java.util.List)" class="member-name-link">setDocuments(List&lt;SearchDocument&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/SearchResponse.html" title="class in org.tailormap.api.viewer.model">SearchResponse</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#setDuration(java.lang.Double)" class="member-name-link">setDuration(Double)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/AppLayerSettings.html#setEditable(java.lang.Boolean)" class="member-name-link">setEditable(Boolean)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AppLayer.html#setEditable(java.lang.Boolean)" class="member-name-link">setEditable(Boolean)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></dt>
@@ -5108,6 +5142,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/admin/model/EntityEvent.html#setEntityName(java.lang.String)" class="member-name-link">setEntityName(String)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/EntityEvent.html" title="class in org.tailormap.api.admin.model">EntityEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/configuration/base/IndexHtmlTransformer.html#setEnvironment(org.springframework.core.env.Environment)" class="member-name-link">setEnvironment(Environment)</a> - Method in class org.tailormap.api.configuration.base.<a href="org/tailormap/api/configuration/base/IndexHtmlTransformer.html" title="class in org.tailormap.api.configuration.base">IndexHtmlTransformer</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#setErrorMessage(java.lang.String)" class="member-name-link">setErrorMessage(String)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/ServerSentEvent.html#setEventType(org.tailormap.api.admin.model.ServerSentEvent.EventTypeEnum)" class="member-name-link">setEventType(ServerSentEvent.EventTypeEnum)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/ServerSentEvent.html" title="class in org.tailormap.api.admin.model">ServerSentEvent</a></dt>
 <dd>&nbsp;</dd>
@@ -5692,6 +5728,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/LoginConfigurationSsoLinksInner.html#setShowForViewer(java.lang.Boolean)" class="member-name-link">setShowForViewer(Boolean)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LoginConfigurationSsoLinksInner.html" title="class in org.tailormap.api.viewer.model">LoginConfigurationSsoLinksInner</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#setSkippedCounter(java.lang.Integer)" class="member-name-link">setSkippedCounter(Integer)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/solr/SolrService.html#setSolrUrl(java.lang.String)" class="member-name-link">setSolrUrl(String)</a> - Method in class org.tailormap.api.solr.<a href="org/tailormap/api/solr/SolrService.html" title="class in org.tailormap.api.solr">SolrService</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html#setSource(java.net.URI)" class="member-name-link">setSource(URI)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html" title="class in org.tailormap.api.persistence.json">TMFeatureTypeInfo</a></dt>
@@ -5701,6 +5739,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/viewer/model/LoginConfiguration.html#setSsoLinks(java.util.List)" class="member-name-link">setSsoLinks(List&lt;LoginConfigurationSsoLinksInner&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LoginConfiguration.html" title="class in org.tailormap.api.viewer.model">LoginConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/SearchResponse.html#setStart(java.lang.Long)" class="member-name-link">setStart(Long)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/SearchResponse.html" title="class in org.tailormap.api.viewer.model">SearchResponse</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#setStartedAt(java.time.OffsetDateTime)" class="member-name-link">setStartedAt(OffsetDateTime)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/TaskProgressEvent.html#setStartedAt(java.time.OffsetDateTime)" class="member-name-link">setStartedAt(OffsetDateTime)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskProgressEvent.html" title="class in org.tailormap.api.admin.model">TaskProgressEvent</a></dt>
 <dd>&nbsp;</dd>
@@ -5715,6 +5755,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/Application.html#setStyling(org.tailormap.api.viewer.model.AppStyling)" class="member-name-link">setStyling(AppStyling)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ViewerResponse.html#setStyling(org.tailormap.api.viewer.model.AppStyling)" class="member-name-link">setStyling(AppStyling)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/persistence/SearchIndex.html#setSummary(org.tailormap.api.admin.model.SearchIndexSummary)" class="member-name-link">setSummary(SearchIndexSummary)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">SearchIndex</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/Group.html#setSystemGroup(boolean)" class="member-name-link">setSystemGroup(boolean)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/Group.html" title="class in org.tailormap.api.persistence">Group</a></dt>
 <dd>&nbsp;</dd>
@@ -5817,6 +5859,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/viewer/model/ViewerPageTile.html#setTitle(java.lang.String)" class="member-name-link">setTitle(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerPageTile.html" title="class in org.tailormap.api.viewer.model">ViewerPageTile</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ViewerResponse.html#setTitle(java.lang.String)" class="member-name-link">setTitle(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#setTotal(java.lang.Integer)" class="member-name-link">setTotal(Integer)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/TaskProgressEvent.html#setTotal(java.lang.Integer)" class="member-name-link">setTotal(Integer)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskProgressEvent.html" title="class in org.tailormap.api.admin.model">TaskProgressEvent</a></dt>
 <dd>&nbsp;</dd>
@@ -5970,6 +6014,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Creates an instance of a <code>SimpleWFSLayerDescription</code> record class.</div>
 </dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#skippedCounter(java.lang.Integer)" class="member-name-link">skippedCounter(Integer)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/SolrAdminController.html" class="type-name-link" title="class in org.tailormap.api.controller.admin">SolrAdminController</a> - Class in <a href="org/tailormap/api/controller/admin/package-summary.html">org.tailormap.api.controller.admin</a></dt>
 <dd>
 <div class="block">Admin controller for Solr.</div>
@@ -6001,6 +6047,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/viewer/model/LoginConfiguration.html#ssoLinks(java.util.List)" class="member-name-link">ssoLinks(List&lt;LoginConfigurationSsoLinksInner&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LoginConfiguration.html" title="class in org.tailormap.api.viewer.model">LoginConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/SearchResponse.html#start(java.lang.Long)" class="member-name-link">start(Long)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/SearchResponse.html" title="class in org.tailormap.api.viewer.model">SearchResponse</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#startedAt(java.time.OffsetDateTime)" class="member-name-link">startedAt(OffsetDateTime)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/TaskProgressEvent.html#startedAt(java.time.OffsetDateTime)" class="member-name-link">startedAt(OffsetDateTime)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskProgressEvent.html" title="class in org.tailormap.api.admin.model">TaskProgressEvent</a></dt>
 <dd>&nbsp;</dd>
@@ -6363,6 +6411,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/EntityEvent.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/EntityEvent.html" title="class in org.tailormap.api.admin.model">EntityEvent</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/ServerSentEvent.EventTypeEnum.html#toString()" class="member-name-link">toString()</a> - Method in enum class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/ServerSentEvent.EventTypeEnum.html" title="enum class in org.tailormap.api.admin.model">ServerSentEvent.EventTypeEnum</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/ServerSentEvent.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/ServerSentEvent.html" title="class in org.tailormap.api.admin.model">ServerSentEvent</a></dt>
@@ -6558,6 +6608,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/viewer/model/ViewerResponse.KindEnum.html#toString()" class="member-name-link">toString()</a> - Method in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerResponse.KindEnum.html" title="enum class in org.tailormap.api.viewer.model">ViewerResponse.KindEnum</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ViewerResponse.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerResponse.html" title="class in org.tailormap.api.viewer.model">ViewerResponse</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#total(java.lang.Integer)" class="member-name-link">total(Integer)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/TaskProgressEvent.html#total(java.lang.Integer)" class="member-name-link">total(Integer)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/TaskProgressEvent.html" title="class in org.tailormap.api.admin.model">TaskProgressEvent</a></dt>
 <dd>&nbsp;</dd>
