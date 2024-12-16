@@ -814,6 +814,12 @@ public class PopulateTestData {
                                       new FeatureTypeRef()
                                           .featureSourceId(featureSources.get("postgis").getId())
                                           .featureTypeName("begroeidterreindeel")),
+                              "postgis:bak",
+                              new GeoServiceLayerSettings()
+                                  .featureType(
+                                      new FeatureTypeRef()
+                                          .featureSourceId(featureSources.get("postgis").getId())
+                                          .featureTypeName("bak")),
                               "sqlserver:wegdeel",
                               new GeoServiceLayerSettings()
                                   .attribution(
@@ -917,6 +923,25 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
               ft.getSettings().addAttributeOrderItem("identificatie");
               ft.getSettings().addAttributeOrderItem("bronhouder");
               ft.getSettings().addAttributeOrderItem("class");
+            });
+
+    featureSources.get("postgis").getFeatureTypes().stream()
+        .filter(ft -> ft.getName().equals("bak"))
+        .findFirst()
+        .ifPresent(
+            ft -> {
+              ft.getSettings().addHideAttributesItem("gmlid");
+              ft.getSettings().addHideAttributesItem("lv_publicatiedatum");
+              ft.getSettings().addHideAttributesItem("creationdate");
+              ft.getSettings().addHideAttributesItem("tijdstipregistratie");
+              ft.getSettings().addHideAttributesItem("eindregistratie");
+              ft.getSettings().addHideAttributesItem("terminationdate");
+              ft.getSettings().addHideAttributesItem("inonderzoek");
+              ft.getSettings().addHideAttributesItem("relatievehoogteligging");
+              ft.getSettings().addHideAttributesItem("bgt_status");
+              ft.getSettings().addHideAttributesItem("plus_status");
+              ft.getSettings().addHideAttributesItem("function_");
+              ft.getSettings().addHideAttributesItem("plus_type");
             });
   }
 
@@ -1030,6 +1055,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                                     "lyr:bestuurlijkegebieden-proxied:Provinciegebied",
                                     "lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied",
                                     "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
+                                    "lyr:snapshot-geoserver:postgis:bak",
                                     "lyr:snapshot-geoserver:sqlserver:wegdeel",
                                     "lyr:snapshot-geoserver:oracle:WATERDEEL",
                                     "lyr:snapshot-geoserver:BGT",
@@ -1067,6 +1093,13 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                             .serviceId("snapshot-geoserver")
                             .layerName("postgis:begroeidterreindeel")
                             .visible(true))
+                    .addLayerNodesItem(
+                        new AppTreeLayerNode()
+                            .objectType("AppTreeLayerNode")
+                            .id("lyr:snapshot-geoserver:postgis:bak")
+                            .serviceId("snapshot-geoserver")
+                            .layerName("postgis:bak")
+                            .visible(false))
                     .addLayerNodesItem(
                         new AppTreeLayerNode()
                             .objectType("AppTreeLayerNode")

@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.controller.TestUrls.layerBakPostgis;
 import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
 import static org.tailormap.api.controller.TestUrls.layerProvinciesWfs;
 import static org.tailormap.api.controller.TestUrls.layerProxiedWithAuthInPublicApp;
@@ -210,23 +211,32 @@ class LayerExportControllerIntegrationTest {
 
   @Test
   void shouldNotExportHiddenAttributesInGeoJSON() throws Exception {
-    final String url = apiBasePath + layerBegroeidTerreindeelPostgis + downloadPath;
+    final String url = apiBasePath + layerBakPostgis + downloadPath;
     mockMvc
         .perform(
             get(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(setServletPath(url))
                 .param("outputFormat", MediaType.APPLICATION_JSON_VALUE)
-                .param("filter", "(bronhouder ILIKE 'L0001')"))
+                .param("filter", "(identificatie = 'P0026.8abeacd54c5b7500047b2112796cab56')"))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk())
-        // GeoServer returns application/json;charset=UTF-8; but this is deprecated
-        // .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$.type").value("FeatureCollection"))
-        .andExpect(jsonPath("$.features.length()").value(14))
-        // terminationdate,geom_kruinlijn are hidden attributes
-        .andExpect(jsonPath("$.features[0].properties.terminationdate").doesNotHaveJsonPath())
-        .andExpect(jsonPath("$.features[0].properties.geom_kruinlijn").doesNotHaveJsonPath());
+        .andExpect(jsonPath("$.features.length()").value(1))
+        // all attributes are hidden except bronhouder and identificatie
+        .andExpect(
+            jsonPath("$.features[0].properties.identificatie")
+                .value("P0026.8abeacd54c5b7500047b2112796cab56"))
+        .andExpect(jsonPath("$.features[0].properties.lv_publicatiedatum").doesNotHaveJsonPath())
+        .andExpect(jsonPath("$.features[0].properties.creationdate").doesNotHaveJsonPath())
+        .andExpect(jsonPath("$.features[0].properties.tijdstipregistratie").doesNotHaveJsonPath())
+        .andExpect(jsonPath("$.features[0].properties.bronhouder").value("P0026"))
+        .andExpect(jsonPath("$.features[0].properties.inonderzoek").doesNotHaveJsonPath())
+        .andExpect(
+            jsonPath("$.features[0].properties.relatievehoogteligging").doesNotHaveJsonPath())
+        .andExpect(jsonPath("$.features[0].properties.bgt_status").doesNotHaveJsonPath())
+        .andExpect(jsonPath("$.features[0].properties.function_").doesNotHaveJsonPath())
+        .andExpect(jsonPath("$.features[0].properties.plus_type").doesNotHaveJsonPath());
   }
 
   @Test
