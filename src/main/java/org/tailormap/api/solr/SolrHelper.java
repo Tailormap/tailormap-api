@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -43,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.tailormap.api.admin.model.SearchIndexSummary;
 import org.tailormap.api.admin.model.TaskProgressEvent;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.processing.GeometryProcessor;
@@ -183,9 +185,7 @@ public class SolrHelper implements AutoCloseable, Constants {
       throws IOException, SolrServerException {
     // use a dummy/logging listener when not given
     Consumer<TaskProgressEvent> progressListener =
-        (event) -> {
-          logger.debug("Progress event: {}", event);
-        };
+        (event) -> logger.debug("Progress event: {}", event);
 
     return this.addFeatureTypeIndex(
         searchIndex,
@@ -234,13 +234,16 @@ public class SolrHelper implements AutoCloseable, Constants {
       taskUuid = searchIndex.getSchedule().getUuid();
     }
 
+    SearchIndexSummary summary =
+        new SearchIndexSummary().startedAt(startedAtOffset).total(0).duration(0.0);
+
     if (null == searchIndex.getSearchFieldsUsed()) {
       logger.warn(
           "No search fields configured for search index: {}, bailing out.", searchIndex.getName());
       return searchIndexRepository.save(
           searchIndex
               .setStatus(SearchIndex.Status.ERROR)
-              .setComment("No search fields configured"));
+              .setSummary(summary.errorMessage("No search fields configured")));
     }
 
     progressListener.accept(
@@ -267,7 +270,7 @@ public class SolrHelper implements AutoCloseable, Constants {
       return searchIndexRepository.save(
           searchIndex
               .setStatus(SearchIndex.Status.ERROR)
-              .setComment("No search fields configured"));
+              .setSummary(summary.errorMessage("No search fields configured")));
     }
 
     // add search and display properties to query
@@ -397,28 +400,21 @@ public class SolrHelper implements AutoCloseable, Constants {
       logger.warn(
           "{} features were skipped because no search or display values were found.",
           indexSkippedCounter);
-      searchIndex =
-          searchIndex.setComment(
-              "Indexed %s features in %s.%s seconds, started at %s. %s features were skipped because no search or display values were found."
-                  .formatted(
-                      total,
-                      processTime.getSeconds(),
-                      processTime.getNano(),
-                      startedAt.atOffset(ZoneId.systemDefault().getRules().getOffset(startedAt)),
-                      indexSkippedCounter));
-    } else {
-      searchIndex =
-          searchIndex.setComment(
-              "Indexed %s features in %s.%s seconds, started at %s."
-                  .formatted(
-                      total,
-                      processTime.getSeconds(),
-                      processTime.getNano(),
-                      startedAt.atOffset(ZoneId.systemDefault().getRules().getOffset(startedAt))));
     }
 
     return searchIndexRepository.save(
-        searchIndex.setLastIndexed(finishedAtOffset).setStatus(SearchIndex.Status.INDEXED));
+        searchIndex
+            .setLastIndexed(finishedAtOffset)
+            .setStatus(SearchIndex.Status.INDEXED)
+            .setSummary(
+                summary
+                    .total(total)
+                    .skippedCounter(indexSkippedCounter)
+                    .duration(
+                        BigDecimal.valueOf(processTime.getSeconds())
+                            .add(BigDecimal.valueOf(processTime.getNano(), 9))
+                            .doubleValue())
+                    .errorMessage(null)));
   }
 
   /**
