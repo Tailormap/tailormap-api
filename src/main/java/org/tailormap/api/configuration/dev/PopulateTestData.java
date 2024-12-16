@@ -493,7 +493,7 @@ public class PopulateTestData {
                 .setId("at-basemap")
                 .setProtocol(WMTS)
                 .setTitle("basemap.at")
-                .setUrl("https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml")
+                .setUrl("https://mapsneu.wien.gv.at/basemapneu/1.0.0/WMTSCapabilities.xml")
                 .setAuthorizationRules(ruleAnonymousRead)
                 .setPublished(true)
                 .setSettings(
