@@ -229,7 +229,7 @@ class ViewerControllerIntegrationTest {
         .andExpect(jsonPath("$.appLayers[0]").isMap())
         // Note: if the testdata was created with MAP5_URL set, the appLayers array will have 4 more
         // layers
-        .andExpect(jsonPath("$.appLayers.length()").value(13))
+        .andExpect(jsonPath("$.appLayers.length()").value(14))
         .andExpect(
             jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-tms:xyz')].hasAttributes")
                 .value(false))
