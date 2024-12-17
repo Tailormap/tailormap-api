@@ -171,7 +171,6 @@ SPDX-License-Identifier: MIT
         <docker.pull.policy>Always</docker.pull.policy>
         <!-- skip QA checks -->
         <skipQA>false</skipQA>
-        <skipSBOM>false</skipSBOM>
         <skipJavaDoc>false</skipJavaDoc>
         <dependencyCheckAutoUpdate>true</dependencyCheckAutoUpdate>
     </properties>
@@ -1429,7 +1428,6 @@ SPDX-License-Identifier: MIT
                 <version>2.9.1</version>
                 <configuration>
                     <projectType>application</projectType>
-                    <skip>${skipSBOM}</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -1702,7 +1700,6 @@ SPDX-License-Identifier: MIT
             <properties>
                 <docker.skip>true</docker.skip>
                 <skipQA>true</skipQA>
-                <skipSBOM>true</skipSBOM>
                 <skipJavaDoc>true</skipJavaDoc>
                 <docker.pull.policy>IfNotPresent</docker.pull.policy>
             </properties>
