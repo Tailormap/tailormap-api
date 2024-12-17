@@ -22,6 +22,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junitpioneer.jupiter.DisabledUntil;
+import org.junitpioneer.jupiter.Issue;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -210,6 +212,10 @@ class LayerExportControllerIntegrationTest {
   }
 
   @Test
+  @Issue("https://b3partners.atlassian.net/browse/SUPPORT-14840")
+  @DisabledUntil(
+      date = "2025-01-23",
+      reason = "This should be fixed in GeoServer 2.26.2, which is planned for 2025-01-18")
   void shouldNotExportHiddenAttributesInGeoJSON() throws Exception {
     final String url = apiBasePath + layerBakPostgis + downloadPath;
     mockMvc
