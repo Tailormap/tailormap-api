@@ -58,8 +58,8 @@ class LayerDescriptionControllerIntegrationTest {
         .andExpect(
             jsonPath("$.attributes[?(@.key == 'relatievehoogteligging')].type").value("integer"))
         .andExpectAll(
-            jsonPath("$.attributes[?(@.key == 'terminationdate')]").doesNotExist(),
-            jsonPath("$.attributes[?(@.key == 'geom_kruinlijn')]").doesNotExist())
+            jsonPath("$.attributes[?(@.key == 'terminationdate')]").doesNotHaveJsonPath(),
+            jsonPath("$.attributes[?(@.key == 'geom_kruinlijn')]").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.attributes[?(@.key == 'gmlid')].nullable").value(false))
         .andExpect(jsonPath("$.attributes[?(@.key == 'gmlid')].editable").value(false))
         .andExpect(jsonPath("$.editable").value(true));

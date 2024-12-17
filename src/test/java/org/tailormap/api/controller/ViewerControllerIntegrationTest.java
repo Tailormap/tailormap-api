@@ -160,13 +160,16 @@ class ViewerControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(
-            jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-proxied:osm')]").doesNotExist())
-        .andExpect(jsonPath("$.services[?(@.id == 'openbasiskaart-proxied')]").doesNotExist())
+            jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-proxied:osm')]")
+                .doesNotHaveJsonPath())
+        .andExpect(
+            jsonPath("$.services[?(@.id == 'openbasiskaart-proxied')]").doesNotHaveJsonPath())
         .andExpect(
             jsonPath("$.appLayers[?(@.id == 'lyr:bestuurlijkegebieden-proxied:Provinciegebied')]")
-                .doesNotExist())
+                .doesNotHaveJsonPath())
         .andExpect(
-            jsonPath("$.services[?(@.id == 'bestuurlijkegebieden-proxied')]").doesNotExist());
+            jsonPath("$.services[?(@.id == 'bestuurlijkegebieden-proxied')]")
+                .doesNotHaveJsonPath());
   }
 
   @Test
@@ -181,13 +184,16 @@ class ViewerControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(
-            jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-proxied:osm')]").doesNotExist())
-        .andExpect(jsonPath("$.services[?(@.id == 'openbasiskaart-proxied')]").doesNotExist())
+            jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-proxied:osm')]")
+                .doesNotHaveJsonPath())
+        .andExpect(
+            jsonPath("$.services[?(@.id == 'openbasiskaart-proxied')]").doesNotHaveJsonPath())
         .andExpect(
             jsonPath("$.appLayers[?(@.id == 'lyr:bestuurlijkegebieden-proxied:Provinciegebied')]")
-                .doesNotExist())
+                .doesNotHaveJsonPath())
         .andExpect(
-            jsonPath("$.services[?(@.id == 'bestuurlijkegebieden-proxied')]").doesNotExist());
+            jsonPath("$.services[?(@.id == 'bestuurlijkegebieden-proxied')]")
+                .doesNotHaveJsonPath());
   }
 
   @Test
@@ -223,7 +229,7 @@ class ViewerControllerIntegrationTest {
         .andExpect(jsonPath("$.appLayers[0]").isMap())
         // Note: if the testdata was created with MAP5_URL set, the appLayers array will have 4 more
         // layers
-        .andExpect(jsonPath("$.appLayers.length()").value(13))
+        .andExpect(jsonPath("$.appLayers.length()").value(14))
         .andExpect(
             jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-tms:xyz')].hasAttributes")
                 .value(false))

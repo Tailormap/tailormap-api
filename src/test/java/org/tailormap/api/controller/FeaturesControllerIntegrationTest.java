@@ -270,9 +270,9 @@ class FeaturesControllerIntegrationTest {
 
   private static ResultMatcher[] provinciesWFSResultMatchers() {
     return new ResultMatcher[] {
-      jsonPath("$.features[0].attributes.identificatie").doesNotExist(),
-      jsonPath("$.features[0].attributes.ligtInLandCode").doesNotExist(),
-      jsonPath("$.features[0].attributes.fuuid").doesNotExist(),
+      jsonPath("$.features[0].attributes.identificatie").doesNotHaveJsonPath(),
+      jsonPath("$.features[0].attributes.ligtInLandCode").doesNotHaveJsonPath(),
+      jsonPath("$.features[0].attributes.fuuid").doesNotHaveJsonPath(),
       jsonPath("$.columnMetadata").isArray(),
       jsonPath("$.columnMetadata").isNotEmpty(),
       jsonPath("$.template").isNotEmpty(),

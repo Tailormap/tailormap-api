@@ -62,7 +62,7 @@ class PageControllerIntegrationTest {
                 .exists())
         .andExpect(
             jsonPath("$.tiles[?(@.applicationUrl == '/app/secured' && @.title == 'Secured app')]")
-                .doesNotExist());
+                .doesNotHaveJsonPath());
   }
 
   @Test
@@ -91,7 +91,7 @@ class PageControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath(aboutItemJsonPath).value("/page/about"))
-        .andExpect(jsonPath(b3pWebsiteItemJsonPath).doesNotExist());
+        .andExpect(jsonPath(b3pWebsiteItemJsonPath).doesNotHaveJsonPath());
 
     mockMvc
         .perform(
