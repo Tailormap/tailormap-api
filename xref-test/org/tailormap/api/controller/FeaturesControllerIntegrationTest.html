@@ -278,9 +278,9 @@
 <a class="jxr_linenumber" name="L270" href="#L270">270</a> 
 <a class="jxr_linenumber" name="L271" href="#L271">271</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> ResultMatcher[] provinciesWFSResultMatchers() {
 <a class="jxr_linenumber" name="L272" href="#L272">272</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ResultMatcher[] {
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>       jsonPath(<span class="jxr_string">"$.features[0].attributes.identificatie"</span>).doesNotExist(),
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>       jsonPath(<span class="jxr_string">"$.features[0].attributes.ligtInLandCode"</span>).doesNotExist(),
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>       jsonPath(<span class="jxr_string">"$.features[0].attributes.fuuid"</span>).doesNotExist(),
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>       jsonPath(<span class="jxr_string">"$.features[0].attributes.identificatie"</span>).doesNotHaveJsonPath(),
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>       jsonPath(<span class="jxr_string">"$.features[0].attributes.ligtInLandCode"</span>).doesNotHaveJsonPath(),
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>       jsonPath(<span class="jxr_string">"$.features[0].attributes.fuuid"</span>).doesNotHaveJsonPath(),
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>       jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isArray(),
 <a class="jxr_linenumber" name="L277" href="#L277">277</a>       jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isNotEmpty(),
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>       jsonPath(<span class="jxr_string">"$.template"</span>).isNotEmpty(),

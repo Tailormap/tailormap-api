@@ -66,8 +66,8 @@
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>          .andExpect(
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>              jsonPath(<span class="jxr_string">"$.attributes[?(@.key == 'relatievehoogteligging')].type"</span>).value(<span class="jxr_string">"integer"</span>))
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>          .andExpectAll(
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>              jsonPath(<span class="jxr_string">"$.attributes[?(@.key == 'terminationdate')]"</span>).doesNotExist(),
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>              jsonPath(<span class="jxr_string">"$.attributes[?(@.key == 'geom_kruinlijn')]"</span>).doesNotExist())
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>              jsonPath(<span class="jxr_string">"$.attributes[?(@.key == 'terminationdate')]"</span>).doesNotHaveJsonPath(),
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>              jsonPath(<span class="jxr_string">"$.attributes[?(@.key == 'geom_kruinlijn')]"</span>).doesNotHaveJsonPath())
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          .andExpect(jsonPath(<span class="jxr_string">"$.attributes[?(@.key == 'gmlid')].nullable"</span>).value(false))
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>          .andExpect(jsonPath(<span class="jxr_string">"$.attributes[?(@.key == 'gmlid')].editable"</span>).value(false))
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          .andExpect(jsonPath(<span class="jxr_string">"$.editable"</span>).value(<strong class="jxr_keyword">true</strong>));

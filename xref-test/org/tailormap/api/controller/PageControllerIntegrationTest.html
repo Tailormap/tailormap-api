@@ -70,7 +70,7 @@
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>                  .exists())
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          .andExpect(
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>              jsonPath(<span class="jxr_string">"$.tiles[?(@.applicationUrl == '/app/secured' &amp;&amp; @.title == 'Secured app')]"</span>)
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>                  .doesNotExist());
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>                  .doesNotHaveJsonPath());
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>    }
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>    @Test
@@ -99,7 +99,7 @@
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>          .andExpect(jsonPath(aboutItemJsonPath).value(<span class="jxr_string">"/page/about"</span>))
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>          .andExpect(jsonPath(b3pWebsiteItemJsonPath).doesNotExist());
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>          .andExpect(jsonPath(b3pWebsiteItemJsonPath).doesNotHaveJsonPath());
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>  
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>      mockMvc
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>          .perform(
