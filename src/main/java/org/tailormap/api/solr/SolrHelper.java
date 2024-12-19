@@ -394,7 +394,7 @@ public class SolrHelper implements AutoCloseable, Constants {
         finishedAtOffset,
         processTime);
     updateResponse = this.solrClient.commit();
-    logger.debug("Update response commit status: {}", updateResponse.getStatus());
+    logger.trace("Update response commit status: {}", updateResponse.getStatus());
 
     if (indexSkippedCounter > 0) {
       logger.warn(
@@ -433,9 +433,9 @@ public class SolrHelper implements AutoCloseable, Constants {
     if (response.getResults().getNumFound() > 0) {
       logger.info("Clearing index for searchLayer {}", searchLayerId);
       UpdateResponse updateResponse = solrClient.deleteByQuery(SEARCH_LAYER + ":" + searchLayerId);
-      logger.debug("Delete response status: {}", updateResponse.getStatus());
+      logger.trace("Delete response status: {}", updateResponse.getStatus());
       updateResponse = solrClient.commit();
-      logger.debug("Commit response status: {}", updateResponse.getStatus());
+      logger.trace("Commit response status: {}", updateResponse.getStatus());
     } else {
       logger.info("No index to clear for layer {}", searchLayerId);
     }
@@ -466,10 +466,12 @@ public class SolrHelper implements AutoCloseable, Constants {
       int numResultsToReturn)
       throws IOException, SolrServerException, SolrException {
 
-    logger.info("Find in index for {}", searchIndex.getId());
     if (null == solrQuery || solrQuery.isBlank()) {
       solrQuery = "*";
     }
+
+    logger.info("Query index for '{}' in {} (id {})", solrQuery, searchIndex.getName() , searchIndex.getId());
+
     // TODO We could escape special/syntax characters, but that also prevents using
     //      keys like ~ and *
     // solrQuery = ClientUtils.escapeQueryChars(solrQuery);
@@ -498,10 +500,10 @@ public class SolrHelper implements AutoCloseable, Constants {
       query.add("d", solrDistance.toString());
     }
     query.set("q.op", "AND");
-    logger.debug("Solr query: {}", query);
+    logger.info("Solr query: {}", query);
 
     final QueryResponse response = solrClient.query(query);
-    logger.debug("response: {}", response);
+    logger.trace("response: {}", response);
 
     final SolrDocumentList solrDocumentList = response.getResults();
     logger.debug("Found {} solr documents", solrDocumentList.getNumFound());
