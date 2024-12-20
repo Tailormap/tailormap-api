@@ -6,6 +6,7 @@
 
 package org.tailormap.api.configuration.base;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -27,6 +28,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
   @Value("${spring.web.resources.static-locations:file:/home/spring/static/}")
   private String resourceLocations;
+
+  @Value("#{'${tailormap-api.supported-languages:en}'.split(',')}")
+  private List<String> supportedLanguages;
 
   @Value("${spring.profiles.active:}")
   private String activeProfile;
@@ -63,6 +67,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
             new FrontControllerResolver(
                 configurationRepository,
                 applicationRepository,
+                supportedLanguages,
                 activeProfile.contains("static-only")))
         .addResolver(new EncodedResourceResolver())
         .addTransformer(indexHtmlTransformer);

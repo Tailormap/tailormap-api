@@ -27,15 +27,7 @@ import org.tailormap.api.repository.ConfigurationRepository;
  * When the user refreshes the page such routes are requested from the server.
  */
 public class FrontControllerResolver implements ResourceResolver {
-  // Hardcoded list for now. In the future scan the spring.web.resources.static-locations directory
-  // for subdirectories of locale-specific frontend bundles.
-  private static final AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
-
-  static {
-    localeResolver.setSupportedLocales(
-        List.of(new Locale("en"), new Locale("nl"), new Locale("de")));
-    localeResolver.setDefaultLocale(localeResolver.getSupportedLocales().get(0));
-  }
+  private final AcceptHeaderLocaleResolver localeResolver;
 
   private final ConfigurationRepository configurationRepository;
   private final ApplicationRepository applicationRepository;
@@ -44,10 +36,15 @@ public class FrontControllerResolver implements ResourceResolver {
   public FrontControllerResolver(
       ConfigurationRepository configurationRepository,
       ApplicationRepository applicationRepository,
+      List<String> supportedLanguages,
       boolean staticOnly) {
     this.configurationRepository = configurationRepository;
     this.applicationRepository = applicationRepository;
     this.staticOnly = staticOnly;
+
+    this.localeResolver = new AcceptHeaderLocaleResolver();
+    localeResolver.setSupportedLocales(supportedLanguages.stream().map(Locale::new).toList());
+    localeResolver.setDefaultLocale(localeResolver.getSupportedLocales().get(0));
   }
 
   @Override
@@ -89,10 +86,11 @@ public class FrontControllerResolver implements ResourceResolver {
 
       if (app != null && app.getSettings().getI18nSettings() != null) {
         String appLanguage = app.getSettings().getI18nSettings().getDefaultLanguage();
-        if (appLanguage != null
-            && localeResolver.getSupportedLocales().stream()
-                .anyMatch(l -> l.toLanguageTag().equals(appLanguage))) {
-          return chain.resolveResource(request, appLanguage + "/index.html", locations);
+        if (appLanguage != null) {
+          resource = chain.resolveResource(request, appLanguage + "/index.html", locations);
+          if (resource != null) {
+            return resource;
+          }
         }
       }
     }
