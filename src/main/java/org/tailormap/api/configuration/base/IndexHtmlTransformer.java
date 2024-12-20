@@ -55,7 +55,8 @@ public class IndexHtmlTransformer implements ResourceTransformer, EnvironmentAwa
     String html = IOUtils.toString(resource.getInputStream(), UTF_8);
     String sentryDsn = environment.getProperty("VIEWER_SENTRY_DSN");
     if (isNotBlank(sentryDsn)) {
-      logger.info("Sending Sentry DSN {} for URI {}", sentryDsn, request.getRequestURI());
+      logger.info(
+          "Sending Sentry DSN {} for index {}", sentryDsn, resource.getFile().getAbsolutePath());
       html = html.replace("@SENTRY_DSN@", sentryDsn);
     }
     return new TransformedResource(resource, html.getBytes(UTF_8));
