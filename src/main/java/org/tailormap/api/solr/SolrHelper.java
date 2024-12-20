@@ -470,7 +470,11 @@ public class SolrHelper implements AutoCloseable, Constants {
       solrQuery = "*";
     }
 
-    logger.info("Query index for '{}' in {} (id {})", solrQuery, searchIndex.getName() , searchIndex.getId());
+    logger.info(
+        "Query index for '{}' in {} (id {})",
+        solrQuery,
+        searchIndex.getName(),
+        searchIndex.getId());
 
     // TODO We could escape special/syntax characters, but that also prevents using
     //      keys like ~ and *
