@@ -45,7 +45,13 @@ public class IndexHtmlTransformer implements ResourceTransformer, EnvironmentAwa
       throws IOException {
     // Note that caching is not required because of cacheResources param to resourceChain() in
     // WebMvcConfig
+
     resource = transformerChain.transform(request, resource);
+
+    if (!"index.html".equals(resource.getFilename())) {
+      return resource;
+    }
+
     String html = IOUtils.toString(resource.getInputStream(), UTF_8);
     String sentryDsn = environment.getProperty("VIEWER_SENTRY_DSN");
     if (isNotBlank(sentryDsn)) {
