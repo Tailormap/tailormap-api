@@ -978,6 +978,12 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
             .setAuthorizationRules(ruleAnonymousRead)
             .setComponents(
                 List.of(
+                    new Component()
+                        .type("SIMPLE_SEARCH")
+                        .config(
+                            new ComponentConfig()
+                                .enabled(true)
+                                .putAdditionalProperty("municipalities", List.of("0344"))),
                     new Component().type("EDIT").config(new ComponentConfig().enabled(true)),
                     new Component()
                         .type("COORDINATE_LINK_WINDOW")
