@@ -48,7 +48,7 @@ class AppControllerIntegrationTest {
         .andExpect(jsonPath("$.components.length()").value(3))
         .andExpect(jsonPath("$.components[0].type").value("SIMPLE_SEARCH"))
         .andExpect(jsonPath("$.components[0].config.enabled").value(true))
-        .andExpect(jsonPath("$.components[0].config.municipalities").value("Utrecht"))
+        .andExpect(jsonPath("$.components[0].config.municipalities").value("0344"))
         .andExpect(jsonPath("$.components[1].type").value("EDIT"))
         .andExpect(jsonPath("$.components[1].config.enabled").value(true))
         .andExpect(jsonPath("$.styling.primaryColor").isEmpty())
