@@ -256,8 +256,6 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/persistence/json/AppI18nSettings.html#%3Cinit%3E()" class="member-name-link">AppI18nSettings()</a> - Constructor for class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/AppI18nSettings.html" title="class in org.tailormap.api.persistence.json">AppI18nSettings</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/configuration/base/FrontController.html#appIndex(jakarta.servlet.http.HttpServletRequest)" class="member-name-link">appIndex(HttpServletRequest)</a> - Method in class org.tailormap.api.configuration.base.<a href="org/tailormap/api/configuration/base/FrontController.html" title="class in org.tailormap.api.configuration.base">FrontController</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AppLayer.html" class="type-name-link" title="class in org.tailormap.api.viewer.model">AppLayer</a> - Class in <a href="org/tailormap/api/viewer/model/package-summary.html">org.tailormap.api.viewer.model</a></dt>
 <dd>
 <div class="block">A map layer, but only enough information to draw the layer.</div>
@@ -1288,13 +1286,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/ViewerResponse.KindEnum.html#fromValue(java.lang.String)" class="member-name-link">fromValue(String)</a> - Static method in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/ViewerResponse.KindEnum.html" title="enum class in org.tailormap.api.viewer.model">ViewerResponse.KindEnum</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/configuration/base/FrontController.html" class="type-name-link" title="class in org.tailormap.api.configuration.base">FrontController</a> - Class in <a href="org/tailormap/api/configuration/base/package-summary.html">org.tailormap.api.configuration.base</a></dt>
+<dt><a href="org/tailormap/api/configuration/base/FrontControllerResolver.html" class="type-name-link" title="class in org.tailormap.api.configuration.base">FrontControllerResolver</a> - Class in <a href="org/tailormap/api/configuration/base/package-summary.html">org.tailormap.api.configuration.base</a></dt>
 <dd>
-<div class="block">Front controller which forwards requests to URLs created by the Angular routing module to the
- proper viewer or admin index.html of the Angular bundle, for example when the user refreshes the
- page.</div>
+<div class="block">Resolver which returns index.html for requests to paths created by the Angular routing module.</div>
 </dd>
-<dt><a href="org/tailormap/api/configuration/base/FrontController.html#%3Cinit%3E(org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.repository.ApplicationRepository)" class="member-name-link">FrontController(ConfigurationRepository, ApplicationRepository)</a> - Constructor for class org.tailormap.api.configuration.base.<a href="org/tailormap/api/configuration/base/FrontController.html" title="class in org.tailormap.api.configuration.base">FrontController</a></dt>
+<dt><a href="org/tailormap/api/configuration/base/FrontControllerResolver.html#%3Cinit%3E(org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.repository.ApplicationRepository,java.util.List,boolean)" class="member-name-link">FrontControllerResolver(ConfigurationRepository, ApplicationRepository, List&lt;String&gt;, boolean)</a> - Constructor for class org.tailormap.api.configuration.base.<a href="org/tailormap/api/configuration/base/FrontControllerResolver.html" title="class in org.tailormap.api.configuration.base">FrontControllerResolver</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:G">G</h2>
@@ -4213,8 +4209,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/security/TailormapUserDetailsService.html#loadUserByUsername(java.lang.String)" class="member-name-link">loadUserByUsername(String)</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/TailormapUserDetailsService.html" title="class in org.tailormap.api.security">TailormapUserDetailsService</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/configuration/base/FrontController.html#localePrefixedAppIndex(java.lang.String,jakarta.servlet.http.HttpServletRequest)" class="member-name-link">localePrefixedAppIndex(String, HttpServletRequest)</a> - Method in class org.tailormap.api.configuration.base.<a href="org/tailormap/api/configuration/base/FrontController.html" title="class in org.tailormap.api.configuration.base">FrontController</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/LoginConfiguration.html" class="type-name-link" title="class in org.tailormap.api.viewer.model">LoginConfiguration</a> - Class in <a href="org/tailormap/api/viewer/model/package-summary.html">org.tailormap.api.viewer.model</a></dt>
 <dd>
 <div class="block">LoginConfiguration</div>
@@ -4690,6 +4684,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/json/TMServiceCapsCapabilities.html#request(org.tailormap.api.persistence.json.TMServiceCapabilitiesRequest)" class="member-name-link">request(TMServiceCapabilitiesRequest)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMServiceCapsCapabilities.html" title="class in org.tailormap.api.persistence.json">TMServiceCapsCapabilities</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/FormField.html#required(java.lang.Boolean)" class="member-name-link">required(Boolean)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/FormField.html" title="class in org.tailormap.api.persistence.json">FormField</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/configuration/base/FrontControllerResolver.html#resolveResource(jakarta.servlet.http.HttpServletRequest,java.lang.String,java.util.List,org.springframework.web.servlet.resource.ResourceResolverChain)" class="member-name-link">resolveResource(HttpServletRequest, String, List&lt;? extends Resource&gt;, ResourceResolverChain)</a> - Method in class org.tailormap.api.configuration.base.<a href="org/tailormap/api/configuration/base/FrontControllerResolver.html" title="class in org.tailormap.api.configuration.base">FrontControllerResolver</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/configuration/base/FrontControllerResolver.html#resolveUrlPath(java.lang.String,java.util.List,org.springframework.web.servlet.resource.ResourceResolverChain)" class="member-name-link">resolveUrlPath(String, List&lt;? extends Resource&gt;, ResourceResolverChain)</a> - Method in class org.tailormap.api.configuration.base.<a href="org/tailormap/api/configuration/base/FrontControllerResolver.html" title="class in org.tailormap.api.configuration.base">FrontControllerResolver</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/geotools/ResponseTeeingHTTPClient.html" class="type-name-link" title="class in org.tailormap.api.geotools">ResponseTeeingHTTPClient</a> - Class in <a href="org/tailormap/api/geotools/package-summary.html">org.tailormap.api.geotools</a></dt>
 <dd>
@@ -6076,8 +6074,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/validation/SearchIndexValidator.html#supports(java.lang.Class)" class="member-name-link">supports(Class&lt;?&gt;)</a> - Method in class org.tailormap.api.repository.validation.<a href="org/tailormap/api/repository/validation/SearchIndexValidator.html" title="class in org.tailormap.api.repository.validation">SearchIndexValidator</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/configuration/base/FrontController.html#swaggerUiWelcomePage()" class="member-name-link">swaggerUiWelcomePage()</a> - Method in class org.tailormap.api.configuration.base.<a href="org/tailormap/api/configuration/base/FrontController.html" title="class in org.tailormap.api.configuration.base">FrontController</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/security/OIDCRepository.html#synchronize()" class="member-name-link">synchronize()</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/OIDCRepository.html" title="class in org.tailormap.api.security">OIDCRepository</a></dt>
 <dd>&nbsp;</dd>
 </dl>
@@ -6993,7 +6989,7 @@ the order they are declared.</div>
 <dl class="index">
 <dt><a href="org/tailormap/api/configuration/base/WebMvcConfig.html" class="type-name-link" title="class in org.tailormap.api.configuration.base">WebMvcConfig</a> - Class in <a href="org/tailormap/api/configuration/base/package-summary.html">org.tailormap.api.configuration.base</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/configuration/base/WebMvcConfig.html#%3Cinit%3E(org.tailormap.api.configuration.base.IndexHtmlTransformer)" class="member-name-link">WebMvcConfig(IndexHtmlTransformer)</a> - Constructor for class org.tailormap.api.configuration.base.<a href="org/tailormap/api/configuration/base/WebMvcConfig.html" title="class in org.tailormap.api.configuration.base">WebMvcConfig</a></dt>
+<dt><a href="org/tailormap/api/configuration/base/WebMvcConfig.html#%3Cinit%3E(org.tailormap.api.configuration.base.IndexHtmlTransformer,org.tailormap.api.repository.ConfigurationRepository,org.tailormap.api.repository.ApplicationRepository)" class="member-name-link">WebMvcConfig(IndexHtmlTransformer, ConfigurationRepository, ApplicationRepository)</a> - Constructor for class org.tailormap.api.configuration.base.<a href="org/tailormap/api/configuration/base/WebMvcConfig.html" title="class in org.tailormap.api.configuration.base">WebMvcConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureSource.Protocol.html#WFS" class="member-name-link">WFS</a> - Enum constant in enum class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureSource.Protocol.html" title="enum class in org.tailormap.api.persistence">TMFeatureSource.Protocol</a></dt>
 <dd>&nbsp;</dd>
