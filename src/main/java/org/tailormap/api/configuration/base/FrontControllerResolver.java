@@ -10,7 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
-
+import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -47,6 +48,8 @@ public class FrontControllerResolver implements ResourceResolver, InitializingBe
 
   private boolean staticOnly;
 
+  private Pattern localeBundlePrefixPattern = Pattern.compile("^[a-z]{2}/.*");
+
   public FrontControllerResolver(
       // Inject these repositories lazily because in the static-only profile these are not needed
       // but also not configured
@@ -82,8 +85,13 @@ public class FrontControllerResolver implements ResourceResolver, InitializingBe
     }
 
     // Check if the request path already starts with a locale prefix like en/ or nl/
-    if (requestPath.matches("^[a-z]{2}/.*")) {
-      return chain.resolveResource(request, requestPath.substring(0, 2) + "/index.html", locations);
+    String localePrefix = StringUtils.left(requestPath, 2);
+    if ((localeBundlePrefixPattern.matcher(requestPath).matches()
+            && supportedLanguages.contains(localePrefix))
+        // When the request is just "GET /nl/" or "GET /nl" the requestPath is "nl" without a
+        // trailing slash
+        || supportedLanguages.contains(requestPath)) {
+      return chain.resolveResource(request, localePrefix + "/index.html", locations);
     }
 
     // When the request path denotes an app, return the index.html for the default language
