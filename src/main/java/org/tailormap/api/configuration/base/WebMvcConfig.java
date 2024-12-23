@@ -62,7 +62,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // using If-Modified-Since. This is needed to always have the latest frontend loaded in the
         // browser after deployment of a new release.
         .setCacheControl(CacheControl.noCache())
-        .resourceChain(true)
+        // Don't cache resources which can vary per user because of the Accept-Language header
+        .resourceChain(false)
         .addResolver(
             new FrontControllerResolver(
                 configurationRepository,
