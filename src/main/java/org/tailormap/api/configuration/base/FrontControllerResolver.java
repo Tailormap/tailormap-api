@@ -10,8 +10,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
+
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.Resource;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import org.springframework.web.servlet.resource.ResourceResolver;
 import org.springframework.web.servlet.resource.ResourceResolverChain;
@@ -26,21 +31,34 @@ import org.tailormap.api.repository.ConfigurationRepository;
  * <br>
  * When the user refreshes the page such routes are requested from the server.
  */
-public class FrontControllerResolver implements ResourceResolver {
-  private final AcceptHeaderLocaleResolver localeResolver;
+@Component
+public class FrontControllerResolver implements ResourceResolver, InitializingBean {
 
   private final ConfigurationRepository configurationRepository;
   private final ApplicationRepository applicationRepository;
-  private final boolean staticOnly;
+
+  @Value("${spring.profiles.active:}")
+  private String activeProfile;
+
+  @Value("#{'${tailormap-api.supported-languages:en}'.split(',')}")
+  private List<String> supportedLanguages;
+
+  private AcceptHeaderLocaleResolver localeResolver;
+
+  private boolean staticOnly;
 
   public FrontControllerResolver(
-      ConfigurationRepository configurationRepository,
-      ApplicationRepository applicationRepository,
-      List<String> supportedLanguages,
-      boolean staticOnly) {
+      // Inject these repositories lazily because in the static-only profile these are not needed
+      // but also not configured
+      @Lazy ConfigurationRepository configurationRepository,
+      @Lazy ApplicationRepository applicationRepository) {
     this.configurationRepository = configurationRepository;
     this.applicationRepository = applicationRepository;
-    this.staticOnly = staticOnly;
+  }
+
+  @Override
+  public void afterPropertiesSet() {
+    this.staticOnly = activeProfile.contains("static-only");
 
     this.localeResolver = new AcceptHeaderLocaleResolver();
     localeResolver.setSupportedLocales(supportedLanguages.stream().map(Locale::new).toList());
