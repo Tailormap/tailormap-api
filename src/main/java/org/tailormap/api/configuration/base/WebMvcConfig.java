@@ -6,6 +6,7 @@
 
 package org.tailormap.api.configuration.base;
 
+import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -38,6 +39,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
         .addResourceHandler("/version.json")
         .addResourceLocations(resourceLocations.split(",", -1)[0])
         .setCacheControl(CacheControl.noStore());
+    registry
+        // Add cache headers for frontend bundle resources with hash in filename and fonts/images
+        .addResourceHandler("/*/*.js", "/*/*.css", "/*/*.map", "/*/media/**", "/*/icons/**")
+        .addResourceLocations(resourceLocations.split(",", -1)[0])
+        .setCacheControl(CacheControl.maxAge(7, TimeUnit.DAYS).mustRevalidate())
+        .resourceChain(true)
+        .addResolver(new EncodedResourceResolver());
     registry
         .addResourceHandler("/**")
         .addResourceLocations(resourceLocations.split(",", -1)[0])
