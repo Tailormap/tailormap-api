@@ -57,19 +57,19 @@
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      <strong class="jxr_keyword">long</strong> ifModifiedSince = request.getDateHeader(<span class="jxr_string">"If-Modified-Since"</span>);
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">if</strong> (ifModifiedSince != -1) {
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>        OffsetDateTime uploadLastModified =
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>            uploadRepository
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>                .findLastModifiedById(id)
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>                .orElseThrow(() -&gt; <strong class="jxr_keyword">new</strong> ResponseStatusException(NOT_FOUND));
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>        <strong class="jxr_keyword">if</strong> (ifModifiedSince
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>            &gt;= uploadLastModified.with(ChronoField.MILLI_OF_SECOND, 0).toInstant().toEpochMilli()) {
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>          <strong class="jxr_keyword">return</strong> ResponseEntity.status(NOT_MODIFIED).build();
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>        }
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      }
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      <a name="Upload" href="../../../../org/tailormap/api/persistence/Upload.html#Upload">Upload</a> upload =
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>          uploadRepository
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>              .findWithContentByIdAndCategory(id, category)
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>              .orElseThrow(() -&gt; <strong class="jxr_keyword">new</strong> ResponseStatusException(NOT_FOUND));
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>            uploadRepository.findLastModifiedById(id).orElseThrow(() -&gt; <strong class="jxr_keyword">new</strong> ResponseStatusException(NOT_FOUND));
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>        <strong class="jxr_keyword">if</strong> (ifModifiedSince
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>            &gt;= uploadLastModified
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>                .with(ChronoField.MILLI_OF_SECOND, 0)
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>                .toInstant()
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>                .toEpochMilli()) {
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          <strong class="jxr_keyword">return</strong> ResponseEntity.status(NOT_MODIFIED).build();
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>        }
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      }
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <a name="Upload" href="../../../../org/tailormap/api/persistence/Upload.html#Upload">Upload</a> upload = uploadRepository
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          .findWithContentByIdAndCategory(id, category)
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          .orElseThrow(() -&gt; <strong class="jxr_keyword">new</strong> ResponseStatusException(NOT_FOUND));
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>  
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">return</strong> ResponseEntity.ok()
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          .header(<span class="jxr_string">"Content-Type"</span>, upload.getMimeType())

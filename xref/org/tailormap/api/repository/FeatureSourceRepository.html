@@ -35,41 +35,38 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>    @Override
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>    @PreAuthorize(value = <span class="jxr_string">"permitAll()"</span>)
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>    @NonNull
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>    Optional&lt;TMFeatureSource&gt; findById(@NonNull Long id);
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>    @PreAuthorize(value = <span class="jxr_string">"permitAll()"</span>)
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>    List&lt;TMFeatureSource&gt; findByLinkedServiceId(String id);
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>    @NonNull
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>    @PreAuthorize(<span class="jxr_string">"permitAll()"</span>)
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>    @Query(<span class="jxr_string">"from TMFeatureSource fs where id in :ids"</span>)
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>    List&lt;TMFeatureSource&gt; findByIds(@Param(<span class="jxr_string">"ids"</span>) List&lt;Long&gt; ids);
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">   * Find multiple feature-sources except some. Example URL:</em>
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment">   * /api/admin/feature-sources/search/getAllExcludingIds?ids=1,2,3</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>    @NonNull Optional&lt;TMFeatureSource&gt; findById(@NonNull Long id);
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>    @PreAuthorize(value = <span class="jxr_string">"permitAll()"</span>)
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>    List&lt;TMFeatureSource&gt; findByLinkedServiceId(String id);
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>    @NonNull @PreAuthorize(<span class="jxr_string">"permitAll()"</span>)
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>    @Query(<span class="jxr_string">"from TMFeatureSource fs where id in :ids"</span>)
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>    List&lt;TMFeatureSource&gt; findByIds(@Param(<span class="jxr_string">"ids"</span>) List&lt;Long&gt; ids);
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment">   * Find multiple feature-sources except some. Example URL:</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">   * /api/admin/feature-sources/search/getAllExcludingIds?ids=1,2,3</em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment">   * &lt;p&gt;No feature sources are returned if ids is an empty list.</em>
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment">   * &lt;p&gt;No feature sources are returned if ids is an empty list.</em>
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">   * @param ids The ids not to include</em>
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">   * @return All feature sources except those matching the ids</em>
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>    @NonNull
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>    @PreAuthorize(<span class="jxr_string">"permitAll()"</span>)
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>    @Query(<span class="jxr_string">"from TMFeatureSource fs where id not in :ids"</span>)
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>    List&lt;TMFeatureSource&gt; getAllExcludingIds(@Param(<span class="jxr_string">"ids"</span>) List&lt;Long&gt; ids);
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>  
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">   * Find a feature-source by title. This is a non-deterministic operation since the title is not</em>
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">   * unique. Useful for testing.</em>
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">   * @param title The title of the feature-source</em>
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">   * @return The feature-source</em>
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>    @PreAuthorize(value = <span class="jxr_string">"permitAll()"</span>)
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>    Optional&lt;TMFeatureSource&gt; getByTitle(String title);
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>  }
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment">   * @param ids The ids not to include</em>
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment">   * @return All feature sources except those matching the ids</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>    @NonNull @PreAuthorize(<span class="jxr_string">"permitAll()"</span>)
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>    @Query(<span class="jxr_string">"from TMFeatureSource fs where id not in :ids"</span>)
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>    List&lt;TMFeatureSource&gt; getAllExcludingIds(@Param(<span class="jxr_string">"ids"</span>) List&lt;Long&gt; ids);
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">   * Find a feature-source by title. This is a non-deterministic operation since the title is not unique. Useful for</em>
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">   * testing.</em>
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">   * @param title The title of the feature-source</em>
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">   * @return The feature-source</em>
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>    @PreAuthorize(value = <span class="jxr_string">"permitAll()"</span>)
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>    Optional&lt;TMFeatureSource&gt; getByTitle(String title);
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

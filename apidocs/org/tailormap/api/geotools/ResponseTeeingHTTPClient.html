@@ -83,12 +83,11 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">ResponseTeeingHTTPClient</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements org.geotools.http.HTTPClient</span></div>
-<div class="block">Wrapper for a GeoTools HTTPClient that allows access to the response headers and body after the
- original response has been consumed and disposed of by other code. The response body for the
- latest request is kept in memory, a consumer can be specified to get responses of earlier
- requests. Response headers of an unwrapped HTTPClient can only be retrieved when the response
- isn't disposed, this wrapper allows response headers to be cached for retrieval even after
- disposal.</div>
+<div class="block">Wrapper for a GeoTools HTTPClient that allows access to the response headers and body after the original response has
+ been consumed and disposed of by other code. The response body for the latest request is kept in memory, a consumer
+ can be specified to get responses of earlier requests. Response headers of an unwrapped HTTPClient can only be
+ retrieved when the response isn't disposed, this wrapper allows response headers to be cached for retrieval even
+ after disposal.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -117,16 +116,15 @@ implements org.geotools.http.HTTPClient</span></div>
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.geotools.http.HTTPClient)" class="member-name-link">ResponseTeeingHTTPClient</a><wbr>(org.geotools.http.HTTPClient&nbsp;wrapped)</code></div>
 <div class="col-last even-row-color">
-<div class="block">Wrap a GeoTools HTTPClient allowing access to the latest response body after it has been
- consumed by handing the client to a GeoTools module.</div>
+<div class="block">Wrap a GeoTools HTTPClient allowing access to the latest response body after it has been consumed by handing the
+ client to a GeoTools module.</div>
 </div>
 <div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(org.geotools.http.HTTPClient,java.util.function.BiConsumer,java.util.Set)" class="member-name-link">ResponseTeeingHTTPClient</a><wbr>(org.geotools.http.HTTPClient&nbsp;wrapped,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/BiConsumer.html" title="class or interface in java.util.function" class="external-link">BiConsumer</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a>,<wbr><a href="ResponseTeeingHTTPClient.TeeHTTPResponseWrapper.html" title="class in org.tailormap.api.geotools">ResponseTeeingHTTPClient.TeeHTTPResponseWrapper</a>&gt;&nbsp;requestConsumer,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;responseHeadersToCache)</code></div>
 <div class="col-last odd-row-color">
-<div class="block">Wrap a GeoTools HTTPClient allowing access to the all responses after they have been consumed
- by handing the client to a GeoTools module by passing a consumer for each request URL and
- wrapped response.</div>
+<div class="block">Wrap a GeoTools HTTPClient allowing access to the all responses after they have been consumed by handing the
+ client to a GeoTools module by passing a consumer for each request URL and wrapped response.</div>
 </div>
 </div>
 </section>
@@ -220,10 +218,9 @@ implements org.geotools.http.HTTPClient</span></div>
 <section class="detail" id="&lt;init&gt;(org.geotools.http.HTTPClient)">
 <h3>ResponseTeeingHTTPClient</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">ResponseTeeingHTTPClient</span><wbr><span class="parameters">(org.geotools.http.HTTPClient&nbsp;wrapped)</span></div>
-<div class="block">Wrap a GeoTools HTTPClient allowing access to the latest response body after it has been
- consumed by handing the client to a GeoTools module. Note that getting the response headers
- after the original response has been consumed will return null without explicitly calling the
- other constructor with the responseHeadersToCache parameter.</div>
+<div class="block">Wrap a GeoTools HTTPClient allowing access to the latest response body after it has been consumed by handing the
+ client to a GeoTools module. Note that getting the response headers after the original response has been consumed
+ will return null without explicitly calling the other constructor with the responseHeadersToCache parameter.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>wrapped</code> - The GeoTools HTTPClient to wrap</dd>
@@ -236,16 +233,14 @@ implements org.geotools.http.HTTPClient</span></div>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">ResponseTeeingHTTPClient</span><wbr><span class="parameters">(org.geotools.http.HTTPClient&nbsp;wrapped,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/BiConsumer.html" title="class or interface in java.util.function" class="external-link">BiConsumer</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a>,<wbr><a href="ResponseTeeingHTTPClient.TeeHTTPResponseWrapper.html" title="class in org.tailormap.api.geotools">ResponseTeeingHTTPClient.TeeHTTPResponseWrapper</a>&gt;&nbsp;requestConsumer,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;responseHeadersToCache)</span></div>
-<div class="block">Wrap a GeoTools HTTPClient allowing access to the all responses after they have been consumed
- by handing the client to a GeoTools module by passing a consumer for each request URL and
- wrapped response. The responseHeadersToCache parameter allows access to response headers after
- the original wrapped response has been disposed (only cached when getResponseStream() is
- requested).</div>
+<div class="block">Wrap a GeoTools HTTPClient allowing access to the all responses after they have been consumed by handing the
+ client to a GeoTools module by passing a consumer for each request URL and wrapped response. The
+ responseHeadersToCache parameter allows access to response headers after the original wrapped response has been
+ disposed (only cached when getResponseStream() is requested).</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>wrapped</code> - The GeoTools HTTPClient to wrap</dd>
-<dd><code>requestConsumer</code> - Consumer for each request so not only the latest response can be
-     accessed, may be null</dd>
+<dd><code>requestConsumer</code> - Consumer for each request so not only the latest response can be accessed, may be null</dd>
 <dd><code>responseHeadersToCache</code> - Which response headers to cache, may be null</dd>
 </dl>
 </section>

@@ -38,24 +38,18 @@
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>    @PostConstruct
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addListeners() <strong class="jxr_keyword">throws</strong> SchedulerException {
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>      schedulerFactoryBean
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>          .getScheduler()
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>          .getListenerManager()
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>          .addJobListener(<strong class="jxr_keyword">new</strong> SentryJobListener());
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>      <strong class="jxr_keyword">if</strong> (logger.isDebugEnabled()) {
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>        <em class="jxr_comment">// Add debug logging listeners to the scheduler</em>
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>        schedulerFactoryBean
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>            .getScheduler()
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>            .getListenerManager()
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>            .addJobListener(<strong class="jxr_keyword">new</strong> <a name="DebugLoggingJobListener" href="../../../../org/tailormap/api/scheduling/DebugLoggingJobListener.html#DebugLoggingJobListener">DebugLoggingJobListener</a>());
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>        schedulerFactoryBean
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>            .getScheduler()
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>            .getListenerManager()
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>            .addTriggerListener(<strong class="jxr_keyword">new</strong> <a name="DebugLoggingTriggerListener" href="../../../../org/tailormap/api/scheduling/DebugLoggingTriggerListener.html#DebugLoggingTriggerListener">DebugLoggingTriggerListener</a>());
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>      }
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>    }
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  }
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      schedulerFactoryBean.getScheduler().getListenerManager().addJobListener(<strong class="jxr_keyword">new</strong> SentryJobListener());
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      <strong class="jxr_keyword">if</strong> (logger.isDebugEnabled()) {
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>        <em class="jxr_comment">// Add debug logging listeners to the scheduler</em>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>        schedulerFactoryBean.getScheduler().getListenerManager().addJobListener(<strong class="jxr_keyword">new</strong> <a name="DebugLoggingJobListener" href="../../../../org/tailormap/api/scheduling/DebugLoggingJobListener.html#DebugLoggingJobListener">DebugLoggingJobListener</a>());
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>        schedulerFactoryBean
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>            .getScheduler()
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>            .getListenerManager()
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>            .addTriggerListener(<strong class="jxr_keyword">new</strong> <a name="DebugLoggingTriggerListener" href="../../../../org/tailormap/api/scheduling/DebugLoggingTriggerListener.html#DebugLoggingTriggerListener">DebugLoggingTriggerListener</a>());
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      }
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>    }
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

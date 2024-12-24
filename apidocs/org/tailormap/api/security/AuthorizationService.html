@@ -79,9 +79,8 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="annotations">@Service
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">AuthorizationService</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Validates access control rules. Any call to mayUserRead will verify that the currently logged in
- user is not only allowed to read the current object, but any object above and below it in the
- hierarchy.</div>
+<div class="block">Validates access control rules. Any call to mayUserRead will verify that the currently logged in user is not only
+ allowed to read the current object, but any object above and below it in the hierarchy.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -144,8 +143,8 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#mustDenyAccessForSecuredProxy(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService)" class="member-name-link">mustDenyAccessForSecuredProxy</a><wbr>(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo
- service when the application is public (accessible by anonymous users).</div>
+<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo service when the
+ application is public (accessible by anonymous users).</div>
 </div>
 </div>
 </div>
@@ -246,9 +245,9 @@ loadScripts(document, 'script');</script>
 <h3>mustDenyAccessForSecuredProxy</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">mustDenyAccessForSecuredProxy</span><wbr><span class="parameters">(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</span></div>
-<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo
- service when the application is public (accessible by anonymous users). Do not even allow
- proxying a secured service if the user is logged viewing a public app!</div>
+<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo service when the
+ application is public (accessible by anonymous users). Do not even allow proxying a secured service if the user
+ is logged viewing a public app!</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>application</code> - The application</dd>

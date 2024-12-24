@@ -28,8 +28,8 @@
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.annotation.Configuration;
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> * Delete the file in the "javax.persistence.schema-generation.scripts.create-target" property</em>
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> * because it is appended to instead of overwritten, which we don't want.</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> * Delete the file in the "javax.persistence.schema-generation.scripts.create-target" property because it is appended to</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> * instead of overwritten, which we don't want.</em>
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  @Configuration
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  @ConfigurationProperties(prefix = <span class="jxr_string">"spring.datasource"</span>)
@@ -64,24 +64,28 @@
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_comment">   */</em>
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>    @Bean
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>    <strong class="jxr_keyword">public</strong> DataSource getDataSource() {
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">return</strong> DataSourceBuilder.create().url(url).username(username).password(password).build();
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>    }
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>    @PostConstruct
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> delete() {
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      <strong class="jxr_keyword">if</strong> (target != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>        File f = <strong class="jxr_keyword">new</strong> File(target);
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>        <strong class="jxr_keyword">if</strong> (f.exists()) {
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>          String absolutePath = f.getAbsolutePath();
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>          <strong class="jxr_keyword">if</strong> (!f.delete()) {
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>            logger.info(<span class="jxr_string">"Could not delete DDL target file {}"</span>, absolutePath);
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>            logger.debug(<span class="jxr_string">"Deleted DDL target file {}"</span>, absolutePath);
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          }
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>        }
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>      }
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>    }
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>  }
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">return</strong> DataSourceBuilder.create()
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>          .url(url)
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          .username(username)
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          .password(password)
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          .build();
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>    }
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>    @PostConstruct
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> delete() {
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">if</strong> (target != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>        File f = <strong class="jxr_keyword">new</strong> File(target);
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>        <strong class="jxr_keyword">if</strong> (f.exists()) {
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          String absolutePath = f.getAbsolutePath();
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          <strong class="jxr_keyword">if</strong> (!f.delete()) {
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>            logger.info(<span class="jxr_string">"Could not delete DDL target file {}"</span>, absolutePath);
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>            logger.debug(<span class="jxr_string">"Deleted DDL target file {}"</span>, absolutePath);
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>          }
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>        }
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>      }
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>    }
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

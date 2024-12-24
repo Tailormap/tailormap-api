@@ -50,27 +50,26 @@
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>    @PostMapping(path = <span class="jxr_string">"${tailormap-api.admin.base-path}/feature-sources/{id}/refresh-capabilities"</span>)
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>    @Transactional
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;?&gt; refreshCapabilities(
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>        @PathVariable Long id, HttpServletResponse httpServletResponse) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;?&gt; refreshCapabilities(@PathVariable Long id, HttpServletResponse httpServletResponse)
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>        <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>      <a name="TMFeatureSource" href="../../../../../org/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> featureSource =
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>          featureSourceRepository
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>              .findById(id)
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>              .orElseThrow(() -&gt; <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND));
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <em class="jxr_comment">// Authorization check not needed: only admins are allowed on the admin base path, and admins</em>
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>      <em class="jxr_comment">// have all access</em>
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      logger.info(<span class="jxr_string">"Loading capabilities for feature source {}"</span>, featureSource);
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      featureSource.setRefreshCapabilities(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>      applicationContext.publishEvent(<strong class="jxr_keyword">new</strong> BeforeSaveEvent(featureSource));
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>      httpServletResponse.sendRedirect(
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>          String.valueOf(
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>              repositoryEntityLinks.linkToItemResource(TMFeatureSource.<strong class="jxr_keyword">class</strong>, id).toUri()));
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>    }
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  }
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>      <a name="TMFeatureSource" href="../../../../../org/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> featureSource = featureSourceRepository
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>          .findById(id)
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>          .orElseThrow(() -&gt; <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND));
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <em class="jxr_comment">// Authorization check not needed: only admins are allowed on the admin base path, and admins</em>
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <em class="jxr_comment">// have all access</em>
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      logger.info(<span class="jxr_string">"Loading capabilities for feature source {}"</span>, featureSource);
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      featureSource.setRefreshCapabilities(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      applicationContext.publishEvent(<strong class="jxr_keyword">new</strong> BeforeSaveEvent(featureSource));
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      httpServletResponse.sendRedirect(String.valueOf(repositoryEntityLinks
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>          .linkToItemResource(TMFeatureSource.<strong class="jxr_keyword">class</strong>, id)
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          .toUri()));
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>    }
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

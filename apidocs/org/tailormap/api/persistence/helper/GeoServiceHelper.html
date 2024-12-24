@@ -192,10 +192,10 @@ loadScripts(document, 'script');</script>
 <h3>getLayerLegendUrlFromStyles</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a></span>&nbsp;<span class="element-name">getLayerLegendUrlFromStyles</span><wbr><span class="parameters">(<a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;service,
  <a href="../json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;serviceLayer)</span></div>
-<div class="block">Try to extract the legend url from the styles of the layer. This works by getting all styles
- for the layer and then removing any styles attached to other (parent) layers from the list of
- all styles. What remains is/are the legend url(s) for the layer. <i>NOTE: when a layer has more
- than one -not an inherited style- style the first style is used.</i></div>
+<div class="block">Try to extract the legend url from the styles of the layer. This works by getting all styles for the layer and
+ then removing any styles attached to other (parent) layers from the list of all styles. What remains is/are the
+ legend url(s) for the layer. <i>NOTE: when a layer has more than one -not an inherited style- style the first
+ style is used.</i></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>service</code> - the service that has the layer</dd>

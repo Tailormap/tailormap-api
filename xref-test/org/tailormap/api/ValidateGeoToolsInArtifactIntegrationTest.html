@@ -37,9 +37,9 @@
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String RUNNABLE_JAR = <span class="jxr_string">"target/tailormap-api-exec.jar"</span>;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment">   * check if there is only one gt-main and only one gt-epsg jar in the runnable jar, so we can be</em>
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment">   * sure there are no or EPSG factory version conflicts. This test will fail if there is than one</em>
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment">   * gt-main (versions) or gt-epsg (factory providers) in the runnable jar.</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment">   * check if there is only one gt-main and only one gt-epsg jar in the runnable jar, so we can be sure there are no</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment">   * or EPSG factory version conflicts. This test will fail if there is than one gt-main (versions) or gt-epsg</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment">   * (factory providers) in the runnable jar.</em>
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment">   */</em>
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>    @Test
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">void</strong> checkArtifact() {
@@ -62,19 +62,17 @@
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>        }
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>        assertFalse(gtMainJars.isEmpty(), <span class="jxr_string">"No gt-main artifact in the runnable jar file"</span>);
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>        assertEquals(
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>            1, gtMainJars.size(), <span class="jxr_string">"There are more than 1 gt-main artifacts in the runnable jar file"</span>);
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>        assertFalse(gtEPSGJars.isEmpty(), <span class="jxr_string">"No gt-epsg artifact in the runnable jar file"</span>);
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>        assertEquals(
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>            1, gtEPSGJars.size(), <span class="jxr_string">"There are more than 1 gt-epsg artifacts in the runnable jar file"</span>);
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>  
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>        logger.error(<span class="jxr_string">"Failed"</span>, e);
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>        fail(e.getLocalizedMessage());
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      }
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>    }
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>  }
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>        assertEquals(1, gtMainJars.size(), <span class="jxr_string">"There are more than 1 gt-main artifacts in the runnable jar file"</span>);
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>        assertFalse(gtEPSGJars.isEmpty(), <span class="jxr_string">"No gt-epsg artifact in the runnable jar file"</span>);
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>        assertEquals(1, gtEPSGJars.size(), <span class="jxr_string">"There are more than 1 gt-epsg artifacts in the runnable jar file"</span>);
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>        logger.error(<span class="jxr_string">"Failed"</span>, e);
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>        fail(e.getLocalizedMessage());
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      }
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>    }
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

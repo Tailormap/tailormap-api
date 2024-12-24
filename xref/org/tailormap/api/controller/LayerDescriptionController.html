@@ -57,83 +57,76 @@
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="FormRepository" href="../../../../org/tailormap/api/repository/FormRepository.html#FormRepository">FormRepository</a> formRepository;
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">public</strong> <a name="LayerDescriptionController" href="../../../../org/tailormap/api/controller/LayerDescriptionController.html#LayerDescriptionController">LayerDescriptionController</a>(
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>        <a name="FeatureSourceRepository" href="../../../../org/tailormap/api/repository/FeatureSourceRepository.html#FeatureSourceRepository">FeatureSourceRepository</a> featureSourceRepository, <a name="FormRepository" href="../../../../org/tailormap/api/repository/FormRepository.html#FormRepository">FormRepository</a> formRepository) {
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>      <strong class="jxr_keyword">this</strong>.featureSourceRepository = featureSourceRepository;
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">this</strong>.formRepository = formRepository;
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>    }
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>    @Transactional
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>    @GetMapping
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>    @Timed(value = <span class="jxr_string">"get_layer_description"</span>, description = <span class="jxr_string">"Get layer description"</span>)
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Serializable&gt; getAppLayerDescription(
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>        @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>        @ModelAttribute AppTreeLayerNode appTreeLayerNode,
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>        @ModelAttribute <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service,
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>        @ModelAttribute GeoServiceLayer layer) {
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">if</strong> (layer == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>            HttpStatus.NOT_FOUND, <span class="jxr_string">"Can't find layer "</span> + appTreeLayerNode);
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      }
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>      <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>      <strong class="jxr_keyword">if</strong> (tmft == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND, <span class="jxr_string">"Layer does not have feature type"</span>);
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>      }
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>  
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>      LayerDetails r =
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>          <strong class="jxr_keyword">new</strong> LayerDetails()
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>              .id(appTreeLayerNode.getId())
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>              .serviceId(appTreeLayerNode.getServiceId())
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>              .featureTypeName(tmft.getName())
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>              .geometryAttribute(tmft.getDefaultGeometryAttribute())
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>              <em class="jxr_comment">// TODO deduce from tmft.getDefaultGeometryAttribute()</em>
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>              .geometryAttributeIndex(<strong class="jxr_keyword">null</strong> <em class="jxr_comment">/* TODO */</em>)
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>              .geometryType(
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>                  tmft.getDefaultGeometryDescriptor()
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>                      .map(TMAttributeDescriptor::getType)
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>                      .map(TMAttributeType::getValue)
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>                      .map(TMGeometryType::fromValue)
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>                      .orElse(<strong class="jxr_keyword">null</strong>))
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>              .editable(TMFeatureTypeHelper.isEditable(application, appTreeLayerNode, tmft));
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>  
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>      AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>  
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>      <a name="Form" href="../../../../org/tailormap/api/persistence/Form.html#Form">Form</a> form;
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>      <strong class="jxr_keyword">if</strong> (appLayerSettings.getFormId() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>        form = formRepository.findById(appLayerSettings.getFormId()).orElse(<strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>        <strong class="jxr_keyword">if</strong> (form != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>          r.setForm(<strong class="jxr_keyword">new</strong> LayerDetailsForm().options(form.getOptions()).fields(form.getFields()));
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>       }
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>     }
-<a class="jxr_linenumber" name="L102" href="#L102">102</a> 
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>     Set&lt;String&gt; readOnlyAttributes =
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>         TMFeatureTypeHelper.getReadOnlyAttributes(tmft, appLayerSettings);
-<a class="jxr_linenumber" name="L105" href="#L105">105</a> 
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>     getConfiguredAttributes(tmft, appLayerSettings).values().stream()
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>         .map(
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>             pair -&gt; {
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>               TMAttributeDescriptor a = pair.getLeft();
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>               <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Attribute()
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>                   .featureType(tmft.getId())
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>                   .key(a.getName())
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>                   <em class="jxr_comment">// Only return generic 'geometry' type for now, frontend doesn't</em>
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>                   <em class="jxr_comment">// handle different geometry types. For the default geometry</em>
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>                   <em class="jxr_comment">// attribute there is a specific geometry type set</em>
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>                   .type(isGeometry(a.getType()) ? TMAttributeType.GEOMETRY : a.getType())
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>                   <em class="jxr_comment">// primary key can never be edited</em>
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>                   .editable(
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>                       !a.getName().equals(tmft.getPrimaryKeyAttribute())
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>                           &amp;&amp; !readOnlyAttributes.contains(a.getName()))
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>                   .defaultValue(a.getDefaultValue())
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>                   .nullable(a.getNullable());
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>             })
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>         .forEach(r::addAttributesItem);
-<a class="jxr_linenumber" name="L125" href="#L125">125</a> 
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>     <strong class="jxr_keyword">return</strong> ResponseEntity.ok(r);
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>   }
-<a class="jxr_linenumber" name="L128" href="#L128">128</a> }
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">public</strong> <a name="LayerDescriptionController" href="../../../../org/tailormap/api/controller/LayerDescriptionController.html#LayerDescriptionController">LayerDescriptionController</a>(<a name="FeatureSourceRepository" href="../../../../org/tailormap/api/repository/FeatureSourceRepository.html#FeatureSourceRepository">FeatureSourceRepository</a> featureSourceRepository, <a name="FormRepository" href="../../../../org/tailormap/api/repository/FormRepository.html#FormRepository">FormRepository</a> formRepository) {
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">this</strong>.featureSourceRepository = featureSourceRepository;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      <strong class="jxr_keyword">this</strong>.formRepository = formRepository;
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>    }
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>    @Transactional
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>    @GetMapping
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>    @Timed(value = <span class="jxr_string">"get_layer_description"</span>, description = <span class="jxr_string">"Get layer description"</span>)
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Serializable&gt; getAppLayerDescription(
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>        @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>        @ModelAttribute AppTreeLayerNode appTreeLayerNode,
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>        @ModelAttribute <a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service,
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>        @ModelAttribute GeoServiceLayer layer) {
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">if</strong> (layer == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND, <span class="jxr_string">"Can't find layer "</span> + appTreeLayerNode);
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      }
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>      <a name="TMFeatureType" href="../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      <strong class="jxr_keyword">if</strong> (tmft == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.NOT_FOUND, <span class="jxr_string">"Layer does not have feature type"</span>);
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>      }
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>      LayerDetails r = <strong class="jxr_keyword">new</strong> LayerDetails()
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>          .id(appTreeLayerNode.getId())
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>          .serviceId(appTreeLayerNode.getServiceId())
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>          .featureTypeName(tmft.getName())
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>          .geometryAttribute(tmft.getDefaultGeometryAttribute())
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          <em class="jxr_comment">// TODO deduce from tmft.getDefaultGeometryAttribute()</em>
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>          .geometryAttributeIndex(<strong class="jxr_keyword">null</strong> <em class="jxr_comment">/* TODO */</em>)
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>          .geometryType(tmft.getDefaultGeometryDescriptor()
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>              .map(TMAttributeDescriptor::getType)
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>              .map(TMAttributeType::getValue)
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>              .map(TMGeometryType::fromValue)
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>              .orElse(<strong class="jxr_keyword">null</strong>))
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          .editable(TMFeatureTypeHelper.isEditable(application, appTreeLayerNode, tmft));
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>  
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>      AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>  
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      <a name="Form" href="../../../../org/tailormap/api/persistence/Form.html#Form">Form</a> form;
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">if</strong> (appLayerSettings.getFormId() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>        form = formRepository.findById(appLayerSettings.getFormId()).orElse(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>        <strong class="jxr_keyword">if</strong> (form != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>          r.setForm(<strong class="jxr_keyword">new</strong> LayerDetailsForm().options(form.getOptions()).fields(form.getFields()));
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>        }
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>      }
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>      Set&lt;String&gt; readOnlyAttributes = TMFeatureTypeHelper.getReadOnlyAttributes(tmft, appLayerSettings);
+<a class="jxr_linenumber" name="L100" href="#L100">100</a> 
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>     getConfiguredAttributes(tmft, appLayerSettings).values().stream()
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>         .map(pair -&gt; {
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>           TMAttributeDescriptor a = pair.getLeft();
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Attribute()
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>               .featureType(tmft.getId())
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>               .key(a.getName())
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>               <em class="jxr_comment">// Only return generic 'geometry' type for now, frontend doesn't</em>
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>               <em class="jxr_comment">// handle different geometry types. For the default geometry</em>
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>               <em class="jxr_comment">// attribute there is a specific geometry type set</em>
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>               .type(isGeometry(a.getType()) ? TMAttributeType.GEOMETRY : a.getType())
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>               <em class="jxr_comment">// primary key can never be edited</em>
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>               .editable(!a.getName().equals(tmft.getPrimaryKeyAttribute())
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>                   &amp;&amp; !readOnlyAttributes.contains(a.getName()))
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>               .defaultValue(a.getDefaultValue())
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>               .nullable(a.getNullable());
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>         })
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>         .forEach(r::addAttributesItem);
+<a class="jxr_linenumber" name="L118" href="#L118">118</a> 
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>     <strong class="jxr_keyword">return</strong> ResponseEntity.ok(r);
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>   }
+<a class="jxr_linenumber" name="L121" href="#L121">121</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

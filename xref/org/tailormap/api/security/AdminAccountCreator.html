@@ -43,78 +43,71 @@
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.UserRepository;
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  @Configuration
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  @ConditionalOnProperty(
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>      name = <span class="jxr_string">"tailormap-api.security.admin.create-if-not-exists"</span>,
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      havingValue = <span class="jxr_string">"true"</span>)
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AdminAccountCreator" href="../../../../org/tailormap/api/security/AdminAccountCreator.html#AdminAccountCreator">AdminAccountCreator</a> {
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>    @Value(<span class="jxr_string">"${tailormap-api.security.admin.username}"</span>)
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">private</strong> String newAdminUsername;
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>    @Value(<span class="jxr_string">"${tailormap-api.security.admin.hashed-password}"</span>)
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>    <strong class="jxr_keyword">private</strong> String newAdminHashedPassword;
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="UserRepository" href="../../../../org/tailormap/api/repository/UserRepository.html#UserRepository">UserRepository</a> userRepository;
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="GroupRepository" href="../../../../org/tailormap/api/repository/GroupRepository.html#GroupRepository">GroupRepository</a> groupRepository;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  @ConditionalOnProperty(name = <span class="jxr_string">"tailormap-api.security.admin.create-if-not-exists"</span>, havingValue = <span class="jxr_string">"true"</span>)
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AdminAccountCreator" href="../../../../org/tailormap/api/security/AdminAccountCreator.html#AdminAccountCreator">AdminAccountCreator</a> {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>    @Value(<span class="jxr_string">"${tailormap-api.security.admin.username}"</span>)
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>    <strong class="jxr_keyword">private</strong> String newAdminUsername;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    @Value(<span class="jxr_string">"${tailormap-api.security.admin.hashed-password}"</span>)
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>    <strong class="jxr_keyword">private</strong> String newAdminHashedPassword;
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="UserRepository" href="../../../../org/tailormap/api/repository/UserRepository.html#UserRepository">UserRepository</a> userRepository;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="GroupRepository" href="../../../../org/tailormap/api/repository/GroupRepository.html#GroupRepository">GroupRepository</a> groupRepository;
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> PasswordEncoder passwordEncoder =
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>        PasswordEncoderFactories.createDelegatingPasswordEncoder();
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>    <strong class="jxr_keyword">public</strong> <a name="AdminAccountCreator" href="../../../../org/tailormap/api/security/AdminAccountCreator.html#AdminAccountCreator">AdminAccountCreator</a>(<a name="UserRepository" href="../../../../org/tailormap/api/repository/UserRepository.html#UserRepository">UserRepository</a> userRepository, <a name="GroupRepository" href="../../../../org/tailormap/api/repository/GroupRepository.html#GroupRepository">GroupRepository</a> groupRepository) {
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>      <strong class="jxr_keyword">this</strong>.userRepository = userRepository;
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">this</strong>.groupRepository = groupRepository;
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>    }
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>    @EventListener(ApplicationReadyEvent.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>    @Transactional
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> postConstruct() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>      logger.trace(<span class="jxr_string">"Checking whether an admin account exists..."</span>);
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      InternalAdminAuthentication.setInSecurityContext();
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>        <strong class="jxr_keyword">if</strong> (!userRepository.existsByGroupsNameIn(List.of(Group.ADMIN))) {
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">if</strong> (isNotBlank(newAdminHashedPassword) &amp;&amp; newAdminHashedPassword.startsWith(<span class="jxr_string">"{bcrypt}"</span>)) {
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>            createAdmin(newAdminUsername, newAdminHashedPassword);
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>            logger.info(
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>                <span class="jxr_string">"New admin account \&quot;{}\&quot; created with hashed password from environment"</span>,
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>                newAdminUsername);
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>          } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>            <em class="jxr_comment">// Create a new admin account with a random generated password</em>
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>            String password = UUID.randomUUID().toString();
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>            createAdmin(newAdminUsername, passwordEncoder.encode(password));
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>            <em class="jxr_comment">// Log generated password</em>
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>            logger.info(getAccountBanner(newAdminUsername, password));
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>          }
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>        }
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>      } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>        InternalAdminAuthentication.clearSecurityContextAuthentication();
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>      }
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>    }
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>  
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> createAdmin(String username, String hashedPassword) {
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>      <a name="User" href="../../../../org/tailormap/api/persistence/User.html#User">User</a> u = <strong class="jxr_keyword">new</strong> <a name="User" href="../../../../org/tailormap/api/persistence/User.html#User">User</a>().setUsername(username).setPassword(hashedPassword);
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>      u.getGroups().add(groupRepository.getReferenceById(Group.ADMIN));
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>      userRepository.saveAndFlush(u);
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>    }
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> String getAccountBanner(String username, String password) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>      String accountBanner =
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>          StreamUtils.copyToString(
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>              <strong class="jxr_keyword">new</strong> ClassPathResource(<span class="jxr_string">"account-banner.txt"</span>).getInputStream(),
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>              StandardCharsets.US_ASCII);
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>      MutablePropertySources sources = <strong class="jxr_keyword">new</strong> MutablePropertySources();
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>     sources.addFirst(<strong class="jxr_keyword">new</strong> AnsiPropertySource(<span class="jxr_string">"ansi"</span>, <strong class="jxr_keyword">true</strong>));
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>     sources.addFirst(
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>         <strong class="jxr_keyword">new</strong> MapPropertySource(
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>             <span class="jxr_string">"account"</span>,
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>             Map.of(
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>                 <span class="jxr_string">"username"</span>, username,
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>                 <span class="jxr_string">"password"</span>, password)));
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> PropertySourcesPropertyResolver(sources).resolvePlaceholders(accountBanner);
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>   }
-<a class="jxr_linenumber" name="L109" href="#L109">109</a> }
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">public</strong> <a name="AdminAccountCreator" href="../../../../org/tailormap/api/security/AdminAccountCreator.html#AdminAccountCreator">AdminAccountCreator</a>(<a name="UserRepository" href="../../../../org/tailormap/api/repository/UserRepository.html#UserRepository">UserRepository</a> userRepository, <a name="GroupRepository" href="../../../../org/tailormap/api/repository/GroupRepository.html#GroupRepository">GroupRepository</a> groupRepository) {
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">this</strong>.userRepository = userRepository;
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">this</strong>.groupRepository = groupRepository;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>    }
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>    @EventListener(ApplicationReadyEvent.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>    @Transactional
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> postConstruct() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      logger.trace(<span class="jxr_string">"Checking whether an admin account exists..."</span>);
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>      InternalAdminAuthentication.setInSecurityContext();
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>        <strong class="jxr_keyword">if</strong> (!userRepository.existsByGroupsNameIn(List.of(Group.ADMIN))) {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          <strong class="jxr_keyword">if</strong> (isNotBlank(newAdminHashedPassword) &amp;&amp; newAdminHashedPassword.startsWith(<span class="jxr_string">"{bcrypt}"</span>)) {
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>            createAdmin(newAdminUsername, newAdminHashedPassword);
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>            logger.info(
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>                <span class="jxr_string">"New admin account \&quot;{}\&quot; created with hashed password from environment"</span>, newAdminUsername);
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>            <em class="jxr_comment">// Create a new admin account with a random generated password</em>
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>            String password = UUID.randomUUID().toString();
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>            createAdmin(newAdminUsername, passwordEncoder.encode(password));
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>            <em class="jxr_comment">// Log generated password</em>
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>            logger.info(getAccountBanner(newAdminUsername, password));
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>          }
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>        }
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>      } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>        InternalAdminAuthentication.clearSecurityContextAuthentication();
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>      }
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>    }
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>  
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> createAdmin(String username, String hashedPassword) {
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      <a name="User" href="../../../../org/tailormap/api/persistence/User.html#User">User</a> u = <strong class="jxr_keyword">new</strong> <a name="User" href="../../../../org/tailormap/api/persistence/User.html#User">User</a>().setUsername(username).setPassword(hashedPassword);
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      u.getGroups().add(groupRepository.getReferenceById(Group.ADMIN));
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      userRepository.saveAndFlush(u);
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>    }
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> String getAccountBanner(String username, String password) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      String accountBanner = StreamUtils.copyToString(
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>          <strong class="jxr_keyword">new</strong> ClassPathResource(<span class="jxr_string">"account-banner.txt"</span>).getInputStream(), StandardCharsets.US_ASCII);
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      MutablePropertySources sources = <strong class="jxr_keyword">new</strong> MutablePropertySources();
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>      sources.addFirst(<strong class="jxr_keyword">new</strong> AnsiPropertySource(<span class="jxr_string">"ansi"</span>, <strong class="jxr_keyword">true</strong>));
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>      sources.addFirst(<strong class="jxr_keyword">new</strong> MapPropertySource(
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>          <span class="jxr_string">"account"</span>,
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>          Map.of(
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>              <span class="jxr_string">"username"</span>, username,
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>              <span class="jxr_string">"password"</span>, password)));
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> PropertySourcesPropertyResolver(sources).resolvePlaceholders(accountBanner);
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>   }
+<a class="jxr_linenumber" name="L102" href="#L102">102</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

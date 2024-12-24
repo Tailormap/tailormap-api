@@ -84,19 +84,18 @@
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>        } <strong class="jxr_keyword">catch</strong> (UnknownHostException e) {
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>          errors.rejectValue(<span class="jxr_string">"url"</span>, <span class="jxr_string">"unknown-host"</span>, <span class="jxr_string">"Unknown host: \&quot;"</span> + uri.getHost() + <span class="jxr_string">"\&quot;"</span>);
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>        } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>          String msg =
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>              String.format(
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>                  <span class="jxr_string">"Error loading capabilities from URL \&quot;%s\&quot;: %s"</span>,
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>                  service.getUrl(), joinAllThrowableMessages(e));
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>          logger.info(
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>              <span class="jxr_string">"The following exception may not be an application error but could be a problem with an external service or user-entered data: {}"</span>,
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>              msg,
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>              e);
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>          errors.rejectValue(<span class="jxr_string">"url"</span>, <span class="jxr_string">"loading-capabilities-failed"</span>, msg);
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>        }
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>      }
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>    }
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>  }
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>          String msg = String.format(
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>              <span class="jxr_string">"Error loading capabilities from URL \&quot;%s\&quot;: %s"</span>,
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>              service.getUrl(), joinAllThrowableMessages(e));
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>          logger.info(
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>              <span class="jxr_string">"The following exception may not be an application error but could be a problem with an external service or user-entered data: {}"</span>,
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>              msg,
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>              e);
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          errors.rejectValue(<span class="jxr_string">"url"</span>, <span class="jxr_string">"loading-capabilities-failed"</span>, msg);
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>        }
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>      }
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>    }
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

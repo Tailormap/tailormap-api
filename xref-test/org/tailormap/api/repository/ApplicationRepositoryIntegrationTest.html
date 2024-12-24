@@ -24,21 +24,22 @@
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  @PostgresIntegrationTest
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">class</strong> <a name="ApplicationRepositoryIntegrationTest" href="../../../../org/tailormap/api/repository/ApplicationRepositoryIntegrationTest.html#ApplicationRepositoryIntegrationTest">ApplicationRepositoryIntegrationTest</a> {
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>    @Autowired <strong class="jxr_keyword">private</strong> ApplicationRepository applicationRepository;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>    @Test
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>    <strong class="jxr_keyword">void</strong> should_find_application_by_name() {
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>      Application a = applicationRepository.findByName(<span class="jxr_string">"default"</span>);
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>      assertNotNull(a);
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>      assertEquals(<span class="jxr_string">"default"</span>, a.getName(), <span class="jxr_string">"application name is incorrect"</span>);
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>    }
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>    @Test
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>    <strong class="jxr_keyword">void</strong> should_not_find_application_by_nonexistent_name() {
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>      Application a = applicationRepository.findByName(<span class="jxr_string">"does-not-exist"</span>);
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      assertNull(a);
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>    }
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  }
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>    @Autowired
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>    <strong class="jxr_keyword">private</strong> ApplicationRepository applicationRepository;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>    @Test
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>    <strong class="jxr_keyword">void</strong> should_find_application_by_name() {
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>      Application a = applicationRepository.findByName(<span class="jxr_string">"default"</span>);
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>      assertNotNull(a);
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>      assertEquals(<span class="jxr_string">"default"</span>, a.getName(), <span class="jxr_string">"application name is incorrect"</span>);
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>    }
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>    @Test
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>    <strong class="jxr_keyword">void</strong> should_not_find_application_by_nonexistent_name() {
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      Application a = applicationRepository.findByName(<span class="jxr_string">"does-not-exist"</span>);
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      assertNull(a);
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>    }
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

@@ -283,12 +283,11 @@ loadScripts(document, 'script');</script>
                                      throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a></span></div>
 <div class="block">Get a list of GetFeature output formats for a WFS feature type.
 
- <p>If there are no specific output formats for the type, the generally supported output formats
- are returned. Requests WFS 1.1.0 but also handles WFS 2.0.0 responses.
+ <p>If there are no specific output formats for the type, the generally supported output formats are returned.
+ Requests WFS 1.1.0 but also handles WFS 2.0.0 responses.
 
- <p>Uses a 'lightweight' WFS implementation parsing only the XML WFS capabilities to extract the
- output formats using XPath, instead of using a heavyweight GeoTools WFS DataStore which is much
- slower.</div>
+ <p>Uses a 'lightweight' WFS implementation parsing only the XML WFS capabilities to extract the output formats
+ using XPath, instead of using a heavyweight GeoTools WFS DataStore which is much slower.</div>
 <dl class="notes">
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a></code></dd>

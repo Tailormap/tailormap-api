@@ -30,20 +30,19 @@
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>      <strong class="jxr_keyword">return</strong> openGeoToolsFeatureSource(tmft, timeout);
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>    }
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>    <strong class="jxr_keyword">public</strong> SimpleFeatureSource openGeoToolsFeatureSource(<a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmft, <strong class="jxr_keyword">int</strong> timeout)
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>        <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>      <a name="FeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/FeatureSourceHelper.html#FeatureSourceHelper">FeatureSourceHelper</a> sh = getHelper(tmft.getFeatureSource());
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>      <strong class="jxr_keyword">return</strong> sh.openGeoToolsFeatureSource(tmft, timeout);
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>    }
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>    <strong class="jxr_keyword">private</strong> <a name="FeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/FeatureSourceHelper.html#FeatureSourceHelper">FeatureSourceHelper</a> getHelper(<a name="TMFeatureSource" href="../../../../../org/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> fs) {
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">switch</strong> (fs.getProtocol()) {
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>        <strong class="jxr_keyword">case</strong> JDBC -&gt; <strong class="jxr_keyword">new</strong> <a name="JDBCFeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/JDBCFeatureSourceHelper.html#JDBCFeatureSourceHelper">JDBCFeatureSourceHelper</a>();
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>        <strong class="jxr_keyword">case</strong> WFS -&gt; <strong class="jxr_keyword">new</strong> <a name="WFSFeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/WFSFeatureSourceHelper.html#WFSFeatureSourceHelper">WFSFeatureSourceHelper</a>();
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>        <strong class="jxr_keyword">default</strong> -&gt; <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Invalid protocol: "</span> + fs.getProtocol());
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>      };
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>    }
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  }
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>    <strong class="jxr_keyword">public</strong> SimpleFeatureSource openGeoToolsFeatureSource(<a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> tmft, <strong class="jxr_keyword">int</strong> timeout) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>      <a name="FeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/FeatureSourceHelper.html#FeatureSourceHelper">FeatureSourceHelper</a> sh = getHelper(tmft.getFeatureSource());
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>      <strong class="jxr_keyword">return</strong> sh.openGeoToolsFeatureSource(tmft, timeout);
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>    }
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>    <strong class="jxr_keyword">private</strong> <a name="FeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/FeatureSourceHelper.html#FeatureSourceHelper">FeatureSourceHelper</a> getHelper(<a name="TMFeatureSource" href="../../../../../org/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> fs) {
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">switch</strong> (fs.getProtocol()) {
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>        <strong class="jxr_keyword">case</strong> JDBC -&gt; <strong class="jxr_keyword">new</strong> <a name="JDBCFeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/JDBCFeatureSourceHelper.html#JDBCFeatureSourceHelper">JDBCFeatureSourceHelper</a>();
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>        <strong class="jxr_keyword">case</strong> WFS -&gt; <strong class="jxr_keyword">new</strong> <a name="WFSFeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/WFSFeatureSourceHelper.html#WFSFeatureSourceHelper">WFSFeatureSourceHelper</a>();
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>        <strong class="jxr_keyword">default</strong> -&gt; <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Invalid protocol: "</span> + fs.getProtocol());
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      };
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>    }
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

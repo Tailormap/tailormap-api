@@ -83,10 +83,9 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">SolrHelper</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/AutoCloseable.html" title="class or interface in java.lang" class="external-link">AutoCloseable</a>, <a href="../util/Constants.html" title="interface in org.tailormap.api.util">Constants</a></span></div>
-<div class="block">Solr utility/wrapper class. This class provides methods to add or update a full-text feature type
- index for a layer, find in the index for a layer, and clear the index for a layer. It also
- provides a method to close the Solr client as well as automatically closing the client when used
- in a try-with-resources.</div>
+<div class="block">Solr utility/wrapper class. This class provides methods to add or update a full-text feature type index for a layer,
+ find in the index for a layer, and clear the index for a layer. It also provides a method to close the Solr client as
+ well as automatically closing the client when used in a try-with-resources.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -167,14 +166,12 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withBatchSize(int)" class="member-name-link">withBatchSize</a><wbr>(@jakarta.validation.constraints.Positive(message="Must use a positive integer for batching") int&nbsp;solrBatchSize)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Configure this <code>SolrHelper</code> with a batch size for submitting documents to the Solr
- instance.</div>
+<div class="block">Configure this <code>SolrHelper</code> with a batch size for submitting documents to the Solr instance.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withGeometryValidationRule(java.lang.String)" class="member-name-link">withGeometryValidationRule</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrGeometryValidationRule)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Configure this <code>SolrHelper</code> to create a geometry field in Solr using the specified
- validation rule.</div>
+<div class="block">Configure this <code>SolrHelper</code> to create a geometry field in Solr using the specified validation rule.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withQueryTimeout(int)" class="member-name-link">withQueryTimeout</a><wbr>(@jakarta.validation.constraints.Positive(message="Must use a positive integer for query timeout") int&nbsp;solrQueryTimeout)</code></div>
@@ -235,8 +232,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <h3>withBatchSize</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></span>&nbsp;<span class="element-name">withBatchSize</span><wbr><span class="parameters">(@Positive(message="Must use a positive integer for batching")
  @jakarta.validation.constraints.Positive(message="Must use a positive integer for batching") int&nbsp;solrBatchSize)</span></div>
-<div class="block">Configure this <code>SolrHelper</code> with a batch size for submitting documents to the Solr
- instance.</div>
+<div class="block">Configure this <code>SolrHelper</code> with a batch size for submitting documents to the Solr instance.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>solrBatchSize</code> - the batch size for indexing, must be greater than 0</dd>
@@ -248,12 +244,10 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <h3>withGeometryValidationRule</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="SolrHelper.html" title="class in org.tailormap.api.solr">SolrHelper</a></span>&nbsp;<span class="element-name">withGeometryValidationRule</span><wbr><span class="parameters">(@NonNull
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;solrGeometryValidationRule)</span></div>
-<div class="block">Configure this <code>SolrHelper</code> to create a geometry field in Solr using the specified
- validation rule.</div>
+<div class="block">Configure this <code>SolrHelper</code> to create a geometry field in Solr using the specified validation rule.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>solrGeometryValidationRule</code> - any of <code>"error", "none", "repairBuffer0",
-     "repairConvexHull"</code></dd>
+<dd><code>solrGeometryValidationRule</code> - any of <code>"error", "none", "repairBuffer0", "repairConvexHull"</code></dd>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
@@ -282,8 +276,7 @@ org.apache.solr.client.solrj.SolrServerException</span></div>
 <dd><code>searchIndex</code> - the search index config</dd>
 <dd><code>tmFeatureType</code> - the feature type</dd>
 <dd><code>featureSourceFactoryHelper</code> - the feature source factory helper</dd>
-<dd><code>searchIndexRepository</code> - the search index repository, so we can save the <code>
-     searchIndex</code></dd>
+<dd><code>searchIndexRepository</code> - the search index repository, so we can save the <code>searchIndex</code></dd>
 <dt>Returns:</dt>
 <dd>the possibly updated <code>searchIndex</code> object</dd>
 <dt>Throws:</dt>
@@ -315,8 +308,7 @@ org.apache.solr.client.solrj.SolrServerException</span></div>
 <dd><code>searchIndex</code> - the search index config</dd>
 <dd><code>tmFeatureType</code> - the feature type</dd>
 <dd><code>featureSourceFactoryHelper</code> - the feature source factory helper</dd>
-<dd><code>searchIndexRepository</code> - the search index repository, so we can save the <code>
-     searchIndex</code></dd>
+<dd><code>searchIndexRepository</code> - the search index repository, so we can save the <code>searchIndex</code></dd>
 <dd><code>progressListener</code> - the progress listener callback</dd>
 <dd><code>taskUuid</code> - the task UUID, when <code>null</code> we will attempt to use the UUID from the
      <code>searchIndex#getSchedule()</code></dd>
@@ -359,13 +351,11 @@ org.apache.solr.client.solrj.SolrServerException</span></div>
                            throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a>,
 org.apache.solr.client.solrj.SolrServerException,
 org.apache.solr.common.SolrException</span></div>
-<div class="block">Search in the index for a layer. The given query is augmented to filter on the <code>
- solrLayerId</code>.</div>
+<div class="block">Search in the index for a layer. The given query is augmented to filter on the <code>solrLayerId</code>.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>searchIndex</code> - the search index</dd>
-<dd><code>solrQuery</code> - the query, when <code>null</code> or empty, the query is set to <code>*</code> (match
-     all)</dd>
+<dd><code>solrQuery</code> - the query, when <code>null</code> or empty, the query is set to <code>*</code> (match all)</dd>
 <dd><code>solrPoint</code> - the point to search around, in (x y) format</dd>
 <dd><code>solrDistance</code> - the distance to search around the point in Solr distance units (kilometers)</dd>
 <dd><code>start</code> - the start index, starting at 0</dd>

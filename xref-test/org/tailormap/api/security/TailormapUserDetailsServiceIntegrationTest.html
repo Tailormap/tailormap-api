@@ -24,15 +24,15 @@
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  @PostgresIntegrationTest
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">class</strong> <a name="TailormapUserDetailsServiceIntegrationTest" href="../../../../org/tailormap/api/security/TailormapUserDetailsServiceIntegrationTest.html#TailormapUserDetailsServiceIntegrationTest">TailormapUserDetailsServiceIntegrationTest</a> {
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>    @Autowired TailormapUserDetailsService userDetailsService;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>    @Test
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>    <strong class="jxr_keyword">void</strong> testLoadUserByUsernameUserDoesNotExist() {
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>      UsernameNotFoundException thrown =
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>          assertThrows(
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>              UsernameNotFoundException.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>              () -&gt; userDetailsService.loadUserByUsername(<span class="jxr_string">"doesnotexist"</span>),
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>              <span class="jxr_string">"UsernameNotFoundException was expected"</span>);
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>    @Autowired
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>    TailormapUserDetailsService userDetailsService;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>    @Test
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>    <strong class="jxr_keyword">void</strong> testLoadUserByUsernameUserDoesNotExist() {
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>      UsernameNotFoundException thrown = assertThrows(
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>          UsernameNotFoundException.<strong class="jxr_keyword">class</strong>,
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>          () -&gt; userDetailsService.loadUserByUsername(<span class="jxr_string">"doesnotexist"</span>),
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>          <span class="jxr_string">"UsernameNotFoundException was expected"</span>);
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>      assertNotNull(thrown, <span class="jxr_string">"thrown exception should not be null"</span>);
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>    }
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  }

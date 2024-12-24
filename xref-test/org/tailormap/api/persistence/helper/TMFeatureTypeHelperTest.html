@@ -36,54 +36,52 @@
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>      TMFeatureType ft = <strong class="jxr_keyword">new</strong> TMFeatureType();
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">final</strong> Function&lt;String, TMAttributeDescriptor&gt; att =
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>          (name) -&gt; <strong class="jxr_keyword">new</strong> TMAttributeDescriptor().name(name).comment(<span class="jxr_string">"comment for "</span> + name);
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      ft.setAttributes(
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>          List.of(
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>              att.apply(<span class="jxr_string">"a"</span>),
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>              att.apply(<span class="jxr_string">"b"</span>),
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>              att.apply(<span class="jxr_string">"c"</span>),
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>              att.apply(<span class="jxr_string">"d"</span>),
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>              att.apply(<span class="jxr_string">"e"</span>),
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>              att.apply(<span class="jxr_string">"f"</span>),
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>              att.apply(<span class="jxr_string">"m"</span>),
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>              att.apply(<span class="jxr_string">"n"</span>),
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>              att.apply(<span class="jxr_string">"o"</span>),
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>              att.apply(<span class="jxr_string">"q"</span>)));
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>      ft.setSettings(
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>          <strong class="jxr_keyword">new</strong> FeatureTypeSettings()
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>              .putAttributeSettingsItem(<span class="jxr_string">"d"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"d title"</span>))
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>              .addHideAttributesItem(<span class="jxr_string">"b"</span>)
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>              .addHideAttributesItem(<span class="jxr_string">"q"</span>)
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>              .addHideAttributesItem(<span class="jxr_string">"o"</span>)
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>              .addAttributeOrderItem(<span class="jxr_string">"c"</span>)
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>              .addAttributeOrderItem(<span class="jxr_string">"d"</span>)
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>              .addAttributeOrderItem(<span class="jxr_string">"e"</span>)
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>              .addAttributeOrderItem(<span class="jxr_string">"o"</span>)
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>              .addAttributeOrderItem(<span class="jxr_string">"a"</span>));
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      AppLayerSettings appLayerSettings = <strong class="jxr_keyword">new</strong> AppLayerSettings();
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      appLayerSettings.setHideAttributes(List.of(<span class="jxr_string">"e"</span>, <span class="jxr_string">"f"</span>));
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      Map&lt;String, Pair&lt;TMAttributeDescriptor, AttributeSettings&gt;&gt; configuredAttributes =
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>          getConfiguredAttributes(ft, appLayerSettings);
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      <em class="jxr_comment">// Compare using Lists to explicitly check the ordering</em>
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      assertEquals(
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>          List.of(
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>              <span class="jxr_string">"c"</span>,
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>              <span class="jxr_string">"d"</span>,
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>              <em class="jxr_comment">// "e" and "f" are hidden in app layer settings</em>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>              <em class="jxr_comment">// "o" is hidden in feature type settings</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>              <span class="jxr_string">"a"</span>,
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>              <em class="jxr_comment">// after ordered attributes, remaining attributes in original feature type order</em>
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>              <span class="jxr_string">"m"</span>,
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>              <span class="jxr_string">"n"</span>),
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(configuredAttributes.keySet()));
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      ft.setAttributes(List.of(
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>          att.apply(<span class="jxr_string">"a"</span>),
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>          att.apply(<span class="jxr_string">"b"</span>),
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>          att.apply(<span class="jxr_string">"c"</span>),
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>          att.apply(<span class="jxr_string">"d"</span>),
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          att.apply(<span class="jxr_string">"e"</span>),
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>          att.apply(<span class="jxr_string">"f"</span>),
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>          att.apply(<span class="jxr_string">"m"</span>),
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>          att.apply(<span class="jxr_string">"n"</span>),
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>          att.apply(<span class="jxr_string">"o"</span>),
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>          att.apply(<span class="jxr_string">"q"</span>)));
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      ft.setSettings(<strong class="jxr_keyword">new</strong> FeatureTypeSettings()
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          .putAttributeSettingsItem(<span class="jxr_string">"d"</span>, <strong class="jxr_keyword">new</strong> AttributeSettings().title(<span class="jxr_string">"d title"</span>))
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>          .addHideAttributesItem(<span class="jxr_string">"b"</span>)
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>          .addHideAttributesItem(<span class="jxr_string">"q"</span>)
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          .addHideAttributesItem(<span class="jxr_string">"o"</span>)
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          .addAttributeOrderItem(<span class="jxr_string">"c"</span>)
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>          .addAttributeOrderItem(<span class="jxr_string">"d"</span>)
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>          .addAttributeOrderItem(<span class="jxr_string">"e"</span>)
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          .addAttributeOrderItem(<span class="jxr_string">"o"</span>)
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          .addAttributeOrderItem(<span class="jxr_string">"a"</span>));
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      AppLayerSettings appLayerSettings = <strong class="jxr_keyword">new</strong> AppLayerSettings();
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      appLayerSettings.setHideAttributes(List.of(<span class="jxr_string">"e"</span>, <span class="jxr_string">"f"</span>));
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      Map&lt;String, Pair&lt;TMAttributeDescriptor, AttributeSettings&gt;&gt; configuredAttributes =
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          getConfiguredAttributes(ft, appLayerSettings);
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <em class="jxr_comment">// Compare using Lists to explicitly check the ordering</em>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      assertEquals(
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          List.of(
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>              <span class="jxr_string">"c"</span>,
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>              <span class="jxr_string">"d"</span>,
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>              <em class="jxr_comment">// "e" and "f" are hidden in app layer settings</em>
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>              <em class="jxr_comment">// "o" is hidden in feature type settings</em>
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>              <span class="jxr_string">"a"</span>,
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>              <em class="jxr_comment">// after ordered attributes, remaining attributes in original feature type order</em>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>              <span class="jxr_string">"m"</span>,
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>              <span class="jxr_string">"n"</span>),
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(configuredAttributes.keySet()));
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      assertEquals(<span class="jxr_string">"d title"</span>, configuredAttributes.get(<span class="jxr_string">"d"</span>).getRight().getTitle());
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>      assertEquals(<span class="jxr_string">"d title"</span>, configuredAttributes.get(<span class="jxr_string">"d"</span>).getRight().getTitle());
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>      assertEquals(<span class="jxr_string">"comment for m"</span>, configuredAttributes.get(<span class="jxr_string">"m"</span>).getLeft().getComment());
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>    }
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>  }
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>      assertEquals(<span class="jxr_string">"comment for m"</span>, configuredAttributes.get(<span class="jxr_string">"m"</span>).getLeft().getComment());
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>    }
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

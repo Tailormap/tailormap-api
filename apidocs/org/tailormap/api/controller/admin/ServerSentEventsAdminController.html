@@ -153,17 +153,16 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations">@GetMapping(path="${tailormap-api.admin.base-path}/events/{clientId}")
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.web.servlet.mvc.method.annotation.SseEmitter</span>&nbsp;<span class="element-name">entityEvents</span><wbr><span class="parameters">(@PathVariable("clientId")
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;clientId)</span></div>
-<div class="block">Endpoint for the single-page admin frontend to receive updates to entities from other windows.
- The frontend does not load all data on each navigation as a traditional frontend and loads and
- stores entities in memory. This requires updating stale entities when these get updated in
- other windows (from other sessions or the same session in a different browser tab), otherwise
- data might get lost or overwritten.
+<div class="block">Endpoint for the single-page admin frontend to receive updates to entities from other windows. The frontend does
+ not load all data on each navigation as a traditional frontend and loads and stores entities in memory. This
+ requires updating stale entities when these get updated in other windows (from other sessions or the same session
+ in a different browser tab), otherwise data might get lost or overwritten.
 
- <p>This endpoint uses <a href="https://html.spec.whatwg.org/multipage/server-sent-events.html">Server-sent events</a>,
- which technically is a long-poll HTTP request which allows unidirectional server-initiated
- communication. Not bidirectional like websockets, but simpler because of the long-poll HTTP
- request. The webserver should ideally use HTTP/2 or higher because HTTP/1.1 limits the amount
- of simultaneous connections to a server per browser to 6.</div>
+ <p>This endpoint uses <a href="https://html.spec.whatwg.org/multipage/server-sent-events.html">Server-sent
+ events</a>, which technically is a long-poll HTTP request which allows unidirectional server-initiated
+ communication. Not bidirectional like websockets, but simpler because of the long-poll HTTP request. The
+ webserver should ideally use HTTP/2 or higher because HTTP/1.1 limits the amount of simultaneous connections to a
+ server per browser to 6.</div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the server-sent events emitter</dd>

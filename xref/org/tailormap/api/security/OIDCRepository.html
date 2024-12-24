@@ -100,14 +100,14 @@
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> synchronize() {
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>      Map&lt;String, ClientRegistration&gt; newMap = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>      <strong class="jxr_keyword">final</strong> HttpClient httpClient =
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>          HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).build();
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>      <strong class="jxr_keyword">for</strong> (<a name="OIDCConfiguration" href="../../../../org/tailormap/api/persistence/OIDCConfiguration.html#OIDCConfiguration">OIDCConfiguration</a> configuration : oidcConfigurationRepository.findAll()) {
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>        String id = String.format(<span class="jxr_string">"%d"</span>, configuration.getId());
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>        <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>         HttpRequest.Builder requestBuilder =
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>             HttpRequest.newBuilder()
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>                 .uri(<strong class="jxr_keyword">new</strong> URI(configuration.getIssuerUrl() + <span class="jxr_string">"/.well-known/openid-configuration"</span>));
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>      <strong class="jxr_keyword">final</strong> HttpClient httpClient = HttpClient.newBuilder()
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>          .followRedirects(HttpClient.Redirect.NORMAL)
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>          .build();
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>      <strong class="jxr_keyword">for</strong> (<a name="OIDCConfiguration" href="../../../../org/tailormap/api/persistence/OIDCConfiguration.html#OIDCConfiguration">OIDCConfiguration</a> configuration : oidcConfigurationRepository.findAll()) {
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>        String id = String.format(<span class="jxr_string">"%d"</span>, configuration.getId());
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>             .uri(<strong class="jxr_keyword">new</strong> URI(configuration.getIssuerUrl() + <span class="jxr_string">"/.well-known/openid-configuration"</span>));
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         HttpResponse&lt;String&gt; response =
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>             httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
 <a class="jxr_linenumber" name="L105" href="#L105">105</a> 
@@ -125,68 +125,70 @@
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>                     ClientAuthenticationMethod
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>                         .CLIENT_SECRET_BASIC) <em class="jxr_comment">// TODO: fetch from OIDC metadata</em>
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>                 .authorizationUri(metadata.getAuthorizationEndpointURI().toASCIIString())
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>                 .tokenUri(metadata.getTokenEndpointURI().toASCIIString())
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>                 .userInfoUri(metadata.getUserInfoEndpointURI().toASCIIString())
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>                 .providerConfigurationMetadata(metadata.toJSONObject())
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>                 .jwkSetUri(metadata.getJWKSetURI().toASCIIString())
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>                 .userNameAttributeName(configuration.getUserNameAttribute())
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>                 .redirectUri(<span class="jxr_string">"{baseUrl}/api/oauth2/callback"</span>)
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>                 .build());
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>         <strong class="jxr_keyword">if</strong> (configuration.getStatus() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>           configuration.setStatus(<strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>           oidcConfigurationRepository.save(configuration);
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>         }
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>       } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>         logger.error(<span class="jxr_string">"Failed to create OIDC client registration for ID {}"</span>, id, e);
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>         configuration.setStatus(e.toString());
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>         oidcConfigurationRepository.save(configuration);
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>       }
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>     }
-<a class="jxr_linenumber" name="L138" href="#L138">138</a> 
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>     <strong class="jxr_keyword">if</strong> (isNotBlank(oidcName) &amp;&amp; isNotBlank(oidcIssuerUri) &amp;&amp; isNotBlank(oidcClientId)) {
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>       <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>         <em class="jxr_comment">// When copying the URI from some IdP control panels into an .env file, this suffix won't be</em>
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>         <em class="jxr_comment">// stripped by OIDCConfigurationEventHandler.handleBeforeCreateOrSave() so accept both</em>
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>         <strong class="jxr_keyword">if</strong> (!oidcIssuerUri.endsWith(<span class="jxr_string">"/.well-known/openid-configuration"</span>)) {
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>           oidcIssuerUri = oidcIssuerUri + <span class="jxr_string">"/.well-known/openid-configuration"</span>;
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>         }
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(<strong class="jxr_keyword">new</strong> URI(oidcIssuerUri));
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>         HttpResponse&lt;String&gt; response =
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>             httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
-<a class="jxr_linenumber" name="L149" href="#L149">149</a> 
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>         OIDCProviderMetadata metadata = OIDCProviderMetadata.parse(response.body());
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>         String id = <span class="jxr_string">"static"</span>;
-<a class="jxr_linenumber" name="L152" href="#L152">152</a> 
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>         newMap.put(
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>             id,
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>             ClientRegistration.withRegistrationId(id)
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>                 .clientId(oidcClientId)
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>                 .clientSecret(oidcClientSecret)
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>                 .clientName(oidcName)
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>                 .scope(<span class="jxr_string">"openid"</span>)
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>                 .issuerUri(metadata.getIssuer().toString())
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>                 .clientAuthenticationMethod(
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>                     ClientAuthenticationMethod
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>                         .CLIENT_SECRET_BASIC) <em class="jxr_comment">// TODO: fetch from OIDC metadata</em>
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>                 .authorizationUri(metadata.getAuthorizationEndpointURI().toASCIIString())
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>                 .tokenUri(metadata.getTokenEndpointURI().toASCIIString())
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>                 .userInfoUri(metadata.getUserInfoEndpointURI().toASCIIString())
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>                 .providerConfigurationMetadata(metadata.toJSONObject())
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>                 .jwkSetUri(metadata.getJWKSetURI().toASCIIString())
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>                 .userNameAttributeName(oidcUserNameAttribute)
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>                 .redirectUri(<span class="jxr_string">"{baseUrl}/api/oauth2/callback"</span>)
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>                 .build());
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>       } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>         logger.error(<span class="jxr_string">"Failed to create static OIDC client registration"</span>, e);
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>       }
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>     }
-<a class="jxr_linenumber" name="L177" href="#L177">177</a> 
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>     registrations.clear();
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>     registrations.putAll(newMap);
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>   }
-<a class="jxr_linenumber" name="L181" href="#L181">181</a> }
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>                 .authorizationUri(
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>                     metadata.getAuthorizationEndpointURI().toASCIIString())
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>                 .tokenUri(metadata.getTokenEndpointURI().toASCIIString())
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>                 .userInfoUri(metadata.getUserInfoEndpointURI().toASCIIString())
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>                 .providerConfigurationMetadata(metadata.toJSONObject())
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>                 .jwkSetUri(metadata.getJWKSetURI().toASCIIString())
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>                 .userNameAttributeName(configuration.getUserNameAttribute())
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>                 .redirectUri(<span class="jxr_string">"{baseUrl}/api/oauth2/callback"</span>)
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>                 .build());
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>         <strong class="jxr_keyword">if</strong> (configuration.getStatus() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>           configuration.setStatus(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>           oidcConfigurationRepository.save(configuration);
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         }
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>       } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>         logger.error(<span class="jxr_string">"Failed to create OIDC client registration for ID {}"</span>, id, e);
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>         configuration.setStatus(e.toString());
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>         oidcConfigurationRepository.save(configuration);
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>       }
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>     }
+<a class="jxr_linenumber" name="L139" href="#L139">139</a> 
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>     <strong class="jxr_keyword">if</strong> (isNotBlank(oidcName) &amp;&amp; isNotBlank(oidcIssuerUri) &amp;&amp; isNotBlank(oidcClientId)) {
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>         <em class="jxr_comment">// When copying the URI from some IdP control panels into an .env file, this suffix won't be</em>
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>         <em class="jxr_comment">// stripped by OIDCConfigurationEventHandler.handleBeforeCreateOrSave() so accept both</em>
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>         <strong class="jxr_keyword">if</strong> (!oidcIssuerUri.endsWith(<span class="jxr_string">"/.well-known/openid-configuration"</span>)) {
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>           oidcIssuerUri = oidcIssuerUri + <span class="jxr_string">"/.well-known/openid-configuration"</span>;
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>         }
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(<strong class="jxr_keyword">new</strong> URI(oidcIssuerUri));
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>         HttpResponse&lt;String&gt; response =
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>             httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
+<a class="jxr_linenumber" name="L150" href="#L150">150</a> 
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>         OIDCProviderMetadata metadata = OIDCProviderMetadata.parse(response.body());
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>         String id = <span class="jxr_string">"static"</span>;
+<a class="jxr_linenumber" name="L153" href="#L153">153</a> 
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>         newMap.put(
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>             id,
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>             ClientRegistration.withRegistrationId(id)
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>                 .clientId(oidcClientId)
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>                 .clientSecret(oidcClientSecret)
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>                 .clientName(oidcName)
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>                 .scope(<span class="jxr_string">"openid"</span>)
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>                 .issuerUri(metadata.getIssuer().toString())
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>                 .clientAuthenticationMethod(
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>                     ClientAuthenticationMethod
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>                         .CLIENT_SECRET_BASIC) <em class="jxr_comment">// TODO: fetch from OIDC metadata</em>
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>                 .authorizationUri(
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>                     metadata.getAuthorizationEndpointURI().toASCIIString())
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>                 .tokenUri(metadata.getTokenEndpointURI().toASCIIString())
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>                 .userInfoUri(metadata.getUserInfoEndpointURI().toASCIIString())
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>                 .providerConfigurationMetadata(metadata.toJSONObject())
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>                 .jwkSetUri(metadata.getJWKSetURI().toASCIIString())
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>                 .userNameAttributeName(oidcUserNameAttribute)
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>                 .redirectUri(<span class="jxr_string">"{baseUrl}/api/oauth2/callback"</span>)
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>                 .build());
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>       } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>         logger.error(<span class="jxr_string">"Failed to create static OIDC client registration"</span>, e);
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>       }
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>     }
+<a class="jxr_linenumber" name="L179" href="#L179">179</a> 
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>     registrations.clear();
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>     registrations.putAll(newMap);
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>   }
+<a class="jxr_linenumber" name="L183" href="#L183">183</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

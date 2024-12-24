@@ -80,16 +80,14 @@ loadScripts(document, 'script');</script>
 @RequestMapping(path="/api/{viewerKind}/{viewerName}/layer/{appLayerId}/proxy/{protocol}")
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">GeoServiceProxyController</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Proxy controller for OGC WMS and WMTS services. Does not attempt to hide the original service
- URL. Mostly useful for access to HTTP Basic secured services without sending the credentials to
- the client. The access control is handled by Spring Security and the authorizations configured on
- the service.
+<div class="block">Proxy controller for OGC WMS and WMTS services. Does not attempt to hide the original service URL. Mostly useful for
+ access to HTTP Basic secured services without sending the credentials to the client. The access control is handled by
+ Spring Security and the authorizations configured on the service.
 
- <p>Only supports GET requests. Does not support CORS, only meant for tailormap-viewer from the
- same origin.
+ <p>Only supports GET requests. Does not support CORS, only meant for tailormap-viewer from the same origin.
 
- <p>Implementation note: uses the Java 11 HttpClient. Spring cloud gateway can proxy with many
- more features but can not be used in a non-reactive application.</div>
+ <p>Implementation note: uses the Java 11 HttpClient. Spring cloud gateway can proxy with many more features but can
+ not be used in a non-reactive application.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">

@@ -32,23 +32,22 @@
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>    <strong class="jxr_keyword">private</strong> String sentryDsn;
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>    @Override
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>    @NonNull
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>    <strong class="jxr_keyword">public</strong> Resource transform(
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>        @NonNull HttpServletRequest request,
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>        @NonNull Resource resource,
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>        @NonNull ResourceTransformerChain transformerChain)
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>        <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>      resource = transformerChain.transform(request, resource);
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">if</strong> (sentryDsn == <strong class="jxr_keyword">null</strong> || !<span class="jxr_string">"index.html"</span>.equals(resource.getFilename())) {
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>        <strong class="jxr_keyword">return</strong> resource;
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>      }
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>      String html = resource.getContentAsString(UTF_8);
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      html = html.replace(<span class="jxr_string">"@SENTRY_DSN@"</span>, sentryDsn);
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> TransformedResource(resource, html.getBytes(UTF_8));
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>    }
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  }
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>    @NonNull <strong class="jxr_keyword">public</strong> Resource transform(
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>        @NonNull HttpServletRequest request,
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>        @NonNull Resource resource,
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>        @NonNull ResourceTransformerChain transformerChain)
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>        <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      resource = transformerChain.transform(request, resource);
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      <strong class="jxr_keyword">if</strong> (sentryDsn == <strong class="jxr_keyword">null</strong> || !<span class="jxr_string">"index.html"</span>.equals(resource.getFilename())) {
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>        <strong class="jxr_keyword">return</strong> resource;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>      }
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      String html = resource.getContentAsString(UTF_8);
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      html = html.replace(<span class="jxr_string">"@SENTRY_DSN@"</span>, sentryDsn);
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> TransformedResource(resource, html.getBytes(UTF_8));
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>    }
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
