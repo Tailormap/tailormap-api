@@ -170,11 +170,13 @@ layers).
 
 Some quick points of attention:
 
-* [Google Java Style](https://google.github.io/styleguide/javaguide.html) and pom formatting is enforced. 
+* [Palantir Java formatting](https://github.com/palantir/palantir-java-format) and pom formatting is enforced. 
   This is the style of the Android Open Source Project (AOSP) with 2-space indent and different import ordering.  
-  Run the following command to reformat your code (an [IntelliJ plugin](https://plugins.jetbrains.com/plugin/8527-google-java-format) is also available) and pom file:
+  Run the following command to reformat your code (an [IntelliJ plugin](https://plugins.jetbrains.com/plugin/13180-palantir-java-format) 
+  is also available) and pom file:
+ 
   ```
-  mvn fmt:format
+  mvn spotless:apply
   mvn sortpom:sort
   ```
 * PMD checks are enforced. Run `mvn pmd:check` to verify your code.  
