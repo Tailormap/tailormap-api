@@ -6,10 +6,9 @@
 
 package org.tailormap.api.configuration.base;
 
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
 import org.springframework.lang.NonNull;
@@ -18,35 +17,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.EncodedResourceResolver;
 import org.tailormap.api.configuration.CaseInsensitiveEnumConverter;
 import org.tailormap.api.persistence.json.GeoServiceProtocol;
-import org.tailormap.api.repository.ApplicationRepository;
-import org.tailormap.api.repository.ConfigurationRepository;
 import org.tailormap.api.scheduling.TaskType;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+  private final FrontControllerResolver frontControllerResolver;
   private final IndexHtmlTransformer indexHtmlTransformer;
 
   @Value("${spring.web.resources.static-locations:file:/home/spring/static/}")
   private String resourceLocations;
 
-  @Value("#{'${tailormap-api.supported-languages:en}'.split(',')}")
-  private List<String> supportedLanguages;
-
-  @Value("${spring.profiles.active:}")
-  private String activeProfile;
-
-  private final ConfigurationRepository configurationRepository;
-  private final ApplicationRepository applicationRepository;
-
   public WebMvcConfig(
-      IndexHtmlTransformer indexHtmlTransformer,
-      // Inject these repositories lazily because in the static-only profile these are not needed
-      // but also not configured
-      @Lazy ConfigurationRepository configurationRepository,
-      @Lazy ApplicationRepository applicationRepository) {
+      FrontControllerResolver frontControllerResolver, IndexHtmlTransformer indexHtmlTransformer) {
+    this.frontControllerResolver = frontControllerResolver;
     this.indexHtmlTransformer = indexHtmlTransformer;
-    this.configurationRepository = configurationRepository;
-    this.applicationRepository = applicationRepository;
   }
 
   @Override
@@ -56,19 +40,22 @@ public class WebMvcConfig implements WebMvcConfigurer {
         .addResourceLocations(resourceLocations.split(",", -1)[0])
         .setCacheControl(CacheControl.noStore());
     registry
+        // Add cache headers for frontend bundle resources with hash in filename and fonts/images
+        .addResourceHandler("/*/*.js", "/*/*.css", "/*/*.map", "/*/media/**", "/*/icons/**")
+        .addResourceLocations(resourceLocations.split(",", -1)[0])
+        .setCacheControl(CacheControl.maxAge(7, TimeUnit.DAYS).mustRevalidate())
+        .resourceChain(true)
+        .addResolver(new EncodedResourceResolver());
+    registry
         .addResourceHandler("/**")
         .addResourceLocations(resourceLocations.split(",", -1)[0])
         // no-cache means the browser must revalidate index.html with a conditional HTTP request
         // using If-Modified-Since. This is needed to always have the latest frontend loaded in the
         // browser after deployment of a new release.
         .setCacheControl(CacheControl.noCache())
-        .resourceChain(true)
-        .addResolver(
-            new FrontControllerResolver(
-                configurationRepository,
-                applicationRepository,
-                supportedLanguages,
-                activeProfile.contains("static-only")))
+        // Don't cache resources which can vary per user because of the Accept-Language header
+        .resourceChain(false)
+        .addResolver(frontControllerResolver)
         .addResolver(new EncodedResourceResolver())
         .addTransformer(indexHtmlTransformer);
   }
