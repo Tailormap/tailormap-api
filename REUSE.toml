@@ -1,0 +1,13 @@
+version = 1
+
+[[annotations]]
+path = ["src/main/resources/**", "src/test/resources/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Copyright (C) 2021 B3Partners B.V."
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = [".github/**", ".mvn/**", "README.md", ".git*", "src/site/**", "SECURITY.md", "codecov.yml", "CONTRIBUTORS.md", ".all-contributorsrc", "CITATION.cff"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "none"
+SPDX-License-Identifier = "CC0-1.0"

@@ -1,9 +1,0 @@
-Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-
-Files: src/main/resources/* src/test/resources/*
-Copyright: Copyright (C) 2021 B3Partners B.V.
-License: MIT
-
-Files: .github/* .mvn/* README.md .gitignore src/site/* SECURITY.md .gitattributes codecov.yml CONTRIBUTORS.md .all-contributorsrc CITATION.cff
-Copyright: none
-License: CC0-1.0
