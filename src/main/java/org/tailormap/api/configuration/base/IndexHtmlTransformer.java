@@ -20,7 +20,7 @@ import org.springframework.web.servlet.resource.TransformedResource;
 
 @Component
 public class IndexHtmlTransformer implements ResourceTransformer {
-  @Value("${tailormap-api.sentry.dsn}")
+  @Value("${tailormap-api.sentry.dsn:#{null}}")
   private String sentryDsn;
 
   @Override
