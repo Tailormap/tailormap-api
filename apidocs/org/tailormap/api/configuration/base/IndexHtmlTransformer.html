@@ -77,13 +77,13 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code>org.springframework.beans.factory.Aware</code>, <code>org.springframework.context.EnvironmentAware</code>, <code>org.springframework.web.servlet.resource.ResourceTransformer</code></dd>
+<dd><code>org.springframework.web.servlet.resource.ResourceTransformer</code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="annotations">@Component
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">IndexHtmlTransformer</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
-implements org.springframework.web.servlet.resource.ResourceTransformer, org.springframework.context.EnvironmentAware</span></div>
+implements org.springframework.web.servlet.resource.ResourceTransformer</span></div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -111,14 +111,11 @@ implements org.springframework.web.servlet.resource.ResourceTransformer, org.spr
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setEnvironment(org.springframework.core.env.Environment)" class="member-name-link">setEnvironment</a><wbr>(org.springframework.core.env.Environment&nbsp;environment)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.core.io.Resource</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#transform(jakarta.servlet.http.HttpServletRequest,org.springframework.core.io.Resource,org.springframework.web.servlet.resource.ResourceTransformerChain)" class="member-name-link">transform</a><wbr>(jakarta.servlet.http.HttpServletRequest&nbsp;request,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.core.io.Resource</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#transform(jakarta.servlet.http.HttpServletRequest,org.springframework.core.io.Resource,org.springframework.web.servlet.resource.ResourceTransformerChain)" class="member-name-link">transform</a><wbr>(jakarta.servlet.http.HttpServletRequest&nbsp;request,
  org.springframework.core.io.Resource&nbsp;resource,
  org.springframework.web.servlet.resource.ResourceTransformerChain&nbsp;transformerChain)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -150,17 +147,6 @@ implements org.springframework.web.servlet.resource.ResourceTransformer, org.spr
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
-<li>
-<section class="detail" id="setEnvironment(org.springframework.core.env.Environment)">
-<h3>setEnvironment</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setEnvironment</span><wbr><span class="parameters">(@NonNull
- org.springframework.core.env.Environment&nbsp;environment)</span></div>
-<dl class="notes">
-<dt>Specified by:</dt>
-<dd><code>setEnvironment</code>&nbsp;in interface&nbsp;<code>org.springframework.context.EnvironmentAware</code></dd>
-</dl>
-</section>
-</li>
 <li>
 <section class="detail" id="transform(jakarta.servlet.http.HttpServletRequest,org.springframework.core.io.Resource,org.springframework.web.servlet.resource.ResourceTransformerChain)">
 <h3>transform</h3>
