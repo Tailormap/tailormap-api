@@ -30,8 +30,8 @@ import org.tailormap.api.scheduling.TaskManagerService;
 import org.tailormap.api.scheduling.TaskType;
 
 /**
- * Event handler for Solr indexes; when a {@code SearchIndex} is created, updated or deleted a
- * {@code Task} is associated.
+ * Event handler for Solr indexes; when a {@code SearchIndex} is created, updated or deleted a {@code Task} is
+ * associated.
  */
 @Component
 @RepositoryEventHandler
@@ -42,8 +42,7 @@ public class SearchIndexEventHandler {
   private final Scheduler scheduler;
   private final TaskManagerService taskManagerService;
 
-  public SearchIndexEventHandler(
-      @Autowired Scheduler scheduler, @Autowired TaskManagerService taskManagerService) {
+  public SearchIndexEventHandler(@Autowired Scheduler scheduler, @Autowired TaskManagerService taskManagerService) {
     this.scheduler = scheduler;
     this.taskManagerService = taskManagerService;
   }
@@ -54,11 +53,10 @@ public class SearchIndexEventHandler {
    * @param searchIndex the search index that was deleted
    */
   @HandleAfterDelete
-  public void afterDeleteSearchIndexEventHandler(SearchIndex searchIndex)
-      throws SchedulerException {
+  public void afterDeleteSearchIndexEventHandler(SearchIndex searchIndex) throws SchedulerException {
     if (null != searchIndex.getSchedule()) {
-      JobKey jobKey =
-          taskManagerService.getJobKey(TaskType.INDEX, searchIndex.getSchedule().getUuid());
+      JobKey jobKey = taskManagerService.getJobKey(
+          TaskType.INDEX, searchIndex.getSchedule().getUuid());
 
       if (null != jobKey && scheduler.checkExists(jobKey)) {
         logger.info(
@@ -91,22 +89,19 @@ public class SearchIndexEventHandler {
         validateNoTaskExistsForIndex(searchIndex);
         // no task exists yet, create one
         logger.info("Creating new task associated with search index: {}", searchIndex.getName());
-        TMJobDataMap jobDataMap =
-            new TMJobDataMap(
-                Map.of(
-                    Task.TYPE_KEY,
-                    TaskType.INDEX,
-                    Task.DESCRIPTION_KEY,
-                    searchIndex.getSchedule().getDescription(),
-                    IndexTask.INDEX_KEY,
-                    searchIndex.getId().toString()));
+        TMJobDataMap jobDataMap = new TMJobDataMap(Map.of(
+            Task.TYPE_KEY,
+            TaskType.INDEX,
+            Task.DESCRIPTION_KEY,
+            searchIndex.getSchedule().getDescription(),
+            IndexTask.INDEX_KEY,
+            searchIndex.getId().toString()));
         if (null != searchIndex.getSchedule().getPriority()
             && searchIndex.getSchedule().getPriority() > 0) {
           jobDataMap.put(Task.PRIORITY_KEY, searchIndex.getSchedule().getPriority());
         }
-        final UUID uuid =
-            taskManagerService.createTask(
-                IndexTask.class, jobDataMap, searchIndex.getSchedule().getCronExpression());
+        final UUID uuid = taskManagerService.createTask(
+            IndexTask.class, jobDataMap, searchIndex.getSchedule().getCronExpression());
         searchIndex.getSchedule().setUuid(uuid);
       } else {
         // UUID given, task should exist; update it
@@ -115,16 +110,19 @@ public class SearchIndexEventHandler {
             searchIndex.getSchedule().getUuid(),
             searchIndex.getName());
 
-        JobKey jobKey =
-            taskManagerService.getJobKey(TaskType.INDEX, searchIndex.getSchedule().getUuid());
+        JobKey jobKey = taskManagerService.getJobKey(
+            TaskType.INDEX, searchIndex.getSchedule().getUuid());
         if (null != jobKey && scheduler.checkExists(jobKey)) {
           // the only things that may have changed are the cron expression, priority and description
           JobDataMap jobDataMap = scheduler.getJobDetail(jobKey).getJobDataMap();
-          jobDataMap.put(Task.DESCRIPTION_KEY, searchIndex.getSchedule().getDescription());
-          jobDataMap.put(Task.CRON_EXPRESSION_KEY, searchIndex.getSchedule().getCronExpression());
+          jobDataMap.put(
+              Task.DESCRIPTION_KEY, searchIndex.getSchedule().getDescription());
+          jobDataMap.put(
+              Task.CRON_EXPRESSION_KEY, searchIndex.getSchedule().getCronExpression());
           if (null != searchIndex.getSchedule().getPriority()
               && searchIndex.getSchedule().getPriority() > 0) {
-            jobDataMap.put(Task.PRIORITY_KEY, searchIndex.getSchedule().getPriority());
+            jobDataMap.put(
+                Task.PRIORITY_KEY, searchIndex.getSchedule().getPriority());
           }
 
           taskManagerService.updateTask(jobKey, new TMJobDataMap(jobDataMap));
@@ -142,26 +140,22 @@ public class SearchIndexEventHandler {
   private void validateNoTaskExistsForIndex(SearchIndex searchIndex) throws SchedulerException {
     Optional<JobDataMap> jobDataMapOptional =
         scheduler.getJobKeys(GroupMatcher.groupEquals(TaskType.INDEX.getValue())).stream()
-            .map(
-                jobKey -> {
-                  try {
-                    return scheduler.getJobDetail(jobKey).getJobDataMap();
-                  } catch (SchedulerException e) {
-                    logger.error("Error getting task detail", e);
-                    return null;
-                  }
-                })
+            .map(jobKey -> {
+              try {
+                return scheduler.getJobDetail(jobKey).getJobDataMap();
+              } catch (SchedulerException e) {
+                logger.error("Error getting task detail", e);
+                return null;
+              }
+            })
             .filter(Objects::nonNull)
-            .filter(
-                jobDataMap ->
-                    searchIndex.getId().equals(jobDataMap.getLongValue(IndexTask.INDEX_KEY)))
+            .filter(jobDataMap -> searchIndex.getId().equals(jobDataMap.getLongValue(IndexTask.INDEX_KEY)))
             .findFirst();
 
     if (jobDataMapOptional.isPresent()) {
       logger.warn("A scheduled task already exists for search index: {}", searchIndex.getName());
       throw new SchedulerException(
-          "A scheduled task already exists for search index: '%s'"
-              .formatted(searchIndex.getName()));
+          "A scheduled task already exists for search index: '%s'".formatted(searchIndex.getName()));
     }
   }
 }

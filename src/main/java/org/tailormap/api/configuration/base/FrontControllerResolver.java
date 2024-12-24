@@ -28,8 +28,7 @@ import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
 
 /**
- * Resolver which returns index.html for requests to paths created by the Angular routing module.
- * <br>
+ * Resolver which returns index.html for requests to paths created by the Angular routing module. <br>
  * When the user refreshes the page such routes are requested from the server.
  */
 @Component
@@ -53,8 +52,7 @@ public class FrontControllerResolver implements ResourceResolver, InitializingBe
   public FrontControllerResolver(
       // Inject these repositories lazily because in the static-only profile these are not needed
       // but also not configured
-      @Lazy ConfigurationRepository configurationRepository,
-      @Lazy ApplicationRepository applicationRepository) {
+      @Lazy ConfigurationRepository configurationRepository, @Lazy ApplicationRepository applicationRepository) {
     this.configurationRepository = configurationRepository;
     this.applicationRepository = applicationRepository;
   }
@@ -64,7 +62,8 @@ public class FrontControllerResolver implements ResourceResolver, InitializingBe
     this.staticOnly = activeProfile.contains("static-only");
 
     this.localeResolver = new AcceptHeaderLocaleResolver();
-    localeResolver.setSupportedLocales(supportedLanguages.stream().map(Locale::new).toList());
+    localeResolver.setSupportedLocales(
+        supportedLanguages.stream().map(Locale::new).toList());
     localeResolver.setDefaultLocale(localeResolver.getSupportedLocales().get(0));
   }
 
@@ -86,8 +85,7 @@ public class FrontControllerResolver implements ResourceResolver, InitializingBe
 
     // Check if the request path already starts with a locale prefix like en/ or nl/
     String localePrefix = StringUtils.left(requestPath, 2);
-    if ((localeBundlePrefixPattern.matcher(requestPath).matches()
-            && supportedLanguages.contains(localePrefix))
+    if ((localeBundlePrefixPattern.matcher(requestPath).matches() && supportedLanguages.contains(localePrefix))
         // When the request is just "GET /nl/" or "GET /nl" the requestPath is "nl" without a
         // trailing slash
         || supportedLanguages.contains(requestPath)) {
@@ -129,9 +127,7 @@ public class FrontControllerResolver implements ResourceResolver, InitializingBe
 
   @Override
   public String resolveUrlPath(
-      @NonNull String resourcePath,
-      @NonNull List<? extends Resource> locations,
-      ResourceResolverChain chain) {
+      @NonNull String resourcePath, @NonNull List<? extends Resource> locations, ResourceResolverChain chain) {
     return chain.resolveUrlPath(resourcePath, locations);
   }
 }

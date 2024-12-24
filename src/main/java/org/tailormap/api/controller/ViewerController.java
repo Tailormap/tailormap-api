@@ -67,14 +67,10 @@ public class ViewerController {
   // We can't parametrize viewerKind (/app/ and /service/) because they'd clash with /api/admin/...
   // so name the paths separately
   @GetMapping(
-      path = {
-        "${tailormap-api.base-path}/app/{viewerName}",
-        "${tailormap-api.base-path}/service/{viewerName}"
-      })
+      path = {"${tailormap-api.base-path}/app/{viewerName}", "${tailormap-api.base-path}/service/{viewerName}"})
   @Timed(value = "get_named_app", description = "Get named app")
   @Counted(value = "get_named_app", description = "Count of get named app")
-  public ViewerResponse viewer(
-      @ModelAttribute Application app, @ModelAttribute ViewerResponse.KindEnum viewerKind) {
+  public ViewerResponse viewer(@ModelAttribute Application app, @ModelAttribute ViewerResponse.KindEnum viewerKind) {
     ViewerResponse viewerResponse = app.getViewerResponse().kind(viewerKind);
 
     AppStyling styling = viewerResponse.getStyling();
@@ -92,11 +88,10 @@ public class ViewerController {
   public MapResponse map(@ModelAttribute Application app) {
     MapResponse mapResponse = applicationHelper.toMapResponse(app);
     mapResponse.getAppLayers().stream()
-        .filter(l -> l.getLegendImageUrl() != null && l.getLegendImageUrl().matches(UUID_REGEX))
-        .forEach(
-            l ->
-                l.setLegendImageUrl(
-                    uploadHelper.getUrlForImage(l.getLegendImageUrl(), Upload.CATEGORY_LEGEND)));
+        .filter(l ->
+            l.getLegendImageUrl() != null && l.getLegendImageUrl().matches(UUID_REGEX))
+        .forEach(l -> l.setLegendImageUrl(
+            uploadHelper.getUrlForImage(l.getLegendImageUrl(), Upload.CATEGORY_LEGEND)));
     return mapResponse;
   }
 }

@@ -30,8 +30,7 @@ public class OIDCConfigurationEventHandler {
     // If the user provided a "full" OIDC discovery URL, strip it.
     if (configuration.getIssuerUrl().endsWith("/.well-known/openid-configuration")) {
       String issuerUrl = configuration.getIssuerUrl();
-      issuerUrl =
-          issuerUrl.substring(0, issuerUrl.lastIndexOf("/.well-known/openid-configuration"));
+      issuerUrl = issuerUrl.substring(0, issuerUrl.lastIndexOf("/.well-known/openid-configuration"));
       configuration.setIssuerUrl(issuerUrl);
     }
   }

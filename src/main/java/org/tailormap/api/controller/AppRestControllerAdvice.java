@@ -68,10 +68,12 @@ public class AppRestControllerAdvice {
     }
     return ResponseEntity.status(ex.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
-        .body(
-            new ErrorResponse()
-                .message(ex.getReason() != null ? ex.getReason() : ex.getBody().getTitle())
-                .code(ex.getStatusCode().value()));
+        .body(new ErrorResponse()
+            .message(
+                ex.getReason() != null
+                    ? ex.getReason()
+                    : ex.getBody().getTitle())
+            .code(ex.getStatusCode().value()));
   }
 
   @ModelAttribute
@@ -136,11 +138,10 @@ public class AppRestControllerAdvice {
       return null;
     }
 
-    final AppTreeLayerNode layerNode =
-        app.getAllAppTreeLayerNode()
-            .filter(r -> r.getId().equals(appLayerId))
-            .findFirst()
-            .orElse(null);
+    final AppTreeLayerNode layerNode = app.getAllAppTreeLayerNode()
+        .filter(r -> r.getId().equals(appLayerId))
+        .findFirst()
+        .orElse(null);
     if (layerNode == null) {
       throw new ResponseStatusException(
           HttpStatus.NOT_FOUND, "Application layer with id " + appLayerId + " not found");
@@ -183,11 +184,10 @@ public class AppRestControllerAdvice {
       // No binding
       return null;
     }
-    GeoServiceLayer layer =
-        service.getLayers().stream()
-            .filter(l -> appTreeLayerNode.getLayerName().equals(l.getName()))
-            .findFirst()
-            .orElse(null);
+    GeoServiceLayer layer = service.getLayers().stream()
+        .filter(l -> appTreeLayerNode.getLayerName().equals(l.getName()))
+        .findFirst()
+        .orElse(null);
 
     if (layer != null && !authorizationService.mayUserRead(service, layer)) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);

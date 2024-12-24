@@ -43,7 +43,9 @@ import org.tailormap.api.persistence.Group;
 @TestPropertySource(properties = {"tailormap-api.solr-url=http://localhost:9999/solr"})
 class UnreachableSolrAdminControllerIntegrationTest {
 
-  @Autowired private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
+
   private MockMvc mockMvc;
 
   @Value("${tailormap-api.admin.base-path}")
@@ -60,8 +62,7 @@ class UnreachableSolrAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(1)
   void failingPingTest() throws Exception {
-    mockMvc
-        .perform(get(adminBasePath + "/index/ping").accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(adminBasePath + "/index/ping").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isInternalServerError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(500))
@@ -74,8 +75,7 @@ class UnreachableSolrAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(2)
   void failClearingIndex() throws Exception {
-    mockMvc
-        .perform(delete(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(delete(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isInternalServerError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(500))
@@ -88,8 +88,7 @@ class UnreachableSolrAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(3)
   void failRecreatingIndex() throws Exception {
-    mockMvc
-        .perform(put(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(put(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))

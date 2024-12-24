@@ -58,8 +58,7 @@ import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.viewer.model.LayerExportCapabilities;
 
 @AppRestController
-@RequestMapping(
-    path = "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/export/")
+@RequestMapping(path = "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/export/")
 public class LayerExportController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -88,17 +87,15 @@ public class LayerExportController {
 
       if (wfsTypeNameDescriptor != null) {
         try {
-          List<String> outputFormats =
-              SimpleWFSHelper.getOutputFormats(
-                  wfsTypeNameDescriptor.wfsUrl(),
-                  wfsTypeNameDescriptor.typeName(),
-                  wfsTypeNameDescriptor.username(),
-                  wfsTypeNameDescriptor.password());
+          List<String> outputFormats = SimpleWFSHelper.getOutputFormats(
+              wfsTypeNameDescriptor.wfsUrl(),
+              wfsTypeNameDescriptor.typeName(),
+              wfsTypeNameDescriptor.username(),
+              wfsTypeNameDescriptor.password());
           capabilities.setOutputFormats(outputFormats);
         } catch (Exception e) {
           String msg =
-              String.format(
-                  "Error getting capabilities for WFS \"%s\"", wfsTypeNameDescriptor.wfsUrl());
+              String.format("Error getting capabilities for WFS \"%s\"", wfsTypeNameDescriptor.wfsUrl());
           if (logger.isTraceEnabled()) {
             logger.trace(msg, e);
           } else {
@@ -107,8 +104,8 @@ public class LayerExportController {
           capabilities.setOutputFormats(null);
         }
       }
-      capabilities.setExportable(
-          capabilities.getOutputFormats() != null && !capabilities.getOutputFormats().isEmpty());
+      capabilities.setExportable(capabilities.getOutputFormats() != null
+          && !capabilities.getOutputFormats().isEmpty());
     }
 
     return ResponseEntity.status(HttpStatus.OK).body(capabilities);
@@ -160,7 +157,8 @@ public class LayerExportController {
     }
 
     // Get attributes in configured or original order
-    Set<String> nonHiddenAttributes = getConfiguredAttributes(tmft, appLayerSettings).keySet();
+    Set<String> nonHiddenAttributes =
+        getConfiguredAttributes(tmft, appLayerSettings).keySet();
 
     if (!attributes.isEmpty()) {
       // Only export non-hidden property names
@@ -192,8 +190,7 @@ public class LayerExportController {
       attributes.retainAll(wfsAttributeNames);
     } catch (IOException e) {
       logger.error("Error getting WFS feature type", e);
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body("Error getting WFS feature type");
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error getting WFS feature type");
     }
 
     return downloadFromWFS(
@@ -228,22 +225,22 @@ public class LayerExportController {
     if (sortBy != null) {
       getFeatureParameters.add("sortBy", sortBy + ("asc".equals(sortOrder) ? " A" : " D"));
     }
-    URI wfsGetFeature =
-        SimpleWFSHelper.getWFSRequestURL(wfsTypeName.wfsUrl(), "GetFeature", getFeatureParameters);
+    URI wfsGetFeature = SimpleWFSHelper.getWFSRequestURL(wfsTypeName.wfsUrl(), "GetFeature", getFeatureParameters);
 
     logger.info("Layer download, proxying WFS GetFeature request {}", wfsGetFeature);
     try {
       // TODO: close JPA connection before proxying
       HttpResponse<InputStream> response =
-          WFSProxy.proxyWfsRequest(
-              wfsGetFeature, wfsTypeName.username(), wfsTypeName.password(), request);
+          WFSProxy.proxyWfsRequest(wfsGetFeature, wfsTypeName.username(), wfsTypeName.password(), request);
 
       logger.info(
           "Layer download response code: {}, content type: {}, disposition: {}",
           response.statusCode(),
-          response.headers().firstValue("Content-Type").map(Object::toString).orElse("<none>"),
-          response
-              .headers()
+          response.headers()
+              .firstValue("Content-Type")
+              .map(Object::toString)
+              .orElse("<none>"),
+          response.headers()
               .firstValue("Content-Disposition")
               .map(Object::toString)
               .orElse("<none>"));
@@ -251,8 +248,7 @@ public class LayerExportController {
       InputStreamResource body = new InputStreamResource(response.body());
 
       org.springframework.http.HttpHeaders headers =
-          passthroughResponseHeaders(
-              response.headers(), Set.of("Content-Type", "Content-Disposition"));
+          passthroughResponseHeaders(response.headers(), Set.of("Content-Type", "Content-Disposition"));
 
       // TODO: record response size and time with micrometer
       return ResponseEntity.status(response.statusCode()).headers(headers).body(body);
@@ -261,11 +257,9 @@ public class LayerExportController {
     }
   }
 
-  private record WFSTypeNameDescriptor(
-      String wfsUrl, String typeName, String username, String password) {}
+  private record WFSTypeNameDescriptor(String wfsUrl, String typeName, String username, String password) {}
 
-  private WFSTypeNameDescriptor findWFSFeatureType(
-      GeoService service, GeoServiceLayer layer, TMFeatureType tmft) {
+  private WFSTypeNameDescriptor findWFSFeatureType(GeoService service, GeoServiceLayer layer, TMFeatureType tmft) {
 
     String wfsUrl = null;
     String typeName = null;
@@ -287,8 +281,7 @@ public class LayerExportController {
       // Try to find out the WFS by doing a DescribeLayer request (from OGC SLD spec)
       auth = service.getAuthentication();
 
-      SimpleWFSLayerDescription wfsLayerDescription =
-          getWFSLayerDescriptionForWMS(service, layer.getName());
+      SimpleWFSLayerDescription wfsLayerDescription = getWFSLayerDescriptionForWMS(service, layer.getName());
       if (wfsLayerDescription != null
           && wfsLayerDescription.wfsUrl() != null
           && wfsLayerDescription.getFirstTypeName() != null) {
@@ -312,13 +305,11 @@ public class LayerExportController {
     }
   }
 
-  private SimpleWFSLayerDescription getWFSLayerDescriptionForWMS(
-      GeoService wmsService, String layerName) {
+  private SimpleWFSLayerDescription getWFSLayerDescriptionForWMS(GeoService wmsService, String layerName) {
     String username = null;
     String password = null;
     if (wmsService.getAuthentication() != null
-        && wmsService.getAuthentication().getMethod()
-            == ServiceAuthentication.MethodEnum.PASSWORD) {
+        && wmsService.getAuthentication().getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
       username = wmsService.getAuthentication().getUsername();
       password = wmsService.getAuthentication().getPassword();
     }
@@ -342,11 +333,9 @@ public class LayerExportController {
    *
    * @param wfsTypeNameDescriptor provides the WFS feature type to get the attribute names for
    * @return a list of attribute names for the WFS feature type
-   * @throws IOException if there were any problems setting up (creating or connecting) the
-   *     datasource.
+   * @throws IOException if there were any problems setting up (creating or connecting) the datasource.
    */
-  private static List<String> getWFSAttributeNames(WFSTypeNameDescriptor wfsTypeNameDescriptor)
-      throws IOException {
+  private static List<String> getWFSAttributeNames(WFSTypeNameDescriptor wfsTypeNameDescriptor) throws IOException {
     Map<String, Object> connectionParameters = new HashMap<>();
     connectionParameters.put(
         WFSDataStoreFactory.URL.key,
@@ -363,11 +352,7 @@ public class LayerExportController {
 
     WFSDataStore wfs = new WFSDataStoreFactory().createDataStore(connectionParameters);
     List<String> attributeNames =
-        wfs
-            .getFeatureSource(wfsTypeNameDescriptor.typeName())
-            .getSchema()
-            .getAttributeDescriptors()
-            .stream()
+        wfs.getFeatureSource(wfsTypeNameDescriptor.typeName()).getSchema().getAttributeDescriptors().stream()
             .map(AttributeDescriptor::getLocalName)
             .toList();
 

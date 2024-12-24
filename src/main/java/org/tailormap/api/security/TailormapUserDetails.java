@@ -43,8 +43,7 @@ public class TailormapUserDetails implements UserDetails {
 
   @Override
   public boolean isAccountNonExpired() {
-    return user.getValidUntil() == null
-        || user.getValidUntil().isAfter(ZonedDateTime.now(ZoneId.systemDefault()));
+    return user.getValidUntil() == null || user.getValidUntil().isAfter(ZonedDateTime.now(ZoneId.systemDefault()));
   }
 
   @Override

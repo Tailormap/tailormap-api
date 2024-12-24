@@ -26,8 +26,7 @@ class TMJobDataMapTest {
   /** Test the creation using a map with all required parameters. */
   @Test
   void testMap() {
-    TMJobDataMap jobDataMap =
-        new TMJobDataMap(Map.of(Task.TYPE_KEY, "test", Task.DESCRIPTION_KEY, "test"));
+    TMJobDataMap jobDataMap = new TMJobDataMap(Map.of(Task.TYPE_KEY, "test", Task.DESCRIPTION_KEY, "test"));
     assertNotNull(jobDataMap, "JobDataMap should not be null");
     assertEquals("NONE", jobDataMap.getState().name(), "State should be NONE");
     assertEquals(5, jobDataMap.getPriority(), "Priority should be 5");
@@ -37,8 +36,7 @@ class TMJobDataMapTest {
   @Test
   void testMapWithPriority() {
     TMJobDataMap jobDataMap =
-        new TMJobDataMap(
-            Map.of(Task.TYPE_KEY, "test", Task.DESCRIPTION_KEY, "test", Task.PRIORITY_KEY, -1));
+        new TMJobDataMap(Map.of(Task.TYPE_KEY, "test", Task.DESCRIPTION_KEY, "test", Task.PRIORITY_KEY, -1));
     assertNotNull(jobDataMap, "JobDataMap should not be null");
     assertEquals("NONE", jobDataMap.getState().name(), "State should be NONE");
     assertEquals(0, jobDataMap.getPriority(), "Priority should be 0");

@@ -24,8 +24,7 @@ public class IndexHtmlTransformer implements ResourceTransformer {
   private String sentryDsn;
 
   @Override
-  @NonNull
-  public Resource transform(
+  @NonNull public Resource transform(
       @NonNull HttpServletRequest request,
       @NonNull Resource resource,
       @NonNull ResourceTransformerChain transformerChain)

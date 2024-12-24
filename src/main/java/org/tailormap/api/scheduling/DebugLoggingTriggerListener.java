@@ -32,14 +32,19 @@ public class DebugLoggingTriggerListener implements TriggerListener {
   @Override
   public void triggerFired(Trigger trigger, JobExecutionContext context) {
     if (logger.isDebugEnabled())
-      logger.debug("Trigger {}:{} fired.", trigger.getKey().getGroup(), trigger.getKey().getName());
+      logger.debug(
+          "Trigger {}:{} fired.",
+          trigger.getKey().getGroup(),
+          trigger.getKey().getName());
   }
 
   @Override
   public void triggerMisfired(Trigger trigger) {
     if (logger.isDebugEnabled())
       logger.warn(
-          "Trigger {}:{} misfired.", trigger.getKey().getGroup(), trigger.getKey().getName());
+          "Trigger {}:{} misfired.",
+          trigger.getKey().getGroup(),
+          trigger.getKey().getName());
   }
 
   @Override
@@ -58,7 +63,8 @@ public class DebugLoggingTriggerListener implements TriggerListener {
           triggerInstructionCode);
 
       logger.debug(
-          "Job data map after trigger complete: {}", context.getMergedJobDataMap().getWrappedMap());
+          "Job data map after trigger complete: {}",
+          context.getMergedJobDataMap().getWrappedMap());
     }
   }
 }

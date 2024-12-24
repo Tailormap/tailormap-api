@@ -25,9 +25,11 @@ public class Configuration {
 
   public static final String PORTAL_MENU = "portal-menu";
 
-  @Id private String key;
+  @Id
+  private String key;
 
-  @Version private Long version;
+  @Version
+  private Long version;
 
   @Column(columnDefinition = "text")
   private String value;

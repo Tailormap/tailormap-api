@@ -40,17 +40,18 @@ public class User {
   @Pattern(regexp = Constants.NAME_REGEX, message = "User" + Constants.NAME_REGEX_INVALID_MESSAGE)
   private String username;
 
-  @Version private Long version;
+  @Version
+  private Long version;
 
-  @NotNull
-  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  @NotNull @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   @JsonDeserialize(using = TMPasswordDeserializer.class)
   // bcrypt MAX/MIN length is 60 + {bcrypt} token, but for testing we use shorter plain text
   // passwords
   @Size(max = (8 + 60))
   private String password;
 
-  @Email private String email;
+  @Email
+  private String email;
 
   private String name;
 

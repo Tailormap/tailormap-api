@@ -54,8 +54,7 @@ import org.tailormap.api.viewer.model.UniqueValuesResponse;
 @AppRestController
 @Validated
 @RequestMapping(
-    path =
-        "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/unique/{attributeName}",
+    path = "${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/unique/{attributeName}",
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class UniqueValuesController {
   private static final Logger logger =
@@ -71,17 +70,14 @@ public class UniqueValuesController {
   private final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
 
   public UniqueValuesController(
-      FeatureSourceFactoryHelper featureSourceFactoryHelper,
-      FeatureSourceRepository featureSourceRepository) {
+      FeatureSourceFactoryHelper featureSourceFactoryHelper, FeatureSourceRepository featureSourceRepository) {
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
     this.featureSourceRepository = featureSourceRepository;
   }
 
   @Transactional
   @RequestMapping(method = {GET, POST})
-  @Timed(
-      value = "get_unique_attributes",
-      description = "time spent to process get unique attributes call")
+  @Timed(value = "get_unique_attributes", description = "time spent to process get unique attributes call")
   @Counted(value = "get_unique_attributes", description = "number of unique attributes calls")
   public ResponseEntity<Serializable> getUniqueAttributes(
       @ModelAttribute GeoService service,
@@ -106,10 +102,8 @@ public class UniqueValuesController {
     return ResponseEntity.status(HttpStatus.OK).body(uniqueValuesResponse);
   }
 
-  private UniqueValuesResponse getUniqueValues(
-      TMFeatureType tmft, String attributeName, String filter) {
-    final UniqueValuesResponse uniqueValuesResponse =
-        new UniqueValuesResponse().filterApplied(false);
+  private UniqueValuesResponse getUniqueValues(TMFeatureType tmft, String attributeName, String filter) {
+    final UniqueValuesResponse uniqueValuesResponse = new UniqueValuesResponse().filterApplied(false);
     SimpleFeatureSource fs = null;
     try {
       Filter existingFilter = null;
@@ -139,9 +133,8 @@ public class UniqueValuesController {
         logger.trace("Using feature visitor to get unique values");
         fs.getFeatures(q)
             .accepts(
-                feature ->
-                    uniqueValuesResponse.addValuesItem(
-                        feature.getProperty(attributeName).getValue()),
+                feature -> uniqueValuesResponse.addValuesItem(
+                    feature.getProperty(attributeName).getValue()),
                 null);
       } else {
         // #2 or use a Function to get the unique values

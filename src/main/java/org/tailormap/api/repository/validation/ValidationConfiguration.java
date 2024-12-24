@@ -38,8 +38,7 @@ public class ValidationConfiguration implements RepositoryRestConfigurer {
   }
 
   @Override
-  public void configureValidatingRepositoryEventListener(
-      ValidatingRepositoryEventListener validatingListener) {
+  public void configureValidatingRepositoryEventListener(ValidatingRepositoryEventListener validatingListener) {
     validatingListener
         .addValidator("beforeCreate", localValidatorFactoryBean)
         .addValidator("beforeSave", localValidatorFactoryBean)

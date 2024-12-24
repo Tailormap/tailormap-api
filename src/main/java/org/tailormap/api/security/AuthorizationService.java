@@ -23,16 +23,14 @@ import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
 
 /**
- * Validates access control rules. Any call to mayUserRead will verify that the currently logged in
- * user is not only allowed to read the current object, but any object above and below it in the
- * hierarchy.
+ * Validates access control rules. Any call to mayUserRead will verify that the currently logged in user is not only
+ * allowed to read the current object, but any object above and below it in the hierarchy.
  */
 @Service
 public class AuthorizationService {
   public static final String ACCESS_TYPE_READ = "read";
 
-  private Optional<AuthorizationRuleDecision> isAuthorizedByRules(
-      List<AuthorizationRule> rules, String type) {
+  private Optional<AuthorizationRuleDecision> isAuthorizedByRules(List<AuthorizationRule> rules, String type) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     Set<String> groups;
 
@@ -132,9 +130,9 @@ public class AuthorizationService {
   }
 
   /**
-   * To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo
-   * service when the application is public (accessible by anonymous users). Do not even allow
-   * proxying a secured service if the user is logged viewing a public app!
+   * To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo service when the
+   * application is public (accessible by anonymous users). Do not even allow proxying a secured service if the user
+   * is logged viewing a public app!
    *
    * @param application The application
    * @param geoService The geo service
@@ -148,10 +146,8 @@ public class AuthorizationService {
       return false;
     }
     return application.getAuthorizationRules().stream()
-        .anyMatch(
-            rule ->
-                Group.ANONYMOUS.equals(rule.getGroupName())
-                    && AuthorizationRuleDecision.ALLOW.equals(
-                        rule.getDecisions().get(ACCESS_TYPE_READ)));
+        .anyMatch(rule -> Group.ANONYMOUS.equals(rule.getGroupName())
+            && AuthorizationRuleDecision.ALLOW.equals(
+                rule.getDecisions().get(ACCESS_TYPE_READ)));
   }
 }

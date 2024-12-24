@@ -73,18 +73,20 @@ public class TMFeatureSource {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Version private Long version;
+  @Version
+  private Long version;
 
-  @Transient private boolean refreshCapabilities;
+  @Transient
+  private boolean refreshCapabilities;
 
   @Column(columnDefinition = "text")
   private String notes;
 
-  @NotNull
-  @Enumerated(EnumType.STRING)
+  @NotNull @Enumerated(EnumType.STRING)
   private TMFeatureSource.Protocol protocol;
 
-  @Basic private String title;
+  @Basic
+  private String title;
 
   @Column(length = 2048)
   private String url;

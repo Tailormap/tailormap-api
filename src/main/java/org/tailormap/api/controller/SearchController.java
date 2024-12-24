@@ -83,38 +83,26 @@ public class SearchController {
           "Layer '%s' does not have a search index".formatted(appTreeLayerNode.getLayerName()));
     }
 
-    final SearchIndex searchIndex =
-        searchIndexRepository
-            .findById(appLayerSettings.getSearchIndexId())
-            .orElseThrow(
-                () ->
-                    new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Layer '%s' does not have a search index"
-                            .formatted(appTreeLayerNode.getLayerName())));
+    final SearchIndex searchIndex = searchIndexRepository
+        .findById(appLayerSettings.getSearchIndexId())
+        .orElseThrow(() -> new ResponseStatusException(
+            HttpStatus.NOT_FOUND,
+            "Layer '%s' does not have a search index".formatted(appTreeLayerNode.getLayerName())));
 
     try (SolrClient solrClient = solrService.getSolrClientForSearching();
         SolrHelper solrHelper = new SolrHelper(solrClient).withQueryTimeout(solrQueryTimeout)) {
-      final SearchResponse searchResponse =
-          solrHelper.findInIndex(
-              searchIndex,
-              solrQuery,
-              solrFilterQuery,
-              solrPoint,
-              solrDistance,
-              start,
-              numResultsToReturn);
-      return (null == searchResponse.getDocuments() || searchResponse.getDocuments().isEmpty())
+      final SearchResponse searchResponse = solrHelper.findInIndex(
+          searchIndex, solrQuery, solrFilterQuery, solrPoint, solrDistance, start, numResultsToReturn);
+      return (null == searchResponse.getDocuments()
+              || searchResponse.getDocuments().isEmpty())
           ? ResponseEntity.noContent().build()
           : ResponseEntity.ok().body(searchResponse);
     } catch (SolrServerException | IOException e) {
       logger.error("Error while contacting Solr", e);
-      throw new ResponseStatusException(
-          HttpStatus.INTERNAL_SERVER_ERROR, "Error while searching", e);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error while searching", e);
     } catch (SolrException e) {
       logger.error("Error while searching", e);
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Error while searching with given query", e);
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error while searching with given query", e);
     }
   }
 }

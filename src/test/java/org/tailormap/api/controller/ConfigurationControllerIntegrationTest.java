@@ -23,17 +23,18 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 @AutoConfigureMockMvc
 class ConfigurationControllerIntegrationTest {
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-  @Autowired ConfigurationController configurationController;
+  @Autowired
+  ConfigurationController configurationController;
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
 
   @Test
   void testNotExist() throws Exception {
-    mockMvc
-        .perform(get(apiBasePath + "/config/doesNotExist"))
+    mockMvc.perform(get(apiBasePath + "/config/doesNotExist"))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
@@ -42,8 +43,7 @@ class ConfigurationControllerIntegrationTest {
 
   @Test
   void testNotAvailableForViewer() throws Exception {
-    mockMvc
-        .perform(get(apiBasePath + "/config/default-app"))
+    mockMvc.perform(get(apiBasePath + "/config/default-app"))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
@@ -52,8 +52,7 @@ class ConfigurationControllerIntegrationTest {
 
   @Test
   void test() throws Exception {
-    mockMvc
-        .perform(get(apiBasePath + "/config/test"))
+    mockMvc.perform(get(apiBasePath + "/config/test"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.key").value("test"))

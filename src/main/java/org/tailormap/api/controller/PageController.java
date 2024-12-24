@@ -62,13 +62,12 @@ public class PageController {
 
   @GetMapping(path = "${tailormap-api.base-path}/page")
   public PageResponse homePage() {
-    Page page =
-        configurationRepository
-            .findByKey(Configuration.HOME_PAGE)
-            .map(Configuration::getValue)
-            .map(Long::parseLong)
-            .flatMap(pageRepository::findById)
-            .orElseThrow(this::notFound);
+    Page page = configurationRepository
+        .findByKey(Configuration.HOME_PAGE)
+        .map(Configuration::getValue)
+        .map(Long::parseLong)
+        .flatMap(pageRepository::findById)
+        .orElseThrow(this::notFound);
     return getPageResponse(page);
   }
 
@@ -85,46 +84,37 @@ public class PageController {
   private PageResponse getPageResponse(Page page) {
     PageResponse pageResponse = new PageResponse();
     copyProperties(page, pageResponse);
-    pageResponse.tiles(
-        page.getTiles().stream()
-            .map(this::convert)
-            .filter(viewerPageTileResult -> !viewerPageTileResult.shouldBeFiltered)
-            .map(viewerPageTileResult -> viewerPageTileResult.viewerPageTile)
-            .toList());
+    pageResponse.tiles(page.getTiles().stream()
+        .map(this::convert)
+        .filter(viewerPageTileResult -> !viewerPageTileResult.shouldBeFiltered)
+        .map(viewerPageTileResult -> viewerPageTileResult.viewerPageTile)
+        .toList());
 
-    List<MenuItem> menuItems =
-        configurationRepository
-            .findByKey(Configuration.PORTAL_MENU)
-            .map(Configuration::getJsonValue)
-            .filter(JsonNode::isArray)
-            .map(
-                jsonNode -> {
-                  try {
-                    return Arrays.asList(
-                        new ObjectMapper().treeToValue(jsonNode, MenuItem[].class));
-                  } catch (IOException e) {
-                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, null, e);
-                  }
-                })
-            .orElse(Collections.emptyList());
+    List<MenuItem> menuItems = configurationRepository
+        .findByKey(Configuration.PORTAL_MENU)
+        .map(Configuration::getJsonValue)
+        .filter(JsonNode::isArray)
+        .map(jsonNode -> {
+          try {
+            return Arrays.asList(new ObjectMapper().treeToValue(jsonNode, MenuItem[].class));
+          } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, null, e);
+          }
+        })
+        .orElse(Collections.emptyList());
 
-    List<ViewerMenuItem> viewerMenuItems =
-        menuItems.stream()
-            .filter(
-                menuItem ->
-                    menuItem.getExclusiveOnPageId() == null
-                        || menuItem.getExclusiveOnPageId().equals(page.getId()))
-            .map(
-                menuItem -> {
-                  ViewerMenuItem viewerMenuItem = new ViewerMenuItem();
-                  copyProperties(menuItem, viewerMenuItem);
-                  Optional.ofNullable(menuItem.getPageId())
-                      .flatMap(pageRepository::findById)
-                      .ifPresent(
-                          linkedPage -> viewerMenuItem.pageUrl("/page/" + linkedPage.getName()));
-                  return viewerMenuItem;
-                })
-            .toList();
+    List<ViewerMenuItem> viewerMenuItems = menuItems.stream()
+        .filter(menuItem -> menuItem.getExclusiveOnPageId() == null
+            || menuItem.getExclusiveOnPageId().equals(page.getId()))
+        .map(menuItem -> {
+          ViewerMenuItem viewerMenuItem = new ViewerMenuItem();
+          copyProperties(menuItem, viewerMenuItem);
+          Optional.ofNullable(menuItem.getPageId())
+              .flatMap(pageRepository::findById)
+              .ifPresent(linkedPage -> viewerMenuItem.pageUrl("/page/" + linkedPage.getName()));
+          return viewerMenuItem;
+        })
+        .toList();
     pageResponse.setMenu(viewerMenuItems);
 
     return pageResponse;
@@ -132,8 +122,7 @@ public class PageController {
 
   /**
    * @param tile The page tile configuration
-   * @return A page tile for the viewer with a boolean set to whether the tile should not be shown
-   *     (filtered).
+   * @return A page tile for the viewer with a boolean set to whether the tile should not be shown (filtered).
    */
   private ViewerPageTileResult convert(PageTile tile) {
     ViewerPageTile viewerPageTile = new ViewerPageTile();
@@ -145,10 +134,8 @@ public class PageController {
     if (tile.getApplicationId() != null) {
       Optional.ofNullable(tile.getApplicationId())
           .flatMap(applicationRepository::findById)
-          .filter(
-              application ->
-                  !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
-                      || authorizationService.mayUserRead(application))
+          .filter(application -> !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
+              || authorizationService.mayUserRead(application))
           .ifPresentOrElse(
               application -> {
                 viewerPageTile.applicationUrl("/app/" + application.getName());
@@ -162,8 +149,7 @@ public class PageController {
         .flatMap(pageRepository::findById)
         .ifPresent(linkedPage -> viewerPageTile.pageUrl("/page/" + linkedPage.getName()));
 
-    viewerPageTile.image(
-        uploadHelper.getUrlForImage(tile.getImage(), Upload.CATEGORY_PORTAL_IMAGE));
+    viewerPageTile.image(uploadHelper.getUrlForImage(tile.getImage(), Upload.CATEGORY_PORTAL_IMAGE));
 
     return result;
   }

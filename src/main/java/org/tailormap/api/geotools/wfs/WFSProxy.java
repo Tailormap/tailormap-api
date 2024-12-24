@@ -19,8 +19,7 @@ import java.util.Set;
 
 public class WFSProxy {
   public static HttpResponse<InputStream> proxyWfsRequest(
-      URI wfsRequest, String username, String password, HttpServletRequest request)
-      throws Exception {
+      URI wfsRequest, String username, String password, HttpServletRequest request) throws Exception {
     final HttpClient httpClient = HttpClient.newBuilder().build();
 
     HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(wfsRequest);

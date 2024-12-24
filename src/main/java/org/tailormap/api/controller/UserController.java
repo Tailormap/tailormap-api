@@ -40,9 +40,7 @@ public class UserController {
   private final GroupRepository groupRepository;
 
   public UserController(
-      OIDCRepository oidcRepository,
-      UserRepository userRepository,
-      GroupRepository groupRepository) {
+      OIDCRepository oidcRepository, UserRepository userRepository, GroupRepository groupRepository) {
     this.oidcRepository = oidcRepository;
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
@@ -56,16 +54,14 @@ public class UserController {
   @GetMapping(path = "${tailormap-api.base-path}/user", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Serializable> getUser() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    boolean isAuthenticated =
-        authentication != null && !(authentication instanceof AnonymousAuthenticationToken);
+    boolean isAuthenticated = authentication != null && !(authentication instanceof AnonymousAuthenticationToken);
 
     UserResponse userResponse = new UserResponse().isAuthenticated(isAuthenticated);
     if (isAuthenticated) {
       userResponse.username(authentication.getName());
-      userResponse.setRoles(
-          authentication.getAuthorities().stream()
-              .map(GrantedAuthority::getAuthority)
-              .collect(Collectors.toSet()));
+      userResponse.setRoles(authentication.getAuthorities().stream()
+          .map(GrantedAuthority::getAuthority)
+          .collect(Collectors.toSet()));
 
       // Public user and group properties are meant for a (modified) frontend to implement custom
       // logic depending on who's logged in. When used for authorization to something the check
@@ -98,20 +94,17 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.OK).body(userResponse);
   }
 
-  @GetMapping(
-      path = "${tailormap-api.base-path}/login/configuration",
-      produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(path = "${tailormap-api.base-path}/login/configuration", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<LoginConfiguration> getSSOEndpoints() {
     LoginConfiguration result = new LoginConfiguration();
 
     for (ClientRegistration reg : oidcRepository) {
       OIDCRepository.OIDCRegistrationMetadata metadata =
           oidcRepository.getMetadataForRegistrationId(reg.getRegistrationId());
-      result.addSsoLinksItem(
-          new LoginConfigurationSsoLinksInner()
-              .name(reg.getClientName())
-              .url("/api/oauth2/authorization/" + reg.getRegistrationId())
-              .showForViewer(metadata.getShowForViewer()));
+      result.addSsoLinksItem(new LoginConfigurationSsoLinksInner()
+          .name(reg.getClientName())
+          .url("/api/oauth2/authorization/" + reg.getRegistrationId())
+          .showForViewer(metadata.getShowForViewer()));
     }
 
     return ResponseEntity.status(HttpStatus.OK).body(result);

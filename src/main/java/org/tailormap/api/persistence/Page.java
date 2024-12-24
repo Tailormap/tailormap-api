@@ -28,24 +28,18 @@ public class Page {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Version private Long version;
+  @Version
+  private Long version;
 
-  /**
-   * Used by the frontend that displays pages to determine how to show the page, a string like
-   * 'page'.
-   */
+  /** Used by the frontend that displays pages to determine how to show the page, a string like 'page'. */
   private String type;
 
   @Column(unique = true)
-  @NotNull
-  private String name;
+  @NotNull private String name;
 
   private String title;
 
-  /**
-   * Content of the page, interpreted by the page display frontend, can contain Markdown for
-   * example.
-   */
+  /** Content of the page, interpreted by the page display frontend, can contain Markdown for example. */
   @Column(columnDefinition = "text")
   private String content;
 

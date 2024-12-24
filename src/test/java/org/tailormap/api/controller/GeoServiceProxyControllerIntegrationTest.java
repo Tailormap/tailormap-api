@@ -69,13 +69,14 @@ class GeoServiceProxyControllerIntegrationTest {
   private final String pdokWmsGemeentegebiedUrl =
       "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/proxy/wms";
 
-  @Autowired private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
 
   private MockMvc mockMvc;
 
-  private static final String expectedImagesPath =
-      Objects.requireNonNull(GeoServiceProxyControllerIntegrationTest.class.getResource("./"))
-          .getPath();
+  private static final String expectedImagesPath = Objects.requireNonNull(
+          GeoServiceProxyControllerIntegrationTest.class.getResource("./"))
+      .getPath();
 
   @BeforeAll
   void initialize() {
@@ -88,8 +89,7 @@ class GeoServiceProxyControllerIntegrationTest {
   @Test
   void test_proxied_legend_from_capabilities_unauthorized() throws Exception {
     final String path = apiBasePath + begroeidterreindeelLegendUrl;
-    mockMvc
-        .perform(get(path).param("SCALE", "693745.6953993673").with(setServletPath(path)))
+    mockMvc.perform(get(path).param("SCALE", "693745.6953993673").with(setServletPath(path)))
         .andExpect(status().isUnauthorized());
   }
 
@@ -97,54 +97,42 @@ class GeoServiceProxyControllerIntegrationTest {
   @WithMockUser(username = "user")
   void test_proxied_legend_from_capabilities(TestInfo testInfo) throws Exception {
     final String path = apiBasePath + begroeidterreindeelLegendUrl;
-    MvcResult result =
-        mockMvc
-            .perform(
-                get(path)
-                    .param("SCALE", "693745.6953993673")
-                    .with(setServletPath(path))
-                    .accept(MediaType.IMAGE_PNG))
-            .andExpect(status().isOk())
-            .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
-            .andExpect(
-                header()
-                    .string(
-                        "Content-Disposition", "inline; filename=geoserver-GetLegendGraphic.image"))
-            .andReturn();
-    assertImagesEqual(
-        expectedImagesPath + "begroeidterreindeelLegend_expected.png", result, testInfo);
+    MvcResult result = mockMvc.perform(get(path)
+            .param("SCALE", "693745.6953993673")
+            .with(setServletPath(path))
+            .accept(MediaType.IMAGE_PNG))
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
+        .andExpect(header().string("Content-Disposition", "inline; filename=geoserver-GetLegendGraphic.image"))
+        .andReturn();
+    assertImagesEqual(expectedImagesPath + "begroeidterreindeelLegend_expected.png", result, testInfo);
   }
 
   @Test
   @WithMockUser(username = "user")
   void test_proxied_legend_from_capabilities2(TestInfo testInfo) throws Exception {
     final String path = apiBasePath + pdokWmsProvinciegebiedLegendUrl;
-    MvcResult result =
-        mockMvc
-            .perform(get(path).with(setServletPath(path)))
-            .andExpect(status().isOk())
-            .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
-            .andExpect(header().string("Content-Length", new StringIsNotZeroMatcher()))
-            .andReturn();
+    MvcResult result = mockMvc.perform(get(path).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
+        .andExpect(header().string("Content-Length", new StringIsNotZeroMatcher()))
+        .andReturn();
 
-    assertImagesEqual(
-        expectedImagesPath + "pdokWmsProvinciegebiedLegend_expected.png", result, testInfo);
+    assertImagesEqual(expectedImagesPath + "pdokWmsProvinciegebiedLegend_expected.png", result, testInfo);
   }
 
-  private static void assertImagesEqual(
-      String expectedImageFileName, MvcResult result, TestInfo testInfo) throws Exception {
+  private static void assertImagesEqual(String expectedImageFileName, MvcResult result, TestInfo testInfo)
+      throws Exception {
     BufferedImage expectedImage = ImageComparisonUtil.readImageFromResources(expectedImageFileName);
 
     BufferedImage actualImage =
         ImageIO.read(new ByteArrayInputStream(result.getResponse().getContentAsByteArray()));
-    ImageIO.write(
-        actualImage, "png", new File("./target/" + testInfo.getDisplayName() + "_actual.png"));
+    ImageIO.write(actualImage, "png", new File("./target/" + testInfo.getDisplayName() + "_actual.png"));
 
-    ImageComparisonResult imageComparisonResult =
-        new ImageComparison(expectedImage, actualImage)
-            .setAllowingPercentOfDifferentPixels(5)
-            .setDestination(new File("./target/" + testInfo.getDisplayName() + "_comparison.png"))
-            .compareImages();
+    ImageComparisonResult imageComparisonResult = new ImageComparison(expectedImage, actualImage)
+        .setAllowingPercentOfDifferentPixels(5)
+        .setDestination(new File("./target/" + testInfo.getDisplayName() + "_comparison.png"))
+        .compareImages();
 
     assertEquals(ImageComparisonState.MATCH, imageComparisonResult.getImageComparisonState());
   }
@@ -152,8 +140,7 @@ class GeoServiceProxyControllerIntegrationTest {
   @Test
   void app_not_found_404() throws Exception {
     final String path = apiBasePath + "/app/1234/layer/76/proxy/wms";
-    mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+    mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Not Found"));
@@ -162,19 +149,16 @@ class GeoServiceProxyControllerIntegrationTest {
   @Test
   void deny_non_proxied_service() throws Exception {
     final String path = apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:BGT/proxy/wms";
-    mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+    mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isForbidden())
         .andExpect(jsonPath("$.message").value("Proxy not enabled for requested service"));
   }
 
   @Test
   void deny_wrong_protocol() throws Exception {
-    final String path =
-        apiBasePath
-            + "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wmts";
-    mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+    final String path = apiBasePath
+        + "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wmts";
+    mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value("Invalid proxy protocol: wmts"));
   }
@@ -182,57 +166,47 @@ class GeoServiceProxyControllerIntegrationTest {
   @Test
   void allow_http_post() throws Exception {
     final String path = apiBasePath + begroeidterreindeelUrl;
-    mockMvc
-        .perform(post(path).param("REQUEST", "GetCapabilities").with(setServletPath(path)))
+    mockMvc.perform(post(path).param("REQUEST", "GetCapabilities").with(setServletPath(path)))
         .andExpect(status().isOk());
   }
 
   @Test
   void allow_http_get() throws Exception {
     final String path = apiBasePath + begroeidterreindeelUrl;
-    mockMvc
-        .perform(get(path).param("REQUEST", "GetCapabilities").with(setServletPath(path)))
+    mockMvc.perform(get(path).param("REQUEST", "GetCapabilities").with(setServletPath(path)))
         .andExpect(status().isOk());
   }
 
   @Test
   void test_pdok_wms_GetCapabilities() throws Exception {
     final String path = apiBasePath + pdokWmsGemeentegebiedUrl;
-    mockMvc
-        .perform(
-            get(path)
-                .param("REQUEST", "GetCapabilities")
-                .param("SERVICE", "WMS")
-                .with(setServletPath(path))
-                .header("User-Agent", "Pietje"))
+    mockMvc.perform(get(path)
+            .param("REQUEST", "GetCapabilities")
+            .param("SERVICE", "WMS")
+            .with(setServletPath(path))
+            .header("User-Agent", "Pietje"))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_XML))
         .andExpect(
-            content()
-                .string(
-                    startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<WMS_Capabilities")));
+            content().string(startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<WMS_Capabilities")));
   }
 
   @Test
   void test_pdok_wms_GetMap() throws Exception {
     final String path = apiBasePath + pdokWmsGemeentegebiedUrl;
-    mockMvc
-        .perform(
-            get(path)
-                .param("REQUEST", "GetMap")
-                .param("VERSION", "1.1.1")
-                .param("FORMAT", "image/png")
-                .param("TRANSPARENT", "TRUE")
-                .param("LAYERS", "Gemeentegebied")
-                .param("SRS", "EPSG:28992")
-                .param("STYLES", "")
-                .param("WIDTH", "1431")
-                .param("HEIGHT", "1152")
-                .param(
-                    "BBOX",
-                    "5864.898958858859,340575.3140154673,283834.9241914773,564349.9255234873")
-                .param("SERVICE", "WMS")
-                .with(setServletPath(path)))
+    mockMvc.perform(get(path)
+            .param("REQUEST", "GetMap")
+            .param("VERSION", "1.1.1")
+            .param("FORMAT", "image/png")
+            .param("TRANSPARENT", "TRUE")
+            .param("LAYERS", "Gemeentegebied")
+            .param("SRS", "EPSG:28992")
+            .param("STYLES", "")
+            .param("WIDTH", "1431")
+            .param("HEIGHT", "1152")
+            .param("BBOX", "5864.898958858859,340575.3140154673,283834.9241914773,564349.9255234873")
+            .param("SERVICE", "WMS")
+            .with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
         .andExpect(header().string("Content-Length", new StringIsNotZeroMatcher()));
@@ -241,17 +215,15 @@ class GeoServiceProxyControllerIntegrationTest {
   @Test
   void test_pdok_wms_GetLegendGraphic() throws Exception {
     final String path = apiBasePath + pdokWmsGemeentegebiedUrl;
-    mockMvc
-        .perform(
-            get(path)
-                .param("REQUEST", "GetLegendGraphic")
-                .param("VERSION", "1.1.1")
-                .param("FORMAT", "image/png")
-                .param("LAYER", "Gemeentegebied")
-                .param("STYLE", "Gemeentegebied")
-                .param("SCALE", "693745.6953993673")
-                .param("SERVICE", "WMS")
-                .with(setServletPath(path)))
+    mockMvc.perform(get(path)
+            .param("REQUEST", "GetLegendGraphic")
+            .param("VERSION", "1.1.1")
+            .param("FORMAT", "image/png")
+            .param("LAYER", "Gemeentegebied")
+            .param("STYLE", "Gemeentegebied")
+            .param("SCALE", "693745.6953993673")
+            .param("SERVICE", "WMS")
+            .with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
         .andExpect(header().string("Content-Length", new StringIsNotZeroMatcher()));
@@ -259,37 +231,30 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   void test_wms_secured_proxy_not_in_public_app() throws Exception {
-    final String path =
-        apiBasePath + "/app/default/layer/lyr:openbasiskaart-proxied:osm/proxy/wmts";
-    mockMvc
-        .perform(
-            get(path)
-                .param("REQUEST", "GetCapabilities")
-                .param("VERSION", "1.1.1")
-                .with(setServletPath(path)))
+    final String path = apiBasePath + "/app/default/layer/lyr:openbasiskaart-proxied:osm/proxy/wmts";
+    mockMvc.perform(get(path)
+            .param("REQUEST", "GetCapabilities")
+            .param("VERSION", "1.1.1")
+            .with(setServletPath(path)))
         .andExpect(status().isForbidden())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Forbidden"));
 
     final String path2 = apiBasePath + layerProxiedWithAuthInPublicApp + "/proxy/wms";
-    mockMvc
-        .perform(
-            get(path2)
-                .param("REQUEST", "GetCapabilities")
-                .param("VERSION", "1.1.0")
-                .with(setServletPath(path2)))
+    mockMvc.perform(get(path2)
+            .param("REQUEST", "GetCapabilities")
+            .param("VERSION", "1.1.0")
+            .with(setServletPath(path2)))
         .andExpect(status().isForbidden());
   }
 
   private ResultActions performLoggedInRequiredAppLayerProxyRequest() throws Exception {
     final String path =
-        apiBasePath
-            + "/app/secured/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wms";
-    return mockMvc.perform(
-        get(path)
-            .param("REQUEST", "GetCapabilities")
-            .param("VERSION", "1.1.1")
-            .with(setServletPath(path)));
+        apiBasePath + "/app/secured/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wms";
+    return mockMvc.perform(get(path)
+        .param("REQUEST", "GetCapabilities")
+        .param("VERSION", "1.1.1")
+        .with(setServletPath(path)));
   }
 
   @Test
@@ -314,13 +279,11 @@ class GeoServiceProxyControllerIntegrationTest {
   @WithMockUser(username = "user")
   void test_obk_wmts_GetCapabilities() throws Exception {
     final String path = apiBasePath + obkUrl;
-    mockMvc
-        .perform(
-            get(path)
-                .param("SERVICE", "WMTS")
-                .param("REQUEST", "GetCapabilities")
-                .param("VERSION", "1.0.0")
-                .with(setServletPath(path)))
+    mockMvc.perform(get(path)
+            .param("SERVICE", "WMTS")
+            .param("REQUEST", "GetCapabilities")
+            .param("VERSION", "1.0.0")
+            .with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
         .andExpect(content().string(containsString("<TileMatrix")));
@@ -330,20 +293,18 @@ class GeoServiceProxyControllerIntegrationTest {
   @WithMockUser(username = "user")
   void test_obk_wmts_GetTile() throws Exception {
     final String path = apiBasePath + obkUrl;
-    mockMvc
-        .perform(
-            get(path)
-                .param("SERVICE", "WMTS")
-                .param("VERSION", "1.0.0")
-                .param("REQUEST", "GetTile")
-                .param("LAYER", "osm")
-                .param("STYLE", "default")
-                .param("FORMAT", "image/png")
-                .param("TILEMATRIXSET", "rd")
-                .param("TILEMATRIX", "4")
-                .param("TILEROW", "7")
-                .param("TILECOL", "8")
-                .with(setServletPath(path)))
+    mockMvc.perform(get(path)
+            .param("SERVICE", "WMTS")
+            .param("VERSION", "1.0.0")
+            .param("REQUEST", "GetTile")
+            .param("LAYER", "osm")
+            .param("STYLE", "default")
+            .param("FORMAT", "image/png")
+            .param("TILEMATRIXSET", "rd")
+            .param("TILEMATRIX", "4")
+            .param("TILEROW", "7")
+            .param("TILECOL", "8")
+            .with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG))
         .andExpect(header().string("Content-Length", new StringIsNotZeroMatcher()))
@@ -355,24 +316,22 @@ class GeoServiceProxyControllerIntegrationTest {
   void test_obk_wmts_GetTile_Conditional() throws Exception {
     final String path = apiBasePath + obkUrl;
 
-    final DateTimeFormatter httpDateHeaderFormatter =
-        DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH)
-            .withZone(ZoneId.of("GMT"));
-    mockMvc
-        .perform(
-            get(path)
-                .param("SERVICE", "WMTS")
-                .param("VERSION", "1.0.0")
-                .param("REQUEST", "GetTile")
-                .param("LAYER", "osm")
-                .param("STYLE", "default")
-                .param("FORMAT", "image/png")
-                .param("TILEMATRIXSET", "rd")
-                .param("TILEMATRIX", "4")
-                .param("TILEROW", "7")
-                .param("TILECOL", "8")
-                .with(setServletPath(path))
-                .header("If-Modified-Since", httpDateHeaderFormatter.format(Instant.now())))
+    final DateTimeFormatter httpDateHeaderFormatter = DateTimeFormatter.ofPattern(
+            "EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH)
+        .withZone(ZoneId.of("GMT"));
+    mockMvc.perform(get(path)
+            .param("SERVICE", "WMTS")
+            .param("VERSION", "1.0.0")
+            .param("REQUEST", "GetTile")
+            .param("LAYER", "osm")
+            .param("STYLE", "default")
+            .param("FORMAT", "image/png")
+            .param("TILEMATRIXSET", "rd")
+            .param("TILEMATRIX", "4")
+            .param("TILEROW", "7")
+            .param("TILECOL", "8")
+            .with(setServletPath(path))
+            .header("If-Modified-Since", httpDateHeaderFormatter.format(Instant.now())))
         .andExpect(status().isNotModified());
   }
 

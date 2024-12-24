@@ -19,6 +19,5 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
   @PreAuthorize("permitAll()")
   @Override
-  @NonNull
-  Optional<Application> findById(@NonNull Long aLong);
+  @NonNull Optional<Application> findById(@NonNull Long aLong);
 }

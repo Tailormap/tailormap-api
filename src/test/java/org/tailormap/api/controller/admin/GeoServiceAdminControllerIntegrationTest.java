@@ -39,7 +39,8 @@ import org.tailormap.api.persistence.Group;
  */
 @PostgresIntegrationTest
 class GeoServiceAdminControllerIntegrationTest {
-  @Autowired private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
 
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
@@ -70,44 +71,37 @@ class GeoServiceAdminControllerIntegrationTest {
       username = "admin",
       authorities = {Group.ADMIN})
   void refreshCapabilities() throws Exception {
-    MockMvc mockMvc =
-        MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
     String body = getResourceString(wmsTestCapabilities);
-    final Headers contentType =
-        new Headers(new String[] {"Content-Type", "application/vnd.ogc.wms_xml"});
+    final Headers contentType = new Headers(new String[] {"Content-Type", "application/vnd.ogc.wms_xml"});
 
     try (MockWebServer server = new MockWebServer()) {
-      server.enqueue(new MockResponse.Builder().headers(contentType).body(body).build());
+      server.enqueue(
+          new MockResponse.Builder().headers(contentType).body(body).build());
       server.start();
 
       String url = server.url("/test-wms").toString();
       String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
 
-      MvcResult result =
-          mockMvc
-              .perform(
-                  post(adminBasePath + "/geo-services")
-                      .contentType(MediaType.APPLICATION_JSON)
-                      .content(geoServicePOSTBody))
-              .andExpect(status().isCreated())
-              .andExpect(jsonPath("$.id").isNotEmpty())
-              .andExpect(jsonPath("$.layers").isArray())
-              .andExpect(jsonPath("$.layers.length()").value(2))
-              .andExpect(jsonPath("$.layers[0].title").value("Test Layer 1"))
-              .andExpect(jsonPath("$.layers[0].crs.length()").value(4))
-              .andExpect(
-                  jsonPath(
-                      "$.layers[0].crs",
-                      Matchers.containsInAnyOrder(
-                          "EPSG:900913", "EPSG:4326", "EPSG:3857", "EPSG:28992")))
-              .andExpect(jsonPath("$.layers[1].name").value("Layer2"))
-              // Child layer inherits all parent CRSes, should not duplicate those to save space
-              .andExpect(jsonPath("$.layers[1].crs.length()").value(0))
-              .andReturn();
+      MvcResult result = mockMvc.perform(post(adminBasePath + "/geo-services")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(geoServicePOSTBody))
+          .andExpect(status().isCreated())
+          .andExpect(jsonPath("$.id").isNotEmpty())
+          .andExpect(jsonPath("$.layers").isArray())
+          .andExpect(jsonPath("$.layers.length()").value(2))
+          .andExpect(jsonPath("$.layers[0].title").value("Test Layer 1"))
+          .andExpect(jsonPath("$.layers[0].crs.length()").value(4))
+          .andExpect(jsonPath(
+              "$.layers[0].crs",
+              Matchers.containsInAnyOrder("EPSG:900913", "EPSG:4326", "EPSG:3857", "EPSG:28992")))
+          .andExpect(jsonPath("$.layers[1].name").value("Layer2"))
+          // Child layer inherits all parent CRSes, should not duplicate those to save space
+          .andExpect(jsonPath("$.layers[1].crs.length()").value(0))
+          .andReturn();
       String serviceId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
-      String selfLink =
-          JsonPath.read(result.getResponse().getContentAsString(), "$._links.self.href");
+      String selfLink = JsonPath.read(result.getResponse().getContentAsString(), "$._links.self.href");
 
       assertEquals(
           "GetCapabilities",
@@ -115,13 +109,10 @@ class GeoServiceAdminControllerIntegrationTest {
 
       // This capabilities document has an extra layer
       body = getResourceString(wmsTestCapabilitiesUpdated);
-      server.enqueue(new MockResponse.Builder().headers(contentType).body(body).build());
+      server.enqueue(
+          new MockResponse.Builder().headers(contentType).body(body).build());
 
-      mockMvc
-          .perform(
-              post(
-                  adminBasePath
-                      + String.format("/geo-services/%s/refresh-capabilities", serviceId)))
+      mockMvc.perform(post(adminBasePath + String.format("/geo-services/%s/refresh-capabilities", serviceId)))
           .andExpect(status().isFound())
           .andExpect(header().string("Location", equalTo(selfLink)));
 
@@ -129,16 +120,14 @@ class GeoServiceAdminControllerIntegrationTest {
           "GetCapabilities",
           Objects.requireNonNull(server.takeRequest().getRequestUrl()).queryParameter("REQUEST"));
 
-      mockMvc
-          .perform(get(selfLink).accept(MediaType.APPLICATION_JSON))
+      mockMvc.perform(get(selfLink).accept(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.id").isNotEmpty())
           .andExpect(jsonPath("$.layers").isArray())
           .andExpect(jsonPath("$.layers.length()").value(3))
           .andExpect(jsonPath("$.layers[0].title").value("Test Layer 1"))
           .andExpect(jsonPath("$.layers[0].crs.length()").value(2))
-          .andExpect(
-              jsonPath("$.layers[0].crs", Matchers.containsInAnyOrder("EPSG:28992", "EPSG:900913")))
+          .andExpect(jsonPath("$.layers[0].crs", Matchers.containsInAnyOrder("EPSG:28992", "EPSG:900913")))
           .andExpect(jsonPath("$.layers[0].children[0]").value(1))
           .andExpect(jsonPath("$.layers[0].children[1]").value(2))
           .andExpect(jsonPath("$.layers[1].name").value("Layer2"))
@@ -153,8 +142,8 @@ class GeoServiceAdminControllerIntegrationTest {
   }
 
   /**
-   * Tests whether {@link AdminRepositoryRestExceptionHandler} is applied and converting validation
-   * exceptions to JSON.
+   * Tests whether {@link AdminRepositoryRestExceptionHandler} is applied and converting validation exceptions to
+   * JSON.
    */
   @Test
   @WithMockUser(
@@ -162,34 +151,27 @@ class GeoServiceAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   void refreshCapabilitiesSendsJsonValidationErrors() throws Exception {
 
-    MockMvc mockMvc =
-        MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
     // Create a GeoService without loading capabilities, with a valid URL but which points to an
     // invalid host. In the normal admin a user can change the URL of a service and the frontend
     // won't send refreshCapabilities but will ask to explicitly refresh the capabilities after
     // saving.
 
-    String geoServicePOSTBody =
-        getGeoServicePOSTBody("http://offline.invalid/")
-            .put("refreshCapabilities", false)
-            .toPrettyString();
+    String geoServicePOSTBody = getGeoServicePOSTBody("http://offline.invalid/")
+        .put("refreshCapabilities", false)
+        .toPrettyString();
 
-    MvcResult result =
-        mockMvc
-            .perform(
-                post(adminBasePath + "/geo-services")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(geoServicePOSTBody))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id").isNotEmpty())
-            .andExpect(jsonPath("$.layers").isEmpty())
-            .andReturn();
+    MvcResult result = mockMvc.perform(post(adminBasePath + "/geo-services")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(geoServicePOSTBody))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.id").isNotEmpty())
+        .andExpect(jsonPath("$.layers").isEmpty())
+        .andReturn();
     String serviceId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
 
-    mockMvc
-        .perform(
-            post(adminBasePath + String.format("/geo-services/%s/refresh-capabilities", serviceId)))
+    mockMvc.perform(post(adminBasePath + String.format("/geo-services/%s/refresh-capabilities", serviceId)))
         .andExpect(status().isBadRequest())
         .andExpect(
             content()
@@ -203,26 +185,22 @@ class GeoServiceAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   void loadServiceWithServiceException() throws Exception {
 
-    MockMvc mockMvc =
-        MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
     try (MockWebServer server = new MockWebServer()) {
-      server.enqueue(
-          new MockResponse.Builder()
-              .headers(new Headers(new String[] {"Content-Type", "text/xml"}))
-              .body(getResourceString(wmsServiceException1_0_0))
-              .build());
+      server.enqueue(new MockResponse.Builder()
+          .headers(new Headers(new String[] {"Content-Type", "text/xml"}))
+          .body(getResourceString(wmsServiceException1_0_0))
+          .build());
 
       server.start();
 
       String url = server.url("/test-wms").toString();
       String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
 
-      mockMvc
-          .perform(
-              post(adminBasePath + "/geo-services")
-                  .contentType(MediaType.APPLICATION_JSON)
-                  .content(geoServicePOSTBody))
+      mockMvc.perform(post(adminBasePath + "/geo-services")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(geoServicePOSTBody))
           .andExpect(status().isBadRequest())
           .andExpect(
               jsonPath("$.errors[0].message")
@@ -231,17 +209,14 @@ class GeoServiceAdminControllerIntegrationTest {
                           + url
                           + "\": Exception: Error loading WMS capabilities: code: InvalidParameterValue: locator: service: Example error message"));
 
-      server.enqueue(
-          new MockResponse.Builder()
-              .headers(new Headers(new String[] {"Content-Type", "text/xml"}))
-              .body(getResourceString(wmsServiceException1_3_0))
-              .build());
+      server.enqueue(new MockResponse.Builder()
+          .headers(new Headers(new String[] {"Content-Type", "text/xml"}))
+          .body(getResourceString(wmsServiceException1_3_0))
+          .build());
 
-      mockMvc
-          .perform(
-              post(adminBasePath + "/geo-services")
-                  .contentType(MediaType.APPLICATION_JSON)
-                  .content(geoServicePOSTBody))
+      mockMvc.perform(post(adminBasePath + "/geo-services")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(geoServicePOSTBody))
           .andExpect(status().isBadRequest())
           .andExpect(
               jsonPath("$.errors[0].message")
@@ -260,21 +235,20 @@ class GeoServiceAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   void loadServiceWithWrongCredentials() throws Exception {
 
-    MockMvc mockMvc =
-        MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
     try (MockWebServer server = new MockWebServer()) {
-      server.enqueue(new MockResponse.Builder().code(HttpStatus.UNAUTHORIZED.value()).build());
+      server.enqueue(new MockResponse.Builder()
+          .code(HttpStatus.UNAUTHORIZED.value())
+          .build());
       server.start();
 
       String url = server.url("/test-wms").toString();
       String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
 
-      mockMvc
-          .perform(
-              post(adminBasePath + "/geo-services")
-                  .contentType(MediaType.APPLICATION_JSON)
-                  .content(geoServicePOSTBody))
+      mockMvc.perform(post(adminBasePath + "/geo-services")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(geoServicePOSTBody))
           .andExpect(status().isBadRequest())
           .andExpect(
               jsonPath("$.errors[0].message")
@@ -292,33 +266,27 @@ class GeoServiceAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   void checkCorsHeaderIsSaved() throws Exception {
 
-    MockMvc mockMvc =
-        MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
     try (MockWebServer server = new MockWebServer()) {
 
-      server.enqueue(
-          new MockResponse.Builder()
-              .headers(
-                  new Headers(
-                      new String[] {
-                        "Content-Type",
-                        "application/vnd.ogc.wms_xml",
-                        "Access-Control-Allow-Origin",
-                        "https://my-origin"
-                      }))
-              .body(getResourceString(wmsTestCapabilities))
-              .build());
+      server.enqueue(new MockResponse.Builder()
+          .headers(new Headers(new String[] {
+            "Content-Type",
+            "application/vnd.ogc.wms_xml",
+            "Access-Control-Allow-Origin",
+            "https://my-origin"
+          }))
+          .body(getResourceString(wmsTestCapabilities))
+          .build());
       server.start();
 
       String url = server.url("/test-wms").toString();
       String geoServicePOSTBody = getGeoServicePOSTBody(url).toPrettyString();
 
-      mockMvc
-          .perform(
-              post(adminBasePath + "/geo-services")
-                  .contentType(MediaType.APPLICATION_JSON)
-                  .content(geoServicePOSTBody))
+      mockMvc.perform(post(adminBasePath + "/geo-services")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(geoServicePOSTBody))
           .andExpect(status().isCreated())
           .andExpect(jsonPath("$.serviceCapabilities.corsAllowOrigin").value("https://my-origin"));
       server.shutdown();
