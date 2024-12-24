@@ -22,8 +22,7 @@ public class FeatureSourceFactoryHelper {
     return openGeoToolsFeatureSource(tmft, timeout);
   }
 
-  public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType tmft, int timeout)
-      throws IOException {
+  public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType tmft, int timeout) throws IOException {
     FeatureSourceHelper sh = getHelper(tmft.getFeatureSource());
     return sh.openGeoToolsFeatureSource(tmft, timeout);
   }

@@ -32,9 +32,7 @@ public class ApplicationValidator implements Validator {
     Application existing = applicationRepository.findByName(app.getName());
     if (existing != null && !existing.getId().equals(app.getId())) {
       errors.rejectValue(
-          "name",
-          "duplicate",
-          String.format("Application with name \"%s\" already exists.", app.getName()));
+          "name", "duplicate", String.format("Application with name \"%s\" already exists.", app.getName()));
     }
   }
 }

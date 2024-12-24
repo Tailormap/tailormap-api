@@ -19,8 +19,7 @@ public class InternalAdminAuthentication implements Authentication {
   public static final InternalAdminAuthentication INSTANCE = new InternalAdminAuthentication();
 
   /**
-   * Allow usage of secured methods such as JpaRepositories as admin, for example on startup or in
-   * background tasks.
+   * Allow usage of secured methods such as JpaRepositories as admin, for example on startup or in background tasks.
    */
   public static void setInSecurityContext() {
     SecurityContext context = SecurityContextHolder.getContext();

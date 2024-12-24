@@ -27,16 +27,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
   @Value("${spring.web.resources.static-locations:file:/home/spring/static/}")
   private String resourceLocations;
 
-  public WebMvcConfig(
-      FrontControllerResolver frontControllerResolver, IndexHtmlTransformer indexHtmlTransformer) {
+  public WebMvcConfig(FrontControllerResolver frontControllerResolver, IndexHtmlTransformer indexHtmlTransformer) {
     this.frontControllerResolver = frontControllerResolver;
     this.indexHtmlTransformer = indexHtmlTransformer;
   }
 
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    registry
-        .addResourceHandler("/version.json")
+    registry.addResourceHandler("/version.json")
         .addResourceLocations(resourceLocations.split(",", -1)[0])
         .setCacheControl(CacheControl.noStore());
     registry
@@ -46,8 +44,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         .setCacheControl(CacheControl.maxAge(7, TimeUnit.DAYS).mustRevalidate())
         .resourceChain(true)
         .addResolver(new EncodedResourceResolver());
-    registry
-        .addResourceHandler("/**")
+    registry.addResourceHandler("/**")
         .addResourceLocations(resourceLocations.split(",", -1)[0])
         // no-cache means the browser must revalidate index.html with a conditional HTTP request
         // using If-Modified-Since. This is needed to always have the latest frontend loaded in the
@@ -63,11 +60,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
   @Override
   public void addFormatters(@NonNull FormatterRegistry registry) {
     registry.addConverter(
-        String.class,
-        GeoServiceProtocol.class,
-        new CaseInsensitiveEnumConverter<>(GeoServiceProtocol.class));
+        String.class, GeoServiceProtocol.class, new CaseInsensitiveEnumConverter<>(GeoServiceProtocol.class));
 
-    registry.addConverter(
-        String.class, TaskType.class, new CaseInsensitiveEnumConverter<>(TaskType.class));
+    registry.addConverter(String.class, TaskType.class, new CaseInsensitiveEnumConverter<>(TaskType.class));
   }
 }

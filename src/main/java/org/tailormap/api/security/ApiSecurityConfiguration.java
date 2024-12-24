@@ -65,14 +65,13 @@ public class ApiSecurityConfiguration {
     // https://angular.io/guide/http#security-xsrf-protection
     CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
     // Allow cross-domain non-GET (unsafe) requests for embedding with an iframe
-    csrfTokenRepository.setCookieCustomizer(
-        cookieCustomizer -> {
-          // Do not set SameSite=None when testing with HTTP instead of HTTPS
-          // Ideally use HttpServletRequest.isSecure(), but look at built cookie for now...
-          if (cookieCustomizer.build().isSecure()) {
-            cookieCustomizer.sameSite(Cookie.SameSite.NONE.attributeValue());
-          }
-        });
+    csrfTokenRepository.setCookieCustomizer(cookieCustomizer -> {
+      // Do not set SameSite=None when testing with HTTP instead of HTTPS
+      // Ideally use HttpServletRequest.isSecure(), but look at built cookie for now...
+      if (cookieCustomizer.build().isSecure()) {
+        cookieCustomizer.sameSite(Cookie.SameSite.NONE.attributeValue());
+      }
+    });
     return csrfTokenRepository;
   }
 
@@ -83,18 +82,16 @@ public class ApiSecurityConfiguration {
         new DefaultAuthenticationEventPublisher(applicationEventPublisher);
 
     authenticationEventPublisher.setAdditionalExceptionMappings(
-        Collections.singletonMap(
-            OAuth2AuthenticationException.class, OAuth2AuthenticationFailureEvent.class));
+        Collections.singletonMap(OAuth2AuthenticationException.class, OAuth2AuthenticationFailureEvent.class));
 
-    authenticationEventPublisher.setDefaultAuthenticationFailureEvent(
-        DefaultAuthenticationFailureEvent.class);
+    authenticationEventPublisher.setDefaultAuthenticationFailureEvent(DefaultAuthenticationFailureEvent.class);
 
     return authenticationEventPublisher;
   }
 
   @Bean
-  public SecurityFilterChain apiFilterChain(
-      HttpSecurity http, CookieCsrfTokenRepository csrfTokenRepository) throws Exception {
+  public SecurityFilterChain apiFilterChain(HttpSecurity http, CookieCsrfTokenRepository csrfTokenRepository)
+      throws Exception {
 
     // Disable CSRF protection for development with HAL explorer
     // https://github.com/spring-projects/spring-data-rest/issues/1347
@@ -102,80 +99,60 @@ public class ApiSecurityConfiguration {
       http.csrf(AbstractHttpConfigurer::disable);
     } else {
       // https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
-      http.csrf(
-          csrf ->
-              csrf.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-                  .csrfTokenRepository(csrfTokenRepository)
-                  // This uses POST for large filter in body, but is safe (read-only)
-                  .ignoringRequestMatchers(
-                      apiBasePath + "/{viewerKind}/{viewerName}/layer/{appLayerId}/features"));
+      http.csrf(csrf -> csrf.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+          .csrfTokenRepository(csrfTokenRepository)
+          // This uses POST for large filter in body, but is safe (read-only)
+          .ignoringRequestMatchers(apiBasePath + "/{viewerKind}/{viewerName}/layer/{appLayerId}/features"));
       http.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
     }
 
     // Before redirecting the user to the OAuth2 authorization endpoint, store the requested
     // redirect URL.
-    RedirectStrategy redirectStrategy =
-        new DefaultRedirectStrategy() {
-          @Override
-          public void sendRedirect(
-              HttpServletRequest request, HttpServletResponse response, String url)
-              throws IOException {
-            String redirectUrl = request.getParameter("redirectUrl");
-            if (redirectUrl != null && redirectUrl.startsWith("/")) {
-              request.getSession().setAttribute("redirectUrl", redirectUrl);
-            }
-            super.sendRedirect(request, response, url);
-          }
-        };
+    RedirectStrategy redirectStrategy = new DefaultRedirectStrategy() {
+      @Override
+      public void sendRedirect(HttpServletRequest request, HttpServletResponse response, String url)
+          throws IOException {
+        String redirectUrl = request.getParameter("redirectUrl");
+        if (redirectUrl != null && redirectUrl.startsWith("/")) {
+          request.getSession().setAttribute("redirectUrl", redirectUrl);
+        }
+        super.sendRedirect(request, response, url);
+      }
+    };
 
     // When OAuth2 authentication succeeds, use the redirect URL stored in the session to send them
     // back.
-    AuthenticationSuccessHandler authenticationSuccessHandler =
-        (request, response, authentication) -> {
-          HttpSession session = request.getSession(false);
-          if (session != null) {
-            String redirectUrl = (String) session.getAttribute("redirectUrl");
-            if (redirectUrl != null) {
-              response.sendRedirect(redirectUrl);
-              return;
-            }
-          }
-          response.sendRedirect("/");
-        };
+    AuthenticationSuccessHandler authenticationSuccessHandler = (request, response, authentication) -> {
+      HttpSession session = request.getSession(false);
+      if (session != null) {
+        String redirectUrl = (String) session.getAttribute("redirectUrl");
+        if (redirectUrl != null) {
+          response.sendRedirect(redirectUrl);
+          return;
+        }
+      }
+      response.sendRedirect("/");
+    };
 
     http.securityMatchers(matchers -> matchers.requestMatchers(apiBasePath + "/**"))
         .addFilterAfter(
             /* (debug) log user making the request */ new AuditInterceptor(),
             AnonymousAuthenticationFilter.class)
-        .authorizeHttpRequests(
-            authorize -> {
-              authorize.requestMatchers(adminApiBasePath + "/**").hasAuthority(Group.ADMIN);
-              authorize.requestMatchers(apiBasePath + "/**").permitAll();
-            })
-        .formLogin(
-            formLogin ->
-                formLogin
-                    .loginPage(apiBasePath + "/unauthorized")
-                    .loginProcessingUrl(apiBasePath + "/login"))
-        .oauth2Login(
-            login ->
-                login
-                    .authorizationEndpoint(
-                        endpoint ->
-                            endpoint
-                                .baseUri(apiBasePath + "/oauth2/authorization")
-                                .authorizationRedirectStrategy(redirectStrategy))
-                    .redirectionEndpoint(
-                        endpoint -> endpoint.baseUri(apiBasePath + "/oauth2/callback"))
-                    .successHandler(authenticationSuccessHandler))
+        .authorizeHttpRequests(authorize -> {
+          authorize.requestMatchers(adminApiBasePath + "/**").hasAuthority(Group.ADMIN);
+          authorize.requestMatchers(apiBasePath + "/**").permitAll();
+        })
+        .formLogin(formLogin ->
+            formLogin.loginPage(apiBasePath + "/unauthorized").loginProcessingUrl(apiBasePath + "/login"))
+        .oauth2Login(login -> login.authorizationEndpoint(
+                endpoint -> endpoint.baseUri(apiBasePath + "/oauth2/authorization")
+                    .authorizationRedirectStrategy(redirectStrategy))
+            .redirectionEndpoint(endpoint -> endpoint.baseUri(apiBasePath + "/oauth2/callback"))
+            .successHandler(authenticationSuccessHandler))
         .anonymous(anonymous -> anonymous.authorities(Group.ANONYMOUS))
-        .logout(
-            logout ->
-                logout
-                    .logoutUrl(apiBasePath + "/logout")
-                    .logoutSuccessHandler(
-                        (request, response, authentication) ->
-                            response.sendError(HttpStatus.OK.value(), "OK")));
+        .logout(logout -> logout.logoutUrl(apiBasePath + "/logout")
+            .logoutSuccessHandler((request, response, authentication) ->
+                response.sendError(HttpStatus.OK.value(), "OK")));
     return http.build();
   }
 
@@ -191,18 +168,17 @@ public class ApiSecurityConfiguration {
       Set<String> wantedGroups = new HashSet<>();
 
       try {
-        authorities.forEach(
-            authority -> {
-              mappedAuthorities.add(authority);
-              if (authority instanceof OidcUserAuthority oidcUserAuthority) {
-                OidcIdToken idToken = oidcUserAuthority.getIdToken();
+        authorities.forEach(authority -> {
+          mappedAuthorities.add(authority);
+          if (authority instanceof OidcUserAuthority oidcUserAuthority) {
+            OidcIdToken idToken = oidcUserAuthority.getIdToken();
 
-                List<String> roles = idToken.getClaimAsStringList("roles");
-                if (roles != null) {
-                  wantedGroups.addAll(roles);
-                }
-              }
-            });
+            List<String> roles = idToken.getClaimAsStringList("roles");
+            if (roles != null) {
+              wantedGroups.addAll(roles);
+            }
+          }
+        });
 
         for (String groupName : wantedGroups) {
           if (repository.findById(groupName).isEmpty()) {

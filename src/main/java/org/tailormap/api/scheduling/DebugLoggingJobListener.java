@@ -31,7 +31,8 @@ public class DebugLoggingJobListener implements JobListener {
           context.getJobDetail().getKey().getGroup(),
           context.getJobDetail().getKey().getName());
       logger.debug(
-          "Job data map before execution: {}", context.getMergedJobDataMap().getWrappedMap());
+          "Job data map before execution: {}",
+          context.getMergedJobDataMap().getWrappedMap());
     }
   }
 

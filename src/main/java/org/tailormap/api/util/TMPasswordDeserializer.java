@@ -23,22 +23,20 @@ import org.tailormap.api.configuration.TailormapPasswordStrengthConfig;
 import org.tailormap.api.security.InvalidPasswordException;
 
 public class TMPasswordDeserializer extends JsonDeserializer<String> {
-  private static final PasswordEncoder encoder =
-      PasswordEncoderFactories.createDelegatingPasswordEncoder();
+  private static final PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
   /**
-   * When deserializing a JSON field containing a plaintext password validate it is strong enough
-   * and hash it with the default PasswordEncoder (bcrypt).
+   * When deserializing a JSON field containing a plaintext password validate it is strong enough and hash it with the
+   * default PasswordEncoder (bcrypt).
    *
    * @param jsonParser parser
    * @param context context
    * @return The bcrypt hashed password
-   * @throws IOException when JSON processing fails, {@code InvalidPasswordException} when the
-   *     password is not strong enough
+   * @throws IOException when JSON processing fails, {@code InvalidPasswordException} when the password is not strong
+   *     enough
    */
   @Override
-  public String deserialize(@NotNull JsonParser jsonParser, DeserializationContext context)
-      throws IOException {
+  public String deserialize(@NotNull JsonParser jsonParser, DeserializationContext context) throws IOException {
     ObjectCodec codec = jsonParser.getCodec();
     JsonNode node = codec.readTree(jsonParser);
     if (node == null) {
@@ -61,11 +59,10 @@ public class TMPasswordDeserializer extends JsonDeserializer<String> {
     if (password.length() < minLength) {
       return false;
     }
-    me.gosimple.nbvcxz.resources.Configuration configuration =
-        new ConfigurationBuilder()
-            .setLocale(Locale.forLanguageTag(LocaleContextHolder.getLocale().toLanguageTag()))
-            .setDistanceCalc(true)
-            .createConfiguration();
+    me.gosimple.nbvcxz.resources.Configuration configuration = new ConfigurationBuilder()
+        .setLocale(Locale.forLanguageTag(LocaleContextHolder.getLocale().toLanguageTag()))
+        .setDistanceCalc(true)
+        .createConfiguration();
     return new Nbvcxz(configuration).estimate(password).getBasicScore() >= minStrength;
   }
 }

@@ -17,16 +17,15 @@ import org.tailormap.api.repository.CatalogRepository;
 import org.tailormap.api.security.InternalAdminAuthentication;
 
 /**
- * Migrate the database using JPA entities, after Flyway has migrated and the entity manager is
- * initialized. When using Flyway callbacks, we can't use JPA.
+ * Migrate the database using JPA entities, after Flyway has migrated and the entity manager is initialized. When using
+ * Flyway callbacks, we can't use JPA.
  */
 @Configuration
 public class TailormapDatabaseMigration {
   private final CatalogRepository catalogRepository;
   private final FlywayMigrationResult migrationResult;
 
-  public TailormapDatabaseMigration(
-      CatalogRepository catalogRepository, FlywayMigrationResult migrationResult) {
+  public TailormapDatabaseMigration(CatalogRepository catalogRepository, FlywayMigrationResult migrationResult) {
     this.catalogRepository = catalogRepository;
     this.migrationResult = migrationResult;
   }
@@ -54,10 +53,9 @@ public class TailormapDatabaseMigration {
   }
 
   private void createRootCatalog() {
-    Catalog catalog =
-        new Catalog()
-            .setId(Catalog.MAIN)
-            .setNodes(List.of(new CatalogNode().root(true).title("root").id("root")));
+    Catalog catalog = new Catalog()
+        .setId(Catalog.MAIN)
+        .setNodes(List.of(new CatalogNode().root(true).title("root").id("root")));
     catalogRepository.save(catalog);
   }
 }

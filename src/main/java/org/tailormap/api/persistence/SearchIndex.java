@@ -73,8 +73,7 @@ public class SearchIndex implements Serializable {
   private TaskSchedule schedule;
 
   @Enumerated(EnumType.STRING)
-  @NotNull
-  @Column(columnDefinition = "varchar(8) default 'INITIAL'")
+  @NotNull @Column(columnDefinition = "varchar(8) default 'INITIAL'")
   private SearchIndex.Status status = SearchIndex.Status.INITIAL;
 
   public Long getId() {

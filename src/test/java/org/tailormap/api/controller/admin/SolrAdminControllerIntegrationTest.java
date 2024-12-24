@@ -36,7 +36,9 @@ import org.tailormap.api.persistence.Group;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SolrAdminControllerIntegrationTest {
-  @Autowired private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
+
   private MockMvc mockMvc;
 
   private final int waitForIndexRefreshMillis = 10000;
@@ -54,8 +56,7 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   void pingTest() throws Exception {
-    mockMvc
-        .perform(get(adminBasePath + "/index/ping").accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(adminBasePath + "/index/ping").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.status").value("OK"))
@@ -67,10 +68,7 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   void deleteNonExistentIndex() throws Exception {
-    mockMvc
-        .perform(
-            delete(adminBasePath + "/index/snapshot-geoserver/1000")
-                .accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(delete(adminBasePath + "/index/snapshot-geoserver/1000").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
   }
 
@@ -80,11 +78,9 @@ class SolrAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(1)
   void refreshIndex1() throws Exception {
-    mockMvc
-        .perform(
-            put(adminBasePath + "/index/1")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(put(adminBasePath + "/index/1")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted());
     // after submitting the request, wait for the index to be refreshed
     Thread.sleep(waitForIndexRefreshMillis);
@@ -96,8 +92,7 @@ class SolrAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(2)
   void clearIndex1() throws Exception {
-    mockMvc
-        .perform(delete(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(delete(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 
@@ -107,8 +102,7 @@ class SolrAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(3)
   void recreateIndex1() throws Exception {
-    mockMvc
-        .perform(put(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(put(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted());
     // after submitting the request, wait for the index to be refreshed
     Thread.sleep(waitForIndexRefreshMillis);
@@ -120,11 +114,9 @@ class SolrAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(1)
   void indexWithoutSearchIndexConfigured() throws Exception {
-    mockMvc
-        .perform(
-            put(adminBasePath + "/index/100")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(put(adminBasePath + "/index/100")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
   }
 
@@ -133,8 +125,7 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   void indexWithoutSchedule() throws Exception {
-    mockMvc
-        .perform(put(adminBasePath + "/index/3").accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(put(adminBasePath + "/index/3").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted())
         .andExpect(jsonPath("$.code").value(202))
         .andExpect(jsonPath("$.message").value("Indexing scheduled"))

@@ -82,8 +82,7 @@ public class IndexTask extends QuartzJobBean implements Task {
 
   @Timed(value = "indexTask", description = "Time taken to execute index task")
   @Override
-  protected void executeInternal(@NonNull JobExecutionContext context)
-      throws JobExecutionException {
+  protected void executeInternal(@NonNull JobExecutionContext context) throws JobExecutionException {
 
     final JobDataMap persistedJobData = context.getJobDetail().getJobDataMap();
     // final long indexId = persistedJobData.getLong(INDEX_KEY);
@@ -93,32 +92,28 @@ public class IndexTask extends QuartzJobBean implements Task {
         getIndexId(),
         getDescription());
 
-    SearchIndex searchIndex =
-        searchIndexRepository
-            .findById(getIndexId())
-            .orElseThrow(() -> new JobExecutionException("Search index not found"));
+    SearchIndex searchIndex = searchIndexRepository
+        .findById(getIndexId())
+        .orElseThrow(() -> new JobExecutionException("Search index not found"));
 
-    TMFeatureType indexingFT =
-        featureTypeRepository
-            .findById(searchIndex.getFeatureTypeId())
-            .orElseThrow(() -> new JobExecutionException("Feature type not found"));
+    TMFeatureType indexingFT = featureTypeRepository
+        .findById(searchIndex.getFeatureTypeId())
+        .orElseThrow(() -> new JobExecutionException("Feature type not found"));
 
     try (SolrClient solrClient = solrService.getSolrClientForIndexing();
-        SolrHelper solrHelper =
-            new SolrHelper(solrClient)
-                .withBatchSize(solrBatchSize)
-                .withGeometryValidationRule(solrGeometryValidationRule)) {
+        SolrHelper solrHelper = new SolrHelper(solrClient)
+            .withBatchSize(solrBatchSize)
+            .withGeometryValidationRule(solrGeometryValidationRule)) {
 
       searchIndex = searchIndexRepository.save(searchIndex.setStatus(SearchIndex.Status.INDEXING));
 
-      searchIndex =
-          solrHelper.addFeatureTypeIndex(
-              searchIndex,
-              indexingFT,
-              featureSourceFactoryHelper,
-              searchIndexRepository,
-              this::taskProgress,
-              UUID.fromString(context.getTrigger().getJobKey().getName()));
+      searchIndex = solrHelper.addFeatureTypeIndex(
+          searchIndex,
+          indexingFT,
+          featureSourceFactoryHelper,
+          searchIndexRepository,
+          this::taskProgress,
+          UUID.fromString(context.getTrigger().getJobKey().getName()));
       searchIndex = searchIndexRepository.save(searchIndex.setStatus(SearchIndex.Status.INDEXED));
       persistedJobData.put(
           "executions", (1 + (int) context.getMergedJobDataMap().getOrDefault("executions", 0)));
@@ -129,12 +124,10 @@ public class IndexTask extends QuartzJobBean implements Task {
       logger.error("Error indexing", e);
       persistedJobData.put("lastExecutionFinished", null);
       persistedJobData.put(
-          Task.LAST_RESULT_KEY,
-          "Index task failed with " + e.getMessage() + ". Check logs for details");
-      searchIndexRepository.save(
-          searchIndex
-              .setStatus(SearchIndex.Status.ERROR)
-              .setSummary(new SearchIndexSummary().errorMessage(e.getMessage())));
+          Task.LAST_RESULT_KEY, "Index task failed with " + e.getMessage() + ". Check logs for details");
+      searchIndexRepository.save(searchIndex
+          .setStatus(SearchIndex.Status.ERROR)
+          .setSummary(new SearchIndexSummary().errorMessage(e.getMessage())));
       context.setResult("Error indexing. Check logs for details.");
       throw new JobExecutionException("Error indexing", e);
     }
@@ -142,10 +135,10 @@ public class IndexTask extends QuartzJobBean implements Task {
 
   @Override
   public void taskProgress(TaskProgressEvent event) {
-    ServerSentEvent serverSentEvent = new ServerSentEvent().eventType(TASK_PROGRESS).details(event);
+    ServerSentEvent serverSentEvent =
+        new ServerSentEvent().eventType(TASK_PROGRESS).details(event);
     try {
-      eventBus.handleEvent(
-          SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(serverSentEvent)));
+      eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(serverSentEvent)));
     } catch (JsonProcessingException e) {
       logger.error("Error publishing indexing task progress event", e);
     }

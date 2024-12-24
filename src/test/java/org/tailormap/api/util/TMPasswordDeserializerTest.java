@@ -61,8 +61,7 @@ class TMPasswordDeserializerTest {
     String actual = this.deserializeJson(testJson);
 
     assertNotNull(actual, "encrypted password should not be null");
-    assertTrue(
-        actual.startsWith("{bcrypt}$2a$"), "bcrypted password should start with {bcrypt}$2a$");
+    assertTrue(actual.startsWith("{bcrypt}$2a$"), "bcrypted password should start with {bcrypt}$2a$");
     assertEquals(68, actual.length(), "bcrypted password should be 8+60 characters");
   }
 

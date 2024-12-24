@@ -71,12 +71,11 @@ public class PocTask extends QuartzJobBean implements Task {
         Thread.sleep(workingTime);
         logger.debug("POC task is at {}%", i);
         context.setResult("POC task is at %d%%".formatted(i));
-        taskProgress(
-            new TaskProgressEvent()
-                .type(TaskType.POC.getValue())
-                .uuid(UUID.fromString(jobDetail.getKey().getName()))
-                .progress(i)
-                .total(100));
+        taskProgress(new TaskProgressEvent()
+            .type(TaskType.POC.getValue())
+            .uuid(UUID.fromString(jobDetail.getKey().getName()))
+            .progress(i)
+            .total(100));
       }
     } catch (InterruptedException e) {
       logger.error("Thread interrupted", e);
@@ -93,10 +92,10 @@ public class PocTask extends QuartzJobBean implements Task {
 
   @Override
   public void taskProgress(TaskProgressEvent event) {
-    ServerSentEvent serverSentEvent = new ServerSentEvent().eventType(TASK_PROGRESS).details(event);
+    ServerSentEvent serverSentEvent =
+        new ServerSentEvent().eventType(TASK_PROGRESS).details(event);
     try {
-      eventBus.handleEvent(
-          SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(serverSentEvent)));
+      eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(serverSentEvent)));
     } catch (JsonProcessingException e) {
       logger.error("Error publishing poc task progress event", e);
     }

@@ -35,9 +35,7 @@ import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.repository.UserRepository;
 
 @Configuration
-@ConditionalOnProperty(
-    name = "tailormap-api.security.admin.create-if-not-exists",
-    havingValue = "true")
+@ConditionalOnProperty(name = "tailormap-api.security.admin.create-if-not-exists", havingValue = "true")
 public class AdminAccountCreator {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -51,8 +49,7 @@ public class AdminAccountCreator {
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
 
-  private final PasswordEncoder passwordEncoder =
-      PasswordEncoderFactories.createDelegatingPasswordEncoder();
+  private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
   public AdminAccountCreator(UserRepository userRepository, GroupRepository groupRepository) {
     this.userRepository = userRepository;
@@ -70,8 +67,7 @@ public class AdminAccountCreator {
         if (isNotBlank(newAdminHashedPassword) && newAdminHashedPassword.startsWith("{bcrypt}")) {
           createAdmin(newAdminUsername, newAdminHashedPassword);
           logger.info(
-              "New admin account \"{}\" created with hashed password from environment",
-              newAdminUsername);
+              "New admin account \"{}\" created with hashed password from environment", newAdminUsername);
         } else {
           // Create a new admin account with a random generated password
           String password = UUID.randomUUID().toString();
@@ -92,18 +88,15 @@ public class AdminAccountCreator {
   }
 
   private static String getAccountBanner(String username, String password) throws IOException {
-    String accountBanner =
-        StreamUtils.copyToString(
-            new ClassPathResource("account-banner.txt").getInputStream(),
-            StandardCharsets.US_ASCII);
+    String accountBanner = StreamUtils.copyToString(
+        new ClassPathResource("account-banner.txt").getInputStream(), StandardCharsets.US_ASCII);
     MutablePropertySources sources = new MutablePropertySources();
     sources.addFirst(new AnsiPropertySource("ansi", true));
-    sources.addFirst(
-        new MapPropertySource(
-            "account",
-            Map.of(
-                "username", username,
-                "password", password)));
+    sources.addFirst(new MapPropertySource(
+        "account",
+        Map.of(
+            "username", username,
+            "password", password)));
     return new PropertySourcesPropertyResolver(sources).resolvePlaceholders(accountBanner);
   }
 }

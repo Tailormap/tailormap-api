@@ -54,15 +54,16 @@ public class SimpleWFSHelper {
   public static final String DEFAULT_WFS_VERSION = "1.1.0";
 
   private static HttpClient getDefaultHttpClient() {
-    return HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).build();
+    return HttpClient.newBuilder()
+        .followRedirects(HttpClient.Redirect.NORMAL)
+        .build();
   }
 
   public static URI getWFSRequestURL(String wfsUrl, String request) {
     return getWFSRequestURL(wfsUrl, request, null);
   }
 
-  public static URI getWFSRequestURL(
-      String wfsUrl, String request, MultiValueMap<String, String> parameters) {
+  public static URI getWFSRequestURL(String wfsUrl, String request, MultiValueMap<String, String> parameters) {
     return getWFSRequestURL(wfsUrl, request, DEFAULT_WFS_VERSION, parameters);
   }
 
@@ -72,11 +73,7 @@ public class SimpleWFSHelper {
   }
 
   public static URI getOGCRequestURL(
-      String url,
-      String service,
-      String version,
-      String request,
-      MultiValueMap<String, String> parameters) {
+      String url, String service, String version, String request, MultiValueMap<String, String> parameters) {
 
     final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
     params.add("SERVICE", service);
@@ -86,34 +83,33 @@ public class SimpleWFSHelper {
       // We need to encode the parameters manually because UriComponentsBuilder annoyingly does not
       // encode '+' as used in mime types for output formats, see
       // https://stackoverflow.com/questions/18138011
-      parameters.replaceAll(
-          (key, values) ->
-              values.stream()
-                  .map(s -> URLEncoder.encode(s, StandardCharsets.UTF_8))
-                  .collect(Collectors.toList()));
+      parameters.replaceAll((key, values) -> values.stream()
+          .map(s -> URLEncoder.encode(s, StandardCharsets.UTF_8))
+          .collect(Collectors.toList()));
       params.addAll(parameters);
     }
-    return UriComponentsBuilder.fromUriString(url).replaceQueryParams(params).build(true).toUri();
+    return UriComponentsBuilder.fromUriString(url)
+        .replaceQueryParams(params)
+        .build(true)
+        .toUri();
   }
 
   /**
    * Get a list of GetFeature output formats for a WFS feature type.
    *
-   * <p>If there are no specific output formats for the type, the generally supported output formats
-   * are returned. Requests WFS 1.1.0 but also handles WFS 2.0.0 responses.
+   * <p>If there are no specific output formats for the type, the generally supported output formats are returned.
+   * Requests WFS 1.1.0 but also handles WFS 2.0.0 responses.
    *
-   * <p>Uses a 'lightweight' WFS implementation parsing only the XML WFS capabilities to extract the
-   * output formats using XPath, instead of using a heavyweight GeoTools WFS DataStore which is much
-   * slower.
+   * <p>Uses a 'lightweight' WFS implementation parsing only the XML WFS capabilities to extract the output formats
+   * using XPath, instead of using a heavyweight GeoTools WFS DataStore which is much slower.
    */
-  public static List<String> getOutputFormats(
-      String wfsUrl, String typeName, String username, String password) throws Exception {
+  public static List<String> getOutputFormats(String wfsUrl, String typeName, String username, String password)
+      throws Exception {
     return getOutputFormats(wfsUrl, typeName, username, password, getDefaultHttpClient());
   }
 
   public static List<String> getOutputFormats(
-      String wfsUrl, String typeName, String username, String password, HttpClient httpClient)
-      throws Exception {
+      String wfsUrl, String typeName, String username, String password, HttpClient httpClient) throws Exception {
 
     URI wfsGetCapabilities = getWFSRequestURL(wfsUrl, "GetCapabilities");
 
@@ -150,10 +146,8 @@ public class SimpleWFSHelper {
     // typeName parameter in it to find the exact FeatureType because escaping characters like '
     // in the typeName is not possible.
     NodeList featureTypes =
-        (NodeList)
-            xPath
-                .compile("/wfs:WFS_Capabilities" + "/wfs:FeatureTypeList" + "/wfs:FeatureType")
-                .evaluate(doc, XPathConstants.NODESET);
+        (NodeList) xPath.compile("/wfs:WFS_Capabilities" + "/wfs:FeatureTypeList" + "/wfs:FeatureType")
+            .evaluate(doc, XPathConstants.NODESET);
 
     for (int i = 0; i < featureTypes.getLength(); i++) {
       Element n = (Element) featureTypes.item(i);
@@ -161,10 +155,9 @@ public class SimpleWFSHelper {
       if (name != null && typeName.equals(DomUtils.getTextValue(name))) {
         Element formatsNode = DomUtils.getChildElementByTagName(n, "OutputFormats");
         if (formatsNode != null) {
-          outputFormats =
-              DomUtils.getChildElementsByTagName(formatsNode, "Format").stream()
-                  .map(DomUtils::getTextValue)
-                  .collect(Collectors.toList());
+          outputFormats = DomUtils.getChildElementsByTagName(formatsNode, "Format").stream()
+              .map(DomUtils::getTextValue)
+              .collect(Collectors.toList());
         }
         break;
       }
@@ -173,12 +166,11 @@ public class SimpleWFSHelper {
     // No output formats found (or maybe not even the featureType...), return output formats from
     // OperationsMetadata
     if (outputFormats == null) {
-      String xpathExpr =
-          "/wfs:WFS_Capabilities"
-              + "/ows:OperationsMetadata"
-              + "/ows:Operation[@name='GetFeature']"
-              + "/ows:Parameter[@name='outputFormat']"
-              + "//ows:Value";
+      String xpathExpr = "/wfs:WFS_Capabilities"
+          + "/ows:OperationsMetadata"
+          + "/ows:Operation[@name='GetFeature']"
+          + "/ows:Parameter[@name='outputFormat']"
+          + "//ows:Value";
       NodeList nodes = (NodeList) xPath.compile(xpathExpr).evaluate(doc, XPathConstants.NODESET);
 
       outputFormats = new ArrayList<>();
@@ -207,8 +199,7 @@ public class SimpleWFSHelper {
       // Directly create WMS 1.1.1 request. Creating it from WebMapServer errors with GeoServer
       // about unsupported request in capabilities unless we override WebMapServer to set up
       // specifications.
-      DescribeLayerRequest describeLayerRequest =
-          new WMS1_1_1().createDescribeLayerRequest(new URL(url));
+      DescribeLayerRequest describeLayerRequest = new WMS1_1_1().createDescribeLayerRequest(new URL(url));
       // XXX Otherwise GeoTools will send VERSION=1.1.0...
       describeLayerRequest.setProperty("VERSION", "1.1.1");
       describeLayerRequest.setLayers(String.join(",", layers));
@@ -220,16 +211,13 @@ public class SimpleWFSHelper {
         String wfsUrl = getWfsUrl(ld, wms);
 
         if (wfsUrl != null && ld.getQueries() != null && ld.getQueries().length != 0) {
-          descriptions.put(
-              ld.getName(), new SimpleWFSLayerDescription(wfsUrl, List.of(ld.getQueries())));
+          descriptions.put(ld.getName(), new SimpleWFSLayerDescription(wfsUrl, List.of(ld.getQueries())));
         }
       }
       return Collections.unmodifiableMap(descriptions);
     } catch (Exception e) {
-      String msg =
-          String.format(
-              "Error in DescribeLayer request to WMS \"%s\": %s: %s",
-              url, e.getClass(), e.getMessage());
+      String msg = String.format(
+          "Error in DescribeLayer request to WMS \"%s\": %s: %s", url, e.getClass(), e.getMessage());
       if (logger.isTraceEnabled()) {
         logger.trace(msg, e);
       } else {

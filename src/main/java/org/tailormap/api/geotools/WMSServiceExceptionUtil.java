@@ -19,8 +19,7 @@ import org.w3c.dom.NodeList;
 public class WMSServiceExceptionUtil {
 
   /**
-   * Tries to parse a WMS service exception XML response of any WMS version and extract an error
-   * message.
+   * Tries to parse a WMS service exception XML response of any WMS version and extract an error message.
    *
    * @param body The response body from a text/xml WMS response
    * @return A service exception message or null if it can't be extracted

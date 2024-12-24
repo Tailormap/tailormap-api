@@ -42,11 +42,10 @@ public final class GeometryProcessor {
    * @param geometry An object representing a geometry
    * @param simplifyGeometry set to {@code true} to simplify
    * @param transform the transformation that should be applied to the geometry, can be {@code null}
-   * @return the string representation of the argument - normally WKT, optionally simplified or
-   *     {@code null} when the given geometry was {@code null}
+   * @return the string representation of the argument - normally WKT, optionally simplified or {@code null} when the
+   *     given geometry was {@code null}
    */
-  @NotNull
-  public static String processGeometry(
+  @NotNull public static String processGeometry(
       Object geometry,
       @NotNull final Boolean simplifyGeometry,
       @NotNull Boolean linearizeGeomToWKT,
@@ -93,21 +92,19 @@ public final class GeometryProcessor {
   }
 
   /**
-   * Simplifies given geometry to reduce (transfer) size, start off with 1 and each iteration
-   * multiply with 10, max 4 steps, so [1, 10, 100, 1000], if the geometry is still too large bail
-   * out and use bbox. TODO this works for CRS in meters, may not work for degrees
+   * Simplifies given geometry to reduce (transfer) size, start off with 1 and each iteration multiply with 10, max 4
+   * steps, so [1, 10, 100, 1000], if the geometry is still too large bail out and use bbox. TODO this works for CRS
+   * in meters, may not work for degrees
    *
    * @param geom geometry to simplify
    * @return simplified geometry as WKT string
    */
-  @NotNull
-  private static String simplify(@NotNull Geometry geom) {
+  @NotNull private static String simplify(@NotNull Geometry geom) {
     final int megabytes = 2097152 /* 2MB is the default tomcat max post size */ - 100 * 1024;
 
     Geometry bbox = geom.getEnvelope();
     logger.trace("PrecisionModel scale: {}", geom.getPrecisionModel().getScale());
-    GeometryPrecisionReducer gpr =
-        new GeometryPrecisionReducer(new PrecisionModel(geom.getPrecisionModel()));
+    GeometryPrecisionReducer gpr = new GeometryPrecisionReducer(new PrecisionModel(geom.getPrecisionModel()));
     try {
       geom = gpr.reduce(geom);
     } catch (IllegalArgumentException e) {
@@ -117,8 +114,7 @@ public final class GeometryProcessor {
     double distanceTolerance = 1.0;
     String geomTxt = geom.toText();
 
-    while ((geomTxt.getBytes(StandardCharsets.UTF_8).length > megabytes
-            || geom.getCoordinates().length > 600)
+    while ((geomTxt.getBytes(StandardCharsets.UTF_8).length > megabytes || geom.getCoordinates().length > 600)
         && distanceTolerance < 9999) {
       logger.debug("Simplify selected feature geometry with distance of: {}", distanceTolerance);
       geom = TopologyPreservingSimplifier.simplify(geom, distanceTolerance);

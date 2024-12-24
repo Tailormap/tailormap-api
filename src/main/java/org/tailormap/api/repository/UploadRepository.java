@@ -19,17 +19,14 @@ import org.tailormap.api.persistence.Upload;
 
 public interface UploadRepository extends JpaRepository<Upload, UUID> {
   @PreAuthorize("permitAll()")
-  @NonNull
-  @Query("select lastModified from Upload where id = :id")
+  @NonNull @Query("select lastModified from Upload where id = :id")
   Optional<OffsetDateTime> findLastModifiedById(@NonNull UUID id);
 
   @PreAuthorize("permitAll()")
-  @NonNull
-  Optional<Upload> findByIdAndCategory(@NonNull UUID id, @NonNull String category);
+  @NonNull Optional<Upload> findByIdAndCategory(@NonNull UUID id, @NonNull String category);
 
   @PreAuthorize("permitAll()")
-  @NonNull
-  @EntityGraph(attributePaths = {"content"})
+  @NonNull @EntityGraph(attributePaths = {"content"})
   Optional<Upload> findWithContentByIdAndCategory(@NonNull UUID id, @NonNull String category);
 
   @PreAuthorize(value = "permitAll()")

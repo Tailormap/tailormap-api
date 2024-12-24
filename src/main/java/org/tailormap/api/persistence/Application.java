@@ -51,11 +51,11 @@ public class Application {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Version private Long version;
+  @Version
+  private Long version;
 
   @Column(unique = true)
-  @NotNull
-  private String name;
+  @NotNull private String name;
 
   private String title;
 
@@ -87,28 +87,23 @@ public class Application {
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @NotNull
-  private AppContent contentRoot = new AppContent();
+  @NotNull private AppContent contentRoot = new AppContent();
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @NotNull
-  private AppSettings settings = new AppSettings();
+  @NotNull private AppSettings settings = new AppSettings();
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @NotNull
-  private List<Component> components = new ArrayList<>();
+  @NotNull private List<Component> components = new ArrayList<>();
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @NotNull
-  private AppStyling styling = new AppStyling();
+  @NotNull private AppStyling styling = new AppStyling();
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @NotNull
-  private List<AuthorizationRule> authorizationRules = new ArrayList<>();
+  @NotNull private List<AuthorizationRule> authorizationRules = new ArrayList<>();
 
   // <editor-fold desc="getters and setters">
   public Long getId() {
@@ -246,40 +241,36 @@ public class Application {
     }
     Stream<AppTreeLayerNode> baseLayers = Stream.empty();
     if (this.getContentRoot().getBaseLayerNodes() != null) {
-      baseLayers =
-          this.getContentRoot().getBaseLayerNodes().stream()
-              .filter(n -> "AppTreeLayerNode".equals(n.getObjectType()))
-              .map(n -> (AppTreeLayerNode) n);
+      baseLayers = this.getContentRoot().getBaseLayerNodes().stream()
+          .filter(n -> "AppTreeLayerNode".equals(n.getObjectType()))
+          .map(n -> (AppTreeLayerNode) n);
     }
     Stream<AppTreeLayerNode> layers = Stream.empty();
     if (this.getContentRoot().getLayerNodes() != null) {
-      layers =
-          this.getContentRoot().getLayerNodes().stream()
-              .filter(n -> "AppTreeLayerNode".equals(n.getObjectType()))
-              .map(n -> (AppTreeLayerNode) n);
+      layers = this.getContentRoot().getLayerNodes().stream()
+          .filter(n -> "AppTreeLayerNode".equals(n.getObjectType()))
+          .map(n -> (AppTreeLayerNode) n);
     }
     return Stream.concat(baseLayers, layers);
   }
 
   /**
-   * Return a GeoTools CoordinateReferenceSystem from this entities' CRS code or null if there is an
-   * error decoding it, which will be logged (only with stacktrace if loglevel is DEBUG).
+   * Return a GeoTools CoordinateReferenceSystem from this entities' CRS code or null if there is an error decoding
+   * it, which will be logged (only with stacktrace if loglevel is DEBUG).
    *
    * @return CoordinateReferenceSystem
    */
   @JsonIgnore
-  public org.geotools.api.referencing.crs.CoordinateReferenceSystem
-      getGeoToolsCoordinateReferenceSystem() {
+  public org.geotools.api.referencing.crs.CoordinateReferenceSystem getGeoToolsCoordinateReferenceSystem() {
     org.geotools.api.referencing.crs.CoordinateReferenceSystem gtCrs = null;
     try {
       if (getCrs() != null) {
         gtCrs = CRS.decode(getCrs());
       }
     } catch (Exception e) {
-      String message =
-          String.format(
-              "Application %d: error decoding CRS from code \"%s\": %s: %s",
-              getId(), getCrs(), e.getClass(), e.getMessage());
+      String message = String.format(
+          "Application %d: error decoding CRS from code \"%s\": %s: %s",
+          getId(), getCrs(), e.getClass(), e.getMessage());
       if (logger.isDebugEnabled()) {
         logger.error(message, e);
       } else {
@@ -297,17 +288,13 @@ public class Application {
         .title(getTitle())
         .styling(styling)
         .components(components)
-        .i18nSettings(
-            requireNonNullElse(
-                settings.getI18nSettings(), new AppI18nSettings().hideLanguageSwitcher(false)))
-        .uiSettings(
-            requireNonNullElse(
-                settings.getUiSettings(), new AppUiSettings().hideLoginButton(false)))
+        .i18nSettings(requireNonNullElse(
+            settings.getI18nSettings(), new AppI18nSettings().hideLanguageSwitcher(false)))
+        .uiSettings(requireNonNullElse(settings.getUiSettings(), new AppUiSettings().hideLoginButton(false)))
         .projections(List.of(getCrs()));
   }
 
-  @NotNull
-  public AppLayerSettings getAppLayerSettings(@NotNull AppTreeLayerNode node) {
+  @NotNull public AppLayerSettings getAppLayerSettings(@NotNull AppTreeLayerNode node) {
     return Optional.ofNullable(getSettings())
         .map(AppSettings::getLayerSettings)
         .map(layerSettingsMap -> layerSettingsMap.get(node.getId()))

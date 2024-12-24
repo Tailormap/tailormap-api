@@ -48,26 +48,22 @@ public class TaskManagerService {
    * @return the task name, a hash of the description
    * @throws SchedulerException if the job could not be scheduled
    */
-  public UUID createTask(Class<? extends QuartzJobBean> job, TMJobDataMap jobData)
-      throws SchedulerException {
-    JobDetail jobDetail =
-        JobBuilder.newJob(job)
-            .withIdentity(
-                new JobKey(UUID.randomUUID().toString(), jobData.get(Task.TYPE_KEY).toString()))
-            .withDescription(jobData.getDescription())
-            .usingJobData(new JobDataMap(jobData))
-            .storeDurably(false)
-            .build();
+  public UUID createTask(Class<? extends QuartzJobBean> job, TMJobDataMap jobData) throws SchedulerException {
+    JobDetail jobDetail = JobBuilder.newJob(job)
+        .withIdentity(new JobKey(
+            UUID.randomUUID().toString(), jobData.get(Task.TYPE_KEY).toString()))
+        .withDescription(jobData.getDescription())
+        .usingJobData(new JobDataMap(jobData))
+        .storeDurably(false)
+        .build();
 
-    Trigger trigger =
-        TriggerBuilder.newTrigger()
-            .withIdentity(jobDetail.getKey().getName(), jobDetail.getKey().getGroup())
-            .startNow()
-            .withPriority(jobData.getPriority())
-            .usingJobData(
-                SENTRY_SLUG_KEY, "monitor_slug_simple_trigger_" + jobData.get(Task.TYPE_KEY))
-            .forJob(jobDetail)
-            .build();
+    Trigger trigger = TriggerBuilder.newTrigger()
+        .withIdentity(jobDetail.getKey().getName(), jobDetail.getKey().getGroup())
+        .startNow()
+        .withPriority(jobData.getPriority())
+        .usingJobData(SENTRY_SLUG_KEY, "monitor_slug_simple_trigger_" + jobData.get(Task.TYPE_KEY))
+        .forJob(jobDetail)
+        .build();
 
     scheduler.scheduleJob(jobDetail, Set.of(trigger), true);
     return UUID.fromString(jobDetail.getKey().getName());
@@ -82,31 +78,26 @@ public class TaskManagerService {
    * @return the task name, a UUID
    * @throws SchedulerException if the job could not be scheduled
    */
-  public UUID createTask(
-      Class<? extends QuartzJobBean> job, TMJobDataMap jobData, String cronExpression)
+  public UUID createTask(Class<? extends QuartzJobBean> job, TMJobDataMap jobData, String cronExpression)
       throws SchedulerException {
 
     // Create a job
-    JobDetail jobDetail =
-        JobBuilder.newJob(job)
-            .withIdentity(
-                new JobKey(UUID.randomUUID().toString(), jobData.get(Task.TYPE_KEY).toString()))
-            .withDescription(jobData.getDescription())
-            .usingJobData(new JobDataMap(jobData))
-            .build();
+    JobDetail jobDetail = JobBuilder.newJob(job)
+        .withIdentity(new JobKey(
+            UUID.randomUUID().toString(), jobData.get(Task.TYPE_KEY).toString()))
+        .withDescription(jobData.getDescription())
+        .usingJobData(new JobDataMap(jobData))
+        .build();
 
     // Create a trigger
-    Trigger trigger =
-        TriggerBuilder.newTrigger()
-            .withIdentity(jobDetail.getKey().getName(), jobDetail.getKey().getGroup())
-            .startAt(DateBuilder.futureDate(90, DateBuilder.IntervalUnit.SECOND))
-            .withPriority(jobData.getPriority())
-            .usingJobData(
-                SENTRY_SLUG_KEY, "monitor_slug_cron_trigger_" + jobData.get(Task.TYPE_KEY))
-            .withSchedule(
-                CronScheduleBuilder.cronSchedule(cronExpression)
-                    .withMisfireHandlingInstructionFireAndProceed())
-            .build();
+    Trigger trigger = TriggerBuilder.newTrigger()
+        .withIdentity(jobDetail.getKey().getName(), jobDetail.getKey().getGroup())
+        .startAt(DateBuilder.futureDate(90, DateBuilder.IntervalUnit.SECOND))
+        .withPriority(jobData.getPriority())
+        .usingJobData(SENTRY_SLUG_KEY, "monitor_slug_cron_trigger_" + jobData.get(Task.TYPE_KEY))
+        .withSchedule(
+            CronScheduleBuilder.cronSchedule(cronExpression).withMisfireHandlingInstructionFireAndProceed())
+        .build();
 
     try {
       scheduler.scheduleJob(jobDetail, trigger);
@@ -140,18 +131,17 @@ public class TaskManagerService {
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
         jobDataMap.putAll(newJobData);
 
-        Trigger newTrigger =
-            TriggerBuilder.newTrigger()
-                .withIdentity(jobKey.getName(), jobKey.getGroup())
-                .startAt(DateBuilder.futureDate(90, DateBuilder.IntervalUnit.SECOND))
-                .withPriority(jobDataMap.getInt(Task.PRIORITY_KEY))
-                .usingJobData(
-                    SENTRY_SLUG_KEY,
-                    "monitor_slug_cron_trigger_" + jobDataMap.get(Task.TYPE_KEY).toString())
-                .withSchedule(
-                    CronScheduleBuilder.cronSchedule(jobDataMap.getString(Task.CRON_EXPRESSION_KEY))
-                        .withMisfireHandlingInstructionFireAndProceed())
-                .build();
+        Trigger newTrigger = TriggerBuilder.newTrigger()
+            .withIdentity(jobKey.getName(), jobKey.getGroup())
+            .startAt(DateBuilder.futureDate(90, DateBuilder.IntervalUnit.SECOND))
+            .withPriority(jobDataMap.getInt(Task.PRIORITY_KEY))
+            .usingJobData(
+                SENTRY_SLUG_KEY,
+                "monitor_slug_cron_trigger_"
+                    + jobDataMap.get(Task.TYPE_KEY).toString())
+            .withSchedule(CronScheduleBuilder.cronSchedule(jobDataMap.getString(Task.CRON_EXPRESSION_KEY))
+                .withMisfireHandlingInstructionFireAndProceed())
+            .build();
 
         scheduler.addJob(jobDetail, true, true);
         scheduler.rescheduleJob(oldTrigger.getKey(), newTrigger);
@@ -167,8 +157,7 @@ public class TaskManagerService {
    * @return the job key
    * @throws SchedulerException when the scheduler cannot be reached
    */
-  @Nullable
-  public JobKey getJobKey(TaskType jobType, UUID uuid) throws SchedulerException {
+  @Nullable public JobKey getJobKey(TaskType jobType, UUID uuid) throws SchedulerException {
     logger.debug("Finding job key for task {}:{}", jobType, uuid);
     return scheduler.getJobKeys(GroupMatcher.groupEquals(jobType.getValue())).stream()
         .filter(jobkey -> jobkey.getName().equals(uuid.toString()))

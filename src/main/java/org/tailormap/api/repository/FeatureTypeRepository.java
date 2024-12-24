@@ -19,14 +19,13 @@ import org.tailormap.api.persistence.TMFeatureType;
 public interface FeatureTypeRepository extends JpaRepository<TMFeatureType, Long> {
 
   /**
-   * Get a feature type by name and feature source. This is a non-deterministic operation since the
-   * combination of name and feature source is not unique. Useful for testing.
+   * Get a feature type by name and feature source. This is a non-deterministic operation since the combination of
+   * name and feature source is not unique. Useful for testing.
    *
    * @param name The name of the feature type
    * @param featureSource The feature source of the feature type
    * @return The feature type
    */
   @PreAuthorize("permitAll()")
-  Optional<TMFeatureType> getTMFeatureTypeByNameAndFeatureSource(
-      String name, TMFeatureSource featureSource);
+  Optional<TMFeatureType> getTMFeatureTypeByNameAndFeatureSource(String name, TMFeatureSource featureSource);
 }

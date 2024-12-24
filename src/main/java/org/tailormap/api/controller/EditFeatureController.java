@@ -71,8 +71,7 @@ import org.tailormap.api.viewer.model.Feature;
 
 @AppRestController
 @Validated
-@RequestMapping(
-    path = {"${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/edit/feature"})
+@RequestMapping(path = {"${tailormap-api.base-path}/{viewerKind}/{viewerName}/layer/{appLayerId}/edit/feature"})
 public class EditFeatureController implements Constants {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -82,8 +81,7 @@ public class EditFeatureController implements Constants {
   private final FeatureSourceRepository featureSourceRepository;
 
   public EditFeatureController(
-      FeatureSourceFactoryHelper featureSourceFactoryHelper,
-      FeatureSourceRepository featureSourceRepository) {
+      FeatureSourceFactoryHelper featureSourceFactoryHelper, FeatureSourceRepository featureSourceRepository) {
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
     this.featureSourceRepository = featureSourceRepository;
   }
@@ -98,7 +96,8 @@ public class EditFeatureController implements Constants {
           "Feature cannot be edited, one or more requested attributes are not available on the feature type");
     }
     if (!Collections.disjoint(
-        getReadOnlyAttributes(tmFeatureType, appLayerSettings), feature.getAttributes().keySet())) {
+        getReadOnlyAttributes(tmFeatureType, appLayerSettings),
+        feature.getAttributes().keySet())) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST,
           "Feature cannot be edited, one or more requested attributes are not editable on the feature type");
@@ -106,9 +105,7 @@ public class EditFeatureController implements Constants {
   }
 
   @Transactional
-  @PostMapping(
-      consumes = MediaType.APPLICATION_JSON_VALUE,
-      produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   @Timed(value = "create_feature", description = "time spent to process create feature call")
   @Counted(value = "create_feature", description = "number of create feature calls")
   public ResponseEntity<Serializable> createFeature(
@@ -120,8 +117,7 @@ public class EditFeatureController implements Constants {
 
     checkAuthentication();
 
-    TMFeatureType tmFeatureType =
-        getEditableFeatureType(application, appTreeLayerNode, service, layer);
+    TMFeatureType tmFeatureType = getEditableFeatureType(application, appTreeLayerNode, service, layer);
     Map<String, Object> attributesMap = completeFeature.getAttributes();
 
     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
@@ -194,8 +190,7 @@ public class EditFeatureController implements Constants {
 
     checkAuthentication();
 
-    TMFeatureType tmFeatureType =
-        getEditableFeatureType(application, appTreeLayerNode, service, layer);
+    TMFeatureType tmFeatureType = getEditableFeatureType(application, appTreeLayerNode, service, layer);
     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
 
     Map<String, Object> attributesMap = partialFeature.getAttributes();
@@ -223,8 +218,7 @@ public class EditFeatureController implements Constants {
         patchedFeature = getFeature(fs, filter, application);
       } else {
         throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST,
-            "Feature cannot be edited, it does not exist or is not editable");
+            HttpStatus.BAD_REQUEST, "Feature cannot be edited, it does not exist or is not editable");
       }
     } catch (RuntimeException | IOException | FactoryException e) {
       // either opening datastore, modify or transaction failed
@@ -255,8 +249,7 @@ public class EditFeatureController implements Constants {
 
     checkAuthentication();
 
-    TMFeatureType tmFeatureType =
-        getEditableFeatureType(application, appTreeLayerNode, service, layer);
+    TMFeatureType tmFeatureType = getEditableFeatureType(application, appTreeLayerNode, service, layer);
 
     SimpleFeatureSource fs = null;
     try (Transaction transaction = new DefaultTransaction("delete")) {
@@ -286,16 +279,15 @@ public class EditFeatureController implements Constants {
 
   private void checkAuthentication() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    boolean isAuthenticated =
-        authentication != null && !(authentication instanceof AnonymousAuthenticationToken);
+    boolean isAuthenticated = authentication != null && !(authentication instanceof AnonymousAuthenticationToken);
     if (!isAuthenticated) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
     }
   }
 
   /**
-   * Get editable feature type, throws exception if not found or not editable. Will throw a {@link
-   * ResponseStatusException} if the layer does not have an editable featuretype.
+   * Get editable feature type, throws exception if not found or not editable. Will throw a
+   * {@link ResponseStatusException} if the layer does not have an editable featuretype.
    *
    * @param application the application that has the editable layer
    * @param appTreeLayerNode the layer to edit
@@ -304,14 +296,10 @@ public class EditFeatureController implements Constants {
    * @return the editable feature type
    */
   private TMFeatureType getEditableFeatureType(
-      Application application,
-      AppTreeLayerNode appTreeLayerNode,
-      GeoService service,
-      GeoServiceLayer layer) {
+      Application application, AppTreeLayerNode appTreeLayerNode, GeoService service, GeoServiceLayer layer) {
 
     if (null == layer) {
-      throw new ResponseStatusException(
-          HttpStatus.NOT_FOUND, "Cannot find layer " + appTreeLayerNode);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find layer " + appTreeLayerNode);
     }
 
     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
@@ -336,22 +324,18 @@ public class EditFeatureController implements Constants {
     try (SimpleFeatureIterator feats = fs.getFeatures(filter).features()) {
       if (feats.hasNext()) {
         SimpleFeature simpleFeature = feats.next();
-        modelFeature =
-            new Feature()
-                .geometry(
-                    GeometryProcessor.processGeometry(
-                        simpleFeature.getDefaultGeometry(),
-                        false,
-                        true,
-                        TransformationUtil.getTransformationToApplication(application, fs)))
-                .fid(simpleFeature.getID());
+        modelFeature = new Feature()
+            .geometry(GeometryProcessor.processGeometry(
+                simpleFeature.getDefaultGeometry(),
+                false,
+                true,
+                TransformationUtil.getTransformationToApplication(application, fs)))
+            .fid(simpleFeature.getID());
         for (AttributeDescriptor att : simpleFeature.getFeatureType().getAttributeDescriptors()) {
           Object value = simpleFeature.getAttribute(att.getName());
           if (value instanceof Geometry) {
-            value =
-                GeometryProcessor.transformGeometry(
-                    (Geometry) value,
-                    TransformationUtil.getTransformationToApplication(application, fs));
+            value = GeometryProcessor.transformGeometry(
+                (Geometry) value, TransformationUtil.getTransformationToApplication(application, fs));
             value = GeometryProcessor.geometryToWKT((Geometry) value);
           }
           modelFeature.putAttributesItem(att.getLocalName(), value);
@@ -371,29 +355,27 @@ public class EditFeatureController implements Constants {
       SimpleFeatureSource fs)
       throws FactoryException {
 
-    final MathTransform transform =
-        TransformationUtil.getTransformationToDataSource(application, fs);
+    final MathTransform transform = TransformationUtil.getTransformationToDataSource(application, fs);
     getNonHiddenAttributes(tmFeatureType, appLayerSettings).stream()
         .filter(attr -> TMAttributeTypeHelper.isGeometry(attr.getType()))
         .filter(attr -> modelFeature.getAttributes().containsKey(attr.getName()))
-        .forEach(
-            attr -> {
-              Geometry geometry =
-                  GeometryProcessor.wktToGeometry(
-                      (String) modelFeature.getAttributes().get(attr.getName()));
-              if (transform != null && geometry != null) {
-                geometry.setSRID(
-                    Integer.parseInt(application.getCrs().substring("EPSG:".length())));
-                if (logger.isTraceEnabled()) {
-                  logger.trace(
-                      "Transforming geometry {} from {} to {}",
-                      geometry.toText(),
-                      geometry.getSRID(),
-                      fs.getSchema().getCoordinateReferenceSystem().getIdentifiers());
-                }
-                geometry = GeometryProcessor.transformGeometry(geometry, transform);
-              }
-              attributesMap.put(attr.getName(), geometry);
-            });
+        .forEach(attr -> {
+          Geometry geometry = GeometryProcessor.wktToGeometry(
+              (String) modelFeature.getAttributes().get(attr.getName()));
+          if (transform != null && geometry != null) {
+            geometry.setSRID(Integer.parseInt(application.getCrs().substring("EPSG:".length())));
+            if (logger.isTraceEnabled()) {
+              logger.trace(
+                  "Transforming geometry {} from {} to {}",
+                  geometry.toText(),
+                  geometry.getSRID(),
+                  fs.getSchema()
+                      .getCoordinateReferenceSystem()
+                      .getIdentifiers());
+            }
+            geometry = GeometryProcessor.transformGeometry(geometry, transform);
+          }
+          attributesMap.put(attr.getName(), geometry);
+        });
   }
 }

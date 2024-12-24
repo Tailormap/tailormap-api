@@ -20,8 +20,8 @@ public interface Task {
   String INTERRUPTABLE_KEY = "interruptable";
 
   /**
-   * Get the type of the task. Implement this method to return the key for the type of task. This
-   * must be a read-only property.
+   * Get the type of the task. Implement this method to return the key for the type of task. This must be a read-only
+   * property.
    *
    * @return the type of task
    */
@@ -42,8 +42,8 @@ public interface Task {
   void setDescription(String description);
 
   /**
-   * Handle the task progress event. Override this method to handle the progress of the task, e.g.
-   * by emitting {@code ServerSentEvent}s. The default is a no-op.
+   * Handle the task progress event. Override this method to handle the progress of the task, e.g. by emitting
+   * {@code ServerSentEvent}s. The default is a no-op.
    *
    * @param event the task progress event
    */

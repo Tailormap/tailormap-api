@@ -20,8 +20,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Delete the file in the "javax.persistence.schema-generation.scripts.create-target" property
- * because it is appended to instead of overwritten, which we don't want.
+ * Delete the file in the "javax.persistence.schema-generation.scripts.create-target" property because it is appended to
+ * instead of overwritten, which we don't want.
  */
 @Configuration
 @ConfigurationProperties(prefix = "spring.datasource")
@@ -56,7 +56,11 @@ public class DeleteDDLScriptBeforeCreating {
    */
   @Bean
   public DataSource getDataSource() {
-    return DataSourceBuilder.create().url(url).username(username).password(password).build();
+    return DataSourceBuilder.create()
+        .url(url)
+        .username(username)
+        .password(password)
+        .build();
   }
 
   @PostConstruct

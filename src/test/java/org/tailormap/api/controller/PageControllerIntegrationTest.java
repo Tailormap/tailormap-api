@@ -30,7 +30,8 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
 class PageControllerIntegrationTest {
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
@@ -44,25 +45,22 @@ class PageControllerIntegrationTest {
   @Test
   void testHomePageWithFilteredTile() throws Exception {
     final String url = apiBasePath + "/page";
-    mockMvc
-        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.name").value("home"))
         .andExpect(jsonPath("$.tiles.length()").value(Matchers.greaterThan(3)))
-        .andExpect(jsonPath("$.tiles[?(@.applicationUrl == '/app/default')]").exists())
-        .andExpect(
-            jsonPath(
-                "$.tiles[?(@.title == 'Default app')].image",
-                everyItem(startsWith("http://localhost/api/uploads/portal-image/"))))
+        .andExpect(jsonPath("$.tiles[?(@.applicationUrl == '/app/default')]")
+            .exists())
+        .andExpect(jsonPath(
+            "$.tiles[?(@.title == 'Default app')].image",
+            everyItem(startsWith("http://localhost/api/uploads/portal-image/"))))
         .andExpect(jsonPath("$.tiles[?(@.title == 'About')].pageUrl").value("/page/about"))
-        .andExpect(
-            jsonPath(
-                    "$.tiles[?(@.applicationUrl == '/app/secured' && @.title == 'Secured app (unfiltered)')]")
-                .exists())
-        .andExpect(
-            jsonPath("$.tiles[?(@.applicationUrl == '/app/secured' && @.title == 'Secured app')]")
-                .doesNotHaveJsonPath());
+        .andExpect(jsonPath(
+                "$.tiles[?(@.applicationUrl == '/app/secured' && @.title == 'Secured app (unfiltered)')]")
+            .exists())
+        .andExpect(jsonPath("$.tiles[?(@.applicationUrl == '/app/secured' && @.title == 'Secured app')]")
+            .doesNotHaveJsonPath());
   }
 
   @Test
@@ -71,14 +69,12 @@ class PageControllerIntegrationTest {
       authorities = {"admin"})
   void testFilteredTileShownWhenAuthorized() throws Exception {
     final String url = apiBasePath + "/page";
-    mockMvc
-        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.name").value("home"))
-        .andExpect(
-            jsonPath("$.tiles[?(@.applicationUrl == '/app/secured' && @.title == 'Secured app')]")
-                .exists());
+        .andExpect(jsonPath("$.tiles[?(@.applicationUrl == '/app/secured' && @.title == 'Secured app')]")
+            .exists());
   }
 
   @Test
@@ -86,18 +82,15 @@ class PageControllerIntegrationTest {
     final String url = apiBasePath + "/page/home";
     String aboutItemJsonPath = "$.menu[?(@.label == 'About')].pageUrl";
     String b3pWebsiteItemJsonPath = "$.menu[?(@.label == 'B3Partners website')]";
-    mockMvc
-        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath(aboutItemJsonPath).value("/page/about"))
         .andExpect(jsonPath(b3pWebsiteItemJsonPath).doesNotHaveJsonPath());
 
-    mockMvc
-        .perform(
-            get(apiBasePath + "/page/about")
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url)))
+    mockMvc.perform(get(apiBasePath + "/page/about")
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath(aboutItemJsonPath).exists())

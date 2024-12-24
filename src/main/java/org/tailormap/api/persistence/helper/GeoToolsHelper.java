@@ -89,14 +89,10 @@ public class GeoToolsHelper {
     if (binding.equals(Boolean.class)) {
       return TMAttributeType.BOOLEAN;
     }
-    if (binding.equals(Long.class)
-        || binding.equals(Integer.class)
-        || binding.equals(Short.class)) {
+    if (binding.equals(Long.class) || binding.equals(Integer.class) || binding.equals(Short.class)) {
       return TMAttributeType.INTEGER;
     }
-    if (binding.equals(Double.class)
-        || binding.equals(Float.class)
-        || binding.equals(BigDecimal.class)) {
+    if (binding.equals(Double.class) || binding.equals(Float.class) || binding.equals(BigDecimal.class)) {
       return TMAttributeType.DOUBLE;
     }
     if (binding.equals(String.class)) {

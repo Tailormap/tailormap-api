@@ -20,33 +20,36 @@ import org.tailormap.api.repository.SearchIndexRepository;
 
 @PostgresIntegrationTest
 class SearchIndexEventHandlerIntegrationTest {
-  @Autowired SearchIndexEventHandler searchIndexEventHandler;
-  @Autowired SearchIndexRepository searchIndexRepository;
+  @Autowired
+  SearchIndexEventHandler searchIndexEventHandler;
+
+  @Autowired
+  SearchIndexRepository searchIndexRepository;
 
   /**
-   * Test that a {@code SearchIndex} with a scheduled task that already exists cannot be saved with
-   * a new task through Spring Data REST.
+   * Test that a {@code SearchIndex} with a scheduled task that already exists cannot be saved with a new task through
+   * Spring Data REST.
    */
   @Test
   @Issue("HTM-1258")
   @SuppressWarnings("PMD.UnitTestShouldIncludeAssert")
   void testBeforeSaveSearchIndexEventHandler() {
-    SearchIndex existingSearchIndexWithSchedule = searchIndexRepository.findById(1L).orElse(null);
+    SearchIndex existingSearchIndexWithSchedule =
+        searchIndexRepository.findById(1L).orElse(null);
 
     assumingThat(
         null != existingSearchIndexWithSchedule
             && null != existingSearchIndexWithSchedule.getSchedule()
             && null != existingSearchIndexWithSchedule.getSchedule().getUuid(),
         () -> {
-          final Exception actual =
-              assertThrows(
-                  SchedulerException.class,
-                  () -> {
-                    existingSearchIndexWithSchedule.getSchedule().setUuid(null);
-                    searchIndexEventHandler.beforeSaveSearchIndexEventHandler(
-                        existingSearchIndexWithSchedule);
-                  },
-                  "Test did not invoke expected exception");
+          final Exception actual = assertThrows(
+              SchedulerException.class,
+              () -> {
+                existingSearchIndexWithSchedule.getSchedule().setUuid(null);
+                searchIndexEventHandler.beforeSaveSearchIndexEventHandler(
+                    existingSearchIndexWithSchedule);
+              },
+              "Test did not invoke expected exception");
 
           assertThat(actual.getMessage(), containsString("scheduled task already exists"));
         });

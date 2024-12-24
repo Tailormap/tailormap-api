@@ -19,10 +19,9 @@ public class TransformationUtil {
   }
 
   /**
-   * Determine whether we need to transform geometries to the application CRS. Note that this uses
-   * the "default geometry" attribute of the feature source, in cases where a feature source has
-   * multiple geometry attributes (with possibly different CRSs) or heterogenous CRSs across a
-   * single geometry attribute this may not be accurate.
+   * Determine whether we need to transform geometries to the application CRS. Note that this uses the "default
+   * geometry" attribute of the feature source, in cases where a feature source has multiple geometry attributes (with
+   * possibly different CRSs) or heterogenous CRSs across a single geometry attribute this may not be accurate.
    *
    * @param application the referenced application
    * @param simpleFeatureSource the feature source used in the application
@@ -44,10 +43,9 @@ public class TransformationUtil {
   }
 
   /**
-   * Determine whether we need to transform geometry to data source crs. Note that this uses the
-   * "default geometry" attribute of the feature source, in cases where a feature source has
-   * multiple geometry attributes (with possibly different CRSs) or heterogenous CRSs across a
-   * single geometry attribute this may not be accurate.
+   * Determine whether we need to transform geometry to data source crs. Note that this uses the "default geometry"
+   * attribute of the feature source, in cases where a feature source has multiple geometry attributes (with possibly
+   * different CRSs) or heterogenous CRSs across a single geometry attribute this may not be accurate.
    *
    * @param application the referenced application
    * @param simpleFeatureSource the feature source used in the application

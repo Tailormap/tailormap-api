@@ -43,8 +43,7 @@ public class ActuatorSecurityConfiguration {
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
 
-  public ActuatorSecurityConfiguration(
-      UserRepository userRepository, GroupRepository groupRepository) {
+  public ActuatorSecurityConfiguration(UserRepository userRepository, GroupRepository groupRepository) {
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
   }
@@ -68,14 +67,14 @@ public class ActuatorSecurityConfiguration {
           msg = "with a different password from";
         }
         logger.info(
-            "Actuator account already exists {} the MANAGEMENT_HASHED_ACCOUNT environment variable",
-            msg);
+            "Actuator account already exists {} the MANAGEMENT_HASHED_ACCOUNT environment variable", msg);
       } else {
         if (!hashedPassword.startsWith("{bcrypt}")) {
           logger.error("Invalid password hash, must start with {bcrypt}");
         } else {
           account = new User().setUsername(Group.ACTUATOR).setPassword(hashedPassword);
-          account.getGroups().add(groupRepository.findById(Group.ACTUATOR).orElseThrow());
+          account.getGroups()
+              .add(groupRepository.findById(Group.ACTUATOR).orElseThrow());
           userRepository.save(account);
           logger.info("Created {} account with hashed password for management", Group.ACTUATOR);
         }
@@ -86,19 +85,17 @@ public class ActuatorSecurityConfiguration {
   }
 
   @Bean
-  public SecurityFilterChain actuatorFilterChain(
-      HttpSecurity http, CookieCsrfTokenRepository csrfTokenRepository) throws Exception {
+  public SecurityFilterChain actuatorFilterChain(HttpSecurity http, CookieCsrfTokenRepository csrfTokenRepository)
+      throws Exception {
     http.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository))
         .securityMatcher(basePath + "/**")
-        .authorizeHttpRequests(
-            authorize ->
-                authorize
-                    .requestMatchers(basePath + "/health/**")
-                    .permitAll()
-                    .requestMatchers(basePath + "/info")
-                    .permitAll()
-                    .requestMatchers(basePath + "/**")
-                    .hasAnyAuthority(Group.ADMIN, Group.ACTUATOR))
+        .authorizeHttpRequests(authorize -> authorize
+            .requestMatchers(basePath + "/health/**")
+            .permitAll()
+            .requestMatchers(basePath + "/info")
+            .permitAll()
+            .requestMatchers(basePath + "/**")
+            .hasAnyAuthority(Group.ADMIN, Group.ACTUATOR))
         .httpBasic(Customizer.withDefaults())
         .addFilterAfter(
             /* debug logging user making the request */ new AuditInterceptor(),

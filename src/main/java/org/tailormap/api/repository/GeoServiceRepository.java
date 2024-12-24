@@ -17,14 +17,10 @@ import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.security.annotation.PreAuthorizeAdmin;
 
 @PreAuthorizeAdmin
-@RepositoryRestResource(
-    path = "geo-services",
-    collectionResourceRel = "geo-services",
-    itemResourceRel = "geo-service")
+@RepositoryRestResource(path = "geo-services", collectionResourceRel = "geo-services", itemResourceRel = "geo-service")
 public interface GeoServiceRepository extends JpaRepository<GeoService, String> {
   @Override
-  @NonNull
-  @PreAuthorize("permitAll()")
+  @NonNull @PreAuthorize("permitAll()")
   Optional<GeoService> findById(@NonNull String id);
 
   /**
@@ -34,8 +30,7 @@ public interface GeoServiceRepository extends JpaRepository<GeoService, String> 
    * @param ids The ids to search for
    * @return The geo services matching the ids
    */
-  @NonNull
-  @PreAuthorize("permitAll()")
+  @NonNull @PreAuthorize("permitAll()")
   @Query("from GeoService s where id in :ids")
   List<GeoService> findByIds(@Param("ids") List<String> ids);
 
@@ -48,8 +43,7 @@ public interface GeoServiceRepository extends JpaRepository<GeoService, String> 
    * @param ids The ids not to include
    * @return All geo services except those matching the ids
    */
-  @NonNull
-  @PreAuthorize("permitAll()")
+  @NonNull @PreAuthorize("permitAll()")
   @Query("from GeoService s where id not in :ids")
   List<GeoService> getAllExcludingIds(@Param("ids") List<String> ids);
 }

@@ -39,8 +39,7 @@ public class InterruptablePocTask extends QuartzJobBean implements Task, Interru
   }
 
   @Override
-  protected void executeInternal(@NonNull JobExecutionContext context)
-      throws JobExecutionException {
+  protected void executeInternal(@NonNull JobExecutionContext context) throws JobExecutionException {
 
     final JobDetail jobDetail = context.getJobDetail();
 
@@ -71,8 +70,7 @@ public class InterruptablePocTask extends QuartzJobBean implements Task, Interru
               Task.LAST_RESULT_KEY,
               "Interruptable POC task interrupted after %d%% iterations".formatted(i));
           jobDataMap.put("lastExecutionFinished", null);
-          context.setResult(
-              "Interruptable POC task interrupted after %d%% iterations".formatted(i));
+          context.setResult("Interruptable POC task interrupted after %d%% iterations".formatted(i));
           // bail out after interruption
           return;
         }

@@ -28,13 +28,10 @@ public class UploadHelper {
     return Optional.ofNullable(imageId)
         .map(UUID::fromString)
         .flatMap(imageUuid -> uploadRepository.findByIdAndCategory(imageUuid, category))
-        .map(
-            upload ->
-                linkTo(
-                        UploadsController.class,
-                        Map.of(
-                            "id", imageId, "category", category, "filename", upload.getFilename()))
-                    .toString())
+        .map(upload -> linkTo(
+                UploadsController.class,
+                Map.of("id", imageId, "category", category, "filename", upload.getFilename()))
+            .toString())
         .orElse(null);
   }
 }

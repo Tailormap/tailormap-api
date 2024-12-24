@@ -29,11 +29,10 @@ import org.tailormap.api.persistence.json.JDBCConnectionProperties;
 import org.tailormap.api.persistence.json.ServiceAuthentication;
 
 public class JDBCFeatureSourceHelper extends FeatureSourceHelper {
-  private static final Map<JDBCConnectionProperties.DbtypeEnum, Integer> defaultPorts =
-      Map.of(
-          JDBCConnectionProperties.DbtypeEnum.POSTGIS, 5432,
-          JDBCConnectionProperties.DbtypeEnum.ORACLE, 1521,
-          JDBCConnectionProperties.DbtypeEnum.SQLSERVER, 1433);
+  private static final Map<JDBCConnectionProperties.DbtypeEnum, Integer> defaultPorts = Map.of(
+      JDBCConnectionProperties.DbtypeEnum.POSTGIS, 5432,
+      JDBCConnectionProperties.DbtypeEnum.ORACLE, 1521,
+      JDBCConnectionProperties.DbtypeEnum.SQLSERVER, 1433);
 
   @Override
   public DataStore createDataStore(TMFeatureSource tmfs, Integer timeout) throws IOException {
@@ -43,19 +42,18 @@ public class JDBCFeatureSourceHelper extends FeatureSourceHelper {
     Objects.requireNonNull(tmfs.getJdbcConnection());
     Objects.requireNonNull(tmfs.getAuthentication());
     if (tmfs.getAuthentication().getMethod() != ServiceAuthentication.MethodEnum.PASSWORD) {
-      throw new IllegalArgumentException(tmfs.getAuthentication().getMethod().getValue());
+      throw new IllegalArgumentException(
+          tmfs.getAuthentication().getMethod().getValue());
     }
 
     JDBCConnectionProperties c = tmfs.getJdbcConnection();
     Objects.requireNonNull(c.getDbtype());
-    String connectionOpts =
-        Optional.ofNullable(c.getAdditionalProperties().get("connectionOptions")).orElse("");
+    String connectionOpts = Optional.ofNullable(c.getAdditionalProperties().get("connectionOptions"))
+        .orElse("");
     if (c.getDbtype() == JDBCConnectionProperties.DbtypeEnum.POSTGIS
         && !connectionOpts.contains("ApplicationName")) {
       connectionOpts =
-          connectionOpts
-              + (connectionOpts.contains("?") ? "&amp;" : "?")
-              + "ApplicationName=tailormap-api";
+          connectionOpts + (connectionOpts.contains("?") ? "&amp;" : "?") + "ApplicationName=tailormap-api";
     }
 
     Map<String, Object> params = new HashMap<>();

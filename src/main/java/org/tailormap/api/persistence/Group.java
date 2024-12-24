@@ -38,7 +38,8 @@ public class Group {
   @Pattern(regexp = Constants.NAME_REGEX, message = "Group " + Constants.NAME_REGEX_INVALID_MESSAGE)
   private String name;
 
-  @Version private Long version;
+  @Version
+  private Long version;
 
   private boolean systemGroup;
 
@@ -51,9 +52,9 @@ public class Group {
   private Set<User> members = new HashSet<>();
 
   /**
-   * Generic additional properties which can be set on a group. A viewer admin frontend extension
-   * component can define attributes for the purposes of the extension and the viewer admin UI will
-   * show a control to edit the attribute in the group detail form.
+   * Generic additional properties which can be set on a group. A viewer admin frontend extension component can define
+   * attributes for the purposes of the extension and the viewer admin UI will show a control to edit the attribute in
+   * the group detail form.
    */
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")

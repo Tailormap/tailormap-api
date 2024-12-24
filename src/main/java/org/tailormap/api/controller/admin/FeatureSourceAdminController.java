@@ -42,13 +42,12 @@ public class FeatureSourceAdminController {
 
   @PostMapping(path = "${tailormap-api.admin.base-path}/feature-sources/{id}/refresh-capabilities")
   @Transactional
-  public ResponseEntity<?> refreshCapabilities(
-      @PathVariable Long id, HttpServletResponse httpServletResponse) throws Exception {
+  public ResponseEntity<?> refreshCapabilities(@PathVariable Long id, HttpServletResponse httpServletResponse)
+      throws Exception {
 
-    TMFeatureSource featureSource =
-        featureSourceRepository
-            .findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    TMFeatureSource featureSource = featureSourceRepository
+        .findById(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
     // Authorization check not needed: only admins are allowed on the admin base path, and admins
     // have all access
@@ -57,9 +56,9 @@ public class FeatureSourceAdminController {
     featureSource.setRefreshCapabilities(true);
     applicationContext.publishEvent(new BeforeSaveEvent(featureSource));
 
-    httpServletResponse.sendRedirect(
-        String.valueOf(
-            repositoryEntityLinks.linkToItemResource(TMFeatureSource.class, id).toUri()));
+    httpServletResponse.sendRedirect(String.valueOf(repositoryEntityLinks
+        .linkToItemResource(TMFeatureSource.class, id)
+        .toUri()));
     return null;
   }
 }

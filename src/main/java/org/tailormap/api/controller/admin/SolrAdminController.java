@@ -86,10 +86,12 @@ public class SolrAdminController {
     // wrap the exception in a proper json response
     return ResponseEntity.status(ex.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
-        .body(
-            new ErrorResponse()
-                .message(ex.getReason() != null ? ex.getReason() : ex.getBody().getTitle())
-                .code(ex.getStatusCode().value()));
+        .body(new ErrorResponse()
+            .message(
+                ex.getReason() != null
+                    ? ex.getReason()
+                    : ex.getBody().getTitle())
+            .code(ex.getStatusCode().value()));
   }
 
   /**
@@ -112,18 +114,15 @@ public class SolrAdminController {
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(example = "{\"message\":\"Some error message..\",\"code\":500}")))
-  @GetMapping(
-      path = "${tailormap-api.admin.base-path}/index/ping",
-      produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(path = "${tailormap-api.admin.base-path}/index/ping", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> pingSolr() {
     try (SolrClient solrClient = solrService.getSolrClientForSearching()) {
       final SolrPingResponse ping = solrClient.ping();
       logger.info("Solr ping status {}", ping.getResponse().get("status"));
-      return ResponseEntity.ok(
-          new ObjectMapper()
-              .createObjectNode()
-              .put("status", ping.getResponse().get("status").toString())
-              .put("timeElapsed", ping.getElapsedTime()));
+      return ResponseEntity.ok(new ObjectMapper()
+          .createObjectNode()
+          .put("status", ping.getResponse().get("status").toString())
+          .put("timeElapsed", ping.getElapsedTime()));
     } catch (IOException | SolrServerException e) {
       logger.error("Error pinging solr", e);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
@@ -138,8 +137,7 @@ public class SolrAdminController {
    */
   @Operation(
       summary = "Create or update a feature type index",
-      description =
-          "Create or update a feature type index for a layer, will erase existing index if present")
+      description = "Create or update a feature type index for a layer, will erase existing index if present")
   @ApiResponse(
       responseCode = "202",
       description = "Index create or update request accepted",
@@ -158,7 +156,8 @@ public class SolrAdminController {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema =
                   @Schema(
-                      example = "{\"message\":\"Layer does not have feature type\",\"code\":404}")))
+                      example =
+                          "{\"message\":\"Layer does not have feature type\",\"code\":404}")))
   @ApiResponse(
       responseCode = "400",
       description = "Indexing WFS feature types is not supported",
@@ -186,16 +185,14 @@ public class SolrAdminController {
 
     if (searchIndex.getStatus() == SearchIndex.Status.INDEXING) {
       throw new ResponseStatusException(
-          HttpStatus.CONFLICT,
-          "Indexing already in progress, check tasks overview before retrying");
+          HttpStatus.CONFLICT, "Indexing already in progress, check tasks overview before retrying");
     }
 
     boolean createNewIndex =
-        (null == searchIndex.getLastIndexed()
-            || searchIndex.getStatus() == SearchIndex.Status.INITIAL);
+        (null == searchIndex.getLastIndexed() || searchIndex.getStatus() == SearchIndex.Status.INITIAL);
 
-    boolean hasSchedule =
-        (null != searchIndex.getSchedule() && null != searchIndex.getSchedule().getUuid());
+    boolean hasSchedule = (null != searchIndex.getSchedule()
+        && null != searchIndex.getSchedule().getUuid());
 
     UUID taskUuid;
     try {
@@ -222,46 +219,44 @@ public class SolrAdminController {
         (createNewIndex ? "creation of a new" : "update of"),
         searchIndex.getName());
     return ResponseEntity.accepted()
-        .body(
-            Map.of(
-                "code",
-                202,
-                Task.TYPE_KEY,
-                TaskType.INDEX.getValue(),
-                Task.UUID_KEY,
-                taskUuid,
-                "message",
-                "Indexing scheduled"));
+        .body(Map.of(
+            "code",
+            202,
+            Task.TYPE_KEY,
+            TaskType.INDEX.getValue(),
+            Task.UUID_KEY,
+            taskUuid,
+            "message",
+            "Indexing scheduled"));
   }
 
   private UUID startOneTimeJobIndexing(SearchIndex searchIndex)
       throws SolrServerException, IOException, SchedulerException {
-    UUID taskName =
-        taskManagerService.createTask(
-            IndexTask.class,
-            new TMJobDataMap(
-                Map.of(
-                    Task.TYPE_KEY,
-                    TaskType.INDEX,
-                    Task.DESCRIPTION_KEY,
-                    "One-time indexing of " + searchIndex.getName(),
-                    IndexTask.INDEX_KEY,
-                    searchIndex.getId().toString(),
-                    Task.PRIORITY_KEY,
-                    0)));
+    UUID taskName = taskManagerService.createTask(
+        IndexTask.class,
+        new TMJobDataMap(Map.of(
+            Task.TYPE_KEY,
+            TaskType.INDEX,
+            Task.DESCRIPTION_KEY,
+            "One-time indexing of " + searchIndex.getName(),
+            IndexTask.INDEX_KEY,
+            searchIndex.getId().toString(),
+            Task.PRIORITY_KEY,
+            0)));
     logger.info("One-time indexing job with UUID {} started", taskName);
     return taskName;
   }
 
   private void startScheduledJobIndexing(SearchIndex searchIndex) throws SchedulerException {
-    JobKey jobKey =
-        taskManagerService.getJobKey(TaskType.INDEX, searchIndex.getSchedule().getUuid());
+    JobKey jobKey = taskManagerService.getJobKey(
+        TaskType.INDEX, searchIndex.getSchedule().getUuid());
     if (null == jobKey) {
       throw new SchedulerException("Indexing job not found in scheduler");
     }
     scheduler.triggerJob(jobKey);
     logger.info(
-        "Indexing of scheduled job with UUID {} started", searchIndex.getSchedule().getUuid());
+        "Indexing of scheduled job with UUID {} started",
+        searchIndex.getSchedule().getUuid());
   }
 
   /**
@@ -269,26 +264,21 @@ public class SolrAdminController {
    *
    * @param searchIndexId the search index id
    * @return the search index
-   * @throws ResponseStatusException if the search index is not found or the feature type is not
-   *     found
+   * @throws ResponseStatusException if the search index is not found or the feature type is not found
    */
   private SearchIndex validateInputAndFindIndex(Long searchIndexId) {
     // check if solr is available
     this.pingSolr();
 
     // check if search index exists
-    SearchIndex searchIndex =
-        searchIndexRepository
-            .findById(searchIndexId)
-            .orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Search index not found"));
+    SearchIndex searchIndex = searchIndexRepository
+        .findById(searchIndexId)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Search index not found"));
 
     // check if feature type exists
-    TMFeatureType indexingFT =
-        featureTypeRepository
-            .findById(searchIndex.getFeatureTypeId())
-            .orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Feature type not found"));
+    TMFeatureType indexingFT = featureTypeRepository
+        .findById(searchIndex.getFeatureTypeId())
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Feature type not found"));
 
     if (TMFeatureSource.Protocol.WFS.equals(indexingFT.getFeatureSource().getProtocol())) {
       // the search index should not exist for WFS feature types, but test just in case
@@ -307,9 +297,7 @@ public class SolrAdminController {
    * @param searchIndexId the searchindex id
    * @return the response entity ({@code 204 NOCONTENT} or an error response)
    */
-  @Operation(
-      summary = "Clear index for a feature type",
-      description = "Clear index for the feature type")
+  @Operation(summary = "Clear index for a feature type", description = "Clear index for the feature type")
   @ApiResponse(responseCode = "204", description = "Index cleared")
   @ApiResponse(responseCode = "404", description = "Index not configured for feature type")
   @ApiResponse(
@@ -330,12 +318,9 @@ public class SolrAdminController {
       solrHelper.clearIndexForLayer(searchIndexId);
       // do not delete the SearchIndex metadata object
       // searchIndexRepository.findById(searchIndexId).ifPresent(searchIndexRepository::delete);
-      SearchIndex searchIndex =
-          searchIndexRepository
-              .findById(searchIndexId)
-              .orElseThrow(
-                  () ->
-                      new ResponseStatusException(HttpStatus.NOT_FOUND, "Search index not found"));
+      SearchIndex searchIndex = searchIndexRepository
+          .findById(searchIndexId)
+          .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Search index not found"));
       searchIndex
           .setLastIndexed(null)
           .setStatus(SearchIndex.Status.INITIAL)

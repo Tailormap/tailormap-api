@@ -39,7 +39,8 @@ class PersistentJsonArrayPropertyIntegrationTest {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Autowired private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
 
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
@@ -51,41 +52,31 @@ class PersistentJsonArrayPropertyIntegrationTest {
   void testUpdateApplicationComponents() throws Exception {
     ObjectMapper objectMapper = new ObjectMapper();
 
-    MockMvc mockMvc =
-        MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
-    Application app =
-        new Application()
-            .setName("test-json-array-property")
-            .setTitle("Testcase")
-            .setCrs("EPSG:3857");
+    Application app = new Application()
+        .setName("test-json-array-property")
+        .setTitle("Testcase")
+        .setCrs("EPSG:3857");
 
-    MvcResult result =
-        mockMvc
-            .perform(
-                post(adminBasePath + "/applications")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(app)))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id").isNotEmpty())
-            .andExpect(jsonPath("$.components").isArray())
-            .andExpect(jsonPath("$.components.length()").value(0))
-            .andExpect(jsonPath("$.name").value("test-json-array-property"))
-            .andReturn();
+    MvcResult result = mockMvc.perform(post(adminBasePath + "/applications")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(app)))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.id").isNotEmpty())
+        .andExpect(jsonPath("$.components").isArray())
+        .andExpect(jsonPath("$.components.length()").value(0))
+        .andExpect(jsonPath("$.name").value("test-json-array-property"))
+        .andReturn();
 
     Integer appId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
 
-    app.setComponents(
-        List.of(
-            new Component().type("test 1"),
-            new Component().type("test 2"),
-            new Component().type("test 3")));
+    app.setComponents(List.of(
+        new Component().type("test 1"), new Component().type("test 2"), new Component().type("test 3")));
 
-    mockMvc
-        .perform(
-            patch(adminBasePath + "/applications/" + appId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getApplicationComponentsPatchBody(objectMapper, app)))
+    mockMvc.perform(patch(adminBasePath + "/applications/" + appId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(getApplicationComponentsPatchBody(objectMapper, app)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.components").isArray())
@@ -94,51 +85,40 @@ class PersistentJsonArrayPropertyIntegrationTest {
         .andExpect(jsonPath("$.components[1].type").value("test 2"))
         .andExpect(jsonPath("$.components[2].type").value("test 3"));
 
-    app.setComponents(
-        List.of(
-            new Component().type("test 1"),
-            new Component().type("test 2 [modified without changing array size]"),
-            new Component().type("test 3")));
+    app.setComponents(List.of(
+        new Component().type("test 1"),
+        new Component().type("test 2 [modified without changing array size]"),
+        new Component().type("test 3")));
 
-    mockMvc
-        .perform(
-            patch(adminBasePath + "/applications/" + appId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getApplicationComponentsPatchBody(objectMapper, app)))
+    mockMvc.perform(patch(adminBasePath + "/applications/" + appId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(getApplicationComponentsPatchBody(objectMapper, app)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.components").isArray())
         .andExpect(jsonPath("$.components.length()").value(3))
-        .andExpect(
-            jsonPath("$.components[1].type")
-                .value("test 2 [modified without changing array size]"));
+        .andExpect(jsonPath("$.components[1].type").value("test 2 [modified without changing array size]"));
 
-    app.setComponents(
-        List.of(new Component().type("test 2 [shrink array]"), new Component().type("test 3")));
+    app.setComponents(List.of(new Component().type("test 2 [shrink array]"), new Component().type("test 3")));
 
-    mockMvc
-        .perform(
-            patch(adminBasePath + "/applications/" + appId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getApplicationComponentsPatchBody(objectMapper, app)))
+    mockMvc.perform(patch(adminBasePath + "/applications/" + appId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(getApplicationComponentsPatchBody(objectMapper, app)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.components").isArray())
         .andExpect(jsonPath("$.components.length()").value(2))
         .andExpect(jsonPath("$.components[0].type").value("test 2 [shrink array]"));
 
-    app.setComponents(
-        List.of(
-            new Component().type("test 1"),
-            new Component().type("test 2"),
-            new Component().type("test 3"),
-            new Component().type("test 4 [test growing array]")));
+    app.setComponents(List.of(
+        new Component().type("test 1"),
+        new Component().type("test 2"),
+        new Component().type("test 3"),
+        new Component().type("test 4 [test growing array]")));
 
-    mockMvc
-        .perform(
-            patch(adminBasePath + "/applications/" + appId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getApplicationComponentsPatchBody(objectMapper, app)))
+    mockMvc.perform(patch(adminBasePath + "/applications/" + appId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(getApplicationComponentsPatchBody(objectMapper, app)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.components").isArray())
@@ -146,8 +126,8 @@ class PersistentJsonArrayPropertyIntegrationTest {
         .andExpect(jsonPath("$.components[3].type").value("test 4 [test growing array]"));
   }
 
-  private static String getApplicationComponentsPatchBody(
-      ObjectMapper objectMapper, Application app) throws JsonProcessingException {
+  private static String getApplicationComponentsPatchBody(ObjectMapper objectMapper, Application app)
+      throws JsonProcessingException {
     ObjectNode node = objectMapper.createObjectNode();
     node.set("components", objectMapper.convertValue(app, JsonNode.class).get("components"));
     String patchBody = objectMapper.writeValueAsString(node);

@@ -18,8 +18,7 @@ import org.junit.jupiter.api.Test;
 class GroupTest {
   private static Validator validator;
 
-  private final String expectedMessage =
-      "Group name must consist of alphanumeric characters, underscore or -";
+  private final String expectedMessage = "Group name must consist of alphanumeric characters, underscore or -";
 
   @BeforeAll
   public static void setupValidatorInstance() {
@@ -46,8 +45,7 @@ class GroupTest {
 
     Set<ConstraintViolation<Group>> violations = validator.validate(group);
     assertEquals(1, violations.size(), "violations should not be empty");
-    violations.forEach(
-        action -> assertEquals(expectedMessage, action.getMessage(), "unexpected message"));
+    violations.forEach(action -> assertEquals(expectedMessage, action.getMessage(), "unexpected message"));
   }
 
   @Test
@@ -56,7 +54,6 @@ class GroupTest {
 
     Set<ConstraintViolation<Group>> violations = validator.validate(group);
     assertEquals(1, violations.size(), "violations should be empty");
-    violations.forEach(
-        action -> assertEquals(expectedMessage, action.getMessage(), "unexpected message"));
+    violations.forEach(action -> assertEquals(expectedMessage, action.getMessage(), "unexpected message"));
   }
 }
