@@ -7,6 +7,9 @@ package org.tailormap.api.scheduling;
 
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.UUID;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.InterruptableJob;
 import org.quartz.JobDataMap;
@@ -19,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.tailormap.api.admin.model.TaskProgressEvent;
 
 /** POC task for testing purposes, this is a task that can be interrupted. */
 @DisallowConcurrentExecution
@@ -55,6 +59,11 @@ public class InterruptablePocTask extends QuartzJobBean implements Task, Interru
         jobDetail.getKey().getName(),
         mergedJobDataMap.getWrappedMap());
 
+    TaskProgressEvent progressEvent = new TaskProgressEvent()
+        .startedAt(OffsetDateTime.now(ZoneId.systemDefault()))
+        .type(getType().getValue())
+        .uuid(UUID.fromString(jobDetail.getKey().getName()));
+
     try {
       for (int i = 0; i < 110; i += 10) {
         // Simulate some work for a random period of time
@@ -63,7 +72,7 @@ public class InterruptablePocTask extends QuartzJobBean implements Task, Interru
         Thread.sleep(workingTime);
         logger.debug("Interruptable POC task is at {}%", i);
         context.setResult("Interruptable POC task is at %d%%".formatted(i));
-
+        taskProgress(progressEvent.progress(i).total(100));
         if (interrupted) {
           logger.debug("Interruptable POC task interrupted at {}%", Instant.now());
           jobDataMap.put(

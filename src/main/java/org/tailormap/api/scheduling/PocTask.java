@@ -14,6 +14,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -64,6 +66,11 @@ public class PocTask extends QuartzJobBean implements Task {
         mergedJobDataMap.getWrappedMap());
 
     try {
+      TaskProgressEvent progressEvent = new TaskProgressEvent()
+          .startedAt(OffsetDateTime.now(ZoneId.systemDefault()))
+          .type(getType().getValue())
+          .uuid(UUID.fromString(jobDetail.getKey().getName()));
+
       for (int i = 0; i < 110; i += 10) {
         // Simulate some work for a random period of time
         long workingTime = (long) (Math.random() * 5000);
@@ -71,11 +78,7 @@ public class PocTask extends QuartzJobBean implements Task {
         Thread.sleep(workingTime);
         logger.debug("POC task is at {}%", i);
         context.setResult("POC task is at %d%%".formatted(i));
-        taskProgress(new TaskProgressEvent()
-            .type(TaskType.POC.getValue())
-            .uuid(UUID.fromString(jobDetail.getKey().getName()))
-            .progress(i)
-            .total(100));
+        taskProgress(progressEvent.progress(i).total(100));
       }
     } catch (InterruptedException e) {
       logger.error("Thread interrupted", e);
