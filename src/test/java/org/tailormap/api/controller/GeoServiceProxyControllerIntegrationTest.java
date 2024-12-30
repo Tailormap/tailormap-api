@@ -30,6 +30,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Objects;
 import javax.imageio.ImageIO;
+import org.gaul.modernizer_maven_annotations.SuppressModernizer;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.BeforeAll;
@@ -121,6 +122,7 @@ class GeoServiceProxyControllerIntegrationTest {
     assertImagesEqual(expectedImagesPath + "pdokWmsProvinciegebiedLegend_expected.png", result, testInfo);
   }
 
+  @SuppressModernizer
   private static void assertImagesEqual(String expectedImageFileName, MvcResult result, TestInfo testInfo)
       throws Exception {
     BufferedImage expectedImage = ImageComparisonUtil.readImageFromResources(expectedImageFileName);

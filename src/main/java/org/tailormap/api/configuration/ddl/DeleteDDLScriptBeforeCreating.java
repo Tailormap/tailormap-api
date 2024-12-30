@@ -7,8 +7,10 @@
 package org.tailormap.api.configuration.ddl;
 
 import jakarta.annotation.PostConstruct;
-import java.io.File;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,16 +66,13 @@ public class DeleteDDLScriptBeforeCreating {
   }
 
   @PostConstruct
-  public void delete() {
+  public void delete() throws IOException {
     if (target != null) {
-      File f = new File(target);
-      if (f.exists()) {
-        String absolutePath = f.getAbsolutePath();
-        if (!f.delete()) {
-          logger.info("Could not delete DDL target file {}", absolutePath);
-        } else {
-          logger.debug("Deleted DDL target file {}", absolutePath);
-        }
+      final Path path = Path.of(target);
+      if (!Files.isDirectory(path) && Files.deleteIfExists(path)) {
+        logger.debug("Deleted DDL target file {}", path.toAbsolutePath());
+      } else {
+        logger.info("Could not delete DDL target file {}", path.toAbsolutePath());
       }
     }
   }

@@ -47,7 +47,7 @@ public class FrontControllerResolver implements ResourceResolver, InitializingBe
 
   private boolean staticOnly;
 
-  private Pattern localeBundlePrefixPattern = Pattern.compile("^[a-z]{2}/.*");
+  private final Pattern localeBundlePrefixPattern = Pattern.compile("^[a-z]{2}/.*");
 
   public FrontControllerResolver(
       // Inject these repositories lazily because in the static-only profile these are not needed
