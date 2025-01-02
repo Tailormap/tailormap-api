@@ -25,101 +25,103 @@
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.quartz.JobExecutionContext;
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.quartz.JobExecutionException;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.quartz.PersistJobDataAfterExecution;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.quartz.UnableToInterruptJobException;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.springframework.lang.NonNull;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.springframework.scheduling.quartz.QuartzJobBean;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.admin.model.TaskProgressEvent;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment">/** POC task for testing purposes, this is a task that can be interrupted. */</em>
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  @DisallowConcurrentExecution
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  @PersistJobDataAfterExecution
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="InterruptablePocTask" href="../../../../org/tailormap/api/scheduling/InterruptablePocTask.html#InterruptablePocTask">InterruptablePocTask</a> <strong class="jxr_keyword">extends</strong> QuartzJobBean <strong class="jxr_keyword">implements</strong> Task, InterruptableJob {
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> interrupted = false;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">private</strong> String description;
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>    @Override
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> interrupt() <strong class="jxr_keyword">throws</strong> UnableToInterruptJobException {
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      logger.info(<span class="jxr_string">"Interrupting POC task"</span>);
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>      interrupted = <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>    }
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>    @Override
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> executeInternal(@NonNull JobExecutionContext context) <strong class="jxr_keyword">throws</strong> JobExecutionException {
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>      <strong class="jxr_keyword">final</strong> JobDetail jobDetail = context.getJobDetail();
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <em class="jxr_comment">// NOTE: This immutable map is a snapshot of the job data maps at the time of the job execution.</em>
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">final</strong> JobDataMap mergedJobDataMap = context.getMergedJobDataMap();
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <em class="jxr_comment">// NOTE: This map is mutable and can be used to store job data.</em>
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>      <strong class="jxr_keyword">final</strong> JobDataMap jobDataMap = jobDetail.getJobDataMap();
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      logger.debug(
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>          <span class="jxr_string">"executing POC task {}:{}, details: {}"</span>,
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>          jobDetail.getKey().getGroup(),
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>          jobDetail.getKey().getName(),
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>          mergedJobDataMap.getWrappedMap());
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      TaskProgressEvent progressEvent = <strong class="jxr_keyword">new</strong> TaskProgressEvent()
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>          .startedAt(OffsetDateTime.now(ZoneId.systemDefault()))
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>          .type(getType().getValue())
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>          .uuid(UUID.fromString(jobDetail.getKey().getName()));
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>        <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; 110; i += 10) {
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          <em class="jxr_comment">// Simulate some work for a random period of time</em>
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">long</strong> workingTime = (<strong class="jxr_keyword">long</strong>) (Math.random() * 5000);
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>          logger.debug(<span class="jxr_string">"Working for {} ms"</span>, workingTime);
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          Thread.sleep(workingTime);
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>          logger.debug(<span class="jxr_string">"Interruptable POC task is at {}%"</span>, i);
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>          context.setResult(<span class="jxr_string">"Interruptable POC task is at %d%%"</span>.formatted(i));
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>          taskProgress(progressEvent.progress(i).total(100));
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>          <strong class="jxr_keyword">if</strong> (interrupted) {
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>            logger.debug(<span class="jxr_string">"Interruptable POC task interrupted at {}%"</span>, Instant.now());
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>            jobDataMap.put(
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>                Task.LAST_RESULT_KEY,
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>                <span class="jxr_string">"Interruptable POC task interrupted after %d%% iterations"</span>.formatted(i));
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>            jobDataMap.put(<span class="jxr_string">"lastExecutionFinished"</span>, <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>            context.setResult(<span class="jxr_string">"Interruptable POC task interrupted after %d%% iterations"</span>.formatted(i));
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>            <em class="jxr_comment">// bail out after interruption</em>
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>            <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>          }
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>  
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>          <strong class="jxr_keyword">int</strong> executions = (1 + (<strong class="jxr_keyword">int</strong>) mergedJobDataMap.getOrDefault(<span class="jxr_string">"executions"</span>, 0));
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>          jobDataMap.put(<span class="jxr_string">"executions"</span>, executions);
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>          jobDataMap.put(<span class="jxr_string">"lastExecutionFinished"</span>, Instant.now());
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>          jobDataMap.put(Task.LAST_RESULT_KEY, <span class="jxr_string">"Interruptable POC task executed successfully"</span>);
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>          context.setResult(<span class="jxr_string">"Interruptable POC task executed successfully"</span>);
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>        }
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>      } <strong class="jxr_keyword">catch</strong> (InterruptedException e) {
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>        logger.error(<span class="jxr_string">"Thread interrupted"</span>, e);
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>      }
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>    }
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>  
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>    @Override
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>    <strong class="jxr_keyword">public</strong> <a name="TaskType" href="../../../../org/tailormap/api/scheduling/TaskType.html#TaskType">TaskType</a> getType() {
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>     <strong class="jxr_keyword">return</strong> TaskType.INTERRUPTABLEPOC;
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>   }
-<a class="jxr_linenumber" name="L102" href="#L102">102</a> 
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>   @Override
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>   <strong class="jxr_keyword">public</strong> String getDescription() {
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>     <strong class="jxr_keyword">return</strong> description;
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>   }
-<a class="jxr_linenumber" name="L107" href="#L107">107</a> 
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>   @Override
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setDescription(String description) {
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>     <strong class="jxr_keyword">this</strong>.description = description;
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>   }
-<a class="jxr_linenumber" name="L112" href="#L112">112</a> }
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.springframework.lang.NonNull;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.springframework.scheduling.quartz.QuartzJobBean;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.admin.model.TaskProgressEvent;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment">/** POC task for testing purposes, this is a task that can be interrupted. */</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  @DisallowConcurrentExecution
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  @PersistJobDataAfterExecution
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="InterruptablePocTask" href="../../../../org/tailormap/api/scheduling/InterruptablePocTask.html#InterruptablePocTask">InterruptablePocTask</a> <strong class="jxr_keyword">extends</strong> QuartzJobBean <strong class="jxr_keyword">implements</strong> Task, InterruptableJob {
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> interrupted = false;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>    <strong class="jxr_keyword">private</strong> String description;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>    @Override
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> interrupt() {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      logger.info(<span class="jxr_string">"Interrupting POC task"</span>);
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      interrupted = <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>    }
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>    @Override
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> executeInternal(@NonNull JobExecutionContext context) <strong class="jxr_keyword">throws</strong> JobExecutionException {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">final</strong> JobDetail jobDetail = context.getJobDetail();
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      <em class="jxr_comment">// NOTE: This immutable map is a snapshot of the job data maps at the time of the job execution.</em>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">final</strong> JobDataMap mergedJobDataMap = context.getMergedJobDataMap();
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <em class="jxr_comment">// NOTE: This map is mutable and can be used to store job data.</em>
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">final</strong> JobDataMap jobDataMap = jobDetail.getJobDataMap();
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      logger.debug(
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>          <span class="jxr_string">"executing POC task {}:{}, details: {}"</span>,
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>          jobDetail.getKey().getGroup(),
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          jobDetail.getKey().getName(),
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          mergedJobDataMap.getWrappedMap());
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>      TaskProgressEvent progressEvent = <strong class="jxr_keyword">new</strong> TaskProgressEvent()
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          .startedAt(OffsetDateTime.now(ZoneId.systemDefault()))
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          .type(getType().getValue())
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          .uuid(UUID.fromString(jobDetail.getKey().getName()));
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>        <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; 110; i += 10) {
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          <em class="jxr_comment">// Simulate some work for a random period of time</em>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          <strong class="jxr_keyword">long</strong> workingTime = (<strong class="jxr_keyword">long</strong>) (Math.random() * 5000);
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          logger.debug(<span class="jxr_string">"Working for {} ms"</span>, workingTime);
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          Thread.sleep(workingTime);
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          logger.debug(<span class="jxr_string">"Interruptable POC task is at {}%"</span>, i);
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          context.setResult(<span class="jxr_string">"Interruptable POC task is at %d%%"</span>.formatted(i));
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          taskProgress(progressEvent.progress(i).total(100));
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>          <strong class="jxr_keyword">if</strong> (interrupted) {
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>            logger.debug(<span class="jxr_string">"Interruptable POC task interrupted at {}%"</span>, Instant.now());
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>            jobDataMap.put(
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>                Task.LAST_RESULT_KEY,
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>                <span class="jxr_string">"Interruptable POC task interrupted after %d%% iterations"</span>.formatted(i));
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>            jobDataMap.put(EXECUTION_FINISHED_KEY, <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>            context.setResult(<span class="jxr_string">"Interruptable POC task interrupted after %d%% iterations"</span>.formatted(i));
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>            <em class="jxr_comment">// bail out after interruption</em>
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>            <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          }
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          <em class="jxr_comment">// after 3rd iteration, interrupt the task</em>
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          <strong class="jxr_keyword">if</strong> (i == 30) {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>            interrupt();
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>          }
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>        }
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      } <strong class="jxr_keyword">catch</strong> (InterruptedException e) {
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>        logger.error(<span class="jxr_string">"Thread interrupted"</span>, e);
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      }
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>      jobDataMap.put(EXECUTION_COUNT_KEY, (1 + (<strong class="jxr_keyword">int</strong>) mergedJobDataMap.getOrDefault(EXECUTION_COUNT_KEY, 0)));
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>      jobDataMap.put(EXECUTION_FINISHED_KEY, Instant.now());
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>      jobDataMap.put(Task.LAST_RESULT_KEY, <span class="jxr_string">"Interruptable POC task executed successfully"</span>);
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>      context.setResult(<span class="jxr_string">"Interruptable POC task executed successfully"</span>);
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>    }
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>   @Override
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>   <strong class="jxr_keyword">public</strong> <a name="TaskType" href="../../../../org/tailormap/api/scheduling/TaskType.html#TaskType">TaskType</a> getType() {
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     <strong class="jxr_keyword">return</strong> TaskType.INTERRUPTABLEPOC;
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>   }
+<a class="jxr_linenumber" name="L104" href="#L104">104</a> 
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>   @Override
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>   <strong class="jxr_keyword">public</strong> String getDescription() {
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>     <strong class="jxr_keyword">return</strong> description;
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>   }
+<a class="jxr_linenumber" name="L109" href="#L109">109</a> 
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>   @Override
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setDescription(String description) {
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>     <strong class="jxr_keyword">this</strong>.description = description;
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>   }
+<a class="jxr_linenumber" name="L114" href="#L114">114</a> }
 </pre>
 <hr/>
-<div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
+<div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
 </body>
 </html>

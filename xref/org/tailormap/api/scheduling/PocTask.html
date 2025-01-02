@@ -92,9 +92,9 @@
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>        logger.error(<span class="jxr_string">"Thread interrupted"</span>, e);
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      }
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">int</strong> executions = (1 + (<strong class="jxr_keyword">int</strong>) mergedJobDataMap.getOrDefault(<span class="jxr_string">"executions"</span>, 0));
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>      jobDataMap.put(<span class="jxr_string">"executions"</span>, executions);
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>      jobDataMap.put(<span class="jxr_string">"lastExecutionFinished"</span>, Instant.now());
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">int</strong> executions = (1 + (<strong class="jxr_keyword">int</strong>) mergedJobDataMap.getOrDefault(EXECUTION_COUNT_KEY, 0));
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>      jobDataMap.put(EXECUTION_COUNT_KEY, executions);
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>      jobDataMap.put(EXECUTION_FINISHED_KEY, Instant.now());
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>      jobDataMap.put(Task.LAST_RESULT_KEY, <span class="jxr_string">"POC task executed successfully"</span>);
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>      context.setResult(<span class="jxr_string">"POC task executed successfully"</span>);
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>  
@@ -139,6 +139,6 @@
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> }
 </pre>
 <hr/>
-<div id="footer">© 2021–2024 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
+<div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
 </body>
 </html>

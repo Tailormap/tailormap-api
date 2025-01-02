@@ -97,6 +97,12 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color"><code><a href="#DESCRIPTION_KEY" class="member-name-link">DESCRIPTION_KEY</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><code><a href="#EXECUTION_COUNT_KEY" class="member-name-link">EXECUTION_COUNT_KEY</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#EXECUTION_FINISHED_KEY" class="member-name-link">EXECUTION_FINISHED_KEY</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color"><code><a href="#INTERRUPTABLE_KEY" class="member-name-link">INTERRUPTABLE_KEY</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
@@ -279,6 +285,34 @@ loadScripts(document, 'script');</script>
 </dl>
 </section>
 </li>
+<li>
+<section class="detail" id="EXECUTION_COUNT_KEY">
+<h3>EXECUTION_COUNT_KEY</h3>
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">EXECUTION_COUNT_KEY</span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../../../constant-values.html#org.tailormap.api.scheduling.Task.EXECUTION_COUNT_KEY">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="EXECUTION_FINISHED_KEY">
+<h3>EXECUTION_FINISHED_KEY</h3>
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">EXECUTION_FINISHED_KEY</span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../../../constant-values.html#org.tailormap.api.scheduling.Task.EXECUTION_FINISHED_KEY">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
 </ul>
 </section>
 </li>
@@ -326,7 +360,7 @@ loadScripts(document, 'script');</script>
 <h3>taskProgress</h3>
 <div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">taskProgress</span><wbr><span class="parameters">(<a href="../admin/model/TaskProgressEvent.html" title="class in org.tailormap.api.admin.model">TaskProgressEvent</a>&nbsp;event)</span></div>
 <div class="block">Handle the task progress event. Override this method to handle the progress of the task, e.g. by emitting
- <code>ServerSentEvent</code>s. The default is a no-op.</div>
+ <code>ServerSentEvent</code>s. The default is a no-op, which means no progress events will be emitted.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>event</code> - the task progress event</dd>
