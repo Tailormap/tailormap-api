@@ -84,9 +84,9 @@ public class PocTask extends QuartzJobBean implements Task {
       logger.error("Thread interrupted", e);
     }
 
-    int executions = (1 + (int) mergedJobDataMap.getOrDefault("executions", 0));
-    jobDataMap.put("executions", executions);
-    jobDataMap.put("lastExecutionFinished", Instant.now());
+    int executions = (1 + (int) mergedJobDataMap.getOrDefault(EXECUTION_COUNT_KEY, 0));
+    jobDataMap.put(EXECUTION_COUNT_KEY, executions);
+    jobDataMap.put(EXECUTION_FINISHED_KEY, Instant.now());
     jobDataMap.put(Task.LAST_RESULT_KEY, "POC task executed successfully");
     context.setResult("POC task executed successfully");
 

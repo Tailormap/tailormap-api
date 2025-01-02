@@ -125,7 +125,6 @@ The state can be one of: NONE, NORMAL, PAUSED, COMPLETE, ERROR, BLOCKED or null 
                   jobDetail.getKey().getGroup()));
             } catch (SchedulerException e) {
               logger.error("Error getting task state", e);
-              // ignore; to get a null (unknown) state
               state = null;
             }
             tasks.add(new ObjectMapper()
@@ -171,7 +170,8 @@ result and any other information.
               schema = @Schema(example = "{\"message\":\"Task not found\",\"code\":404}")))
   @ApiResponse(
       responseCode = "200",
-      description = "Details of the task",
+      description =
+          "Details of the task. The response content will vay according to the type of task, the most common fields are listed in the Task interface",
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -186,14 +186,11 @@ result and any other information.
 "description":"This is a poc task",
 "startTime":"2024-06-06T12:00:00Z",
 "nextTime":"2024-06-06T12:00:00Z",
-"jobData":{
-"type":"poc",
-"description":"This is a poc task"
-},
 "state":"NORMAL",
 "progress":"...",
 "result":"...",
 "message":"something is happening"
+"jobData":{ "type":"poc", "description":"This is a poc task" }
 }
 """)))
   public ResponseEntity<Object> details(@PathVariable TaskType type, @PathVariable UUID uuid)

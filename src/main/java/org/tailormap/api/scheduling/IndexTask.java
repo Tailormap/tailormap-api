@@ -12,6 +12,7 @@ import ch.rasc.sse.eventbus.SseEvent;
 import ch.rasc.sse.eventbus.SseEventBus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -81,11 +82,11 @@ public class IndexTask extends QuartzJobBean implements Task {
   }
 
   @Timed(value = "indexTask", description = "Time taken to execute index task")
+  @Counted(value = "indexTaskCount", description = "Number of times index task executed")
   @Override
   protected void executeInternal(@NonNull JobExecutionContext context) throws JobExecutionException {
 
     final JobDataMap persistedJobData = context.getJobDetail().getJobDataMap();
-    // final long indexId = persistedJobData.getLong(INDEX_KEY);
     logger.info(
         "Start Executing IndexTask {} for index {}, described with '{}'",
         context.getJobDetail().getKey(),
@@ -98,13 +99,15 @@ public class IndexTask extends QuartzJobBean implements Task {
 
     TMFeatureType indexingFT = featureTypeRepository
         .findById(searchIndex.getFeatureTypeId())
-        .orElseThrow(() -> new JobExecutionException("Feature type not found"));
+        .orElseThrow(() -> new JobExecutionException("Feature type for indexing not found"));
 
     try (SolrClient solrClient = solrService.getSolrClientForIndexing();
         SolrHelper solrHelper = new SolrHelper(solrClient)
             .withBatchSize(solrBatchSize)
             .withGeometryValidationRule(solrGeometryValidationRule)) {
 
+      persistedJobData.put(EXECUTION_FINISHED_KEY, null);
+      persistedJobData.put(LAST_RESULT_KEY, null);
       searchIndex = searchIndexRepository.save(searchIndex.setStatus(SearchIndex.Status.INDEXING));
 
       searchIndex = solrHelper.addFeatureTypeIndex(
@@ -116,15 +119,16 @@ public class IndexTask extends QuartzJobBean implements Task {
           UUID.fromString(context.getTrigger().getJobKey().getName()));
       searchIndex = searchIndexRepository.save(searchIndex.setStatus(SearchIndex.Status.INDEXED));
       persistedJobData.put(
-          "executions", (1 + (int) context.getMergedJobDataMap().getOrDefault("executions", 0)));
-      persistedJobData.put("lastExecutionFinished", Instant.now());
-      persistedJobData.put(Task.LAST_RESULT_KEY, "Index task executed successfully");
+          EXECUTION_COUNT_KEY,
+          (1 + (int) context.getMergedJobDataMap().getOrDefault(EXECUTION_COUNT_KEY, 0)));
+      persistedJobData.put(EXECUTION_FINISHED_KEY, Instant.now());
+      persistedJobData.put(LAST_RESULT_KEY, "Index task executed successfully");
       context.setResult("Index task executed successfully");
     } catch (UnsupportedOperationException | IOException | SolrServerException | SolrException e) {
       logger.error("Error indexing", e);
-      persistedJobData.put("lastExecutionFinished", null);
+      persistedJobData.put(EXECUTION_FINISHED_KEY, null);
       persistedJobData.put(
-          Task.LAST_RESULT_KEY, "Index task failed with " + e.getMessage() + ". Check logs for details");
+          LAST_RESULT_KEY, "Index task failed with " + e.getMessage() + ". Check logs for details");
       searchIndexRepository.save(searchIndex
           .setStatus(SearchIndex.Status.ERROR)
           .setSummary(new SearchIndexSummary().errorMessage(e.getMessage())));
