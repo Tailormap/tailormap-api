@@ -17,7 +17,6 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
-import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -37,7 +36,7 @@ public class InterruptablePocTask extends QuartzJobBean implements Task, Interru
   private String description;
 
   @Override
-  public void interrupt() throws UnableToInterruptJobException {
+  public void interrupt() {
     logger.info("Interrupting POC task");
     interrupted = true;
   }
@@ -78,21 +77,24 @@ public class InterruptablePocTask extends QuartzJobBean implements Task, Interru
           jobDataMap.put(
               Task.LAST_RESULT_KEY,
               "Interruptable POC task interrupted after %d%% iterations".formatted(i));
-          jobDataMap.put("lastExecutionFinished", null);
+          jobDataMap.put(EXECUTION_FINISHED_KEY, null);
           context.setResult("Interruptable POC task interrupted after %d%% iterations".formatted(i));
           // bail out after interruption
           return;
         }
-
-        int executions = (1 + (int) mergedJobDataMap.getOrDefault("executions", 0));
-        jobDataMap.put("executions", executions);
-        jobDataMap.put("lastExecutionFinished", Instant.now());
-        jobDataMap.put(Task.LAST_RESULT_KEY, "Interruptable POC task executed successfully");
-        context.setResult("Interruptable POC task executed successfully");
+        // after 3rd iteration, interrupt the task
+        if (i == 30) {
+          interrupt();
+        }
       }
     } catch (InterruptedException e) {
       logger.error("Thread interrupted", e);
     }
+
+    jobDataMap.put(EXECUTION_COUNT_KEY, (1 + (int) mergedJobDataMap.getOrDefault(EXECUTION_COUNT_KEY, 0)));
+    jobDataMap.put(EXECUTION_FINISHED_KEY, Instant.now());
+    jobDataMap.put(Task.LAST_RESULT_KEY, "Interruptable POC task executed successfully");
+    context.setResult("Interruptable POC task executed successfully");
   }
 
   @Override

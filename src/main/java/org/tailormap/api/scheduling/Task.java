@@ -18,6 +18,8 @@ public interface Task {
   String STATE_KEY = "state";
   String LAST_RESULT_KEY = "lastResult";
   String INTERRUPTABLE_KEY = "interruptable";
+  String EXECUTION_COUNT_KEY = "executionCount";
+  String EXECUTION_FINISHED_KEY = "lastExecutionFinished";
 
   /**
    * Get the type of the task. Implement this method to return the key for the type of task. This must be a read-only
@@ -43,7 +45,7 @@ public interface Task {
 
   /**
    * Handle the task progress event. Override this method to handle the progress of the task, e.g. by emitting
-   * {@code ServerSentEvent}s. The default is a no-op.
+   * {@code ServerSentEvent}s. The default is a no-op, which means no progress events will be emitted.
    *
    * @param event the task progress event
    */
