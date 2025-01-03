@@ -54,6 +54,15 @@ import org.tailormap.api.scheduling.TaskType;
 /**
  * Admin controller for controlling the task scheduler. Not to be used to create new tasks, adding tasks belongs in the
  * domain of the specific controller or Spring Data REST API as that requires specific configuration information.
+ * Provides the following endpoints:
+ *
+ * <ul>
+ *   <li>{@link #list /admin/tasks} to list all tasks, optionally filtered by type
+ *   <li>{@link #details /admin/tasks/{type}/{uuid}} to get the details of a task
+ *   <li>{@link #startTask /admin/tasks/{type}/{uuid}/start} to start a task
+ *   <li>{@link #stopTask /admin/tasks/{type}/{uuid}/stop} to stop a task
+ *   <li>{@link #delete /admin/tasks/{type}/{uuid}} to delete a task
+ * </ul>
  */
 @RestController
 public class TaskAdminController {
@@ -171,7 +180,10 @@ result and any other information.
   @ApiResponse(
       responseCode = "200",
       description =
-          "Details of the task. The response content will vay according to the type of task, the most common fields are listed in the Task interface",
+          """
+Details of the task. The response content will vay according to the type of task,
+the most common fields are listed in the Task interface.
+""",
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -329,9 +341,7 @@ A stopped task cannot be restarted, it fire again depending on the schedule.
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(example = """
-{
-"message":"Task cannot be stopped"
-}
+{ "message":"Task cannot be stopped" }
 """)))
   public ResponseEntity<Object> stopTask(@PathVariable TaskType type, @PathVariable UUID uuid)
       throws ResponseStatusException {
