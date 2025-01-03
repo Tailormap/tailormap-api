@@ -80,7 +80,16 @@ loadScripts(document, 'script');</script>
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">TaskAdminController</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 <div class="block">Admin controller for controlling the task scheduler. Not to be used to create new tasks, adding tasks belongs in the
- domain of the specific controller or Spring Data REST API as that requires specific configuration information.</div>
+ domain of the specific controller or Spring Data REST API as that requires specific configuration information.
+ Provides the following endpoints:
+
+ <ul>
+   <li><a href="#list(java.lang.String)"><code>/admin/tasks</code></a> to list all tasks, optionally filtered by type
+   <li><a href="#details(org.tailormap.api.scheduling.TaskType,java.util.UUID)"><code>/admin/tasks/{type}/{uuid}</code></a> to get the details of a task
+   <li><a href="#startTask(org.tailormap.api.scheduling.TaskType,java.util.UUID)"><code>/admin/tasks/{type}/{uuid}/start</code></a> to start a task
+   <li><a href="#stopTask(org.tailormap.api.scheduling.TaskType,java.util.UUID)"><code>/admin/tasks/{type}/{uuid}/stop</code></a> to stop a task
+   <li><a href="#delete(org.tailormap.api.scheduling.TaskType,java.util.UUID)"><code>/admin/tasks/{type}/{uuid}</code></a> to delete a task
+ </ul></div>
 </section>
 <section class="summary">
 <ul class="summary-list">
