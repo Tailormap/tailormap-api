@@ -127,7 +127,7 @@ SPDX-License-Identifier: MIT
         <!-- <jackson-bom.version>2.18.2</jackson-bom.version> -->
         <junit-jupiter.version>5.11.4</junit-jupiter.version>
         <logback.version>1.5.14</logback.version>
-        <micrometer.version>1.13.6</micrometer.version>
+        <micrometer.version>1.14.2</micrometer.version>
         <mssql-jdbc.version>12.8.1.jre11</mssql-jdbc.version>
         <oracle-database.version>23.6.0.24.10</oracle-database.version>
         <postgresql.version>42.7.4</postgresql.version>
@@ -156,7 +156,7 @@ SPDX-License-Identifier: MIT
         <modernizer-maven-plugin.version>3.0.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.0.1</maven-fluido-skin.version>
         <swagger-ui.version>5.18.2</swagger-ui.version>
-        <sentry.version>7.19.1</sentry.version>
+        <sentry.version>7.20.0</sentry.version>
         <errorProne.version>2.36.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
