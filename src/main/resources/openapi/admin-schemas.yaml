@@ -76,6 +76,12 @@ components:
           format: date-time
           nullable: true
           example: '2024-12-12T16:02:34.587142504+01:00'
+        taskData:
+          description: 'Additional data for the task.'
+          type: object
+          additionalProperties: true
+          nullable: true
+          example: { 'index': 1 }
 
     TaskSchedule:
       type: object
