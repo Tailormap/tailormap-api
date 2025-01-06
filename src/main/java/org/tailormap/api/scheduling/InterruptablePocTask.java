@@ -9,6 +9,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.Map;
 import java.util.UUID;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.InterruptableJob;
@@ -61,6 +62,7 @@ public class InterruptablePocTask extends QuartzJobBean implements Task, Interru
     TaskProgressEvent progressEvent = new TaskProgressEvent()
         .startedAt(OffsetDateTime.now(ZoneId.systemDefault()))
         .type(getType().getValue())
+        .taskData(Map.of("jobKey", jobDetail.getKey().getName()))
         .uuid(UUID.fromString(jobDetail.getKey().getName()));
 
     try {

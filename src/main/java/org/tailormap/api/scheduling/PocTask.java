@@ -16,6 +16,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.Map;
 import java.util.UUID;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -69,6 +70,7 @@ public class PocTask extends QuartzJobBean implements Task {
       TaskProgressEvent progressEvent = new TaskProgressEvent()
           .startedAt(OffsetDateTime.now(ZoneId.systemDefault()))
           .type(getType().getValue())
+          .taskData(Map.of("jobKey", jobDetail.getKey().getName()))
           .uuid(UUID.fromString(jobDetail.getKey().getName()));
 
       for (int i = 0; i < 110; i += 10) {
