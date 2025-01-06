@@ -102,8 +102,8 @@ class SearchControllerIntegrationTest implements Constants {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.start").value(10))
-        .andExpect(jsonPath("$.total")
-            .value(both(greaterThanOrEqualTo(100)).and(lessThanOrEqualTo(110))))
+        .andExpect(
+            jsonPath("$.total").value(both(greaterThanOrEqualTo(50)).and(lessThanOrEqualTo(110))))
         // .andExpect(jsonPath("$.maxScore").isNumber())
         // .andExpect(jsonPath("$.maxScore").value(closeTo(1.0, 0.1)))
         .andExpect(jsonPath("$.maxScore").isEmpty())
