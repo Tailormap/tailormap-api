@@ -1411,7 +1411,7 @@
 <a class="jxr_linenumber" name="L1403" href="#L1403">1403</a>                     .setName(<span class="jxr_string">"bak"</span>)
 <a class="jxr_linenumber" name="L1404" href="#L1404">1404</a>                     .setFeatureTypeId(ft.getId())
 <a class="jxr_linenumber" name="L1405" href="#L1405">1405</a>                     .setSearchFieldsUsed(List.of(<span class="jxr_string">"gmlid"</span>, <span class="jxr_string">"identificatie"</span>, <span class="jxr_string">"plus_type"</span>))
-<a class="jxr_linenumber" name="L1406" href="#L1406">1406</a>                     .setSearchDisplayFieldsUsed(List.of(<span class="jxr_string">"gmlid"</span>, <span class="jxr_string">"plus_type"</span>));
+<a class="jxr_linenumber" name="L1406" href="#L1406">1406</a>                     .setSearchDisplayFieldsUsed(List.of(<span class="jxr_string">"gmlid"</span>, <span class="jxr_string">"plus_type"</span>, <span class="jxr_string">"bronhouder"</span>));
 <a class="jxr_linenumber" name="L1407" href="#L1407">1407</a>                 searchIndexRepository.save(bak);
 <a class="jxr_linenumber" name="L1408" href="#L1408">1408</a>                 <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1409" href="#L1409">1409</a>                   bak = solrHelper.addFeatureTypeIndex(
