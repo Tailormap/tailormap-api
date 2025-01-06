@@ -1403,7 +1403,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                     .setName("bak")
                     .setFeatureTypeId(ft.getId())
                     .setSearchFieldsUsed(List.of("gmlid", "identificatie", "plus_type"))
-                    .setSearchDisplayFieldsUsed(List.of("gmlid", "plus_type"));
+                    .setSearchDisplayFieldsUsed(List.of("gmlid", "plus_type", "bronhouder"));
                 searchIndexRepository.save(bak);
                 try {
                   bak = solrHelper.addFeatureTypeIndex(

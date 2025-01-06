@@ -5,6 +5,8 @@
  */
 package org.tailormap.api.solr;
 
+import static org.tailormap.api.scheduling.IndexTask.INDEX_KEY;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.io.IOException;
@@ -224,11 +226,13 @@ public class SolrHelper implements AutoCloseable, Constants {
           .setSummary(summary.errorMessage("No search fields configured")));
     }
 
-    progressListener.accept(new TaskProgressEvent()
+    TaskProgressEvent taskProgressEvent = new TaskProgressEvent()
         .type(TaskType.INDEX.getValue())
         .uuid(taskUuid)
         .startedAt(startedAtOffset)
-        .progress(0));
+        .progress(0)
+        .taskData(Map.of(INDEX_KEY, searchIndex.getId()));
+    progressListener.accept(taskProgressEvent);
 
     // set fields while filtering out hidden fields
     List<String> searchFields = searchIndex.getSearchFieldsUsed().stream()
@@ -326,12 +330,8 @@ public class SolrHelper implements AutoCloseable, Constants {
               indexCounter - indexSkippedCounter,
               total,
               updateResponse.getStatus());
-          progressListener.accept(new TaskProgressEvent()
-              .type(TaskType.INDEX.getValue())
-              .uuid(taskUuid)
-              .startedAt(startedAtOffset)
-              .progress((indexCounter - indexSkippedCounter))
-              .total(total));
+          progressListener.accept(
+              taskProgressEvent.total(total).progress((indexCounter - indexSkippedCounter)));
           docsBatch.clear();
         }
       }
@@ -342,10 +342,7 @@ public class SolrHelper implements AutoCloseable, Constants {
     if (!docsBatch.isEmpty()) {
       solrClient.addBeans(docsBatch, solrQueryTimeout);
       logger.info("Added last {} documents of {} to index", docsBatch.size(), total);
-      progressListener.accept(new TaskProgressEvent()
-          .type(TaskType.INDEX.getValue())
-          .uuid(taskUuid)
-          .startedAt(startedAtOffset)
+      progressListener.accept(taskProgressEvent
           .progress((indexCounter - indexSkippedCounter))
           .total(total));
     }
