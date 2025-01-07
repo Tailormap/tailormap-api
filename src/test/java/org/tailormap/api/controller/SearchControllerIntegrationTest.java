@@ -7,6 +7,7 @@ package org.tailormap.api.controller;
 
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
@@ -17,13 +18,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
-import static org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
-import static org.tailormap.api.controller.TestUrls.layerWaterdeelOracle;
-import static org.tailormap.api.controller.TestUrls.layerWegdeelSqlServer;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +37,7 @@ import org.tailormap.api.util.Constants;
 @PostgresIntegrationTest
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
-class SearchControllerIntegrationTest implements Constants {
+class SearchControllerIntegrationTest implements Constants, TestUrls {
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
 
@@ -208,5 +208,65 @@ class SearchControllerIntegrationTest implements Constants {
         .andExpect(jsonPath("$.documents[0].fid").value(startsWithIgnoringCase("wegdeel")))
         .andExpect(jsonPath("$.documents[0].displayValues").isArray())
         .andExpect(jsonPath("$.documents[0]." + INDEX_GEOM_FIELD).isString());
+  }
+
+  /**
+   * Test search for Kadastraal Perceel with aanduiding "CTR00 A 655".
+   *
+   * @param qTerm search term
+   * @param totalCount expected total hits
+   * @throws Exception when an error occurs
+   */
+  @ParameterizedTest(name = "query Kadastraal Perceel for : {0} -> hits {1}")
+  @CsvSource(
+      textBlock =
+          """
+*CTR*, 995
+CTR*, 995
+CTR0*, 995
+CTR00, 995
+CTR00*, 995
+*CTR00*, 995
+(CTR00), 995
+(CTR00 ), 995
+(CTR00 *), 995
+(*CTR00 *), 995
+(CTR00 A*), 304
+(*CTR00 A*), 304
+(A 655), 1
+A searchFields:655, 1
+(*A 655*), 1
+(*A 65*), 8
+""")
+  void testAanduiding(String qTerm, int totalCount) throws Exception {
+    final String url = apiBasePath + layerKadastraalPerceel + "/search";
+    final int documentsCount = Math.min(totalCount, 10);
+
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("q", qTerm)
+            .param("start", "0"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.start").value(0))
+        .andExpect(jsonPath("$.total").value(both(greaterThan(0)).and(lessThanOrEqualTo(totalCount))))
+        .andExpect(jsonPath("$.documents").isArray())
+        .andExpect(jsonPath("$.documents.length()").value(documentsCount))
+        .andExpect(jsonPath("$.documents[0].fid").isString())
+        .andExpect(jsonPath("$.documents[0].fid")
+            .value(containsString("kadastraal_perceel.NL.IMKAD.KadastraalObject")))
+        .andExpect(jsonPath("$.documents[0].displayValues").isArray())
+        .andExpect(jsonPath("$.documents[0]." + INDEX_GEOM_FIELD).value(startsWithIgnoringCase("POINT")))
+        .andExpect(jsonPath("$.maxScore").isEmpty());
+  }
+
+  @Test
+  void testUnquotedWhitespace() throws Exception {
+    final String url = apiBasePath + layerKadastraalPerceel + "/search";
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("q", "A 655")
+            .param("start", "0"))
+        .andExpect(status().isNoContent());
   }
 }
