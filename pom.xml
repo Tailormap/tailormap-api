@@ -221,6 +221,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
+            <!-- ? should be  <scope>test</scope> ... -->
         </dependency>
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
@@ -246,6 +247,10 @@ SPDX-License-Identifier: MIT
             <groupId>io.hypersistence</groupId>
             <artifactId>hypersistence-utils-hibernate-63</artifactId>
             <version>3.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
@@ -472,6 +477,10 @@ SPDX-License-Identifier: MIT
             <artifactId>quartz</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
@@ -563,6 +572,11 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -849,7 +863,7 @@ SPDX-License-Identifier: MIT
                         <phase>pre-integration-test</phase>
                         <configuration>
                             <!-- <skip>${skipQA}</skip> -->
-                            <!--suppress UnresolvedMavenProperty -->
+                            <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
                             <skip>${skipTests}</skip>
                             <profiles>
                                 <profile>test</profile>
@@ -1318,6 +1332,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
                                         <exclude>org.springframework.hateoas:spring-hateoas</exclude>
                                         <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
+                                        <exclude>io.micrometer:micrometer-core</exclude>
                                         <exclude>org.hibernate.orm:hibernate-micrometer</exclude>
                                         <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
                                         <exclude>io.sentry:sentry-spring-boot-starter-jakarta</exclude>
@@ -1335,6 +1350,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.apache.solr:solr-solrj</exclude>
                                         <exclude>com.jayway.jsonpath</exclude>
                                         <exclude>org.junit.jupiter:junit-jupiter-api</exclude>
+                                        <exclude>org.junit.jupiter:junit-jupiter-params</exclude>
                                     </excludes>
                                 </banTransitiveDependencies>
                             </rules>
@@ -1779,7 +1795,7 @@ SPDX-License-Identifier: MIT
                                 <!-- start with populate-testdata profile before tests to populate database -->
                                 <phase>pre-integration-test</phase>
                                 <configuration>
-                                    <!--suppress UnresolvedMavenProperty -->
+                                    <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
                                     <skip>${skipTests}</skip>
                                     <profiles>
                                         <profile>populate-testdata</profile>
@@ -1800,7 +1816,7 @@ SPDX-License-Identifier: MIT
                             <argLine>${failsafeArgLine} -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql</argLine>
                             <trimStackTrace>false</trimStackTrace>
                             <useFile>false</useFile>
-                            <!--suppress UnresolvedMavenProperty -->
+                            <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
                             <skipITs>${skipTests}</skipITs>
                         </configuration>
                         <executions>
