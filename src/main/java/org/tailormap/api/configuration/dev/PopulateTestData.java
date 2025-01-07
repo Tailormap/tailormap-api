@@ -208,7 +208,7 @@ public class PopulateTestData {
         }
       }
       if (categories.contains("tasks")) {
-        createPocTasks();
+        createScheduledTasks();
       }
       if (categories.contains("pages")) {
         createPages();
@@ -222,7 +222,8 @@ public class PopulateTestData {
       // integration tests
       new Thread(() -> {
             try {
-              Thread.sleep(5000);
+              logger.info("Exiting in 10 seconds");
+              Thread.sleep(10000);
             } catch (InterruptedException ignored) {
               // Ignore
             }
@@ -737,6 +738,14 @@ https://postgis.net/brand.svg""")
                               .get("postgis")
                               .getId())
                           .featureTypeName("bak")),
+                  "postgis:kadastraal_perceel",
+                  new GeoServiceLayerSettings()
+                      .description("cadastral parcel label points")
+                      .featureType(new FeatureTypeRef()
+                          .featureSourceId(featureSources
+                              .get("postgis")
+                              .getId())
+                          .featureTypeName("kadastraal_perceel")),
                   "sqlserver:wegdeel",
                   new GeoServiceLayerSettings()
                       .attribution(
@@ -849,6 +858,13 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
           ft.getSettings().addHideAttributesItem("function_");
           ft.getSettings().addHideAttributesItem("plus_type");
         });
+
+    featureSources.get("postgis").getFeatureTypes().stream()
+        .filter(ft -> ft.getName().equals("kadastraal_perceel"))
+        .findFirst()
+        .ifPresent(ft -> {
+          ft.getSettings().addHideAttributesItem("gml_id");
+        });
   }
 
   public void createAppTestData() throws Exception {
@@ -955,6 +971,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                     "lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied",
                     "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
                     "lyr:snapshot-geoserver:postgis:bak",
+                    "lyr:snapshot-geoserver:postgis:kadastraal_perceel",
                     "lyr:snapshot-geoserver:sqlserver:wegdeel",
                     "lyr:snapshot-geoserver:oracle:WATERDEEL",
                     "lyr:snapshot-geoserver:BGT",
@@ -993,6 +1010,12 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .id("lyr:snapshot-geoserver:postgis:bak")
                 .serviceId("snapshot-geoserver")
                 .layerName("postgis:bak")
+                .visible(false))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:snapshot-geoserver:postgis:kadastraal_perceel")
+                .serviceId("snapshot-geoserver")
+                .layerName("postgis:kadastraal_perceel")
                 .visible(false))
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
@@ -1077,6 +1100,9 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                     .editable(true)
                     .addHideAttributesItem("begroeidterreindeeloptalud")
                     .addReadOnlyAttributesItem("eindregistratie"))
+            .putLayerSettingsItem(
+                "lyr:snapshot-geoserver:postgis:kadastraal_perceel",
+                new AppLayerSettings().editable(true).addReadOnlyAttributesItem("aanduiding"))
             .putLayerSettingsItem(
                 "lyr:snapshot-geoserver:sqlserver:wegdeel", new AppLayerSettings().editable(true))
             .putLayerSettingsItem(
@@ -1363,6 +1389,9 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
       TMFeatureType wegdeelFT = geoService.findFeatureTypeForLayer(
           geoService.findLayer("sqlserver:wegdeel"), featureSourceRepository);
 
+      TMFeatureType kadastraalPerceelFT = geoService.findFeatureTypeForLayer(
+          geoService.findLayer("postgis:kadastraal_perceel"), featureSourceRepository);
+
       try (solrHelper) {
         SearchIndex begroeidterreindeelIndex = null;
         if (begroeidterreindeelFT != null) {
@@ -1378,6 +1407,22 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
               featureSourceFactoryHelper,
               searchIndexRepository);
           begroeidterreindeelIndex = searchIndexRepository.save(begroeidterreindeelIndex);
+        }
+
+        SearchIndex kadastraalPerceelIndex = null;
+        if (kadastraalPerceelFT != null) {
+          kadastraalPerceelIndex = new SearchIndex()
+              .setName("kadastraal_perceel")
+              .setFeatureTypeId(kadastraalPerceelFT.getId())
+              .setSearchFieldsUsed(List.of("aanduiding"))
+              .setSearchDisplayFieldsUsed(List.of("aanduiding"));
+          kadastraalPerceelIndex = searchIndexRepository.save(kadastraalPerceelIndex);
+          kadastraalPerceelIndex = solrHelper.addFeatureTypeIndex(
+              kadastraalPerceelIndex,
+              kadastraalPerceelFT,
+              featureSourceFactoryHelper,
+              searchIndexRepository);
+          kadastraalPerceelIndex = searchIndexRepository.save(kadastraalPerceelIndex);
         }
 
         SearchIndex wegdeelIndex = null;
@@ -1427,6 +1472,18 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
               .setSearchIndexId(begroeidterreindeelIndex.getId());
         }
 
+        AppTreeLayerNode kadastraalPerceelLayerNode = defaultApp
+            .getAllAppTreeLayerNode()
+            .filter(node -> node.getId().equals("lyr:snapshot-geoserver:postgis:kadastraal_perceel"))
+            .findFirst()
+            .orElse(null);
+
+        if (kadastraalPerceelLayerNode != null && kadastraalPerceelIndex != null) {
+          defaultApp
+              .getAppLayerSettings(kadastraalPerceelLayerNode)
+              .setSearchIndexId(kadastraalPerceelIndex.getId());
+        }
+
         AppTreeLayerNode wegdeel = defaultApp
             .getAllAppTreeLayerNode()
             .filter(node -> node.getId().equals("lyr:snapshot-geoserver:sqlserver:wegdeel"))
@@ -1442,8 +1499,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     }
   }
 
-  private void createPocTasks() {
-
+  private void createScheduledTasks() {
     try {
       logger.info("Creating POC tasks");
       logger.info(
@@ -1502,36 +1558,37 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     }
 
     if (categories.contains("search-index")) {
-      logger.info("Creating INDEX task");
-      searchIndexRepository.findByName("Begroeidterreindeel").ifPresent(index -> {
-        index.setSchedule(new TaskSchedule()
-            /* hour */
-            .cronExpression("0 0 0/1 1/1 * ? *")
-            // /* 15 min */
-            // .cronExpression("0 0/15 * 1/1 * ? *")
-            .description("Update Solr index \"Begroeidterreindeel\" every time"));
-        try {
-          final UUID uuid = taskManagerService.createTask(
-              IndexTask.class,
-              new TMJobDataMap(Map.of(
-                  Task.TYPE_KEY,
-                  TaskType.INDEX,
-                  Task.DESCRIPTION_KEY,
-                  index.getSchedule().getDescription(),
-                  IndexTask.INDEX_KEY,
-                  index.getId().toString(),
-                  Task.PRIORITY_KEY,
-                  10)),
-              index.getSchedule().getCronExpression());
+      logger.info("Creating INDEX tasks");
+      List.of("Begroeidterreindeel", "kadastraal_perceel")
+          .forEach(name -> searchIndexRepository.findByName(name).ifPresent(index -> {
+            index.setSchedule(new TaskSchedule()
+                /* hour */
+                .cronExpression("0 0 0/1 1/1 * ? *")
+                // /* 15 min */
+                // .cronExpression("0 0/15 * 1/1 * ? *")
+                .description("Update Solr index \" " + name + "\" every hour"));
+            try {
+              final UUID uuid = taskManagerService.createTask(
+                  IndexTask.class,
+                  new TMJobDataMap(Map.of(
+                      Task.TYPE_KEY,
+                      TaskType.INDEX,
+                      Task.DESCRIPTION_KEY,
+                      index.getSchedule().getDescription(),
+                      IndexTask.INDEX_KEY,
+                      index.getId().toString(),
+                      Task.PRIORITY_KEY,
+                      10)),
+                  index.getSchedule().getCronExpression());
 
-          index.getSchedule().setUuid(uuid);
-          searchIndexRepository.save(index);
+              index.getSchedule().setUuid(uuid);
+              searchIndexRepository.save(index);
 
-          logger.info("Created task to update Solr index with key: {}", uuid);
-        } catch (SchedulerException e) {
-          logger.error("Error creating scheduled solr index task", e);
-        }
-      });
+              logger.info("Created task to update Solr index with key: {}", uuid);
+            } catch (SchedulerException e) {
+              logger.error("Error creating scheduled solr index task", e);
+            }
+          }));
     }
   }
 

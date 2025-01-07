@@ -70,7 +70,7 @@ class TaskAdminControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
-        .andExpect(jsonPath("$.tasks.length()").value(5))
+        .andExpect(jsonPath("$.tasks.length()").value(6))
         // value is either 'poc' or 'index'
         .andExpect(jsonPath("$.tasks[0].type")
             .value(anyOf(
@@ -367,7 +367,7 @@ class TaskAdminControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
-        .andExpect(jsonPath("$.tasks.length()").value(1))
+        .andExpect(jsonPath("$.tasks.length()").value(2))
         .andReturn();
 
     final String deleteUUID = JsonPath.read(result.getResponse().getContentAsString(), "$.tasks[0].uuid");
