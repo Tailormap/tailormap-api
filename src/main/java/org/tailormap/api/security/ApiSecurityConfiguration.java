@@ -12,7 +12,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.Cookie;
 import org.springframework.context.ApplicationEventPublisher;
@@ -181,7 +183,8 @@ public class ApiSecurityConfiguration {
         });
 
         for (String groupName : wantedGroups) {
-          if (repository.findById(groupName).isEmpty()) {
+          Optional<Group> groupEntity = repository.findById(groupName);
+          if (groupEntity.isEmpty()) {
             Group group = new Group();
             group.setName(groupName);
             group.setDescription("<imported from SSO>");
@@ -189,6 +192,11 @@ public class ApiSecurityConfiguration {
           }
 
           mappedAuthorities.add(new SimpleGrantedAuthority(groupName));
+          groupEntity
+              .map(Group::getAliasForGroup)
+              .filter(StringUtils::isNotBlank)
+              .map(SimpleGrantedAuthority::new)
+              .ifPresent(mappedAuthorities::add);
         }
       } catch (Exception e) {
         // Ignore

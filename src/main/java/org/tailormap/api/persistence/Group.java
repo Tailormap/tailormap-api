@@ -52,6 +52,13 @@ public class Group {
   private Set<User> members = new HashSet<>();
 
   /**
+   * Enables the use of a group as an alias for another group. This is useful for example when the 'admin' group name
+   * can't be sent from a single sign-on provider. In that case, the single sign-on provider can send a different
+   * group name and the viewer can map that group name to the 'admin' group.
+   */
+  private String aliasForGroup;
+
+  /**
    * Generic additional properties which can be set on a group. A viewer admin frontend extension component can define
    * attributes for the purposes of the extension and the viewer admin UI will show a control to edit the attribute in
    * the group detail form.
@@ -111,6 +118,15 @@ public class Group {
 
   public Group setMembers(Set<User> members) {
     this.members = members;
+    return this;
+  }
+
+  public String getAliasForGroup() {
+    return aliasForGroup;
+  }
+
+  public Group setAliasForGroup(String aliasFor) {
+    this.aliasForGroup = aliasFor;
     return this;
   }
 
