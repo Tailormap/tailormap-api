@@ -15,23 +15,23 @@
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.Matchers.both;
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.Matchers.contains;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.Matchers.greaterThan;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.Matchers.greaterThanOrEqualTo;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.Matchers.lessThanOrEqualTo;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.Matchers.not;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.Matchers.startsWithIgnoringCase;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.TestRequestProcessor.setServletPath;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.controller.TestUrls.layerBegroeidTerreindeelPostgis;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.controller.TestUrls.layerWaterdeelOracle;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.controller.TestUrls.layerWegdeelSqlServer;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.parallel.Execution;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.parallel.ExecutionMode;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.Matchers.containsString;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.Matchers.greaterThan;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.Matchers.greaterThanOrEqualTo;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.Matchers.lessThanOrEqualTo;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.Matchers.not;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.hamcrest.Matchers.startsWithIgnoringCase;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.TestRequestProcessor.setServletPath;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.parallel.Execution;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.parallel.ExecutionMode;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.params.ParameterizedTest;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.params.provider.CsvSource;
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.junitpioneer.jupiter.Stopwatch;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Autowired;
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
@@ -45,7 +45,7 @@
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  @PostgresIntegrationTest
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  @Execution(ExecutionMode.CONCURRENT)
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  @Stopwatch
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">class</strong> <a name="SearchControllerIntegrationTest" href="../../../../org/tailormap/api/controller/SearchControllerIntegrationTest.html#SearchControllerIntegrationTest">SearchControllerIntegrationTest</a> <strong class="jxr_keyword">implements</strong> Constants {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">class</strong> <a name="SearchControllerIntegrationTest" href="../../../../org/tailormap/api/controller/SearchControllerIntegrationTest.html#SearchControllerIntegrationTest">SearchControllerIntegrationTest</a> <strong class="jxr_keyword">implements</strong> Constants, <a name="TestUrls" href="../../../../org/tailormap/api/controller/TestUrls.html#TestUrls">TestUrls</a> {
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>    @Value(<span class="jxr_string">"${tailormap-api.base-path}"</span>)
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">private</strong> String apiBasePath;
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  
@@ -217,7 +217,67 @@
 <a class="jxr_linenumber" name="L209" href="#L209">209</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents[0].displayValues"</span>).isArray())
 <a class="jxr_linenumber" name="L210" href="#L210">210</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents[0]."</span> + INDEX_GEOM_FIELD).isString());
 <a class="jxr_linenumber" name="L211" href="#L211">211</a>   }
-<a class="jxr_linenumber" name="L212" href="#L212">212</a> }
+<a class="jxr_linenumber" name="L212" href="#L212">212</a> 
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L214" href="#L214">214</a> <em class="jxr_javadoccomment">   * Test search for Kadastraal Perceel with aanduiding "CTR00 A 655".</em>
+<a class="jxr_linenumber" name="L215" href="#L215">215</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L216" href="#L216">216</a> <em class="jxr_javadoccomment">   * @param qTerm search term</em>
+<a class="jxr_linenumber" name="L217" href="#L217">217</a> <em class="jxr_javadoccomment">   * @param totalCount expected total hits</em>
+<a class="jxr_linenumber" name="L218" href="#L218">218</a> <em class="jxr_javadoccomment">   * @throws Exception when an error occurs</em>
+<a class="jxr_linenumber" name="L219" href="#L219">219</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>   @ParameterizedTest(name = <span class="jxr_string">"query Kadastraal Perceel for : {0} -&gt; hits {1}"</span>)
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>   @CsvSource(
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>       textBlock =
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>           <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L224" href="#L224">224</a> *CTR*, 995
+<a class="jxr_linenumber" name="L225" href="#L225">225</a> CTR*, 995
+<a class="jxr_linenumber" name="L226" href="#L226">226</a> CTR0*, 995
+<a class="jxr_linenumber" name="L227" href="#L227">227</a> CTR00, 995
+<a class="jxr_linenumber" name="L228" href="#L228">228</a> CTR00*, 995
+<a class="jxr_linenumber" name="L229" href="#L229">229</a> *CTR00*, 995
+<a class="jxr_linenumber" name="L230" href="#L230">230</a> (CTR00), 995
+<a class="jxr_linenumber" name="L231" href="#L231">231</a> (CTR00 ), 995
+<a class="jxr_linenumber" name="L232" href="#L232">232</a> (CTR00 *), 995
+<a class="jxr_linenumber" name="L233" href="#L233">233</a> (*CTR00 *), 995
+<a class="jxr_linenumber" name="L234" href="#L234">234</a> (CTR00 A*), 304
+<a class="jxr_linenumber" name="L235" href="#L235">235</a> (*CTR00 A*), 304
+<a class="jxr_linenumber" name="L236" href="#L236">236</a> (A 655), 1
+<a class="jxr_linenumber" name="L237" href="#L237">237</a> A searchFields:655, 1
+<a class="jxr_linenumber" name="L238" href="#L238">238</a> (*A 655*), 1
+<a class="jxr_linenumber" name="L239" href="#L239">239</a> (*A 65*), 8
+<a class="jxr_linenumber" name="L240" href="#L240">240</a> <span class="jxr_string">""</span><span class="jxr_string">")
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>   <strong class="jxr_keyword">void</strong> testAanduiding(String qTerm, <strong class="jxr_keyword">int</strong> totalCount) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerKadastraalPerceel + <span class="jxr_string">"/search"</span>;
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> documentsCount = Math.min(totalCount, 10);
+<a class="jxr_linenumber" name="L244" href="#L244">244</a> 
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>             .with(setServletPath(url))
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>             .param(<span class="jxr_string">"q"</span>, qTerm)
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>             .param(<span class="jxr_string">"start"</span>, <span class="jxr_string">"0"</span>))
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>         .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>         .andExpect(jsonPath(<span class="jxr_string">"$.start"</span>).value(0))
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>         .andExpect(jsonPath(<span class="jxr_string">"$.total"</span>).value(both(greaterThan(0)).and(lessThanOrEqualTo(totalCount))))
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents"</span>).isArray())
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents.length()"</span>).value(documentsCount))
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents[0].fid"</span>).isString())
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents[0].fid"</span>)
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>             .value(containsString(<span class="jxr_string">"kadastraal_perceel.NL.IMKAD.KadastraalObject"</span>)))
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents[0].displayValues"</span>).isArray())
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>         .andExpect(jsonPath(<span class="jxr_string">"$.documents[0]."</span> + INDEX_GEOM_FIELD).value(startsWithIgnoringCase(<span class="jxr_string">"POINT"</span>)))
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>         .andExpect(jsonPath(<span class="jxr_string">"$.maxScore"</span>).isEmpty());
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>   }
+<a class="jxr_linenumber" name="L262" href="#L262">262</a> 
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>   @Test
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>   <strong class="jxr_keyword">void</strong> testUnquotedWhitespace() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>     <strong class="jxr_keyword">final</strong> String url = apiBasePath + layerKadastraalPerceel + <span class="jxr_string">"/search"</span>;
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>             .with(setServletPath(url))
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>             .param(<span class="jxr_string">"q"</span>, <span class="jxr_string">"A 655"</span>)
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>             .param(<span class="jxr_string">"start"</span>, <span class="jxr_string">"0"</span>))
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>         .andExpect(status().isNoContent());
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>   }
+<a class="jxr_linenumber" name="L272" href="#L272">272</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
