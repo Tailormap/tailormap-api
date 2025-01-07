@@ -220,7 +220,7 @@
 <a class="jxr_linenumber" name="L212" href="#L212">212</a>         .andExpect(jsonPath(<span class="jxr_string">"$.appLayers[0]"</span>).isMap())
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>         <em class="jxr_comment">// Note: if the testdata was created with MAP5_URL set, the appLayers array will have 4 more</em>
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>         <em class="jxr_comment">// layers</em>
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>         .andExpect(jsonPath(<span class="jxr_string">"$.appLayers.length()"</span>).value(14))
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>         .andExpect(jsonPath(<span class="jxr_string">"$.appLayers.length()"</span>).value(15))
 <a class="jxr_linenumber" name="L216" href="#L216">216</a>         .andExpect(jsonPath(<span class="jxr_string">"$.appLayers[?(@.id == 'lyr:openbasiskaart-tms:xyz')].hasAttributes"</span>)
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>             .value(false))
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>         .andExpect(jsonPath(<span class="jxr_string">"$.appLayers[?(@.id == 'lyr:b3p-mapproxy-luchtfoto:xyz')].hasAttributes"</span>)

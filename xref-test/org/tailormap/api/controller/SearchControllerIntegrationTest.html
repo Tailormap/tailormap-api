@@ -110,8 +110,8 @@
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>         .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>         .andExpect(jsonPath(<span class="jxr_string">"$.start"</span>).value(10))
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>         .andExpect(jsonPath(<span class="jxr_string">"$.total"</span>)
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>             .value(both(greaterThanOrEqualTo(100)).and(lessThanOrEqualTo(110))))
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>         .andExpect(
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>             jsonPath(<span class="jxr_string">"$.total"</span>).value(both(greaterThanOrEqualTo(50)).and(lessThanOrEqualTo(110))))
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         <em class="jxr_comment">// .andExpect(jsonPath("$.maxScore").isNumber())</em>
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         <em class="jxr_comment">// .andExpect(jsonPath("$.maxScore").value(closeTo(1.0, 0.1)))</em>
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>         .andExpect(jsonPath(<span class="jxr_string">"$.maxScore"</span>).isEmpty())

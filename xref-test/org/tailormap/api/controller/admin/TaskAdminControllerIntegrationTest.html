@@ -78,7 +78,7 @@
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          .andExpect(jsonPath(<span class="jxr_string">"$.tasks"</span>).isArray())
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>          .andExpect(jsonPath(<span class="jxr_string">"$.tasks.length()"</span>).value(5))
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          .andExpect(jsonPath(<span class="jxr_string">"$.tasks.length()"</span>).value(6))
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          <em class="jxr_comment">// value is either 'poc' or 'index'</em>
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          .andExpect(jsonPath(<span class="jxr_string">"$.tasks[0].type"</span>)
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>              .value(anyOf(
@@ -375,7 +375,7 @@
 <a class="jxr_linenumber" name="L367" href="#L367">367</a>         .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L368" href="#L368">368</a>         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
 <a class="jxr_linenumber" name="L369" href="#L369">369</a>         .andExpect(jsonPath(<span class="jxr_string">"$.tasks"</span>).isArray())
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>         .andExpect(jsonPath(<span class="jxr_string">"$.tasks.length()"</span>).value(1))
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>         .andExpect(jsonPath(<span class="jxr_string">"$.tasks.length()"</span>).value(2))
 <a class="jxr_linenumber" name="L371" href="#L371">371</a>         .andReturn();
 <a class="jxr_linenumber" name="L372" href="#L372">372</a> 
 <a class="jxr_linenumber" name="L373" href="#L373">373</a>     <strong class="jxr_keyword">final</strong> String deleteUUID = JsonPath.read(result.getResponse().getContentAsString(), <span class="jxr_string">"$.tasks[0].uuid"</span>);
