@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -167,36 +168,34 @@ public class ApiSecurityConfiguration {
   public GrantedAuthoritiesMapper userAuthoritiesMapper(GroupRepository repository) {
     return (authorities) -> {
       Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-      Set<String> wantedGroups = new HashSet<>();
 
       try {
-        authorities.forEach(authority -> {
-          mappedAuthorities.add(authority);
-          if (authority instanceof OidcUserAuthority oidcUserAuthority) {
-            OidcIdToken idToken = oidcUserAuthority.getIdToken();
+        mappedAuthorities.addAll(authorities);
 
-            List<String> roles = idToken.getClaimAsStringList("roles");
-            if (roles != null) {
-              wantedGroups.addAll(roles);
-            }
+        OidcIdToken idToken = authorities.stream()
+            .filter(OidcUserAuthority.class::isInstance)
+            .map(OidcUserAuthority.class::cast)
+            .map(OidcUserAuthority::getIdToken)
+            .findFirst()
+            .orElseThrow();
+
+        // We can match the OIDC authority to the OIDC registration via the audience which is the client ID
+        String audience = idToken.getAudience().stream().findFirst().orElse("<unknown>");
+
+        List<String> roles = Optional.ofNullable(idToken.getClaimAsStringList("roles"))
+            .orElse(Collections.emptyList());
+        for (String role : roles) {
+          Group groupEntity = repository.findById(role).orElseGet(() -> new Group().setName(role));
+
+          groupEntity.addOrUpdateAdminProperty("oidcAudience", audience, false);
+          groupEntity.addOrUpdateAdminProperty(
+              "oidcLastLogin", Instant.now().toString(), false);
+          repository.save(groupEntity);
+
+          mappedAuthorities.add(new SimpleGrantedAuthority(role));
+          if (StringUtils.isNotBlank(groupEntity.getAliasForGroup())) {
+            mappedAuthorities.add(new SimpleGrantedAuthority(groupEntity.getAliasForGroup()));
           }
-        });
-
-        for (String groupName : wantedGroups) {
-          Optional<Group> groupEntity = repository.findById(groupName);
-          if (groupEntity.isEmpty()) {
-            Group group = new Group();
-            group.setName(groupName);
-            group.setDescription("<imported from SSO>");
-            repository.save(group);
-          }
-
-          mappedAuthorities.add(new SimpleGrantedAuthority(groupName));
-          groupEntity
-              .map(Group::getAliasForGroup)
-              .filter(StringUtils::isNotBlank)
-              .map(SimpleGrantedAuthority::new)
-              .ifPresent(mappedAuthorities::add);
         }
       } catch (Exception e) {
         // Ignore

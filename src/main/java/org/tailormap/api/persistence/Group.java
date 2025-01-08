@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.hibernate.annotations.Type;
+import org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.tailormap.api.util.Constants;
@@ -145,5 +146,9 @@ public class Group {
     for (User user : this.members) {
       user.getGroups().remove(this);
     }
+  }
+
+  public void addOrUpdateAdminProperty(String key, Object value, boolean isPublic) {
+    AdminAdditionalPropertyHelper.addOrUpdateAdminProperty(additionalProperties, key, value, isPublic);
   }
 }
