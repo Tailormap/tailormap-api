@@ -8,7 +8,8 @@ package org.tailormap.api.security;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,10 +26,18 @@ public class TailormapUserDetails implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return user.getGroups().stream()
+    Collection<GrantedAuthority> authorities = new HashSet<>();
+    user.getGroups().stream()
         .map(Group::getName)
         .map(SimpleGrantedAuthority::new)
-        .collect(Collectors.toSet());
+        .forEach(authorities::add);
+
+    user.getGroups().stream()
+        .map(Group::getAliasForGroup)
+        .filter(StringUtils::isNotBlank)
+        .map(SimpleGrantedAuthority::new)
+        .forEach(authorities::add);
+    return authorities;
   }
 
   @Override
