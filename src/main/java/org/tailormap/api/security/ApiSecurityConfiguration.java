@@ -9,13 +9,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.Cookie;
 import org.springframework.context.ApplicationEventPublisher;
@@ -52,6 +53,8 @@ import org.tailormap.api.security.events.OAuth2AuthenticationFailureEvent;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class ApiSecurityConfiguration {
+  private static final Logger log = LoggerFactory.getLogger(ApiSecurityConfiguration.class);
+
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
 
@@ -179,28 +182,23 @@ public class ApiSecurityConfiguration {
             .findFirst()
             .orElseThrow();
 
-        // We can match the OIDC authority to the OIDC registration via the audience which is the client ID
-        String audience = idToken.getAudience().stream().findFirst().orElse("<unknown>");
-
         List<String> roles = Optional.ofNullable(idToken.getClaimAsStringList("roles"))
             .orElse(Collections.emptyList());
+
         for (String role : roles) {
-          Group groupEntity = repository.findById(role).orElseGet(() -> new Group().setName(role));
-
-          groupEntity.addOrUpdateAdminProperty("oidcAudience", audience, false);
-          groupEntity.addOrUpdateAdminProperty(
-              "oidcLastLogin", Instant.now().toString(), false);
-          repository.save(groupEntity);
-
           mappedAuthorities.add(new SimpleGrantedAuthority(role));
-          if (StringUtils.isNotBlank(groupEntity.getAliasForGroup())) {
-            mappedAuthorities.add(new SimpleGrantedAuthority(groupEntity.getAliasForGroup()));
+
+          Optional<Group> groupEntity = repository.findById(role);
+          if (groupEntity.isPresent()) {
+            String alias = groupEntity.get().getAliasForGroup();
+            if (StringUtils.isNotBlank(alias)) {
+              mappedAuthorities.add(new SimpleGrantedAuthority(alias));
+            }
           }
         }
       } catch (Exception e) {
-        // Ignore
+        log.error("Error mapping OIDC authorities", e);
       }
-
       return mappedAuthorities;
     };
   }
