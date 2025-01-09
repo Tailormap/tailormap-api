@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import org.hibernate.annotations.Type;
 import org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
@@ -150,5 +151,17 @@ public class Group {
 
   public void addOrUpdateAdminProperty(String key, Object value, boolean isPublic) {
     AdminAdditionalPropertyHelper.addOrUpdateAdminProperty(additionalProperties, key, value, isPublic);
+  }
+
+  /**
+   * Maps a property value in the additional properties of the group. If the property does not exist, it will be
+   * created and the valueMapper function will be called with a null value.
+   *
+   * @param key the key of the property
+   * @param isPublic whether the property is public
+   * @param valueMapper the function to map the value
+   */
+  public void mapAdminPropertyValue(String key, boolean isPublic, Function<Object, Object> valueMapper) {
+    AdminAdditionalPropertyHelper.mapAdminPropertyValue(additionalProperties, key, isPublic, valueMapper);
   }
 }
