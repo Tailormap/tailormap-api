@@ -8,11 +8,12 @@ package org.tailormap.api.security;
 
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -43,7 +44,8 @@ public class OIDCAuthenticationEventsHandler {
       if (token.getPrincipal() instanceof DefaultOidcUser oidcUser) {
         String clientId = token.getClientRegistration().getClientId();
 
-        List<String> roles = oidcUser.getIdToken().getClaimAsStringList("roles");
+        List<String> roles = Optional.ofNullable(oidcUser.getIdToken().getClaimAsStringList("roles"))
+            .orElseGet(Collections::emptyList);
         logger.info(
             "OIDC authentication successful for user \"{}\", granted roles: {}, using OIDC registration \"{}\" with client ID {}",
             success.getAuthentication().getName(),
@@ -52,12 +54,10 @@ public class OIDCAuthenticationEventsHandler {
             clientId);
 
         for (String role : roles) {
-          Group group = groupRepository
-              .findById(role)
-              .orElseGet(() -> new Group().setName(role));
+          Group group = groupRepository.findById(role).orElseGet(() -> new Group().setName(role));
           group.mapAdminPropertyValue("oidcClientIds", false, value -> {
             @SuppressWarnings("unchecked")
-            Set<String> clientIds = value instanceof Set ? (Set<String>) value : new HashSet<>();
+            List<String> clientIds = value instanceof List ? (List<String>) value : new ArrayList<>();
             clientIds.add(clientId);
             return clientIds;
           });
