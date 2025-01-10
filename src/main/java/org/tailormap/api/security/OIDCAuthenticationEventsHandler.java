@@ -47,12 +47,6 @@ public class OIDCAuthenticationEventsHandler {
 
         List<String> roles = Optional.ofNullable(oidcUser.getIdToken().getClaimAsStringList("roles"))
             .orElseGet(Collections::emptyList);
-        logger.info(
-            "OIDC authentication successful for user \"{}\", granted roles: {}, using OIDC registration \"{}\" with client ID {}",
-            success.getAuthentication().getName(),
-            roles,
-            token.getClientRegistration().getClientName(),
-            clientId);
 
         for (String role : roles) {
           Group group = groupRepository.findById(role).orElseGet(() -> new Group().setName(role));
