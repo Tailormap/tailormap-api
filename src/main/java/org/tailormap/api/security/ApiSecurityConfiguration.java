@@ -189,12 +189,11 @@ public class ApiSecurityConfiguration {
           mappedAuthorities.add(new SimpleGrantedAuthority(role));
 
           Optional<Group> groupEntity = repository.findById(role);
-          if (groupEntity.isPresent()) {
-            String alias = groupEntity.get().getAliasForGroup();
-            if (StringUtils.isNotBlank(alias)) {
-              mappedAuthorities.add(new SimpleGrantedAuthority(alias));
+          groupEntity.ifPresent(group -> {
+            if (StringUtils.isNotBlank(group.getAliasForGroup())) {
+              mappedAuthorities.add(new SimpleGrantedAuthority(group.getAliasForGroup()));
             }
-          }
+          });
         }
       } catch (Exception e) {
         log.error("Error mapping OIDC authorities", e);
