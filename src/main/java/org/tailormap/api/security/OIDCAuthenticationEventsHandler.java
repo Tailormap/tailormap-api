@@ -41,31 +41,30 @@ public class OIDCAuthenticationEventsHandler {
   @EventListener
   @Transactional
   public void onSuccess(AuthenticationSuccessEvent success) {
-    if (success.getSource() instanceof OAuth2LoginAuthenticationToken token) {
-      if (token.getPrincipal() instanceof DefaultOidcUser oidcUser) {
-        String clientId = token.getClientRegistration().getClientId();
+    if (success.getSource() instanceof OAuth2LoginAuthenticationToken token
+        && token.getPrincipal() instanceof DefaultOidcUser oidcUser) {
+      String clientId = token.getClientRegistration().getClientId();
 
-        List<String> roles = Optional.ofNullable(oidcUser.getIdToken().getClaimAsStringList("roles"))
-            .orElseGet(Collections::emptyList);
+      List<String> roles = Optional.ofNullable(oidcUser.getIdToken().getClaimAsStringList("roles"))
+          .orElseGet(Collections::emptyList);
 
-        for (String role : roles) {
-          Group group = groupRepository.findById(role).orElseGet(() -> new Group().setName(role));
-          group.mapAdminPropertyValue("oidcClientIds", false, value -> {
-            @SuppressWarnings("unchecked")
-            Set<String> clientIds =
-                new HashSet<>(value instanceof List ? (List<String>) value : Collections.emptyList());
-            clientIds.add(clientId);
-            return clientIds;
-          });
-          group.mapAdminPropertyValue("oidcLastSeen", false, value -> {
-            @SuppressWarnings("unchecked")
-            Map<String, String> lastSeenByClientId =
-                value instanceof Map ? (Map<String, String>) value : new HashMap<>();
-            lastSeenByClientId.put(clientId, Instant.now().toString());
-            return lastSeenByClientId;
-          });
-          groupRepository.save(group);
-        }
+      for (String role : roles) {
+        Group group = groupRepository.findById(role).orElseGet(() -> new Group().setName(role));
+        group.mapAdminPropertyValue("oidcClientIds", false, value -> {
+          @SuppressWarnings("unchecked")
+          Set<String> clientIds =
+              new HashSet<>(value instanceof List ? (List<String>) value : Collections.emptyList());
+          clientIds.add(clientId);
+          return clientIds;
+        });
+        group.mapAdminPropertyValue("oidcLastSeen", false, value -> {
+          @SuppressWarnings("unchecked")
+          Map<String, String> lastSeenByClientId =
+              value instanceof Map ? (Map<String, String>) value : new HashMap<>();
+          lastSeenByClientId.put(clientId, Instant.now().toString());
+          return lastSeenByClientId;
+        });
+        groupRepository.save(group);
       }
     }
   }
