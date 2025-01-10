@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -53,7 +54,8 @@ import org.tailormap.api.security.events.OAuth2AuthenticationFailureEvent;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class ApiSecurityConfiguration {
-  private static final Logger log = LoggerFactory.getLogger(ApiSecurityConfiguration.class);
+  private static final Logger log =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
