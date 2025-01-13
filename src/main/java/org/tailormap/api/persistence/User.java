@@ -38,8 +38,7 @@ import org.tailormap.api.util.TMPasswordDeserializer;
 public class User {
 
   @Id
-  @Pattern(regexp = Constants.NAME_REGEX, message = "User" + Constants.NAME_REGEX_INVALID_MESSAGE)
-  private String username;
+  @Pattern(regexp = Constants.NAME_REGEX, message = "User" + Constants.NAME_REGEX_INVALID_MESSAGE) private String username;
 
   @Version
   private Long version;
@@ -51,8 +50,7 @@ public class User {
   @Size(max = (8 + 60))
   private String password;
 
-  @Email
-  private String email;
+  @Email private String email;
 
   private String name;
 
