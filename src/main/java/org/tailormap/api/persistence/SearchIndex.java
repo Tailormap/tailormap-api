@@ -44,30 +44,25 @@ public class SearchIndex implements Serializable {
   @JsonProperty("searchFieldsUsed")
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @Valid
-  private List<String> searchFieldsUsed = new ArrayList<>();
+  @Valid private List<String> searchFieldsUsed = new ArrayList<>();
 
   /** List of attribute names for display that were used when building the search index. */
   @JsonProperty("searchDisplayFieldsUsed")
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @Valid
-  private List<String> searchDisplayFieldsUsed = new ArrayList<>();
+  @Valid private List<String> searchDisplayFieldsUsed = new ArrayList<>();
 
   @JsonProperty("summary")
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @Valid
-  private SearchIndexSummary summary;
+  @Valid private SearchIndexSummary summary;
 
   /** Date and time of last index creation. */
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  @Valid
-  @JsonProperty("lastIndexed")
+  @Valid @JsonProperty("lastIndexed")
   private OffsetDateTime lastIndexed;
 
-  @Valid
-  @JsonProperty("schedule")
+  @Valid @JsonProperty("schedule")
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   private TaskSchedule schedule;

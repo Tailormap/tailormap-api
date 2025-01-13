@@ -37,8 +37,7 @@ public class Group {
   public static final String ACTUATOR = "actuator";
 
   @Id
-  @Pattern(regexp = Constants.NAME_REGEX, message = "Group " + Constants.NAME_REGEX_INVALID_MESSAGE)
-  private String name;
+  @Pattern(regexp = Constants.NAME_REGEX, message = "Group " + Constants.NAME_REGEX_INVALID_MESSAGE) private String name;
 
   @Version
   private Long version;
