@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>OIDCAuthenticationEventsHandler xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../apidocs/org/tailormap/api/security/OIDCAuthenticationEventsHandler.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * Copyright (C) 2025 B3Partners B.V.</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * SPDX-License-Identifier: MIT</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> */</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> org.tailormap.api.security;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.time.Instant;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.util.Collections;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> java.util.HashMap;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> java.util.HashSet;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> java.util.Optional;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.event.EventListener;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.springframework.stereotype.Component;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.springframework.transaction.annotation.Transactional;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Group;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.GroupRepository;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.security.events.OAuth2AuthenticationFailureEvent;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  @Component
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="OIDCAuthenticationEventsHandler" href="../../../../org/tailormap/api/security/OIDCAuthenticationEventsHandler.html#OIDCAuthenticationEventsHandler">OIDCAuthenticationEventsHandler</a> {
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="GroupRepository" href="../../../../org/tailormap/api/repository/GroupRepository.html#GroupRepository">GroupRepository</a> groupRepository;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">public</strong> <a name="OIDCAuthenticationEventsHandler" href="../../../../org/tailormap/api/security/OIDCAuthenticationEventsHandler.html#OIDCAuthenticationEventsHandler">OIDCAuthenticationEventsHandler</a>(<a name="GroupRepository" href="../../../../org/tailormap/api/repository/GroupRepository.html#GroupRepository">GroupRepository</a> groupRepository) {
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">this</strong>.groupRepository = groupRepository;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>    }
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>    @EventListener
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>    @Transactional
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onSuccess(AuthenticationSuccessEvent success) {
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      <strong class="jxr_keyword">if</strong> (success.getSource() instanceof OAuth2LoginAuthenticationToken token
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>          &amp;&amp; token.getPrincipal() instanceof DefaultOidcUser oidcUser) {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>        String clientId = token.getClientRegistration().getClientId();
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>        List&lt;String&gt; roles = Optional.ofNullable(oidcUser.getIdToken().getClaimAsStringList(<span class="jxr_string">"roles"</span>))
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>            .orElseGet(Collections::emptyList);
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>        <strong class="jxr_keyword">for</strong> (String role : roles) {
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          <a name="Group" href="../../../../org/tailormap/api/persistence/Group.html#Group">Group</a> group = groupRepository.findById(role).orElseGet(() -&gt; <strong class="jxr_keyword">new</strong> <a name="Group" href="../../../../org/tailormap/api/persistence/Group.html#Group">Group</a>().setName(role));
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          group.mapAdminPropertyValue(<span class="jxr_string">"oidcClientIds"</span>, false, value -&gt; {
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>            @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>            Set&lt;String&gt; clientIds =
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>                <strong class="jxr_keyword">new</strong> HashSet&lt;&gt;(value instanceof List ? (List&lt;String&gt;) value : Collections.emptyList());
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>            clientIds.add(clientId);
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>            <strong class="jxr_keyword">return</strong> clientIds;
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          });
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>          group.mapAdminPropertyValue(<span class="jxr_string">"oidcLastSeen"</span>, false, value -&gt; {
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>            @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>            Map&lt;String, String&gt; lastSeenByClientId =
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>                value instanceof Map ? (Map&lt;String, String&gt;) value : <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>            lastSeenByClientId.put(clientId, Instant.now().toString());
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>            <strong class="jxr_keyword">return</strong> lastSeenByClientId;
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          });
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          groupRepository.save(group);
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>        }
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>      }
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>    }
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>    @EventListener
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onOAuth2AuthenticationFailureEvent(<a name="OAuth2AuthenticationFailureEvent" href="../../../../org/tailormap/api/security/events/OAuth2AuthenticationFailureEvent.html#OAuth2AuthenticationFailureEvent">OAuth2AuthenticationFailureEvent</a> event) {
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>      logger.info(
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>          <span class="jxr_string">"OAuth2 authentication failure: {}, {}"</span>, event.getException().getMessage(), event);
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>    }
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  }
+</pre>
+<hr/>
+<div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
+</body>
+</html>
