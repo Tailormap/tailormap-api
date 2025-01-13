@@ -9,12 +9,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.Cookie;
 import org.springframework.context.ApplicationEventPublisher;
@@ -51,6 +54,9 @@ import org.tailormap.api.security.events.OAuth2AuthenticationFailureEvent;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class ApiSecurityConfiguration {
+  private static final Logger log =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
 
@@ -167,41 +173,33 @@ public class ApiSecurityConfiguration {
   public GrantedAuthoritiesMapper userAuthoritiesMapper(GroupRepository repository) {
     return (authorities) -> {
       Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-      Set<String> wantedGroups = new HashSet<>();
 
       try {
-        authorities.forEach(authority -> {
-          mappedAuthorities.add(authority);
-          if (authority instanceof OidcUserAuthority oidcUserAuthority) {
-            OidcIdToken idToken = oidcUserAuthority.getIdToken();
+        mappedAuthorities.addAll(authorities);
 
-            List<String> roles = idToken.getClaimAsStringList("roles");
-            if (roles != null) {
-              wantedGroups.addAll(roles);
+        OidcIdToken idToken = authorities.stream()
+            .filter(OidcUserAuthority.class::isInstance)
+            .map(OidcUserAuthority.class::cast)
+            .map(OidcUserAuthority::getIdToken)
+            .findFirst()
+            .orElseThrow();
+
+        List<String> roles = Optional.ofNullable(idToken.getClaimAsStringList("roles"))
+            .orElse(Collections.emptyList());
+
+        for (String role : roles) {
+          mappedAuthorities.add(new SimpleGrantedAuthority(role));
+
+          Optional<Group> groupEntity = repository.findById(role);
+          groupEntity.ifPresent(group -> {
+            if (StringUtils.isNotBlank(group.getAliasForGroup())) {
+              mappedAuthorities.add(new SimpleGrantedAuthority(group.getAliasForGroup()));
             }
-          }
-        });
-
-        for (String groupName : wantedGroups) {
-          Optional<Group> groupEntity = repository.findById(groupName);
-          if (groupEntity.isEmpty()) {
-            Group group = new Group();
-            group.setName(groupName);
-            group.setDescription("<imported from SSO>");
-            repository.save(group);
-          }
-
-          mappedAuthorities.add(new SimpleGrantedAuthority(groupName));
-          groupEntity
-              .map(Group::getAliasForGroup)
-              .filter(StringUtils::isNotBlank)
-              .map(SimpleGrantedAuthority::new)
-              .ifPresent(mappedAuthorities::add);
+          });
         }
       } catch (Exception e) {
-        // Ignore
+        log.error("Error mapping OIDC authorities", e);
       }
-
       return mappedAuthorities;
     };
   }
