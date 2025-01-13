@@ -77,8 +77,9 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(1)
-  void refreshIndex1() throws Exception {
-    mockMvc.perform(put(adminBasePath + "/index/1")
+  void refreshIndex4() throws Exception {
+    // 4: bak
+    mockMvc.perform(put(adminBasePath + "/index/4")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted());
@@ -91,8 +92,9 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(2)
-  void clearIndex1() throws Exception {
-    mockMvc.perform(delete(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
+  void clearIndex4() throws Exception {
+    // 4: bak
+    mockMvc.perform(delete(adminBasePath + "/index/4").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 
@@ -101,8 +103,9 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(3)
-  void recreateIndex1() throws Exception {
-    mockMvc.perform(put(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
+  void recreateIndex4() throws Exception {
+    // 4: bak
+    mockMvc.perform(put(adminBasePath + "/index/4").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted());
     // after submitting the request, wait for the index to be refreshed
     Thread.sleep(waitForIndexRefreshMillis);
@@ -125,6 +128,7 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   void indexWithoutSchedule() throws Exception {
+    // 3: Wegdeel
     mockMvc.perform(put(adminBasePath + "/index/3").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted())
         .andExpect(jsonPath("$.code").value(202))
@@ -133,6 +137,6 @@ class SolrAdminControllerIntegrationTest {
         .andExpect(jsonPath("$.type").value("index"));
 
     // after submitting the request, wait for the index to be refreshed in the scheduler
-    Thread.sleep(waitForIndexRefreshMillis);
+    Thread.sleep(2 * waitForIndexRefreshMillis);
   }
 }
