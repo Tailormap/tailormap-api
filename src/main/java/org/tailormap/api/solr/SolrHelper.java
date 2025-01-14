@@ -271,6 +271,12 @@ public class SolrHelper implements AutoCloseable, Constants {
     Query q = new Query(fs.getName().toString());
     // filter out any hidden properties (there should be none though)
     tmFeatureType.getSettings().getHideAttributes().forEach(propertyNames::remove);
+    if (propertyNames.isEmpty()) {
+      logger.warn("No valid properties to index for featuretype: {}, bailing out.", tmFeatureType.getName());
+      return searchIndexRepository.save(searchIndex
+          .setStatus(SearchIndex.Status.ERROR)
+          .setSummary(summary.errorMessage("No valid properties to index")));
+    }
     q.setPropertyNames(List.copyOf(propertyNames));
     q.setStartIndex(0);
     // TODO: make maxFeatures configurable?
