@@ -24,7 +24,8 @@ import org.tailormap.api.persistence.Group;
 
 @PostgresIntegrationTest
 class JSR303ValidationIntegrationTest {
-  @Autowired private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
 
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
@@ -34,23 +35,19 @@ class JSR303ValidationIntegrationTest {
       username = "admin",
       authorities = {Group.ADMIN})
   void testUrlRequired() throws Exception {
-    MockMvc mockMvc =
-        MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
-    String geoServicePOSTBody =
-        new ObjectMapper()
-            .createObjectNode()
-            .put("protocol", "wms")
-            .put("title", "test")
-            .put("refreshCapabilities", true)
-            .put("url", (String) null)
-            .toPrettyString();
+    String geoServicePOSTBody = new ObjectMapper()
+        .createObjectNode()
+        .put("protocol", "wms")
+        .put("title", "test")
+        .put("refreshCapabilities", true)
+        .put("url", (String) null)
+        .toPrettyString();
 
-    mockMvc
-        .perform(
-            post(adminBasePath + "/geo-services")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(geoServicePOSTBody))
+    mockMvc.perform(post(adminBasePath + "/geo-services")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(geoServicePOSTBody))
         .andExpect(status().isBadRequest())
         .andExpect(
             content()

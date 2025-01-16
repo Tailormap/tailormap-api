@@ -30,8 +30,7 @@ class UserTest {
 
   private static final Validator validator =
       Validation.buildDefaultValidatorFactory().getValidator();
-  private final String expectedMessage =
-      "Username must consist of alphanumeric characters, underscore or -";
+  private final String expectedMessage = "Username must consist of alphanumeric characters, underscore or -";
   private ObjectMapper mapper;
 
   @BeforeEach
@@ -42,17 +41,13 @@ class UserTest {
   /** Test that the password is not serialized. */
   @Test
   void testJsonSerialize() {
-    final User userToSerialize =
-        new User()
-            .setUsername("markimarks")
-            .setPassword("{bcrypt}$2a$10$hOKiZqxsvDJXMN/LbYcOeeJwWtgkKvfv834P5RsouLFpl7a8e3am2");
+    final User userToSerialize = new User()
+        .setUsername("markimarks")
+        .setPassword("{bcrypt}$2a$10$hOKiZqxsvDJXMN/LbYcOeeJwWtgkKvfv834P5RsouLFpl7a8e3am2");
 
     String actualJson = this.mapper.valueToTree(userToSerialize).toString();
-    assertTrue(
-        actualJson.contains("\"username\":\"markimarks\""),
-        "actualJson should contain given username");
-    assertFalse(
-        actualJson.contains("\"password\":"), "actualJson should not contain 'password' node");
+    assertTrue(actualJson.contains("\"username\":\"markimarks\""), "actualJson should contain given username");
+    assertFalse(actualJson.contains("\"password\":"), "actualJson should not contain 'password' node");
   }
 
   @Test
@@ -66,20 +61,17 @@ class UserTest {
 
   @Test
   void testJsonDeserializeValidPassword() throws JsonProcessingException {
-    final String jsonToDeserialize =
-        "{\"username\":\"markimarks\",\"password\":\"myValidSecret$@12\"}";
+    final String jsonToDeserialize = "{\"username\":\"markimarks\",\"password\":\"myValidSecret$@12\"}";
 
     User actualUser = this.mapper.readValue(jsonToDeserialize, User.class);
 
     assertNotNull(actualUser, "user should not be null");
-    assertEquals(
-        "markimarks", actualUser.getUsername(), "username should be equal to given username");
+    assertEquals("markimarks", actualUser.getUsername(), "username should be equal to given username");
 
     assertTrue(
         actualUser.getPassword().startsWith("{bcrypt}$2a$"),
         "bcrypted password should start with {bcrypt}$2a$");
-    assertEquals(
-        68, actualUser.getPassword().length(), "bcrypted password should be 8+60 characters");
+    assertEquals(68, actualUser.getPassword().length(), "bcrypted password should be 8+60 characters");
   }
 
   @Test
@@ -102,8 +94,7 @@ class UserTest {
 
     Set<ConstraintViolation<User>> violations = validator.validate(user);
     assertEquals(1, violations.size(), "violations should not be empty");
-    violations.forEach(
-        action -> assertEquals(expectedMessage, action.getMessage(), "unexpected message"));
+    violations.forEach(action -> assertEquals(expectedMessage, action.getMessage(), "unexpected message"));
   }
 
   @Test
@@ -112,7 +103,6 @@ class UserTest {
 
     Set<ConstraintViolation<User>> violations = validator.validate(user);
     assertEquals(1, violations.size(), "violations should not be empty");
-    violations.forEach(
-        action -> assertEquals(expectedMessage, action.getMessage(), "unexpected message"));
+    violations.forEach(action -> assertEquals(expectedMessage, action.getMessage(), "unexpected message"));
   }
 }

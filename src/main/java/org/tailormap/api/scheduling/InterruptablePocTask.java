@@ -7,6 +7,10 @@ package org.tailormap.api.scheduling;
 
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.Map;
+import java.util.UUID;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.InterruptableJob;
 import org.quartz.JobDataMap;
@@ -14,11 +18,11 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
-import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.tailormap.api.admin.model.TaskProgressEvent;
 
 /** POC task for testing purposes, this is a task that can be interrupted. */
 @DisallowConcurrentExecution
@@ -33,14 +37,13 @@ public class InterruptablePocTask extends QuartzJobBean implements Task, Interru
   private String description;
 
   @Override
-  public void interrupt() throws UnableToInterruptJobException {
+  public void interrupt() {
     logger.info("Interrupting POC task");
     interrupted = true;
   }
 
   @Override
-  protected void executeInternal(@NonNull JobExecutionContext context)
-      throws JobExecutionException {
+  protected void executeInternal(@NonNull JobExecutionContext context) throws JobExecutionException {
 
     final JobDetail jobDetail = context.getJobDetail();
 
@@ -56,6 +59,12 @@ public class InterruptablePocTask extends QuartzJobBean implements Task, Interru
         jobDetail.getKey().getName(),
         mergedJobDataMap.getWrappedMap());
 
+    TaskProgressEvent progressEvent = new TaskProgressEvent()
+        .startedAt(OffsetDateTime.now(ZoneId.systemDefault()))
+        .type(getType().getValue())
+        .taskData(Map.of("jobKey", jobDetail.getKey().getName()))
+        .uuid(UUID.fromString(jobDetail.getKey().getName()));
+
     try {
       for (int i = 0; i < 110; i += 10) {
         // Simulate some work for a random period of time
@@ -64,28 +73,30 @@ public class InterruptablePocTask extends QuartzJobBean implements Task, Interru
         Thread.sleep(workingTime);
         logger.debug("Interruptable POC task is at {}%", i);
         context.setResult("Interruptable POC task is at %d%%".formatted(i));
-
+        taskProgress(progressEvent.progress(i).total(100));
         if (interrupted) {
           logger.debug("Interruptable POC task interrupted at {}%", Instant.now());
           jobDataMap.put(
               Task.LAST_RESULT_KEY,
               "Interruptable POC task interrupted after %d%% iterations".formatted(i));
-          jobDataMap.put("lastExecutionFinished", null);
-          context.setResult(
-              "Interruptable POC task interrupted after %d%% iterations".formatted(i));
+          jobDataMap.put(EXECUTION_FINISHED_KEY, null);
+          context.setResult("Interruptable POC task interrupted after %d%% iterations".formatted(i));
           // bail out after interruption
           return;
         }
-
-        int executions = (1 + (int) mergedJobDataMap.getOrDefault("executions", 0));
-        jobDataMap.put("executions", executions);
-        jobDataMap.put("lastExecutionFinished", Instant.now());
-        jobDataMap.put(Task.LAST_RESULT_KEY, "Interruptable POC task executed successfully");
-        context.setResult("Interruptable POC task executed successfully");
+        // after 3rd iteration, interrupt the task
+        if (i == 30) {
+          interrupt();
+        }
       }
     } catch (InterruptedException e) {
       logger.error("Thread interrupted", e);
     }
+
+    jobDataMap.put(EXECUTION_COUNT_KEY, (1 + (int) mergedJobDataMap.getOrDefault(EXECUTION_COUNT_KEY, 0)));
+    jobDataMap.put(EXECUTION_FINISHED_KEY, Instant.now());
+    jobDataMap.put(Task.LAST_RESULT_KEY, "Interruptable POC task executed successfully");
+    context.setResult("Interruptable POC task executed successfully");
   }
 
   @Override

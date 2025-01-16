@@ -28,15 +28,32 @@ import org.tailormap.api.viewer.model.TMCoordinateReferenceSystem;
 @SpringBootTest(classes = ApplicationHelper.class)
 class ApplicationHelperTest {
 
-  @MockitoBean GeoServiceRepository geoServiceRepository;
-  @MockitoBean GeoServiceHelper geoServiceHelper;
-  @MockitoBean FeatureSourceRepository featureSourceRepository;
-  @MockitoBean ConfigurationRepository configurationRepository;
-  @MockitoBean ApplicationRepository applicationRepository;
-  @MockitoBean EntityManager entityManager;
-  @MockitoBean AuthorizationService authorizationService;
-  @MockitoBean SearchIndexRepository searchIndexRepository;
-  @Autowired ApplicationHelper applicationHelper;
+  @MockitoBean
+  GeoServiceRepository geoServiceRepository;
+
+  @MockitoBean
+  GeoServiceHelper geoServiceHelper;
+
+  @MockitoBean
+  FeatureSourceRepository featureSourceRepository;
+
+  @MockitoBean
+  ConfigurationRepository configurationRepository;
+
+  @MockitoBean
+  ApplicationRepository applicationRepository;
+
+  @MockitoBean
+  EntityManager entityManager;
+
+  @MockitoBean
+  AuthorizationService authorizationService;
+
+  @MockitoBean
+  SearchIndexRepository searchIndexRepository;
+
+  @Autowired
+  ApplicationHelper applicationHelper;
 
   @Test
   void testAppWithCrsRD() {

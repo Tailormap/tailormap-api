@@ -30,7 +30,8 @@ import org.tailormap.api.persistence.Group;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PasswordValidationControllerIntegrationTest {
 
-  @Autowired private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
 
   private MockMvc mockMvc;
 
@@ -53,13 +54,11 @@ class PasswordValidationControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   void test(String password, String expected) throws Exception {
-    mockMvc
-        .perform(
-            post(adminBasePath + "/validate-password")
-                //                    .servletPath(adminBasePath + "/validate-password")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .param("password", password)
-                .accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(post(adminBasePath + "/validate-password")
+            //                    .servletPath(adminBasePath + "/validate-password")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .param("password", password)
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.result").value(expected));

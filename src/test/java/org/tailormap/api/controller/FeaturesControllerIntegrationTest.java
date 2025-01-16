@@ -65,8 +65,7 @@ class FeaturesControllerIntegrationTest {
 
   private static final String provinciesWfs = layerProvinciesWfs + controllerPath;
   private static final String osm_polygonUrlPostgis = layerOsmPolygonPostgis + controllerPath;
-  private static final String begroeidterreindeelUrlPostgis =
-      layerBegroeidTerreindeelPostgis + controllerPath;
+  private static final String begroeidterreindeelUrlPostgis = layerBegroeidTerreindeelPostgis + controllerPath;
   private static final String waterdeelUrlOracle = layerWaterdeelOracle + controllerPath;
   private static final String wegdeelUrlSqlserver = layerWegdeelSqlServer + controllerPath;
 
@@ -84,7 +83,8 @@ class FeaturesControllerIntegrationTest {
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
   @Value("${tailormap-api.features.wfs_count_exact:false}")
   private boolean exactWfsCounts;
@@ -119,10 +119,7 @@ class FeaturesControllerIntegrationTest {
   static Stream<Arguments> filtersProvider() {
     return Stream.of(
         // equals
-        arguments(
-            begroeidterreindeelUrlPostgis,
-            "identificatie='L0002.5854010e82af4892986b8ec57bde6413'",
-            1),
+        arguments(begroeidterreindeelUrlPostgis, "identificatie='L0002.5854010e82af4892986b8ec57bde6413'", 1),
         arguments(waterdeelUrlOracle, "IDENTIFICATIE='W0636.729e31bc9e154f2c9fb72a9c733e7d64'", 1),
         arguments(wegdeelUrlSqlserver, "identificatie='G0344.9cbe9a54d127406087e76c102c6ddc45'", 1),
         arguments(provinciesWfs, "naam='Noord-Holland'", 1),
@@ -136,10 +133,7 @@ class FeaturesControllerIntegrationTest {
         arguments(waterdeelUrlOracle, "RELATIEVEHOOGTELIGGING < 0", 1),
         arguments(wegdeelUrlSqlserver, "relatievehoogteligging < 0", 0),
         // equals or greater than
-        arguments(
-            begroeidterreindeelUrlPostgis,
-            "relatievehoogteligging>=0",
-            begroeidterreindeelTotalCount),
+        arguments(begroeidterreindeelUrlPostgis, "relatievehoogteligging>=0", begroeidterreindeelTotalCount),
         arguments(waterdeelUrlOracle, "RELATIEVEHOOGTELIGGING>=0", waterdeelTotalCount - 1),
         arguments(wegdeelUrlSqlserver, "relatievehoogteligging>=0", wegdeelTotalCount),
         // equals or less than
@@ -148,25 +142,18 @@ class FeaturesControllerIntegrationTest {
         arguments(wegdeelUrlSqlserver, "relatievehoogteligging<=0", 5782),
         // in between
         arguments(begroeidterreindeelUrlPostgis, "relatievehoogteligging between -2 and 0", 3660),
-        arguments(
-            waterdeelUrlOracle, "RELATIEVEHOOGTELIGGING between -2 and 0", waterdeelTotalCount),
+        arguments(waterdeelUrlOracle, "RELATIEVEHOOGTELIGGING between -2 and 0", waterdeelTotalCount),
         arguments(wegdeelUrlSqlserver, "relatievehoogteligging between -2 and 0", 5782),
         // not in between / outside
         arguments(begroeidterreindeelUrlPostgis, "relatievehoogteligging not between -2 and 0", 2),
         arguments(waterdeelUrlOracle, "RELATIEVEHOOGTELIGGING not between -2 and 0", 0),
         arguments(wegdeelUrlSqlserver, "relatievehoogteligging not between -2 and 0", 152),
         // null value
-        arguments(
-            begroeidterreindeelUrlPostgis,
-            "terminationdate is null",
-            begroeidterreindeelTotalCount),
+        arguments(begroeidterreindeelUrlPostgis, "terminationdate is null", begroeidterreindeelTotalCount),
         arguments(waterdeelUrlOracle, "TERMINATIONDATE is null", waterdeelTotalCount),
         arguments(wegdeelUrlSqlserver, "terminationdate is null", wegdeelTotalCount),
         // not null value
-        arguments(
-            begroeidterreindeelUrlPostgis,
-            "identificatie is not null",
-            begroeidterreindeelTotalCount),
+        arguments(begroeidterreindeelUrlPostgis, "identificatie is not null", begroeidterreindeelTotalCount),
         arguments(waterdeelUrlOracle, "IDENTIFICATIE is not null", waterdeelTotalCount),
         arguments(wegdeelUrlSqlserver, "identificatie is not null", wegdeelTotalCount),
         // date equals w/ string argument (automatic conversion)
@@ -190,12 +177,8 @@ class FeaturesControllerIntegrationTest {
             begroeidterreindeelUrlPostgis,
             "creationdate during 2016-04-18T00:00:00/2018-04-18T00:00:00",
             2217),
-        arguments(
-            waterdeelUrlOracle, "CREATIONDATE during 2016-04-18T00:00:00/2018-04-18T00:00:00", 157),
-        arguments(
-            wegdeelUrlSqlserver,
-            "creationdate during 2016-04-18T00:00:00/2018-04-18T00:00:00",
-            3864),
+        arguments(waterdeelUrlOracle, "CREATIONDATE during 2016-04-18T00:00:00/2018-04-18T00:00:00", 157),
+        arguments(wegdeelUrlSqlserver, "creationdate during 2016-04-18T00:00:00/2018-04-18T00:00:00", 3864),
         // not between dates
         arguments(
             begroeidterreindeelUrlPostgis,
@@ -256,13 +239,10 @@ class FeaturesControllerIntegrationTest {
       authorities = {"admin"})
   void broken_filter_not_supported() throws Exception {
     final String url = apiBasePath + provinciesWfs;
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("filter", "naam or Utrecht")
-                .param("page", "1"))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("filter", "naam or Utrecht")
+            .param("page", "1"))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400));
@@ -270,9 +250,9 @@ class FeaturesControllerIntegrationTest {
 
   private static ResultMatcher[] provinciesWFSResultMatchers() {
     return new ResultMatcher[] {
-      jsonPath("$.features[0].attributes.identificatie").doesNotExist(),
-      jsonPath("$.features[0].attributes.ligtInLandCode").doesNotExist(),
-      jsonPath("$.features[0].attributes.fuuid").doesNotExist(),
+      jsonPath("$.features[0].attributes.identificatie").doesNotHaveJsonPath(),
+      jsonPath("$.features[0].attributes.ligtInLandCode").doesNotHaveJsonPath(),
+      jsonPath("$.features[0].attributes.fuuid").doesNotHaveJsonPath(),
       jsonPath("$.columnMetadata").isArray(),
       jsonPath("$.columnMetadata").isNotEmpty(),
       jsonPath("$.template").isNotEmpty(),
@@ -284,8 +264,8 @@ class FeaturesControllerIntegrationTest {
   }
 
   /**
-   * requires layer "Provinciegebied" with id 2 and with wfs attributes to be configured, will fail
-   * if configured postgres database is unavailable.
+   * requires layer "Provinciegebied" with id 2 and with wfs attributes to be configured, will fail if configured
+   * postgres database is unavailable.
    *
    * @throws Exception if any
    */
@@ -295,14 +275,11 @@ class FeaturesControllerIntegrationTest {
       authorities = {"admin"})
   void should_produce_for_valid_input_pdok_betuurlijkegebieden() throws Exception {
     final String url = apiBasePath + provinciesWfs;
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("x", "141247")
-                .param("y", "458118")
-                .param("simplify", "true"))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("x", "141247")
+            .param("y", "458118")
+            .param("simplify", "true"))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.features").isArray())
@@ -319,36 +296,31 @@ class FeaturesControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_produce_for_valid_input_pdok_betuurlijkegebieden_without_simplifying()
-      throws Exception {
+  void should_produce_for_valid_input_pdok_betuurlijkegebieden_without_simplifying() throws Exception {
     final String url = apiBasePath + provinciesWfs;
-    MvcResult result =
-        mockMvc
-            .perform(
-                get(url)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(url))
-                    .param("x", "141247")
-                    .param("y", "458118")
-                    .param("simplify", "false")
-                    .param("geometryInAttributes", "true"))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.features").isArray())
-            .andExpect(jsonPath("$.features[0]").isMap())
-            .andExpect(jsonPath("$.features[0]").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
-            .andExpect(jsonPath("$.features[0].attributes.code").value("26"))
-            .andExpectAll(provinciesWFSResultMatchers())
-            .andReturn();
+    MvcResult result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("x", "141247")
+            .param("y", "458118")
+            .param("simplify", "false")
+            .param("geometryInAttributes", "true"))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features[0]").isMap())
+        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
+        .andExpect(jsonPath("$.features[0].attributes.code").value("26"))
+        .andExpectAll(provinciesWFSResultMatchers())
+        .andReturn();
 
     String body = result.getResponse().getContentAsString();
     String geometry = JsonPath.parse(body).read("$.features[0].geometry").toString();
-    String geomAttribute = JsonPath.parse(body).read("$.features[0].attributes.geom").toString();
-    assertEquals(
-        geometry, geomAttribute, "geometry and geom attribute should be equal when not simplified");
+    String geomAttribute =
+        JsonPath.parse(body).read("$.features[0].attributes.geom").toString();
+    assertEquals(geometry, geomAttribute, "geometry and geom attribute should be equal when not simplified");
   }
 
   /**
@@ -365,29 +337,25 @@ class FeaturesControllerIntegrationTest {
     // bestuurlijke gebieden WFS; provincies
     // page 1
     final String url = apiBasePath + provinciesWfs;
-    MvcResult result =
-        mockMvc
-            .perform(
-                get(url)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(url))
-                    .param("page", "1"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
-            .andExpect(jsonPath("$.page").value(1))
-            .andExpect(jsonPath("$.pageSize").value(pageSize))
-            .andExpect(jsonPath("$.features").isArray())
-            .andExpect(jsonPath("$.features").isNotEmpty())
-            .andExpect(jsonPath("$.features[0]").isMap())
-            .andExpect(jsonPath("$.features[0]").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].geometry").isEmpty())
-            // Features sorted by default by first configured attribute: naam
-            .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
-            .andExpect(jsonPath("$.features[0].attributes.code").value("22"))
-            .andExpectAll(provinciesWFSResultMatchers())
-            .andReturn();
+    MvcResult result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("page", "1"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+        .andExpect(jsonPath("$.page").value(1))
+        .andExpect(jsonPath("$.pageSize").value(pageSize))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isNotEmpty())
+        .andExpect(jsonPath("$.features[0]").isMap())
+        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+        // Features sorted by default by first configured attribute: naam
+        .andExpect(jsonPath("$.features[0].attributes.naam").value("Drenthe"))
+        .andExpect(jsonPath("$.features[0].attributes.code").value("22"))
+        .andExpectAll(provinciesWFSResultMatchers())
+        .andReturn();
 
     String body = result.getResponse().getContentAsString();
     logger.trace(body);
@@ -396,21 +364,14 @@ class FeaturesControllerIntegrationTest {
     assertEquals(
         pageSize,
         page1Features.size(),
-        () ->
-            "there should be "
-                + pageSize
-                + " provinces in the list, but was "
-                + page1Features.size());
+        () -> "there should be " + pageSize + " provinces in the list, but was " + page1Features.size());
 
     // page 2
     result =
         // bestuurlijke gebieden WFS; provincies
-        mockMvc
-            .perform(
-                get(url)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(url))
-                    .param("page", "2"))
+        mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+                .with(setServletPath(url))
+                .param("page", "2"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
@@ -453,21 +414,17 @@ class FeaturesControllerIntegrationTest {
     // bestuurlijke gebieden WFS; provincies
     // page 3
     final String url = apiBasePath + provinciesWfs;
-    MvcResult result =
-        mockMvc
-            .perform(
-                get(url)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(url))
-                    .param("page", "3"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
-            .andExpect(jsonPath("$.page").value(3))
-            .andExpect(jsonPath("$.pageSize").value(pageSize))
-            .andExpect(jsonPath("$.features").isArray())
-            .andExpect(jsonPath("$.features").isEmpty())
-            .andReturn();
+    MvcResult result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("page", "3"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
+        .andExpect(jsonPath("$.page").value(3))
+        .andExpect(jsonPath("$.pageSize").value(pageSize))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isEmpty())
+        .andReturn();
     String body = result.getResponse().getContentAsString();
     logger.trace(body);
     assertNotNull(body, "response body should not be null");
@@ -479,17 +436,13 @@ class FeaturesControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_return_default_sorted_featurecollections_for_no_or_invalid_sorting_from_wfs()
-      throws Exception {
+  void should_return_default_sorted_featurecollections_for_no_or_invalid_sorting_from_wfs() throws Exception {
     // page 1, sort by naam, no direction
     final String url = apiBasePath + provinciesWfs;
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("page", "1")
-                .param("sortBy", "naam"))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("page", "1")
+            .param("sortBy", "naam"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
@@ -512,14 +465,11 @@ class FeaturesControllerIntegrationTest {
         .andExpectAll(provinciesWFSResultMatchers());
 
     // page 1, sort by naam, invalid direction
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("page", "1")
-                .param("sortBy", "naam")
-                .param("sortOrder", "invalid"))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("page", "1")
+            .param("sortBy", "naam")
+            .param("sortOrder", "invalid"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
@@ -550,14 +500,11 @@ class FeaturesControllerIntegrationTest {
     // bestuurlijke gebieden WFS; provincies
     // page 1, sort ascending by naam
     final String url = apiBasePath + provinciesWfs;
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("page", "1")
-                .param("sortBy", "naam")
-                .param("sortOrder", "asc"))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("page", "1")
+            .param("sortBy", "naam")
+            .param("sortOrder", "asc"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
@@ -580,14 +527,11 @@ class FeaturesControllerIntegrationTest {
         .andExpectAll(provinciesWFSResultMatchers());
 
     // page 1, sort descending by naam
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("page", "1")
-                .param("sortBy", "naam")
-                .param("sortOrder", "desc"))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("page", "1")
+            .param("sortBy", "naam")
+            .param("sortOrder", "desc"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.total").value(exactWfsCounts ? provinciesWFSTotalCount : -1))
@@ -643,14 +587,11 @@ class FeaturesControllerIntegrationTest {
     // begroeidterreindeel from postgis
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
     // page 1, sort ascending by gmlid
-    mockMvc
-        .perform(
-            get(url)
-                .with(setServletPath(url))
-                .accept(MediaType.APPLICATION_JSON)
-                .param("page", "1")
-                .param("sortBy", "gmlid")
-                .param("sortOrder", "asc"))
+    mockMvc.perform(get(url).with(setServletPath(url))
+            .accept(MediaType.APPLICATION_JSON)
+            .param("page", "1")
+            .param("sortBy", "gmlid")
+            .param("sortOrder", "asc"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.total").value(begroeidterreindeelTotalCount))
@@ -663,18 +604,14 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpectAll(begroeidterreindeelPostgisResultMatchers())
         .andExpect(
-            jsonPath("$.features[0].__fid")
-                .value("begroeidterreindeel.000f22d5ea3eace21bd39111a7212bd9"));
+            jsonPath("$.features[0].__fid").value("begroeidterreindeel.000f22d5ea3eace21bd39111a7212bd9"));
 
     // page 1, sort descending by gmlid
-    mockMvc
-        .perform(
-            get(url)
-                .with(setServletPath(url))
-                .accept(MediaType.APPLICATION_JSON)
-                .param("page", "1")
-                .param("sortBy", "gmlid")
-                .param("sortOrder", "desc"))
+    mockMvc.perform(get(url).with(setServletPath(url))
+            .accept(MediaType.APPLICATION_JSON)
+            .param("page", "1")
+            .param("sortBy", "gmlid")
+            .param("sortOrder", "desc"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.total").value(begroeidterreindeelTotalCount))
@@ -687,8 +624,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpectAll(begroeidterreindeelPostgisResultMatchers())
         .andExpect(
-            jsonPath("$.features[0].__fid")
-                .value("begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"));
+            jsonPath("$.features[0].__fid").value("begroeidterreindeel.fff17bee0b9f3c51db387a0ecd364457"));
   }
 
   @Test
@@ -697,12 +633,9 @@ class FeaturesControllerIntegrationTest {
       authorities = {"admin"})
   void get_by_fid_from_database() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
-    mockMvc
-        .perform(
-            get(url)
-                .with(setServletPath(url))
-                .param("__fid", StaticTestData.get("begroeidterreindeel__fid_edit"))
-                .accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(url).with(setServletPath(url))
+            .param("__fid", StaticTestData.get("begroeidterreindeel__fid_edit"))
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.features").isArray())
@@ -712,9 +645,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andExpectAll(begroeidterreindeelPostgisResultMatchers())
-        .andExpect(
-            jsonPath("$.features[0].__fid")
-                .value(StaticTestData.get("begroeidterreindeel__fid_edit")))
+        .andExpect(jsonPath("$.features[0].__fid").value(StaticTestData.get("begroeidterreindeel__fid_edit")))
         .andExpect(jsonPath("$.features[0].attributes.geom").isEmpty());
   }
 
@@ -724,13 +655,10 @@ class FeaturesControllerIntegrationTest {
       authorities = {"admin"})
   void get_by_fid_from_database_with_geometry() throws Exception {
     final String url = apiBasePath + begroeidterreindeelUrlPostgis;
-    mockMvc
-        .perform(
-            get(url)
-                .with(setServletPath(url))
-                .param("__fid", StaticTestData.get("begroeidterreindeel__fid_edit"))
-                .param("geometryInAttributes", "true")
-                .accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(url).with(setServletPath(url))
+            .param("__fid", StaticTestData.get("begroeidterreindeel__fid_edit"))
+            .param("geometryInAttributes", "true")
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.features").isArray())
@@ -740,9 +668,7 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
         .andExpectAll(begroeidterreindeelPostgisResultMatchers())
-        .andExpect(
-            jsonPath("$.features[0].__fid")
-                .value(StaticTestData.get("begroeidterreindeel__fid_edit")))
+        .andExpect(jsonPath("$.features[0].__fid").value(StaticTestData.get("begroeidterreindeel__fid_edit")))
         .andExpect(jsonPath("$.features[0].attributes.geom").isNotEmpty());
   }
 
@@ -758,12 +684,9 @@ class FeaturesControllerIntegrationTest {
     final String utrecht__fid = StaticTestData.get("utrecht__fid");
     final String url = apiBasePath + provinciesWfs;
 
-    mockMvc
-        .perform(
-            get(url)
-                .with(setServletPath(url))
-                .param("__fid", utrecht__fid)
-                .accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(url).with(setServletPath(url))
+            .param("__fid", utrecht__fid)
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.features").isArray())
@@ -790,13 +713,10 @@ class FeaturesControllerIntegrationTest {
     final String utrecht__fid = StaticTestData.get("utrecht__fid");
     final String url = apiBasePath + provinciesWfs;
 
-    mockMvc
-        .perform(
-            get(url)
-                .with(setServletPath(url))
-                .param("__fid", utrecht__fid)
-                .param("geometryInAttributes", "true")
-                .accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(url).with(setServletPath(url))
+            .param("__fid", utrecht__fid)
+            .param("geometryInAttributes", "true")
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.features").isArray())
@@ -823,31 +743,28 @@ class FeaturesControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_return_non_empty_featurecollections_for_valid_pages_from_database(
-      String applayerUrl, int totalCcount) throws Exception {
+  void should_return_non_empty_featurecollections_for_valid_pages_from_database(String applayerUrl, int totalCcount)
+      throws Exception {
     applayerUrl = apiBasePath + applayerUrl;
     // page 1
-    MvcResult result =
-        mockMvc
-            .perform(
-                get(applayerUrl)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(applayerUrl))
-                    .param("page", "1"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.total").value(totalCcount))
-            .andExpect(jsonPath("$.page").value(1))
-            .andExpect(jsonPath("$.pageSize").value(pageSize))
-            .andExpect(jsonPath("$.features").isArray())
-            .andExpect(jsonPath("$.features").isNotEmpty())
-            .andExpect(jsonPath("$.features[0]").isMap())
-            .andExpect(jsonPath("$.features[0]").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].geometry").isEmpty())
-            .andExpect(jsonPath("$.columnMetadata").isArray())
-            .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
-            .andReturn();
+    MvcResult result = mockMvc.perform(get(applayerUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(applayerUrl))
+            .param("page", "1"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.total").value(totalCcount))
+        .andExpect(jsonPath("$.page").value(1))
+        .andExpect(jsonPath("$.pageSize").value(pageSize))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isNotEmpty())
+        .andExpect(jsonPath("$.features[0]").isMap())
+        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+        .andExpect(jsonPath("$.columnMetadata").isArray())
+        .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
+        .andReturn();
 
     String body = result.getResponse().getContentAsString();
     logger.trace(body);
@@ -856,34 +773,27 @@ class FeaturesControllerIntegrationTest {
     assertEquals(
         pageSize,
         page1Features.size(),
-        () ->
-            "there should be "
-                + pageSize
-                + " features in the list, but was "
-                + page1Features.size());
+        () -> "there should be " + pageSize + " features in the list, but was " + page1Features.size());
 
     // page 2
-    result =
-        mockMvc
-            .perform(
-                get(applayerUrl)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(applayerUrl))
-                    .param("page", "2"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.total").value(totalCcount))
-            .andExpect(jsonPath("$.page").value(2))
-            .andExpect(jsonPath("$.pageSize").value(pageSize))
-            .andExpect(jsonPath("$.features").isArray())
-            .andExpect(jsonPath("$.features").isNotEmpty())
-            .andExpect(jsonPath("$.features[0]").isMap())
-            .andExpect(jsonPath("$.features[0]").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].geometry").isEmpty())
-            .andExpect(jsonPath("$.columnMetadata").isArray())
-            .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
-            .andReturn();
+    result = mockMvc.perform(get(applayerUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(applayerUrl))
+            .param("page", "2"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.total").value(totalCcount))
+        .andExpect(jsonPath("$.page").value(2))
+        .andExpect(jsonPath("$.pageSize").value(pageSize))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isNotEmpty())
+        .andExpect(jsonPath("$.features[0]").isMap())
+        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+        .andExpect(jsonPath("$.columnMetadata").isArray())
+        .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
+        .andReturn();
 
     body = result.getResponse().getContentAsString();
     logger.trace(body);
@@ -892,11 +802,7 @@ class FeaturesControllerIntegrationTest {
     assertEquals(
         pageSize,
         page2Features.size(),
-        () ->
-            "there should be "
-                + pageSize
-                + " features in the list, but was "
-                + page2Features.size());
+        () -> "there should be " + pageSize + " features in the list, but was " + page2Features.size());
 
     // check for duplicates
     page2Features.addAll(page1Features);
@@ -907,8 +813,7 @@ class FeaturesControllerIntegrationTest {
   }
 
   @Test
-  @DisplayName(
-      "should return expected reprojected polygon feature for valid coordinates from database")
+  @DisplayName("should return expected reprojected polygon feature for valid coordinates from database")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
@@ -923,42 +828,32 @@ class FeaturesControllerIntegrationTest {
     final String expectedFid = "osm_polygon.-310859";
     final String url = apiBasePath + osm_polygonUrlPostgis;
 
-    MvcResult result =
-        mockMvc
-            .perform(
-                get(url)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(url))
-                    .param("x", String.valueOf(x))
-                    .param("y", String.valueOf(y))
-                    .param("distance", String.valueOf(distance))
-                    .param("simplify", "true")
-                    .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.features").isArray())
-            .andExpect(jsonPath("$.features").isNotEmpty())
-            .andExpect(jsonPath("$.features[0]").isMap())
-            .andExpect(jsonPath("$.features[0]").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].__fid").value(expectedFid))
-            .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].attributes.boundary").value("administrative"))
-            .andReturn();
+    MvcResult result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("x", String.valueOf(x))
+            .param("y", String.valueOf(y))
+            .param("distance", String.valueOf(distance))
+            .param("simplify", "true")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isNotEmpty())
+        .andExpect(jsonPath("$.features[0]").isMap())
+        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].__fid").value(expectedFid))
+        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].attributes.boundary").value("administrative"))
+        .andReturn();
     String body = result.getResponse().getContentAsString();
     String geometry = JsonPath.read(body, "$.features[0].geometry");
     Geometry g = new WKTReader().read(geometry);
     assertEquals(Polygon.class, g.getClass(), "Did not find expected geometry type");
     assertEquals(
-        expected1stCoordinate,
-        g.getCoordinate().getX(),
-        .1,
-        "x coordinate should be " + expected1stCoordinate);
+        expected1stCoordinate, g.getCoordinate().getX(), .1, "x coordinate should be " + expected1stCoordinate);
     assertEquals(
-        expected2ndCoordinate,
-        g.getCoordinate().getY(),
-        .1,
-        "y coordinate should be " + expected2ndCoordinate);
+        expected2ndCoordinate, g.getCoordinate().getY(), .1, "y coordinate should be " + expected2ndCoordinate);
   }
 
   @Test
@@ -977,45 +872,35 @@ class FeaturesControllerIntegrationTest {
     final String expectedFid = StaticTestData.get("utrecht__fid");
     final String url = apiBasePath + provinciesWfs;
 
-    MvcResult result =
-        mockMvc
-            .perform(
-                get(url)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(url))
-                    .param("x", String.valueOf(x))
-                    .param("y", String.valueOf(y))
-                    .param("distance", String.valueOf(distance))
-                    .param("simplify", "true")
-                    .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.features").isArray())
-            .andExpect(jsonPath("$.features").isNotEmpty())
-            .andExpect(jsonPath("$.features[0]").isMap())
-            .andExpect(jsonPath("$.features[0]").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].__fid").value(expectedFid))
-            .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].attributes.naam").value(expectedNaam))
-            .andExpect(jsonPath("$.features[0].attributes.code").value(expectedCode))
-            .andExpectAll(provinciesWFSResultMatchers())
-            .andReturn();
+    MvcResult result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("x", String.valueOf(x))
+            .param("y", String.valueOf(y))
+            .param("distance", String.valueOf(distance))
+            .param("simplify", "true")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isNotEmpty())
+        .andExpect(jsonPath("$.features[0]").isMap())
+        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].__fid").value(expectedFid))
+        .andExpect(jsonPath("$.features[0].geometry").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].attributes.naam").value(expectedNaam))
+        .andExpect(jsonPath("$.features[0].attributes.code").value(expectedCode))
+        .andExpectAll(provinciesWFSResultMatchers())
+        .andReturn();
 
     String body = result.getResponse().getContentAsString();
     String geometry = JsonPath.read(body, "$.features[0].geometry");
     Geometry g = new WKTReader().read(geometry);
     assertEquals(Polygon.class, g.getClass(), "Did not find expected geometry type");
     assertEquals(
-        expected1stCoordinate,
-        g.getCoordinate().getX(),
-        .1,
-        "x coordinate should be " + expected1stCoordinate);
+        expected1stCoordinate, g.getCoordinate().getX(), .1, "x coordinate should be " + expected1stCoordinate);
     assertEquals(
-        expected2ndCoordinate,
-        g.getCoordinate().getY(),
-        .1,
-        "y coordinate should be " + expected2ndCoordinate);
+        expected2ndCoordinate, g.getCoordinate().getY(), .1, "y coordinate should be " + expected2ndCoordinate);
   }
 
   /**
@@ -1024,38 +909,34 @@ class FeaturesControllerIntegrationTest {
    * @throws Exception if any
    */
   @ParameterizedTest(
-      name =
-          "#{index}: should return same featurecollection for same page from database: {0}, featuretype: {1}")
+      name = "#{index}: should return same featurecollection for same page from database: {0}, featuretype: {1}")
   @MethodSource("databaseArgumentsProvider")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_return_same_featurecollection_for_same_page_database(
-      String applayerUrl, int totalCcount) throws Exception {
+  void should_return_same_featurecollection_for_same_page_database(String applayerUrl, int totalCcount)
+      throws Exception {
     applayerUrl = apiBasePath + applayerUrl;
 
     // page 1
-    MvcResult result =
-        mockMvc
-            .perform(
-                get(applayerUrl)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(applayerUrl))
-                    .param("page", "1"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.total").value(totalCcount))
-            .andExpect(jsonPath("$.page").value(1))
-            .andExpect(jsonPath("$.pageSize").value(pageSize))
-            .andExpect(jsonPath("$.features").isArray())
-            .andExpect(jsonPath("$.features").isNotEmpty())
-            .andExpect(jsonPath("$.features[0]").isMap())
-            .andExpect(jsonPath("$.features[0]").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].geometry").isEmpty())
-            .andExpect(jsonPath("$.columnMetadata").isArray())
-            .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
-            .andReturn();
+    MvcResult result = mockMvc.perform(get(applayerUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(applayerUrl))
+            .param("page", "1"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.total").value(totalCcount))
+        .andExpect(jsonPath("$.page").value(1))
+        .andExpect(jsonPath("$.pageSize").value(pageSize))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isNotEmpty())
+        .andExpect(jsonPath("$.features[0]").isMap())
+        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+        .andExpect(jsonPath("$.columnMetadata").isArray())
+        .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
+        .andReturn();
 
     String body = result.getResponse().getContentAsString();
     logger.trace(body);
@@ -1063,27 +944,24 @@ class FeaturesControllerIntegrationTest {
     List<Service> page1Features = JsonPath.read(body, "$.features");
 
     // page 1 again
-    result =
-        mockMvc
-            .perform(
-                get(applayerUrl)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(applayerUrl))
-                    .param("page", "1"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.total").value(totalCcount))
-            .andExpect(jsonPath("$.page").value(1))
-            .andExpect(jsonPath("$.pageSize").value(pageSize))
-            .andExpect(jsonPath("$.features").isArray())
-            .andExpect(jsonPath("$.features").isNotEmpty())
-            .andExpect(jsonPath("$.features[0]").isMap())
-            .andExpect(jsonPath("$.features[0]").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
-            .andExpect(jsonPath("$.features[0].geometry").isEmpty())
-            .andExpect(jsonPath("$.columnMetadata").isArray())
-            .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
-            .andReturn();
+    result = mockMvc.perform(get(applayerUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(applayerUrl))
+            .param("page", "1"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.total").value(totalCcount))
+        .andExpect(jsonPath("$.page").value(1))
+        .andExpect(jsonPath("$.pageSize").value(pageSize))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isNotEmpty())
+        .andExpect(jsonPath("$.features[0]").isMap())
+        .andExpect(jsonPath("$.features[0]").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].geometry").isEmpty())
+        .andExpect(jsonPath("$.columnMetadata").isArray())
+        .andExpect(jsonPath("$.columnMetadata").isNotEmpty())
+        .andReturn();
 
     body = result.getResponse().getContentAsString();
     logger.trace(body);
@@ -1091,9 +969,7 @@ class FeaturesControllerIntegrationTest {
     List<Service> page2Features = JsonPath.read(body, "$.features");
 
     assertEquals(
-        page1Features,
-        page2Features,
-        "2 identical page requests should give two identical lists of features");
+        page1Features, page2Features, "2 identical page requests should give two identical lists of features");
   }
 
   /**
@@ -1102,32 +978,28 @@ class FeaturesControllerIntegrationTest {
    * @throws Exception if any
    */
   @ParameterizedTest(
-      name =
-          "#{index}: should return empty featurecollection for out of range page from database for layer: {0}")
+      name = "#{index}: should return empty featurecollection for out of range page from database for layer: {0}")
   @MethodSource("databaseArgumentsProvider")
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_return_empty_featurecollection_for_out_of_range_page_database(
-      String appLayerUrl, int totalCount) throws Exception {
+  void should_return_empty_featurecollection_for_out_of_range_page_database(String appLayerUrl, int totalCount)
+      throws Exception {
     appLayerUrl = apiBasePath + appLayerUrl;
     // request page ...
     int page = (totalCount / pageSize) + 5;
-    MvcResult result =
-        mockMvc
-            .perform(
-                get(appLayerUrl)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(appLayerUrl))
-                    .param("page", String.valueOf(page)))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.total").value(totalCount))
-            .andExpect(jsonPath("$.page").value(page))
-            .andExpect(jsonPath("$.pageSize").value(pageSize))
-            .andExpect(jsonPath("$.features").isArray())
-            .andExpect(jsonPath("$.features").isEmpty())
-            .andReturn();
+    MvcResult result = mockMvc.perform(get(appLayerUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(appLayerUrl))
+            .param("page", String.valueOf(page)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.total").value(totalCount))
+        .andExpect(jsonPath("$.page").value(page))
+        .andExpect(jsonPath("$.pageSize").value(pageSize))
+        .andExpect(jsonPath("$.features").isArray())
+        .andExpect(jsonPath("$.features").isEmpty())
+        .andReturn();
     String body = result.getResponse().getContentAsString();
     logger.trace(body);
     assertNotNull(body, "response body should not be null");
@@ -1136,8 +1008,7 @@ class FeaturesControllerIntegrationTest {
   }
 
   @ParameterizedTest(
-      name =
-          "#{index} should return a featurecollection for various ECQL filters on appLayer: {0}, filter: {1}")
+      name = "#{index} should return a featurecollection for various ECQL filters on appLayer: {0}, filter: {1}")
   @MethodSource("filtersProvider")
   @WithMockUser(
       username = "tm-admin",
@@ -1152,28 +1023,24 @@ class FeaturesControllerIntegrationTest {
 
     appLayerUrl = apiBasePath + appLayerUrl;
 
-    MvcResult result =
-        mockMvc
-            .perform(
-                get(appLayerUrl)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(appLayerUrl))
-                    .param("filter", filterCQL)
-                    .param("page", "1"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.page").value(1))
-            .andExpect(jsonPath("$.pageSize").value(pageSize))
-            .andExpect(jsonPath("$.total").value(totalCount))
-            .andExpect(jsonPath("$.features").isArray())
-            .andReturn();
+    MvcResult result = mockMvc.perform(get(appLayerUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(appLayerUrl))
+            .param("filter", filterCQL)
+            .param("page", "1"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.page").value(1))
+        .andExpect(jsonPath("$.pageSize").value(pageSize))
+        .andExpect(jsonPath("$.total").value(totalCount))
+        .andExpect(jsonPath("$.features").isArray())
+        .andReturn();
     final String body = result.getResponse().getContentAsString();
     logger.trace(body);
     assertNotNull(body, "response body should not be null");
     final List<Service> features = JsonPath.read(body, "$.features");
 
-    assertEquals(
-        listSize, features.size(), () -> "there should be " + listSize + " features in the list");
+    assertEquals(listSize, features.size(), () -> "there should be " + listSize + " features in the list");
   }
 
   @ParameterizedTest(name = "#{index} should return onlyGeometries for {0}, appLayer: {1}")
@@ -1182,13 +1049,11 @@ class FeaturesControllerIntegrationTest {
 
     appLayerUrl = apiBasePath + appLayerUrl;
 
-    mockMvc
-        .perform(
-            get(appLayerUrl)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(appLayerUrl))
-                .param("onlyGeometries", "true")
-                .param("page", "1"))
+    mockMvc.perform(get(appLayerUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(appLayerUrl))
+            .param("onlyGeometries", "true")
+            .param("page", "1"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.page").value(1))
@@ -1201,14 +1066,12 @@ class FeaturesControllerIntegrationTest {
   @MethodSource("differentFeatureSourcesProvider")
   void ignore_skipGeometryOutput_with_onlyGeometries(String appLayerUrl) throws Exception {
     appLayerUrl = apiBasePath + appLayerUrl;
-    mockMvc
-        .perform(
-            get(appLayerUrl)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(appLayerUrl))
-                .param("geometryInAttributes", "true")
-                .param("onlyGeometries", "true")
-                .param("page", "1"))
+    mockMvc.perform(get(appLayerUrl)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(appLayerUrl))
+            .param("geometryInAttributes", "true")
+            .param("onlyGeometries", "true")
+            .param("page", "1"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.page").value(1))
@@ -1223,12 +1086,9 @@ class FeaturesControllerIntegrationTest {
       authorities = {"admin"})
   void only_filter_not_supported() throws Exception {
     final String url = apiBasePath + provinciesWfs;
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("filter", "naam=Utrecht"))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("filter", "naam=Utrecht"))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))
@@ -1241,16 +1101,16 @@ class FeaturesControllerIntegrationTest {
       authorities = {"admin"})
   void givenOnly_XorY_shouldError() throws Exception {
     final String url = apiBasePath + provinciesWfs;
-    mockMvc
-        .perform(
-            get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)).param("x", "3"))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("x", "3"))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400));
 
-    mockMvc
-        .perform(
-            get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)).param("y", "3"))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("y", "3"))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400));
@@ -1262,27 +1122,21 @@ class FeaturesControllerIntegrationTest {
       authorities = {"admin"})
   void given_distance_NotGreaterThanZero() throws Exception {
     final String url = apiBasePath + provinciesWfs;
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("x", "3")
-                .param("y", "3")
-                .param("distance", "0"))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("x", "3")
+            .param("y", "3")
+            .param("distance", "0"))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))
         .andExpect(jsonPath("$.message").value("Buffer distance must be greater than 0"));
 
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("x", "3")
-                .param("y", "3")
-                .param("distance", "-1"))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("x", "3")
+            .param("y", "3")
+            .param("distance", "-1"))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(400))
@@ -1295,8 +1149,7 @@ class FeaturesControllerIntegrationTest {
       authorities = {"admin"})
   void should_error_when_calling_with_nonexistent_appId() throws Exception {
     final String url = apiBasePath + "/app/400/layer/1/features";
-    mockMvc
-        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404));
@@ -1308,22 +1161,17 @@ class FeaturesControllerIntegrationTest {
       authorities = {"admin"})
   void should_not_find_when_called_without_appId() throws Exception {
     final String url = apiBasePath + "/app/layer/features";
-    mockMvc
-        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isNotFound());
   }
 
   @Test
   void should_send_401_when_access_denied() throws Exception {
     final String url =
-        apiBasePath
-            + "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/features";
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("page", "1"))
+        apiBasePath + "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/features";
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("page", "1"))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))
@@ -1333,12 +1181,9 @@ class FeaturesControllerIntegrationTest {
   @Test
   void should_send_403_for_layer_proxied_with_auth_in_public_app() throws Exception {
     final String url = apiBasePath + layerProxiedWithAuthInPublicApp + "/features";
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("page", "1"))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("page", "1"))
         .andExpect(status().isForbidden());
   }
 }

@@ -23,9 +23,13 @@ public class Configuration {
 
   public static final String HOME_PAGE = "home-page";
 
-  @Id private String key;
+  public static final String PORTAL_MENU = "portal-menu";
 
-  @Version private Long version;
+  @Id
+  private String key;
+
+  @Version
+  private Long version;
 
   @Column(columnDefinition = "text")
   private String value;

@@ -39,9 +39,7 @@ public class GeoServiceAdminController {
       @PathVariable String id, HttpServletResponse httpServletResponse) throws Exception {
 
     GeoService geoService =
-        geoServiceRepository
-            .findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        geoServiceRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
     // Authorization check not needed: only admins are allowed on the admin base path, and admins
     // have all access
@@ -51,8 +49,8 @@ public class GeoServiceAdminController {
 
     geoServiceRepository.saveAndFlush(geoService);
 
-    httpServletResponse.sendRedirect(
-        String.valueOf(repositoryEntityLinks.linkToItemResource(GeoService.class, id).toUri()));
+    httpServletResponse.sendRedirect(String.valueOf(
+        repositoryEntityLinks.linkToItemResource(GeoService.class, id).toUri()));
     return null;
   }
 }

@@ -24,7 +24,8 @@ import org.tailormap.api.security.InternalAdminAuthentication;
 @TestMethodOrder(OrderAnnotation.class)
 class ConfigurationRepositoryIntegrationTest {
 
-  @Autowired private ConfigurationRepository configurationRepository;
+  @Autowired
+  private ConfigurationRepository configurationRepository;
 
   @Test
   @Order(1)
@@ -41,7 +42,8 @@ class ConfigurationRepositoryIntegrationTest {
     InternalAdminAuthentication.setInSecurityContext();
     try {
       configurationRepository.deleteConfigurationByKey(DEFAULT_APP);
-      final Configuration c = configurationRepository.findByKey(DEFAULT_APP).orElse(null);
+      final Configuration c =
+          configurationRepository.findByKey(DEFAULT_APP).orElse(null);
       assertNull(c);
     } finally {
       InternalAdminAuthentication.clearSecurityContextAuthentication();

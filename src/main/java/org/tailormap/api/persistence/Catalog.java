@@ -21,14 +21,16 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 @EntityListeners(EntityEventPublisher.class)
 public class Catalog {
   public static final String MAIN = "main";
-  @Id private String id;
 
-  @Version private Long version;
+  @Id
+  private String id;
+
+  @Version
+  private Long version;
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @NotNull
-  private List<CatalogNode> nodes = new ArrayList<>();
+  @NotNull private List<CatalogNode> nodes = new ArrayList<>();
 
   public String getId() {
     return id;

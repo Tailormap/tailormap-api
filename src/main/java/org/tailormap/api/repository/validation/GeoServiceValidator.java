@@ -76,10 +76,9 @@ public class GeoServiceValidator implements Validator {
       } catch (UnknownHostException e) {
         errors.rejectValue("url", "unknown-host", "Unknown host: \"" + uri.getHost() + "\"");
       } catch (Exception e) {
-        String msg =
-            String.format(
-                "Error loading capabilities from URL \"%s\": %s",
-                service.getUrl(), joinAllThrowableMessages(e));
+        String msg = String.format(
+            "Error loading capabilities from URL \"%s\": %s",
+            service.getUrl(), joinAllThrowableMessages(e));
         logger.info(
             "The following exception may not be an application error but could be a problem with an external service or user-entered data: {}",
             msg,

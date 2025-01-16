@@ -29,7 +29,8 @@ import org.tailormap.api.persistence.Group;
  */
 @PostgresIntegrationTest
 class FeatureSourceAdminControllerIntegrationTest {
-  @Autowired private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
 
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
@@ -39,8 +40,7 @@ class FeatureSourceAdminControllerIntegrationTest {
       username = "admin",
       authorities = {Group.ADMIN})
   void refreshJdbcFeatureSourceCapabilities() throws Exception {
-    MockMvc mockMvc =
-        MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
 
     String host = "localhost";
     int port = 54322;
@@ -56,61 +56,52 @@ class FeatureSourceAdminControllerIntegrationTest {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     jdbcTemplate.execute("drop table if exists test");
 
-    String featureSourcePOSTBody =
-        String.format(
-            """
-                        {
-                          "title": "My Test Source",
-                          "protocol": "JDBC",
-                          "url": "",
-                          "refreshCapabilities": true,
-                          "jdbcConnection": {
-                            "dbtype": "postgis",
-                            "port": %s,
-                            "host": "%s",
-                            "database": "%s",
-                            "schema": "public"
-                          },
-                          "authentication": {
-                            "method": "password",
-                            "username": "%s",
-                            "password": "%s"
-                          }
-                        }""",
-            port, host, database, user, password);
+    String featureSourcePOSTBody = String.format(
+        """
+{
+"title": "My Test Source",
+"protocol": "JDBC",
+"url": "",
+"refreshCapabilities": true,
+"jdbcConnection": {
+"dbtype": "postgis",
+"port": %s,
+"host": "%s",
+"database": "%s",
+"schema": "public"
+},
+"authentication": {
+"method": "password",
+"username": "%s",
+"password": "%s"
+}
+}""",
+        port, host, database, user, password);
 
-    MvcResult result =
-        mockMvc
-            .perform(
-                post(adminBasePath + "/feature-sources")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(featureSourcePOSTBody))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id").isNotEmpty())
-            .andExpect(jsonPath("$.allFeatureTypes").isArray())
-            .andExpect(jsonPath("$.allFeatureTypes.length()").value(30))
-            .andReturn();
+    MvcResult result = mockMvc.perform(post(adminBasePath + "/feature-sources")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(featureSourcePOSTBody))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.id").isNotEmpty())
+        .andExpect(jsonPath("$.allFeatureTypes").isArray())
+        .andExpect(jsonPath("$.allFeatureTypes.length()").value(31))
+        .andReturn();
     Integer featureSourceId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
-    String selfLink =
-        JsonPath.read(result.getResponse().getContentAsString(), "$._links.self.href");
+    String selfLink = JsonPath.read(result.getResponse().getContentAsString(), "$._links.self.href");
 
     try {
       jdbcTemplate.execute("create table test(id serial primary key)");
 
-      mockMvc
-          .perform(
-              post(
-                  adminBasePath
-                      + String.format("/feature-sources/%s/refresh-capabilities", featureSourceId)))
+      mockMvc.perform(post(
+              adminBasePath + String.format("/feature-sources/%s/refresh-capabilities", featureSourceId)))
           .andExpect(status().isFound())
           .andExpect(header().string("Location", equalTo(selfLink)));
 
-      mockMvc
-          .perform(get(selfLink).accept(MediaType.APPLICATION_JSON))
+      mockMvc.perform(get(selfLink).accept(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.id").isNotEmpty())
           .andExpect(jsonPath("$.allFeatureTypes").isArray())
-          .andExpect(jsonPath("$.allFeatureTypes.length()").value(31))
+          .andExpect(jsonPath("$.allFeatureTypes.length()").value(32))
           .andExpect(jsonPath("$.allFeatureTypes[?(@.name=='test')]").isNotEmpty());
     } finally {
       try {
@@ -120,20 +111,16 @@ class FeatureSourceAdminControllerIntegrationTest {
       }
     }
 
-    mockMvc
-        .perform(
-            post(
-                adminBasePath
-                    + String.format("/feature-sources/%s/refresh-capabilities", featureSourceId)))
+    mockMvc.perform(post(
+            adminBasePath + String.format("/feature-sources/%s/refresh-capabilities", featureSourceId)))
         .andExpect(status().isFound())
         .andExpect(header().string("Location", equalTo(selfLink)));
 
-    mockMvc
-        .perform(get(selfLink).accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(selfLink).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").isNotEmpty())
         .andExpect(jsonPath("$.allFeatureTypes").isArray())
-        .andExpect(jsonPath("$.allFeatureTypes.length()").value(30))
+        .andExpect(jsonPath("$.allFeatureTypes.length()").value(31))
         .andExpect(jsonPath("$.allFeatureTypes[?(@.name=='test')]").isEmpty());
   }
 }

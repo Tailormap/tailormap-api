@@ -52,9 +52,17 @@ import org.tailormap.api.scheduling.TaskManagerService;
 import org.tailormap.api.scheduling.TaskType;
 
 /**
- * Admin controller for controlling the task scheduler. Not to be used to create new tasks, adding
- * tasks belongs in the domain of the specific controller or Spring Data REST API as that requires
- * specific configuration information.
+ * Admin controller for controlling the task scheduler. Not to be used to create new tasks, adding tasks belongs in the
+ * domain of the specific controller or Spring Data REST API as that requires specific configuration information.
+ * Provides the following endpoints:
+ *
+ * <ul>
+ *   <li>{@link #list /admin/tasks} to list all tasks, optionally filtered by type
+ *   <li>{@link #details /admin/tasks/{type}/{uuid}} to get the details of a task
+ *   <li>{@link #startTask /admin/tasks/{type}/{uuid}/start} to start a task
+ *   <li>{@link #stopTask /admin/tasks/{type}/{uuid}/stop} to stop a task
+ *   <li>{@link #delete /admin/tasks/{type}/{uuid}} to delete a task
+ * </ul>
  */
 @RestController
 public class TaskAdminController {
@@ -78,13 +86,11 @@ public class TaskAdminController {
       summary = "List all tasks, optionally filtered by type",
       description =
           """
-          This will return a list of all tasks, optionally filtered by task type.
-          The state of the task is one of the Quartz Trigger states.
-          The state can be one of: NONE, NORMAL, PAUSED, COMPLETE, ERROR, BLOCKED or null in error conditions.
-          """)
-  @GetMapping(
-      path = "${tailormap-api.admin.base-path}/tasks",
-      produces = MediaType.APPLICATION_JSON_VALUE)
+This will return a list of all tasks, optionally filtered by task type.
+The state of the task is one of the Quartz Trigger states.
+The state can be one of: NONE, NORMAL, PAUSED, COMPLETE, ERROR, BLOCKED or null in error conditions.
+""")
+  @GetMapping(path = "${tailormap-api.admin.base-path}/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
   @ApiResponse(
       responseCode = "200",
       description = "List of all tasks, this list may be empty",
@@ -95,16 +101,15 @@ public class TaskAdminController {
                   @Schema(
                       example =
                           """
-                          {"tasks":[
-                          {"uuid":"6308d26e-fe1e-4268-bb28-20db2cd06914","type":"index", "state":"NORMAL", "interruptable": false},
-                          {"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca8","type":"poc", "state": "BLOCKED", "interruptable": false},
-                          {"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca9","type":"poc", "state": "PAUSED", "interruptable": false},
-                          {"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca2","type":"poc", "state": "COMPLETE", "interruptable": false},
-                          {"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca3","type":"interuptablepoc", "state": "ERROR", "interruptable": true}
-                          ]}
-                          """)))
-  public ResponseEntity<Object> list(@RequestParam(required = false) String type)
-      throws ResponseStatusException {
+{"tasks":[
+{"uuid":"6308d26e-fe1e-4268-bb28-20db2cd06914","type":"index", "state":"NORMAL", "interruptable": false},
+{"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca8","type":"poc", "state": "BLOCKED", "interruptable": false},
+{"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca9","type":"poc", "state": "PAUSED", "interruptable": false},
+{"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca2","type":"poc", "state": "COMPLETE", "interruptable": false},
+{"uuid":"d5ce9152-e90e-4b5a-b129-3b2366cabca3","type":"interuptablepoc", "state": "ERROR", "interruptable": true}
+]}
+""")))
+  public ResponseEntity<Object> list(@RequestParam(required = false) String type) throws ResponseStatusException {
     logger.debug("Listing all tasks (optional type filter: {})", (null == type ? "all" : type));
     final List<ObjectNode> tasks = new ArrayList<>();
 
@@ -112,62 +117,56 @@ public class TaskAdminController {
         (null == type ? GroupMatcher.anyGroup() : GroupMatcher.groupEquals(type));
     try {
       scheduler.getJobKeys(groupMatcher).stream()
-          .map(
-              jobKey -> {
-                try {
-                  return scheduler.getJobDetail(jobKey);
-                } catch (SchedulerException e) {
-                  logger.error("Error getting task detail", e);
-                  return null;
-                }
-              })
+          .map(jobKey -> {
+            try {
+              return scheduler.getJobDetail(jobKey);
+            } catch (SchedulerException e) {
+              logger.error("Error getting task detail", e);
+              return null;
+            }
+          })
           .filter(Objects::nonNull)
-          .forEach(
-              jobDetail -> {
-                Trigger.TriggerState state;
-                try {
-                  state =
-                      scheduler.getTriggerState(
-                          TriggerKey.triggerKey(
-                              jobDetail.getKey().getName(), jobDetail.getKey().getGroup()));
-                } catch (SchedulerException e) {
-                  logger.error("Error getting task state", e);
-                  // ignore; to get a null (unknown) state
-                  state = null;
-                }
-                tasks.add(
-                    new ObjectMapper()
-                        .createObjectNode()
-                        .put(Task.UUID_KEY, jobDetail.getKey().getName())
-                        .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
-                        .put(
-                            Task.INTERRUPTABLE_KEY,
-                            InterruptableJob.class.isAssignableFrom(jobDetail.getJobClass()))
-                        .put(
-                            Task.DESCRIPTION_KEY,
-                            jobDetail.getJobDataMap().getString(Task.DESCRIPTION_KEY))
-                        .put(
-                            Task.LAST_RESULT_KEY,
-                            jobDetail.getJobDataMap().getString(Task.LAST_RESULT_KEY))
-                        .putPOJO(Task.STATE_KEY, state));
-              });
+          .forEach(jobDetail -> {
+            Trigger.TriggerState state;
+            try {
+              state = scheduler.getTriggerState(TriggerKey.triggerKey(
+                  jobDetail.getKey().getName(),
+                  jobDetail.getKey().getGroup()));
+            } catch (SchedulerException e) {
+              logger.error("Error getting task state", e);
+              state = null;
+            }
+            tasks.add(new ObjectMapper()
+                .createObjectNode()
+                .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
+                .put(Task.UUID_KEY, jobDetail.getKey().getName())
+                .put(
+                    Task.INTERRUPTABLE_KEY,
+                    InterruptableJob.class.isAssignableFrom(jobDetail.getJobClass()))
+                .put(
+                    Task.DESCRIPTION_KEY,
+                    jobDetail.getJobDataMap().getString(Task.DESCRIPTION_KEY))
+                .put(
+                    Task.LAST_RESULT_KEY,
+                    jobDetail.getJobDataMap().getString(Task.LAST_RESULT_KEY))
+                .putPOJO(Task.STATE_KEY, state));
+          });
     } catch (SchedulerException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error getting tasks", e);
     }
 
-    return ResponseEntity.ok(
-        new ObjectMapper()
-            .createObjectNode()
-            .set("tasks", new ObjectMapper().createArrayNode().addAll(tasks)));
+    return ResponseEntity.ok(new ObjectMapper()
+        .createObjectNode()
+        .set("tasks", new ObjectMapper().createArrayNode().addAll(tasks)));
   }
 
   @Operation(
       summary = "List all details for a given task",
       description =
           """
-          This will return the details of the task, including the status, progress,
-          result and any other information.
-          """)
+This will return the details of the task, including the status, progress,
+result and any other information.
+""")
   @GetMapping(
       path = "${tailormap-api.admin.base-path}/tasks/{type}/{uuid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -180,7 +179,11 @@ public class TaskAdminController {
               schema = @Schema(example = "{\"message\":\"Task not found\",\"code\":404}")))
   @ApiResponse(
       responseCode = "200",
-      description = "Details of the task",
+      description =
+          """
+Details of the task. The response content will vay according to the type of task,
+the most common fields are listed in the Task interface.
+""",
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -188,23 +191,20 @@ public class TaskAdminController {
                   @Schema(
                       example =
                           """
-                          {
-                            "uuid":"6308d26e-fe1e-4268-bb28-20db2cd06914",
-                            "type":"poc",
-                            "interruptable":false,
-                            "description":"This is a poc task",
-                            "startTime":"2024-06-06T12:00:00Z",
-                            "nextTime":"2024-06-06T12:00:00Z",
-                            "jobData":{
-                              "type":"poc",
-                              "description":"This is a poc task"
-                            },
-                            "state":"NORMAL",
-                            "progress":"...",
-                            "result":"...",
-                            "message":"something is happening"
-                          }
-                          """)))
+{
+"type":"poc",
+"uuid":"6308d26e-fe1e-4268-bb28-20db2cd06914",
+"interruptable":false,
+"description":"This is a poc task",
+"startTime":"2024-06-06T12:00:00Z",
+"nextTime":"2024-06-06T12:00:00Z",
+"state":"NORMAL",
+"progress":"...",
+"result":"...",
+"message":"something is happening"
+"jobData":{ "type":"poc", "description":"This is a poc task" }
+}
+""")))
   public ResponseEntity<Object> details(@PathVariable TaskType type, @PathVariable UUID uuid)
       throws ResponseStatusException {
     logger.debug("Getting task details for {}:{}", type, uuid);
@@ -225,55 +225,49 @@ public class TaskAdminController {
       final Object[] result = new Object[1];
       scheduler.getCurrentlyExecutingJobs().stream()
           .filter(Objects::nonNull)
-          .filter(jobExecutionContext -> jobExecutionContext.getJobDetail().getKey().equals(jobKey))
-          .forEach(
-              jobExecutionContext -> {
-                logger.debug(
-                    "currently executing job {} with trigger {}.",
-                    jobExecutionContext.getJobDetail().getKey(),
-                    jobExecutionContext.getTrigger().getKey());
+          .filter(jobExecutionContext ->
+              jobExecutionContext.getJobDetail().getKey().equals(jobKey))
+          .forEach(jobExecutionContext -> {
+            logger.debug(
+                "currently executing job {} with trigger {}.",
+                jobExecutionContext.getJobDetail().getKey(),
+                jobExecutionContext.getTrigger().getKey());
 
-                result[0] = jobExecutionContext.getResult();
-              });
+            result[0] = jobExecutionContext.getResult();
+          });
 
-      return ResponseEntity.ok(
-          new ObjectMapper()
-              .createObjectNode()
-              // immutable uuid, type and description
-              .put(Task.UUID_KEY, jobDetail.getKey().getName())
-              .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
-              .put(
-                  Task.INTERRUPTABLE_KEY,
-                  InterruptableJob.class.isAssignableFrom(jobDetail.getJobClass()))
-              .put(Task.DESCRIPTION_KEY, jobDataMap.getString(Task.DESCRIPTION_KEY))
-              .put(Task.CRON_EXPRESSION_KEY, cron.getCronExpression())
-              // TODO / XXX we could add a human-readable description of the cron expression using
-              // eg.
-              //   com.cronutils:cron-utils like:
-              //     CronParser cronParser = new
-              //         CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
-              //     CronDescriptor.instance(locale).describe(cronParser.parse(cronExpression));
-              //   this could also be done front-end using eg.
-              // https://www.npmjs.com/package/cronstrue
-              //   which has the advantage of knowing the required locale for the human
-              // .put("cronDescription", cron.getCronExpression())
-              .put("timezone", cron.getTimeZone().getID())
-              .putPOJO("startTime", trigger.getStartTime())
-              .putPOJO("lastTime", trigger.getPreviousFireTime())
-              .putPOJO(
-                  "nextFireTimes", TriggerUtils.computeFireTimes((OperableTrigger) cron, null, 5))
-              .putPOJO(Task.STATE_KEY, scheduler.getTriggerState(trigger.getKey()))
-              .putPOJO("progress", result[0])
-              .put(Task.LAST_RESULT_KEY, jobDataMap.getString(Task.LAST_RESULT_KEY))
-              .putPOJO("jobData", jobDataMap));
+      return ResponseEntity.ok(new ObjectMapper()
+          .createObjectNode()
+          // immutable uuid, type and description
+          .put(Task.TYPE_KEY, jobDetail.getKey().getGroup())
+          .put(Task.UUID_KEY, jobDetail.getKey().getName())
+          .put(Task.INTERRUPTABLE_KEY, InterruptableJob.class.isAssignableFrom(jobDetail.getJobClass()))
+          .put(Task.DESCRIPTION_KEY, jobDataMap.getString(Task.DESCRIPTION_KEY))
+          .put(Task.CRON_EXPRESSION_KEY, cron.getCronExpression())
+          // TODO / XXX we could add a human-readable description of the cron expression using
+          // eg.
+          //   com.cronutils:cron-utils like:
+          //     CronParser cronParser = new
+          //         CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+          //     CronDescriptor.instance(locale).describe(cronParser.parse(cronExpression));
+          //   this could also be done front-end using eg.
+          // https://www.npmjs.com/package/cronstrue
+          //   which has the advantage of knowing the required locale for the human
+          // .put("cronDescription", cron.getCronExpression())
+          .put("timezone", cron.getTimeZone().getID())
+          .putPOJO("startTime", trigger.getStartTime())
+          .putPOJO("lastTime", trigger.getPreviousFireTime())
+          .putPOJO("nextFireTimes", TriggerUtils.computeFireTimes((OperableTrigger) cron, null, 5))
+          .putPOJO(Task.STATE_KEY, scheduler.getTriggerState(trigger.getKey()))
+          .putPOJO("progress", result[0])
+          .put(Task.LAST_RESULT_KEY, jobDataMap.getString(Task.LAST_RESULT_KEY))
+          .putPOJO("jobData", jobDataMap));
     } catch (SchedulerException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error getting task", e);
     }
   }
 
-  @Operation(
-      summary = "Start a task",
-      description = "This will start the task if it is not already running")
+  @Operation(summary = "Start a task", description = "This will start the task if it is not already running")
   @PutMapping(
       path = "${tailormap-api.admin.base-path}/tasks/{type}/{uuid}/start",
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -313,11 +307,11 @@ public class TaskAdminController {
       summary = "Stop a task irrevocably",
       description =
           """
-              This will stop a running task, if the task is not running, nothing will happen.
-              This can leave the application in an inconsistent state.
-              A task that is not interruptable cannot be stopped.
-              A stopped task cannot be restarted, it fire again depending on the schedule.
-              """)
+This will stop a running task, if the task is not running, nothing will happen.
+This can leave the application in an inconsistent state.
+A task that is not interruptable cannot be stopped.
+A stopped task cannot be restarted, it fire again depending on the schedule.
+""")
   @PutMapping(
       path = "${tailormap-api.admin.base-path}/tasks/{type}/{uuid}/stop",
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -334,30 +328,21 @@ public class TaskAdminController {
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema =
-                  @Schema(
-                      example =
-                          """
-                                {
-                                "message":"Task stopping accepted".
-                                "succes":true
-                                }
-                              """)))
+              schema = @Schema(example = """
+{
+"message":"Task stopping accepted".
+"succes":true
+}
+""")))
   @ApiResponse(
       responseCode = "400",
-      description =
-          "The task cannot be stopped as it does not implement the InterruptableJob interface.",
+      description = "The task cannot be stopped as it does not implement the InterruptableJob interface.",
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema =
-                  @Schema(
-                      example =
-                          """
-                                        {
-                                        "message":"Task cannot be stopped"
-                                        }
-                                      """)))
+              schema = @Schema(example = """
+{ "message":"Task cannot be stopped" }
+""")))
   public ResponseEntity<Object> stopTask(@PathVariable TaskType type, @PathVariable UUID uuid)
       throws ResponseStatusException {
     logger.debug("Stopping task {}:{}", type, uuid);
@@ -368,21 +353,20 @@ public class TaskAdminController {
         return handleTaskNotFound();
       }
 
-      if (InterruptableJob.class.isAssignableFrom(scheduler.getJobDetail(jobKey).getJobClass())) {
+      if (InterruptableJob.class.isAssignableFrom(
+          scheduler.getJobDetail(jobKey).getJobClass())) {
         boolean interrupted = scheduler.interrupt(jobKey);
         return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_ACCEPTED))
-            .body(
-                new ObjectMapper()
-                    .createObjectNode()
-                    .put("message", "Task stopping accepted")
-                    .put("succes", interrupted));
+            .body(new ObjectMapper()
+                .createObjectNode()
+                .put("message", "Task stopping accepted")
+                .put("succes", interrupted));
       } else {
         return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_BAD_REQUEST))
-            .body(
-                new ObjectMapper()
-                    .createObjectNode()
-                    .put("message", "Task cannot be stopped")
-                    .put("succes", false));
+            .body(new ObjectMapper()
+                .createObjectNode()
+                .put("message", "Task cannot be stopped")
+                .put("succes", false));
       }
 
     } catch (SchedulerException e) {
@@ -392,8 +376,7 @@ public class TaskAdminController {
 
   @Operation(
       summary = "Delete a task",
-      description =
-          "This will remove the task from the scheduler and delete all information about the task")
+      description = "This will remove the task from the scheduler and delete all information about the task")
   @DeleteMapping(
       path = "${tailormap-api.admin.base-path}/tasks/{type}/{uuid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
@@ -424,7 +407,7 @@ public class TaskAdminController {
         case FAILINGPOC:
         case POC:
         case INTERRUPTABLEPOC:
-        // no action required, as these are not managed in Tailormap
+          // no action required, as these are not managed in Tailormap
         default:
           break;
       }
@@ -435,22 +418,18 @@ public class TaskAdminController {
   }
 
   private void deleteScheduleFromSearchIndex(UUID uuid) {
-    searchIndexRepository
-        .findByTaskScheduleUuid(uuid)
-        .forEach(
-            searchIndex -> {
-              searchIndex.setSchedule(null);
-              searchIndexRepository.save(searchIndex);
-            });
+    searchIndexRepository.findByTaskScheduleUuid(uuid).forEach(searchIndex -> {
+      searchIndex.setSchedule(null);
+      searchIndexRepository.save(searchIndex);
+    });
   }
 
   private ResponseEntity<Object> handleTaskNotFound() {
     return ResponseEntity.status(HttpStatusCode.valueOf(HTTP_NOT_FOUND))
         .contentType(MediaType.APPLICATION_JSON)
-        .body(
-            new ObjectMapper()
-                .createObjectNode()
-                .put("message", "Task not found")
-                .put("code", HTTP_NOT_FOUND));
+        .body(new ObjectMapper()
+            .createObjectNode()
+            .put("message", "Task not found")
+            .put("code", HTTP_NOT_FOUND));
   }
 }

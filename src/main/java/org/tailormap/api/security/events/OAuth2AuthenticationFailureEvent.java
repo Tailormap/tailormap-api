@@ -12,8 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 
 public class OAuth2AuthenticationFailureEvent extends AbstractAuthenticationFailureEvent {
 
-  public OAuth2AuthenticationFailureEvent(
-      Authentication authentication, AuthenticationException exception) {
+  public OAuth2AuthenticationFailureEvent(Authentication authentication, AuthenticationException exception) {
     super(authentication, exception);
   }
 }

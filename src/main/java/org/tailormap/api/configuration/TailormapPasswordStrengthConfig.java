@@ -15,10 +15,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "tailormap-api.strong-password")
 public class TailormapPasswordStrengthConfig {
-  /**
-   * {@code true} if strong password validation is enabled, {@code false} otherwise, defaults to
-   * true.
-   */
+  /** {@code true} if strong password validation is enabled, {@code false} otherwise, defaults to true. */
   private static boolean validation = true;
 
   /** minimum length of the password, defaults to 8. */

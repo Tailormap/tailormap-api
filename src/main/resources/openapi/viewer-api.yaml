@@ -162,7 +162,7 @@ components:
     Layers:
       description: 'An array of app layers.'
       type: array
-      minLength: 0
+      minItems: 0
       items:
         $ref: './viewer-schemas.yaml#/components/schemas/AppLayer'
 
@@ -208,7 +208,7 @@ components:
         components:
           description: 'Configured components (controls) for the viewer'
           type: array
-          minLength: 0
+          minItems: 0
           items:
             $ref: './viewer-schemas.yaml#/components/schemas/Component'
           nullable: false
@@ -241,13 +241,13 @@ components:
         features:
           description: 'list of features. When the pagenumber*pagesize exceeds the number of features this list will be empty'
           type: array
-          minLength: 0
+          minItems: 0
           items:
             $ref: './viewer-schemas.yaml#/components/schemas/Feature'
         columnMetadata:
           description: 'presentation metadata'
           type: array
-          minLength: 0
+          minItems: 0
           items:
             $ref: './viewer-schemas.yaml#/components/schemas/ColumnMetadata'
         template:
@@ -273,7 +273,7 @@ components:
         values:
           description: 'list of unique values'
           type: array
-          minLength: 0
+          minItems: 0
           uniqueItems: true
           # any one type of string|number|boolean is allowed, but that generates unusable java code
           # so allow any non-null value, we don't need to worry about mixed types as the data comes from a
@@ -306,7 +306,7 @@ components:
         documents:
           description: 'list of search documents. When the pagenumber*pagesize exceeds the number of documents this list will be empty'
           type: array
-          minLength: 0
+          minItems: 0
           items:
             $ref: '#/components/schemas/SearchDocument'
       example: { "total": 2,
@@ -1372,6 +1372,7 @@ paths:
   /page:
     summary: 'Use this endpoint to get the home page'
     get:
+      operationId: 'getHomePage'
       responses:
         '200':
           description: 'OK'
@@ -1395,6 +1396,7 @@ paths:
         schema:
           type: string
     get:
+      operationId: 'getPage'
       responses:
         '200':
           description: 'OK'

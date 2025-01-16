@@ -38,25 +38,22 @@ public class ServerSentEventsAdminController {
   }
 
   /**
-   * Endpoint for the single-page admin frontend to receive updates to entities from other windows.
-   * The frontend does not load all data on each navigation as a traditional frontend and loads and
-   * stores entities in memory. This requires updating stale entities when these get updated in
-   * other windows (from other sessions or the same session in a different browser tab), otherwise
-   * data might get lost or overwritten.
+   * Endpoint for the single-page admin frontend to receive updates to entities from other windows. The frontend does
+   * not load all data on each navigation as a traditional frontend and loads and stores entities in memory. This
+   * requires updating stale entities when these get updated in other windows (from other sessions or the same session
+   * in a different browser tab), otherwise data might get lost or overwritten.
    *
-   * <p>This endpoint uses <a
-   * href="https://html.spec.whatwg.org/multipage/server-sent-events.html">Server-sent events</a>,
-   * which technically is a long-poll HTTP request which allows unidirectional server-initiated
-   * communication. Not bidirectional like websockets, but simpler because of the long-poll HTTP
-   * request. The webserver should ideally use HTTP/2 or higher because HTTP/1.1 limits the amount
-   * of simultaneous connections to a server per browser to 6.
+   * <p>This endpoint uses <a href="https://html.spec.whatwg.org/multipage/server-sent-events.html">Server-sent
+   * events</a>, which technically is a long-poll HTTP request which allows unidirectional server-initiated
+   * communication. Not bidirectional like websockets, but simpler because of the long-poll HTTP request. The
+   * webserver should ideally use HTTP/2 or higher because HTTP/1.1 limits the amount of simultaneous connections to a
+   * server per browser to 6.
    *
    * @return the server-sent events emitter
    */
   @GetMapping(path = "${tailormap-api.admin.base-path}/events/{clientId}")
   public SseEmitter entityEvents(
-      /*@RequestParam(required = false) String[] events,*/ @PathVariable("clientId")
-          String clientId) {
+      /*@RequestParam(required = false) String[] events,*/ @PathVariable("clientId") String clientId) {
     logger.debug("New SSE client: {}, all clients: {}", clientId, this.eventBus.getAllClientIds());
     return this.eventBus.createSseEmitter(clientId, 3600_000L, DEFAULT_EVENT);
   }
@@ -64,7 +61,6 @@ public class ServerSentEventsAdminController {
   @Scheduled(fixedRate = 60_000)
   public void keepAlive() throws JsonProcessingException {
     this.eventBus.handleEvent(
-        SseEvent.ofData(
-            objectMapper.writeValueAsString(new ServerSentEvent().eventType(KEEP_ALIVE))));
+        SseEvent.ofData(objectMapper.writeValueAsString(new ServerSentEvent().eventType(KEEP_ALIVE))));
   }
 }

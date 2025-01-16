@@ -9,11 +9,11 @@ SPDX-License-Identifier: MIT
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.1</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
-    <version>11.4.4-SNAPSHOT</version>
+    <version>11.4.5-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Tailormap API</name>
     <description>Tailormap API provides the backend for Tailormap</description>
@@ -63,7 +63,7 @@ SPDX-License-Identifier: MIT
     <scm>
         <connection>scm:git:git@github.com:Tailormap/tailormap-api.git</connection>
         <developerConnection>scm:git:git@github.com:Tailormap/tailormap-api.git</developerConnection>
-        <tag>tailormap-api-11.4.0</tag>
+        <tag>tailormap-api-11.4.4</tag>
         <url>https://github.com/Tailormap/tailormap-api/</url>
     </scm>
     <issueManagement>
@@ -99,7 +99,7 @@ SPDX-License-Identifier: MIT
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
-        <project.build.outputTimestamp>2024-11-29T15:05:44Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2024-12-13T12:39:10Z</project.build.outputTimestamp>
         <geotools.version>32.1</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
@@ -121,14 +121,15 @@ SPDX-License-Identifier: MIT
         to check
         -->
         <commons-lang3.version>3.17.0</commons-lang3.version>
-        <flyway.version>10.20.1</flyway.version>
+        <flyway.version>10.22.0</flyway.version>
         <hamcrest.version>3.0</hamcrest.version>
-        <hibernate.version>6.6.3.Final</hibernate.version>
-        <jackson-bom.version>2.17.2</jackson-bom.version>
-        <junit-jupiter.version>5.11.3</junit-jupiter.version>
-        <micrometer.version>1.13.6</micrometer.version>
+        <hibernate.version>6.6.4.Final</hibernate.version>
+        <!-- <jackson-bom.version>2.18.2</jackson-bom.version> -->
+        <junit-jupiter.version>5.11.4</junit-jupiter.version>
+        <logback.version>1.5.14</logback.version>
+        <micrometer.version>1.14.2</micrometer.version>
         <mssql-jdbc.version>12.8.1.jre11</mssql-jdbc.version>
-        <oracle-database.version>23.5.0.24.07</oracle-database.version>
+        <oracle-database.version>23.6.0.24.10</oracle-database.version>
         <postgresql.version>42.7.4</postgresql.version>
         <!-- <spring-data-bom.version>2024.0.6</spring-data-bom.version> -->
         <!-- <spring-hateoas.version>2.3.3</spring-hateoas.version> -->
@@ -141,7 +142,7 @@ SPDX-License-Identifier: MIT
         <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
         <maven-deploy-plugin.version>3.1.0</maven-deploy-plugin.version>
         <maven-install-plugin.version>3.1.0</maven-install-plugin.version>
-        <maven-javadoc-plugin.version>3.11.1</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
         <maven-enforcer-plugin.version>3.2.1</maven-enforcer-plugin.version>
@@ -151,17 +152,17 @@ SPDX-License-Identifier: MIT
         <maven-pmd-plugin.version>3.26.0</maven-pmd-plugin.version>
         <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
-        <dependency-check-maven.version>11.1.0</dependency-check-maven.version>
-        <modernizer-maven-plugin.version>2.9.0</modernizer-maven-plugin.version>
-        <maven-fluido-skin.version>2.0.0</maven-fluido-skin.version>
+        <dependency-check-maven.version>12.0.0</dependency-check-maven.version>
+        <modernizer-maven-plugin.version>3.0.0</modernizer-maven-plugin.version>
+        <maven-fluido-skin.version>2.0.1</maven-fluido-skin.version>
         <swagger-ui.version>5.18.2</swagger-ui.version>
-        <sentry.version>7.18.1</sentry.version>
+        <sentry.version>7.20.0</sentry.version>
         <errorProne.version>2.36.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
         <compiler.lint>deprecation,unchecked</compiler.lint>
         <failOnValidation>true</failOnValidation>
-        <fmt.action>format</fmt.action>
+        <spotless.action>apply</spotless.action>
         <pom.fmt.action>sort</pom.fmt.action>
         <!-- suppress missing javadoc warnings -->
         <javadoc.doclint>all,-missing</javadoc.doclint>
@@ -171,7 +172,6 @@ SPDX-License-Identifier: MIT
         <docker.pull.policy>Always</docker.pull.policy>
         <!-- skip QA checks -->
         <skipQA>false</skipQA>
-        <skipSBOM>false</skipSBOM>
         <skipJavaDoc>false</skipJavaDoc>
         <dependencyCheckAutoUpdate>true</dependencyCheckAutoUpdate>
     </properties>
@@ -182,7 +182,7 @@ SPDX-License-Identifier: MIT
                  our spring-boot parent provides this import -->
                 <groupId>org.eclipse.jetty.ee10</groupId>
                 <artifactId>jetty-ee10-bom</artifactId>
-                <version>12.0.15</version>
+                <version>12.0.16</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -221,6 +221,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
+            <!-- ? should be  <scope>test</scope> ... -->
         </dependency>
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
@@ -249,6 +250,10 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
         <dependency>
@@ -274,7 +279,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>2.2.26</version>
+            <version>2.2.27</version>
         </dependency>
         <dependency>
             <groupId>jakarta.annotation</groupId>
@@ -472,13 +477,12 @@ SPDX-License-Identifier: MIT
             <artifactId>quartz</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -568,6 +572,11 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -854,7 +863,7 @@ SPDX-License-Identifier: MIT
                         <phase>pre-integration-test</phase>
                         <configuration>
                             <!-- <skip>${skipQA}</skip> -->
-                            <!--suppress UnresolvedMavenProperty -->
+                            <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
                             <skip>${skipTests}</skip>
                             <profiles>
                                 <profile>test</profile>
@@ -1187,20 +1196,40 @@ SPDX-License-Identifier: MIT
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.spotify.fmt</groupId>
-                <artifactId>fmt-maven-plugin</artifactId>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>2.44.2</version>
                 <configuration>
-                    <verbose>false</verbose>
-                    <filesNamePattern>.*\.java</filesNamePattern>
-                    <skip>${skipQA}</skip>
-                    <style>google</style>
-                    <displayFiles>true</displayFiles>
+                    <java>
+                        <palantirJavaFormat>
+                            <version>2.50.0</version>
+                            <formatJavadoc>true</formatJavadoc>
+                        </palantirJavaFormat>
+                        <importOrder />
+                        <removeUnusedImports />
+                        <trimTrailingWhitespace />
+                        <endWithNewline />
+                        <formatAnnotations />
+                        <indent>
+                            <tabs>true</tabs>
+                            <spacesPerTab>4</spacesPerTab>
+                        </indent>
+                        <indent>
+                            <spaces>true</spaces>
+                            <spacesPerTab>2</spacesPerTab>
+                        </indent>
+                    </java>
+                    <upToDateChecking>
+                        <enabled>true</enabled>
+                        <indexFile>${project.basedir}/.spotless-index</indexFile>
+                    </upToDateChecking>
                 </configuration>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>${fmt.action}</goal>
+                            <goal>${spotless.action}</goal>
                         </goals>
+                        <phase>validate</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -1303,6 +1332,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.springframework.boot:spring-boot-starter-aop</exclude>
                                         <exclude>org.springframework.hateoas:spring-hateoas</exclude>
                                         <exclude>io.micrometer:micrometer-registry-prometheus</exclude>
+                                        <exclude>io.micrometer:micrometer-core</exclude>
                                         <exclude>org.hibernate.orm:hibernate-micrometer</exclude>
                                         <exclude>com.microsoft.sqlserver:mssql-jdbc:jar</exclude>
                                         <exclude>io.sentry:sentry-spring-boot-starter-jakarta</exclude>
@@ -1320,6 +1350,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.apache.solr:solr-solrj</exclude>
                                         <exclude>com.jayway.jsonpath</exclude>
                                         <exclude>org.junit.jupiter:junit-jupiter-api</exclude>
+                                        <exclude>org.junit.jupiter:junit-jupiter-params</exclude>
                                     </excludes>
                                 </banTransitiveDependencies>
                             </rules>
@@ -1429,7 +1460,6 @@ SPDX-License-Identifier: MIT
                 <version>2.9.1</version>
                 <configuration>
                     <projectType>application</projectType>
-                    <skip>${skipSBOM}</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -1702,7 +1732,6 @@ SPDX-License-Identifier: MIT
             <properties>
                 <docker.skip>true</docker.skip>
                 <skipQA>true</skipQA>
-                <skipSBOM>true</skipSBOM>
                 <skipJavaDoc>true</skipJavaDoc>
                 <docker.pull.policy>IfNotPresent</docker.pull.policy>
             </properties>
@@ -1766,7 +1795,7 @@ SPDX-License-Identifier: MIT
                                 <!-- start with populate-testdata profile before tests to populate database -->
                                 <phase>pre-integration-test</phase>
                                 <configuration>
-                                    <!--suppress UnresolvedMavenProperty -->
+                                    <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
                                     <skip>${skipTests}</skip>
                                     <profiles>
                                         <profile>populate-testdata</profile>
@@ -1787,7 +1816,7 @@ SPDX-License-Identifier: MIT
                             <argLine>${failsafeArgLine} -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql</argLine>
                             <trimStackTrace>false</trimStackTrace>
                             <useFile>false</useFile>
-                            <!--suppress UnresolvedMavenProperty -->
+                            <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
                             <skipITs>${skipTests}</skipITs>
                         </configuration>
                         <executions>

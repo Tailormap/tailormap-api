@@ -21,8 +21,7 @@ public interface UserRepository extends JpaRepository<User, String> {
   @Override
   @PreAuthorize("permitAll()")
   @EntityGraph(attributePaths = {"groups"})
-  @NonNull
-  Optional<User> findById(@NonNull String username);
+  @NonNull Optional<User> findById(@NonNull String username);
 
   boolean existsByGroupsNameIn(Collection<String> groupNames);
 }

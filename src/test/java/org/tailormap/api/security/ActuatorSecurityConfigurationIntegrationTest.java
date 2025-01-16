@@ -24,9 +24,8 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
 
 /**
- * Integration test for the actuator security configuration. The test verifies that the actuator
- * endpoints are secured as expected; {@code health} is publicly accessible, {@code prometheus}
- * requires authentication.
+ * Integration test for the actuator security configuration. The test verifies that the actuator endpoints are secured
+ * as expected; {@code health} is publicly accessible, {@code prometheus} requires authentication.
  */
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -40,15 +39,15 @@ import org.tailormap.api.persistence.Group;
       "management.prometheus.metrics.export.descriptions=true",
     })
 class ActuatorSecurityConfigurationIntegrationTest {
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
   @Value("${management.endpoints.web.base-path}")
   private String basePath;
 
   @Test
   void testUnAuthenticatedHealth() throws Exception {
-    mockMvc
-        .perform(get(basePath + "/health").accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(basePath + "/health").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(content().json("{\"status\":\"UP\"}"));
@@ -59,8 +58,7 @@ class ActuatorSecurityConfigurationIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   void testAuthenticatedHealth() throws Exception {
-    mockMvc
-        .perform(get(basePath + "/health").accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(basePath + "/health").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(content().json("{\"status\":\"UP\"}"));
@@ -68,8 +66,7 @@ class ActuatorSecurityConfigurationIntegrationTest {
 
   @Test
   void testUnAuthenticatedPrometheus() throws Exception {
-    mockMvc
-        .perform(get(basePath + "/prometheus").accept(MediaType.TEXT_PLAIN))
+    mockMvc.perform(get(basePath + "/prometheus").accept(MediaType.TEXT_PLAIN))
         .andExpect(status().isUnauthorized());
   }
 
@@ -78,13 +75,10 @@ class ActuatorSecurityConfigurationIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   void testAuthenticatedPrometheus() throws Exception {
-    mockMvc
-        .perform(get(basePath + "/prometheus").accept(MediaType.TEXT_PLAIN))
+    mockMvc.perform(get(basePath + "/prometheus").accept(MediaType.TEXT_PLAIN))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
         .andExpect(content().string(startsWith("# HELP")))
-        .andExpect(
-            content()
-                .string(containsString("# HELP jvm_memory_used_bytes The amount of used memory")));
+        .andExpect(content().string(containsString("# HELP jvm_memory_used_bytes The amount of used memory")));
   }
 }

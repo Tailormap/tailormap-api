@@ -71,12 +71,18 @@ http://localhost:4201/api/admin/ after logging in as admin to see the HAL explor
 
 ### Basic development procedure
 
-1. Write your code using the [Google Java style](https://google.github.io/styleguide/javaguide.html)
+1. Write your code using the [Palantir Java formatting](https://github.com/palantir/palantir-java-format) but with 2-space indent
 2. Commit and push your branch to create a pull request
 3. Wait for continuous integration and code review to pass, possibly amend your PR and merge your PR
 
 Make sure you have useful commit messages, any PR with `WIP` commits will need to be squashed before
 merge.
+
+To ignore some commits (such as code style changes) in the `git blame` output, add commit hashes for 
+these commits to `.git-blame-ignore-revs` and configure Git with:
+```
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+```
 
 See also [QA](#QA).
 
@@ -170,11 +176,13 @@ layers).
 
 Some quick points of attention:
 
-* [Google Java Style](https://google.github.io/styleguide/javaguide.html) and pom formatting is enforced. 
-  This is the style of the Android Open Source Project (AOSP) with 2-space indent and different import ordering.  
-  Run the following command to reformat your code (an [IntelliJ plugin](https://plugins.jetbrains.com/plugin/8527-google-java-format) is also available) and pom file:
+* [Palantir Java formatting](https://github.com/palantir/palantir-java-format) and pom formatting is enforced. 
+  This a modified version of the Google Java Format style, but with 2-space indent instead of 4-space (crazy, we know!).
+  Run the following command to reformat your code (an [IntelliJ plugin](https://plugins.jetbrains.com/plugin/13180-palantir-java-format) 
+  is also available, which unfortunately can't be configured with 2-space indent) and pom file:
+ 
   ```
-  mvn fmt:format
+  mvn spotless:apply
   mvn sortpom:sort
   ```
 * PMD checks are enforced. Run `mvn pmd:check` to verify your code.  

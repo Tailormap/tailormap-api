@@ -39,9 +39,11 @@ import org.tailormap.api.persistence.Group;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ApplicationAdminControllerIntegrationTest {
-  @Autowired private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
 
-  @Autowired private JdbcTemplate jdbcTemplate;
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
 
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
@@ -59,8 +61,7 @@ class ApplicationAdminControllerIntegrationTest {
   void initialize() {
     maxAppId = jdbcTemplate.queryForObject("select max(id) from application", Long.class);
 
-    mockMvc =
-        MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
+    mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
   }
 
   @AfterAll
@@ -94,23 +95,20 @@ class ApplicationAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   void testCreateApplications() throws Exception {
 
-    MvcResult result =
-        mockMvc
-            .perform(
-                post(adminBasePath + "/applications")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(getTestApplicationJson(appName)))
-            .andExpect(status().isCreated())
-            .andReturn();
+    MvcResult result = mockMvc.perform(post(adminBasePath + "/applications")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(getTestApplicationJson(appName)))
+        .andExpect(status().isCreated())
+        .andReturn();
 
-    createdAppId =
-        objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asLong();
+    createdAppId = objectMapper
+        .readTree(result.getResponse().getContentAsString())
+        .get("id")
+        .asLong();
 
-    mockMvc
-        .perform(
-            post(adminBasePath + "/applications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getTestApplicationJson(otherAppName)))
+    mockMvc.perform(post(adminBasePath + "/applications")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(getTestApplicationJson(otherAppName)))
         .andExpect(status().isCreated());
   }
 
@@ -120,11 +118,9 @@ class ApplicationAdminControllerIntegrationTest {
       username = "admin",
       authorities = {Group.ADMIN})
   void testCantCreateApplicationWithDuplicateName() throws Exception {
-    mockMvc
-        .perform(
-            post(adminBasePath + "/applications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getTestApplicationJson(appName)))
+    mockMvc.perform(post(adminBasePath + "/applications")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(getTestApplicationJson(appName)))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isBadRequest())
         .andExpect(content().json(getDuplicateNameErrorJson(appName)));
@@ -136,11 +132,9 @@ class ApplicationAdminControllerIntegrationTest {
       username = "admin",
       authorities = {Group.ADMIN})
   void testCantChangeApplicationNameToDuplicate() throws Exception {
-    mockMvc
-        .perform(
-            patch(adminBasePath + "/applications/" + createdAppId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getTestApplicationJson(otherAppName)))
+    mockMvc.perform(patch(adminBasePath + "/applications/" + createdAppId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(getTestApplicationJson(otherAppName)))
         .andExpect(status().isBadRequest())
         .andExpect(content().json(getDuplicateNameErrorJson(otherAppName)));
   }
@@ -151,11 +145,9 @@ class ApplicationAdminControllerIntegrationTest {
       username = "admin",
       authorities = {Group.ADMIN})
   void testChangeApplicationName() throws Exception {
-    mockMvc
-        .perform(
-            patch(adminBasePath + "/applications/" + createdAppId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getTestApplicationJson("some-other-name")))
+    mockMvc.perform(patch(adminBasePath + "/applications/" + createdAppId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(getTestApplicationJson("some-other-name")))
         .andExpect(status().isOk());
   }
 }

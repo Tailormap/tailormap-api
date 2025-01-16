@@ -37,7 +37,8 @@ public class TMFeatureType {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Version private Long version;
+  @Version
+  private Long version;
 
   @NotNull private String name;
 
@@ -49,8 +50,7 @@ public class TMFeatureType {
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @NotNull
-  private TMFeatureTypeInfo info = new TMFeatureTypeInfo();
+  @NotNull private TMFeatureTypeInfo info = new TMFeatureTypeInfo();
 
   // Note: this will vanish when feature type disappears at the source, unless we move this to a
   // separate featureTypeSettings JSON property in TMFeatureSource
@@ -68,13 +68,11 @@ public class TMFeatureType {
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @NotNull
-  private List<TMAttributeDescriptor> attributes = new ArrayList<>();
+  @NotNull private List<TMAttributeDescriptor> attributes = new ArrayList<>();
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @NotNull
-  private FeatureTypeSettings settings = new FeatureTypeSettings();
+  @NotNull private FeatureTypeSettings settings = new FeatureTypeSettings();
 
   // <editor-fold desc="getters and setters">
   public Long getId() {
@@ -200,12 +198,11 @@ public class TMFeatureType {
   @PreUpdate
   public void checkDefaultGeometryAttribute() {
     if (defaultGeometryAttribute == null) {
-      defaultGeometryAttribute =
-          getAttributes().stream()
-              .filter(a -> TMAttributeTypeHelper.isGeometry(a.getType()))
-              .findFirst()
-              .map(TMAttributeDescriptor::getName)
-              .orElse(null);
+      defaultGeometryAttribute = getAttributes().stream()
+          .filter(a -> TMAttributeTypeHelper.isGeometry(a.getType()))
+          .findFirst()
+          .map(TMAttributeDescriptor::getName)
+          .orElse(null);
     }
   }
 

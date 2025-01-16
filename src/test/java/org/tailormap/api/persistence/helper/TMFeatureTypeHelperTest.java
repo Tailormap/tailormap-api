@@ -28,30 +28,28 @@ class TMFeatureTypeHelperTest {
     TMFeatureType ft = new TMFeatureType();
     final Function<String, TMAttributeDescriptor> att =
         (name) -> new TMAttributeDescriptor().name(name).comment("comment for " + name);
-    ft.setAttributes(
-        List.of(
-            att.apply("a"),
-            att.apply("b"),
-            att.apply("c"),
-            att.apply("d"),
-            att.apply("e"),
-            att.apply("f"),
-            att.apply("m"),
-            att.apply("n"),
-            att.apply("o"),
-            att.apply("q")));
+    ft.setAttributes(List.of(
+        att.apply("a"),
+        att.apply("b"),
+        att.apply("c"),
+        att.apply("d"),
+        att.apply("e"),
+        att.apply("f"),
+        att.apply("m"),
+        att.apply("n"),
+        att.apply("o"),
+        att.apply("q")));
 
-    ft.setSettings(
-        new FeatureTypeSettings()
-            .putAttributeSettingsItem("d", new AttributeSettings().title("d title"))
-            .addHideAttributesItem("b")
-            .addHideAttributesItem("q")
-            .addHideAttributesItem("o")
-            .addAttributeOrderItem("c")
-            .addAttributeOrderItem("d")
-            .addAttributeOrderItem("e")
-            .addAttributeOrderItem("o")
-            .addAttributeOrderItem("a"));
+    ft.setSettings(new FeatureTypeSettings()
+        .putAttributeSettingsItem("d", new AttributeSettings().title("d title"))
+        .addHideAttributesItem("b")
+        .addHideAttributesItem("q")
+        .addHideAttributesItem("o")
+        .addAttributeOrderItem("c")
+        .addAttributeOrderItem("d")
+        .addAttributeOrderItem("e")
+        .addAttributeOrderItem("o")
+        .addAttributeOrderItem("a"));
 
     AppLayerSettings appLayerSettings = new AppLayerSettings();
     appLayerSettings.setHideAttributes(List.of("e", "f"));

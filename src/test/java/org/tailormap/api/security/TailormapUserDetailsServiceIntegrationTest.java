@@ -16,15 +16,15 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 @PostgresIntegrationTest
 class TailormapUserDetailsServiceIntegrationTest {
 
-  @Autowired TailormapUserDetailsService userDetailsService;
+  @Autowired
+  TailormapUserDetailsService userDetailsService;
 
   @Test
   void testLoadUserByUsernameUserDoesNotExist() {
-    UsernameNotFoundException thrown =
-        assertThrows(
-            UsernameNotFoundException.class,
-            () -> userDetailsService.loadUserByUsername("doesnotexist"),
-            "UsernameNotFoundException was expected");
+    UsernameNotFoundException thrown = assertThrows(
+        UsernameNotFoundException.class,
+        () -> userDetailsService.loadUserByUsername("doesnotexist"),
+        "UsernameNotFoundException was expected");
     assertNotNull(thrown, "thrown exception should not be null");
   }
 }

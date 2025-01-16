@@ -40,11 +40,9 @@ public abstract class FeatureSourceHelper {
     return createDataStore(tmfs, null);
   }
 
-  public abstract DataStore createDataStore(TMFeatureSource tmfs, Integer timeout)
-      throws IOException;
+  public abstract DataStore createDataStore(TMFeatureSource tmfs, Integer timeout) throws IOException;
 
-  public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType tmft, Integer timeout)
-      throws IOException {
+  public SimpleFeatureSource openGeoToolsFeatureSource(TMFeatureType tmft, Integer timeout) throws IOException {
     DataStore ds = createDataStore(tmft.getFeatureSource(), timeout);
     return ds.getFeatureSource(tmft.getName());
   }
@@ -53,8 +51,7 @@ public abstract class FeatureSourceHelper {
     loadCapabilities(tmfs, null);
   }
 
-  public DataStore openDatastore(Map<String, Object> params, String passwordKey)
-      throws IOException {
+  public DataStore openDatastore(Map<String, Object> params, String passwordKey) throws IOException {
     Map<String, Object> logParams = new HashMap<>(params);
     String passwd = (String) params.get(passwordKey);
     if (passwd != null) {
@@ -81,49 +78,40 @@ public abstract class FeatureSourceHelper {
       }
 
       org.geotools.api.data.ServiceInfo si = ds.getInfo();
-      tmfs.setServiceCapabilities(
-          new TMServiceCaps()
-              .serviceInfo(
-                  new TMServiceInfo()
-                      .title(si.getTitle())
-                      .keywords(si.getKeywords())
-                      .description(si.getDescription())
-                      .publisher(si.getPublisher())
-                      .schema(si.getSchema())
-                      .source(si.getSource())));
+      tmfs.setServiceCapabilities(new TMServiceCaps()
+          .serviceInfo(new TMServiceInfo()
+              .title(si.getTitle())
+              .keywords(si.getKeywords())
+              .description(si.getDescription())
+              .publisher(si.getPublisher())
+              .schema(si.getSchema())
+              .source(si.getSource())));
 
       List<String> typeNames = Arrays.asList(ds.getTypeNames());
       logger.info(
           "Type names for {} {}: {}",
           tmfs.getProtocol().getValue(),
-          tmfs.getProtocol() == TMFeatureSource.Protocol.WFS
-              ? tmfs.getUrl()
-              : tmfs.getJdbcConnection(),
+          tmfs.getProtocol() == TMFeatureSource.Protocol.WFS ? tmfs.getUrl() : tmfs.getJdbcConnection(),
           typeNames);
 
-      tmfs.getFeatureTypes()
-          .removeIf(
-              tmft -> {
-                if (!typeNames.contains(tmft.getName())) {
-                  logger.info("Feature type removed: {}", tmft.getName());
-                  return true;
-                } else {
-                  return false;
-                }
-              });
+      tmfs.getFeatureTypes().removeIf(tmft -> {
+        if (!typeNames.contains(tmft.getName())) {
+          logger.info("Feature type removed: {}", tmft.getName());
+          return true;
+        } else {
+          return false;
+        }
+      });
 
       for (String typeName : typeNames) {
-        TMFeatureType pft =
-            tmfs.getFeatureTypes().stream()
-                .filter(ft -> ft.getName().equals(typeName))
-                .findFirst()
-                .orElseGet(
-                    () ->
-                        new TMFeatureType()
-                            .setName(typeName)
-                            .setFeatureSource(tmfs)
-                            // TODO set writeable meaningfully
-                            .setWriteable(tmfs.getProtocol() == TMFeatureSource.Protocol.JDBC));
+        TMFeatureType pft = tmfs.getFeatureTypes().stream()
+            .filter(ft -> ft.getName().equals(typeName))
+            .findFirst()
+            .orElseGet(() -> new TMFeatureType()
+                .setName(typeName)
+                .setFeatureSource(tmfs)
+                // TODO set writeable meaningfully
+                .setWriteable(tmfs.getProtocol() == TMFeatureSource.Protocol.JDBC));
         if (!tmfs.getFeatureTypes().contains(pft)) {
           tmfs.getFeatureTypes().add(pft);
         }
@@ -148,17 +136,18 @@ public abstract class FeatureSourceHelper {
                     typeName);
                 primaryKeyName = gtAttr.getLocalName();
               }
-              TMAttributeDescriptor tmAttr =
-                  new TMAttributeDescriptor()
-                      .name(gtAttr.getLocalName())
-                      .type(GeoToolsHelper.toAttributeType(type))
-                      .nullable(gtAttr.isNillable())
-                      .defaultValue(
-                          gtAttr.getDefaultValue() == null
-                              ? null
-                              : gtAttr.getDefaultValue().toString())
-                      .description(
-                          type.getDescription() == null ? null : type.getDescription().toString());
+              TMAttributeDescriptor tmAttr = new TMAttributeDescriptor()
+                  .name(gtAttr.getLocalName())
+                  .type(GeoToolsHelper.toAttributeType(type))
+                  .nullable(gtAttr.isNillable())
+                  .defaultValue(
+                      gtAttr.getDefaultValue() == null
+                          ? null
+                          : gtAttr.getDefaultValue().toString())
+                  .description(
+                      type.getDescription() == null
+                          ? null
+                          : type.getDescription().toString());
               if (tmAttr.getType() == TMAttributeType.OBJECT) {
                 tmAttr.setUnknownTypeClassName(type.getBinding().getName());
               }
@@ -175,8 +164,7 @@ public abstract class FeatureSourceHelper {
     }
   }
 
-  protected TMFeatureTypeInfo getFeatureTypeInfo(
-      TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
+  protected TMFeatureTypeInfo getFeatureTypeInfo(TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
     return new TMFeatureTypeInfo()
         .keywords(info.getKeywords())
         .description(info.getDescription())

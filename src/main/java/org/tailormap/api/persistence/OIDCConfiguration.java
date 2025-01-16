@@ -21,7 +21,8 @@ public class OIDCConfiguration {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Version private Long version;
+  @Version
+  private Long version;
 
   @NotNull private String name;
 

@@ -44,12 +44,12 @@ public class GeoToolsEPSGAliasesConfiguration {
     }
 
     Hints hints = new Hints(Hints.CRS_AUTHORITY_FACTORY, PropertyAuthorityFactory.class);
-    ReferencingFactoryContainer referencingFactoryContainer =
-        ReferencingFactoryContainer.instance(hints);
+    ReferencingFactoryContainer referencingFactoryContainer = ReferencingFactoryContainer.instance(hints);
 
-    PropertyAuthorityFactory factory =
-        new PropertyAuthorityFactory(
-            referencingFactoryContainer, Citations.fromName("EPSG"), f.toURI().toURL());
+    PropertyAuthorityFactory factory = new PropertyAuthorityFactory(
+        referencingFactoryContainer,
+        Citations.fromName("EPSG"),
+        f.toURI().toURL());
 
     ReferencingFactoryFinder.addAuthorityFactory(factory);
     ReferencingFactoryFinder.scanForPlugins();

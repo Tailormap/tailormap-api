@@ -46,11 +46,9 @@ class GeometryProcessorTest extends StaticTestData {
   @Test
   void reprojectPoint() throws ParseException, FactoryException {
     final Geometry p = new WKTReader2().read(testData.getProperty("RDpointWkt"));
-    MathTransform transform =
-        CRS.findMathTransform(CRS.decode("EPSG:28992"), CRS.decode("EPSG:4326"), true);
+    MathTransform transform = CRS.findMathTransform(CRS.decode("EPSG:28992"), CRS.decode("EPSG:4326"), true);
 
-    final Geometry reprojected =
-        new WKTReader2().read(GeometryProcessor.processGeometry(p, true, true, transform));
+    final Geometry reprojected = new WKTReader2().read(GeometryProcessor.processGeometry(p, true, true, transform));
     final Geometry expected = new WKTReader2().read(testData.getProperty("WGS84pointWkt"));
     assertEquals(
         expected.getCoordinate().getX(),
@@ -68,8 +66,7 @@ class GeometryProcessorTest extends StaticTestData {
   @Test
   void transformPoint() throws ParseException, FactoryException {
     final Geometry p = new WKTReader2().read(testData.getProperty("RDpointWkt"));
-    MathTransform transform =
-        CRS.findMathTransform(CRS.decode("EPSG:28992"), CRS.decode("EPSG:4326"), true);
+    MathTransform transform = CRS.findMathTransform(CRS.decode("EPSG:28992"), CRS.decode("EPSG:4326"), true);
 
     final Geometry reprojected = GeometryProcessor.transformGeometry(p, transform);
     final Geometry expected = new WKTReader2().read(testData.getProperty("WGS84pointWkt"));
@@ -90,8 +87,7 @@ class GeometryProcessorTest extends StaticTestData {
   void simplifyPolygon() throws ParseException {
     final Geometry p = new WKTReader2().read(testData.getProperty("RDpolygonWkt"));
     final String simplified = GeometryProcessor.processGeometry(p, true, true, null);
-    assertNotEquals(
-        testData.getProperty("RDpolygonWkt"), simplified, "simplified geometry should not match");
+    assertNotEquals(testData.getProperty("RDpolygonWkt"), simplified, "simplified geometry should not match");
 
     final Geometry p2 = new WKTReader2().read(simplified);
     assertTrue(p.overlaps(p2), "source polygon should overlap simplified");
@@ -166,7 +162,6 @@ class GeometryProcessorTest extends StaticTestData {
   void testWKTInputOutput() {
     assertEquals(
         testData.getProperty("RDpointWkt"),
-        GeometryProcessor.geometryToWKT(
-            GeometryProcessor.wktToGeometry(testData.getProperty("RDpointWkt"))));
+        GeometryProcessor.geometryToWKT(GeometryProcessor.wktToGeometry(testData.getProperty("RDpointWkt"))));
   }
 }

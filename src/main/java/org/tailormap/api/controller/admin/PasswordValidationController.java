@@ -21,8 +21,7 @@ public class PasswordValidationController {
   public ResponseEntity<Serializable> test(@RequestParam String password) {
     int minLength = TailormapPasswordStrengthConfig.getMinLength();
     int minStrength = TailormapPasswordStrengthConfig.getMinStrength();
-    boolean result =
-        TMPasswordDeserializer.validatePasswordStrength(password, minLength, minStrength);
+    boolean result = TMPasswordDeserializer.validatePasswordStrength(password, minLength, minStrength);
     return ResponseEntity.ok(new ObjectMapper().createObjectNode().put("result", result));
   }
 }

@@ -8,6 +8,7 @@ package org.tailormap.api.persistence;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -22,11 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.tailormap.api.admin.model.SearchIndexSummary;
 import org.tailormap.api.admin.model.TaskSchedule;
+import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
 /** SearchIndex is a table that stores the metadata for search indexes for a feature type. */
 @Entity
 @Table(name = "search_index")
+@EntityListeners(EntityEventPublisher.class)
 public class SearchIndex implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,34 +44,31 @@ public class SearchIndex implements Serializable {
   @JsonProperty("searchFieldsUsed")
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @Valid
-  private List<String> searchFieldsUsed = new ArrayList<>();
+  @Valid private List<String> searchFieldsUsed = new ArrayList<>();
 
   /** List of attribute names for display that were used when building the search index. */
   @JsonProperty("searchDisplayFieldsUsed")
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @Valid
-  private List<String> searchDisplayFieldsUsed = new ArrayList<>();
+  @Valid private List<String> searchDisplayFieldsUsed = new ArrayList<>();
 
-  @Column(columnDefinition = "text")
-  private String comment;
+  @JsonProperty("summary")
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @Column(columnDefinition = "jsonb")
+  @Valid private SearchIndexSummary summary;
 
   /** Date and time of last index creation. */
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  @Valid
-  @JsonProperty("lastIndexed")
+  @Valid @JsonProperty("lastIndexed")
   private OffsetDateTime lastIndexed;
 
-  @Valid
-  @JsonProperty("schedule")
+  @Valid @JsonProperty("schedule")
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   private TaskSchedule schedule;
 
   @Enumerated(EnumType.STRING)
-  @NotNull
-  @Column(columnDefinition = "varchar(8) default 'INITIAL'")
+  @NotNull @Column(columnDefinition = "varchar(8) default 'INITIAL'")
   private SearchIndex.Status status = SearchIndex.Status.INITIAL;
 
   public Long getId() {
@@ -115,15 +116,6 @@ public class SearchIndex implements Serializable {
     return this;
   }
 
-  public String getComment() {
-    return comment;
-  }
-
-  public SearchIndex setComment(String comment) {
-    this.comment = comment;
-    return this;
-  }
-
   public OffsetDateTime getLastIndexed() {
     return lastIndexed;
   }
@@ -148,6 +140,15 @@ public class SearchIndex implements Serializable {
 
   public SearchIndex setSchedule(@Valid TaskSchedule schedule) {
     this.schedule = schedule;
+    return this;
+  }
+
+  public SearchIndexSummary getSummary() {
+    return summary;
+  }
+
+  public SearchIndex setSummary(SearchIndexSummary summary) {
+    this.summary = summary;
     return this;
   }
 

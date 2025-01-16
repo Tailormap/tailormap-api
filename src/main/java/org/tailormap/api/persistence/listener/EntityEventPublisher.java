@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
 import org.tailormap.api.admin.model.EntityEvent;
 import org.tailormap.api.admin.model.ServerSentEvent;
 import org.tailormap.api.persistence.TMFeatureType;
@@ -35,33 +34,42 @@ public class EntityEventPublisher {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Autowired @Lazy private EntityManagerFactory entityManagerFactory;
+  @Autowired
+  @Lazy
+  private EntityManagerFactory entityManagerFactory;
 
-  @Autowired @Lazy private ObjectMapper objectMapper;
+  @Autowired
+  @Lazy
+  private ObjectMapper objectMapper;
 
-  @Autowired @Lazy private SseEventBus eventBus;
+  @Autowired
+  @Lazy
+  private SseEventBus eventBus;
 
-  @Autowired @Lazy private RepositoryRestMvcConfiguration repositoryRestMvcConfiguration;
+  @Autowired
+  @Lazy
+  private RepositoryRestMvcConfiguration repositoryRestMvcConfiguration;
 
   public EntityEventPublisher() {}
 
-  private void sendEvent(
-      ServerSentEvent.EventTypeEnum eventTypeEnum, Object entity, boolean serializeEntity) {
+  private void sendEvent(ServerSentEvent.EventTypeEnum eventTypeEnum, Object entity, boolean serializeEntity) {
     Object id = null;
 
-    if (RequestContextHolder.getRequestAttributes() == null) {
-      // No current request -- do not send events / serialize entities during app startup
+    if (this.eventBus.countSubscribers(DEFAULT_EVENT) == 0) {
       return;
     }
 
     try {
       id = entityManagerFactory.getPersistenceUnitUtil().getIdentifier(entity);
-      EntityEvent entityEvent =
-          new EntityEvent().entityName(entity.getClass().getSimpleName()).id(String.valueOf(id));
+      EntityEvent entityEvent = new EntityEvent()
+          .entityName(entity.getClass().getSimpleName())
+          .id(String.valueOf(id));
       if (serializeEntity) {
-        entityEvent.setObject(repositoryRestMvcConfiguration.objectMapper().valueToTree(entity));
+        entityEvent.setObject(
+            repositoryRestMvcConfiguration.objectMapper().valueToTree(entity));
       }
-      ServerSentEvent event = new ServerSentEvent().eventType(eventTypeEnum).details(entityEvent);
+      ServerSentEvent event =
+          new ServerSentEvent().eventType(eventTypeEnum).details(entityEvent);
       this.eventBus.handleEvent(SseEvent.of(DEFAULT_EVENT, objectMapper.writeValueAsString(event)));
     } catch (Exception e) {
       logger.error(

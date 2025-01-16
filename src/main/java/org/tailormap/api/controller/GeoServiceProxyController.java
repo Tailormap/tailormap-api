@@ -54,16 +54,14 @@ import org.tailormap.api.persistence.json.ServiceAuthentication;
 import org.tailormap.api.security.AuthorizationService;
 
 /**
- * Proxy controller for OGC WMS and WMTS services. Does not attempt to hide the original service
- * URL. Mostly useful for access to HTTP Basic secured services without sending the credentials to
- * the client. The access control is handled by Spring Security and the authorizations configured on
- * the service.
+ * Proxy controller for OGC WMS and WMTS services. Does not attempt to hide the original service URL. Mostly useful for
+ * access to HTTP Basic secured services without sending the credentials to the client. The access control is handled by
+ * Spring Security and the authorizations configured on the service.
  *
- * <p>Only supports GET requests. Does not support CORS, only meant for tailormap-viewer from the
- * same origin.
+ * <p>Only supports GET requests. Does not support CORS, only meant for tailormap-viewer from the same origin.
  *
- * <p>Implementation note: uses the Java 11 HttpClient. Spring cloud gateway can proxy with many
- * more features but can not be used in a non-reactive application.
+ * <p>Implementation note: uses the Java 11 HttpClient. Spring cloud gateway can proxy with many more features but can
+ * not be used in a non-reactive application.
  */
 @AppRestController
 @Validated
@@ -95,15 +93,12 @@ public class GeoServiceProxyController {
       throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "XYZ proxying not implemented");
     }
 
-    if (!(service.getProtocol().equals(protocol)
-        || GeoServiceProtocol.PROXIEDLEGEND.equals(protocol))) {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Invalid proxy protocol: " + protocol);
+    if (!(service.getProtocol().equals(protocol) || GeoServiceProtocol.PROXIEDLEGEND.equals(protocol))) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid proxy protocol: " + protocol);
     }
 
     if (!service.getSettings().getUseProxy()) {
-      throw new ResponseStatusException(
-          HttpStatus.FORBIDDEN, "Proxy not enabled for requested service");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Proxy not enabled for requested service");
     }
 
     if (authorizationService.mustDenyAccessForSecuredProxy(application, service)) {
@@ -129,13 +124,11 @@ public class GeoServiceProxyController {
         }
         return doProxy(legendURI, service, request);
       default:
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "Unsupported proxy protocol: " + protocol);
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported proxy protocol: " + protocol);
     }
   }
 
-  private @Nullable URI buildLegendURI(
-      GeoService service, GeoServiceLayer layer, HttpServletRequest request) {
+  private @Nullable URI buildLegendURI(GeoService service, GeoServiceLayer layer, HttpServletRequest request) {
     URI legendURI = GeoServiceHelper.getLayerLegendUrlFromStyles(service, layer);
     if (null != legendURI && null != legendURI.getQuery() && null != request.getQueryString()) {
       // assume this is a getLegendGraphic request
@@ -151,33 +144,27 @@ public class GeoServiceProxyController {
           // no special options
       }
       if (null != request.getParameterMap().get("SCALE")) {
-        legendURI =
-            uriComponentsBuilder
-                .queryParam("SCALE", request.getParameterMap().get("SCALE")[0])
-                .build(true)
-                .toUri();
+        legendURI = uriComponentsBuilder
+            .queryParam("SCALE", request.getParameterMap().get("SCALE")[0])
+            .build(true)
+            .toUri();
       }
     }
     return legendURI;
   }
 
   private URI buildWMSUrl(GeoService service, HttpServletRequest request) {
-    final UriComponentsBuilder originalServiceUrl =
-        UriComponentsBuilder.fromUriString(service.getUrl());
+    final UriComponentsBuilder originalServiceUrl = UriComponentsBuilder.fromUriString(service.getUrl());
     // request.getParameterMap() includes parameters from an application/x-www-form-urlencoded POST
     // body
-    final MultiValueMap<String, String> requestParams =
-        request.getParameterMap().entrySet().stream()
-            .map(
-                entry ->
-                    new AbstractMap.SimpleEntry<>(
-                        entry.getKey(),
-                        Arrays.stream(entry.getValue())
-                            .map(value -> UriUtils.encode(value, StandardCharsets.UTF_8))
-                            .collect(Collectors.toList())))
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey, Map.Entry::getValue, (x, y) -> y, LinkedMultiValueMap::new));
+    final MultiValueMap<String, String> requestParams = request.getParameterMap().entrySet().stream()
+        .map(entry -> new AbstractMap.SimpleEntry<>(
+            entry.getKey(),
+            Arrays.stream(entry.getValue())
+                .map(value -> UriUtils.encode(value, StandardCharsets.UTF_8))
+                .collect(Collectors.toList())))
+        .collect(Collectors.toMap(
+            Map.Entry::getKey, Map.Entry::getValue, (x, y) -> y, LinkedMultiValueMap::new));
     final MultiValueMap<String, String> params =
         buildOgcProxyRequestParams(originalServiceUrl.build(true).getQueryParams(), requestParams);
     originalServiceUrl.replaceQueryParams(params);
@@ -185,8 +172,7 @@ public class GeoServiceProxyController {
   }
 
   public static MultiValueMap<String, String> buildOgcProxyRequestParams(
-      MultiValueMap<String, String> originalServiceParams,
-      MultiValueMap<String, String> requestParams) {
+      MultiValueMap<String, String> originalServiceParams, MultiValueMap<String, String> requestParams) {
     // Start with all the parameters from the request
     final MultiValueMap<String, String> params = new LinkedMultiValueMap<>(requestParams);
 
@@ -202,10 +188,8 @@ public class GeoServiceProxyController {
     return params;
   }
 
-  private static ResponseEntity<?> doProxy(
-      URI uri, GeoService service, HttpServletRequest request) {
-    final HttpClient.Builder builder =
-        HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);
+  private static ResponseEntity<?> doProxy(URI uri, GeoService service, HttpServletRequest request) {
+    final HttpClient.Builder builder = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);
     final HttpClient httpClient = builder.build();
 
     HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(uri);
@@ -246,19 +230,18 @@ public class GeoServiceProxyController {
       // Currently, a layer will just stop working if the geo service credentials are changed
       // without updating them in the geo service registry.
       InputStreamResource body = new InputStreamResource(response.body());
-      HttpHeaders headers =
-          passthroughResponseHeaders(
-              response.headers(),
-              Set.of(
-                  "Content-Type",
-                  "Content-Length",
-                  "Content-Range",
-                  "Content-Disposition",
-                  "Cache-Control",
-                  "Expires",
-                  "Last-Modified",
-                  "ETag",
-                  "Pragma"));
+      HttpHeaders headers = passthroughResponseHeaders(
+          response.headers(),
+          Set.of(
+              "Content-Type",
+              "Content-Length",
+              "Content-Range",
+              "Content-Disposition",
+              "Cache-Control",
+              "Expires",
+              "Last-Modified",
+              "ETag",
+              "Pragma"));
       return ResponseEntity.status(response.statusCode()).headers(headers).body(body);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Bad Gateway");

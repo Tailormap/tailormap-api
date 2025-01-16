@@ -26,9 +26,11 @@ import org.tailormap.api.persistence.Group;
 @AutoConfigureMockMvc
 class UserControllerIntegrationTest {
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-  @Autowired UserController userController;
+  @Autowired
+  UserController userController;
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
@@ -37,8 +39,7 @@ class UserControllerIntegrationTest {
   void testUnauthenticatedGetUser() throws Exception {
     assertNotNull(userController, "userController can not be `null` if Spring Boot works");
 
-    mockMvc
-        .perform(get(apiBasePath + "/user"))
+    mockMvc.perform(get(apiBasePath + "/user"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.isAuthenticated").value(false))
@@ -55,16 +56,13 @@ class UserControllerIntegrationTest {
   void testAuthenticatedGetUser() throws Exception {
     assertNotNull(userController, "userController can not be `null` if Spring Boot works");
 
-    mockMvc
-        .perform(get(apiBasePath + "/user"))
+    mockMvc.perform(get(apiBasePath + "/user"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.isAuthenticated").value(true))
         .andExpect(jsonPath("$.username").value("tm-admin"))
         .andExpect(jsonPath("$.roles.length()").value(3))
-        .andExpect(
-            jsonPath("$.roles")
-                .value(Matchers.containsInAnyOrder(Group.ADMIN, "test-bar", "test-baz")))
+        .andExpect(jsonPath("$.roles").value(Matchers.containsInAnyOrder(Group.ADMIN, "test-bar", "test-baz")))
         .andExpect(jsonPath("$.properties.length()").value(1))
         .andExpect(jsonPath("$.properties[0].key").value("some-property"))
         .andExpect(jsonPath("$.properties[0].value").value("some-value"))

@@ -29,23 +29,21 @@ public class SourceMapSecurityFilter implements Filter {
   private String sourceMapAuth;
 
   @Override
-  public void doFilter(
-      ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
+  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
       throws ServletException, IOException {
 
     if (!"public".equals(sourceMapAuth)) {
       HttpServletRequest request = (HttpServletRequest) servletRequest;
       HttpServletResponse response = (HttpServletResponse) servletResponse;
-      String path = request.getRequestURI().substring(request.getContextPath().length());
+      String path =
+          request.getRequestURI().substring(request.getContextPath().length());
       if (!path.startsWith("/api/") && path.endsWith(".map")) {
         if (sourceMapAuth == null) {
           response.sendError(SC_FORBIDDEN);
           return;
         }
         String sourceMapAuthorization =
-            "Basic "
-                + Base64.getEncoder()
-                    .encodeToString(sourceMapAuth.getBytes(StandardCharsets.UTF_8));
+            "Basic " + Base64.getEncoder().encodeToString(sourceMapAuth.getBytes(StandardCharsets.UTF_8));
         if (!sourceMapAuthorization.equals(request.getHeader("Authorization"))) {
           response.addHeader("WWW-Authenticate", "Basic realm=\"Source maps\"");
           response.sendError(SC_UNAUTHORIZED);

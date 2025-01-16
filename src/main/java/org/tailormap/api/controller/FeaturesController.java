@@ -94,8 +94,7 @@ public class FeaturesController implements Constants {
   private boolean exactWfsCounts;
 
   public FeaturesController(
-      FeatureSourceFactoryHelper featureSourceFactoryHelper,
-      FeatureSourceRepository featureSourceRepository) {
+      FeatureSourceFactoryHelper featureSourceFactoryHelper, FeatureSourceRepository featureSourceRepository) {
     this.featureSourceFactoryHelper = featureSourceFactoryHelper;
     this.featureSourceRepository = featureSourceRepository;
   }
@@ -121,8 +120,7 @@ public class FeaturesController implements Constants {
       @RequestParam(defaultValue = "false") boolean geometryInAttributes) {
 
     if (layer == null) {
-      throw new ResponseStatusException(
-          HttpStatus.NOT_FOUND, "Can't find layer " + appTreeLayerNode);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find layer " + appTreeLayerNode);
     }
 
     TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
@@ -138,42 +136,29 @@ public class FeaturesController implements Constants {
     FeaturesResponse featuresResponse;
 
     if (null != __fid) {
-      featuresResponse =
-          getFeatureByFID(tmft, appLayerSettings, __fid, application, !geometryInAttributes);
+      featuresResponse = getFeatureByFID(tmft, appLayerSettings, __fid, application, !geometryInAttributes);
     } else if (null != x && null != y) {
-      featuresResponse =
-          getFeaturesByXY(
-              tmft,
-              appLayerSettings,
-              filter,
-              x,
-              y,
-              application,
-              distance,
-              simplify,
-              !geometryInAttributes);
+      featuresResponse = getFeaturesByXY(
+          tmft, appLayerSettings, filter, x, y, application, distance, simplify, !geometryInAttributes);
     } else if (null != page && page > 0) {
-      featuresResponse =
-          getAllFeatures(
-              tmft,
-              application,
-              appLayerSettings,
-              page,
-              filter,
-              sortBy,
-              sortOrder,
-              onlyGeometries,
-              !geometryInAttributes);
+      featuresResponse = getAllFeatures(
+          tmft,
+          application,
+          appLayerSettings,
+          page,
+          filter,
+          sortBy,
+          sortOrder,
+          onlyGeometries,
+          !geometryInAttributes);
     } else {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Unsupported combination of request parameters");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported combination of request parameters");
     }
 
     return ResponseEntity.status(HttpStatus.OK).body(featuresResponse);
   }
 
-  @NotNull
-  private FeaturesResponse getAllFeatures(
+  @NotNull private FeaturesResponse getAllFeatures(
       @NotNull TMFeatureType tmft,
       @NotNull Application application,
       @NotNull AppLayerSettings appLayerSettings,
@@ -193,12 +178,11 @@ public class FeaturesController implements Constants {
       //  if we do the geometry attribute must not be removed from propNames
 
       // Property names for query: only non-geometry attributes that aren't hidden
-      List<String> propNames =
-          getConfiguredAttributes(tmft, appLayerSettings).values().stream()
-              .map(Pair::getLeft)
-              .filter(a -> !isGeometry(a.getType()))
-              .map(TMAttributeDescriptor::getName)
-              .collect(Collectors.toList());
+      List<String> propNames = getConfiguredAttributes(tmft, appLayerSettings).values().stream()
+          .map(Pair::getLeft)
+          .filter(a -> !isGeometry(a.getType()))
+          .map(TMAttributeDescriptor::getName)
+          .collect(Collectors.toList());
 
       String sortAttrName;
       if (onlyGeometries) {
@@ -210,8 +194,7 @@ public class FeaturesController implements Constants {
           return featuresResponse;
         }
         // Default sorting attribute if sortBy not specified or not a configured attribute
-        if (tmft.getPrimaryKeyAttribute() != null
-            && propNames.contains(tmft.getPrimaryKeyAttribute())) {
+        if (tmft.getPrimaryKeyAttribute() != null && propNames.contains(tmft.getPrimaryKeyAttribute())) {
           // There is a primary key and it is known, use that for sorting
           sortAttrName = tmft.getPrimaryKeyAttribute();
         } else {
@@ -232,8 +215,7 @@ public class FeaturesController implements Constants {
       }
 
       SortOrder _sortOrder = SortOrder.ASCENDING;
-      if (null != sortOrder
-          && (sortOrder.equalsIgnoreCase("desc") || sortOrder.equalsIgnoreCase("asc"))) {
+      if (null != sortOrder && (sortOrder.equalsIgnoreCase("desc") || sortOrder.equalsIgnoreCase("asc"))) {
         _sortOrder = SortOrder.valueOf(sortOrder.toUpperCase(Locale.ROOT));
       }
 
@@ -292,8 +274,7 @@ public class FeaturesController implements Constants {
     return featuresResponse;
   }
 
-  @NotNull
-  private FeaturesResponse getFeatureByFID(
+  @NotNull private FeaturesResponse getFeatureByFID(
       @NotNull TMFeatureType tmFeatureType,
       @NotNull AppLayerSettings appLayerSettings,
       @NotNull String fid,
@@ -330,8 +311,7 @@ public class FeaturesController implements Constants {
     return featuresResponse;
   }
 
-  @NotNull
-  private FeaturesResponse getFeaturesByXY(
+  @NotNull private FeaturesResponse getFeaturesByXY(
       @NotNull TMFeatureType tmFeatureType,
       @NotNull AppLayerSettings appLayerSettings,
       String filterCQL,
@@ -343,8 +323,7 @@ public class FeaturesController implements Constants {
       boolean skipGeometryOutput) {
 
     if (null != distance && 0d >= distance) {
-      throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Buffer distance must be greater than 0");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Buffer distance must be greater than 0");
     }
 
     FeaturesResponse featuresResponse = new FeaturesResponse();
@@ -371,8 +350,7 @@ public class FeaturesController implements Constants {
           p = JTS.transform(p, transform);
           logger.debug("reprojected geometry to: {}", p);
         } catch (TransformException e) {
-          logger.warn(
-              "Unable to transform query geometry to desired CRS, trying with original CRS");
+          logger.warn("Unable to transform query geometry to desired CRS, trying with original CRS");
         }
       }
       logger.debug("using selection geometry: {}", p);
@@ -431,18 +409,18 @@ public class FeaturesController implements Constants {
         getConfiguredAttributes(tmFeatureType, appLayerSettings);
 
     // send request to attribute source
-    try (SimpleFeatureIterator feats = featureSource.getFeatures(selectQuery).features()) {
+    try (SimpleFeatureIterator feats =
+        featureSource.getFeatures(selectQuery).features()) {
       while (feats.hasNext()) {
         addFields = true;
         // transform found simplefeatures to list of Feature
         SimpleFeature feature = feats.next();
         // processedGeometry can be null
-        String processedGeometry =
-            GeometryProcessor.processGeometry(
-                feature.getAttribute(tmFeatureType.getDefaultGeometryAttribute()),
-                simplifyGeometry,
-                true,
-                transform);
+        String processedGeometry = GeometryProcessor.processGeometry(
+            feature.getAttribute(tmFeatureType.getDefaultGeometryAttribute()),
+            simplifyGeometry,
+            true,
+            transform);
         Feature newFeat =
             new Feature().fid(feature.getIdentifier().getID()).geometry(processedGeometry);
 
@@ -470,16 +448,15 @@ public class FeaturesController implements Constants {
     }
     if (addFields) {
       configuredAttributes.values().stream()
-          .map(
-              pair -> {
-                TMAttributeDescriptor attributeDescriptor = pair.getLeft();
-                TMAttributeType type = attributeDescriptor.getType();
-                AttributeSettings settings = pair.getRight();
-                return new ColumnMetadata()
-                    .key(attributeDescriptor.getName())
-                    .alias(settings.getTitle())
-                    .type(isGeometry(type) ? TMAttributeType.GEOMETRY : type);
-              })
+          .map(pair -> {
+            TMAttributeDescriptor attributeDescriptor = pair.getLeft();
+            TMAttributeType type = attributeDescriptor.getType();
+            AttributeSettings settings = pair.getRight();
+            return new ColumnMetadata()
+                .key(attributeDescriptor.getName())
+                .alias(settings.getTitle())
+                .type(isGeometry(type) ? TMAttributeType.GEOMETRY : type);
+          })
           .forEach(featuresResponse::addColumnMetadataItem);
     }
   }

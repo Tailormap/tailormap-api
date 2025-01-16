@@ -57,63 +57,59 @@ public class GeoService {
 
   private static final List<String> REMOVE_PARAMS = List.of("REQUEST");
 
-  @Id private String id;
+  @Id
+  private String id;
 
-  @Version private Long version;
+  @Version
+  private Long version;
 
   @Column(columnDefinition = "text")
   private String notes;
 
-  @NotNull
-  @Enumerated(EnumType.STRING)
+  @NotNull @Enumerated(EnumType.STRING)
   private GeoServiceProtocol protocol;
 
   /**
-   * The URL from which the capabilities of this service can be loaded and the URL to use for the
-   * service, except when the advertisedUrl should be used by explicit user request. TODO: never use
-   * URL in capabilities? TODO: explicitly specify relative URLs can be used? Or even if it should
-   * be automatically converted to a relative URL if the hostname/port matches our URL? TODO: what
-   * to do with parameters such as VERSION in the URL?
+   * The URL from which the capabilities of this service can be loaded and the URL to use for the service, except when
+   * the advertisedUrl should be used by explicit user request. TODO: never use URL in capabilities? TODO: explicitly
+   * specify relative URLs can be used? Or even if it should be automatically converted to a relative URL if the
+   * hostname/port matches our URL? TODO: what to do with parameters such as VERSION in the URL?
    */
-  @NotNull
-  @Column(length = 2048)
+  @NotNull @Column(length = 2048)
   private String url;
 
-  @Transient private boolean refreshCapabilities;
+  @Transient
+  private boolean refreshCapabilities;
 
   /**
-   * Non-null when authentication is required for this service. Currently, the only authentication
-   * method is password (HTTP Basic).
+   * Non-null when authentication is required for this service. Currently, the only authentication method is password
+   * (HTTP Basic).
    */
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   private ServiceAuthentication authentication;
 
   /**
-   * Original capabilities as received from the service. This can be used for capability information
-   * not already parsed in this entity, such as tiling information.
+   * Original capabilities as received from the service. This can be used for capability information not already
+   * parsed in this entity, such as tiling information.
    */
   @Basic(fetch = FetchType.LAZY)
   @JsonIgnore
   private byte[] capabilities;
 
-  /**
-   * Content type of capabilities. "application/xml" for WMS/WMTS and "application/json" for REST
-   * services.
-   */
+  /** Content type of capabilities. "application/xml" for WMS/WMTS and "application/json" for REST services. */
   private String capabilitiesContentType;
 
   /** The instant the capabilities where last successfully fetched and parsed. */
   private Instant capabilitiesFetched;
 
   /** Title loaded from capabilities or as modified by user for display. */
-  @NotNull
-  @Column(length = 2048)
+  @NotNull @Column(length = 2048)
   private String title;
 
   /**
-   * A service may advertise a URL in its capabilities which does not actually work, for example if
-   * the service is behind a proxy. Usually this shouldn't be used.
+   * A service may advertise a URL in its capabilities which does not actually work, for example if the service is
+   * behind a proxy. Usually this shouldn't be used.
    */
   @Column(length = 2048)
   private String advertisedUrl;
@@ -124,24 +120,21 @@ public class GeoService {
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @NotNull
-  private List<AuthorizationRule> authorizationRules = new ArrayList<>();
+  @NotNull private List<AuthorizationRule> authorizationRules = new ArrayList<>();
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @NotNull
-  private List<GeoServiceLayer> layers = new ArrayList<>();
+  @NotNull private List<GeoServiceLayer> layers = new ArrayList<>();
 
   private boolean published;
 
   /**
-   * Settings relevant for Tailormap use cases, such as configuring the specific server type for
-   * vendor-specific capabilities etc.
+   * Settings relevant for Tailormap use cases, such as configuring the specific server type for vendor-specific
+   * capabilities etc.
    */
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @NotNull
-  private GeoServiceSettings settings = new GeoServiceSettings();
+  @NotNull private GeoServiceSettings settings = new GeoServiceSettings();
 
   // <editor-fold desc="getters and setters">
   public String getId() {
@@ -314,16 +307,16 @@ public class GeoService {
     if (settings.getServerType() == GeoServiceSettings.ServerTypeEnum.AUTO) {
       serverTypeEnum = geoServiceHelper.guessServerTypeFromUrl(getUrl());
     } else {
-      serverTypeEnum = Service.ServerTypeEnum.fromValue(settings.getServerType().getValue());
+      serverTypeEnum =
+          Service.ServerTypeEnum.fromValue(settings.getServerType().getValue());
     }
 
-    Service s =
-        new Service()
-            .id(this.id)
-            .title(this.title)
-            .url(Boolean.TRUE.equals(this.getSettings().getUseProxy()) ? null : this.url)
-            .protocol(this.protocol)
-            .serverType(serverTypeEnum);
+    Service s = new Service()
+        .id(this.id)
+        .title(this.title)
+        .url(Boolean.TRUE.equals(this.getSettings().getUseProxy()) ? null : this.url)
+        .protocol(this.protocol)
+        .serverType(serverTypeEnum);
 
     if (this.protocol == GeoServiceProtocol.WMTS) {
       // Frontend requires WMTS capabilities to parse TilingMatrix, but WMS capabilities aren't used
@@ -335,29 +328,29 @@ public class GeoService {
   }
 
   public GeoServiceLayer findLayer(String name) {
-    return getLayers().stream().filter(sl -> name.equals(sl.getName())).findFirst().orElse(null);
+    return getLayers().stream()
+        .filter(sl -> name.equals(sl.getName()))
+        .findFirst()
+        .orElse(null);
   }
 
   public GeoServiceLayerSettings getLayerSettings(String layerName) {
     return getSettings().getLayerSettings().get(layerName);
   }
 
-  @NonNull
-  public String getTitleWithSettingsOverrides(String layerName) {
+  @NonNull public String getTitleWithSettingsOverrides(String layerName) {
     // First use title in layer settings
-    String title =
-        Optional.ofNullable(getLayerSettings(layerName))
-            .map(GeoServiceLayerSettings::getTitle)
-            .map(TMStringUtils::nullIfEmpty)
-            .orElse(null);
+    String title = Optional.ofNullable(getLayerSettings(layerName))
+        .map(GeoServiceLayerSettings::getTitle)
+        .map(TMStringUtils::nullIfEmpty)
+        .orElse(null);
 
     // If not set, title from capabilities
     if (title == null) {
-      title =
-          Optional.ofNullable(findLayer(layerName))
-              .map(GeoServiceLayer::getTitle)
-              .map(TMStringUtils::nullIfEmpty)
-              .orElse(null);
+      title = Optional.ofNullable(findLayer(layerName))
+          .map(GeoServiceLayer::getTitle)
+          .map(TMStringUtils::nullIfEmpty)
+          .orElse(null);
     }
 
     // Do not get title from default layer settings (a default title wouldn't make sense)
@@ -380,17 +373,14 @@ public class GeoService {
     String featureTypeName;
 
     if (layerSettings != null && layerSettings.getFeatureType() != null) {
-      featureTypeName =
-          Optional.ofNullable(layerSettings.getFeatureType().getFeatureTypeName())
-              .orElse(layer.getName());
+      featureTypeName = Optional.ofNullable(layerSettings.getFeatureType().getFeatureTypeName())
+          .orElse(layer.getName());
       featureSourceId = layerSettings.getFeatureType().getFeatureSourceId();
     } else {
       featureTypeName = layer.getName();
     }
 
-    if (featureSourceId == null
-        && defaultLayerSettings != null
-        && defaultLayerSettings.getFeatureType() != null) {
+    if (featureSourceId == null && defaultLayerSettings != null && defaultLayerSettings.getFeatureType() != null) {
       featureSourceId = defaultLayerSettings.getFeatureType().getFeatureSourceId();
     }
 
@@ -448,7 +438,8 @@ public class GeoService {
     if (url != null && url.contains("?")) {
       MultiValueMap<String, String> sanitisedParams = new LinkedMultiValueMap<>();
       UriComponentsBuilder uri = UriComponentsBuilder.fromUriString(url);
-      MultiValueMap<String, String> /* unmodifiable */ requestParams = uri.build().getQueryParams();
+      MultiValueMap<String, String> /* unmodifiable */ requestParams =
+          uri.build().getQueryParams();
       for (Map.Entry<String, List<String>> param : requestParams.entrySet()) {
         if (!REMOVE_PARAMS.contains(param.getKey().toUpperCase(Locale.ROOT))) {
           sanitisedParams.put(param.getKey(), param.getValue());

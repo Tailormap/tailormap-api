@@ -16,7 +16,8 @@ import org.tailormap.api.persistence.Application;
 
 @PostgresIntegrationTest
 class ApplicationRepositoryIntegrationTest {
-  @Autowired private ApplicationRepository applicationRepository;
+  @Autowired
+  private ApplicationRepository applicationRepository;
 
   @Test
   void should_find_application_by_name() {

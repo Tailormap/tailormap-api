@@ -7,8 +7,10 @@
 package org.tailormap.api.configuration.ddl;
 
 import jakarta.annotation.PostConstruct;
-import java.io.File;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +22,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Delete the file in the "javax.persistence.schema-generation.scripts.create-target" property
- * because it is appended to instead of overwritten, which we don't want.
+ * Delete the file in the "javax.persistence.schema-generation.scripts.create-target" property because it is appended to
+ * instead of overwritten, which we don't want.
  */
 @Configuration
 @ConfigurationProperties(prefix = "spring.datasource")
@@ -56,20 +58,21 @@ public class DeleteDDLScriptBeforeCreating {
    */
   @Bean
   public DataSource getDataSource() {
-    return DataSourceBuilder.create().url(url).username(username).password(password).build();
+    return DataSourceBuilder.create()
+        .url(url)
+        .username(username)
+        .password(password)
+        .build();
   }
 
   @PostConstruct
-  public void delete() {
+  public void delete() throws IOException {
     if (target != null) {
-      File f = new File(target);
-      if (f.exists()) {
-        String absolutePath = f.getAbsolutePath();
-        if (!f.delete()) {
-          logger.info("Could not delete DDL target file {}", absolutePath);
-        } else {
-          logger.debug("Deleted DDL target file {}", absolutePath);
-        }
+      final Path path = Path.of(target);
+      if (!Files.isDirectory(path) && Files.deleteIfExists(path)) {
+        logger.debug("Deleted DDL target file {}", path.toAbsolutePath());
+      } else {
+        logger.info("Could not delete DDL target file {}", path.toAbsolutePath());
       }
     }
   }

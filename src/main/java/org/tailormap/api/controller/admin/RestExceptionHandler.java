@@ -25,9 +25,7 @@ public class RestExceptionHandler {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @ExceptionHandler({HttpMessageNotReadableException.class})
-  @Nullable
-  public ResponseEntity<Object> handleException(
-      final HttpMessageNotReadableException ex, final WebRequest request) {
+  @Nullable public ResponseEntity<Object> handleException(final HttpMessageNotReadableException ex, final WebRequest request) {
     logger.debug("Invalid message exception", ex);
 
     // Invalid password was given
@@ -37,18 +35,15 @@ public class RestExceptionHandler {
     if (ex.getCause() != null && ex.getMostSpecificCause() instanceof InvalidPasswordException) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .contentType(MediaType.APPLICATION_JSON)
-          .body(
-              new ErrorResponse()
-                  .code(HttpStatus.BAD_REQUEST.value())
-                  .message(
-                      ((InvalidPasswordException) ex.getMostSpecificCause()).getOriginalMessage()));
+          .body(new ErrorResponse()
+              .code(HttpStatus.BAD_REQUEST.value())
+              .message(((InvalidPasswordException) ex.getMostSpecificCause()).getOriginalMessage()));
     }
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .contentType(MediaType.APPLICATION_JSON)
-        .body(
-            new ErrorResponse()
-                .code(HttpStatus.BAD_REQUEST.value())
-                .message(ex.getMostSpecificCause().getLocalizedMessage()));
+        .body(new ErrorResponse()
+            .code(HttpStatus.BAD_REQUEST.value())
+            .message(ex.getMostSpecificCause().getLocalizedMessage()));
   }
 }

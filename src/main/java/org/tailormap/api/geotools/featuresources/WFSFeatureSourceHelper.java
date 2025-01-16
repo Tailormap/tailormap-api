@@ -32,18 +32,18 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
     }
 
     LinkedCaseInsensitiveMap<String> wfsUrlParams = new LinkedCaseInsensitiveMap<>();
-    wfsUrlParams.putAll(
-        UriComponentsBuilder.fromUriString(tmfs.getUrl())
-            .build()
-            .getQueryParams()
-            .toSingleValueMap());
+    wfsUrlParams.putAll(UriComponentsBuilder.fromUriString(tmfs.getUrl())
+        .build()
+        .getQueryParams()
+        .toSingleValueMap());
     String version = wfsUrlParams.get("VERSION");
     if (!"2.0.0".equals(version)) {
       version = SimpleWFSHelper.DEFAULT_WFS_VERSION;
     }
     params.put(
         WFSDataStoreFactory.URL.key,
-        SimpleWFSHelper.getWFSRequestURL(tmfs.getUrl(), "GetCapabilities", version, null).toURL());
+        SimpleWFSHelper.getWFSRequestURL(tmfs.getUrl(), "GetCapabilities", version, null)
+            .toURL());
 
     ServiceAuthentication authentication = tmfs.getAuthentication();
     if (authentication != null) {
@@ -57,12 +57,10 @@ public class WFSFeatureSourceHelper extends FeatureSourceHelper {
   }
 
   @Override
-  protected TMFeatureTypeInfo getFeatureTypeInfo(
-      TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
+  protected TMFeatureTypeInfo getFeatureTypeInfo(TMFeatureType pft, ResourceInfo info, SimpleFeatureSource gtFs) {
     TMFeatureTypeInfo tmInfo = super.getFeatureTypeInfo(pft, info, gtFs);
     if (info instanceof FeatureTypeInfo ftInfo) {
-      tmInfo
-          .schema(info.getSchema())
+      tmInfo.schema(info.getSchema())
           .wgs84BoundingBox(GeoToolsHelper.fromEnvelope(ftInfo.getWGS84BoundingBox()))
           .defaultSrs(ftInfo.getDefaultSRS())
           .otherSrs(Set.copyOf(ftInfo.getOtherSRS()))
