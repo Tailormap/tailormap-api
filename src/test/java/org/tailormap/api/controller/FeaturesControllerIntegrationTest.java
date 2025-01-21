@@ -460,8 +460,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[9].attributes.naam").value("Zeeland"))
-        .andExpect(jsonPath("$.features[9].attributes.code").value("29"))
+        .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
         .andExpectAll(provinciesWFSResultMatchers());
 
     // page 1, sort by naam, invalid direction
@@ -487,8 +487,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[9].attributes.naam").value("Zeeland"))
-        .andExpect(jsonPath("$.features[9].attributes.code").value("29"))
+        .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
         .andExpectAll(provinciesWFSResultMatchers());
   }
 
@@ -522,8 +522,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[9]").isNotEmpty())
         .andExpect(jsonPath("$.features[9].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[9].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[9].attributes.naam").value("Zeeland"))
-        .andExpect(jsonPath("$.features[9].attributes.code").value("29"))
+        .andExpect(jsonPath("$.features[9].attributes.naam").value("Utrecht"))
+        .andExpect(jsonPath("$.features[9].attributes.code").value("26"))
         .andExpectAll(provinciesWFSResultMatchers());
 
     // page 1, sort descending by naam
@@ -543,8 +543,8 @@ class FeaturesControllerIntegrationTest {
         .andExpect(jsonPath("$.features[0]").isNotEmpty())
         .andExpect(jsonPath("$.features[0].__fid").isNotEmpty())
         .andExpect(jsonPath("$.features[0].geometry").isEmpty())
-        .andExpect(jsonPath("$.features[0].attributes.naam").value("Zeeland"))
-        .andExpect(jsonPath("$.features[0].attributes.code").value("29"))
+        .andExpect(jsonPath("$.features[0].attributes.naam").value("Utrecht"))
+        .andExpect(jsonPath("$.features[0].attributes.code").value("26"))
         .andExpect(jsonPath("$.features[8]").isMap())
         .andExpect(jsonPath("$.features[8]").isNotEmpty())
         .andExpect(jsonPath("$.features[8].__fid").isNotEmpty())
@@ -705,7 +705,7 @@ class FeaturesControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void get_by_fid_from_wfs_with_geomerty() throws Exception {
+  void get_by_fid_from_wfs_with_geometry() throws Exception {
     // note that this test may break when pdok decides to update the data or the service.
     // you can get the fid by clicking on the Utrecht feature in the map.
     // alternatively this test could be written to use the wfs service to first get Utrecht

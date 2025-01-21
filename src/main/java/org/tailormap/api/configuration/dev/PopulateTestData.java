@@ -629,7 +629,8 @@ public class PopulateTestData {
         "pdok-kadaster-bestuurlijkegebieden",
         new TMFeatureSource()
             .setProtocol(TMFeatureSource.Protocol.WFS)
-            .setUrl("https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0?VERSION=2.0.0")
+            .setUrl(
+                "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0?service=WFS&VERSION=2.0.0")
             .setTitle("Bestuurlijke gebieden")
             .setNotes(
                 "Overzicht van de bestuurlijke indeling van Nederland in gemeenten en provincies alsmede de rijksgrens. Gegevens zijn afgeleid uit de Basisregistratie Kadaster (BRK)."));
