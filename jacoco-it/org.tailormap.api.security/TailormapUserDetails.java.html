@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TailormapUserDetails.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.security</a> &gt; <span class="el_source">TailormapUserDetails.java</span></div><h1>TailormapUserDetails.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2022 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.security;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.HashSet;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.tailormap.api.persistence.Group;
+import org.tailormap.api.persistence.User;
+
+public class TailormapUserDetails implements UserDetails {
+
+  private final User user;
+
+<span class="nc" id="L23">  public TailormapUserDetails(User user) {</span>
+<span class="nc" id="L24">    this.user = user;</span>
+<span class="nc" id="L25">  }</span>
+
+  @Override
+  public Collection&lt;? extends GrantedAuthority&gt; getAuthorities() {
+<span class="nc" id="L29">    Collection&lt;GrantedAuthority&gt; authorities = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L30">    user.getGroups().stream()</span>
+<span class="nc" id="L31">        .map(Group::getName)</span>
+<span class="nc" id="L32">        .map(SimpleGrantedAuthority::new)</span>
+<span class="nc" id="L33">        .forEach(authorities::add);</span>
+
+<span class="nc" id="L35">    user.getGroups().stream()</span>
+<span class="nc" id="L36">        .map(Group::getAliasForGroup)</span>
+<span class="nc" id="L37">        .filter(StringUtils::isNotBlank)</span>
+<span class="nc" id="L38">        .map(SimpleGrantedAuthority::new)</span>
+<span class="nc" id="L39">        .forEach(authorities::add);</span>
+<span class="nc" id="L40">    return authorities;</span>
+  }
+
+  @Override
+  public String getPassword() {
+<span class="nc" id="L45">    return user.getPassword();</span>
+  }
+
+  @Override
+  public String getUsername() {
+<span class="nc" id="L50">    return user.getUsername();</span>
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+<span class="nc bnc" id="L55" title="All 4 branches missed.">    return user.getValidUntil() == null || user.getValidUntil().isAfter(ZonedDateTime.now(ZoneId.systemDefault()));</span>
+  }
+
+  @Override
+  public boolean isEnabled() {
+<span class="nc" id="L60">    return user.isEnabled();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

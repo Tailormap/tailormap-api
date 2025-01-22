@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DebugLoggingJobListener.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.scheduling</a> &gt; <span class="el_source">DebugLoggingJobListener.java</span></div><h1>DebugLoggingJobListener.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2024 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.scheduling;
+
+import java.lang.invoke.MethodHandles;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.JobListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+@Component
+<span class="nc" id="L17">public class DebugLoggingJobListener implements JobListener {</span>
+<span class="nc" id="L18">  private static final Logger logger =</span>
+<span class="nc" id="L19">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  @Override
+  public String getName() {
+<span class="nc" id="L23">    return this.getClass().getSimpleName();</span>
+  }
+
+  @Override
+  public void jobToBeExecuted(JobExecutionContext context) {
+<span class="nc bnc" id="L28" title="All 2 branches missed.">    if (logger.isDebugEnabled()) {</span>
+<span class="nc" id="L29">      logger.debug(</span>
+          &quot;Job {}:{} about to be executed.&quot;,
+<span class="nc" id="L31">          context.getJobDetail().getKey().getGroup(),</span>
+<span class="nc" id="L32">          context.getJobDetail().getKey().getName());</span>
+<span class="nc" id="L33">      logger.debug(</span>
+          &quot;Job data map before execution: {}&quot;,
+<span class="nc" id="L35">          context.getMergedJobDataMap().getWrappedMap());</span>
+    }
+<span class="nc" id="L37">  }</span>
+
+  @Override
+  public void jobExecutionVetoed(JobExecutionContext context) {
+<span class="nc bnc" id="L41" title="All 2 branches missed.">    if (logger.isDebugEnabled())</span>
+<span class="nc" id="L42">      logger.debug(</span>
+          &quot;Job {}:{} execution vetoed.&quot;,
+<span class="nc" id="L44">          context.getJobDetail().getKey().getGroup(),</span>
+<span class="nc" id="L45">          context.getJobDetail().getKey().getName());</span>
+<span class="nc" id="L46">  }</span>
+
+  @Override
+  public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
+<span class="nc bnc" id="L50" title="All 2 branches missed.">    if (logger.isDebugEnabled())</span>
+<span class="nc" id="L51">      logger.debug(</span>
+          &quot;Job {}:{} was executed in: {} ms. With result: {}&quot;,
+<span class="nc" id="L53">          context.getJobDetail().getKey().getGroup(),</span>
+<span class="nc" id="L54">          context.getJobDetail().getKey().getName(),</span>
+<span class="nc" id="L55">          context.getJobRunTime(),</span>
+<span class="nc" id="L56">          context.getResult());</span>
+
+<span class="nc bnc" id="L58" title="All 2 branches missed.">    if (null != jobException) {</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">      if (logger.isDebugEnabled())</span>
+<span class="nc" id="L60">        logger.error(</span>
+            &quot;Job {}:{} threw an exception: {}&quot;,
+<span class="nc" id="L62">            context.getJobDetail().getKey().getGroup(),</span>
+<span class="nc" id="L63">            context.getJobDetail().getKey().getName(),</span>
+<span class="nc" id="L64">            jobException.getMessage());</span>
+    }
+<span class="nc" id="L66">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
