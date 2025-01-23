@@ -185,15 +185,13 @@ public class GeoServiceHelper {
   }
 
   private static void setQuantizedMeshCapabilities(GeoService geoService) {
-    geoService.setLayers(
-        List.of(
-            new GeoServiceLayer()
-                .id("0")
-                .root(true)
-                .name("quantizedmesh")
-                .title(geoService.getTitle())
-                .virtual(false)
-                .queryable(false)));
+    geoService.setLayers(List.of(new GeoServiceLayer()
+        .id("0")
+        .root(true)
+        .name("quantizedmesh")
+        .title(geoService.getTitle())
+        .virtual(false)
+        .queryable(false)));
   }
 
   private void setServiceInfo(
