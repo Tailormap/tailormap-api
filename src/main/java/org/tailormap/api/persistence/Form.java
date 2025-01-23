@@ -28,7 +28,8 @@ public class Form {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Version private Long version;
+  @Version
+  private Long version;
 
   @NotNull private String name;
 
@@ -38,13 +39,11 @@ public class Form {
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @NotNull
-  private FormOptions options = new FormOptions();
+  @NotNull private FormOptions options = new FormOptions();
 
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
-  @NotNull
-  private List<FormField> fields = new ArrayList<>();
+  @NotNull private List<FormField> fields = new ArrayList<>();
 
   public Long getId() {
     return id;

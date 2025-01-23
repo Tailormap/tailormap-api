@@ -19,10 +19,9 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 import org.tailormap.api.security.events.DefaultAuthenticationFailureEvent;
-import org.tailormap.api.security.events.OAuth2AuthenticationFailureEvent;
 
 @Component
-public class AuthenticationEvents {
+public class AuthenticationEventsLogger {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -43,12 +42,11 @@ public class AuthenticationEvents {
       if (token.getPrincipal() instanceof DefaultOidcUser oidcUser) {
         userClaims = ", user claims: " + oidcUser.getUserInfo().getClaims();
       }
-      authInfo =
-          String.format(
-              "via OIDC registration \"%s\" with client ID %s%s",
-              token.getClientRegistration().getClientName(),
-              token.getClientRegistration().getClientId(),
-              userClaims);
+      authInfo = String.format(
+          "via OIDC registration \"%s\" with client ID %s%s",
+          token.getClientRegistration().getClientName(),
+          token.getClientRegistration().getClientId(),
+          userClaims);
     }
     if (success.getSource() instanceof UsernamePasswordAuthenticationToken) {
       authInfo = "using username/password";
@@ -65,18 +63,14 @@ public class AuthenticationEvents {
   public void onFailure(AbstractAuthenticationFailureEvent failure) {
     String userInfo = "";
     if (failure.getAuthentication().getPrincipal() != null) {
-      userInfo = String.format(" for user \"%s\"", failure.getAuthentication().getPrincipal());
+      userInfo = String.format(
+          " for user \"%s\"", failure.getAuthentication().getPrincipal());
     }
     logger.info(
         "Authentication failure: {} {}{}",
         failure.getException().getMessage(),
         userInfo,
         getExtraInfo(failure));
-  }
-
-  @EventListener
-  public void onOAuth2AuthenticationFailureEvent(OAuth2AuthenticationFailureEvent event) {
-    logger.info("OAuth2 authentication failure: {}, {}", event.getException().getMessage(), event);
   }
 
   @EventListener

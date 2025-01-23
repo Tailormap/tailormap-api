@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.hibernate.annotations.Type;
+import org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.tailormap.api.util.Constants;
@@ -37,13 +38,12 @@ import org.tailormap.api.util.TMPasswordDeserializer;
 public class User {
 
   @Id
-  @Pattern(regexp = Constants.NAME_REGEX, message = "User" + Constants.NAME_REGEX_INVALID_MESSAGE)
-  private String username;
+  @Pattern(regexp = Constants.NAME_REGEX, message = "User" + Constants.NAME_REGEX_INVALID_MESSAGE) private String username;
 
-  @Version private Long version;
+  @Version
+  private Long version;
 
-  @NotNull
-  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  @NotNull @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   @JsonDeserialize(using = TMPasswordDeserializer.class)
   // bcrypt MAX/MIN length is 60 + {bcrypt} token, but for testing we use shorter plain text
   // passwords
@@ -165,5 +165,9 @@ public class User {
   public User setEnabled(boolean enabled) {
     this.enabled = enabled;
     return this;
+  }
+
+  public void addOrUpdateAdminProperty(String key, Object value, boolean isPublic) {
+    AdminAdditionalPropertyHelper.addOrUpdateAdminProperty(additionalProperties, key, value, isPublic);
   }
 }

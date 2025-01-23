@@ -47,8 +47,7 @@ public class TMFeatureTypeHelper {
   public static Set<String> getHiddenAttributes(
       @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
     Set<String> hiddenAttributes = new HashSet<>();
-    Optional.ofNullable(featureType.getSettings().getHideAttributes())
-        .ifPresent(hiddenAttributes::addAll);
+    Optional.ofNullable(featureType.getSettings().getHideAttributes()).ifPresent(hiddenAttributes::addAll);
     Optional.ofNullable(appLayerSettings.getHideAttributes()).ifPresent(hiddenAttributes::addAll);
     return hiddenAttributes;
   }
@@ -56,17 +55,14 @@ public class TMFeatureTypeHelper {
   public static Set<String> getReadOnlyAttributes(
       @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
     Set<String> readOnlyAttributes = new HashSet<>();
-    Optional.ofNullable(featureType.getSettings().getReadOnlyAttributes())
-        .ifPresent(readOnlyAttributes::addAll);
-    Optional.ofNullable(appLayerSettings.getReadOnlyAttributes())
-        .ifPresent(readOnlyAttributes::addAll);
+    Optional.ofNullable(featureType.getSettings().getReadOnlyAttributes()).ifPresent(readOnlyAttributes::addAll);
+    Optional.ofNullable(appLayerSettings.getReadOnlyAttributes()).ifPresent(readOnlyAttributes::addAll);
     return readOnlyAttributes;
   }
 
   /**
-   * Return a map of attribute names (in order, using a LinkedHashMap implementation) to an
-   * attribute descriptor and configured settings pair, taking into account the configured attribute
-   * order and hidden attributes.
+   * Return a map of attribute names (in order, using a LinkedHashMap implementation) to an attribute descriptor and
+   * configured settings pair, taking into account the configured attribute order and hidden attributes.
    *
    * @param featureType The feature type
    * @param appLayerSettings The app layer settings
@@ -102,8 +98,7 @@ public class TMFeatureTypeHelper {
 
     Map<String, AttributeSettings> attributeSettings =
         featureType.getSettings().getAttributeSettings();
-    LinkedHashMap<String, Pair<TMAttributeDescriptor, AttributeSettings>> result =
-        new LinkedHashMap<>();
+    LinkedHashMap<String, Pair<TMAttributeDescriptor, AttributeSettings>> result = new LinkedHashMap<>();
     for (String attribute : finalAttributeOrder) {
       AttributeSettings settings =
           Optional.ofNullable(attributeSettings.get(attribute)).orElseGet(AttributeSettings::new);

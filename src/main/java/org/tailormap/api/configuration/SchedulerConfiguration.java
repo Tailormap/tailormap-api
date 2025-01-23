@@ -30,16 +30,10 @@ public class SchedulerConfiguration {
 
   @PostConstruct
   public void addListeners() throws SchedulerException {
-    schedulerFactoryBean
-        .getScheduler()
-        .getListenerManager()
-        .addJobListener(new SentryJobListener());
+    schedulerFactoryBean.getScheduler().getListenerManager().addJobListener(new SentryJobListener());
     if (logger.isDebugEnabled()) {
       // Add debug logging listeners to the scheduler
-      schedulerFactoryBean
-          .getScheduler()
-          .getListenerManager()
-          .addJobListener(new DebugLoggingJobListener());
+      schedulerFactoryBean.getScheduler().getListenerManager().addJobListener(new DebugLoggingJobListener());
 
       schedulerFactoryBean
           .getScheduler()

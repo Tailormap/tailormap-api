@@ -57,12 +57,12 @@ class UniqueValuesControllerIntegrationTest {
   private String apiBasePath;
 
   private static final String provinciesWfsUrl = layerProvinciesWfs + "/unique/naam";
-  private static final String begroeidterreindeelPostgisUrl =
-      layerBegroeidTerreindeelPostgis + "/unique/bronhouder";
+  private static final String begroeidterreindeelPostgisUrl = layerBegroeidTerreindeelPostgis + "/unique/bronhouder";
   private static final String waterdeelOracleUrl = layerWaterdeelOracle + "/unique/BRONHOUDER";
   private static final String wegdeelSqlServerUrl = layerWegdeelSqlServer + "/unique/bronhouder";
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
   /** layer url + bronhouders. */
   static Stream<Arguments> databaseArgumentsProvider() {
@@ -80,15 +80,14 @@ class UniqueValuesControllerIntegrationTest {
   @MethodSource("databaseArgumentsProvider")
   void bronhouder_unique_values_test(String url, String... expected) throws Exception {
     url = apiBasePath + url;
-    MvcResult result =
-        mockMvc
-            .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.filterApplied").value(false))
-            .andExpect(jsonPath("$.values").isArray())
-            .andExpect(jsonPath("$.values").isNotEmpty())
-            .andReturn();
+    MvcResult result = mockMvc.perform(
+            get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.filterApplied").value(false))
+        .andExpect(jsonPath("$.values").isArray())
+        .andExpect(jsonPath("$.values").isNotEmpty())
+        .andReturn();
 
     final String body = result.getResponse().getContentAsString();
     List<String> values = JsonPath.read(body, "$.values");
@@ -100,11 +99,9 @@ class UniqueValuesControllerIntegrationTest {
 
   @Test
   void test_hidden_attribute() throws Exception {
-    final String url =
-        apiBasePath
-            + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/unique/ligtInLandCode";
-    mockMvc
-        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+    final String url = apiBasePath
+        + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/unique/ligtInLandCode";
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Attribute does not exist"));
@@ -113,10 +110,8 @@ class UniqueValuesControllerIntegrationTest {
   @Test
   void layer_without_featuretype() throws Exception {
     final String url =
-        apiBasePath
-            + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/unique/naam";
-    mockMvc
-        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        apiBasePath + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/unique/naam";
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Layer does not have feature type"));
@@ -125,21 +120,17 @@ class UniqueValuesControllerIntegrationTest {
   @Test
   void attribute_name_required() throws Exception {
     final String url =
-        apiBasePath
-            + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/unique/ ";
-    mockMvc
-        .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        apiBasePath + "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/unique/ ";
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().is4xxClientError())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.message").value("Attribute name is required"));
   }
 
   @ParameterizedTest(
-      name =
-          "#{index}: should return unique bronhouder from database when filtered on bronhouder: {0}")
+      name = "#{index}: should return unique bronhouder from database when filtered on bronhouder: {0}")
   @MethodSource("databaseArgumentsProvider")
-  void bronhouder_with_filter_on_bronhouder_unique_values_test(String url, String... expected)
-      throws Exception {
+  void bronhouder_with_filter_on_bronhouder_unique_values_test(String url, String... expected) throws Exception {
     url = apiBasePath + url;
     String cqlFilter = "bronhouder='G0344'";
     if (url.contains("BRONHOUDER")) {
@@ -147,19 +138,15 @@ class UniqueValuesControllerIntegrationTest {
       cqlFilter = cqlFilter.toUpperCase(Locale.ROOT);
     }
 
-    MvcResult result =
-        mockMvc
-            .perform(
-                get(url)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(url))
-                    .param("filter", cqlFilter))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.filterApplied").value(true))
-            .andExpect(jsonPath("$.values").isArray())
-            .andExpect(jsonPath("$.values").isNotEmpty())
-            .andReturn();
+    MvcResult result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("filter", cqlFilter))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.filterApplied").value(true))
+        .andExpect(jsonPath("$.values").isArray())
+        .andExpect(jsonPath("$.values").isNotEmpty())
+        .andReturn();
 
     final String body = result.getResponse().getContentAsString();
     List<String> values = JsonPath.read(body, "$.values");
@@ -168,9 +155,7 @@ class UniqueValuesControllerIntegrationTest {
     assertTrue(List.of(expected).contains(values.get(0)), "not all values are present");
   }
 
-  @ParameterizedTest(
-      name =
-          "#{index}: should return no unique bronhouder from database with exclusion filter: {0}")
+  @ParameterizedTest(name = "#{index}: should return no unique bronhouder from database with exclusion filter: {0}")
   @MethodSource("databaseArgumentsProvider")
   void bronhouder_with_filter_on_inonderzoek_unique_values_test(String url) throws Exception {
     url = apiBasePath + url;
@@ -180,12 +165,9 @@ class UniqueValuesControllerIntegrationTest {
       cqlFilter = cqlFilter.toUpperCase(Locale.ROOT);
     }
 
-    mockMvc
-        .perform(
-            get(url)
-                .with(setServletPath(url))
-                .param("filter", cqlFilter)
-                .accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(url).with(setServletPath(url))
+            .param("filter", cqlFilter)
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.filterApplied").value(true))
@@ -197,38 +179,35 @@ class UniqueValuesControllerIntegrationTest {
   // https://b3partners.atlassian.net/browse/HTM-758
   void unique_values_from_wfs() throws Exception {
     final String url = apiBasePath + provinciesWfsUrl;
-    MvcResult result =
-        mockMvc
-            .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.filterApplied").value(false))
-            .andExpect(jsonPath("$.values").isArray())
-            .andExpect(jsonPath("$.values").isNotEmpty())
-            .andReturn();
+    MvcResult result = mockMvc.perform(
+            get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.filterApplied").value(false))
+        .andExpect(jsonPath("$.values").isArray())
+        .andExpect(jsonPath("$.values").isNotEmpty())
+        .andReturn();
 
-    final String body =
-        result.getResponse().getContentAsString(/* for Fryslân */ StandardCharsets.UTF_8);
+    final String body = result.getResponse().getContentAsString(/* for Fryslân */ StandardCharsets.UTF_8);
     final List<String> values = JsonPath.read(body, "$.values");
     assertEquals(12, values.size(), "there should be 12 provinces");
 
     final Set<String> uniqueValues = new HashSet<>(values);
     assertEquals(values.size(), uniqueValues.size(), "Unique values should be unique");
     assertTrue(
-        uniqueValues.containsAll(
-            Arrays.asList(
-                "Noord-Brabant",
-                "Zuid-Holland",
-                "Utrecht",
-                "Groningen",
-                "Drenthe",
-                "Fryslân",
-                "Zeeland",
-                "Limburg",
-                "Noord-Holland",
-                "Gelderland",
-                "Flevoland",
-                "Overijssel")),
+        uniqueValues.containsAll(Arrays.asList(
+            "Noord-Brabant",
+            "Zuid-Holland",
+            "Utrecht",
+            "Groningen",
+            "Drenthe",
+            "Fryslân",
+            "Zeeland",
+            "Limburg",
+            "Noord-Holland",
+            "Gelderland",
+            "Flevoland",
+            "Overijssel")),
         "not all values are present");
 
     final List<String> sortedValues = values.stream().sorted().collect(Collectors.toList());
@@ -239,12 +218,9 @@ class UniqueValuesControllerIntegrationTest {
   void unique_values_from_wfs_with_filter_on_same() throws Exception {
     final String url = apiBasePath + provinciesWfsUrl;
     final String cqlFilter = "naam='Utrecht'";
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("filter", cqlFilter))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("filter", cqlFilter))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.filterApplied").value(true))
@@ -257,12 +233,9 @@ class UniqueValuesControllerIntegrationTest {
   void unique_values_from_wfs_with_filter_on_different() throws Exception {
     String cqlFilter = "naam like '%Holland'";
     final String url = apiBasePath + provinciesWfsUrl;
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("filter", cqlFilter))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("filter", cqlFilter))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.filterApplied").value(true))
@@ -273,16 +246,15 @@ class UniqueValuesControllerIntegrationTest {
   }
 
   /**
-   * Testcase for <a href="https://b3partners.atlassian.net/browse/HTM-492">HTM-492</a> where
-   * Jackson fails to process oracle.sql.TIMESTAMP.
+   * Testcase for <a href="https://b3partners.atlassian.net/browse/HTM-492">HTM-492</a> where Jackson fails to process
+   * oracle.sql.TIMESTAMP.
    *
-   * <p>The exception is: {@code org.springframework.web.util.NestedServletException: Request
-   * processing failed; nested exception is java.lang.ClassCastException: class oracle.sql.TIMESTAMP
-   * cannot be cast to class java.lang.Comparable (oracle.sql.TIMESTAMP is in unnamed module of
-   * loader 'app'; java.lang.Comparable is in module java.base of loader 'bootstrap') }
+   * <p>The exception is: {@code org.springframework.web.util.NestedServletException: Request processing failed;
+   * nested exception is java.lang.ClassCastException: class oracle.sql.TIMESTAMP cannot be cast to class
+   * java.lang.Comparable (oracle.sql.TIMESTAMP is in unnamed module of loader 'app'; java.lang.Comparable is in
+   * module java.base of loader 'bootstrap') }
    *
-   * <p>For this testcase to go green set the environment variable {@code
-   * -Doracle.jdbc.J2EE13Compliant=true}
+   * <p>For this testcase to go green set the environment variable {@code -Doracle.jdbc.J2EE13Compliant=true}
    *
    * <p>See also:
    *
@@ -301,10 +273,8 @@ class UniqueValuesControllerIntegrationTest {
   @Test
   void unique_values_oracle_timestamp_HTM_492() throws Exception {
     final String testUrl =
-        apiBasePath
-            + "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/TIJDSTIPREGISTRATIE";
-    mockMvc
-        .perform(get(testUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(testUrl)))
+        apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/TIJDSTIPREGISTRATIE";
+    mockMvc.perform(get(testUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(testUrl)))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.filterApplied").value(false))
@@ -315,8 +285,7 @@ class UniqueValuesControllerIntegrationTest {
   @Test
   void test_wms_secured_proxy_not_in_public_app() throws Exception {
     final String testUrl = apiBasePath + layerProxiedWithAuthInPublicApp + "/unique/naam";
-    mockMvc
-        .perform(get(testUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(testUrl)))
+    mockMvc.perform(get(testUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(testUrl)))
         .andExpect(status().isForbidden());
   }
 }

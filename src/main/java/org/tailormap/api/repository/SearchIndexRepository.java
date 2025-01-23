@@ -24,8 +24,7 @@ public interface SearchIndexRepository extends JpaRepository<SearchIndex, Long> 
 
   Optional<SearchIndex> findByName(String name);
 
-  @NonNull
-  @Query(
+  @NonNull @Query(
       value =
           "select * from search_index si, lateral jsonb_path_query(si.schedule, ('$.uuid ? (@ == \"'||:uuidToFind||'\")')::jsonpath)",
       nativeQuery = true)

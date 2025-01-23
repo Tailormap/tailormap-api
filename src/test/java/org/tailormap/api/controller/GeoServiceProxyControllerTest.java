@@ -19,8 +19,7 @@ class GeoServiceProxyControllerTest {
     String originalUrl = "https://service/path1?param=abc";
     String requestUrl = "https://api/path2?request=GetMap&other=value";
     assertEquals(
-        UriComponentsBuilder.fromUriString(
-                "https://service/path1?request=GetMap&param=abc&other=value")
+        UriComponentsBuilder.fromUriString("https://service/path1?request=GetMap&param=abc&other=value")
             .build(),
         getProxyUrl(originalUrl, requestUrl),
         "bad proxy params");
@@ -28,8 +27,7 @@ class GeoServiceProxyControllerTest {
     originalUrl = "https://service/path1?param=abc&REQUEST=GetCapabilities&original=value";
     requestUrl = "https://api/path2?request=GetMap&param=xyz";
     assertEquals(
-        UriComponentsBuilder.fromUriString(
-                "https://service/path1?request=GetMap&param=xyz&original=value")
+        UriComponentsBuilder.fromUriString("https://service/path1?request=GetMap&param=xyz&original=value")
             .build(),
         getProxyUrl(originalUrl, requestUrl),
         "bad proxy params");
@@ -37,9 +35,8 @@ class GeoServiceProxyControllerTest {
 
   private static UriComponents getProxyUrl(String originalUrl, String requestUrl) {
     UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(originalUrl);
-    uriComponentsBuilder.replaceQueryParams(
-        GeoServiceProxyController.buildOgcProxyRequestParams(
-            getUrlParams(originalUrl), getUrlParams(requestUrl)));
+    uriComponentsBuilder.replaceQueryParams(GeoServiceProxyController.buildOgcProxyRequestParams(
+        getUrlParams(originalUrl), getUrlParams(requestUrl)));
     return uriComponentsBuilder.build();
   }
 

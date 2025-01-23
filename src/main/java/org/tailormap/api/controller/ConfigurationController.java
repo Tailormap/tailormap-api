@@ -29,16 +29,13 @@ public class ConfigurationController {
     this.configurationRepository = configurationRepository;
   }
 
-  @GetMapping(
-      path = "${tailormap-api.base-path}/config/{key}",
-      produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(path = "${tailormap-api.base-path}/config/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
   @Timed(value = "get_config_key", description = "Get configuration value")
   @Counted(value = "get_config_key", description = "Count of get configuration value")
   public ResponseEntity<Serializable> getConfig(@PathVariable String key) {
-    Configuration config =
-        configurationRepository
-            .getAvailableForViewer(key)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    Configuration config = configurationRepository
+        .getAvailableForViewer(key)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
     ConfigResponse response = new ConfigResponse();
     response.setKey(key);

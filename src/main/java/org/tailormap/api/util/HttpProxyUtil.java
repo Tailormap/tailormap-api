@@ -16,8 +16,7 @@ import java.util.Set;
 import org.springframework.http.HttpHeaders;
 
 public class HttpProxyUtil {
-  public static void addForwardedForRequestHeaders(
-      HttpRequest.Builder requestBuilder, HttpServletRequest request) {
+  public static void addForwardedForRequestHeaders(HttpRequest.Builder requestBuilder, HttpServletRequest request) {
     try {
       String ip = request.getRemoteAddr();
       InetAddress inetAddress = InetAddress.getByName(ip);
@@ -63,8 +62,7 @@ public class HttpProxyUtil {
       HttpRequest.Builder requestBuilder, String username, String password) {
     if (username != null && password != null) {
       String toEncode = username + ":" + password;
-      String encoded =
-          Base64.getEncoder().encodeToString(toEncode.getBytes(StandardCharsets.UTF_8));
+      String encoded = Base64.getEncoder().encodeToString(toEncode.getBytes(StandardCharsets.UTF_8));
       requestBuilder.header("Authorization", "Basic " + encoded);
     }
   }

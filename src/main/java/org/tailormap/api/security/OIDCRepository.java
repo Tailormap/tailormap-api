@@ -92,14 +92,14 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
   public void synchronize() {
     Map<String, ClientRegistration> newMap = new HashMap<>();
 
-    final HttpClient httpClient =
-        HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).build();
+    final HttpClient httpClient = HttpClient.newBuilder()
+        .followRedirects(HttpClient.Redirect.NORMAL)
+        .build();
     for (OIDCConfiguration configuration : oidcConfigurationRepository.findAll()) {
       String id = String.format("%d", configuration.getId());
       try {
-        HttpRequest.Builder requestBuilder =
-            HttpRequest.newBuilder()
-                .uri(new URI(configuration.getIssuerUrl() + "/.well-known/openid-configuration"));
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
+            .uri(new URI(configuration.getIssuerUrl() + "/.well-known/openid-configuration"));
         HttpResponse<String> response =
             httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
 
@@ -117,7 +117,8 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
                     ClientAuthenticationMethod
                         .CLIENT_SECRET_BASIC) // TODO: fetch from OIDC metadata
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationUri(metadata.getAuthorizationEndpointURI().toASCIIString())
+                .authorizationUri(
+                    metadata.getAuthorizationEndpointURI().toASCIIString())
                 .tokenUri(metadata.getTokenEndpointURI().toASCIIString())
                 .userInfoUri(metadata.getUserInfoEndpointURI().toASCIIString())
                 .providerConfigurationMetadata(metadata.toJSONObject())
@@ -162,7 +163,8 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
                     ClientAuthenticationMethod
                         .CLIENT_SECRET_BASIC) // TODO: fetch from OIDC metadata
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationUri(metadata.getAuthorizationEndpointURI().toASCIIString())
+                .authorizationUri(
+                    metadata.getAuthorizationEndpointURI().toASCIIString())
                 .tokenUri(metadata.getTokenEndpointURI().toASCIIString())
                 .userInfoUri(metadata.getUserInfoEndpointURI().toASCIIString())
                 .providerConfigurationMetadata(metadata.toJSONObject())

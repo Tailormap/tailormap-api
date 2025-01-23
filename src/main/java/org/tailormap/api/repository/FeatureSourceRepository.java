@@ -27,14 +27,12 @@ public interface FeatureSourceRepository extends JpaRepository<TMFeatureSource, 
 
   @Override
   @PreAuthorize(value = "permitAll()")
-  @NonNull
-  Optional<TMFeatureSource> findById(@NonNull Long id);
+  @NonNull Optional<TMFeatureSource> findById(@NonNull Long id);
 
   @PreAuthorize(value = "permitAll()")
   List<TMFeatureSource> findByLinkedServiceId(String id);
 
-  @NonNull
-  @PreAuthorize("permitAll()")
+  @NonNull @PreAuthorize("permitAll()")
   @Query("from TMFeatureSource fs where id in :ids")
   List<TMFeatureSource> findByIds(@Param("ids") List<Long> ids);
 
@@ -47,14 +45,13 @@ public interface FeatureSourceRepository extends JpaRepository<TMFeatureSource, 
    * @param ids The ids not to include
    * @return All feature sources except those matching the ids
    */
-  @NonNull
-  @PreAuthorize("permitAll()")
+  @NonNull @PreAuthorize("permitAll()")
   @Query("from TMFeatureSource fs where id not in :ids")
   List<TMFeatureSource> getAllExcludingIds(@Param("ids") List<Long> ids);
 
   /**
-   * Find a feature-source by title. This is a non-deterministic operation since the title is not
-   * unique. Useful for testing.
+   * Find a feature-source by title. This is a non-deterministic operation since the title is not unique. Useful for
+   * testing.
    *
    * @param title The title of the feature-source
    * @return The feature-source

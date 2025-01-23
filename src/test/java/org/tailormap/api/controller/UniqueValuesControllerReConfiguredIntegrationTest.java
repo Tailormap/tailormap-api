@@ -62,7 +62,8 @@ class UniqueValuesControllerReConfiguredIntegrationTest {
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
   /** layer url + bronhouders. */
   static Stream<Arguments> databaseArgumentsProvider() {
@@ -80,15 +81,14 @@ class UniqueValuesControllerReConfiguredIntegrationTest {
   @MethodSource("databaseArgumentsProvider")
   void bronhouder_unique_values_test(String url, String... expected) throws Exception {
     url = apiBasePath + url;
-    MvcResult result =
-        mockMvc
-            .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.filterApplied").value(false))
-            .andExpect(jsonPath("$.values").isArray())
-            .andExpect(jsonPath("$.values").isNotEmpty())
-            .andReturn();
+    MvcResult result = mockMvc.perform(
+            get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.filterApplied").value(false))
+        .andExpect(jsonPath("$.values").isArray())
+        .andExpect(jsonPath("$.values").isNotEmpty())
+        .andReturn();
 
     final String body = result.getResponse().getContentAsString();
     List<String> values = JsonPath.read(body, "$.values");
@@ -99,11 +99,9 @@ class UniqueValuesControllerReConfiguredIntegrationTest {
   }
 
   @ParameterizedTest(
-      name =
-          "#{index}: should return unique bronhouder from database when filtered on bronhouder: {0}")
+      name = "#{index}: should return unique bronhouder from database when filtered on bronhouder: {0}")
   @MethodSource("databaseArgumentsProvider")
-  void bronhouder_with_filter_on_bronhouder_unique_values_test(String url, String... expected)
-      throws Exception {
+  void bronhouder_with_filter_on_bronhouder_unique_values_test(String url, String... expected) throws Exception {
     url = apiBasePath + url;
     String cqlFilter = "bronhouder='G0344'";
     if (url.contains("BRONHOUDER")) {
@@ -111,19 +109,15 @@ class UniqueValuesControllerReConfiguredIntegrationTest {
       cqlFilter = cqlFilter.toUpperCase(Locale.ROOT);
     }
 
-    MvcResult result =
-        mockMvc
-            .perform(
-                get(url)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .with(setServletPath(url))
-                    .param("filter", cqlFilter))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.filterApplied").value(true))
-            .andExpect(jsonPath("$.values").isArray())
-            .andExpect(jsonPath("$.values").isNotEmpty())
-            .andReturn();
+    MvcResult result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("filter", cqlFilter))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.filterApplied").value(true))
+        .andExpect(jsonPath("$.values").isArray())
+        .andExpect(jsonPath("$.values").isNotEmpty())
+        .andReturn();
 
     final String body = result.getResponse().getContentAsString();
     List<String> values = JsonPath.read(body, "$.values");
@@ -132,9 +126,7 @@ class UniqueValuesControllerReConfiguredIntegrationTest {
     assertTrue(List.of(expected).contains(values.get(0)), "not all values are present");
   }
 
-  @ParameterizedTest(
-      name =
-          "#{index}: should return no unique bronhouder from database with exclusion filter: {0}")
+  @ParameterizedTest(name = "#{index}: should return no unique bronhouder from database with exclusion filter: {0}")
   @MethodSource("databaseArgumentsProvider")
   void bronhouder_with_filter_on_inonderzoek_unique_values_test(String url) throws Exception {
     url = apiBasePath + url;
@@ -144,12 +136,9 @@ class UniqueValuesControllerReConfiguredIntegrationTest {
       cqlFilter = cqlFilter.toUpperCase(Locale.ROOT);
     }
 
-    mockMvc
-        .perform(
-            get(url)
-                .with(setServletPath(url))
-                .param("filter", cqlFilter)
-                .accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(url).with(setServletPath(url))
+            .param("filter", cqlFilter)
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.filterApplied").value(true))
@@ -161,38 +150,35 @@ class UniqueValuesControllerReConfiguredIntegrationTest {
   // https://b3partners.atlassian.net/browse/HTM-758
   void unique_values_from_wfs() throws Exception {
     final String url = apiBasePath + provinciesWFSUrl;
-    MvcResult result =
-        mockMvc
-            .perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.filterApplied").value(false))
-            .andExpect(jsonPath("$.values").isArray())
-            .andExpect(jsonPath("$.values").isNotEmpty())
-            .andReturn();
+    MvcResult result = mockMvc.perform(
+            get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.filterApplied").value(false))
+        .andExpect(jsonPath("$.values").isArray())
+        .andExpect(jsonPath("$.values").isNotEmpty())
+        .andReturn();
 
-    final String body =
-        result.getResponse().getContentAsString(/* for Fryslân */ StandardCharsets.UTF_8);
+    final String body = result.getResponse().getContentAsString(/* for Fryslân */ StandardCharsets.UTF_8);
     final List<String> values = JsonPath.read(body, "$.values");
     assertEquals(12, values.size(), "there should be 12 provinces");
 
     final Set<String> uniqueValues = new HashSet<>(values);
     assertEquals(values.size(), uniqueValues.size(), "Unique values should be unique");
     assertTrue(
-        uniqueValues.containsAll(
-            Arrays.asList(
-                "Noord-Brabant",
-                "Zuid-Holland",
-                "Utrecht",
-                "Groningen",
-                "Drenthe",
-                "Fryslân",
-                "Zeeland",
-                "Limburg",
-                "Noord-Holland",
-                "Gelderland",
-                "Flevoland",
-                "Overijssel")),
+        uniqueValues.containsAll(Arrays.asList(
+            "Noord-Brabant",
+            "Zuid-Holland",
+            "Utrecht",
+            "Groningen",
+            "Drenthe",
+            "Fryslân",
+            "Zeeland",
+            "Limburg",
+            "Noord-Holland",
+            "Gelderland",
+            "Flevoland",
+            "Overijssel")),
         "not all values are present");
 
     final List<String> sortedValues = values.stream().sorted().collect(Collectors.toList());
@@ -203,12 +189,9 @@ class UniqueValuesControllerReConfiguredIntegrationTest {
   void unique_values_from_wfs_with_filter_on_same() throws Exception {
     final String url = apiBasePath + provinciesWFSUrl;
     final String cqlFilter = "naam='Utrecht'";
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("filter", cqlFilter))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("filter", cqlFilter))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.filterApplied").value(true))
@@ -221,12 +204,9 @@ class UniqueValuesControllerReConfiguredIntegrationTest {
   void unique_values_from_wfs_with_filter_on_different() throws Exception {
     String cqlFilter = "naam like '%Holland'";
     final String url = apiBasePath + provinciesWFSUrl;
-    mockMvc
-        .perform(
-            get(url)
-                .accept(MediaType.APPLICATION_JSON)
-                .with(setServletPath(url))
-                .param("filter", cqlFilter))
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .param("filter", cqlFilter))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.filterApplied").value(true))
@@ -240,10 +220,8 @@ class UniqueValuesControllerReConfiguredIntegrationTest {
   @Test
   void unique_values_oracle_timestamp_HTM_492() throws Exception {
     final String testUrl =
-        apiBasePath
-            + "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/TIJDSTIPREGISTRATIE";
-    mockMvc
-        .perform(get(testUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(testUrl)))
+        apiBasePath + "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL/unique/TIJDSTIPREGISTRATIE";
+    mockMvc.perform(get(testUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(testUrl)))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.filterApplied").value(false))

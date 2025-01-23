@@ -1,0 +1,142 @@
+# Copyright (C) 2024 B3Partners B.V.
+#
+# SPDX-License-Identifier: MIT
+name: 'tailormap-devcontainer'
+
+include:
+  - ../build/ci/docker-compose.yml
+
+services:
+  tailormap-api:
+    container_name: tailormap-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment: # NOTE: POSTGRES_DB/USER/PASSWORD should match values in db container
+      POSTGRES_USER: tailormap
+      POSTGRES_PASSWORD: tailormap
+      POSTGRES_DB: tailormap
+      POSTGRES_HOSTNAME: postgres
+    #    volumes:
+    #      - ../..:/workspaces:cached
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
+    network_mode: service:postgres
+    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
+#
+#  postgres:
+#    container_name: postgres
+#    image: postgres:17-alpine
+#    environment:
+#      POSTGRES_USER: tailormap
+#      POSTGRES_PASSWORD: tailormap
+#      POSTGRES_DB: tailormap
+#    ports:
+#      - "127.0.0.1:5432:5432"
+#    volumes:
+#      - postgres-data:/var/lib/postgresql/data
+#    networks:
+#      - tailormap-ci
+#    healthcheck:
+#      test: su postgres -c pg_isready
+#      interval: 15s
+#      timeout: 5s
+#      retries: 5
+#      start_period: 45s
+#    restart: unless-stopped
+#
+#  postgis:
+#    container_name: postgis
+#    image: docker.b3p.nl/tailormap/tailormap-data_postgis:snapshot
+#    environment:
+#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fa6efb5b-075b-4b7b-aab0-96108cd77e76}
+#      GEODATA_PASSWORD: ${GEODATA_PASSWORD:-980f1c8A-25933b2}
+#    volumes:
+#      - postgis-data:/var/lib/postgresql/data
+#    ports:
+#      - "127.0.0.1:54322:5432"
+#    networks:
+#      - tailormap-ci
+#    healthcheck:
+#      interval: 1m
+#      timeout: 5s
+#      retries: 5
+#      start_period: 1m
+#      test: su postgres -c pg_isready
+#    restart: unless-stopped
+#
+#  sqlserver:
+#    container_name: sqlserver
+#    image: docker.b3p.nl/tailormap/tailormap-data_sqlserver:snapshot
+#    environment:
+#      SA_PASSWORD: ${SA_PASSWORD:-fa6efb5b-075b-4b7b-aab0-96108cd77e76}
+#      GEODATA_PASSWORD: ${GEODATA_PASSWORD:-980f1c8A-25933b2}
+#      ACCEPT_EULA: Y
+#    volumes:
+#      - sqlserver-data:/var/opt/mssql
+#    ports:
+#      - "127.0.0.1:1433:1433"
+#    networks:
+#      - tailormap-ci
+#    healthcheck:
+#      interval: 1m
+#      timeout: 5s
+#      retries: 5
+#      start_period: 1m
+#      test: /opt/mssql-tools18/bin/sqlcmd -No -U sa -P $$SA_PASSWORD -Q "select 1" -b -o /dev/null
+#    restart: unless-stopped
+#
+#  oracle:
+#    container_name: oracle
+#    image: docker.b3p.nl/tailormap/tailormap-data_oracle:snapshot
+#    environment: # Note Oracle has default maximum password length of 16!
+#      ORACLE_PASSWORD: ${ORACLE_PASSWORD:-fa6efb5b-075b-4b}
+#      # this user is created in FREEPDB1, not in XE
+#      APP_USER: "geodata"
+#      APP_USER_PASSWORD: ${GEODATA_PASSWORD:-980f1c8A-25933b2}
+#      GEODATA_PASSWORD: ${GEODATA_PASSWORD:-980f1c8A-25933b2}
+#    volumes:
+#      - oracle-data:/opt/oracle/oradata
+#    ports:
+#      - "127.0.0.1:1521:1521"
+#    networks:
+#      - tailormap-ci
+#    labels:
+#      traefik.enable: false
+#    healthcheck:
+#      interval: 1m
+#      timeout: 5s
+#      retries: 5
+#      start_period: 1m
+#      test: healthcheck.sh
+#    restart: unless-stopped
+#
+#  solr:
+#    container_name: solr
+#    depends_on:
+#      - postgis
+#      - oracle
+#      - sqlserver
+#    image: ghcr.io/tailormap/solr:9.7.0
+#    environment:
+#      TZ: Europe/Amsterdam
+#      SOLR_OPTS: '$SOLR_OPTS -Dsolr.environment=dev,label=Tailormap+Development,color=#6236FF'
+#      SOLR_DELETE_UNKNOWN_CORES: true
+#    volumes:
+#      - solr-data:/var/solr
+#    ports:
+#      - "127.0.0.1:8983:8983"
+#    networks:
+#      - tailormap-ci
+#    restart: unless-stopped
+#    command:
+#      - solr-precreate
+#      - tailormap
+#    healthcheck:
+#      test: 'curl -s http://localhost:8983/solr/tailormap/admin/ping | grep -q "OK" || exit 1'
+#      start_period: 60s
+#      interval: 15s
+#      timeout: 5s
+#      retries: 3

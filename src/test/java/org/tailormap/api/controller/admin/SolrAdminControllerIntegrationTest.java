@@ -36,8 +36,12 @@ import org.tailormap.api.persistence.Group;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SolrAdminControllerIntegrationTest {
-  @Autowired private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
+
   private MockMvc mockMvc;
+
+  private final int waitForIndexRefreshMillis = 10000;
 
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
@@ -52,8 +56,7 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   void pingTest() throws Exception {
-    mockMvc
-        .perform(get(adminBasePath + "/index/ping").accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(adminBasePath + "/index/ping").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.status").value("OK"))
@@ -65,10 +68,7 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   void deleteNonExistentIndex() throws Exception {
-    mockMvc
-        .perform(
-            delete(adminBasePath + "/index/snapshot-geoserver/1000")
-                .accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(delete(adminBasePath + "/index/snapshot-geoserver/1000").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
   }
 
@@ -77,13 +77,14 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(1)
-  void refreshIndex1() throws Exception {
-    mockMvc
-        .perform(
-            put(adminBasePath + "/index/1")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
+  void refreshIndex4() throws Exception {
+    // 4: bak
+    mockMvc.perform(put(adminBasePath + "/index/4")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isAccepted());
+    // after submitting the request, wait for the index to be refreshed
+    Thread.sleep(waitForIndexRefreshMillis);
   }
 
   @Test
@@ -91,9 +92,9 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(2)
-  void clearIndex1() throws Exception {
-    mockMvc
-        .perform(delete(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
+  void clearIndex4() throws Exception {
+    // 4: bak
+    mockMvc.perform(delete(adminBasePath + "/index/4").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 
@@ -102,10 +103,12 @@ class SolrAdminControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   @Order(3)
-  void recreateIndex1() throws Exception {
-    mockMvc
-        .perform(put(adminBasePath + "/index/1").accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isCreated());
+  void recreateIndex4() throws Exception {
+    // 4: bak
+    mockMvc.perform(put(adminBasePath + "/index/4").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isAccepted());
+    // after submitting the request, wait for the index to be refreshed
+    Thread.sleep(waitForIndexRefreshMillis);
   }
 
   @Test
@@ -114,11 +117,26 @@ class SolrAdminControllerIntegrationTest {
       authorities = {Group.ADMIN})
   @Order(1)
   void indexWithoutSearchIndexConfigured() throws Exception {
-    mockMvc
-        .perform(
-            put(adminBasePath + "/index/100")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(put(adminBasePath + "/index/100")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {Group.ADMIN})
+  void indexWithoutSchedule() throws Exception {
+    // 3: Wegdeel
+    mockMvc.perform(put(adminBasePath + "/index/3").accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isAccepted())
+        .andExpect(jsonPath("$.code").value(202))
+        .andExpect(jsonPath("$.message").value("Indexing scheduled"))
+        .andExpect(jsonPath("$.uuid").isNotEmpty())
+        .andExpect(jsonPath("$.type").value("index"));
+
+    // after submitting the request, wait for the index to be refreshed in the scheduler
+    Thread.sleep(2 * waitForIndexRefreshMillis);
   }
 }

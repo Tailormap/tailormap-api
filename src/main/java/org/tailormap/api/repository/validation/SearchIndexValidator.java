@@ -36,21 +36,15 @@ public class SearchIndexValidator implements Validator {
   public void validate(@NonNull Object target, @NonNull Errors errors) {
     final SearchIndex searchIndex = (SearchIndex) target;
     if (searchIndex.getFeatureTypeId() != null) {
-      featureTypeRepository
-          .findById(searchIndex.getFeatureTypeId())
-          .ifPresent(
-              (ft) -> {
-                if (TMFeatureSource.Protocol.WFS.equals(ft.getFeatureSource().getProtocol())) {
-                  logger.warn(
-                      "Attempt to index feature type '{}' from unsupported WFS source '{}'.",
-                      ft.getName(),
-                      ft.getFeatureSource().getTitle());
-                  errors.rejectValue(
-                      "featureTypeId",
-                      "invalid",
-                      "This feature type is not available for indexing.");
-                }
-              });
+      featureTypeRepository.findById(searchIndex.getFeatureTypeId()).ifPresent((ft) -> {
+        if (TMFeatureSource.Protocol.WFS.equals(ft.getFeatureSource().getProtocol())) {
+          logger.warn(
+              "Attempt to index feature type '{}' from unsupported WFS source '{}'.",
+              ft.getName(),
+              ft.getFeatureSource().getTitle());
+          errors.rejectValue("featureTypeId", "invalid", "This feature type is not available for indexing.");
+        }
+      });
     }
   }
 }

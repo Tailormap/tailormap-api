@@ -72,8 +72,7 @@ public class GeoServiceHelper {
   private final FeatureSourceRepository featureSourceRepository;
 
   @Autowired
-  public GeoServiceHelper(
-      TailormapConfig tailormapConfig, FeatureSourceRepository featureSourceRepository) {
+  public GeoServiceHelper(TailormapConfig tailormapConfig, FeatureSourceRepository featureSourceRepository) {
     this.tailormapConfig = tailormapConfig;
     this.featureSourceRepository = featureSourceRepository;
   }
@@ -112,9 +111,8 @@ public class GeoServiceHelper {
       return;
     }
 
-    ResponseTeeingHTTPClient client =
-        new ResponseTeeingHTTPClient(
-            HTTPClientFinder.createClient(), null, Set.of("Access-Control-Allow-Origin"));
+    ResponseTeeingHTTPClient client = new ResponseTeeingHTTPClient(
+        HTTPClientFinder.createClient(), null, Set.of("Access-Control-Allow-Origin"));
 
     ServiceAuthentication auth = geoService.getAuthentication();
     if (auth != null && auth.getMethod() == ServiceAuthentication.MethodEnum.PASSWORD) {
@@ -147,11 +145,10 @@ public class GeoServiceHelper {
     }
 
     if (geoService.getTitle() == null) {
-      geoService.setTitle(
-          Optional.ofNullable(geoService.getServiceCapabilities())
-              .map(TMServiceCaps::getServiceInfo)
-              .map(TMServiceInfo::getTitle)
-              .orElse(null));
+      geoService.setTitle(Optional.ofNullable(geoService.getServiceCapabilities())
+          .map(TMServiceCaps::getServiceInfo)
+          .map(TMServiceInfo::getTitle)
+          .orElse(null));
     }
 
     if (logger.isDebugEnabled()) {
@@ -167,28 +164,24 @@ public class GeoServiceHelper {
   }
 
   private static void setXyzCapabilities(GeoService geoService) {
-    geoService.setLayers(
-        List.of(
-            new GeoServiceLayer()
-                .id("0")
-                .root(true)
-                .name("xyz")
-                .title(geoService.getTitle())
-                .crs(Set.of(geoService.getSettings().getXyzCrs()))
-                .virtual(false)
-                .queryable(false)));
+    geoService.setLayers(List.of(new GeoServiceLayer()
+        .id("0")
+        .root(true)
+        .name("xyz")
+        .title(geoService.getTitle())
+        .crs(Set.of(geoService.getSettings().getXyzCrs()))
+        .virtual(false)
+        .queryable(false)));
   }
 
   private static void setTileset3DCapabilities(GeoService geoService) {
-    geoService.setLayers(
-        List.of(
-            new GeoServiceLayer()
-                .id("0")
-                .root(true)
-                .name("Tileset3D")
-                .title(geoService.getTitle())
-                .virtual(false)
-                .queryable(false)));
+    geoService.setLayers(List.of(new GeoServiceLayer()
+        .id("0")
+        .root(true)
+        .name("Tileset3D")
+        .title(geoService.getTitle())
+        .virtual(false)
+        .queryable(false)));
   }
 
   private static void setQuantizedMeshCapabilities(GeoService geoService) {
@@ -217,22 +210,20 @@ public class GeoServiceHelper {
     TMServiceCaps caps = new TMServiceCaps();
     geoService.setServiceCapabilities(caps);
 
-    caps.setCorsAllowOrigin(
-        client.getLatestResponse().getResponseHeader("Access-Control-Allow-Origin"));
+    caps.setCorsAllowOrigin(client.getLatestResponse().getResponseHeader("Access-Control-Allow-Origin"));
 
     if (info != null) {
       if (StringUtils.isBlank(geoService.getTitle())) {
         geoService.setTitle(info.getTitle());
       }
 
-      caps.serviceInfo(
-          new TMServiceInfo()
-              .keywords(info.getKeywords())
-              .description(info.getDescription())
-              .title(info.getTitle())
-              .publisher(info.getPublisher())
-              .schema(info.getSchema())
-              .source(info.getSource()));
+      caps.serviceInfo(new TMServiceInfo()
+          .keywords(info.getKeywords())
+          .description(info.getDescription())
+          .title(info.getTitle())
+          .publisher(info.getPublisher())
+          .schema(info.getSchema())
+          .source(info.getSource()));
 
       geoService.setAdvertisedUrl(info.getSource().toString());
     } else if (ows.getCapabilities() != null && ows.getCapabilities().getService() != null) {
@@ -241,8 +232,7 @@ public class GeoServiceHelper {
       if (StringUtils.isBlank(geoService.getTitle())) {
         geoService.setTitle(service.getTitle());
       }
-      caps.setServiceInfo(
-          new TMServiceInfo().keywords(Set.copyOf(List.of(service.getKeywordList()))));
+      caps.setServiceInfo(new TMServiceInfo().keywords(Set.copyOf(List.of(service.getKeywordList()))));
     }
   }
 
@@ -257,43 +247,35 @@ public class GeoServiceHelper {
         .virtual(l.getName() == null)
         .crs(l.getSrs())
         .latLonBoundingBox(GeoToolsHelper.boundsFromCRSEnvelope(l.getLatLonBoundingBox()))
-        .styles(
-            l.getStyles().stream()
-                .map(
-                    gtStyle -> {
-                      WMSStyle style =
-                          new WMSStyle()
-                              .name(gtStyle.getName())
-                              .title(
-                                  Optional.ofNullable(gtStyle.getTitle())
-                                      .map(Objects::toString)
-                                      .orElse(null))
-                              .abstractText(
-                                  Optional.ofNullable(gtStyle.getAbstract())
-                                      .map(Objects::toString)
-                                      .orElse(null));
-                      try {
-                        List<?> legendURLs = gtStyle.getLegendURLs();
-                        // GeoTools will replace invalid URLs with null in legendURLs
-                        if (legendURLs != null
-                            && !legendURLs.isEmpty()
-                            && legendURLs.get(0) != null) {
-                          style.legendURL(new URI((String) legendURLs.get(0)));
-                        }
-                      } catch (URISyntaxException ignored) {
-                        // Won't occur because GeoTools would have already returned null on
-                        // invalid URL
-                      }
-                      return style;
-                    })
-                .collect(Collectors.toList()))
+        .styles(l.getStyles().stream()
+            .map(gtStyle -> {
+              WMSStyle style = new WMSStyle()
+                  .name(gtStyle.getName())
+                  .title(Optional.ofNullable(gtStyle.getTitle())
+                      .map(Objects::toString)
+                      .orElse(null))
+                  .abstractText(Optional.ofNullable(gtStyle.getAbstract())
+                      .map(Objects::toString)
+                      .orElse(null));
+              try {
+                List<?> legendURLs = gtStyle.getLegendURLs();
+                // GeoTools will replace invalid URLs with null in legendURLs
+                if (legendURLs != null && !legendURLs.isEmpty() && legendURLs.get(0) != null) {
+                  style.legendURL(new URI((String) legendURLs.get(0)));
+                }
+              } catch (URISyntaxException ignored) {
+                // Won't occur because GeoTools would have already returned null on
+                // invalid URL
+              }
+              return style;
+            })
+            .collect(Collectors.toList()))
         .queryable(l.isQueryable())
         .abstractText(l.get_abstract())
-        .children(
-            l.getLayerChildren().stream()
-                .map(layers::indexOf)
-                .map(String::valueOf)
-                .collect(Collectors.toList()));
+        .children(l.getLayerChildren().stream()
+            .map(layers::indexOf)
+            .map(String::valueOf)
+            .collect(Collectors.toList()));
   }
 
   private void addLayerRecursive(
@@ -309,8 +291,7 @@ public class GeoServiceHelper {
     }
   }
 
-  void loadWMSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client)
-      throws Exception {
+  void loadWMSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client) throws Exception {
     WebMapServer wms;
     try {
       wms = new WebMapServer(new URL(geoService.getUrl()), client);
@@ -328,11 +309,10 @@ public class GeoServiceHelper {
       if (contentType != null && contentType.contains("text/xml")) {
         String wmsException =
             WMSServiceExceptionUtil.tryGetServiceExceptionMessage(client.getLatestResponseCopy());
-        throw new Exception(
-            "Error loading WMS capabilities: "
-                + (wmsException != null
-                    ? wmsException
-                    : new String(client.getLatestResponseCopy(), StandardCharsets.UTF_8)));
+        throw new Exception("Error loading WMS capabilities: "
+            + (wmsException != null
+                ? wmsException
+                : new String(client.getLatestResponseCopy(), StandardCharsets.UTF_8)));
       } else {
         throw e;
       }
@@ -363,34 +343,33 @@ public class GeoServiceHelper {
 
     geoService
         .getServiceCapabilities()
-        .capabilities(
-            new TMServiceCapsCapabilities()
-                .version(wmsCapabilities.getVersion())
-                .updateSequence(wmsCapabilities.getUpdateSequence())
-                .abstractText(wmsCapabilities.getService().get_abstract())
-                .request(
-                    new TMServiceCapabilitiesRequest()
-                        .getMap(
-                            new TMServiceCapabilitiesRequestGetMap()
-                                .formats(Set.copyOf(getMap.getFormats())))
-                        .getFeatureInfo(
-                            getFeatureInfo == null
-                                ? null
-                                : new TMServiceCapabilitiesRequestGetFeatureInfo()
-                                    .formats(Set.copyOf(getFeatureInfo.getFormats())))
-                        .describeLayer(
-                            wms.getCapabilities().getRequest().getDescribeLayer() != null)));
+        .capabilities(new TMServiceCapsCapabilities()
+            .version(wmsCapabilities.getVersion())
+            .updateSequence(wmsCapabilities.getUpdateSequence())
+            .abstractText(wmsCapabilities.getService().get_abstract())
+            .request(new TMServiceCapabilitiesRequest()
+                .getMap(new TMServiceCapabilitiesRequestGetMap()
+                    .formats(Set.copyOf(getMap.getFormats())))
+                .getFeatureInfo(
+                    getFeatureInfo == null
+                        ? null
+                        : new TMServiceCapabilitiesRequestGetFeatureInfo()
+                            .formats(Set.copyOf(getFeatureInfo.getFormats())))
+                .describeLayer(
+                    wms.getCapabilities().getRequest().getDescribeLayer() != null)));
 
     if (logger.isDebugEnabled()) {
-      logger.debug(
-          "Loaded capabilities, service capabilities: {}", geoService.getServiceCapabilities());
+      logger.debug("Loaded capabilities, service capabilities: {}", geoService.getServiceCapabilities());
     } else {
       logger.info(
           "Loaded capabilities from \"{}\", title: \"{}\"",
           geoService.getUrl(),
           geoService.getServiceCapabilities() != null
                   && geoService.getServiceCapabilities().getServiceInfo() != null
-              ? geoService.getServiceCapabilities().getServiceInfo().getTitle()
+              ? geoService
+                  .getServiceCapabilities()
+                  .getServiceInfo()
+                  .getTitle()
               : "(none)");
     }
     geoService.setLayers(new ArrayList<>());
@@ -401,8 +380,7 @@ public class GeoServiceHelper {
         Collections.emptySet());
   }
 
-  void loadWMTSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client)
-      throws Exception {
+  void loadWMTSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client) throws Exception {
     WebMapTileServer wmts = new WebMapTileServer(new URL(geoService.getUrl()), client);
     setServiceInfo(geoService, client, wmts);
 
@@ -426,23 +404,21 @@ public class GeoServiceHelper {
     // For now at least ignore layers with space in the name because GeoServer chokes out invalid
     // XML for those.
 
-    List<String> layers =
-        geoService.getLayers().stream()
-            .filter(l -> !l.getVirtual())
-            .map(GeoServiceLayer::getName)
-            .filter(
-                n -> {
-                  // filter out white-space (non-greedy regex)
-                  boolean noWhitespace = !n.contains("(.*?)\\s(.*?)");
-                  if (!noWhitespace) {
-                    logger.warn(
-                        "Not doing WFS DescribeLayer request for layer name with space: \"{}\" of WMS {}",
-                        n,
-                        geoService.getUrl());
-                  }
-                  return noWhitespace;
-                })
-            .collect(Collectors.toList());
+    List<String> layers = geoService.getLayers().stream()
+        .filter(l -> !l.getVirtual())
+        .map(GeoServiceLayer::getName)
+        .filter(n -> {
+          // filter out white-space (non-greedy regex)
+          boolean noWhitespace = !n.contains("(.*?)\\s(.*?)");
+          if (!noWhitespace) {
+            logger.warn(
+                "Not doing WFS DescribeLayer request for layer name with space: \"{}\" of WMS {}",
+                n,
+                geoService.getUrl());
+          }
+          return noWhitespace;
+        })
+        .collect(Collectors.toList());
 
     // TODO: add authentication
     Map<String, SimpleWFSLayerDescription> descriptions =
@@ -479,39 +455,35 @@ public class GeoServiceHelper {
     wfsByLayer.values().stream()
         .map(SimpleWFSLayerDescription::wfsUrl)
         .distinct()
-        .forEach(
-            url -> {
-              TMFeatureSource fs = featureSourceRepository.findByUrl(url);
-              if (fs == null) {
-                fs =
-                    new TMFeatureSource()
-                        .setProtocol(WFS)
-                        .setUrl(url)
-                        .setTitle("WFS for " + geoService.getTitle())
-                        .setLinkedService(geoService);
-                try {
-                  new WFSFeatureSourceHelper().loadCapabilities(fs, tailormapConfig.getTimeout());
-                } catch (IOException e) {
-                  String msg =
-                      String.format(
-                          "Error loading WFS from URL %s: %s: %s",
-                          url, e.getClass(), e.getMessage());
-                  if (logger.isTraceEnabled()) {
-                    logger.error(msg, e);
-                  } else {
-                    logger.error(msg);
-                  }
-                }
-                featureSourceRepository.save(fs);
+        .forEach(url -> {
+          TMFeatureSource fs = featureSourceRepository.findByUrl(url);
+          if (fs == null) {
+            fs = new TMFeatureSource()
+                .setProtocol(WFS)
+                .setUrl(url)
+                .setTitle("WFS for " + geoService.getTitle())
+                .setLinkedService(geoService);
+            try {
+              new WFSFeatureSourceHelper().loadCapabilities(fs, tailormapConfig.getTimeout());
+            } catch (IOException e) {
+              String msg = String.format(
+                  "Error loading WFS from URL %s: %s: %s", url, e.getClass(), e.getMessage());
+              if (logger.isTraceEnabled()) {
+                logger.error(msg, e);
+              } else {
+                logger.error(msg);
               }
-            });
+            }
+            featureSourceRepository.save(fs);
+          }
+        });
   }
 
   /**
-   * Try to extract the legend url from the styles of the layer. This works by getting all styles
-   * for the layer and then removing any styles attached to other (parent) layers from the list of
-   * all styles. What remains is/are the legend url(s) for the layer. <i>NOTE: when a layer has more
-   * than one -not an inherited style- style the first style is used.</i>
+   * Try to extract the legend url from the styles of the layer. This works by getting all styles for the layer and
+   * then removing any styles attached to other (parent) layers from the list of all styles. What remains is/are the
+   * legend url(s) for the layer. <i>NOTE: when a layer has more than one -not an inherited style- style the first
+   * style is used.</i>
    *
    * @param service the service that has the layer
    * @param serviceLayer the layer to get the legend url for
@@ -521,7 +493,10 @@ public class GeoServiceHelper {
     if (serviceLayer.getRoot()) {
       // if this is a root layer, there are no parent layers, return the first style we find for
       // this layer, if any
-      return serviceLayer.getStyles().stream().findFirst().map(WMSStyle::getLegendURL).orElse(null);
+      return serviceLayer.getStyles().stream()
+          .findFirst()
+          .map(WMSStyle::getLegendURL)
+          .orElse(null);
     }
 
     final List<WMSStyle> allOurLayersStyles = serviceLayer.getStyles();
@@ -533,6 +508,9 @@ public class GeoServiceHelper {
         .filter(layer -> !layer.equals(serviceLayer))
         .forEach(layer -> allOurLayersStyles.removeAll(layer.getStyles()));
 
-    return allOurLayersStyles.stream().findFirst().map(WMSStyle::getLegendURL).orElse(null);
+    return allOurLayersStyles.stream()
+        .findFirst()
+        .map(WMSStyle::getLegendURL)
+        .orElse(null);
   }
 }

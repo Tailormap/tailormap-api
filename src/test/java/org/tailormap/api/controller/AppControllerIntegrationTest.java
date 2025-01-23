@@ -27,27 +27,33 @@ import org.tailormap.api.repository.ConfigurationRepository;
 @AutoConfigureMockMvc
 @PostgresIntegrationTest
 class AppControllerIntegrationTest {
-  @Autowired private MockMvc mockMvc;
-  @Autowired ConfigurationRepository configurationRepository;
+  @Autowired
+  private MockMvc mockMvc;
 
-  @Autowired EntityManager entityManager;
+  @Autowired
+  ConfigurationRepository configurationRepository;
+
+  @Autowired
+  EntityManager entityManager;
 
   @Value("${tailormap-api.base-path}")
   private String basePath;
 
   @Test
   void returns_default_when_no_arguments() throws Exception {
-    mockMvc
-        .perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.kind").value("app"))
         .andExpect(jsonPath("$.name").value("default"))
         .andExpect(jsonPath("$.title").value("Tailormap demo"))
         .andExpect(jsonPath("$.components").isArray())
-        .andExpect(jsonPath("$.components.length()").value(2))
-        .andExpect(jsonPath("$.components[0].type").value("EDIT"))
+        .andExpect(jsonPath("$.components.length()").value(3))
+        .andExpect(jsonPath("$.components[0].type").value("SIMPLE_SEARCH"))
         .andExpect(jsonPath("$.components[0].config.enabled").value(true))
+        .andExpect(jsonPath("$.components[0].config.municipalities").value("0344"))
+        .andExpect(jsonPath("$.components[1].type").value("EDIT"))
+        .andExpect(jsonPath("$.components[1].config.enabled").value(true))
         .andExpect(jsonPath("$.styling.primaryColor").isEmpty())
         .andExpect(
             jsonPath(
@@ -63,8 +69,7 @@ class AppControllerIntegrationTest {
     Configuration defaultApp =
         configurationRepository.findByKey(Configuration.DEFAULT_APP).orElseThrow();
     entityManager.remove(defaultApp);
-    mockMvc
-        .perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
@@ -82,8 +87,7 @@ class AppControllerIntegrationTest {
     Configuration defaultApp =
         configurationRepository.findByKey(Configuration.DEFAULT_APP).orElseThrow();
     defaultApp.setValue("non existing app!");
-    mockMvc
-        .perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
@@ -94,8 +98,7 @@ class AppControllerIntegrationTest {
   @Test
   void finds_by_name() throws Exception {
     String path = basePath + "/app/default";
-    mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+    mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.kind").value("app"))
@@ -105,8 +108,7 @@ class AppControllerIntegrationTest {
   @Test
   void not_found_by_name() throws Exception {
     String path = basePath + "/app/waldo";
-    mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+    mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404));
@@ -115,8 +117,7 @@ class AppControllerIntegrationTest {
   @Test
   void finds_service_viewer() throws Exception {
     String path = basePath + "/service/snapshot-geoserver";
-    mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+    mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.kind").value("service"))
@@ -127,8 +128,7 @@ class AppControllerIntegrationTest {
   @Test
   void not_found_unpublished_service_viewer() throws Exception {
     String path = basePath + "/service/openbasiskaart";
-    mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+    mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isNotFound())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
@@ -138,8 +138,7 @@ class AppControllerIntegrationTest {
   @Test
   void should_send_401_when_application_configured() throws Exception {
     String path = basePath + "/app/secured";
-    mockMvc
-        .perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+    mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))

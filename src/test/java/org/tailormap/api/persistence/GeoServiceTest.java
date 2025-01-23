@@ -27,8 +27,7 @@ class GeoServiceTest {
         arguments("https://geoserver.nl/wms?", "https://geoserver.nl/wms"),
         arguments("https://geoserver.nl/wms?request=getcapabilities", "https://geoserver.nl/wms"),
         arguments(
-            "https://geoserver.nl/wms?request=getcapabilities&REQUEST=getMap",
-            "https://geoserver.nl/wms"),
+            "https://geoserver.nl/wms?request=getcapabilities&REQUEST=getMap", "https://geoserver.nl/wms"),
         arguments("https://geoserver.nl/wmts?REQUEST=getcapabilities", "https://geoserver.nl/wmts"),
         arguments(
             "https://geoserver.nl/wms?request=getcapabilities&version=1",
@@ -58,9 +57,6 @@ class GeoServiceTest {
   @MethodSource("urlProvider")
   void testSetUrl(final String input, final String expected) {
     geoService.setUrl(input);
-    assertEquals(
-        expected,
-        geoService.getUrl(),
-        () -> input + "not sanitised properly, expected " + expected);
+    assertEquals(expected, geoService.getUrl(), () -> input + "not sanitised properly, expected " + expected);
   }
 }

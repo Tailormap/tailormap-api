@@ -89,13 +89,11 @@ public class ApplicationHelper {
     this.searchIndexRepository = searchIndexRepository;
   }
 
-  public Application getServiceApplication(
-      String baseAppName, String projection, GeoService service) {
+  public Application getServiceApplication(String baseAppName, String projection, GeoService service) {
     if (baseAppName == null) {
-      baseAppName =
-          Optional.ofNullable(service.getSettings().getPublishing())
-              .map(ServicePublishingSettings::getBaseApp)
-              .orElseGet(() -> configurationRepository.get(Configuration.DEFAULT_BASE_APP));
+      baseAppName = Optional.ofNullable(service.getSettings().getPublishing())
+          .map(ServicePublishingSettings::getBaseApp)
+          .orElseGet(() -> configurationRepository.get(Configuration.DEFAULT_BASE_APP));
     }
 
     Application baseApp = null;
@@ -108,8 +106,7 @@ public class ApplicationHelper {
       }
     }
 
-    Application app =
-        baseApp != null ? baseApp : new Application().setContentRoot(new AppContent());
+    Application app = baseApp != null ? baseApp : new Application().setContentRoot(new AppContent());
 
     if (projection != null) {
       // TODO: filter layers by projection parameter (layer.crs must inherit crs from parent layers)
@@ -141,15 +138,13 @@ public class ApplicationHelper {
       throw new IllegalArgumentException("Invalid CRS: " + a.getCrs());
     }
 
-    TMCoordinateReferenceSystem crs =
-        new TMCoordinateReferenceSystem()
-            .code(a.getCrs())
-            .definition(((Formattable) gtCrs).toWKT(0))
-            .bounds(GeoToolsHelper.fromCRS(gtCrs))
-            .unit(
-                Optional.ofNullable(CRSUtilities.getUnit(gtCrs.getCoordinateSystem()))
-                    .map(Objects::toString)
-                    .orElse(null));
+    TMCoordinateReferenceSystem crs = new TMCoordinateReferenceSystem()
+        .code(a.getCrs())
+        .definition(((Formattable) gtCrs).toWKT(0))
+        .bounds(GeoToolsHelper.fromCRS(gtCrs))
+        .unit(Optional.ofNullable(CRSUtilities.getUnit(gtCrs.getCoordinateSystem()))
+            .map(Objects::toString)
+            .orElse(null));
 
     Bounds maxExtent = a.getMaxExtent() != null ? a.getMaxExtent() : crs.getBounds();
     Bounds initialExtent = a.getInitialExtent() != null ? a.getInitialExtent() : maxExtent;
@@ -161,8 +156,7 @@ public class ApplicationHelper {
     new MapResponseLayerBuilder(app, mr).buildLayers();
   }
 
-  private String getProxyUrl(
-      GeoService geoService, Application application, AppTreeLayerNode appTreeLayerNode) {
+  private String getProxyUrl(GeoService geoService, Application application, AppTreeLayerNode appTreeLayerNode) {
     return linkTo(
             GeoServiceProxyController.class,
             Map.of(
@@ -256,8 +250,7 @@ public class ApplicationHelper {
     }
 
     private boolean addAppLayerItem(AppTreeLayerNode layerRef) {
-      Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> serviceWithLayer =
-          findServiceLayer(layerRef);
+      Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> serviceWithLayer = findServiceLayer(layerRef);
       GeoService service = serviceWithLayer.getLeft();
       GeoServiceLayer serviceLayer = serviceWithLayer.getMiddle();
 
@@ -279,54 +272,43 @@ public class ApplicationHelper {
       // When default layer settings or settings for a specific layer are missing, construct new
       // settings objects so no null check is needed. All properties are initialized to null
       // (not-set) by default.
-      GeoServiceDefaultLayerSettings defaultLayerSettings =
-          Optional.ofNullable(service.getSettings().getDefaultLayerSettings())
-              .orElseGet(GeoServiceDefaultLayerSettings::new);
+      GeoServiceDefaultLayerSettings defaultLayerSettings = Optional.ofNullable(
+              service.getSettings().getDefaultLayerSettings())
+          .orElseGet(GeoServiceDefaultLayerSettings::new);
       GeoServiceLayerSettings serviceLayerSettings =
           Optional.ofNullable(serviceWithLayer.getRight()).orElseGet(GeoServiceLayerSettings::new);
 
       AppLayerSettings appLayerSettings = app.getAppLayerSettings(layerRef);
 
-      String title =
-          Objects.requireNonNullElse(
-              nullIfEmpty(appLayerSettings.getTitle()),
-              // Get title from layer settings, title from capabilities or the layer name -- never
-              // null
-              service.getTitleWithSettingsOverrides(layerRef.getLayerName()));
+      String title = Objects.requireNonNullElse(
+          nullIfEmpty(appLayerSettings.getTitle()),
+          // Get title from layer settings, title from capabilities or the layer name -- never
+          // null
+          service.getTitleWithSettingsOverrides(layerRef.getLayerName()));
 
       // These settings can be overridden per appLayer
 
-      String description =
-          ObjectUtils.firstNonNull(
-              nullIfEmpty(appLayerSettings.getDescription()),
-              nullIfEmpty(serviceLayerSettings.getDescription()),
-              nullIfEmpty(defaultLayerSettings.getDescription()));
+      String description = ObjectUtils.firstNonNull(
+          nullIfEmpty(appLayerSettings.getDescription()),
+          nullIfEmpty(serviceLayerSettings.getDescription()),
+          nullIfEmpty(defaultLayerSettings.getDescription()));
 
-      String attribution =
-          ObjectUtils.firstNonNull(
-              nullIfEmpty(appLayerSettings.getAttribution()),
-              nullIfEmpty(serviceLayerSettings.getAttribution()),
-              nullIfEmpty(defaultLayerSettings.getAttribution()));
+      String attribution = ObjectUtils.firstNonNull(
+          nullIfEmpty(appLayerSettings.getAttribution()),
+          nullIfEmpty(serviceLayerSettings.getAttribution()),
+          nullIfEmpty(defaultLayerSettings.getAttribution()));
 
       // These settings can't be overridden per appLayer but can be set on a per-layer and
       // service-level default basis
 
-      boolean tilingDisabled =
-          ObjectUtils.firstNonNull(
-              serviceLayerSettings.getTilingDisabled(),
-              defaultLayerSettings.getTilingDisabled(),
-              true);
-      Integer tilingGutter =
-          ObjectUtils.firstNonNull(
-              serviceLayerSettings.getTilingGutter(), defaultLayerSettings.getTilingGutter(), 0);
-      boolean hiDpiDisabled =
-          ObjectUtils.firstNonNull(
-              serviceLayerSettings.getHiDpiDisabled(),
-              defaultLayerSettings.getHiDpiDisabled(),
-              true);
-      TileLayerHiDpiMode hiDpiMode =
-          ObjectUtils.firstNonNull(
-              serviceLayerSettings.getHiDpiMode(), defaultLayerSettings.getHiDpiMode(), null);
+      boolean tilingDisabled = ObjectUtils.firstNonNull(
+          serviceLayerSettings.getTilingDisabled(), defaultLayerSettings.getTilingDisabled(), true);
+      Integer tilingGutter = ObjectUtils.firstNonNull(
+          serviceLayerSettings.getTilingGutter(), defaultLayerSettings.getTilingGutter(), 0);
+      boolean hiDpiDisabled = ObjectUtils.firstNonNull(
+          serviceLayerSettings.getHiDpiDisabled(), defaultLayerSettings.getHiDpiDisabled(), true);
+      TileLayerHiDpiMode hiDpiMode = ObjectUtils.firstNonNull(
+          serviceLayerSettings.getHiDpiMode(), defaultLayerSettings.getHiDpiMode(), null);
       // Do not get from defaultLayerSettings because a default wouldn't make sense
       String hiDpiSubstituteLayer = serviceLayerSettings.getHiDpiSubstituteLayer();
 
@@ -347,48 +329,51 @@ public class ApplicationHelper {
 
       SearchIndex searchIndex = null;
       if (appLayerSettings.getSearchIndexId() != null) {
-        searchIndex =
-            searchIndexRepository.findById(appLayerSettings.getSearchIndexId()).orElse(null);
+        searchIndex = searchIndexRepository
+            .findById(appLayerSettings.getSearchIndexId())
+            .orElse(null);
       }
 
-      mr.addAppLayersItem(
-          new AppLayer()
-              .id(layerRef.getId())
-              .serviceId(serviceLayerServiceIds.get(serviceLayer))
-              .layerName(layerRef.getLayerName())
-              .hasAttributes(tmft != null)
-              .editable(TMFeatureTypeHelper.isEditable(app, layerRef, tmft))
-              .url(proxied ? getProxyUrl(service, app, layerRef) : null)
-              // Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools
-              // gt-wms Layer class?
-              .maxScale(serviceLayer.getMaxScale())
-              .minScale(serviceLayer.getMinScale())
-              .title(title)
-              .tilingDisabled(tilingDisabled)
-              .tilingGutter(tilingGutter)
-              .hiDpiDisabled(hiDpiDisabled)
-              .hiDpiMode(hiDpiMode)
-              .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
-              .minZoom(serviceLayerSettings.getMinZoom())
-              .maxZoom(serviceLayerSettings.getMaxZoom())
-              .tileSize(serviceLayerSettings.getTileSize())
-              .tileGridExtent(serviceLayerSettings.getTileGridExtent())
-              .opacity(appLayerSettings.getOpacity())
-              .autoRefreshInSeconds(appLayerSettings.getAutoRefreshInSeconds())
-              .searchIndex(
-                  searchIndex != null
-                      ? new LayerSearchIndex().id(searchIndex.getId()).name(searchIndex.getName())
-                      : null)
-              .legendImageUrl(legendImageUrl)
-              .visible(layerRef.getVisible())
-              .attribution(attribution)
-              .description(description));
+      mr.addAppLayersItem(new AppLayer()
+          .id(layerRef.getId())
+          .serviceId(serviceLayerServiceIds.get(serviceLayer))
+          .layerName(layerRef.getLayerName())
+          .hasAttributes(tmft != null)
+          .editable(TMFeatureTypeHelper.isEditable(app, layerRef, tmft))
+          .url(proxied ? getProxyUrl(service, app, layerRef) : null)
+          // Can't set whether layer is opaque, not mapped from WMS capabilities by GeoTools
+          // gt-wms Layer class?
+          .maxScale(serviceLayer.getMaxScale())
+          .minScale(serviceLayer.getMinScale())
+          .title(title)
+          .tilingDisabled(tilingDisabled)
+          .tilingGutter(tilingGutter)
+          .hiDpiDisabled(hiDpiDisabled)
+          .hiDpiMode(hiDpiMode)
+          .hiDpiSubstituteLayer(hiDpiSubstituteLayer)
+          .minZoom(serviceLayerSettings.getMinZoom())
+          .maxZoom(serviceLayerSettings.getMaxZoom())
+          .tileSize(serviceLayerSettings.getTileSize())
+          .tileGridExtent(serviceLayerSettings.getTileGridExtent())
+          .opacity(appLayerSettings.getOpacity())
+          .autoRefreshInSeconds(appLayerSettings.getAutoRefreshInSeconds())
+          .searchIndex(
+              searchIndex != null
+                  ? new LayerSearchIndex()
+                      .id(searchIndex.getId())
+                      .name(searchIndex.getName())
+                  : null)
+          .legendImageUrl(legendImageUrl)
+          .visible(layerRef.getVisible())
+          .attribution(attribution)
+          .description(description));
       return true;
     }
 
     private Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> findServiceLayer(
         AppTreeLayerNode layerRef) {
-      GeoService service = geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);
+      GeoService service =
+          geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);
       if (service == null) {
         logger.warn(
             "App {} references layer \"{}\" of missing service {}",

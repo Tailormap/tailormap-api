@@ -7,14 +7,13 @@
 package org.tailormap.api.controller;
 
 public interface TestUrls {
-  String layerProvinciesWfs =
-      "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied";
-  String layerBegroeidTerreindeelPostgis =
-      "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel";
+  String layerProvinciesWfs = "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied";
+  String layerBegroeidTerreindeelPostgis = "/app/default/layer/lyr:snapshot-geoserver:postgis:begroeidterreindeel";
+  String layerBakPostgis = "/app/default/layer/lyr:snapshot-geoserver:postgis:bak";
   String layerWaterdeelOracle = "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL";
   String layerWegdeelSqlServer = "/app/default/layer/lyr:snapshot-geoserver:sqlserver:wegdeel";
   String layerOsmPolygonPostgis = "/app/default/layer/lyr:snapshot-geoserver:postgis:osm_polygon";
-  String layerProxiedWithAuthInPublicApp =
-      "/app/default/layer/lyr:bestuurlijkegebieden-proxied:Provinciegebied";
+  String layerProxiedWithAuthInPublicApp = "/app/default/layer/lyr:bestuurlijkegebieden-proxied:Provinciegebied";
   String layerWaterdeel = "/app/default/layer/lyr:snapshot-geoserver:oracle:WATERDEEL";
+  String layerKadastraalPerceel = "/app/default/layer/lyr:snapshot-geoserver:postgis:kadastraal_perceel";
 }

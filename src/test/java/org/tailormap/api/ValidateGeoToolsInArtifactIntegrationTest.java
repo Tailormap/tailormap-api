@@ -29,9 +29,9 @@ class ValidateGeoToolsInArtifactIntegrationTest {
   private static final String RUNNABLE_JAR = "target/tailormap-api-exec.jar";
 
   /**
-   * check if there is only one gt-main and only one gt-epsg jar in the runnable jar, so we can be
-   * sure there are no or EPSG factory version conflicts. This test will fail if there is than one
-   * gt-main (versions) or gt-epsg (factory providers) in the runnable jar.
+   * check if there is only one gt-main and only one gt-epsg jar in the runnable jar, so we can be sure there are no
+   * or EPSG factory version conflicts. This test will fail if there is than one gt-main (versions) or gt-epsg
+   * (factory providers) in the runnable jar.
    */
   @Test
   void checkArtifact() {
@@ -54,12 +54,10 @@ class ValidateGeoToolsInArtifactIntegrationTest {
       }
 
       assertFalse(gtMainJars.isEmpty(), "No gt-main artifact in the runnable jar file");
-      assertEquals(
-          1, gtMainJars.size(), "There are more than 1 gt-main artifacts in the runnable jar file");
+      assertEquals(1, gtMainJars.size(), "There are more than 1 gt-main artifacts in the runnable jar file");
 
       assertFalse(gtEPSGJars.isEmpty(), "No gt-epsg artifact in the runnable jar file");
-      assertEquals(
-          1, gtEPSGJars.size(), "There are more than 1 gt-epsg artifacts in the runnable jar file");
+      assertEquals(1, gtEPSGJars.size(), "There are more than 1 gt-epsg artifacts in the runnable jar file");
 
     } catch (IOException e) {
       logger.error("Failed", e);

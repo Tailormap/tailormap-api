@@ -30,9 +30,11 @@ import org.tailormap.api.repository.UploadRepository;
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UploadsControllerIntegrationTest {
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-  @Autowired private UploadRepository uploadRepository;
+  @Autowired
+  private UploadRepository uploadRepository;
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
@@ -43,16 +45,13 @@ class UploadsControllerIntegrationTest {
 
   @Test
   void test404() throws Exception {
-    mockMvc
-        .perform(
-            get(apiBasePath + "/uploads/something/a10457df-9643-4240-b70b-bf6038ec88f5/file.txt"))
+    mockMvc.perform(get(apiBasePath + "/uploads/something/a10457df-9643-4240-b70b-bf6038ec88f5/file.txt"))
         .andExpect(status().isNotFound());
   }
 
   @Test
   void testBadRequest() throws Exception {
-    mockMvc
-        .perform(get(apiBasePath + "/uploads/something/not-a-uuid/file.txt"))
+    mockMvc.perform(get(apiBasePath + "/uploads/something/not-a-uuid/file.txt"))
         .andExpect(status().isBadRequest());
   }
 
@@ -63,33 +62,26 @@ class UploadsControllerIntegrationTest {
     Upload logo = uploadRepository.findByCategory(Upload.CATEGORY_APP_LOGO).get(0);
 
     logoUrl = apiBasePath + "/uploads/%s/%s/file.txt".formatted(logo.getCategory(), logo.getId());
-    logoResult =
-        mockMvc
-            .perform(get(logoUrl))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType("image/svg+xml"))
-            .andExpect(header().longValue("content-length", logo.getContentLength()))
-            .andReturn();
+    logoResult = mockMvc.perform(get(logoUrl))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("image/svg+xml"))
+        .andExpect(header().longValue("content-length", logo.getContentLength()))
+        .andReturn();
   }
 
   @Test
   @Order(2)
   void testConditionalNotModified() throws Exception {
-    mockMvc
-        .perform(
-            get(logoUrl)
-                .header("If-Modified-Since", logoResult.getResponse().getHeader("Last-Modified")))
+    mockMvc.perform(get(logoUrl)
+            .header("If-Modified-Since", logoResult.getResponse().getHeader("Last-Modified")))
         .andExpect(status().isNotModified());
   }
 
   @Test
   @Order(3)
   void testConditionalModified() throws Exception {
-    mockMvc
-        .perform(get(logoUrl).header("If-Modified-Since", "Wed, 12 Jun 2001 09:48:38 GMT"))
+    mockMvc.perform(get(logoUrl).header("If-Modified-Since", "Wed, 12 Jun 2001 09:48:38 GMT"))
         .andExpect(status().isOk())
-        .andExpect(
-            content()
-                .bytes(new ClassPathResource("test/gradient-logo.svg").getContentAsByteArray()));
+        .andExpect(content().bytes(new ClassPathResource("test/gradient-logo.svg").getContentAsByteArray()));
   }
 }

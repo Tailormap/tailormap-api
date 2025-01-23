@@ -18,12 +18,11 @@ import org.geotools.http.HTTPClient;
 import org.geotools.http.HTTPResponse;
 
 /**
- * Wrapper for a GeoTools HTTPClient that allows access to the response headers and body after the
- * original response has been consumed and disposed of by other code. The response body for the
- * latest request is kept in memory, a consumer can be specified to get responses of earlier
- * requests. Response headers of an unwrapped HTTPClient can only be retrieved when the response
- * isn't disposed, this wrapper allows response headers to be cached for retrieval even after
- * disposal.
+ * Wrapper for a GeoTools HTTPClient that allows access to the response headers and body after the original response has
+ * been consumed and disposed of by other code. The response body for the latest request is kept in memory, a consumer
+ * can be specified to get responses of earlier requests. Response headers of an unwrapped HTTPClient can only be
+ * retrieved when the response isn't disposed, this wrapper allows response headers to be cached for retrieval even
+ * after disposal.
  */
 public class ResponseTeeingHTTPClient implements HTTPClient {
 
@@ -101,10 +100,9 @@ public class ResponseTeeingHTTPClient implements HTTPClient {
   private final Set<String> responseHeadersToCache;
 
   /**
-   * Wrap a GeoTools HTTPClient allowing access to the latest response body after it has been
-   * consumed by handing the client to a GeoTools module. Note that getting the response headers
-   * after the original response has been consumed will return null without explicitly calling the
-   * other constructor with the responseHeadersToCache parameter.
+   * Wrap a GeoTools HTTPClient allowing access to the latest response body after it has been consumed by handing the
+   * client to a GeoTools module. Note that getting the response headers after the original response has been consumed
+   * will return null without explicitly calling the other constructor with the responseHeadersToCache parameter.
    *
    * @param wrapped The GeoTools HTTPClient to wrap
    */
@@ -113,15 +111,13 @@ public class ResponseTeeingHTTPClient implements HTTPClient {
   }
 
   /**
-   * Wrap a GeoTools HTTPClient allowing access to the all responses after they have been consumed
-   * by handing the client to a GeoTools module by passing a consumer for each request URL and
-   * wrapped response. The responseHeadersToCache parameter allows access to response headers after
-   * the original wrapped response has been disposed (only cached when getResponseStream() is
-   * requested).
+   * Wrap a GeoTools HTTPClient allowing access to the all responses after they have been consumed by handing the
+   * client to a GeoTools module by passing a consumer for each request URL and wrapped response. The
+   * responseHeadersToCache parameter allows access to response headers after the original wrapped response has been
+   * disposed (only cached when getResponseStream() is requested).
    *
    * @param wrapped The GeoTools HTTPClient to wrap
-   * @param requestConsumer Consumer for each request so not only the latest response can be
-   *     accessed, may be null
+   * @param requestConsumer Consumer for each request so not only the latest response can be accessed, may be null
    * @param responseHeadersToCache Which response headers to cache, may be null
    */
   public ResponseTeeingHTTPClient(
@@ -130,8 +126,7 @@ public class ResponseTeeingHTTPClient implements HTTPClient {
       Set<String> responseHeadersToCache) {
     this.wrapped = wrapped;
     this.requestConsumer = requestConsumer == null ? (url, response) -> {} : requestConsumer;
-    this.responseHeadersToCache =
-        responseHeadersToCache == null ? Collections.emptySet() : responseHeadersToCache;
+    this.responseHeadersToCache = responseHeadersToCache == null ? Collections.emptySet() : responseHeadersToCache;
   }
 
   @Override

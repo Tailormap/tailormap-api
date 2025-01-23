@@ -49,19 +49,19 @@ public class UploadsController {
     long ifModifiedSince = request.getDateHeader("If-Modified-Since");
     if (ifModifiedSince != -1) {
       OffsetDateTime uploadLastModified =
-          uploadRepository
-              .findLastModifiedById(id)
-              .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+          uploadRepository.findLastModifiedById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
       if (ifModifiedSince
-          >= uploadLastModified.with(ChronoField.MILLI_OF_SECOND, 0).toInstant().toEpochMilli()) {
+          >= uploadLastModified
+              .with(ChronoField.MILLI_OF_SECOND, 0)
+              .toInstant()
+              .toEpochMilli()) {
         return ResponseEntity.status(NOT_MODIFIED).build();
       }
     }
 
-    Upload upload =
-        uploadRepository
-            .findWithContentByIdAndCategory(id, category)
-            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+    Upload upload = uploadRepository
+        .findWithContentByIdAndCategory(id, category)
+        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
 
     return ResponseEntity.ok()
         .header("Content-Type", upload.getMimeType())

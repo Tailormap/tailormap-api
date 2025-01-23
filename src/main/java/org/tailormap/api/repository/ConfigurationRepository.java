@@ -15,10 +15,7 @@ import org.tailormap.api.persistence.Configuration;
 import org.tailormap.api.security.annotation.PreAuthorizeAdmin;
 
 @PreAuthorizeAdmin
-@RepositoryRestResource(
-    path = "configs",
-    collectionResourceRel = "configs",
-    itemResourceRel = "config")
+@RepositoryRestResource(path = "configs", collectionResourceRel = "configs", itemResourceRel = "config")
 public interface ConfigurationRepository extends JpaRepository<Configuration, String> {
   @PreAuthorize("permitAll()")
   Optional<Configuration> findByKey(String key);
