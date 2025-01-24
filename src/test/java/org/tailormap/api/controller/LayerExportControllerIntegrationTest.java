@@ -189,8 +189,9 @@ class LayerExportControllerIntegrationTest {
   @Test
   @Issue("https://b3partners.atlassian.net/browse/SUPPORT-14840")
   @DisabledUntil(
-      date = "2025-01-23",
-      reason = "This should be fixed in GeoServer 2.26.2, which is planned for 2025-01-18")
+      date = "2025-01-31",
+      reason =
+          "This should be fixed in GeoServer 2.26.2, which was planned for 2025-01-18, but is not yet released.")
   void shouldNotExportHiddenAttributesInGeoJSON() throws Exception {
     final String url = apiBasePath + layerBakPostgis + downloadPath;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
