@@ -100,7 +100,7 @@ SPDX-License-Identifier: MIT
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
         <project.build.outputTimestamp>2025-01-22T14:15:27Z</project.build.outputTimestamp>
-        <geotools.version>32.1</geotools.version>
+        <geotools.version>32.2</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
@@ -719,7 +719,7 @@ SPDX-License-Identifier: MIT
                         <fileset>
                             <directory>${project.basedir}</directory>
                             <includes>
-                                <include>tailormap.log*</include>
+                                <include>*.log*</include>
                             </includes>
                         </fileset>
                     </filesets>
