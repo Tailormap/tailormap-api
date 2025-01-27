@@ -17,6 +17,9 @@ import static org.geotools.jdbc.JDBCDataStoreFactory.PK_METADATA_TABLE;
 import static org.geotools.jdbc.JDBCDataStoreFactory.PORT;
 import static org.geotools.jdbc.JDBCDataStoreFactory.SCHEMA;
 import static org.geotools.jdbc.JDBCDataStoreFactory.USER;
+import static org.tailormap.api.persistence.json.JDBCConnectionProperties.DbtypeEnum.ORACLE;
+import static org.tailormap.api.persistence.json.JDBCConnectionProperties.DbtypeEnum.POSTGIS;
+import static org.tailormap.api.persistence.json.JDBCConnectionProperties.DbtypeEnum.SQLSERVER;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,15 +27,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.geotools.api.data.DataStore;
+import org.geotools.data.postgis.PostgisNGDataStoreFactory;
+import org.geotools.data.sqlserver.SQLServerDataStoreFactory;
 import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.json.JDBCConnectionProperties;
 import org.tailormap.api.persistence.json.ServiceAuthentication;
 
 public class JDBCFeatureSourceHelper extends FeatureSourceHelper {
-  private static final Map<JDBCConnectionProperties.DbtypeEnum, Integer> defaultPorts = Map.of(
-      JDBCConnectionProperties.DbtypeEnum.POSTGIS, 5432,
-      JDBCConnectionProperties.DbtypeEnum.ORACLE, 1521,
-      JDBCConnectionProperties.DbtypeEnum.SQLSERVER, 1433);
+  private static final Map<JDBCConnectionProperties.DbtypeEnum, Integer> defaultPorts =
+      Map.of(POSTGIS, 5432, ORACLE, 1521, SQLSERVER, 1433);
 
   @Override
   public DataStore createDataStore(TMFeatureSource tmfs, Integer timeout) throws IOException {
@@ -50,13 +53,33 @@ public class JDBCFeatureSourceHelper extends FeatureSourceHelper {
     Objects.requireNonNull(c.getDbtype());
     String connectionOpts = Optional.ofNullable(c.getAdditionalProperties().get("connectionOptions"))
         .orElse("");
-    if (c.getDbtype() == JDBCConnectionProperties.DbtypeEnum.POSTGIS
-        && !connectionOpts.contains("ApplicationName")) {
-      connectionOpts =
-          connectionOpts + (connectionOpts.contains("?") ? "&amp;" : "?") + "ApplicationName=tailormap-api";
-    }
 
     Map<String, Object> params = new HashMap<>();
+    // database specific settings
+    switch (c.getDbtype()) {
+      case POSTGIS:
+        // use spatial index to estimate the extents
+        params.put(PostgisNGDataStoreFactory.ESTIMATED_EXTENTS.key, true);
+        if (!connectionOpts.contains("ApplicationName")) {
+          connectionOpts = connectionOpts + (connectionOpts.contains("?") ? "&amp;" : "?")
+              + "ApplicationName=tailormap-api";
+        }
+        break;
+      case SQLSERVER:
+        // use spatial index to estimate the extents
+        params.put(SQLServerDataStoreFactory.ESTIMATED_EXTENTS.key, true);
+        // we need this for mssql to determine a feature type on an empty table
+        params.put(GEOMETRY_METADATA_TABLE.key, "geometry_columns");
+        if (!connectionOpts.contains("applicationName")) {
+          // see
+          // https://learn.microsoft.com/en-us/sql/connect/jdbc/building-the-connection-url?view=sql-server-ver16
+          connectionOpts = connectionOpts + ";applicationName=tailormap-api";
+        }
+        break;
+      case ORACLE:
+        break;
+    }
+
     params.put(DBTYPE.key, c.getDbtype().getValue());
     params.put(HOST.key, c.getHost());
     params.put(PORT.key, c.getPort() != null ? c.getPort() : defaultPorts.get(c.getDbtype()));
@@ -68,12 +91,7 @@ public class JDBCFeatureSourceHelper extends FeatureSourceHelper {
     params.put(EXPOSE_PK.key, true);
     params.put(PK_METADATA_TABLE.key, c.getPrimaryKeyMetadataTable());
     params.put(MAXWAIT.key, timeout);
-    if (c.getDbtype() != JDBCConnectionProperties.DbtypeEnum.ORACLE) {
-      // this key is available in ao. Oracle and MS SQL datastore factories, but not in the common
-      // parent...
-      // we need this for mssql to determine a feature type on an empty table
-      params.put(GEOMETRY_METADATA_TABLE.key, "geometry_columns");
-    }
+
     return openDatastore(params, PASSWD.key);
   }
 }
