@@ -200,18 +200,22 @@ class LayerExportControllerIntegrationTest {
         // all attributes are hidden except bronhouder and identificatie
         .andExpect(jsonPath("$.features[0].properties.identificatie")
             .value("P0026.8abeacd54c5b7500047b2112796cab56"))
+        // mandatory, but hidden attributes of the schema
+        .andExpect(
+            jsonPath("$.features[0].properties.lv_publicatiedatum").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].properties.creationdate").isNotEmpty())
+        .andExpect(
+            jsonPath("$.features[0].properties.tijdstipregistratie").isNotEmpty())
         .andExpect(jsonPath("$.features[0].properties.bronhouder").value("P0026"))
-        .andExpect(
-            jsonPath("$.features[0].properties.lv_publicatiedatum").doesNotHaveJsonPath())
-        .andExpect(jsonPath("$.features[0].properties.creationdate").doesNotHaveJsonPath())
-        .andExpect(
-            jsonPath("$.features[0].properties.tijdstipregistratie").doesNotHaveJsonPath())
-        .andExpect(jsonPath("$.features[0].properties.inonderzoek").doesNotHaveJsonPath())
+        .andExpect(jsonPath("$.features[0].properties.inonderzoek").isNotEmpty())
         .andExpect(jsonPath("$.features[0].properties.relatievehoogteligging")
-            .doesNotHaveJsonPath())
-        .andExpect(jsonPath("$.features[0].properties.bgt_status").doesNotHaveJsonPath())
-        .andExpect(jsonPath("$.features[0].properties.function_").doesNotHaveJsonPath())
-        .andExpect(jsonPath("$.features[0].properties.plus_type").doesNotHaveJsonPath());
+            .isNotEmpty())
+        .andExpect(jsonPath("$.features[0].properties.bgt_status").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].properties.function_").isNotEmpty())
+        .andExpect(jsonPath("$.features[0].properties.plus_type").isNotEmpty())
+        // non-mandatory attributes of the schema that were not requested
+        .andExpect(jsonPath("$.features[0].properties.eindregistratie").doesNotHaveJsonPath())
+        .andExpect(jsonPath("$.features[0].properties.terminationdate").doesNotHaveJsonPath());
   }
 
   @Test
