@@ -25,8 +25,8 @@
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.net.URI;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.net.http.HttpResponse;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.util.HashMap;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.HashMap;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.util.HashSet;
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.util.List;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
@@ -130,7 +130,7 @@
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>       @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application,
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>       @RequestParam String outputFormat,
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>       @RequestParam(required = false) List&lt;String&gt; attributes,
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>       @RequestParam(required = false) Set&lt;String&gt; attributes,
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>       @RequestParam(required = false) String filter,
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>       @RequestParam(required = false) String sortBy,
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>       @RequestParam(required = false) String sortOrder,
@@ -161,7 +161,7 @@
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>     }
 <a class="jxr_linenumber" name="L154" href="#L154">154</a> 
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>     <strong class="jxr_keyword">if</strong> (attributes == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>       attributes = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>       attributes = <strong class="jxr_keyword">new</strong> HashSet&lt;&gt;();
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>     }
 <a class="jxr_linenumber" name="L158" href="#L158">158</a> 
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>     <em class="jxr_comment">// Get attributes in configured or original order</em>
@@ -179,7 +179,7 @@
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>       <em class="jxr_comment">// Only specify specific propNames if there are hidden attributes. Having no propNames</em>
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>       <em class="jxr_comment">// request parameter to request all propNames is less error-prone than specifying the ones</em>
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>       <em class="jxr_comment">// we have saved in the feature type</em>
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>       attributes = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(nonHiddenAttributes);
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>       attributes = <strong class="jxr_keyword">new</strong> HashSet&lt;&gt;(nonHiddenAttributes);
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>     }
 <a class="jxr_linenumber" name="L176" href="#L176">176</a> 
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>     <em class="jxr_comment">// Empty attributes means we won't specify propNames in GetFeature request, but if we do select</em>
@@ -208,7 +208,7 @@
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>   <strong class="jxr_keyword">private</strong> ResponseEntity&lt;?&gt; downloadFromWFS(
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>       WFSTypeNameDescriptor wfsTypeName,
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>       String outputFormat,
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>       List&lt;String&gt; attributes,
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>       Set&lt;String&gt; attributes,
 <a class="jxr_linenumber" name="L204" href="#L204">204</a>       String filter,
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>       String sortBy,
 <a class="jxr_linenumber" name="L206" href="#L206">206</a>       String sortOrder,
