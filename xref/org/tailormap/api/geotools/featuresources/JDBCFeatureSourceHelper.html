@@ -25,66 +25,84 @@
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.geotools.jdbc.JDBCDataStoreFactory.PORT;
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.geotools.jdbc.JDBCDataStoreFactory.SCHEMA;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.geotools.jdbc.JDBCDataStoreFactory.USER;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.util.HashMap;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> java.util.Optional;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.geotools.api.data.DataStore;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureSource;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.JDBCConnectionProperties;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.ServiceAuthentication;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="JDBCFeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/JDBCFeatureSourceHelper.html#JDBCFeatureSourceHelper">JDBCFeatureSourceHelper</a> <strong class="jxr_keyword">extends</strong> <a name="FeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/FeatureSourceHelper.html#FeatureSourceHelper">FeatureSourceHelper</a> {
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Map&lt;JDBCConnectionProperties.DbtypeEnum, Integer&gt; defaultPorts = Map.of(
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>        JDBCConnectionProperties.DbtypeEnum.POSTGIS, 5432,
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>        JDBCConnectionProperties.DbtypeEnum.ORACLE, 1521,
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>        JDBCConnectionProperties.DbtypeEnum.SQLSERVER, 1433);
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>    @Override
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>    <strong class="jxr_keyword">public</strong> DataStore createDataStore(<a name="TMFeatureSource" href="../../../../../org/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> tmfs, Integer timeout) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">if</strong> (tmfs.getProtocol() != TMFeatureSource.Protocol.JDBC) {
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(tmfs.getProtocol().getValue());
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      }
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>      Objects.requireNonNull(tmfs.getJdbcConnection());
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>      Objects.requireNonNull(tmfs.getAuthentication());
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>      <strong class="jxr_keyword">if</strong> (tmfs.getAuthentication().getMethod() != ServiceAuthentication.MethodEnum.PASSWORD) {
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>            tmfs.getAuthentication().getMethod().getValue());
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>      }
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>      JDBCConnectionProperties c = tmfs.getJdbcConnection();
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>      Objects.requireNonNull(c.getDbtype());
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>      String connectionOpts = Optional.ofNullable(c.getAdditionalProperties().get(<span class="jxr_string">"connectionOptions"</span>))
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>          .orElse(<span class="jxr_string">""</span>);
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">if</strong> (c.getDbtype() == JDBCConnectionProperties.DbtypeEnum.POSTGIS
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          &amp;&amp; !connectionOpts.contains(<span class="jxr_string">"ApplicationName"</span>)) {
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>        connectionOpts =
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>            connectionOpts + (connectionOpts.contains(<span class="jxr_string">"?"</span>) ? <span class="jxr_string">"&amp;amp;"</span> : <span class="jxr_string">"?"</span>) + <span class="jxr_string">"ApplicationName=tailormap-api"</span>;
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      }
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      Map&lt;String, Object&gt; params = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>      params.put(DBTYPE.key, c.getDbtype().getValue());
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      params.put(HOST.key, c.getHost());
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      params.put(PORT.key, c.getPort() != <strong class="jxr_keyword">null</strong> ? c.getPort() : defaultPorts.get(c.getDbtype()));
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>      params.put(DATABASE.key, c.getDatabase() + connectionOpts);
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      params.put(SCHEMA.key, c.getSchema());
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>      params.put(USER.key, tmfs.getAuthentication().getUsername());
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>      params.put(PASSWD.key, tmfs.getAuthentication().getPassword());
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      params.put(FETCHSIZE.key, c.getFetchSize());
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>      params.put(EXPOSE_PK.key, <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      params.put(PK_METADATA_TABLE.key, c.getPrimaryKeyMetadataTable());
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      params.put(MAXWAIT.key, timeout);
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>      <strong class="jxr_keyword">if</strong> (c.getDbtype() != JDBCConnectionProperties.DbtypeEnum.ORACLE) {
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>        <em class="jxr_comment">// this key is available in ao. Oracle and MS SQL datastore factories, but not in the common</em>
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>        <em class="jxr_comment">// parent...</em>
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>        <em class="jxr_comment">// we need this for mssql to determine a feature type on an empty table</em>
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>        params.put(GEOMETRY_METADATA_TABLE.key, <span class="jxr_string">"geometry_columns"</span>);
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>      }
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>      <strong class="jxr_keyword">return</strong> openDatastore(params, PASSWD.key);
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>    }
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>  }
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.persistence.json.JDBCConnectionProperties.DbtypeEnum.ORACLE;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.persistence.json.JDBCConnectionProperties.DbtypeEnum.POSTGIS;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.tailormap.api.persistence.json.JDBCConnectionProperties.DbtypeEnum.SQLSERVER;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> java.util.HashMap;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> java.util.Optional;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.geotools.api.data.DataStore;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.postgis.PostgisNGDataStoreFactory;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.sqlserver.SQLServerDataStoreFactory;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureSource;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.JDBCConnectionProperties;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.ServiceAuthentication;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="JDBCFeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/JDBCFeatureSourceHelper.html#JDBCFeatureSourceHelper">JDBCFeatureSourceHelper</a> <strong class="jxr_keyword">extends</strong> <a name="FeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/FeatureSourceHelper.html#FeatureSourceHelper">FeatureSourceHelper</a> {
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Map&lt;JDBCConnectionProperties.DbtypeEnum, Integer&gt; defaultPorts =
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>        Map.of(POSTGIS, 5432, ORACLE, 1521, SQLSERVER, 1433);
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>    @Override
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>    <strong class="jxr_keyword">public</strong> DataStore createDataStore(<a name="TMFeatureSource" href="../../../../../org/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> tmfs, Integer timeout) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      <strong class="jxr_keyword">if</strong> (tmfs.getProtocol() != TMFeatureSource.Protocol.JDBC) {
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(tmfs.getProtocol().getValue());
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      }
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      Objects.requireNonNull(tmfs.getJdbcConnection());
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>      Objects.requireNonNull(tmfs.getAuthentication());
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">if</strong> (tmfs.getAuthentication().getMethod() != ServiceAuthentication.MethodEnum.PASSWORD) {
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>            tmfs.getAuthentication().getMethod().getValue());
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      }
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      JDBCConnectionProperties c = tmfs.getJdbcConnection();
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      Objects.requireNonNull(c.getDbtype());
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      String connectionOpts = Optional.ofNullable(c.getAdditionalProperties().get(<span class="jxr_string">"connectionOptions"</span>))
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>          .orElse(<span class="jxr_string">""</span>);
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      Map&lt;String, Object&gt; params = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      <em class="jxr_comment">// database specific settings</em>
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">switch</strong> (c.getDbtype()) {
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>        <strong class="jxr_keyword">case</strong> POSTGIS:
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          <em class="jxr_comment">// use spatial index to estimate the extents</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          params.put(PostgisNGDataStoreFactory.ESTIMATED_EXTENTS.key, <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          <strong class="jxr_keyword">if</strong> (!connectionOpts.contains(<span class="jxr_string">"ApplicationName"</span>)) {
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>            connectionOpts = connectionOpts + (connectionOpts.contains(<span class="jxr_string">"?"</span>) ? <span class="jxr_string">"&amp;amp;"</span> : <span class="jxr_string">"?"</span>)
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>                + <span class="jxr_string">"ApplicationName=tailormap-api"</span>;
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          }
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>        <strong class="jxr_keyword">case</strong> SQLSERVER:
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          <em class="jxr_comment">// use spatial index to estimate the extents</em>
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          params.put(SQLServerDataStoreFactory.ESTIMATED_EXTENTS.key, <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          <em class="jxr_comment">// we need this for mssql to determine a feature type on an empty table</em>
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          params.put(GEOMETRY_METADATA_TABLE.key, <span class="jxr_string">"geometry_columns"</span>);
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          <strong class="jxr_keyword">if</strong> (!connectionOpts.contains(<span class="jxr_string">"applicationName"</span>)) {
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>            <em class="jxr_comment">// see</em>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>            <em class="jxr_comment">// https://learn.microsoft.com/en-us/sql/connect/jdbc/building-the-connection-url?view=sql-server-ver16</em>
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>            connectionOpts = connectionOpts + <span class="jxr_string">";applicationName=tailormap-api"</span>;
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>          }
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>          <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>        <strong class="jxr_keyword">case</strong> ORACLE:
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>      }
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      params.put(DBTYPE.key, c.getDbtype().getValue());
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      params.put(HOST.key, c.getHost());
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      params.put(PORT.key, c.getPort() != <strong class="jxr_keyword">null</strong> ? c.getPort() : defaultPorts.get(c.getDbtype()));
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      params.put(DATABASE.key, c.getDatabase() + connectionOpts);
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      params.put(SCHEMA.key, c.getSchema());
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>      params.put(USER.key, tmfs.getAuthentication().getUsername());
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>      params.put(PASSWD.key, tmfs.getAuthentication().getPassword());
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      params.put(FETCHSIZE.key, c.getFetchSize());
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      params.put(EXPOSE_PK.key, <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      params.put(PK_METADATA_TABLE.key, c.getPrimaryKeyMetadataTable());
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      params.put(MAXWAIT.key, timeout);
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>  
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>      <strong class="jxr_keyword">return</strong> openDatastore(params, PASSWD.key);
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>    }
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
