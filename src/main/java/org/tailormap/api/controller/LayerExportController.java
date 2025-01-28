@@ -17,8 +17,8 @@ import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -122,7 +122,7 @@ public class LayerExportController {
       @ModelAttribute Application application,
       @ModelAttribute AppTreeLayerNode appTreeLayerNode,
       @RequestParam String outputFormat,
-      @RequestParam(required = false) List<String> attributes,
+      @RequestParam(required = false) Set<String> attributes,
       @RequestParam(required = false) String filter,
       @RequestParam(required = false) String sortBy,
       @RequestParam(required = false) String sortOrder,
@@ -153,7 +153,7 @@ public class LayerExportController {
     }
 
     if (attributes == null) {
-      attributes = new ArrayList<>();
+      attributes = new HashSet<>();
     }
 
     // Get attributes in configured or original order
@@ -171,7 +171,7 @@ public class LayerExportController {
       // Only specify specific propNames if there are hidden attributes. Having no propNames
       // request parameter to request all propNames is less error-prone than specifying the ones
       // we have saved in the feature type
-      attributes = new ArrayList<>(nonHiddenAttributes);
+      attributes = new HashSet<>(nonHiddenAttributes);
     }
 
     // Empty attributes means we won't specify propNames in GetFeature request, but if we do select
@@ -200,7 +200,7 @@ public class LayerExportController {
   private ResponseEntity<?> downloadFromWFS(
       WFSTypeNameDescriptor wfsTypeName,
       String outputFormat,
-      List<String> attributes,
+      Set<String> attributes,
       String filter,
       String sortBy,
       String sortOrder,
