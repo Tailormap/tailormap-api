@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junitpioneer.jupiter.DisabledUntil;
 import org.junitpioneer.jupiter.Issue;
 import org.junitpioneer.jupiter.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -188,10 +187,6 @@ class LayerExportControllerIntegrationTest {
 
   @Test
   @Issue("https://b3partners.atlassian.net/browse/SUPPORT-14840")
-  @DisabledUntil(
-      date = "2025-01-31",
-      reason =
-          "This should be fixed in GeoServer 2.26.2, which was planned for 2025-01-18, but is not yet released.")
   void shouldNotExportHiddenAttributesInGeoJSON() throws Exception {
     final String url = apiBasePath + layerBakPostgis + downloadPath;
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)
@@ -205,12 +200,12 @@ class LayerExportControllerIntegrationTest {
         // all attributes are hidden except bronhouder and identificatie
         .andExpect(jsonPath("$.features[0].properties.identificatie")
             .value("P0026.8abeacd54c5b7500047b2112796cab56"))
+        .andExpect(jsonPath("$.features[0].properties.bronhouder").value("P0026"))
         .andExpect(
             jsonPath("$.features[0].properties.lv_publicatiedatum").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.features[0].properties.creationdate").doesNotHaveJsonPath())
         .andExpect(
             jsonPath("$.features[0].properties.tijdstipregistratie").doesNotHaveJsonPath())
-        .andExpect(jsonPath("$.features[0].properties.bronhouder").value("P0026"))
         .andExpect(jsonPath("$.features[0].properties.inonderzoek").doesNotHaveJsonPath())
         .andExpect(jsonPath("$.features[0].properties.relatievehoogteligging")
             .doesNotHaveJsonPath())
