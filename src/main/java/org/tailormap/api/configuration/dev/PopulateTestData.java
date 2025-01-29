@@ -7,9 +7,7 @@ package org.tailormap.api.configuration.dev;
 
 import static org.tailormap.api.persistence.Configuration.HOME_PAGE;
 import static org.tailormap.api.persistence.Configuration.PORTAL_MENU;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.*;
 import static org.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -495,7 +493,14 @@ public class PopulateTestData {
                 .serverType(GeoServiceSettings.ServerTypeEnum.MAPSERVER)
                 .useProxy(true))
             .setPublished(true)
-            .setTitle("Bestuurlijke gebieden (proxied met auth)")
+            .setTitle("Bestuurlijke gebieden (proxied met auth)"),
+        new GeoService()
+            .setId("3dDBAG_Utrecht")
+            .setProtocol(TILES3D)
+            .setUrl("https://3dtilesnederland.nl/tiles/1.0/implicit/nederland/344.json")
+            .setTitle("3D BAG Utrecht")
+            .setPublished(true)
+            .setAuthorizationRules(ruleAnonymousRead)
         // TODO MapServer WMS "https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk"
         );
 

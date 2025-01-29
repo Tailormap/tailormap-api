@@ -6,10 +6,7 @@
 package org.tailormap.api.persistence.helper;
 
 import static org.tailormap.api.persistence.TMFeatureSource.Protocol.WFS;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.QUANTIZEDMESH;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.TILESET3D;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.*;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -101,8 +98,8 @@ public class GeoServiceHelper {
       return;
     }
 
-    if (geoService.getProtocol() == TILESET3D) {
-      setTileset3DCapabilities(geoService);
+    if (geoService.getProtocol() == TILES3D) {
+      set3DTilesCapabilities(geoService);
       return;
     }
 
@@ -174,11 +171,11 @@ public class GeoServiceHelper {
         .queryable(false)));
   }
 
-  private static void setTileset3DCapabilities(GeoService geoService) {
+  private static void set3DTilesCapabilities(GeoService geoService) {
     geoService.setLayers(List.of(new GeoServiceLayer()
         .id("0")
         .root(true)
-        .name("Tileset3D")
+        .name("tiles3d")
         .title(geoService.getTitle())
         .virtual(false)
         .queryable(false)));
