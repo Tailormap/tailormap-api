@@ -7,7 +7,11 @@ package org.tailormap.api.configuration.dev;
 
 import static org.tailormap.api.persistence.Configuration.HOME_PAGE;
 import static org.tailormap.api.persistence.Configuration.PORTAL_MENU;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.*;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.TILES3D;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.QUANTIZEDMESH;
 import static org.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
