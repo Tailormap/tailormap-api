@@ -52,28 +52,7 @@ import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.User;
 import org.tailormap.api.persistence.helper.GeoServiceHelper;
-import org.tailormap.api.persistence.json.AppContent;
-import org.tailormap.api.persistence.json.AppLayerSettings;
-import org.tailormap.api.persistence.json.AppSettings;
-import org.tailormap.api.persistence.json.AppTreeLayerNode;
-import org.tailormap.api.persistence.json.AppTreeLevelNode;
-import org.tailormap.api.persistence.json.AppTreeNode;
-import org.tailormap.api.persistence.json.AttributeSettings;
-import org.tailormap.api.persistence.json.AuthorizationRule;
-import org.tailormap.api.persistence.json.AuthorizationRuleDecision;
-import org.tailormap.api.persistence.json.Bounds;
-import org.tailormap.api.persistence.json.CatalogNode;
-import org.tailormap.api.persistence.json.FeatureTypeRef;
-import org.tailormap.api.persistence.json.FeatureTypeTemplate;
-import org.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
-import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
-import org.tailormap.api.persistence.json.GeoServiceSettings;
-import org.tailormap.api.persistence.json.JDBCConnectionProperties;
-import org.tailormap.api.persistence.json.MenuItem;
-import org.tailormap.api.persistence.json.PageTile;
-import org.tailormap.api.persistence.json.ServiceAuthentication;
-import org.tailormap.api.persistence.json.TailormapObjectRef;
-import org.tailormap.api.persistence.json.TileLayerHiDpiMode;
+import org.tailormap.api.persistence.json.*;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.CatalogRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
@@ -495,10 +474,18 @@ public class PopulateTestData {
             .setPublished(true)
             .setTitle("Bestuurlijke gebieden (proxied met auth)"),
         new GeoService()
-            .setId("3dDBAG_Utrecht")
+            .setId("3dbag_utrecht")
             .setProtocol(TILES3D)
             .setUrl("https://3dtilesnederland.nl/tiles/1.0/implicit/nederland/344.json")
             .setTitle("3D BAG Utrecht")
+            .setPublished(true)
+            .setAuthorizationRules(ruleAnonymousRead),
+        new GeoService()
+            .setId("ahn_terrain_model")
+            .setProtocol(QUANTIZEDMESH)
+            .setUrl(
+                "https://api.pdok.nl/kadaster/3d-basisvoorziening/ogc/v1/collections/digitaalterreinmodel")
+            .setTitle("AHN Terrain Model")
             .setPublished(true)
             .setAuthorizationRules(ruleAnonymousRead)
         // TODO MapServer WMS "https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk"
@@ -1329,6 +1316,70 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .id("lyr:osm:xyz")
                 .serviceId("osm")
                 .layerName("xyz")
+                .visible(false)));
+
+    applicationRepository.save(app);
+
+    app = new Application()
+        .setName("3d_utrecht")
+        .setCrs("EPSG:3857")
+        .setAuthorizationRules(ruleAnonymousRead)
+        .setTitle("3D Utrecht")
+        .setInitialExtent(
+            new Bounds().minx(558390d).miny(6818485d).maxx(566751d).maxy(6824036d))
+        .setMaxExtent(
+            new Bounds().minx(91467d).miny(6496479d).maxx(1037043d).maxy(7147453d))
+        .setSettings(new AppSettings().uiSettings(new AppUiSettings().enable3D(true)))
+        .setContentRoot(new AppContent()
+            .addBaseLayerNodesItem(new AppTreeLevelNode()
+                .objectType("AppTreeLevelNode")
+                .id("root-base-layers")
+                .root(true)
+                .title("Base layers")
+                .childrenIds(List.of("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR", "lyr:osm:xyz")))
+            .addBaseLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:pdok-hwh-luchtfotorgb:Actueel_orthoHR")
+                .serviceId("pdok-hwh-luchtfotorgb")
+                .layerName("Actueel_orthoHR")
+                .visible(true))
+            .addBaseLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:osm:xyz")
+                .serviceId("osm")
+                .layerName("xyz")
+                .visible(false))
+            .addLayerNodesItem(new AppTreeLevelNode()
+                .objectType("AppTreeLevelNode")
+                .id("root")
+                .root(true)
+                .title("Layers")
+                .childrenIds(List.of(
+                    "lyr:3dbag_utrecht:tiles3d",
+                    "lyr:snapshot-geoserver:postgis:begroeidterreindeel")))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:3dbag_utrecht:tiles3d")
+                .serviceId("3dbag_utrecht")
+                .layerName("tiles3d")
+                .visible(true))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:snapshot-geoserver:postgis:begroeidterreindeel")
+                .serviceId("snapshot-geoserver")
+                .layerName("postgis:begroeidterreindeel")
+                .visible(true))
+            .addTerrainLayerNodesItem(new AppTreeLevelNode()
+                .objectType("AppTreeLevelNode")
+                .id("root-terrain-layers")
+                .root(true)
+                .title("Terrain Layers")
+                .childrenIds(List.of("lyr:ahn_terrain_model:quantizedmesh")))
+            .addTerrainLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:ahn_terrain_model:quantizedmesh")
+                .serviceId("ahn_terrain_model")
+                .layerName("quantizedmesh")
                 .visible(false)));
 
     applicationRepository.save(app);
