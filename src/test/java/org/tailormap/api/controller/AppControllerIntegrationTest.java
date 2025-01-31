@@ -150,19 +150,11 @@ class AppControllerIntegrationTest {
   void finds_3d_application() throws Exception {
     String path = basePath + "/app/3d_utrecht";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
-            .andExpect(status().isOk())
-            .andDo(print())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.kind").value("app"))
-            .andExpect(jsonPath("$.name").value("3d_utrecht"));
-  }
-
-  @Test
-  void should_have_enable3d_setting() throws Exception {
-    final String path = basePath + "/app/3d_utrecht";
-    mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.uiSettings.enable3D").value(true));
+        .andExpect(status().isOk())
+        .andDo(print())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.kind").value("app"))
+        .andExpect(jsonPath("$.name").value("3d_utrecht"))
+        .andExpect(jsonPath("$.uiSettings.enable3D").value(true));
   }
 }
