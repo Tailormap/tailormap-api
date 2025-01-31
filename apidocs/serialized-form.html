@@ -350,6 +350,10 @@ loadScripts(document, 'script');</script>
 <h5>layerNodes</h5>
 <pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="org/tailormap/api/persistence/json/AppTreeNode.html" title="interface in org.tailormap.api.persistence.json">AppTreeNode</a>&gt; layerNodes</pre>
 </li>
+<li class="block-list">
+<h5>terrainLayerNodes</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="org/tailormap/api/persistence/json/AppTreeNode.html" title="interface in org.tailormap.api.persistence.json">AppTreeNode</a>&gt; terrainLayerNodes</pre>
+</li>
 </ul>
 </section>
 </li>
@@ -1420,6 +1424,53 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="serialized-class-details" id="org.tailormap.api.persistence.json.QuantizedMeshLayerSettings">
+<h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/QuantizedMeshLayerSettings.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.QuantizedMeshLayerSettings</a></h3>
+<div class="type-signature">class QuantizedMeshLayerSettings extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>attribution</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> attribution</pre>
+</li>
+<li class="block-list">
+<h5>authorizationRules</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="org/tailormap/api/persistence/json/AuthorizationRule.html" title="class in org.tailormap.api.persistence.json">AuthorizationRule</a>&gt; authorizationRules</pre>
+</li>
+<li class="block-list">
+<h5>description</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> description</pre>
+</li>
+<li class="block-list">
+<h5>featureType</h5>
+<pre><a href="org/tailormap/api/persistence/json/FeatureTypeRef.html" title="class in org.tailormap.api.persistence.json">FeatureTypeRef</a> featureType</pre>
+</li>
+<li class="block-list">
+<h5>hiDpiDisabled</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> hiDpiDisabled</pre>
+</li>
+<li class="block-list">
+<h5>legendImageId</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> legendImageId</pre>
+</li>
+<li class="block-list">
+<h5>title</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> title</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
 <section class="serialized-class-details" id="org.tailormap.api.persistence.json.ServiceAuthentication">
 <h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/ServiceAuthentication.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.ServiceAuthentication</a></h3>
 <div class="type-signature">class ServiceAuthentication extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
@@ -1509,9 +1560,9 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="serialized-class-details" id="org.tailormap.api.persistence.json.Tileset3DLayerSettings">
-<h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/Tileset3DLayerSettings.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.Tileset3DLayerSettings</a></h3>
-<div class="type-signature">class Tileset3DLayerSettings extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<section class="serialized-class-details" id="org.tailormap.api.persistence.json.Tiles3dLayerSettings">
+<h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/Tiles3dLayerSettings.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.Tiles3dLayerSettings</a></h3>
+<div class="type-signature">class Tiles3dLayerSettings extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
 <dl class="name-value">
 <dt>serialVersionUID:</dt>
 <dd>1L</dd>
@@ -2896,6 +2947,10 @@ loadScripts(document, 'script');</script>
 <li class="block-list">
 <h5>services</h5>
 <pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;@Valid <a href="org/tailormap/api/viewer/model/Service.html" title="class in org.tailormap.api.viewer.model">Service</a>&gt; services</pre>
+</li>
+<li class="block-list">
+<h5>terrainLayerTreeNodes</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="org/tailormap/api/viewer/model/LayerTreeNode.html" title="class in org.tailormap.api.viewer.model">LayerTreeNode</a>&gt; terrainLayerTreeNodes</pre>
 </li>
 </ul>
 </section>
