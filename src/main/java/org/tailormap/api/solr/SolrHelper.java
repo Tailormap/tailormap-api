@@ -220,7 +220,10 @@ public class SolrHelper implements AutoCloseable, Constants {
         new SearchIndexSummary().startedAt(startedAtOffset).total(0).duration(0.0);
 
     if (null == searchIndex.getSearchFieldsUsed()) {
-      logger.warn("No search fields configured for search index: {}, bailing out.", searchIndex.getName());
+      logger.warn(
+          "No search fields configured for search index: {}, skipping index {}.",
+          tmFeatureType.getName(),
+          searchIndex.getName());
       return searchIndexRepository.save(searchIndex
           .setStatus(SearchIndex.Status.ERROR)
           .setSummary(summary.errorMessage("No search fields configured")));
@@ -243,7 +246,10 @@ public class SolrHelper implements AutoCloseable, Constants {
         .toList();
 
     if (searchFields.isEmpty()) {
-      logger.warn("No valid search fields configured for featuretype: {}, bailing out.", tmFeatureType.getName());
+      logger.warn(
+          "No valid search fields configured for feature type: {}, skipping index {}.",
+          tmFeatureType.getName(),
+          searchIndex.getName());
       return searchIndexRepository.save(searchIndex
           .setStatus(SearchIndex.Status.ERROR)
           .setSummary(summary.errorMessage("No search fields configured")));
@@ -251,8 +257,27 @@ public class SolrHelper implements AutoCloseable, Constants {
 
     // add search and display properties to query
     Set<String> propertyNames = new HashSet<>();
-    // always add primary key and default geometry to geotools query
+
+    // always try to add primary key and default geometry to geotools query
+    if (null == tmFeatureType.getPrimaryKeyAttribute()) {
+      logger.error(
+          "No primary key attribute configured for feature type: {}, skipping index {}.",
+          tmFeatureType.getName(),
+          searchIndex.getName());
+      return searchIndexRepository.save(searchIndex
+          .setStatus(SearchIndex.Status.ERROR)
+          .setSummary(summary.errorMessage("No primary key attribute configured")));
+    }
     propertyNames.add(tmFeatureType.getPrimaryKeyAttribute());
+    if (null == tmFeatureType.getDefaultGeometryAttribute()) {
+      logger.error(
+          "No default geometry attribute configured for feature type: {}, skipping index {}.",
+          tmFeatureType.getName(),
+          searchIndex.getName());
+      return searchIndexRepository.save(searchIndex
+          .setStatus(SearchIndex.Status.ERROR)
+          .setSummary(summary.errorMessage("No default geometry attribute configured")));
+    }
     propertyNames.add(tmFeatureType.getDefaultGeometryAttribute());
     propertyNames.addAll(searchFields);
 
@@ -262,8 +287,7 @@ public class SolrHelper implements AutoCloseable, Constants {
 
     clearIndexForLayer(searchIndex.getId());
 
-    logger.info(
-        "Indexing started for index id: {}, feature type: {}", searchIndex.getId(), tmFeatureType.getName());
+    logger.info("Indexing started for index: {}, feature type: {}", searchIndex.getName(), tmFeatureType.getName());
     searchIndex = searchIndexRepository.save(searchIndex.setStatus(SearchIndex.Status.INDEXING));
 
     // collect features to index
@@ -272,10 +296,14 @@ public class SolrHelper implements AutoCloseable, Constants {
     // filter out any hidden properties (there should be none though)
     tmFeatureType.getSettings().getHideAttributes().forEach(propertyNames::remove);
     if (propertyNames.isEmpty()) {
-      logger.warn("No valid properties to index for featuretype: {}, bailing out.", tmFeatureType.getName());
+      logger.warn(
+          "No valid properties to index for feature type: {}, skipping index {}.",
+          tmFeatureType.getName(),
+          searchIndex.getName());
       return searchIndexRepository.save(searchIndex
           .setStatus(SearchIndex.Status.ERROR)
-          .setSummary(summary.errorMessage("No valid properties to index")));
+          .setSummary(
+              summary.errorMessage("No valid properties to index. Check if any properties are hidden.")));
     }
     q.setPropertyNames(List.copyOf(propertyNames));
     q.setStartIndex(0);
@@ -319,7 +347,7 @@ public class SolrHelper implements AutoCloseable, Constants {
         if (searchValues.isEmpty() || displayValues.isEmpty()) {
           // this is a record/document that can either not be found or not be displayed
           logger.trace(
-              "No search or display values found for feature: {} in featuretype: {}, skipped for indexing",
+              "No search or display values found for feature: {} in feature type: {}, skipped for indexing",
               feature.getID(),
               tmFeatureType.getName());
           indexSkippedCounter++;
@@ -357,8 +385,8 @@ public class SolrHelper implements AutoCloseable, Constants {
         finishedAt.atOffset(ZoneId.systemDefault().getRules().getOffset(finishedAt));
     Duration processTime = Duration.between(startedAt, finishedAt).abs();
     logger.info(
-        "Indexing finished for index id: {}, featuretype: {} at {} in {}",
-        searchIndex.getId(),
+        "Indexing finished for index: {}, feature type: {} at {} in {}",
+        searchIndex.getName(),
         tmFeatureType.getName(),
         finishedAtOffset,
         processTime);

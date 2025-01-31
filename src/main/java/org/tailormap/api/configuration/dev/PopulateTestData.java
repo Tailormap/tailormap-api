@@ -844,9 +844,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     featureSources.get("postgis").getFeatureTypes().stream()
         .filter(ft -> ft.getName().equals("kadastraal_perceel"))
         .findFirst()
-        .ifPresent(ft -> {
-          ft.getSettings().addHideAttributesItem("gml_id");
-        });
+        .ifPresent(ft -> ft.getSettings().addHideAttributesItem("gml_id"));
   }
 
   public void createAppTestData() throws Exception {
@@ -1419,28 +1417,44 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
           wegdeelIndex = solrHelper.addFeatureTypeIndex(
               wegdeelIndex, wegdeelFT, featureSourceFactoryHelper, searchIndexRepository);
           wegdeelIndex = searchIndexRepository.save(wegdeelIndex);
-
-          featureSourceRepository
-              .getByTitle("PostGIS")
-              .flatMap(fs -> fs.getFeatureTypes().stream()
-                  .filter(ft -> ft.getName().equals("bak"))
-                  .findFirst())
-              .ifPresent(ft -> {
-                SearchIndex bak = new SearchIndex()
-                    .setName("bak")
-                    .setFeatureTypeId(ft.getId())
-                    .setSearchFieldsUsed(List.of("gmlid", "identificatie", "plus_type"))
-                    .setSearchDisplayFieldsUsed(List.of("gmlid", "plus_type", "bronhouder"));
-                searchIndexRepository.save(bak);
-                try {
-                  bak = solrHelper.addFeatureTypeIndex(
-                      bak, ft, featureSourceFactoryHelper, searchIndexRepository);
-                  searchIndexRepository.save(bak);
-                } catch (IOException | SolrServerException e) {
-                  throw new RuntimeException(e);
-                }
-              });
         }
+
+        featureSourceRepository
+            .getByTitle("PostGIS")
+            .flatMap(fs -> fs.getFeatureTypes().stream()
+                .filter(ft -> ft.getName().equals("bak"))
+                .findFirst())
+            .ifPresent(ft -> {
+              SearchIndex bak = new SearchIndex()
+                  .setName("bak")
+                  .setFeatureTypeId(ft.getId())
+                  .setSearchFieldsUsed(List.of("gmlid", "identificatie", "plus_type"))
+                  .setSearchDisplayFieldsUsed(List.of("gmlid", "plus_type", "bronhouder"));
+              searchIndexRepository.save(bak);
+              try {
+                bak = solrHelper.addFeatureTypeIndex(
+                    bak, ft, featureSourceFactoryHelper, searchIndexRepository);
+                searchIndexRepository.save(bak);
+              } catch (IOException | SolrServerException e) {
+                throw new RuntimeException(e);
+              }
+            });
+
+        // creating a solr index of config this will/should fail because there is no primary key in the FT
+        featureSourceRepository
+            .getByTitle("PostGIS OSM")
+            .flatMap(fs -> fs.getFeatureTypes().stream()
+                .filter(ft -> ft.getName().equals("osm_roads"))
+                .findFirst())
+            .ifPresent(ft -> {
+              SearchIndex osm_no_pk = new SearchIndex()
+                  .setName("osm_no_pk")
+                  .setFeatureTypeId(ft.getId())
+                  .setSearchFieldsUsed(List.of("landuse", "osm_id", "natural", "boundary"))
+                  .setSearchDisplayFieldsUsed(
+                      List.of("landuse", "osm_id", "natural", "amenity", "boundary"));
+              searchIndexRepository.save(osm_no_pk);
+            });
 
         AppTreeLayerNode begroeidTerreindeelLayerNode = defaultApp
             .getAllAppTreeLayerNode()
