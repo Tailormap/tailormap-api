@@ -322,7 +322,8 @@ components:
             - $ref: '#/components/schemas/LayerSettings'
             - $ref: '#/components/schemas/WMSLayerSettings'
             - $ref: '#/components/schemas/WMTSLayerSettings'
-            - $ref: '#/components/schemas/Tileset3DLayerSettings'
+            - $ref: '#/components/schemas/Tiles3dLayerSettings'
+            - $ref: '#/components/schemas/QuantizedMeshLayerSettings'
           default:
         layerSettings:
           # this appears to be broken since org.openapitools:openapi-generator-maven-plugin:7.8.0 / PR #913
@@ -335,7 +336,8 @@ components:
               - $ref: '#/components/schemas/WMSLayerSettings'
               - $ref: '#/components/schemas/WMTSLayerSettings'
               - $ref: '#/components/schemas/XYZLayerSettings'
-              - $ref: '#/components/schemas/Tileset3DLayerSettings'
+              - $ref: '#/components/schemas/Tiles3dLayerSettings'
+              - $ref: '#/components/schemas/QuantizedMeshLayerSettings'
           example:
             'begroeidterreindeel':
               title: laag 1
@@ -445,8 +447,13 @@ components:
               description: Alternate URL template to use when rendering at high dpi (using 'layer' instead of 'url' in the name for ease of use).
               type: string
 
-    Tileset3DLayerSettings:
-      description: Settings applying to a 3D Tileset layer.
+    Tiles3dLayerSettings:
+      description: Settings applying to a 3D Tiles layer.
+      allOf:
+        - $ref: '#/components/schemas/LayerSettings'
+
+    QuantizedMeshLayerSettings:
+      description: Settings applying to a Quantized Mesh layer.
       allOf:
         - $ref: '#/components/schemas/LayerSettings'
 
@@ -568,6 +575,11 @@ components:
           items:
             $ref: '#/components/schemas/AppTreeNode'
         layerNodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppTreeNode'
+        terrainLayerNodes:
+          nullable: true
           type: array
           items:
             $ref: '#/components/schemas/AppTreeNode'

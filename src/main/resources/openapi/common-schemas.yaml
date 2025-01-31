@@ -33,7 +33,8 @@ components:
         - wms
         - wmts
         - xyz
-        - Tileset3D
+        - tiles3d
+        - quantizedmesh
         - proxiedlegend
       # force the enum variable names to be uppercase without underscores
       # see:
@@ -43,7 +44,8 @@ components:
         - WMS
         - WMTS
         - XYZ
-        - TILESET3D
+        - TILES3D
+        - QUANTIZEDMESH
         - PROXIEDLEGEND
 
     TileLayerHiDpiMode:

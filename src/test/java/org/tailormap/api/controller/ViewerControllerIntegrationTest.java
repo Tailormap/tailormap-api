@@ -341,4 +341,14 @@ class ViewerControllerIntegrationTest {
         .andExpect(jsonPath("$.code").value(401))
         .andExpect(jsonPath("$.url").value("/login"));
   }
+
+  @Test
+  void should_contain_terrain_layers() throws Exception {
+    final String path = apiBasePath + "/app/3d_utrecht/map";
+    mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.terrainLayerTreeNodes[0].id").value("root-terrain-layers"))
+        .andExpect(jsonPath("$.terrainLayerTreeNodes[1].id").value("lyr:ahn_terrain_model:quantizedmesh"));
+  }
 }
