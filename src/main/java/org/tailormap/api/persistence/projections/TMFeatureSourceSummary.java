@@ -42,6 +42,10 @@ public interface TMFeatureSourceSummary {
 
     boolean isWriteable();
 
+    String getDefaultGeometryAttribute();
+
+    String getPrimaryKeyAttribute();
+
     @JsonIgnore
     List<TMAttributeDescriptor> getAttributes();
 
