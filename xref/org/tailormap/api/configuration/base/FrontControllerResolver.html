@@ -130,15 +130,21 @@
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>     <em class="jxr_comment">// Otherwise use the LocaleResolver to return the index.html for the language of the</em>
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     <em class="jxr_comment">// Accept-Language header</em>
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>     Locale locale = localeResolver.resolveLocale(request);
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>     <strong class="jxr_keyword">return</strong> chain.resolveResource(request, locale.toLanguageTag() + <span class="jxr_string">"/index.html"</span>, locations);
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>   }
-<a class="jxr_linenumber" name="L127" href="#L127">127</a> 
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>   @Override
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>   <strong class="jxr_keyword">public</strong> String resolveUrlPath(
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>       @NonNull String resourcePath, @NonNull List&lt;? <strong class="jxr_keyword">extends</strong> Resource&gt; locations, ResourceResolverChain chain) {
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>     <strong class="jxr_keyword">return</strong> chain.resolveUrlPath(resourcePath, locations);
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>     resource = chain.resolveResource(request, locale.toLanguageTag() + <span class="jxr_string">"/index.html"</span>, locations);
+<a class="jxr_linenumber" name="L126" href="#L126">126</a> 
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>     <em class="jxr_comment">// When frontend is built without localization, return the index.html in the root</em>
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>     <strong class="jxr_keyword">if</strong> (resource == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>       resource = chain.resolveResource(request, <span class="jxr_string">"/index.html"</span>, locations);
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>     }
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>     <strong class="jxr_keyword">return</strong> resource;
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>   }
-<a class="jxr_linenumber" name="L133" href="#L133">133</a> }
+<a class="jxr_linenumber" name="L133" href="#L133">133</a> 
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>   @Override
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>   <strong class="jxr_keyword">public</strong> String resolveUrlPath(
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>       @NonNull String resourcePath, @NonNull List&lt;? <strong class="jxr_keyword">extends</strong> Resource&gt; locations, ResourceResolverChain chain) {
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>     <strong class="jxr_keyword">return</strong> chain.resolveUrlPath(resourcePath, locations);
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>   }
+<a class="jxr_linenumber" name="L139" href="#L139">139</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
