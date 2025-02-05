@@ -122,7 +122,13 @@ public class FrontControllerResolver implements ResourceResolver, InitializingBe
     // Otherwise use the LocaleResolver to return the index.html for the language of the
     // Accept-Language header
     Locale locale = localeResolver.resolveLocale(request);
-    return chain.resolveResource(request, locale.toLanguageTag() + "/index.html", locations);
+    resource = chain.resolveResource(request, locale.toLanguageTag() + "/index.html", locations);
+
+    // When frontend is built without localization, return the index.html in the root
+    if (resource == null) {
+      resource = chain.resolveResource(request, "/index.html", locations);
+    }
+    return resource;
   }
 
   @Override
