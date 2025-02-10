@@ -25,11 +25,12 @@ public class AuthenticationEventsLogger {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private static String getExtraInfo(AbstractAuthenticationEvent event) {
+  private static String getIPAddressInfo(AbstractAuthenticationEvent event) {
     String extraInfo = "";
+    // prevent leaking personal data in logs unless trace logging is enabled
     if (logger.isTraceEnabled()
         && event.getAuthentication().getDetails() instanceof WebAuthenticationDetails details) {
-      extraInfo = String.format(" (IP: %s)", details.getRemoteAddress());
+      extraInfo = " (IP: %s)".formatted(details.getRemoteAddress());
     }
     return extraInfo;
   }
@@ -38,23 +39,27 @@ public class AuthenticationEventsLogger {
   public void onSuccess(AuthenticationSuccessEvent success) {
     String authInfo = "";
     if (success.getSource() instanceof OAuth2LoginAuthenticationToken token) {
+      // prevent leaking personal data in logs unless trace logging is enabled
       String userClaims = "";
-      if (token.getPrincipal() instanceof DefaultOidcUser oidcUser) {
+      if (logger.isTraceEnabled() && token.getPrincipal() instanceof DefaultOidcUser oidcUser) {
         userClaims = ", user claims: " + oidcUser.getUserInfo().getClaims();
       }
-      authInfo = String.format(
-          "via OIDC registration \"%s\" with client ID %s%s",
-          token.getClientRegistration().getClientName(),
-          token.getClientRegistration().getClientId(),
-          userClaims);
+
+      authInfo = "via OIDC registration \"%s\" with client ID %s%s"
+          .formatted(
+              token.getClientRegistration().getClientName(),
+              token.getClientRegistration().getClientId(),
+              userClaims);
     }
     if (success.getSource() instanceof UsernamePasswordAuthenticationToken) {
       authInfo = "using username/password";
     }
+
     logger.info(
         "Authentication successful for user \"{}\"{}, granted authorities: {}, {}",
-        success.getAuthentication().getName(),
-        getExtraInfo(success),
+        // prevent leaking personal data in logs unless trace logging is enabled
+        logger.isTraceEnabled() ? success.getAuthentication().getName() : "<username hidden>",
+        getIPAddressInfo(success),
         success.getAuthentication().getAuthorities().toString(),
         authInfo);
   }
@@ -69,8 +74,9 @@ public class AuthenticationEventsLogger {
     logger.info(
         "Authentication failure: {} {}{}",
         failure.getException().getMessage(),
+        // in this case logging the "login" is useful/warranted for analysis
         userInfo,
-        getExtraInfo(failure));
+        getIPAddressInfo(failure));
   }
 
   @EventListener
