@@ -7,11 +7,18 @@
 package org.tailormap.api.configuration.base;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -33,6 +40,8 @@ import org.tailormap.api.repository.ConfigurationRepository;
  */
 @Component
 public class FrontControllerResolver implements ResourceResolver, InitializingBean {
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final ConfigurationRepository configurationRepository;
   private final ApplicationRepository applicationRepository;
@@ -40,8 +49,13 @@ public class FrontControllerResolver implements ResourceResolver, InitializingBe
   @Value("${spring.profiles.active:}")
   private String activeProfile;
 
-  @Value("#{'${tailormap-api.supported-languages:en}'.split(',')}")
-  private List<String> supportedLanguages;
+  @Value("#{'${spring.web.resources.static-locations:}'.split(',')}")
+  private List<String> staticResourceLocations;
+
+  @Value("${tailormap-api.default-language:en}")
+  private String defaultLanguage;
+
+  private List<String> supportedLanguages = Collections.emptyList();
 
   private AcceptHeaderLocaleResolver localeResolver;
 
@@ -62,9 +76,45 @@ public class FrontControllerResolver implements ResourceResolver, InitializingBe
     this.staticOnly = activeProfile.contains("static-only");
 
     this.localeResolver = new AcceptHeaderLocaleResolver();
-    localeResolver.setSupportedLocales(
-        supportedLanguages.stream().map(Locale::new).toList());
-    localeResolver.setDefaultLocale(localeResolver.getSupportedLocales().get(0));
+
+    try {
+      for (String resourceLocation : staticResourceLocations) {
+        Path resourcePath = resourceLocation.startsWith("file:")
+            ? Path.of(StringUtils.removeStart(resourceLocation, "file:"))
+            : null;
+        // Check whether the resource path has the Tailormap frontend which always has a version.json
+        if (resourcePath != null
+            && resourcePath.resolve("version.json").toFile().exists()) {
+          // Only check for locale bundle directories when the frontend is built with localization. When
+          // index.html exists this is a non-localized build -- leave supportedLanguages empty
+          if (resourcePath.resolve("index.html").toFile().exists()) {
+            break;
+          }
+
+          File[] languageBundleDirs =
+              resourcePath.toFile().listFiles((file, name) -> name.matches("^[a-z]{2}$"));
+          if (languageBundleDirs != null && languageBundleDirs.length > 0) {
+            supportedLanguages = Arrays.stream(languageBundleDirs)
+                .map(File::getName)
+                .toList();
+            logger.info("Detected frontend bundles for languages: {}", supportedLanguages);
+          }
+          break;
+        }
+      }
+    } catch (Exception e) {
+      logger.error("Error while trying to determine frontend languages bundles", e);
+    }
+
+    if (!supportedLanguages.isEmpty()) {
+      localeResolver.setSupportedLocales(
+          supportedLanguages.stream().map(Locale::new).toList());
+      Locale defaultLocale = supportedLanguages.contains(defaultLanguage)
+          ? new Locale(defaultLanguage)
+          : localeResolver.getSupportedLocales().get(0);
+      localeResolver.setDefaultLocale(defaultLocale);
+      logger.info("Default language set to: {}", defaultLocale.toLanguageTag());
+    }
   }
 
   @Override
