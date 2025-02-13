@@ -3,8 +3,9 @@ updates:
   - package-ecosystem: maven
     directory: "/"
     schedule:
-      interval: daily
-      time: "06:00"
+      interval: weekly
+      day: thursday
+      time: "21:00"
       timezone: Europe/Amsterdam
     open-pull-requests-limit: 25
     target-branch: main
@@ -31,7 +32,7 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-      day: monday
+      day: thursday
       time: "21:00"
       timezone: Europe/Amsterdam
     assignees:
@@ -43,7 +44,7 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-      day: monday
+      day: thursday
       time: "21:00"
       timezone: Europe/Amsterdam
     target-branch: main
@@ -58,3 +59,11 @@ updates:
       - dependency-name: "eclipse-temurin"
         versions:
           - ">= 18"
+
+  - package-ecosystem: "devcontainers"
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: thursday
+      time: "21:00"
+      timezone: Europe/Amsterdam
