@@ -125,6 +125,7 @@ SPDX-License-Identifier: MIT
         <hamcrest.version>3.0</hamcrest.version>
         <hibernate.version>6.6.7.Final</hibernate.version>
         <!-- <jackson-bom.version>2.18.2</jackson-bom.version> -->
+        <json-smart.version>2.5.2</json-smart.version>
         <junit-jupiter.version>5.11.4</junit-jupiter.version>
         <logback.version>1.5.14</logback.version>
         <micrometer.version>1.14.3</micrometer.version>
