@@ -507,3 +507,73 @@ components:
           type: boolean
           nullable: true
           description: indicates whether the link should be opened in a new window
+
+    Drawing:
+      description: 'A drawing is a collection of features (modeled as a GeoJSON FeatureCollection) and some metadata.'
+      required:
+        - id
+        - name
+        - access
+        - features
+      properties:
+        id:
+          description: 'Unique identifier of the drawing'
+          type: string
+          # UUID's can be generated reliably by the server or the client,
+          # since creating a drawing will return the created drawing we could limit this to the server.
+          format: uuid
+        name:
+          type: string
+          description: 'A user provided name of the drawing'
+        description:
+          type: string
+          description: 'Description of the drawing'
+        createdAt:
+          description: 'Creation date of the drawing.'
+          type: string
+          format: date-time
+        updatedAt:
+          description: 'Last update date of the drawing.'
+          type: string
+          format: date-time
+        createdBy:
+          description: 'User that created the drawing.'
+          type: string
+          nullable: false
+        savedBy:
+          description: 'User that last saved the drawing.'
+          type: string
+          nullable: false
+        version:
+          description: 'Version of the drawing.'
+          type: integer
+          format: int32
+          nullable: false
+        access:
+          description: 'Access level of the drawing, defaults to private.'
+          type: string
+          enum:
+            - private
+            - shared
+            - public
+          default: private
+          nullable: false
+        featureCollection:
+          description: 'Features of the drawing.'
+          type: object
+          properties: {
+            #      type: 'FeatureCollection',
+            #      features: [
+            #        {
+            #          type: 'Feature',
+            #          geometry: {
+            #            type: 'Point',
+            #            coordinates: [ 0, 0 ]
+            #          },
+            #          properties: {
+            #            drawingId: 'a73ac8ee-1d64-44be-a05e-b6426e2c1c59',
+            #            name: 'Feature 1'
+            #          }
+            #        }
+            #      ] }
+          }
