@@ -339,6 +339,12 @@ components:
     PageResponse:
       $ref: './viewer-schemas.yaml#/components/schemas/Page'
 
+    DrawingResponse:
+      $ref: './viewer-schemas.yaml#/components/schemas/Drawing'
+
+    DrawingRequest:
+      $ref: './viewer-schemas.yaml#/components/schemas/Drawing'
+
 paths:
   /unauthorized:
     get:
@@ -1410,3 +1416,92 @@ paths:
             application/json:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+
+  /drawing:
+    summary: 'Use this endpoint to create a new drawing.'
+    post:
+      operationId: 'createDrawing'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DrawingRequest'
+      responses:
+        '201':
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DrawingResponse'
+        '401':
+          description: 'Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
+        '400':
+          description: 'Bad Request. May be returned for some combination of parameters that can not be processed or are incomplete.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+    put:
+      operationId: 'updateDrawing'
+      description: 'Update an existing drawing.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DrawingRequest'
+      responses: # other responses possible such as 400, 401, 500, see the post operation
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DrawingResponse'
+
+  /drawing/list:
+    summary: 'Use this endpoint to get a list of drawings accessible to the user.'
+    get:
+      operationId: 'listDrawings'
+      responses: # other responses possible such as 401, 404 see the post operation for details
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DrawingResponse'
+
+  /drawing/{id}:
+    summary: 'Use this endpoint to get or delete a drawing.'
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      operationId: 'getDrawing'
+      responses: # other responses possible such as 401, 404 see the post operation for details
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DrawingResponse'
+    delete:
+      operationId: 'deleteDrawing'
+      description: 'Delete a drawing.'
+      responses: # other responses possible such as 401, 404, 500 see the post operation for details
+        '204':
+          description: 'Deleted'
