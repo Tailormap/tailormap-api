@@ -1380,12 +1380,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PageResponse'
-        '404':
+        '401':
           description: 'Unauthorized'
           content:
             application/json:
               schema:
-                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
   /page/{name}:
     summary: 'Use this endpoint to get a page'
@@ -1404,9 +1404,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PageResponse'
-        '404':
+        '401':
           description: 'Unauthorized'
           content:
             application/json:
               schema:
-                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+                $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
