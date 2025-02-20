@@ -4,18 +4,26 @@
 # SPDX-License-Identifier: MIT
 set -e
 
+export SOLR_OPTS=""
+
 docker compose -f ./build/ci/docker-compose.yml up --pull=always -d --wait
 
 POSTGIS_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" postgis)
 ORACLE_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" oracle)
 SQLSERVER_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" sqlserver)
+POSTGRES_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" postgres)
+SOLR_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" solr)
 _WAIT=0;
 
 printf "Waiting for databases to be ready...\n"
 while :
 do
   printf " %d" "$_WAIT"
-  if [ "$POSTGIS_HEALTHY" == "healthy" ] && [ "$ORACLE_HEALTHY" == "healthy" ] && [ "$SQLSERVER_HEALTHY" == "healthy" ]; then
+  if [ "$POSTGIS_HEALTHY" == "healthy" ] &&
+      [ "$ORACLE_HEALTHY" == "healthy" ] &&
+      [ "$SQLSERVER_HEALTHY" == "healthy" ] &&
+      [ "$POSTGRES_HEALTHY" == "healthy" ] &&
+      [ "$SOLR_HEALTHY" == "healthy" ]; then
     printf "\nDocker containers are healthy\n"
     break
   fi
@@ -26,7 +34,8 @@ do
   POSTGIS_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" postgis)
   ORACLE_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" oracle)
   SQLSERVER_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" sqlserver)
-
+  POSTGRES_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" postgres)
+  SOLR_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" solr)
 done
 
 printf "\n%(%T)T Waiting for Oracle $1 database to report it is ready to use.... "
