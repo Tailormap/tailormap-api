@@ -563,6 +563,9 @@ components:
           description: Whether this layer should be shown on the map on startup.
           nullable: false
           default: true
+        webMercatorAvailable:
+          description: Web Mercator projection is available for this layer.
+          type: boolean
       required:
         - serviceId
         - layerName
