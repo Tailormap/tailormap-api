@@ -12,11 +12,7 @@ import static org.tailormap.api.util.TMStringUtils.nullIfEmpty;
 import jakarta.persistence.EntityManager;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
@@ -188,6 +184,8 @@ public class ApplicationHelper {
     // XXX not needed if we have GeoServiceLayer.getService().getName()
     private final Map<GeoServiceLayer, String> serviceLayerServiceIds = new HashMap<>();
 
+    private final Set<String> childrenIdsWithWebMercator = new HashSet<>();
+
     public MapResponseLayerBuilder(Application app, MapResponse mr) {
       this.app = app;
       this.mr = mr;
@@ -229,6 +227,22 @@ public class ApplicationHelper {
       LayerTreeNode layerTreeNode = new LayerTreeNode();
       if ("AppTreeLayerNode".equals(node.getObjectType())) {
         AppTreeLayerNode appTreeLayerNode = (AppTreeLayerNode) node;
+        Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> serviceWithLayer =
+            findServiceLayer(appTreeLayerNode);
+        GeoServiceLayer serviceLayer = serviceWithLayer.getMiddle();
+        if (this.childrenIdsWithWebMercator.contains(appTreeLayerNode.getId())) {
+          layerTreeNode.setWebMercatorAvailable(true);
+        }
+        if (serviceLayer != null) {
+          Set<String> layerCrs = serviceLayer.getCrs();
+          if (layerCrs != null && layerCrs.contains("EPSG:3857")) {
+            layerTreeNode.setWebMercatorAvailable(true);
+            List<String> childrenIds = layerTreeNode.getChildrenIds();
+            if (childrenIds != null) {
+              this.childrenIdsWithWebMercator.addAll(childrenIds);
+            }
+          }
+        }
         layerTreeNode.setId(appTreeLayerNode.getId());
         layerTreeNode.setAppLayerId(appTreeLayerNode.getId());
         if (!addAppLayerItem(appTreeLayerNode)) {
