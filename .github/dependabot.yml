@@ -5,7 +5,7 @@ updates:
     schedule:
       interval: weekly
       day: thursday
-      time: "21:00"
+      time: "23:00"
       timezone: Europe/Amsterdam
     open-pull-requests-limit: 25
     target-branch: main
@@ -33,7 +33,7 @@ updates:
     schedule:
       interval: weekly
       day: thursday
-      time: "21:00"
+      time: "23:00"
       timezone: Europe/Amsterdam
     assignees:
       - mprins
@@ -45,7 +45,7 @@ updates:
     schedule:
       interval: weekly
       day: thursday
-      time: "21:00"
+      time: "23:00"
       timezone: Europe/Amsterdam
     target-branch: main
     reviewers:
@@ -65,5 +65,5 @@ updates:
     schedule:
       interval: weekly
       day: thursday
-      time: "21:00"
+      time: "23:00"
       timezone: Europe/Amsterdam
