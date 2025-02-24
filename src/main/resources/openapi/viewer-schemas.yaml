@@ -533,15 +533,17 @@ components:
           description: 'A description of the drawing.'
           type: string
         createdAt:
-          description: 'Creation date of the drawing.'
+          description: 'Creation date of the drawing as a Zoned date-time.'
           type: string
           format: date-time
           readOnly: true
+          example: '2024-12-12T16:02:34.587142504+01:00'
         updatedAt:
-          description: 'Last update date of the drawing.'
+          description: 'Last update date of the drawing as a Zoned date-time.'
           type: string
           format: date-time
           readOnly: true
+          example: '2024-12-12T16:02:34.587142504+01:00'
         createdBy:
           description: 'User that created the drawing.'
           type: string
@@ -582,6 +584,7 @@ components:
                   The collection is projected to the SRID of the application that the drawing was last edited in.
                   '
           type: object
+          nullable: true
           properties: {
             #      type: 'FeatureCollection',
             #      features: [
