@@ -6,17 +6,9 @@
 package org.tailormap.api.drawing;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.lang.invoke.MethodHandles;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.postgresql.util.PGobject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +26,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.viewer.model.Drawing;
+
+import java.lang.invoke.MethodHandles;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Service for managing drawings.
@@ -64,9 +68,6 @@ public class DrawingService {
       }
     });
 
-    // add a converter to convert PGobject jsonb to a Map<String, Object>
-    // [org.postgresql.util.PGobject] to type [java.util.Map<java.lang.String, java.lang.Object>]
-
     conversionService.addConverter(new Converter<PGobject, Map<String, Object>>() {
       @Override
       @SuppressWarnings("unchecked")
@@ -81,11 +82,8 @@ public class DrawingService {
 
     drawingRowMapper = new SimplePropertyRowMapper<>(Drawing.class, conversionService) {
       @Override
-      @NonNull public Drawing mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Drawing drawing = super.mapRow(rs, rowNum);
-        // TODO
-        // drawing.setDomainData(rs.getString("domaindata"));
-        return drawing;
+      @NonNull public Drawing mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
+        return super.mapRow(rs, rowNum);
       }
     };
   }
@@ -128,6 +126,58 @@ VALUES (?, ?, ?::jsonb, ?, ?, ?, ?) RETURNING *
 
     logger.debug("stored new drawing: {}", storedDrawing);
 
+    if (drawing.getFeatureCollection() != null) {
+      List<JsonNode> storedFeatures = jdbcClient
+          .sql(
+              """
+WITH jsonData AS (SELECT ?::json AS featureCollection)
+INSERT INTO data.drawing_geometry (drawing_id, geometry, properties)
+SELECT ?::uuid AS drawing_id,
+ST_SetSRID(ST_GeomFromGeoJSON(feature ->> 'geometry'), ?) AS geometry,
+feature -> 'properties' AS properties
+FROM (SELECT json_array_elements(featureCollection -> 'features') AS feature
+FROM jsonData)
+AS f
+RETURNING
+-- since we cannot use aggregate functions in a returning clause, we will return a list of geojson
+-- features and aggregate them into a featureCollection in the next step
+ST_AsGeoJSON(data.drawing_geometry.*, geom_column =>'geometry', id_column => 'id')::json;
+""")
+          .param(objectMapper.writeValueAsString(drawing.getFeatureCollection()))
+          .param(storedDrawing.getId())
+          .param(drawing.getSrid())
+          .query(new RowMapper<JsonNode>() {
+            @Override
+            public JsonNode mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
+              try {
+                JsonNode jsonNode = objectMapper.readTree(rs.getString(1));
+                // merge properties with nested properties (because we have a jsonb column called
+                // "properties")
+                final ObjectNode properties = (ObjectNode) jsonNode.get("properties");
+                JsonNode nestedProperties = properties.get("properties");
+                if (nestedProperties != null) {
+                  nestedProperties.properties().stream()
+                      .iterator()
+                      .forEachRemaining(entry -> {
+                        properties.putIfAbsent(entry.getKey(), entry.getValue());
+                      });
+                }
+                properties.remove("properties");
+                return jsonNode;
+              } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+              }
+            }
+          })
+          .list();
+
+      ObjectNode featureCollection = objectMapper
+          .createObjectNode()
+          .put("type", "FeatureCollection")
+          .set("features", objectMapper.createArrayNode().addAll(storedFeatures));
+      logger.debug("stored features: {}", featureCollection);
+      storedDrawing.setFeatureCollection(featureCollection);
+    }
     return storedDrawing;
   }
 

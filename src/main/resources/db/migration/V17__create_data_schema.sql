@@ -25,6 +25,4 @@ CREATE TABLE IF NOT EXISTS data.drawing_geometry
     properties JSONB
 );
 CREATE INDEX IF NOT EXISTS drawing_drawing_id ON data.drawing_geometry (drawing_id);
--- Flyway does not (re)create geometry column when this script is executed on existing schema...
--- ALTER TABLE data.drawing_geometry ADD COLUMN IF NOT EXISTS geometry GEOMETRY;
 CREATE INDEX IF NOT EXISTS drawing_geometry_geometry ON data.drawing_geometry USING GIST (geometry);
