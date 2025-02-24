@@ -569,6 +569,7 @@ components:
         domainData:
           description: 'Domain specific data, can be used to store additional data.'
           type: object
+          additionalProperties: true
           nullable: true
         srid:
           description: 'The EPSG SRID code of the drawing''s features, defaults to the SRID of the application.'
@@ -599,4 +600,4 @@ components:
             #          }
             #       }
             #     ]
-          }
+            # }

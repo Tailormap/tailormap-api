@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
@@ -74,7 +75,8 @@ public class DrawingController {
   @Timed(value = "create_or_update_drawing", description = "time spent to create or update a drawing")
   @Counted(value = "create_or_update_drawing", description = "number of created or updated drawings")
   @Valid public ResponseEntity<Serializable> createOrUpdateDrawing(
-      @NonNull @RequestBody Drawing drawing, @ModelAttribute Application application) {
+      @NonNull @RequestBody Drawing drawing, @ModelAttribute Application application)
+      throws JsonProcessingException {
     logger.trace("create or update drawing {}", drawing);
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

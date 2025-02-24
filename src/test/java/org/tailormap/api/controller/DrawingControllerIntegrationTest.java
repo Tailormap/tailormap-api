@@ -5,24 +5,9 @@
  */
 package org.tailormap.api.controller;
 
-import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.tailormap.api.TestRequestProcessor.setServletPath;
-import static org.tailormap.api.persistence.Group.ADMIN;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jayway.jsonpath.JsonPath;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -42,6 +27,22 @@ import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.viewer.model.Drawing;
 
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.UUID;
+
+import static org.hamcrest.Matchers.matchesPattern;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.persistence.Group.ADMIN;
+
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
 @Stopwatch
@@ -58,7 +59,7 @@ class DrawingControllerIntegrationTest {
 {
 "name": "Drawing 1",
 "description": "Drawing 1 description",
-"domainData": null,
+"domainData": {"items": 1, "domain": "test drawings"},
 "access": "private",
 "srid": 28992,
 "featureCollection": {
@@ -101,7 +102,6 @@ class DrawingControllerIntegrationTest {
     final String url = apiBasePath + "/drawing/" + UNKNOWN_DRAWING_ID;
 
     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-        .andDo(print())
         .andExpect(status().isNotFound())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(404))
@@ -113,7 +113,6 @@ class DrawingControllerIntegrationTest {
     final String url = apiBasePath + "/drawing/" + UNKNOWN_DRAWING_ID;
 
     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-        .andDo(print())
         .andExpect(status().isUnauthorized());
   }
 
@@ -122,7 +121,6 @@ class DrawingControllerIntegrationTest {
     final String url = apiBasePath + "/drawing/a73ac8ee-1d64-44be-a05e-b6426e2c1c59";
 
     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-        .andDo(print())
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(401))
@@ -140,6 +138,7 @@ class DrawingControllerIntegrationTest {
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
             .content(NEW_DRAWING_JSON))
+        .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         // API created values
@@ -149,7 +148,10 @@ class DrawingControllerIntegrationTest {
         // given values
         .andExpect(jsonPath("$.name").value("Drawing 1"))
         .andExpect(jsonPath("$.access").value("private"))
-        .andExpect(jsonPath("$.description").value("Drawing 1 description"));
+        .andExpect(jsonPath("$.description").value("Drawing 1 description"))
+        .andExpect(jsonPath("$.domainData").exists())
+        .andExpect(jsonPath("$.domainData.items").value(1))
+        .andExpect(jsonPath("$.domainData.domain").value("test drawings"));
   }
 
   @Test
@@ -160,7 +162,6 @@ class DrawingControllerIntegrationTest {
   void listDrawings() throws Exception {
     final String url = apiBasePath + "/drawing/list";
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-        .andDo(print())
         .andExpect(status().is2xxSuccessful())
         .andExpect(status().is(200))
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -214,7 +215,10 @@ class DrawingControllerIntegrationTest {
         // given values
         .andExpect(jsonPath("$.access").value("private"))
         .andExpect(jsonPath("$.name").value(oldName))
-        .andExpect(jsonPath("$.description").value("Edited drawing 2 description"));
+        .andExpect(jsonPath("$.description").value("Edited drawing 2 description"))
+        .andExpect(jsonPath("$.domainData").exists())
+        .andExpect(jsonPath("$.domainData.items").value(1))
+        .andExpect(jsonPath("$.domainData.domain").value("test drawings"));
   }
 
   @Test
@@ -222,7 +226,7 @@ class DrawingControllerIntegrationTest {
       username = "tm-admin",
       authorities = {ADMIN})
   @Order(30)
-  void deleteDrawing() throws Exception {
+  void deleteDrawings() throws Exception {
     final String url = apiBasePath + "/drawing/list";
     final MvcResult result = mockMvc.perform(
             get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))

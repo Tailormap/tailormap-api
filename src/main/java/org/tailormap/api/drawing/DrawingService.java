@@ -5,15 +5,19 @@
  */
 package org.tailormap.api.drawing;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.invoke.MethodHandles;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import org.postgresql.util.PGobject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
@@ -27,6 +31,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.viewer.model.Drawing;
 
@@ -43,17 +48,34 @@ public class DrawingService {
 
   private final JdbcClient jdbcClient;
   private final RowMapper<Drawing> drawingRowMapper;
+  private final ObjectMapper objectMapper;
 
-  public DrawingService(JdbcClient jdbcClient) {
+  public DrawingService(JdbcClient jdbcClient, ObjectMapper objectMapper) {
     this.jdbcClient = jdbcClient;
+    this.objectMapper = objectMapper;
 
     final GenericConversionService conversionService = new GenericConversionService();
     DefaultConversionService.addDefaultConverters(conversionService);
 
     conversionService.addConverter(new Converter<String, Drawing.AccessEnum>() {
       @Override
-      public Drawing.AccessEnum convert(String source) {
+      public Drawing.AccessEnum convert(@NonNull String source) {
         return Drawing.AccessEnum.fromValue(source);
+      }
+    });
+
+    // add a converter to convert PGobject jsonb to a Map<String, Object>
+    // [org.postgresql.util.PGobject] to type [java.util.Map<java.lang.String, java.lang.Object>]
+
+    conversionService.addConverter(new Converter<PGobject, Map<String, Object>>() {
+      @Override
+      @SuppressWarnings("unchecked")
+      public Map<String, Object> convert(@NonNull PGobject source) {
+        try {
+          return objectMapper.readValue(source.getValue(), Map.class);
+        } catch (JsonProcessingException e) {
+          throw new IllegalArgumentException("Failed to convert PGobject to Map", e);
+        }
       }
     });
 
@@ -63,7 +85,6 @@ public class DrawingService {
         Drawing drawing = super.mapRow(rs, rowNum);
         // TODO
         // drawing.setDomainData(rs.getString("domaindata"));
-        // drawing.setAccess(Drawing.AccessEnum.fromValue(rs.getString("access")));
         return drawing;
       }
     };
@@ -76,20 +97,28 @@ public class DrawingService {
    * @param authentication the current user
    * @return the created drawing
    */
-  public Drawing createDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication) {
+  @Transactional
+  public Drawing createDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
+      throws JsonProcessingException {
     logger.warn("createDrawing for {}", drawing);
 
     canCreateDrawing(authentication);
 
+    logger.debug(
+        "creating new drawing: {}, domainData {}, createdAt {}",
+        drawing,
+        objectMapper.writeValueAsString(drawing.getDomainData()),
+        OffsetDateTime.now(ZoneId.systemDefault()));
+
     Drawing storedDrawing = jdbcClient
         .sql(
             """
-INSERT INTO data.drawing
-(name, description,domaindata,access,created_at,created_by,srid)
-VALUES ( ?, ?, ?, ?, ?, ?, ?) RETURNING *""")
+INSERT INTO data.drawing (name, description, domaindata, access, created_at, created_by,srid)
+VALUES (?, ?, ?::jsonb, ?, ?, ?, ?) RETURNING *
+""")
         .param(drawing.getName())
         .param(drawing.getDescription())
-        .param(drawing.getDomainData())
+        .param(objectMapper.writeValueAsString(drawing.getDomainData()))
         .param(drawing.getAccess().getValue())
         .param(OffsetDateTime.now(ZoneId.systemDefault()))
         .param(authentication.getName())
@@ -109,6 +138,7 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?) RETURNING *""")
    * @param authentication the current user
    * @return the created drawing
    */
+  @Transactional
   public Drawing updateDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication) {
     canSaveOrDeleteDrawing(drawing, authentication);
 
@@ -126,26 +156,26 @@ VALUES ( ?, ?, ?, ?, ?, ?, ?) RETURNING *""")
             """
 UPDATE data.drawing SET
 id=:id,
-name= :name,
+name=:name,
 description=:description,
-domaindata=:domaindata,
+domaindata=:domainData::jsonb,
 access=:access,
-created_by=:created_by,
-created_at=:created_at,
-updated_by=:updated_by,
-updated_at=:updated_at,
+created_by=:createdBy,
+created_at=:createdAt,
+updated_by=:updatedBy,
+updated_at=:updatedAt,
 srid=:srid,
 version=:version
 WHERE id = :id RETURNING *""")
         .param("id", drawing.getId())
         .param("name", drawing.getName())
         .param("description", drawing.getDescription())
-        .param("domaindata", drawing.getDomainData())
+        .param("domainData", drawing.getDomainData())
         .param("access", drawing.getAccess().getValue())
-        .param("created_by", drawing.getCreatedBy())
-        .param("created_at", drawing.getCreatedAt())
-        .param("updated_by", authentication.getName())
-        .param("updated_at", OffsetDateTime.now(ZoneId.systemDefault()))
+        .param("createdBy", drawing.getCreatedBy())
+        .param("createdAt", drawing.getCreatedAt())
+        .param("updatedBy", authentication.getName())
+        .param("updatedAt", OffsetDateTime.now(ZoneId.systemDefault()))
         .param("srid", drawing.getSrid())
         .param("version", drawing.getVersion())
         .query(drawingRowMapper)
