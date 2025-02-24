@@ -1417,10 +1417,24 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/RedirectResponse'
 
-  /drawing:
-    summary: 'Use this endpoint to create a new drawing.'
-    post:
-      operationId: 'createDrawing'
+  /{viewerKind}/{viewerName}/drawing:
+    summary: 'Use this endpoint to create a new or update an existing drawing.'
+    parameters:
+      - in: path
+        name: viewerKind
+        required: true
+        schema:
+          type: string
+          enum:
+            - app
+            - service
+      - in: path
+        name: viewerName
+        required: true
+        schema:
+          type: string
+    put:
+      operationId: 'createOrUpdateDrawing'
       requestBody:
         required: true
         content:
@@ -1428,6 +1442,12 @@ paths:
             schema:
               $ref: '#/components/schemas/DrawingRequest'
       responses:
+        '200':
+          description: 'Updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DrawingResponse'
         '201':
           description: 'Created'
           content:
@@ -1452,38 +1472,39 @@ paths:
             application/json:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
-    put:
-      operationId: 'updateDrawing'
-      description: 'Update an existing drawing.'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DrawingRequest'
-      responses: # other responses possible such as 400, 401, 500, see the post operation
-        '200':
-          description: 'OK'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DrawingResponse'
+
 
   /drawing/list:
     summary: 'Use this endpoint to get a list of drawings accessible to the user.'
     get:
       operationId: 'listDrawings'
-      responses: # other responses possible such as 401, 404 see the post operation for details
+      responses: # other responses possible such as 401, 404 see the put operation for details
         '200':
           description: 'OK'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DrawingResponse'
+                type: array
+                description: 'List of partly populated drawings accessible to the user.'
+                items:
+                  $ref: '#/components/schemas/DrawingResponse'
 
-  /drawing/{id}:
+  /{viewerKind}/{viewerName}/drawing/{id}:
     summary: 'Use this endpoint to get or delete a drawing.'
     parameters:
+      - in: path
+        name: viewerKind
+        required: true
+        schema:
+          type: string
+          enum:
+            - app
+            - service
+      - in: path
+        name: viewerName
+        required: true
+        schema:
+          type: string
       - in: path
         name: id
         required: true
@@ -1492,7 +1513,7 @@ paths:
           format: uuid
     get:
       operationId: 'getDrawing'
-      responses: # other responses possible such as 401, 404 see the post operation for details
+      responses: # other responses possible such as 401, 404 see the put operation for details
         '200':
           description: 'OK'
           content:
