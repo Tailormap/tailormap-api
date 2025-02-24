@@ -572,6 +572,7 @@ components:
         domainData:
           description: 'Domain specific data, can be used to store additional data.'
           type: object
+          additionalProperties: true
           nullable: true
         srid:
           description: 'The EPSG SRID code of the drawing''s features, defaults to the SRID of the application.'
@@ -590,16 +591,23 @@ components:
             #      features: [
             #        {
             #          type: 'Feature',
-            #          id: '30d5c076-18b6-474d-9b62-e0ea33851912',
             #          geometry: {
             #            type: 'Point',
-            #            coordinates: [ 0, 0 ]
+            #            "crs": {
+            #              "type": "name",
+            #              "properties": {
+            #                "name": "EPSG:28992"
+            #              }
+            #            },
+            #            coordinates: [ 132300.928, 458629.588 ]
             #          },
+            #          id: 'ca7bcc22-3467-4d7b-b3a9-3ca9f9525f4d',
             #          properties: {
             #            drawingId: 'a73ac8ee-1d64-44be-a05e-b6426e2c1c59',
-            #            name: 'Feature 1',
+            #            key: 'value'
             #            ....
             #          }
             #       }
             #     ]
+            # }
           }
