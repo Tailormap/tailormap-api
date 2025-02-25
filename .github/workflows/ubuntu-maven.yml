@@ -225,7 +225,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     services:
       postgres:
-        image: postgres:16-alpine
+        image: postgis/postgis:17-3.5-alpine
         env:
           POSTGRES_USER: tailormap
           POSTGRES_PASSWORD: tailormap
