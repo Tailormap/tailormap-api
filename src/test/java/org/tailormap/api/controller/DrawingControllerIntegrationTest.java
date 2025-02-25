@@ -5,9 +5,23 @@
  */
 package org.tailormap.api.controller;
 
+import static org.hamcrest.Matchers.matchesPattern;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.persistence.Group.ADMIN;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jayway.jsonpath.JsonPath;
+import java.nio.charset.Charset;
+import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -26,22 +40,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.viewer.model.Drawing;
-
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.UUID;
-
-import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.tailormap.api.TestRequestProcessor.setServletPath;
-import static org.tailormap.api.persistence.Group.ADMIN;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -200,18 +198,24 @@ class DrawingControllerIntegrationTest {
     objectMapper.registerModule(new JavaTimeModule());
     Drawing drawing = objectMapper.readValue(body, Drawing[].class)[0];
 
-    UUID drawingId = drawing.getId();
+    String drawingId = drawing.getId().toString();
     Integer oldVersion = drawing.getVersion();
     String oldName = drawing.getName();
 
-    drawing.setDescription("Edited drawing 2 description");
+    // update the drawing (kludge)
+    String updatedDrawing = NEW_DRAWING_JSON
+        .replace("Drawing 1 description", "Edited drawing 2 description")
+        .replace("\"name\":", "\"id\":\"" + drawingId + "\",\"name\":")
+        .replace("\"name\":", "\"createdBy\":\"tm-admin\",\"name\":")
+        .replace("\"name\":", "\"createdAt\":\"" + drawing.getCreatedAt() + "\",\"name\":")
+        .replace("\"name\":", "\"version\":" + oldVersion + ",\"name\":");
 
     url = apiBasePath + "/app/default/drawing";
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
             .characterEncoding(Charset.defaultCharset())
-            .content(objectMapper.writeValueAsString(drawing)))
+            .content(updatedDrawing))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -227,7 +231,13 @@ class DrawingControllerIntegrationTest {
         .andExpect(jsonPath("$.description").value("Edited drawing 2 description"))
         .andExpect(jsonPath("$.domainData").exists())
         .andExpect(jsonPath("$.domainData.items").value(1))
-        .andExpect(jsonPath("$.domainData.domain").value("test drawings"));
+        .andExpect(jsonPath("$.domainData.domain").value("test drawings"))
+        .andExpect(jsonPath("$.featureCollection.features[0].geometry.type")
+            .value("Polygon"))
+        .andExpect(jsonPath("$.featureCollection.features[0].properties.prop0")
+            .value("value0"))
+        .andExpect(jsonPath("$.featureCollection.features[1].properties.rendering.fill")
+            .value("red"));
   }
 
   @Test
