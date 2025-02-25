@@ -5,9 +5,28 @@
  */
 package org.tailormap.api.controller;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.matchesPattern;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.tailormap.api.TestRequestProcessor.setServletPath;
+import static org.tailormap.api.persistence.Group.ADMIN;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jayway.jsonpath.JsonPath;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -27,22 +46,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.viewer.model.Drawing;
 
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.UUID;
-
-import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.tailormap.api.TestRequestProcessor.setServletPath;
-import static org.tailormap.api.persistence.Group.ADMIN;
-
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
 @Stopwatch
@@ -52,9 +55,9 @@ class DrawingControllerIntegrationTest {
 
   private static final String UUID_REGEX = "[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}";
   private static final String UNKNOWN_DRAWING_ID = "a73ac8ee-1d64-44be-a05e-b6426e2c1c59";
+  private static final String KNOWN_DRAWING_ID = "38faa008-013e-49d4-9528-8f58c94d8791";
 
   private static final String NEW_DRAWING_JSON =
-      // spotless:off
       """
 {
 "name": "Drawing 1",
@@ -82,7 +85,6 @@ class DrawingControllerIntegrationTest {
 }
 ] } }
 """;
-  // spotless:on
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
@@ -98,44 +100,11 @@ class DrawingControllerIntegrationTest {
   }
 
   @Test
-  @WithMockUser(
-      username = "tm-admin",
-      authorities = {ADMIN})
-  void deleteNonExistentDrawingAuthenticated() throws Exception {
-    final String url = apiBasePath + "/drawing/" + UNKNOWN_DRAWING_ID;
-
-    mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-        .andExpect(status().isNotFound())
-        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.code").value(404))
-        .andExpect(jsonPath("$.message").value("Drawing not found"));
-  }
-
-  @Test
-  void deleteNonExistentDrawingUnAuthenticated() throws Exception {
-    final String url = apiBasePath + "/drawing/" + UNKNOWN_DRAWING_ID;
-
-    mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-        .andExpect(status().isUnauthorized());
-  }
-
-  @Test
-  void deleteDrawingUnAuthenticated() throws Exception {
-    final String url = apiBasePath + "/drawing/a73ac8ee-1d64-44be-a05e-b6426e2c1c59";
-
-    mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-        .andExpect(status().isUnauthorized())
-        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.code").value(401))
-        .andExpect(jsonPath("$.url").value("/login"));
-  }
-
-  @Test
   @Order(10)
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void createDrawing() throws Exception {
+  void create_drawing_by_admin() throws Exception {
     final String url = apiBasePath + "/app/default/drawing";
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
@@ -147,6 +116,7 @@ class DrawingControllerIntegrationTest {
         // API created values
         .andExpect(jsonPath("$.id", matchesPattern(UUID_REGEX)))
         .andExpect(jsonPath("$.createdBy").value("tm-admin"))
+        // srid from /app/default application
         .andExpect(jsonPath("$.srid").value(28992))
         // given values
         .andExpect(jsonPath("$.name").value("Drawing 1"))
@@ -168,23 +138,52 @@ class DrawingControllerIntegrationTest {
       username = "tm-admin",
       authorities = {ADMIN})
   @Order(20)
-  void listDrawings() throws Exception {
+  void list_drawings_for_admin() throws Exception {
     final String url = apiBasePath + "/drawing/list";
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().is2xxSuccessful())
         .andExpect(status().is(200))
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isArray())
-        .andExpect(jsonPath("$[0].name").value("Drawing 1"))
-        .andExpect(jsonPath("$[0].description").value("Drawing 1 description"));
+        .andExpect(jsonPath("$[-1].name").value("Drawing 1"))
+        .andExpect(jsonPath("$[-1].description").value("Drawing 1 description"));
   }
 
   @Test
-  @Order(10)
+  @WithMockUser(
+      username = "user",
+      authorities = {"test-bar"})
+  @Order(20)
+  void list_drawings_for_other_user() throws Exception {
+    final String url = apiBasePath + "/drawing/list";
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().is2xxSuccessful())
+        .andExpect(status().is(200))
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        // no drawings should be returned as we only added a "private" drawing
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$[0]").doesNotHaveJsonPath());
+  }
+
+  @Test
+  @Order(20)
+  void list_drawings_for_anonymous() throws Exception {
+    final String url = apiBasePath + "/drawing/list";
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().is2xxSuccessful())
+        .andExpect(status().is(200))
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        // no drawings should be returned as we only added a "private" drawing
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$[0]").doesNotHaveJsonPath());
+  }
+
+  @Test
+  @Order(30)
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  void updateDrawing() throws Exception {
+  void update_drawing_by_admin() throws Exception {
     // this test cuts a corner by assuming that the first drawing in the list is the one we just created
     String url = apiBasePath + "/drawing/list";
     MvcResult result = mockMvc.perform(
@@ -198,20 +197,30 @@ class DrawingControllerIntegrationTest {
 
     final ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.registerModule(new JavaTimeModule());
-    Drawing drawing = objectMapper.readValue(body, Drawing[].class)[0];
+    Drawing drawing = Arrays.stream(objectMapper.readValue(body, Drawing[].class))
+        .reduce((first, second) -> second)
+        .orElse(null);
+    assertNotNull(drawing, "drawing should not be null");
 
-    UUID drawingId = drawing.getId();
+    String drawingId = drawing.getId().toString();
+    assertNotEquals(KNOWN_DRAWING_ID, drawingId);
     Integer oldVersion = drawing.getVersion();
     String oldName = drawing.getName();
 
-    drawing.setDescription("Edited drawing 2 description");
+    // update the NEW_DRAWING_JSON drawing
+    String updatedDrawing = NEW_DRAWING_JSON
+        .replace("Drawing 1 description", "Edited drawing 2 description")
+        .replace("\"name\":", "\"id\":\"" + drawingId + "\",\"name\":")
+        .replace("\"name\":", "\"createdBy\":\"tm-admin\",\"name\":")
+        .replace("\"name\":", "\"createdAt\":\"" + drawing.getCreatedAt() + "\",\"name\":")
+        .replace("\"name\":", "\"version\":" + oldVersion + ",\"name\":");
 
     url = apiBasePath + "/app/default/drawing";
     mockMvc.perform(put(url).accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
             .characterEncoding(Charset.defaultCharset())
-            .content(objectMapper.writeValueAsString(drawing)))
+            .content(updatedDrawing))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -227,15 +236,209 @@ class DrawingControllerIntegrationTest {
         .andExpect(jsonPath("$.description").value("Edited drawing 2 description"))
         .andExpect(jsonPath("$.domainData").exists())
         .andExpect(jsonPath("$.domainData.items").value(1))
-        .andExpect(jsonPath("$.domainData.domain").value("test drawings"));
+        .andExpect(jsonPath("$.domainData.domain").value("test drawings"))
+        .andExpect(jsonPath("$.featureCollection.features[0].geometry.type")
+            .value("Polygon"))
+        .andExpect(jsonPath("$.featureCollection.features[0].properties.prop0")
+            .value("value0"))
+        .andExpect(jsonPath("$.featureCollection.features[1].properties.rendering.fill")
+            .value("red"));
   }
 
   @Test
   @WithMockUser(
       username = "tm-admin",
       authorities = {ADMIN})
-  @Order(30)
-  void deleteDrawings() throws Exception {
+  @Order(1)
+  void get_nonexistent_drawing_admin() throws Exception {
+    final String url = apiBasePath + "/app/default/drawing/" + UNKNOWN_DRAWING_ID;
+
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(404))
+        .andExpect(jsonPath("$.message").value("Drawing not found"));
+  }
+
+  @Test
+  @Order(1)
+  void get_nonexistent_drawing_anonymous() throws Exception {
+    final String url = apiBasePath + "/app/default/drawing/" + UNKNOWN_DRAWING_ID;
+
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(404))
+        .andExpect(jsonPath("$.message").value("Drawing not found"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "user",
+      authorities = {"test-bar"})
+  @Order(1)
+  void get_private_drawing_other_user() throws Exception {
+    final String url = apiBasePath + "/app/default/drawing/" + KNOWN_DRAWING_ID;
+
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isUnauthorized())
+        .andDo(print())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(401))
+        .andExpect(jsonPath("$.url").value("/login"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  @Order(1)
+  void get_private_drawing_admin() throws Exception {
+    final String url = apiBasePath + "/app/default/drawing/" + KNOWN_DRAWING_ID;
+
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id").value(KNOWN_DRAWING_ID));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  @Order(35)
+  void get_drawing_in_default_application_srs() throws Exception {
+    final String url = apiBasePath + "/drawing/list";
+    final MvcResult result = mockMvc.perform(
+            get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().is2xxSuccessful())
+        .andExpect(status().is(200))
+        .andReturn();
+
+    final String body = result.getResponse().getContentAsString();
+    assertNotNull(body, "response body should not be null");
+
+    final String drawingId = JsonPath.read(body, "$[-1].id");
+    assertNotEquals(KNOWN_DRAWING_ID, drawingId);
+    final String getDrawingUrl = apiBasePath + "/app/default/drawing/" + drawingId;
+
+    mockMvc.perform(get(getDrawingUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(getDrawingUrl)))
+        .andExpect(status().is2xxSuccessful())
+        .andExpect(status().is(200))
+        .andDo(print())
+        .andExpect(jsonPath("$.id").value(drawingId))
+        .andExpect(jsonPath("$.createdBy").value("tm-admin"))
+        .andExpect(jsonPath("$.updatedBy").value("tm-admin"))
+        .andExpect(jsonPath("$.srid").value(28992))
+        // given values
+        .andExpect(jsonPath("$.access").value("private"))
+        .andExpect(jsonPath("$.description").value("Edited drawing 2 description"))
+        .andExpect(jsonPath("$.domainData").exists())
+        .andExpect(jsonPath("$.domainData.items").value(1))
+        .andExpect(jsonPath("$.domainData.domain").value("test drawings"))
+        .andExpect(jsonPath("$.featureCollection.features[0].geometry.type")
+            .value("Polygon"))
+        .andExpect(jsonPath("$.featureCollection.features[0].properties.properties")
+            .doesNotHaveJsonPath())
+        .andExpect(jsonPath("$.featureCollection.features[0].properties.prop0")
+            .value("value0"))
+        .andExpect(jsonPath("$.featureCollection.features[0].properties.prop0")
+            .value("value0"))
+        .andExpect(jsonPath("$.featureCollection.features[1].properties.rendering.fill")
+            .value("red"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  @Order(35)
+  void get_drawing_in_foreign_application_srs() throws Exception {
+    final String url = apiBasePath + "/drawing/list";
+    final MvcResult result = mockMvc.perform(
+            get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().is2xxSuccessful())
+        .andExpect(status().is(200))
+        .andReturn();
+
+    final String body = result.getResponse().getContentAsString();
+    assertNotNull(body, "response body should not be null");
+
+    final String drawingId = JsonPath.read(body, "$[-1].id");
+    assertNotEquals(KNOWN_DRAWING_ID, drawingId);
+    final String getDrawingUrl = apiBasePath + "/app/austria/drawing/" + drawingId;
+
+    mockMvc.perform(get(getDrawingUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(getDrawingUrl)))
+        .andDo(print())
+        .andExpect(status().is2xxSuccessful())
+        .andExpect(status().is(200))
+        .andExpect(jsonPath("$.id").value(drawingId))
+        .andExpect(jsonPath("$.createdBy").value("tm-admin"))
+        .andExpect(jsonPath("$.updatedBy").value("tm-admin"))
+        .andExpect(jsonPath("$.srid").value(3857))
+        // given values
+        .andExpect(jsonPath("$.access").value("private"))
+        .andExpect(jsonPath("$.description").value("Edited drawing 2 description"))
+        .andExpect(jsonPath("$.domainData").exists())
+        .andExpect(jsonPath("$.domainData.items").value(1))
+        .andExpect(jsonPath("$.domainData.domain").value("test drawings"))
+        .andExpect(jsonPath("$.featureCollection.features[0].geometry.type")
+            .value("Polygon"))
+        .andExpect(jsonPath("$.featureCollection.features[0].properties.properties")
+            .doesNotHaveJsonPath())
+        .andExpect(jsonPath("$.featureCollection.features[0].properties.prop0")
+            .value("value0"))
+        .andExpect(jsonPath("$.featureCollection.features[0].properties.prop0")
+            .value("value0"))
+        .andExpect(jsonPath("$.featureCollection.features[1].properties.rendering.fill")
+            .value("red"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  @Order(1)
+  void delete_nonexistent_drawing_admin() throws Exception {
+    final String url = apiBasePath + "/drawing/" + UNKNOWN_DRAWING_ID;
+
+    mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isNotFound())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(404))
+        .andExpect(jsonPath("$.message").value("Drawing not found"));
+  }
+
+  @Test
+  @Order(1)
+  void delete_nonexistent_drawing_anonymous() throws Exception {
+    final String url = apiBasePath + "/drawing/" + UNKNOWN_DRAWING_ID;
+
+    mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(401))
+        .andExpect(jsonPath("$.url").value("/login"));
+  }
+
+  @Test
+  @Order(1)
+  void delete_drawing_anonymous() throws Exception {
+    final String url = apiBasePath + "/drawing/" + KNOWN_DRAWING_ID;
+
+    mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(401))
+        .andExpect(jsonPath("$.url").value("/login"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  @Order(Integer.MAX_VALUE)
+  void delete_drawings_by_admin() throws Exception {
     final String url = apiBasePath + "/drawing/list";
     final MvcResult result = mockMvc.perform(
             get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -247,12 +450,21 @@ class DrawingControllerIntegrationTest {
     assertNotNull(body, "response body should not be null");
 
     final List<String> drawingIds = JsonPath.read(body, "$[*].id");
-    String deleteUrl = apiBasePath + "/drawing/";
-    for (String drawingId : drawingIds) {
-      deleteUrl += drawingId;
-      mockMvc.perform(delete(deleteUrl).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
-          .andExpect(status().isNoContent())
-          .andDo(print());
-    }
+    assertNotNull(drawingIds, "drawingIds should not be null");
+    assertThat("KNOWN_DRAWING_ID should be in the list", drawingIds, hasItem(KNOWN_DRAWING_ID));
+
+    drawingIds.stream()
+        .filter(drawingId -> !drawingId.equals(KNOWN_DRAWING_ID))
+        .forEach(drawingId -> {
+          String deleteUrl = apiBasePath + "/drawing/" + drawingId;
+          try {
+            mockMvc.perform(delete(deleteUrl)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(setServletPath(deleteUrl)))
+                .andExpect(status().isNoContent());
+          } catch (Exception e) {
+            fail("Deleting a drawing failed", e);
+          }
+        });
   }
 }

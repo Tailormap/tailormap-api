@@ -8,7 +8,20 @@ package org.tailormap.api.drawing;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.lang.invoke.MethodHandles;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import org.postgresql.util.PGobject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,23 +40,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.viewer.model.Drawing;
 
-import java.lang.invoke.MethodHandles;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
 /**
  * Service for managing drawings.
  *
- * <p>This service provides methods for creating, updating, reading, and deleting drawings. Any call can throw a
- * {@link ResponseStatusException} if the user is not allowed to perform the operation.
+ * <p>This service provides methods for creating, updating, reading, and deleting drawings and persisting these
+ * operations in the data schema of the tailormap database. Any call can throw a {@link ResponseStatusException} if the
+ * user is not allowed to perform the operation.
  */
 @Service
 public class DrawingService {
@@ -98,11 +100,10 @@ public class DrawingService {
   @Transactional
   public Drawing createDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
       throws JsonProcessingException {
-    logger.warn("createDrawing for {}", drawing);
 
     canCreateDrawing(authentication);
 
-    logger.debug(
+    logger.trace(
         "creating new drawing: {}, domainData {}, createdAt {}",
         drawing,
         objectMapper.writeValueAsString(drawing.getDomainData()),
@@ -124,16 +125,27 @@ VALUES (?, ?, ?::jsonb, ?, ?, ?, ?) RETURNING *
         .query(drawingRowMapper)
         .single();
 
-    logger.debug("stored new drawing: {}", storedDrawing);
-
     if (drawing.getFeatureCollection() != null) {
-      List<JsonNode> storedFeatures = jdbcClient
-          .sql(
-              """
-WITH jsonData AS (SELECT ?::json AS featureCollection)
+      ObjectNode featureCollection = insertGeoJsonFeatureCollection(
+          storedDrawing.getId(),
+          drawing.getSrid(),
+          objectMapper.writeValueAsString(drawing.getFeatureCollection()));
+      storedDrawing.setFeatureCollection(featureCollection);
+    }
+
+    logger.trace("stored new drawing: {}", storedDrawing);
+    return storedDrawing;
+  }
+
+  private ObjectNode insertGeoJsonFeatureCollection(UUID drawingId, int srid, String featureCollectionToStore)
+      throws JsonProcessingException {
+    List<JsonNode> storedFeatures = jdbcClient
+        .sql(
+            """
+WITH jsonData AS (SELECT :featureCollectionToStore::json AS featureCollection)
 INSERT INTO data.drawing_feature (drawing_id, geometry, properties)
-SELECT ?::uuid AS drawing_id,
-ST_SetSRID(ST_GeomFromGeoJSON(feature ->> 'geometry'), ?) AS geometry,
+SELECT :drawingId::uuid AS drawing_id,
+ST_SetSRID(ST_GeomFromGeoJSON(feature ->> 'geometry'), :srid) AS geometry,
 feature -> 'properties' AS properties
 FROM (SELECT json_array_elements(featureCollection -> 'features') AS feature
 FROM jsonData)
@@ -143,42 +155,37 @@ RETURNING
 -- features and aggregate them into a featureCollection in the next step
 ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id')::json;
 """)
-          .param(objectMapper.writeValueAsString(drawing.getFeatureCollection()))
-          .param(storedDrawing.getId())
-          .param(drawing.getSrid())
-          .query(new RowMapper<JsonNode>() {
-            @Override
-            public JsonNode mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
-              try {
-                JsonNode jsonNode = objectMapper.readTree(rs.getString(1));
-                // merge properties with nested properties (because we have a jsonb column called
-                // "properties")
-                final ObjectNode properties = (ObjectNode) jsonNode.get("properties");
-                JsonNode nestedProperties = properties.get("properties");
-                if (nestedProperties != null) {
-                  nestedProperties.properties().stream()
-                      .iterator()
-                      .forEachRemaining(entry -> {
-                        properties.putIfAbsent(entry.getKey(), entry.getValue());
-                      });
-                }
-                properties.remove("properties");
-                return jsonNode;
-              } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+        .param("featureCollectionToStore", featureCollectionToStore)
+        .param("drawingId", drawingId)
+        .param("srid", srid)
+        .query(new RowMapper<JsonNode>() {
+          @Override
+          public JsonNode mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
+            try {
+              JsonNode jsonNode = objectMapper.readTree(rs.getString(1));
+              // merge/un-nest properties with nested properties, because we have a jsonb column
+              // called "properties" and we are using the `ST_AsGeoJSON(::record,...)` function
+              final ObjectNode properties = (ObjectNode) jsonNode.get("properties");
+              JsonNode nestedProperties = properties.get("properties");
+              if (nestedProperties != null) {
+                nestedProperties.properties().stream()
+                    .iterator()
+                    .forEachRemaining(
+                        entry -> properties.putIfAbsent(entry.getKey(), entry.getValue()));
               }
+              properties.remove("properties");
+              return jsonNode;
+            } catch (JsonProcessingException e) {
+              throw new RuntimeException(e);
             }
-          })
-          .list();
+          }
+        })
+        .list();
 
-      ObjectNode featureCollection = objectMapper
-          .createObjectNode()
-          .put("type", "FeatureCollection")
-          .set("features", objectMapper.createArrayNode().addAll(storedFeatures));
-      logger.debug("stored features: {}", featureCollection);
-      storedDrawing.setFeatureCollection(featureCollection);
-    }
-    return storedDrawing;
+    return objectMapper
+        .createObjectNode()
+        .put("type", "FeatureCollection")
+        .set("features", objectMapper.createArrayNode().addAll(storedFeatures));
   }
 
   /**
@@ -191,18 +198,25 @@ ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id'
   @Transactional
   public Drawing updateDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
       throws JsonProcessingException {
+
     canSaveOrDeleteDrawing(drawing, authentication);
 
-    final Drawing storedDrawing = getDrawing(drawing.getId(), authentication, false, drawing.getSrid())
+    logger.trace(
+        "updating drawing: {}, domainData {}, updatedAt {}",
+        drawing,
+        objectMapper.writeValueAsString(drawing.getDomainData()),
+        OffsetDateTime.now(ZoneId.systemDefault()));
+
+    final Drawing oldDrawing = getDrawing(drawing.getId(), authentication)
         .orElseThrow(() ->
             new ResponseStatusException(HttpStatus.NOT_FOUND, "Drawing has been deleted by another user"));
 
-    if (drawing.getVersion() < storedDrawing.getVersion()) {
+    if (drawing.getVersion() < oldDrawing.getVersion()) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Drawing has been updated by another user");
     }
     drawing.setVersion(drawing.getVersion() + 1);
 
-    return jdbcClient
+    Drawing updatedDrawing = jdbcClient
         .sql(
             """
 UPDATE data.drawing SET
@@ -232,26 +246,51 @@ WHERE id = :id RETURNING *""")
         .query(drawingRowMapper)
         .single();
 
-    // TODO: delete and reinsert featureCollection
+    // delete even if drawing.getFeatureCollection()==null, because all features could have been removed,
+    // afterwards (re)insert the featureCollection
+    jdbcClient
+        .sql("DELETE FROM data.drawing_feature WHERE drawing_id = ?")
+        .param(drawing.getId())
+        .update();
 
+    if (drawing.getFeatureCollection() != null) {
+      ObjectNode featureCollection = insertGeoJsonFeatureCollection(
+          drawing.getId(),
+          drawing.getSrid(),
+          objectMapper.writeValueAsString(drawing.getFeatureCollection()));
+      updatedDrawing.setFeatureCollection(featureCollection);
+    }
+
+    logger.trace("stored updated drawing: {}", updatedDrawing);
+    return updatedDrawing;
   }
 
   /**
    * Get all drawings for the current user.
    *
    * @param authentication the current user
-   * @return the drawings
+   * @return the drawings, a possibly empty set
    */
-  public Set<Drawing> getDrawingsForUser(@NonNull Authentication authentication) {
-    // TODO: this query is not correct/complete; it should be fixed to:
-    //    - take access level into account and
-    //    - possibly cater for anonymous users
+  public Set<Drawing> getDrawingsForUser(Authentication authentication) throws ResponseStatusException {
+    if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+      return Set.of();
+    }
     return jdbcClient
-        .sql("SELECT * FROM data.drawing WHERE created_by = ? OR updated_by = ?")
-        .param(1, authentication.getName())
-        .param(2, authentication.getName())
+        .sql("SELECT * FROM data.drawing WHERE created_by = :userName OR updated_by = :userName")
+        .param("userName", authentication.getName())
+        //        .param(2, authentication.getName())
         .query(drawingRowMapper)
-        .set();
+        .set()
+        .stream()
+        .filter(d -> {
+          try {
+            canReadDrawing(d, authentication);
+            return true;
+          } catch (ResponseStatusException e) {
+            return false;
+          }
+        })
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -266,7 +305,7 @@ WHERE id = :id RETURNING *""")
   }
 
   /**
-   * Get a complete drawing by its ID.
+   * Get a complete drawing by its ID with GeoJSON geometries in the requested srid.
    *
    * @param drawingId the ID of the drawing
    * @param authentication the current user
@@ -274,6 +313,7 @@ WHERE id = :id RETURNING *""")
    * @param requestedSrid the SRID to return the geometries in
    * @return the complete drawing
    */
+  @Transactional
   public Optional<Drawing> getDrawing(
       @NonNull UUID drawingId,
       @NonNull Authentication authentication,
@@ -287,19 +327,67 @@ WHERE id = :id RETURNING *""")
             .stream()
             .findFirst();
 
-    logger.debug("found drawing: {}", drawing);
-
     drawing.ifPresent(d -> {
+      // check if the user is allowed to read the drawing
       canReadDrawing(d, authentication);
+
+      d.setSrid(requestedSrid);
       if (withGeometries) {
-        // TODO fetch featureCollection for drawing
-        logger.trace("TODO fetch featureCollection for drawing {} with srid {}", drawingId, requestedSrid);
-        Object featureCollection = null;
-        d.setFeatureCollection(featureCollection);
+        d.setFeatureCollection(getFeatureCollection(drawingId, requestedSrid));
       }
     });
 
     return drawing;
+  }
+
+  /**
+   * Retrieve the feature collection as GeoJSON for a drawing.
+   *
+   * @param drawingId the ID of the drawing
+   * @param srid the SRID to return the geometries in
+   * @return the feature collection as GeoJSON
+   */
+  private JsonNode getFeatureCollection(UUID drawingId, int srid) {
+    return jdbcClient
+        .sql(
+            """
+SELECT row_to_json(featureCollection) from (
+SELECT
+'FeatureCollection' AS type,
+array_to_json(array_agg(feature)) AS features FROM (
+SELECT 'Feature' AS type,
+ST_ASGeoJSON(ST_Transform(geomTable.geometry, :srid))::json AS geometry,
+row_to_json((SELECT l from (SELECT drawing_id, properties) AS l)) AS properties
+FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS feature) AS featureCollection
+""")
+        .param("drawingId", drawingId)
+        .param("srid", srid)
+        .query(new RowMapper<JsonNode>() {
+          @Override
+          public JsonNode mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
+            try {
+              JsonNode jsonNode = objectMapper.readTree(rs.getString(1));
+              // merge/un-nest properties with nested properties, because we have a jsonb column
+              // called "properties" and we are using the `ST_AsGeoJSON(::record,...)` function
+              ArrayNode features = (ArrayNode) jsonNode.get("features");
+              features.elements().forEachRemaining(feature -> {
+                ObjectNode properties = (ObjectNode) feature.get("properties");
+                JsonNode nestedProperties = properties.get("properties");
+                if (nestedProperties != null) {
+                  nestedProperties
+                      .fields()
+                      .forEachRemaining(
+                          entry -> properties.putIfAbsent(entry.getKey(), entry.getValue()));
+                }
+                properties.remove("properties");
+              });
+              return jsonNode;
+            } catch (JsonProcessingException e) {
+              throw new RuntimeException(e);
+            }
+          }
+        })
+        .single();
   }
 
   /**
@@ -324,6 +412,7 @@ WHERE id = :id RETURNING *""")
    * @throws ResponseStatusException if the user is not allowed to create a drawing
    */
   private void canCreateDrawing(@NonNull Authentication authentication) throws ResponseStatusException {
+    // TODO validate this method
     if ((authentication instanceof AnonymousAuthenticationToken)) {
       throw new ResponseStatusException(
           HttpStatus.UNAUTHORIZED, "Insufficient permissions to create new drawing");
@@ -360,14 +449,12 @@ WHERE id = :id RETURNING *""")
    *
    * @param drawing the drawing to check
    * @param authentication the current user
-   * @throws ResponseStatusException if the user cannot read the drawing
+   * @throws ResponseStatusException if the user is not allowed to save/delete the drawing
    */
   private void canSaveOrDeleteDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
       throws ResponseStatusException {
     // TODO validate this method
-    boolean isAuthenticated = !(authentication instanceof AnonymousAuthenticationToken);
-
-    if (!isAuthenticated) {
+    if (authentication instanceof AnonymousAuthenticationToken) {
       // Only authenticated users can save drawings, irrelevant of drawing access level
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to save drawing");
     }

@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -38,15 +39,16 @@ import org.tailormap.api.viewer.model.Drawing;
  * Controller for drawing operations. Note that the following endpoints are secured/require authentication:
  *
  * <ul>
- *   <li>PUT /drawing (@see DrawingController#createOrUpdateDrawing)
+ *   <li>PUT /{viewerKind}/{viewerName}/drawing (@see DrawingController#createOrUpdateDrawing)
  *   <li>DELETE /drawing/{drawingId} (@see DrawingController#deleteDrawing)
  * </ul>
  *
- * The following endpoints do not require authentication (but may return different results based on the user's role):
+ * The following endpoints do not require authentication (but may return different results based on the user's
+ * role/authorization):
  *
  * <ul>
  *   <li>GET /drawing/list (@see DrawingController#listDrawings)
- *   <li>GET /drawing/{drawingId} (@see DrawingController#getDrawing)
+ *   <li>GET /{viewerKind}/{viewerName}/drawing/{drawingId} (@see DrawingController#getDrawing)
  * </ul>
  */
 @AppRestController
@@ -69,7 +71,7 @@ public class DrawingController {
    * @return the created or updated drawing
    */
   @PutMapping(
-      path = "${tailormap-api.base-path}/{viewerKind}/{viewerName}/drawing",
+      path = {"${tailormap-api.base-path}/{viewerKind}/{viewerName}/drawing"},
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   @Timed(value = "create_or_update_drawing", description = "time spent to create or update a drawing")
@@ -77,10 +79,9 @@ public class DrawingController {
   @Valid public ResponseEntity<Serializable> createOrUpdateDrawing(
       @NonNull @RequestBody Drawing drawing, @ModelAttribute Application application)
       throws JsonProcessingException {
-    logger.trace("create or update drawing {}", drawing);
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication == null) {
+    if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authentication required");
     }
 
@@ -88,9 +89,11 @@ public class DrawingController {
 
     HttpStatus httpStatus;
     if (drawing.getId() == null) {
+      logger.trace("create new drawing {}", drawing);
       drawing = drawingService.createDrawing(drawing, authentication);
       httpStatus = HttpStatus.CREATED;
     } else {
+      logger.trace("update existing drawing {}", drawing);
       drawing = drawingService.updateDrawing(drawing, authentication);
       httpStatus = HttpStatus.OK;
     }
@@ -98,26 +101,22 @@ public class DrawingController {
   }
 
   /**
-   * Get a drawing by id. Does not require authentication.
+   * Get a drawing by id. Does not require authentication per-se, but authorizations are checked at the drawing level.
    *
    * @param drawingId the id of the drawing to retrieve
    * @param application the application that this drawing is created or updated in (used to determine the SRID)
    * @return the drawing, if found and accessible
    * @throws ResponseStatusException if the drawing is not found or not accessible
-   * @see DrawingService#getDrawing(UUID, Authentication, Boolean, Integer)
+   * @see DrawingService#getDrawing(UUID, Authentication, boolean, int)
    */
   @GetMapping(
-      path = "${tailormap-api.base-path}/{viewerKind}/{viewerName}/drawing/{drawingId}",
+      path = {"${tailormap-api.base-path}/{viewerKind}/{viewerName}/drawing/{drawingId}"},
       produces = MediaType.APPLICATION_JSON_VALUE)
   @Counted(value = "get_drawing", description = "number of drawings retrieved")
   @Timed(value = "get_drawing", description = "time spent to retrieve a drawing")
   @Valid public ResponseEntity<Serializable> getDrawing(
-      @PathVariable UUID drawingId, @ModelAttribute Application application) throws ResponseStatusException {
-    logger.trace("get drawing {}", drawingId);
-
-    if (drawingId == null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Drawing id is required");
-    }
+      @NonNull @PathVariable UUID drawingId, @ModelAttribute Application application)
+      throws ResponseStatusException {
 
     final Drawing drawing = drawingService
         .getDrawing(
@@ -131,7 +130,7 @@ public class DrawingController {
   }
 
   /**
-   * List drawings. Does not require authentication.
+   * List drawings. Does not require authentication per-se, but authorizations are checked at the drawing level.
    *
    * @return a, possibly empty, set of drawings
    * @see DrawingService#getDrawingsForUser(Authentication)
@@ -154,23 +153,23 @@ public class DrawingController {
   @DeleteMapping(path = "${tailormap-api.base-path}/drawing/{drawingId}")
   @Timed(value = "delete_drawing", description = "time spent to delete a drawing")
   @Counted(value = "delete_drawing", description = "number of drawings deleted")
-  public ResponseEntity<Serializable> deleteDrawing(@PathVariable UUID drawingId) {
+  public ResponseEntity<Serializable> deleteDrawing(@NonNull @PathVariable UUID drawingId) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication == null) {
+    if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authentication required");
     }
-    if (drawingId == null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Drawing id is required");
-    }
 
-    drawingService.deleteDrawing(
-        drawingId, SecurityContextHolder.getContext().getAuthentication());
+    drawingService.deleteDrawing(drawingId, authentication);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
   private Integer getApplicationSrid(Application application) {
-    return Integer.valueOf(
-        application.getCrs().substring(application.getCrs().indexOf(":") + 1));
+    if (application.getCrs().contains(":")) {
+      return Integer.valueOf(
+          application.getCrs().substring(application.getCrs().lastIndexOf(":") + 1));
+    } else {
+      return Integer.valueOf(application.getCrs());
+    }
   }
 }
