@@ -7,6 +7,7 @@ package org.tailormap.api.persistence.helper;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.PROXIEDLEGEND;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static org.tailormap.api.util.TMStringUtils.nullIfEmpty;
 
 import jakarta.persistence.EntityManager;
@@ -184,8 +185,6 @@ public class ApplicationHelper {
     // XXX not needed if we have GeoServiceLayer.getService().getName()
     private final Map<GeoServiceLayer, String> serviceLayerServiceIds = new HashMap<>();
 
-    private final Set<String> childrenIdsWithWebMercator = new HashSet<>();
-
     public MapResponseLayerBuilder(Application app, MapResponse mr) {
       this.app = app;
       this.mr = mr;
@@ -227,22 +226,9 @@ public class ApplicationHelper {
       LayerTreeNode layerTreeNode = new LayerTreeNode();
       if ("AppTreeLayerNode".equals(node.getObjectType())) {
         AppTreeLayerNode appTreeLayerNode = (AppTreeLayerNode) node;
-        Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> serviceWithLayer =
-            findServiceLayer(appTreeLayerNode);
-        GeoServiceLayer serviceLayer = serviceWithLayer.getMiddle();
-        if (this.childrenIdsWithWebMercator.contains(appTreeLayerNode.getId())) {
-          layerTreeNode.setWebMercatorAvailable(true);
-        }
-        if (serviceLayer != null) {
-          Set<String> layerCrs = serviceLayer.getCrs();
-          if (layerCrs != null && layerCrs.contains("EPSG:3857")) {
-            layerTreeNode.setWebMercatorAvailable(true);
-            List<String> childrenIds = layerTreeNode.getChildrenIds();
-            if (childrenIds != null) {
-              this.childrenIdsWithWebMercator.addAll(childrenIds);
-            }
-          }
-        }
+        boolean webMercatorAvailable = this.isWebMercatorAvailable(appTreeLayerNode);
+        layerTreeNode.setWebMercatorAvailable(webMercatorAvailable);
+        appTreeLayerNode.setWebMercatorAvailable(webMercatorAvailable);
         layerTreeNode.setId(appTreeLayerNode.getId());
         layerTreeNode.setAppLayerId(appTreeLayerNode.getId());
         if (!addAppLayerItem(appTreeLayerNode)) {
@@ -380,7 +366,9 @@ public class ApplicationHelper {
           .legendImageUrl(legendImageUrl)
           .visible(layerRef.getVisible())
           .attribution(attribution)
-          .description(description));
+          .description(description)
+          .webMercatorAvailable(layerRef.getWebMercatorAvailable()));
+
       return true;
     }
 
@@ -431,6 +419,31 @@ public class ApplicationHelper {
 
       GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());
       return Triple.of(service, serviceLayer, layerSettings);
+    }
+
+    private boolean isWebMercatorAvailable(AppTreeLayerNode appTreeLayerNode) {
+      Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> serviceWithLayer =
+          findServiceLayer(appTreeLayerNode);
+      GeoServiceLayer serviceLayer = serviceWithLayer.getMiddle();
+      GeoService service = serviceWithLayer.getLeft();
+      boolean webMercatorAvailable = false;
+      if (service != null && service.getProtocol() == XYZ) {
+        if (Objects.equals(service.getSettings().getXyzCrs(), "EPSG:3857")) {
+          webMercatorAvailable = true;
+        }
+      } else {
+        while (serviceLayer != null) {
+          Set<String> layerCrs = serviceLayer.getCrs();
+          if (layerCrs != null && layerCrs.contains("EPSG:3857")) {
+            webMercatorAvailable = true;
+          }
+          if (serviceLayer.getRoot()) {
+            break;
+          }
+            serviceLayer = service.getParentLayer(serviceLayer.getId());
+        }
+      }
+      return webMercatorAvailable;
     }
   }
 }
