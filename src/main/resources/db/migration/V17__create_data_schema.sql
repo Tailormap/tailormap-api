@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS data.drawing
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name        VARCHAR NOT NULL,
     description TEXT,
-    domainData  JSONB,
+    domain_data JSONB,
     access      VARCHAR  NOT NULL DEFAULT 'private' CONSTRAINT drawing_access CHECK (access IN ('private', 'shared', 'public')),
     created_by  VARCHAR NOT NULL,
     created_at  TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -17,12 +17,12 @@ CREATE TABLE IF NOT EXISTS data.drawing
 CREATE INDEX IF NOT EXISTS drawing_created_by ON data.drawing (created_by);
 
 
-CREATE TABLE IF NOT EXISTS data.drawing_geometry
+CREATE TABLE IF NOT EXISTS data.drawing_feature
 (
     drawing_id UUID NOT NULL CONSTRAINT drawing_id_fk REFERENCES data.drawing (id) ON DELETE CASCADE,
     id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     geometry   GEOMETRY NOT NULL,
     properties JSONB
 );
-CREATE INDEX IF NOT EXISTS drawing_drawing_id ON data.drawing_geometry (drawing_id);
-CREATE INDEX IF NOT EXISTS drawing_geometry_geometry ON data.drawing_geometry USING GIST (geometry);
+CREATE INDEX IF NOT EXISTS drawing_drawing_id ON data.drawing_feature (drawing_id);
+CREATE INDEX IF NOT EXISTS drawing_feature_geometry ON data.drawing_feature USING GIST (geometry);
