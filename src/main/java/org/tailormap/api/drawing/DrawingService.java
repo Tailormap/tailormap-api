@@ -111,7 +111,7 @@ public class DrawingService {
     Drawing storedDrawing = jdbcClient
         .sql(
             """
-INSERT INTO data.drawing (name, description, domaindata, access, created_at, created_by,srid)
+INSERT INTO data.drawing (name, description, domain_data, access, created_at, created_by,srid)
 VALUES (?, ?, ?::jsonb, ?, ?, ?, ?) RETURNING *
 """)
         .param(drawing.getName())
@@ -131,7 +131,7 @@ VALUES (?, ?, ?::jsonb, ?, ?, ?, ?) RETURNING *
           .sql(
               """
 WITH jsonData AS (SELECT ?::json AS featureCollection)
-INSERT INTO data.drawing_geometry (drawing_id, geometry, properties)
+INSERT INTO data.drawing_feature (drawing_id, geometry, properties)
 SELECT ?::uuid AS drawing_id,
 ST_SetSRID(ST_GeomFromGeoJSON(feature ->> 'geometry'), ?) AS geometry,
 feature -> 'properties' AS properties
@@ -141,7 +141,7 @@ AS f
 RETURNING
 -- since we cannot use aggregate functions in a returning clause, we will return a list of geojson
 -- features and aggregate them into a featureCollection in the next step
-ST_AsGeoJSON(data.drawing_geometry.*, geom_column =>'geometry', id_column => 'id')::json;
+ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id')::json;
 """)
           .param(objectMapper.writeValueAsString(drawing.getFeatureCollection()))
           .param(storedDrawing.getId())
@@ -189,7 +189,8 @@ ST_AsGeoJSON(data.drawing_geometry.*, geom_column =>'geometry', id_column => 'id
    * @return the created drawing
    */
   @Transactional
-  public Drawing updateDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication) {
+  public Drawing updateDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
+      throws JsonProcessingException {
     canSaveOrDeleteDrawing(drawing, authentication);
 
     final Drawing storedDrawing = getDrawing(drawing.getId(), authentication, false, drawing.getSrid())
@@ -208,7 +209,7 @@ UPDATE data.drawing SET
 id=:id,
 name=:name,
 description=:description,
-domaindata=:domainData::jsonb,
+domain_data=:domainData::jsonb,
 access=:access,
 created_by=:createdBy,
 created_at=:createdAt,
@@ -220,7 +221,7 @@ WHERE id = :id RETURNING *""")
         .param("id", drawing.getId())
         .param("name", drawing.getName())
         .param("description", drawing.getDescription())
-        .param("domainData", drawing.getDomainData())
+        .param("domainData", objectMapper.writeValueAsString(drawing.getDomainData()))
         .param("access", drawing.getAccess().getValue())
         .param("createdBy", drawing.getCreatedBy())
         .param("createdAt", drawing.getCreatedAt())
@@ -230,6 +231,9 @@ WHERE id = :id RETURNING *""")
         .param("version", drawing.getVersion())
         .query(drawingRowMapper)
         .single();
+
+    // TODO: delete and reinsert featureCollection
+
   }
 
   /**
