@@ -151,7 +151,7 @@ components:
         searchIndex:
           $ref: '#/components/schemas/LayerSearchIndex'
         webMercatorAvailable:
-          description: Web Mercator projection is available for this layer.
+          description: Whether Web Mercator projection is available for this layer.
           type: boolean
 
 
