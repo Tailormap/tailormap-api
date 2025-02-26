@@ -6,13 +6,21 @@
 package org.tailormap.api.persistence.helper;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.*;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.PROXIEDLEGEND;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.QUANTIZEDMESH;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.TILES3D;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static org.tailormap.api.util.TMStringUtils.nullIfEmpty;
 
 import jakarta.persistence.EntityManager;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
