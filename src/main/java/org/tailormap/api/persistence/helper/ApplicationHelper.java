@@ -7,6 +7,9 @@ package org.tailormap.api.persistence.helper;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.PROXIEDLEGEND;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.QUANTIZEDMESH;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.TILES3D;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static org.tailormap.api.util.TMStringUtils.nullIfEmpty;
 
 import jakarta.persistence.EntityManager;
@@ -17,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
@@ -229,6 +233,9 @@ public class ApplicationHelper {
       LayerTreeNode layerTreeNode = new LayerTreeNode();
       if ("AppTreeLayerNode".equals(node.getObjectType())) {
         AppTreeLayerNode appTreeLayerNode = (AppTreeLayerNode) node;
+        boolean webMercatorAvailable = this.isWebMercatorAvailable(appTreeLayerNode);
+        layerTreeNode.setWebMercatorAvailable(webMercatorAvailable);
+        appTreeLayerNode.setWebMercatorAvailable(webMercatorAvailable);
         layerTreeNode.setId(appTreeLayerNode.getId());
         layerTreeNode.setAppLayerId(appTreeLayerNode.getId());
         if (!addAppLayerItem(appTreeLayerNode)) {
@@ -366,7 +373,9 @@ public class ApplicationHelper {
           .legendImageUrl(legendImageUrl)
           .visible(layerRef.getVisible())
           .attribution(attribution)
-          .description(description));
+          .description(description)
+          .webMercatorAvailable(layerRef.getWebMercatorAvailable()));
+
       return true;
     }
 
@@ -417,6 +426,31 @@ public class ApplicationHelper {
 
       GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());
       return Triple.of(service, serviceLayer, layerSettings);
+    }
+
+    private boolean isWebMercatorAvailable(AppTreeLayerNode appTreeLayerNode) {
+      Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> serviceWithLayer =
+          findServiceLayer(appTreeLayerNode);
+      GeoServiceLayer serviceLayer = serviceWithLayer.getMiddle();
+      GeoService service = serviceWithLayer.getLeft();
+
+      if (service != null && service.getProtocol() == XYZ) {
+        return Objects.equals(service.getSettings().getXyzCrs(), "EPSG:3857");
+      }
+      if (service != null && (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH)) {
+        return false;
+      }
+      while (serviceLayer != null) {
+        Set<String> layerCrs = serviceLayer.getCrs();
+        if (layerCrs != null && layerCrs.contains("EPSG:3857")) {
+          return true;
+        }
+        if (serviceLayer.getRoot()) {
+          break;
+        }
+        serviceLayer = service != null ? service.getParentLayer(serviceLayer.getId()) : null;
+      }
+      return false;
     }
   }
 }

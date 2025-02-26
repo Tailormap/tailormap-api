@@ -453,4 +453,13 @@ public class GeoService {
     }
     return url;
   }
+
+  public GeoServiceLayer getParentLayer(String layerId) {
+    for (GeoServiceLayer layer : this.getLayers()) {
+      if (layer.getChildren().contains(layerId)) {
+        return layer;
+      }
+    }
+    return null;
+  }
 }
