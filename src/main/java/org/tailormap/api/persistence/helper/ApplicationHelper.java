@@ -6,8 +6,7 @@
 package org.tailormap.api.persistence.helper;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.PROXIEDLEGEND;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.*;
 import static org.tailormap.api.util.TMStringUtils.nullIfEmpty;
 
 import jakarta.persistence.EntityManager;
@@ -426,24 +425,24 @@ public class ApplicationHelper {
           findServiceLayer(appTreeLayerNode);
       GeoServiceLayer serviceLayer = serviceWithLayer.getMiddle();
       GeoService service = serviceWithLayer.getLeft();
-      boolean webMercatorAvailable = false;
+
       if (service != null && service.getProtocol() == XYZ) {
-        if (Objects.equals(service.getSettings().getXyzCrs(), "EPSG:3857")) {
-          webMercatorAvailable = true;
-        }
-      } else {
-        while (serviceLayer != null) {
-          Set<String> layerCrs = serviceLayer.getCrs();
-          if (layerCrs != null && layerCrs.contains("EPSG:3857")) {
-            webMercatorAvailable = true;
-          }
-          if (serviceLayer.getRoot()) {
-            break;
-          }
-            serviceLayer = service.getParentLayer(serviceLayer.getId());
-        }
+        return Objects.equals(service.getSettings().getXyzCrs(), "EPSG:3857");
       }
-      return webMercatorAvailable;
+      if (service != null && (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH)) {
+        return false;
+      }
+      while (serviceLayer != null) {
+        Set<String> layerCrs = serviceLayer.getCrs();
+        if (layerCrs != null && layerCrs.contains("EPSG:3857")) {
+          return true;
+        }
+        if (serviceLayer.getRoot()) {
+          break;
+        }
+        serviceLayer = service != null ? service.getParentLayer(serviceLayer.getId()) : null;
+      }
+      return false;
     }
   }
 }
