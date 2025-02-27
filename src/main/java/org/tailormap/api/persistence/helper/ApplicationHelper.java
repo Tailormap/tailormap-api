@@ -233,9 +233,6 @@ public class ApplicationHelper {
       LayerTreeNode layerTreeNode = new LayerTreeNode();
       if ("AppTreeLayerNode".equals(node.getObjectType())) {
         AppTreeLayerNode appTreeLayerNode = (AppTreeLayerNode) node;
-        boolean webMercatorAvailable = this.isWebMercatorAvailable(appTreeLayerNode);
-        layerTreeNode.setWebMercatorAvailable(webMercatorAvailable);
-        appTreeLayerNode.setWebMercatorAvailable(webMercatorAvailable);
         layerTreeNode.setId(appTreeLayerNode.getId());
         layerTreeNode.setAppLayerId(appTreeLayerNode.getId());
         if (!addAppLayerItem(appTreeLayerNode)) {
@@ -341,6 +338,8 @@ public class ApplicationHelper {
             .orElse(null);
       }
 
+      boolean webMercatorAvailable = this.isWebMercatorAvailable(service, serviceLayer);
+
       mr.addAppLayersItem(new AppLayer()
           .id(layerRef.getId())
           .serviceId(serviceLayerServiceIds.get(serviceLayer))
@@ -374,7 +373,7 @@ public class ApplicationHelper {
           .visible(layerRef.getVisible())
           .attribution(attribution)
           .description(description)
-          .webMercatorAvailable(layerRef.getWebMercatorAvailable()));
+          .webMercatorAvailable(webMercatorAvailable));
 
       return true;
     }
@@ -428,27 +427,22 @@ public class ApplicationHelper {
       return Triple.of(service, serviceLayer, layerSettings);
     }
 
-    private boolean isWebMercatorAvailable(AppTreeLayerNode appTreeLayerNode) {
-      Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> serviceWithLayer =
-          findServiceLayer(appTreeLayerNode);
-      GeoServiceLayer serviceLayer = serviceWithLayer.getMiddle();
-      GeoService service = serviceWithLayer.getLeft();
-
-      if (service != null && service.getProtocol() == XYZ) {
-        return Objects.equals(service.getSettings().getXyzCrs(), "EPSG:3857");
+    private boolean isWebMercatorAvailable(GeoService service, GeoServiceLayer serviceLayer) {
+      if (service.getProtocol() == XYZ) {
+        return service.getSettings().getXyzCrs().equals("EPSG:3857");
       }
-      if (service != null && (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH)) {
+      if (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH) {
         return false;
       }
       while (serviceLayer != null) {
         Set<String> layerCrs = serviceLayer.getCrs();
-        if (layerCrs != null && layerCrs.contains("EPSG:3857")) {
+        if (layerCrs.contains("EPSG:3857")) {
           return true;
         }
         if (serviceLayer.getRoot()) {
           break;
         }
-        serviceLayer = service != null ? service.getParentLayer(serviceLayer.getId()) : null;
+        serviceLayer = service.getParentLayer(serviceLayer.getId());
       }
       return false;
     }
