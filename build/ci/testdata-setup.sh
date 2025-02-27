@@ -43,11 +43,11 @@ do
 done
 
 printf "\nPostGIS logs:\n"
-docker logs postgis
+docker logs -t postgis
 #docker inspect postgis
 printf "\nOracle logs:\n"
-docker logs oracle
+docker logs -t oracle
 #docker inspect oracle
 printf "\nSQL Server logs:\n"
-docker logs sqlserver
+docker logs -t sqlserver
 #docker inspect sqlserver
