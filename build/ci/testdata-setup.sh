@@ -16,7 +16,7 @@ while :
 do
   printf " %d" "$_WAIT"
   if [ "$POSTGIS_HEALTHY" == "healthy" ] && [ "$ORACLE_HEALTHY" == "healthy" ] && [ "$SQLSERVER_HEALTHY" == "healthy" ]; then
-    printf "\nDone waiting for databases to be ready\n"
+    printf "\nDocker containers are healthy\n"
     break
   fi
 
@@ -29,12 +29,25 @@ do
 
 done
 
+printf "\n%(%T)T Waiting for Oracle $1 database to report it is ready to use.... "
+_WAIT=0;
+while :
+do
+    printf " $_WAIT"
+    if $(docker logs oracle | grep -q 'DATABASE IS READY TO USE!'); then
+        printf "\n %(%T)TOracle $1 database is ready to use\n\n" -1
+        break
+    fi
+    sleep 10
+    _WAIT=$(($_WAIT+10))
+done
+
 printf "\nPostGIS logs:\n"
-docker logs postgis
+docker logs -t postgis
 #docker inspect postgis
 printf "\nOracle logs:\n"
-docker logs oracle
+docker logs -t oracle
 #docker inspect oracle
 printf "\nSQL Server logs:\n"
-docker logs sqlserver
+docker logs -t sqlserver
 #docker inspect sqlserver

@@ -5,6 +5,8 @@
  */
 package org.tailormap.api.geotools.featuresources;
 
+import static org.geotools.jdbc.JDBCDataStore.JDBC_PRIMARY_KEY_COLUMN;
+import static org.geotools.jdbc.JDBCDataStore.JDBC_READ_ONLY;
 import static org.tailormap.api.persistence.helper.GeoToolsHelper.crsToString;
 
 import java.io.IOException;
@@ -21,6 +23,7 @@ import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.geotools.api.feature.type.AttributeDescriptor;
 import org.geotools.api.feature.type.AttributeType;
+import org.geotools.jdbc.JDBCFeatureStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tailormap.api.persistence.TMFeatureSource;
@@ -107,11 +110,7 @@ public abstract class FeatureSourceHelper {
         TMFeatureType pft = tmfs.getFeatureTypes().stream()
             .filter(ft -> ft.getName().equals(typeName))
             .findFirst()
-            .orElseGet(() -> new TMFeatureType()
-                .setName(typeName)
-                .setFeatureSource(tmfs)
-                // TODO set writeable meaningfully
-                .setWriteable(tmfs.getProtocol() == TMFeatureSource.Protocol.JDBC));
+            .orElseGet(() -> new TMFeatureType().setName(typeName).setFeatureSource(tmfs));
         if (!tmfs.getFeatureTypes().contains(pft)) {
           tmfs.getFeatureTypes().add(pft);
         }
@@ -125,16 +124,26 @@ public abstract class FeatureSourceHelper {
             pft.getAttributes().clear();
 
             SimpleFeatureType gtFt = gtFs.getSchema();
+            pft.setWriteable(gtFs instanceof JDBCFeatureStore
+                && !Boolean.TRUE.equals(gtFt.getUserData().get(JDBC_READ_ONLY)));
             String primaryKeyName = null;
             for (AttributeDescriptor gtAttr : gtFt.getAttributeDescriptors()) {
               AttributeType type = gtAttr.getType();
-              Boolean isPk = (Boolean) gtAttr.getUserData().get("org.geotools.jdbc.pk.column");
-              if (null != isPk && isPk) {
-                logger.debug(
-                    "Found primary key attribute \"{}\" for type \"{}\"",
-                    gtAttr.getLocalName(),
-                    typeName);
-                primaryKeyName = gtAttr.getLocalName();
+              if (Boolean.TRUE.equals(gtAttr.getUserData().get(JDBC_PRIMARY_KEY_COLUMN))) {
+                if (primaryKeyName == null) {
+                  logger.debug(
+                      "Found primary key attribute \"{}\" for type \"{}\"",
+                      gtAttr.getLocalName(),
+                      typeName);
+                  primaryKeyName = gtAttr.getLocalName();
+                } else {
+                  logger.warn(
+                      "Multiple primary key attributes found for type \"{}\": \"{}\" and \"{}\". Composite primary keys are not supported for writing at the moment, setting as read-only.",
+                      typeName,
+                      primaryKeyName,
+                      gtAttr.getLocalName());
+                  pft.setWriteable(false);
+                }
               }
               TMAttributeDescriptor tmAttr = new TMAttributeDescriptor()
                   .name(gtAttr.getLocalName())
