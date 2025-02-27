@@ -429,14 +429,14 @@ public class ApplicationHelper {
 
     private boolean isWebMercatorAvailable(GeoService service, GeoServiceLayer serviceLayer) {
       if (service.getProtocol() == XYZ) {
-        return service.getSettings().getXyzCrs().equals("EPSG:3857");
+        return service.getSettings().getXyzCrs().equals(DEFAULT_WEB_MERCATOR_CRS);
       }
       if (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH) {
         return false;
       }
       while (serviceLayer != null) {
         Set<String> layerCrs = serviceLayer.getCrs();
-        if (layerCrs.contains("EPSG:3857")) {
+        if (layerCrs.contains(DEFAULT_WEB_MERCATOR_CRS)) {
           return true;
         }
         if (serviceLayer.getRoot()) {
