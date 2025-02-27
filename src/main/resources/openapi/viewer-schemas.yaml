@@ -150,6 +150,9 @@ components:
           nullable: true
         searchIndex:
           $ref: '#/components/schemas/LayerSearchIndex'
+        webMercatorAvailable:
+          description: Whether Web Mercator projection is available for this layer.
+          type: boolean
 
 
     LayerTreeNode:

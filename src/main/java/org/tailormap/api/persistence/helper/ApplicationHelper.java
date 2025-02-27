@@ -7,6 +7,9 @@ package org.tailormap.api.persistence.helper;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.PROXIEDLEGEND;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.QUANTIZEDMESH;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.TILES3D;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static org.tailormap.api.util.TMStringUtils.nullIfEmpty;
 
 import jakarta.persistence.EntityManager;
@@ -17,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
@@ -334,6 +338,8 @@ public class ApplicationHelper {
             .orElse(null);
       }
 
+      boolean webMercatorAvailable = this.isWebMercatorAvailable(service, serviceLayer);
+
       mr.addAppLayersItem(new AppLayer()
           .id(layerRef.getId())
           .serviceId(serviceLayerServiceIds.get(serviceLayer))
@@ -366,7 +372,9 @@ public class ApplicationHelper {
           .legendImageUrl(legendImageUrl)
           .visible(layerRef.getVisible())
           .attribution(attribution)
-          .description(description));
+          .description(description)
+          .webMercatorAvailable(webMercatorAvailable));
+
       return true;
     }
 
@@ -417,6 +425,26 @@ public class ApplicationHelper {
 
       GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());
       return Triple.of(service, serviceLayer, layerSettings);
+    }
+
+    private boolean isWebMercatorAvailable(GeoService service, GeoServiceLayer serviceLayer) {
+      if (service.getProtocol() == XYZ) {
+        return service.getSettings().getXyzCrs().equals(DEFAULT_WEB_MERCATOR_CRS);
+      }
+      if (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH) {
+        return false;
+      }
+      while (serviceLayer != null) {
+        Set<String> layerCrs = serviceLayer.getCrs();
+        if (layerCrs.contains(DEFAULT_WEB_MERCATOR_CRS)) {
+          return true;
+        }
+        if (serviceLayer.getRoot()) {
+          break;
+        }
+        serviceLayer = service.getParentLayer(serviceLayer.getId());
+      }
+      return false;
     }
   }
 }
