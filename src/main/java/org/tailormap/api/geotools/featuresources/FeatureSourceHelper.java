@@ -110,11 +110,7 @@ public abstract class FeatureSourceHelper {
         TMFeatureType pft = tmfs.getFeatureTypes().stream()
             .filter(ft -> ft.getName().equals(typeName))
             .findFirst()
-            .orElseGet(() -> new TMFeatureType()
-                .setName(typeName)
-                .setFeatureSource(tmfs)
-                // TODO set writeable meaningfully
-                .setWriteable(tmfs.getProtocol() == TMFeatureSource.Protocol.JDBC));
+            .orElseGet(() -> new TMFeatureType().setName(typeName).setFeatureSource(tmfs));
         if (!tmfs.getFeatureTypes().contains(pft)) {
           tmfs.getFeatureTypes().add(pft);
         }
