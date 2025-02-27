@@ -178,9 +178,6 @@ components:
           type: array
           items:
             type: string
-        webMercatorAvailable:
-          description: Whether Web Mercator projection is available for this layer.
-          type: boolean
       required:
         - id
         - name
