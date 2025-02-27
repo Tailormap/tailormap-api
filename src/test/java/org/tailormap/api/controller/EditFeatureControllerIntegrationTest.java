@@ -37,6 +37,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.StaticTestData;
@@ -440,6 +441,7 @@ class EditFeatureControllerIntegrationTest {
             .with(setServletPath(url))
             .contentType(MediaType.APPLICATION_JSON)
             .content(content))
+        .andDo(MockMvcResultHandlers.print())
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.__fid").value(fid))
@@ -556,6 +558,7 @@ class EditFeatureControllerIntegrationTest {
             .content("{\"attributes\":{\"INONDERZOEK\":true,\"CLASS\":\"woeste bergbeek\",\"GEOM\":\""
                 + StaticTestData.get("waterdeel__edit_geom")
                 + "\"}}"))
+        .andDo(MockMvcResultHandlers.print())
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.__fid").value(StaticTestData.get("waterdeel__fid_edit")))
@@ -682,6 +685,7 @@ class EditFeatureControllerIntegrationTest {
   void testDeleteExistingFeatureOrcl() throws Exception {
     final String url = apiBasePath + waterdeelUrlOracle + "/" + StaticTestData.get("waterdeel__fid_delete");
     mockMvc.perform(delete(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andDo(MockMvcResultHandlers.print())
         .andExpect(status().is2xxSuccessful())
         .andExpect(status().is(204));
   }
