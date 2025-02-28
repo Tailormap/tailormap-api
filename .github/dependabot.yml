@@ -60,6 +60,14 @@ updates:
         versions:
           - ">= 18"
 
+  - package-ecosystem: "docker-compose"
+    directory: "/build/ci/"
+    schedule:
+      interval: weekly
+      day: thursday
+      time: "23:00"
+      timezone: Europe/Amsterdam
+
   - package-ecosystem: "devcontainers"
     directory: "/"
     schedule:
