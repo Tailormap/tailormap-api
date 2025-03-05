@@ -100,7 +100,7 @@ SPDX-License-Identifier: MIT
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
         <project.build.outputTimestamp>2025-01-22T14:15:27Z</project.build.outputTimestamp>
-        <geotools.version>32.2</geotools.version>
+        <geotools.version>33.0</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
@@ -402,8 +402,13 @@ SPDX-License-Identifier: MIT
             <version>${geotools.version}</version>
             <exclusions>
                 <exclusion>
+                    <!-- TODO: probably not needed after GeoTools 33.0 -->
                     <groupId>com.oracle.database.jdbc</groupId>
                     <artifactId>ojdbc8</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.oracle.database.jdbc</groupId>
+                    <artifactId>ojdbc11</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
