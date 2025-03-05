@@ -39,6 +39,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.transaction.annotation.Transactional;
 import org.tailormap.api.admin.model.TaskSchedule;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
@@ -129,6 +130,7 @@ public class PopulateTestData {
   private final FeatureSourceFactoryHelper featureSourceFactoryHelper;
   private final UploadRepository uploadRepository;
   private final PageRepository pageRepository;
+  private final JdbcClient jdbcClient;
 
   @Value("${spatial.dbs.connect:false}")
   private boolean connectToSpatialDbs;
@@ -169,7 +171,8 @@ public class PopulateTestData {
       FeatureSourceFactoryHelper featureSourceFactoryHelper,
       SearchIndexRepository searchIndexRepository,
       UploadRepository uploadRepository,
-      PageRepository pageRepository) {
+      PageRepository pageRepository,
+      JdbcClient jdbcClient) {
     this.appContext = appContext;
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
@@ -185,6 +188,7 @@ public class PopulateTestData {
     this.searchIndexRepository = searchIndexRepository;
     this.uploadRepository = uploadRepository;
     this.pageRepository = pageRepository;
+    this.jdbcClient = jdbcClient;
   }
 
   @EventListener(ApplicationReadyEvent.class)
@@ -216,6 +220,10 @@ public class PopulateTestData {
         createPages();
       }
       logger.info("Test entities created");
+      if (categories.contains("drawing")) {
+        insertTestDrawing();
+        logger.info("Test drawing created");
+      }
     } finally {
       InternalAdminAuthentication.clearSecurityContextAuthentication();
     }
@@ -1759,5 +1767,29 @@ from [B3Partners](https://www.b3partners.nl)!
     c.setKey(PORTAL_MENU);
     c.setJsonValue(new ObjectMapper().valueToTree(globalMenuItems));
     configurationRepository.save(c);
+  }
+
+  private void insertTestDrawing() {
+    // note that the drawing uuid is hardcoded and used in the DrawingControllerIntegrationTest
+    try {
+      this.jdbcClient
+          .sql(
+              """
+INSERT INTO data.drawing (id,name,description,domain_data,"access",created_by,created_at,updated_by,updated_at,srid,"version") VALUES
+('38faa008-013e-49d4-9528-8f58c94d8791'::uuid,'Testcase','A private access drawing that is inserted as part of the testdata','{"items": 1, "domain": "test drawings"}','private','tm-admin','2025-02-27 17:53:36.095164+01','tm-admin','2025-02-27 17:54:19.384961+01',28992,1);
+""")
+          .update();
+
+      this.jdbcClient
+          .sql(
+              """
+INSERT INTO data.drawing_feature (drawing_id,id,geometry,properties) VALUES
+('38faa008-013e-49d4-9528-8f58c94d8791'::uuid,'9637cda5-c2f5-414e-ae2f-8a8195354ee1'::uuid,'SRID=28992;POLYGON ((132300.928 458629.588, 132302.724 458633.881, 132302.947 458634.318, 132303.327 458634.91400000005, 132303.772 458635.463, 132304.277 458635.95800000004, 132304.834 458636.393, 132305.436 458636.76200000005, 132306.076 458637.061, 132306.746 458637.28599999996, 132307.437 458637.433, 132308.141 458637.502, 132308.847 458637.49, 132309.548 458637.399, 132309.586 458637.39099999995, 132310.246 458637.205, 132311.059 458639.08, 132308.945 458639.943, 132306.112 458641.216, 132305.358 458639.943, 132304.898 458639.368, 132304.292 458638.757, 132303.703 458638.277, 132302.98 458637.805, 132302.304 458637.459, 132301.497 458637.14699999994, 132300.764 458636.94999999995, 132298.981 458636.524, 132297.813 458636.3460000001, 132296.568 458636.24199999997, 132295.387 458636.223, 132294.148 458636.288, 132292.419 458636.46499999997, 132290.614 458636.73099999997, 132288.866 458637.069, 132287.14 458637.485, 132270.926 458640.482, 132267.328 458613.3950000001, 132264.028 458607.445, 132258.431 458602.51900000003, 132259.646 458600, 132260.791 458597.624, 132267.141 458592.053, 132271.287 458591.25299999997, 132284.279 458588.227, 132294.24 458585.92399999994, 132295.651 458595.245, 132296.248 458600, 132297.991 458613.87, 132300.928 458629.588))'::public.geometry,'{"prop0": "value0"}'),
+('38faa008-013e-49d4-9528-8f58c94d8791'::uuid,'21d1b15f-9b1a-48cc-9770-9a70ba1a4637'::uuid,'SRID=28992;POINT (132300 458629)'::public.geometry,'{"prop0": "value1", "prop1": 0.0, "rendering": {"fill": "red", "stroke": "black"}}');
+""")
+          .update();
+    } catch (Exception any) {
+      logger.error("Error inserting test drawing in data schema, some tests may fail", any);
+    }
   }
 }
