@@ -15,6 +15,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -278,7 +280,6 @@ WHERE id = :id RETURNING *""")
     return jdbcClient
         .sql("SELECT * FROM data.drawing WHERE created_by = :userName OR updated_by = :userName")
         .param("userName", authentication.getName())
-        //        .param(2, authentication.getName())
         .query(drawingRowMapper)
         .set()
         .stream()
@@ -290,7 +291,8 @@ WHERE id = :id RETURNING *""")
             return false;
           }
         })
-        .collect(Collectors.toSet());
+        .sorted(Comparator.comparing(Drawing::getCreatedAt))
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   /**
