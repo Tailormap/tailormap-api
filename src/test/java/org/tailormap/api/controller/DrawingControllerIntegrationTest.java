@@ -184,7 +184,6 @@ class DrawingControllerIntegrationTest {
       username = "tm-admin",
       authorities = {ADMIN})
   void update_drawing_by_admin() throws Exception {
-    // this test cuts a corner by assuming that the first drawing in the list is the one we just created
     String url = apiBasePath + "/drawing/list";
     MvcResult result = mockMvc.perform(
             get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
@@ -198,6 +197,7 @@ class DrawingControllerIntegrationTest {
     final ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.registerModule(new JavaTimeModule());
     Drawing drawing = Arrays.stream(objectMapper.readValue(body, Drawing[].class))
+        // reduce to last drawing in collection
         .reduce((first, second) -> second)
         .orElse(null);
     assertNotNull(drawing, "drawing should not be null");

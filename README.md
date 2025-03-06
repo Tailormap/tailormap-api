@@ -6,11 +6,11 @@ repository.
 
 If you want to run Tailormap the best starting point is the [tailormap-viewer](https://github.com/Tailormap/tailormap-viewer/) 
 repository with the Angular frontends where you will find a Docker Compose stack which will run the 
-frontends, backend and PostgreSQL configuration database.
+frontends, backend and PostGIS configuration database.
 
 This repository builds a `tailormap-api` Docker image with only the backend which is used as a base image by
 tailormap-viewer which adds the static Angular frontend bundle to it to create the final 
-`tailormap` image with both the frontend and backend in it which only requires a PostgreSQL database
+`tailormap` image with both the frontend and backend in it which only requires a PostGIS database
 to store configuration.
 
 ## Development
@@ -23,14 +23,14 @@ To build and run the project, you need to have the following installed:
 
 - Java 17 JDK
 - Maven 3.9.5 or higher
-- PostgreSQL configuration database
+- PostGIS configuration database
 - Docker 27.x with buildx 0.17 or higher (this requirement may be skipped if you don't need to build
   the docker images or build release artifacts)
 
-The quickest way to start the PostgreSQL database is to check out the Docker Compose stack in [tailormap-viewer](https://github.com/Tailormap/tailormap-viewer/)
+The quickest way to start the PostGIS database is to check out the Docker Compose stack in [tailormap-viewer](https://github.com/Tailormap/tailormap-viewer/)
 and start the `db` container. This opens a port on localhost:5432. If you already have your own 
 database running locally, create a database, user and password all set to `tailormap` to use that.
-Beware that Tailormap is only developed and supported with the PostgreSQL version from the Docker 
+Beware that Tailormap is only developed and supported with the PostGIS version from the Docker 
 Compose stack.
 
 ### Running
@@ -198,14 +198,14 @@ To run unit tests which do not need integration with the entity manager and data
 mvn -Pdeveloping test
 ```
 
-Unit tests which use the PostgreSQL configuration database _and_ the spatial database stack need 
+Unit tests which use the PostGIS configuration database _and_ the spatial database stack need 
 their class name to end with `PostgresIntegrationTest`. 
 
 Run the following command to run the integration tests. The application is started with the
 `populate-testdata` profile automatically, so if you've modified your configuration it will be 
 lost!
 ```
-mvn -Pdeveloping,postgresql verify
+mvn -Pdeveloping,postgresql verify -Dspring-boot.run.profiles=dev,populate-testdata,postgresql -Dspring-boot.run.arguments=--spatial.dbs.connect=true
 ```
 
 ### Tips and Tricks

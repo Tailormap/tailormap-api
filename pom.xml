@@ -1401,6 +1401,9 @@ SPDX-License-Identifier: MIT
                             <goal>build</goal>
                         </goals>
                         <phase>package</phase>
+                        <configuration>
+                            <skip>${docker.skip}</skip>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>docker-push</id>
@@ -1412,6 +1415,9 @@ SPDX-License-Identifier: MIT
                              see: https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry
                          -->
                         <phase>deploy</phase>
+                        <configuration>
+                            <skip>${docker.skip}</skip>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
