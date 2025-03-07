@@ -429,7 +429,7 @@ public class ApplicationHelper {
 
     private boolean isWebMercatorAvailable(GeoService service, GeoServiceLayer serviceLayer) {
       if (service.getProtocol() == XYZ) {
-        return service.getSettings().getXyzCrs().equals(DEFAULT_WEB_MERCATOR_CRS);
+        return DEFAULT_WEB_MERCATOR_CRS.equals(service.getSettings().getXyzCrs());
       }
       if (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH) {
         return false;
