@@ -135,12 +135,12 @@ public class PageController {
       Optional.ofNullable(tile.getApplicationId())
           .flatMap(applicationRepository::findById)
           .filter(application -> !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
-              || authorizationService.mayUserRead(application))
+              || authorizationService.userMayView(application))
           .ifPresentOrElse(
               application -> {
                 viewerPageTile.applicationUrl("/app/" + application.getName());
                 viewerPageTile.setApplicationRequiresLogin(
-                    !authorizationService.mayUserRead(application));
+                    !authorizationService.userMayView(application));
               },
               () -> result.shouldBeFiltered = true);
     }
