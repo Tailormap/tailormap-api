@@ -9,12 +9,14 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.tailormap.api.persistence.Group;
 import org.tailormap.api.persistence.User;
+import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 
 public class TailormapUserDetails implements UserDetails {
 
@@ -58,5 +60,9 @@ public class TailormapUserDetails implements UserDetails {
   @Override
   public boolean isEnabled() {
     return user.isEnabled();
+  }
+
+  public List<AdminAdditionalProperty> getAdditionalProperties() {
+    return user.getAdditionalProperties();
   }
 }

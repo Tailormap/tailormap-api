@@ -40,6 +40,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import org.tailormap.api.persistence.json.AdminAdditionalProperty;
+import org.tailormap.api.security.TailormapUserDetails;
 import org.tailormap.api.viewer.model.Drawing;
 
 /**
@@ -302,6 +304,7 @@ WHERE id = :id RETURNING *""")
    * @param authentication the current user
    * @return the — thinly populated — drawing
    */
+  @SuppressWarnings("SpringTransactionalMethodCallsInspection")
   public Optional<Drawing> getDrawing(@NonNull UUID drawingId, @NonNull Authentication authentication) {
     return this.getDrawing(drawingId, authentication, false, 0);
   }
@@ -408,18 +411,18 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
   }
 
   /**
-   * Check if the current user can read the drawing. If not, throw an unauthorized exception.
+   * Check if the current user can create a drawing. If not, throw an unauthorized exception.
    *
    * @param authentication the current user
    * @throws ResponseStatusException if the user is not allowed to create a drawing
    */
   private void canCreateDrawing(@NonNull Authentication authentication) throws ResponseStatusException {
-    // TODO validate this method
     if ((authentication instanceof AnonymousAuthenticationToken)) {
       throw new ResponseStatusException(
           HttpStatus.UNAUTHORIZED, "Insufficient permissions to create new drawing");
     }
-    // TODO check if this user is allowed to create/add drawings using the current authentication
+    // TODO check if this user is allowed to create/add drawings using additional properties, currently none are
+    //  defined
   }
 
   /**
@@ -431,12 +434,29 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
    */
   private void canReadDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
       throws ResponseStatusException {
-    // TODO validate this method
     boolean isAuthenticated = !(authentication instanceof AnonymousAuthenticationToken);
-
     boolean canRead =
         switch (drawing.getAccess()) {
-          case PRIVATE -> isAuthenticated && Objects.equals(authentication.getName(), drawing.getCreatedBy());
+          case PRIVATE -> {
+            if (isAuthenticated) {
+              if (Objects.equals(authentication.getName(), drawing.getCreatedBy())) {
+                // is drawing owner
+                yield true;
+              }
+              if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
+                // check if the user has either the `drawings-admin` or `drawings-read-all` property set
+                for (AdminAdditionalProperty ap : userDetails.getAdditionalProperties()) {
+                  if (ap.getKey().equals("drawings-admin")
+                      || ap.getKey().equals("drawings-read-all")) {
+                    if ("true".equals(ap.getValue().toString())) {
+                      yield true;
+                    }
+                  }
+                }
+              }
+            }
+            yield false;
+          }
           case SHARED -> isAuthenticated;
           case PUBLIC -> true;
         };
@@ -455,7 +475,6 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
    */
   private void canSaveOrDeleteDrawing(@NonNull Drawing drawing, @NonNull Authentication authentication)
       throws ResponseStatusException {
-    // TODO validate this method
     if (authentication instanceof AnonymousAuthenticationToken) {
       // Only authenticated users can save drawings, irrelevant of drawing access level
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Insufficient permissions to save drawing");
@@ -463,7 +482,22 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
 
     boolean canSave =
         switch (drawing.getAccess()) {
-          case PRIVATE -> drawing.getCreatedBy().equals(authentication.getName());
+          case PRIVATE -> {
+            if (Objects.equals(authentication.getName(), drawing.getCreatedBy())) {
+              // is drawing owner
+              yield true;
+            }
+            if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
+              // check if the user has the drawings-admin property set
+              for (AdminAdditionalProperty ap : userDetails.getAdditionalProperties()) {
+                if (ap.getKey().equals("drawings-admin")
+                    && "true".equals(ap.getValue().toString())) {
+                  yield true;
+                }
+              }
+            }
+            yield false;
+          }
           case SHARED, PUBLIC -> true;
         };
 

@@ -275,6 +275,7 @@ class DrawingControllerIntegrationTest {
   @Test
   @WithMockUser(
       username = "user",
+      password = "user",
       authorities = {"test-bar"})
   @Order(1)
   void get_private_drawing_other_user() throws Exception {
