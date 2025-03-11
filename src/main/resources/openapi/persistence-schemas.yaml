@@ -294,7 +294,7 @@ components:
           type: string
           enum:
             - auto
-            - disabled
+            - generic
             - geoserver
             - mapserver
           nullable: false
