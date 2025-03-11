@@ -79,7 +79,7 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="annotations">@Service
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">AuthorizationService</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Validates access control rules. Any call to mayUserRead will verify that the currently logged in user is not only
+<div class="block">Validates access control rules. Any call to userMayView will verify that the currently logged in user is not only
  allowed to read the current object, but any object above and below it in the hierarchy.</div>
 </section>
 <section class="summary">
@@ -124,27 +124,27 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#mayUserRead(org.tailormap.api.persistence.Application)" class="member-name-link">mayUserRead</a><wbr>(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Verifies that this user may read this Application.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#mayUserRead(org.tailormap.api.persistence.GeoService)" class="member-name-link">mayUserRead</a><wbr>(<a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Verifies that this user may read this GeoService.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#mayUserRead(org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer)" class="member-name-link">mayUserRead</a><wbr>(<a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService,
- <a href="../persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Verifies that this user may read the Layer in context of the GeoService.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#mustDenyAccessForSecuredProxy(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService)" class="member-name-link">mustDenyAccessForSecuredProxy</a><wbr>(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#mustDenyAccessForSecuredProxy(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService)" class="member-name-link">mustDenyAccessForSecuredProxy</a><wbr>(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo service when the
  application is public (accessible by anonymous users).</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#userMayView(org.tailormap.api.persistence.Application)" class="member-name-link">userMayView</a><wbr>(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Verifies that the (authenticated) user may view/open the application.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#userMayView(org.tailormap.api.persistence.GeoService)" class="member-name-link">userMayView</a><wbr>(<a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Verifies that the (authenticated) user may view this geoService.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#userMayView(org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer)" class="member-name-link">userMayView</a><wbr>(<a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService,
+ <a href="../persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Verifies that the (authenticated) user may view the layer in context of the geoService.</div>
 </div>
 </div>
 </div>
@@ -200,43 +200,43 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="mayUserRead(org.tailormap.api.persistence.Application)">
-<h3>mayUserRead</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">mayUserRead</span><wbr><span class="parameters">(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</span></div>
-<div class="block">Verifies that this user may read this Application.</div>
+<section class="detail" id="userMayView(org.tailormap.api.persistence.Application)">
+<h3>userMayView</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">userMayView</span><wbr><span class="parameters">(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</span></div>
+<div class="block">Verifies that the (authenticated) user may view/open the application.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>application</code> - the Application to check</dd>
 <dt>Returns:</dt>
-<dd>the results from the access control checks.</dd>
+<dd>the result from the access control checks.</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="mayUserRead(org.tailormap.api.persistence.GeoService)">
-<h3>mayUserRead</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">mayUserRead</span><wbr><span class="parameters">(<a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</span></div>
-<div class="block">Verifies that this user may read this GeoService.</div>
+<section class="detail" id="userMayView(org.tailormap.api.persistence.GeoService)">
+<h3>userMayView</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">userMayView</span><wbr><span class="parameters">(<a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</span></div>
+<div class="block">Verifies that the (authenticated) user may view this geoService.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>geoService</code> - the GeoService to check</dd>
 <dt>Returns:</dt>
-<dd>the results from the access control checks.</dd>
+<dd>the result from the access control checks.</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="mayUserRead(org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer)">
-<h3>mayUserRead</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">mayUserRead</span><wbr><span class="parameters">(<a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService,
+<section class="detail" id="userMayView(org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer)">
+<h3>userMayView</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">userMayView</span><wbr><span class="parameters">(<a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService,
  <a href="../persistence/json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;layer)</span></div>
-<div class="block">Verifies that this user may read the Layer in context of the GeoService.</div>
+<div class="block">Verifies that the (authenticated) user may view the layer in context of the geoService.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>geoService</code> - the GeoService to check</dd>
 <dd><code>layer</code> - the GeoServiceLayer to check</dd>
 <dt>Returns:</dt>
-<dd>the results from the access control checks.</dd>
+<dd>the result from the access control checks.</dd>
 </dl>
 </section>
 </li>

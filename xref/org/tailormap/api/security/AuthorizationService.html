@@ -31,7 +31,7 @@
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.GeoServiceLayerSettings;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment"> * Validates access control rules. Any call to mayUserRead will verify that the currently logged in user is not only</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment"> * Validates access control rules. Any call to userMayView will verify that the currently logged in user is not only</em>
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment"> * allowed to read the current object, but any object above and below it in the hierarchy.</em>
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  @Service
@@ -87,35 +87,35 @@
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>    }
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>  
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>  <em class="jxr_javadoccomment">   * Verifies that this user may read this Application.</em>
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  <em class="jxr_javadoccomment">   * Verifies that the (authenticated) user may view/open the application.</em>
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>  <em class="jxr_javadoccomment">   * @param application the Application to check</em>
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  <em class="jxr_javadoccomment">   * @return the results from the access control checks.</em>
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  <em class="jxr_javadoccomment">   * @return the result from the access control checks.</em>
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> mayUserRead(<a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application) {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> userMayView(<a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> application) {
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      <strong class="jxr_keyword">return</strong> isAuthorizedByRules(application.getAuthorizationRules(), ACCESS_TYPE_READ)
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>    }
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">   * Verifies that this user may read this GeoService.</em>
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">   * Verifies that the (authenticated) user may view this geoService.</em>
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>  <em class="jxr_javadoccomment">   * @param geoService the GeoService to check</em>
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>  <em class="jxr_javadoccomment">   * @return the results from the access control checks.</em>
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  <em class="jxr_javadoccomment">   * @return the result from the access control checks.</em>
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> mayUserRead(<a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> userMayView(<a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>      <strong class="jxr_keyword">return</strong> isAuthorizedByRules(geoService.getAuthorizationRules(), ACCESS_TYPE_READ)
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>         .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>   }
 <a class="jxr_linenumber" name="L102" href="#L102">102</a> 
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L104" href="#L104">104</a> <em class="jxr_javadoccomment">   * Verifies that this user may read the Layer in context of the GeoService.</em>
+<a class="jxr_linenumber" name="L104" href="#L104">104</a> <em class="jxr_javadoccomment">   * Verifies that the (authenticated) user may view the layer in context of the geoService.</em>
 <a class="jxr_linenumber" name="L105" href="#L105">105</a> <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L106" href="#L106">106</a> <em class="jxr_javadoccomment">   * @param geoService the GeoService to check</em>
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> <em class="jxr_javadoccomment">   * @param layer the GeoServiceLayer to check</em>
-<a class="jxr_linenumber" name="L108" href="#L108">108</a> <em class="jxr_javadoccomment">   * @return the results from the access control checks.</em>
+<a class="jxr_linenumber" name="L108" href="#L108">108</a> <em class="jxr_javadoccomment">   * @return the result from the access control checks.</em>
 <a class="jxr_linenumber" name="L109" href="#L109">109</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> mayUserRead(<a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService, GeoServiceLayer layer) {
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> userMayView(<a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService, GeoServiceLayer layer) {
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>     Optional&lt;AuthorizationRuleDecision&gt; geoserviceDecision =
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         isAuthorizedByRules(geoService.getAuthorizationRules(), ACCESS_TYPE_READ);
 <a class="jxr_linenumber" name="L113" href="#L113">113</a> 

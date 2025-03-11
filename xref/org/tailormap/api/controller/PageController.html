@@ -143,12 +143,12 @@
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>       Optional.ofNullable(tile.getApplicationId())
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>           .flatMap(applicationRepository::findById)
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>           .filter(application -&gt; !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>               || authorizationService.mayUserRead(application))
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>               || authorizationService.userMayView(application))
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>           .ifPresentOrElse(
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>               application -&gt; {
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>                 viewerPageTile.applicationUrl(<span class="jxr_string">"/app/"</span> + application.getName());
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>                 viewerPageTile.setApplicationRequiresLogin(
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>                     !authorizationService.mayUserRead(application));
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>                     !authorizationService.userMayView(application));
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>               },
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>               () -&gt; result.shouldBeFiltered = <strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>     }

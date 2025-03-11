@@ -348,16 +348,16 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>boolean</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">AuthorizationService.</span><code><a href="../../security/AuthorizationService.html#mayUserRead(org.tailormap.api.persistence.Application)" class="member-name-link">mayUserRead</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
-<div class="col-last even-row-color">
-<div class="block">Verifies that this user may read this Application.</div>
-</div>
-<div class="col-first odd-row-color"><code>boolean</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">AuthorizationService.</span><code><a href="../../security/AuthorizationService.html#mustDenyAccessForSecuredProxy(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService)" class="member-name-link">mustDenyAccessForSecuredProxy</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+<div class="col-second even-row-color"><span class="type-name-label">AuthorizationService.</span><code><a href="../../security/AuthorizationService.html#mustDenyAccessForSecuredProxy(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService)" class="member-name-link">mustDenyAccessForSecuredProxy</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
-<div class="col-last odd-row-color">
+<div class="col-last even-row-color">
 <div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured geo service when the
  application is public (accessible by anonymous users).</div>
+</div>
+<div class="col-first odd-row-color"><code>boolean</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">AuthorizationService.</span><code><a href="../../security/AuthorizationService.html#userMayView(org.tailormap.api.persistence.Application)" class="member-name-link">userMayView</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Verifies that the (authenticated) user may view/open the application.</div>
 </div>
 </div>
 </section>

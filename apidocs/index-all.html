@@ -4645,18 +4645,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AppLayer.html#maxZoom(java.lang.Integer)" class="member-name-link">maxZoom(Integer)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/security/AuthorizationService.html#mayUserRead(org.tailormap.api.persistence.Application)" class="member-name-link">mayUserRead(Application)</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/AuthorizationService.html" title="class in org.tailormap.api.security">AuthorizationService</a></dt>
-<dd>
-<div class="block">Verifies that this user may read this Application.</div>
-</dd>
-<dt><a href="org/tailormap/api/security/AuthorizationService.html#mayUserRead(org.tailormap.api.persistence.GeoService)" class="member-name-link">mayUserRead(GeoService)</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/AuthorizationService.html" title="class in org.tailormap.api.security">AuthorizationService</a></dt>
-<dd>
-<div class="block">Verifies that this user may read this GeoService.</div>
-</dd>
-<dt><a href="org/tailormap/api/security/AuthorizationService.html#mayUserRead(org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer)" class="member-name-link">mayUserRead(GeoService, GeoServiceLayer)</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/AuthorizationService.html" title="class in org.tailormap.api.security">AuthorizationService</a></dt>
-<dd>
-<div class="block">Verifies that this user may read the Layer in context of the GeoService.</div>
-</dd>
 <dt><a href="org/tailormap/api/viewer/model/Page.html#menu(java.util.List)" class="member-name-link">menu(List&lt;ViewerMenuItem&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Page.html" title="class in org.tailormap.api.viewer.model">Page</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/PageResponse.html#menu(java.util.List)" class="member-name-link">menu(List&lt;ViewerMenuItem&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/PageResponse.html" title="class in org.tailormap.api.viewer.model">PageResponse</a></dt>
@@ -7310,6 +7298,18 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/projections/UserGroups.html" class="type-name-link" title="interface in org.tailormap.api.persistence.projections">UserGroups</a> - Interface in <a href="org/tailormap/api/persistence/projections/package-summary.html">org.tailormap.api.persistence.projections</a></dt>
 <dd>
 <div class="block">Projection for <a href="org/tailormap/api/persistence/User.html" title="class in org.tailormap.api.persistence"><code>User</code></a> that includes the groups (but only the group name).</div>
+</dd>
+<dt><a href="org/tailormap/api/security/AuthorizationService.html#userMayView(org.tailormap.api.persistence.Application)" class="member-name-link">userMayView(Application)</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/AuthorizationService.html" title="class in org.tailormap.api.security">AuthorizationService</a></dt>
+<dd>
+<div class="block">Verifies that the (authenticated) user may view/open the application.</div>
+</dd>
+<dt><a href="org/tailormap/api/security/AuthorizationService.html#userMayView(org.tailormap.api.persistence.GeoService)" class="member-name-link">userMayView(GeoService)</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/AuthorizationService.html" title="class in org.tailormap.api.security">AuthorizationService</a></dt>
+<dd>
+<div class="block">Verifies that the (authenticated) user may view this geoService.</div>
+</dd>
+<dt><a href="org/tailormap/api/security/AuthorizationService.html#userMayView(org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer)" class="member-name-link">userMayView(GeoService, GeoServiceLayer)</a> - Method in class org.tailormap.api.security.<a href="org/tailormap/api/security/AuthorizationService.html" title="class in org.tailormap.api.security">AuthorizationService</a></dt>
+<dd>
+<div class="block">Verifies that the (authenticated) user may view the layer in context of the geoService.</div>
 </dd>
 <dt><a href="org/tailormap/api/persistence/json/ServiceAuthentication.html#username(java.lang.String)" class="member-name-link">username(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/ServiceAuthentication.html" title="class in org.tailormap.api.persistence.json">ServiceAuthentication</a></dt>
 <dd>&nbsp;</dd>
