@@ -111,7 +111,7 @@ public class AppRestControllerAdvice {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
       }
 
-      if (!authorizationService.mayUserRead(service)) {
+      if (!authorizationService.userMayView(service)) {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
       }
 
@@ -124,7 +124,7 @@ public class AppRestControllerAdvice {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
-    if (!this.authorizationService.mayUserRead(app)) {
+    if (!this.authorizationService.userMayView(app)) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
     return app;
@@ -148,7 +148,7 @@ public class AppRestControllerAdvice {
     }
 
     // TODO
-    //    if (!this.authorizationService.mayUserRead(applicationLayer, application)) {
+    //    if (!this.authorizationService.userMayView(applicationLayer, application)) {
     //      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
     //    }
     return layerNode;
@@ -166,7 +166,7 @@ public class AppRestControllerAdvice {
     }
     GeoService service =
         geoServiceRepository.findById(appTreeLayerNode.getServiceId()).orElse(null);
-    if (service != null && !authorizationService.mayUserRead(service)) {
+    if (service != null && !authorizationService.userMayView(service)) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
 
@@ -189,7 +189,7 @@ public class AppRestControllerAdvice {
         .findFirst()
         .orElse(null);
 
-    if (layer != null && !authorizationService.mayUserRead(service, layer)) {
+    if (layer != null && !authorizationService.userMayView(service, layer)) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
 

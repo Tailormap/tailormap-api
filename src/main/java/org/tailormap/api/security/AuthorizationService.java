@@ -23,7 +23,7 @@ import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
 
 /**
- * Validates access control rules. Any call to mayUserRead will verify that the currently logged in user is not only
+ * Validates access control rules. Any call to userMayView will verify that the currently logged in user is not only
  * allowed to read the current object, but any object above and below it in the hierarchy.
  */
 @Service
@@ -79,35 +79,35 @@ public class AuthorizationService {
   }
 
   /**
-   * Verifies that this user may read this Application.
+   * Verifies that the (authenticated) user may view/open the application.
    *
    * @param application the Application to check
-   * @return the results from the access control checks.
+   * @return the result from the access control checks.
    */
-  public boolean mayUserRead(Application application) {
+  public boolean userMayView(Application application) {
     return isAuthorizedByRules(application.getAuthorizationRules(), ACCESS_TYPE_READ)
         .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
   }
 
   /**
-   * Verifies that this user may read this GeoService.
+   * Verifies that the (authenticated) user may view this geoService.
    *
    * @param geoService the GeoService to check
-   * @return the results from the access control checks.
+   * @return the result from the access control checks.
    */
-  public boolean mayUserRead(GeoService geoService) {
+  public boolean userMayView(GeoService geoService) {
     return isAuthorizedByRules(geoService.getAuthorizationRules(), ACCESS_TYPE_READ)
         .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
   }
 
   /**
-   * Verifies that this user may read the Layer in context of the GeoService.
+   * Verifies that the (authenticated) user may view the layer in context of the geoService.
    *
    * @param geoService the GeoService to check
    * @param layer the GeoServiceLayer to check
-   * @return the results from the access control checks.
+   * @return the result from the access control checks.
    */
-  public boolean mayUserRead(GeoService geoService, GeoServiceLayer layer) {
+  public boolean userMayView(GeoService geoService, GeoServiceLayer layer) {
     Optional<AuthorizationRuleDecision> geoserviceDecision =
         isAuthorizedByRules(geoService.getAuthorizationRules(), ACCESS_TYPE_READ);
 

@@ -58,7 +58,7 @@ public class ViewerController {
     if (app == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
-    if (!this.authorizationService.mayUserRead(app)) {
+    if (!this.authorizationService.userMayView(app)) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
     return viewer(app, ViewerResponse.KindEnum.APP);

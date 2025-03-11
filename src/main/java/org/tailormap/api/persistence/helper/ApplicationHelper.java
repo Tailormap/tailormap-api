@@ -391,7 +391,7 @@ public class ApplicationHelper {
         return Triple.of(null, null, null);
       }
 
-      if (!authorizationService.mayUserRead(service)) {
+      if (!authorizationService.userMayView(service)) {
         return Triple.of(null, null, null);
       }
 
@@ -410,7 +410,7 @@ public class ApplicationHelper {
         return Triple.of(null, null, null);
       }
 
-      if (!authorizationService.mayUserRead(service, serviceLayer)) {
+      if (!authorizationService.userMayView(service, serviceLayer)) {
         return Triple.of(null, null, null);
       }
 
