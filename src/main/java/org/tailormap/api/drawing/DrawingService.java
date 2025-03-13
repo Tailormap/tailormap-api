@@ -5,6 +5,9 @@
  */
 package org.tailormap.api.drawing;
 
+import static org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper.KEY_DRAWINGS_ADMIN;
+import static org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper.KEY_DRAWINGS_READ_ALL;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -446,8 +449,8 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
               if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
                 // check if the user has either the `drawings-admin` or `drawings-read-all` property set
                 for (AdminAdditionalProperty ap : userDetails.getAdditionalProperties()) {
-                  if (ap.getKey().equals("drawings-admin")
-                      || ap.getKey().equals("drawings-read-all")) {
+                  if (ap.getKey().equals(KEY_DRAWINGS_ADMIN)
+                      || ap.getKey().equals(KEY_DRAWINGS_READ_ALL)) {
                     if ("true".equals(ap.getValue().toString())) {
                       yield true;
                     }
@@ -490,7 +493,7 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
             if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
               // check if the user has the drawings-admin property set
               for (AdminAdditionalProperty ap : userDetails.getAdditionalProperties()) {
-                if (ap.getKey().equals("drawings-admin")
+                if (ap.getKey().equals(KEY_DRAWINGS_ADMIN)
                     && "true".equals(ap.getValue().toString())) {
                   yield true;
                 }
