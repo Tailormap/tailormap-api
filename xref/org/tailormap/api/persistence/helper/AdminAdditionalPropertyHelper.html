@@ -19,35 +19,47 @@
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AdminAdditionalProperty;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AdminAdditionalPropertyHelper" href="../../../../../org/tailormap/api/persistence/helper/AdminAdditionalPropertyHelper.html#AdminAdditionalPropertyHelper">AdminAdditionalPropertyHelper</a> {
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> addOrUpdateAdminProperty(
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>        List&lt;AdminAdditionalProperty&gt; list, String key, Object value, <strong class="jxr_keyword">boolean</strong> isPublic) {
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>      <strong class="jxr_keyword">if</strong> (key == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>        <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>      }
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>      list.removeIf(p -&gt; p.getKey().equals(key));
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>      list.add(<strong class="jxr_keyword">new</strong> AdminAdditionalProperty().key(key).value(value).isPublic(isPublic));
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>    }
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> mapAdminPropertyValue(
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>        List&lt;AdminAdditionalProperty&gt; additionalProperties,
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>        String key,
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>        <strong class="jxr_keyword">boolean</strong> isPublic,
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>        Function&lt;Object, Object&gt; valueMapper) {
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>    <em class="jxr_comment">// these are known keys used in this API and other projects, do not reuse them for other purposes:</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>    <em class="jxr_comment">//      used in Drawing</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String KEY_DRAWINGS_ADMIN = <span class="jxr_string">"drawings-admin"</span>;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String KEY_DRAWINGS_READ_ALL = <span class="jxr_string">"drawings-read-all"</span>;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>    <em class="jxr_comment">//      used in PlanmonitorWonen:</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>    <em class="jxr_comment">// -</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>    <em class="jxr_comment">// https://github.com/B3Partners/tailormap-planmonitor-wonen/blob/fbe5dd34d64ab0a2b61e1f5db558c7c147d81587/projects/planmonitor-wonen/src/lib/services/planmonitor-authentication.service.ts#L26-L27</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>    <em class="jxr_comment">// -</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>    <em class="jxr_comment">// https://github.com/B3Partners/planmonitor-wonen-api/blob/d66180f4b015e1e4e7800f8f0fbe1f3450f1ae80/src/main/java/nl/b3p/planmonitorwonen/api/model/auth/PlanmonitorAuthentication.java#L63-L64</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String KEY_TYPE_GEBRUIKER = <span class="jxr_string">"typeGebruiker"</span>;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String KEY_GEMEENTE = <span class="jxr_string">"gemeente"</span>;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> addOrUpdateAdminProperty(
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>        List&lt;AdminAdditionalProperty&gt; list, String key, Object value, <strong class="jxr_keyword">boolean</strong> isPublic) {
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>      <strong class="jxr_keyword">if</strong> (key == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>        <strong class="jxr_keyword">return</strong>;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>      }
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      AdminAdditionalProperty property = additionalProperties.stream()
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>          .filter(p -&gt; p.getKey().equals(key))
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>          .findFirst()
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>          .orElseGet(() -&gt; {
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>            AdminAdditionalProperty newProperty =
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>                <strong class="jxr_keyword">new</strong> AdminAdditionalProperty().key(key).isPublic(isPublic);
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>            additionalProperties.add(newProperty);
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>            <strong class="jxr_keyword">return</strong> newProperty;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>          });
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      property.setValue(valueMapper.apply(property.getValue()));
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>    }
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  }
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      list.removeIf(p -&gt; p.getKey().equals(key));
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      list.add(<strong class="jxr_keyword">new</strong> AdminAdditionalProperty().key(key).value(value).isPublic(isPublic));
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>    }
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> mapAdminPropertyValue(
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>        List&lt;AdminAdditionalProperty&gt; additionalProperties,
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>        String key,
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>        <strong class="jxr_keyword">boolean</strong> isPublic,
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>        Function&lt;Object, Object&gt; valueMapper) {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">if</strong> (key == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>        <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      }
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      AdminAdditionalProperty property = additionalProperties.stream()
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          .filter(p -&gt; p.getKey().equals(key))
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>          .findFirst()
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>          .orElseGet(() -&gt; {
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>            AdminAdditionalProperty newProperty =
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>                <strong class="jxr_keyword">new</strong> AdminAdditionalProperty().key(key).isPublic(isPublic);
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>            additionalProperties.add(newProperty);
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>            <strong class="jxr_keyword">return</strong> newProperty;
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          });
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      property.setValue(valueMapper.apply(property.getValue()));
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>    }
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
