@@ -644,6 +644,16 @@ components:
           type: number
           format: double
           nullable: true
+        hiddenFunctionality:
+          description: List of functionality that is hidden for this layer (the functionality is still available in the backend! Not a "security" setting)
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+              - "object-information"
+              - "attribute-list"
+              - "export"
         # TODO add properties for selected WMS style, feature info popup template, etc.
 
     FormOptions:
