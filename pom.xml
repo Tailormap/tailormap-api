@@ -107,7 +107,7 @@ SPDX-License-Identifier: MIT
         <!-- solr and jetty versions may need to match to prevent errors such as
         Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener -->
         <jetty.version>10.0.24</jetty.version>
-        <solr.version>9.8.0</solr.version>
+        <solr.version>9.8.1</solr.version>
         <!--
         Spring Boot version overrides.
 
