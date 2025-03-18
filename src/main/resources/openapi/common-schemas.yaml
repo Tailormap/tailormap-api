@@ -275,3 +275,17 @@ components:
         hint:
           type: string
           nullable: true
+
+    HiddenLayerFunctionality:
+      description: Functionality that should be hidden for a layer in the UI. The functionality is still available in the backend, so not a "security" setting.
+      type: array
+      uniqueItems: true
+      items:
+        $ref: '#/components/schemas/HiddenLayerFunctionalityEnum'
+
+    HiddenLayerFunctionalityEnum:
+      type: string
+      enum:
+        - "object-information"
+        - "attribute-list"
+        - "export"

@@ -12,6 +12,9 @@ import static org.tailormap.api.persistence.json.GeoServiceProtocol.TILES3D;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
+import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.ATTRIBUTE_LIST;
+import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.EXPORT;
+import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.OBJECT_INFORMATION;
 import static org.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -1113,7 +1116,11 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 "lyr:snapshot-geoserver:sqlserver:wegdeel", new AppLayerSettings().editable(true))
             .putLayerSettingsItem(
                 "lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel",
-                new AppLayerSettings().editable(false)));
+                new AppLayerSettings().editable(false))
+            .putLayerSettingsItem(
+                "lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied",
+                new AppLayerSettings().hiddenFunctionality(Set.of(OBJECT_INFORMATION, ATTRIBUTE_LIST, EXPORT))
+            ));
 
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     app.setInitialExtent(
