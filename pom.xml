@@ -1021,7 +1021,8 @@ SPDX-License-Identifier: MIT
                                 <useSpringBoot3>true</useSpringBoot3>
                             </configOptions>
                             <!-- All common models from common-schemas.yaml here, comma separated -->
-                            <importMappings>TileLayerHiDpiMode=org.tailormap.api.persistence.json.TileLayerHiDpiMode,
+                            <importMappings>
+                                TileLayerHiDpiMode=org.tailormap.api.persistence.json.TileLayerHiDpiMode,
                                 GeoServiceProtocol=org.tailormap.api.persistence.json.GeoServiceProtocol,
                                 Bounds=org.tailormap.api.persistence.json.Bounds,
                                 BoundsWithCRS=org.tailormap.api.persistence.json.BoundsWithCRS,
@@ -1033,7 +1034,9 @@ SPDX-License-Identifier: MIT
                                 FormOptions=org.tailormap.api.persistence.json.FormOptions,
                                 FormTab=org.tailormap.api.persistence.json.FormTab,
                                 FormField=org.tailormap.api.persistence.json.FormField,
-                                FormFieldValue=org.tailormap.api.persistence.json.FormFieldValue</importMappings>
+                                FormFieldValue=org.tailormap.api.persistence.json.FormFieldValue,
+                                HiddenLayerFunctionalityEnum=org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum
+                            </importMappings>
                             <ignoreFileOverride>${project.basedir}/src/main/resources/openapi/common-schemas-openapi-ignore</ignoreFileOverride>
                             <generateApis>false</generateApis>
                             <generateModels>true</generateModels>

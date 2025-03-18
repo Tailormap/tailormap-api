@@ -373,7 +373,8 @@ public class ApplicationHelper {
           .visible(layerRef.getVisible())
           .attribution(attribution)
           .description(description)
-          .webMercatorAvailable(webMercatorAvailable));
+          .webMercatorAvailable(webMercatorAvailable)
+          .hiddenFunctionality(appLayerSettings.getHiddenFunctionality()));
 
       return true;
     }
