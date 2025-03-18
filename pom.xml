@@ -107,7 +107,7 @@ SPDX-License-Identifier: MIT
         <!-- solr and jetty versions may need to match to prevent errors such as
         Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener -->
         <jetty.version>10.0.24</jetty.version>
-        <solr.version>9.8.0</solr.version>
+        <solr.version>9.8.1</solr.version>
         <!--
         Spring Boot version overrides.
 
@@ -123,7 +123,7 @@ SPDX-License-Identifier: MIT
         <commons-lang3.version>3.17.0</commons-lang3.version>
         <flyway.version>10.22.0</flyway.version>
         <hamcrest.version>3.0</hamcrest.version>
-        <hibernate.version>6.6.9.Final</hibernate.version>
+        <hibernate.version>6.6.10.Final</hibernate.version>
         <!-- <jackson-bom.version>2.18.2</jackson-bom.version> -->
         <json-smart.version>2.5.2</json-smart.version>
         <junit-jupiter.version>5.12.0</junit-jupiter.version>
@@ -155,7 +155,7 @@ SPDX-License-Identifier: MIT
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <dependency-check-maven.version>12.1.0</dependency-check-maven.version>
         <modernizer-maven-plugin.version>3.1.0</modernizer-maven-plugin.version>
-        <maven-fluido-skin.version>2.0.1</maven-fluido-skin.version>
+        <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
         <swagger-ui.version>5.20.0</swagger-ui.version>
         <sentry.version>8.3.0</sentry.version>
         <errorProne.version>2.36.0</errorProne.version>
@@ -247,7 +247,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.hypersistence</groupId>
             <artifactId>hypersistence-utils-hibernate-63</artifactId>
-            <version>3.9.2</version>
+            <version>3.9.5</version>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
@@ -280,7 +280,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>2.2.28</version>
+            <version>2.2.29</version>
         </dependency>
         <dependency>
             <groupId>jakarta.annotation</groupId>
