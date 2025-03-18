@@ -14,7 +14,7 @@ import static org.tailormap.api.persistence.json.GeoServiceProtocol.WMTS;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.ATTRIBUTE_LIST;
 import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.EXPORT;
-import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.OBJECT_INFORMATION;
+import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.FEATURE_INFO;
 import static org.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -1119,8 +1119,8 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 new AppLayerSettings().editable(false))
             .putLayerSettingsItem(
                 "lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied",
-                new AppLayerSettings().hiddenFunctionality(Set.of(OBJECT_INFORMATION, ATTRIBUTE_LIST, EXPORT))
-            ));
+                new AppLayerSettings()
+                    .hiddenFunctionality(Set.of(FEATURE_INFO, ATTRIBUTE_LIST, EXPORT))));
 
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     app.setInitialExtent(

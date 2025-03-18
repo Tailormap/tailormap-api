@@ -286,6 +286,6 @@ components:
     HiddenLayerFunctionalityEnum:
       type: string
       enum:
-        - "object-information"
+        - "feature-info"
         - "attribute-list"
         - "export"
