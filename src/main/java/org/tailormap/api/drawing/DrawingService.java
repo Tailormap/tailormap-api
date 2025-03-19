@@ -363,9 +363,11 @@ SELECT row_to_json(featureCollection) from (
 SELECT
 'FeatureCollection' AS type,
 array_to_json(array_agg(feature)) AS features FROM (
-SELECT 'Feature' AS type,
+SELECT
+'Feature' AS type,
+id as id,
 ST_ASGeoJSON(ST_Transform(geomTable.geometry, :srid))::json AS geometry,
-row_to_json((SELECT l from (SELECT drawing_id, properties) AS l)) AS properties
+row_to_json((SELECT l from (SELECT id, drawing_id, properties) AS l)) AS properties
 FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS feature) AS featureCollection
 """)
         .param("drawingId", drawingId)

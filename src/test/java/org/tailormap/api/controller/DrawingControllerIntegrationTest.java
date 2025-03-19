@@ -100,6 +100,37 @@ class DrawingControllerIntegrationTest {
   }
 
   @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {ADMIN})
+  void get_preexisting_drawing() throws Exception {
+    final String url = apiBasePath + "/app/default/drawing/" + KNOWN_DRAWING_ID;
+
+    mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
+        .andExpect(status().isOk())
+        .andDo(print())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id").value(KNOWN_DRAWING_ID))
+        .andExpect(jsonPath("$.id", matchesPattern(UUID_REGEX)))
+        .andExpect(jsonPath("$.createdBy").value("tm-admin"))
+        .andExpect(jsonPath("$.srid").value(28992))
+        .andExpect(jsonPath("$.name").value("Testcase"))
+        .andExpect(jsonPath("$.access").value("private"))
+        .andExpect(jsonPath("$.description")
+            .value("A private access drawing that is inserted as part of the testdata"))
+        .andExpect(jsonPath("$.domainData").exists())
+        .andExpect(jsonPath("$.domainData.items").value(1))
+        .andExpect(jsonPath("$.domainData.domain").value("test drawings"))
+        .andExpect(jsonPath("$.featureCollection.features[0].geometry.type")
+            .value("Polygon"))
+        .andExpect(jsonPath("$.featureCollection.features[0].id", matchesPattern(UUID_REGEX)))
+        .andExpect(jsonPath("$.featureCollection.features[0].properties.prop0")
+            .value("value0"))
+        .andExpect(jsonPath("$.featureCollection.features[1].properties.rendering.fill")
+            .value("red"));
+  }
+
+  @Test
   @Order(10)
   @WithMockUser(
       username = "tm-admin",
@@ -127,6 +158,7 @@ class DrawingControllerIntegrationTest {
         .andExpect(jsonPath("$.domainData.domain").value("test drawings"))
         .andExpect(jsonPath("$.featureCollection.features[0].geometry.type")
             .value("Polygon"))
+        .andExpect(jsonPath("$.featureCollection.features[0].id", matchesPattern(UUID_REGEX)))
         .andExpect(jsonPath("$.featureCollection.features[0].properties.prop0")
             .value("value0"))
         .andExpect(jsonPath("$.featureCollection.features[1].properties.rendering.fill")
@@ -239,6 +271,7 @@ class DrawingControllerIntegrationTest {
         .andExpect(jsonPath("$.domainData.domain").value("test drawings"))
         .andExpect(jsonPath("$.featureCollection.features[0].geometry.type")
             .value("Polygon"))
+        .andExpect(jsonPath("$.featureCollection.features[0].id", matchesPattern(UUID_REGEX)))
         .andExpect(jsonPath("$.featureCollection.features[0].properties.prop0")
             .value("value0"))
         .andExpect(jsonPath("$.featureCollection.features[1].properties.rendering.fill")
@@ -339,6 +372,7 @@ class DrawingControllerIntegrationTest {
         .andExpect(jsonPath("$.domainData.domain").value("test drawings"))
         .andExpect(jsonPath("$.featureCollection.features[0].geometry.type")
             .value("Polygon"))
+        .andExpect(jsonPath("$.featureCollection.features[0].id", matchesPattern(UUID_REGEX)))
         .andExpect(jsonPath("$.featureCollection.features[0].properties.properties")
             .doesNotHaveJsonPath())
         .andExpect(jsonPath("$.featureCollection.features[0].properties.prop0")
@@ -385,6 +419,7 @@ class DrawingControllerIntegrationTest {
         .andExpect(jsonPath("$.domainData.domain").value("test drawings"))
         .andExpect(jsonPath("$.featureCollection.features[0].geometry.type")
             .value("Polygon"))
+        .andExpect(jsonPath("$.featureCollection.features[0].id", matchesPattern(UUID_REGEX)))
         .andExpect(jsonPath("$.featureCollection.features[0].properties.properties")
             .doesNotHaveJsonPath())
         .andExpect(jsonPath("$.featureCollection.features[0].properties.prop0")
