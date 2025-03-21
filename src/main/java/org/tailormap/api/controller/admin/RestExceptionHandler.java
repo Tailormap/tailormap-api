@@ -29,15 +29,14 @@ public class RestExceptionHandler {
     logger.debug("Invalid message exception", ex);
 
     // Invalid password was given
-    // ideally we would use @ExceptionHandler({InvalidPasswordException.class}) but that does not
-    // trigger
-    // the exception handler because it is wrapped in HttpMessageNotReadableException
-    if (ex.getCause() != null && ex.getMostSpecificCause() instanceof InvalidPasswordException) {
+    // ideally we would use @ExceptionHandler({InvalidPasswordException.class}) but that does not trigger the
+    // exception handler because it is wrapped in HttpMessageNotReadableException
+    if (ex.getCause() != null && ex.getMostSpecificCause() instanceof InvalidPasswordException ipe) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .contentType(MediaType.APPLICATION_JSON)
           .body(new ErrorResponse()
               .code(HttpStatus.BAD_REQUEST.value())
-              .message(((InvalidPasswordException) ex.getMostSpecificCause()).getOriginalMessage()));
+              .message(ipe.getOriginalMessage()));
     }
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)

@@ -427,11 +427,11 @@ public class FeaturesController implements Constants {
         if (!onlyGeometries) {
           for (String attName : configuredAttributes.keySet()) {
             Object value = feature.getAttribute(attName);
-            if (value instanceof Geometry) {
+            if (value instanceof Geometry geometry) {
               if (skipGeometryOutput) {
                 value = null;
               } else {
-                value = GeometryProcessor.geometryToWKT((Geometry) value);
+                value = GeometryProcessor.geometryToWKT(geometry);
               }
             }
             newFeat.putAttributesItem(attName, value);

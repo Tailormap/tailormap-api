@@ -142,9 +142,7 @@ public class UniqueValuesController {
         logger.trace("Using geotools unique collection function to get unique values");
         Function unique = ff.function("Collection_Unique", ff.property(attributeName));
         Object o = unique.evaluate(fs.getFeatures(q));
-        if (o instanceof Set) {
-          @SuppressWarnings("unchecked")
-          Set<Object> uniqueValues = (Set<Object>) o;
+        if (o instanceof Set<?> uniqueValues) {
           uniqueValuesResponse.setValues(new TreeSet<>(uniqueValues));
         }
       }

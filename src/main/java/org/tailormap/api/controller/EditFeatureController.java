@@ -253,11 +253,11 @@ public class EditFeatureController implements Constants {
     try (Transaction transaction = new DefaultTransaction("delete")) {
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
       Filter filter = ff.id(ff.featureId(fid));
-      if (fs instanceof FeatureStore) {
+      if (fs instanceof FeatureStore<?, ?> featureStore) {
         // NOTE geotools does not report back that the feature does not exist, nor the number of
         // deleted features, no error === success
-        ((FeatureStore<?, ?>) fs).setTransaction(transaction);
-        ((FeatureStore<?, ?>) fs).removeFeatures(filter);
+        featureStore.setTransaction(transaction);
+        featureStore.removeFeatures(filter);
         transaction.commit();
       } else {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Layer cannot be edited");
@@ -331,10 +331,10 @@ public class EditFeatureController implements Constants {
             .fid(simpleFeature.getID());
         for (AttributeDescriptor att : simpleFeature.getFeatureType().getAttributeDescriptors()) {
           Object value = simpleFeature.getAttribute(att.getName());
-          if (value instanceof Geometry) {
-            value = GeometryProcessor.transformGeometry(
-                (Geometry) value, TransformationUtil.getTransformationToApplication(application, fs));
-            value = GeometryProcessor.geometryToWKT((Geometry) value);
+          if (value instanceof Geometry geometry) {
+            geometry = GeometryProcessor.transformGeometry(
+                geometry, TransformationUtil.getTransformationToApplication(application, fs));
+            value = GeometryProcessor.geometryToWKT(geometry);
           }
           modelFeature.putAttributesItem(att.getLocalName(), value);
         }
