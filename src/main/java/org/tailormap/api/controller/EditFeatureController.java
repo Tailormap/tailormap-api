@@ -145,10 +145,9 @@ public class EditFeatureController implements Constants {
         simpleFeature.setAttribute(entry.getKey(), entry.getValue());
       }
 
-      if (fs instanceof SimpleFeatureStore) {
-        ((SimpleFeatureStore) fs).setTransaction(transaction);
-        List<FeatureId> newFids =
-            ((SimpleFeatureStore) fs).addFeatures(DataUtilities.collection(simpleFeature));
+      if (fs instanceof SimpleFeatureStore simpleFeatureStore) {
+        simpleFeatureStore.setTransaction(transaction);
+        List<FeatureId> newFids = simpleFeatureStore.addFeatures(DataUtilities.collection(simpleFeature));
 
         transaction.commit();
         // find the created feature to return
@@ -203,16 +202,15 @@ public class EditFeatureController implements Constants {
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
       // find feature to update
       final Filter filter = ff.id(ff.featureId(fid));
-      if (!fs.getFeatures(filter).isEmpty() && fs instanceof SimpleFeatureStore) {
+      if (!fs.getFeatures(filter).isEmpty() && fs instanceof SimpleFeatureStore simpleFeatureStore) {
         handleGeometryAttributesInput(
             tmFeatureType, appLayerSettings, partialFeature, attributesMap, application, fs);
         // NOTE geotools does not report back that the feature was updated, no error === success
-        ((SimpleFeatureStore) fs).setTransaction(transaction);
-        ((SimpleFeatureStore) fs)
-            .modifyFeatures(
-                attributesMap.keySet().toArray(new String[] {}),
-                attributesMap.values().toArray(),
-                filter);
+        simpleFeatureStore.setTransaction(transaction);
+        simpleFeatureStore.modifyFeatures(
+            attributesMap.keySet().toArray(new String[] {}),
+            attributesMap.values().toArray(),
+            filter);
         transaction.commit();
         // find the updated feature to return
         patchedFeature = getFeature(fs, filter, application);
@@ -255,11 +253,11 @@ public class EditFeatureController implements Constants {
     try (Transaction transaction = new DefaultTransaction("delete")) {
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
       Filter filter = ff.id(ff.featureId(fid));
-      if (fs instanceof FeatureStore) {
+      if (fs instanceof FeatureStore<?, ?> featureStore) {
         // NOTE geotools does not report back that the feature does not exist, nor the number of
         // deleted features, no error === success
-        ((FeatureStore<?, ?>) fs).setTransaction(transaction);
-        ((FeatureStore<?, ?>) fs).removeFeatures(filter);
+        featureStore.setTransaction(transaction);
+        featureStore.removeFeatures(filter);
         transaction.commit();
       } else {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Layer cannot be edited");
@@ -333,10 +331,10 @@ public class EditFeatureController implements Constants {
             .fid(simpleFeature.getID());
         for (AttributeDescriptor att : simpleFeature.getFeatureType().getAttributeDescriptors()) {
           Object value = simpleFeature.getAttribute(att.getName());
-          if (value instanceof Geometry) {
-            value = GeometryProcessor.transformGeometry(
-                (Geometry) value, TransformationUtil.getTransformationToApplication(application, fs));
-            value = GeometryProcessor.geometryToWKT((Geometry) value);
+          if (value instanceof Geometry geometry) {
+            geometry = GeometryProcessor.transformGeometry(
+                geometry, TransformationUtil.getTransformationToApplication(application, fs));
+            value = GeometryProcessor.geometryToWKT(geometry);
           }
           modelFeature.putAttributesItem(att.getLocalName(), value);
         }
