@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TaskProgressEvent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.admin.model</a> &gt; <span class="el_source">TaskProgressEvent.java</span></div><h1>TaskProgressEvent.java</h1><pre class="source lang-java linenums">package org.tailormap.api.admin.model;
+
+import java.net.URI;
+import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
+import java.util.*;
+import jakarta.annotation.Generated;
+
+/**
+ * Task progress event. This event is sent when a _running_ task makes progress, including start/stop. The fraction of the task that is done can be computed using &amp;#x60;progress&amp;#x60; and &amp;#x60;total&amp;#x60; (if not null).
+ */
+
+@Schema(name = &quot;TaskProgressEvent&quot;, description = &quot;Task progress event. This event is sent when a _running_ task makes progress, including start/stop. The fraction of the task that is done can be computed using `progress` and `total` (if not null).&quot;)
+@Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;, comments = &quot;Generator version: 7.12.0&quot;)
+public class TaskProgressEvent implements Serializable {
+
+  private static final long serialVersionUID = 1L;
+
+  private String type;
+
+  private UUID uuid;
+
+<span class="nc" id="L37">  private Integer total = null;</span>
+
+<span class="nc" id="L39">  private Integer progress = 0;</span>
+
+<span class="nc" id="L41">  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)</span>
+  private OffsetDateTime startedAt = null;
+
+  @Valid
+  private Map&lt;String, Object&gt; taskData;
+
+  public TaskProgressEvent() {
+<span class="nc" id="L48">    super();</span>
+<span class="nc" id="L49">  }</span>
+
+  public TaskProgressEvent type(String type) {
+<span class="nc" id="L52">    this.type = type;</span>
+<span class="nc" id="L53">    return this;</span>
+  }
+
+  /**
+   * Type of the task.
+   * @return type
+   */
+  @NotNull 
+  @Schema(name = &quot;type&quot;, example = &quot;index&quot;, description = &quot;Type of the task.&quot;, requiredMode = Schema.RequiredMode.REQUIRED)
+  @JsonProperty(&quot;type&quot;)
+  public String getType() {
+<span class="nc" id="L64">    return type;</span>
+  }
+
+  public void setType(String type) {
+<span class="nc" id="L68">    this.type = type;</span>
+<span class="nc" id="L69">  }</span>
+
+  public TaskProgressEvent uuid(UUID uuid) {
+<span class="nc" id="L72">    this.uuid = uuid;</span>
+<span class="nc" id="L73">    return this;</span>
+  }
+
+  /**
+   * UUID of the task; this, combined with type, is used to uniquely identify the task.
+   * @return uuid
+   */
+  @NotNull @Valid 
+  @Schema(name = &quot;uuid&quot;, description = &quot;UUID of the task; this, combined with type, is used to uniquely identify the task.&quot;, requiredMode = Schema.RequiredMode.REQUIRED)
+  @JsonProperty(&quot;uuid&quot;)
+  public UUID getUuid() {
+<span class="nc" id="L84">    return uuid;</span>
+  }
+
+  public void setUuid(UUID uuid) {
+<span class="nc" id="L88">    this.uuid = uuid;</span>
+<span class="nc" id="L89">  }</span>
+
+  public TaskProgressEvent total(Integer total) {
+<span class="nc" id="L92">    this.total = total;</span>
+<span class="nc" id="L93">    return this;</span>
+  }
+
+  /**
+   * Total number of items to process. May be `null` or empty if unknown.
+   * @return total
+   */
+  
+  @Schema(name = &quot;total&quot;, example = &quot;1200&quot;, description = &quot;Total number of items to process. May be `null` or empty if unknown.&quot;, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty(&quot;total&quot;)
+  public Integer getTotal() {
+<span class="nc" id="L104">    return total;</span>
+  }
+
+  public void setTotal(Integer total) {
+<span class="nc" id="L108">    this.total = total;</span>
+<span class="nc" id="L109">  }</span>
+
+  public TaskProgressEvent progress(Integer progress) {
+<span class="nc" id="L112">    this.progress = progress;</span>
+<span class="nc" id="L113">    return this;</span>
+  }
+
+  /**
+   * Number of items processed so far.
+   * @return progress
+   */
+  @NotNull 
+  @Schema(name = &quot;progress&quot;, example = &quot;113&quot;, description = &quot;Number of items processed so far.&quot;, requiredMode = Schema.RequiredMode.REQUIRED)
+  @JsonProperty(&quot;progress&quot;)
+  public Integer getProgress() {
+<span class="nc" id="L124">    return progress;</span>
+  }
+
+  public void setProgress(Integer progress) {
+<span class="nc" id="L128">    this.progress = progress;</span>
+<span class="nc" id="L129">  }</span>
+
+  public TaskProgressEvent startedAt(OffsetDateTime startedAt) {
+<span class="nc" id="L132">    this.startedAt = startedAt;</span>
+<span class="nc" id="L133">    return this;</span>
+  }
+
+  /**
+   * Zoned date-time when the task started.
+   * @return startedAt
+   */
+  @Valid 
+  @Schema(name = &quot;startedAt&quot;, example = &quot;2024-12-12T16:02:34.587142504+01:00&quot;, description = &quot;Zoned date-time when the task started.&quot;, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty(&quot;startedAt&quot;)
+  public OffsetDateTime getStartedAt() {
+<span class="nc" id="L144">    return startedAt;</span>
+  }
+
+  public void setStartedAt(OffsetDateTime startedAt) {
+<span class="nc" id="L148">    this.startedAt = startedAt;</span>
+<span class="nc" id="L149">  }</span>
+
+  public TaskProgressEvent taskData(Map&lt;String, Object&gt; taskData) {
+<span class="nc" id="L152">    this.taskData = taskData;</span>
+<span class="nc" id="L153">    return this;</span>
+  }
+
+  public TaskProgressEvent putTaskDataItem(String key, Object taskDataItem) {
+<span class="nc bnc" id="L157" title="All 2 branches missed.">    if (this.taskData == null) {</span>
+<span class="nc" id="L158">      this.taskData = new HashMap&lt;&gt;();</span>
+    }
+<span class="nc" id="L160">    this.taskData.put(key, taskDataItem);</span>
+<span class="nc" id="L161">    return this;</span>
+  }
+
+  /**
+   * Additional data for the task.
+   * @return taskData
+   */
+  
+  @Schema(name = &quot;taskData&quot;, example = &quot;{\&quot;index\&quot;:1}&quot;, description = &quot;Additional data for the task.&quot;, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty(&quot;taskData&quot;)
+  public Map&lt;String, Object&gt; getTaskData() {
+<span class="nc" id="L172">    return taskData;</span>
+  }
+
+  public void setTaskData(Map&lt;String, Object&gt; taskData) {
+<span class="nc" id="L176">    this.taskData = taskData;</span>
+<span class="nc" id="L177">  }</span>
+
+  @Override
+  public boolean equals(Object o) {
+<span class="nc bnc" id="L181" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L182">      return true;</span>
+    }
+<span class="nc bnc" id="L184" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L185">      return false;</span>
+    }
+<span class="nc" id="L187">    TaskProgressEvent taskProgressEvent = (TaskProgressEvent) o;</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">    return Objects.equals(this.type, taskProgressEvent.type) &amp;&amp;</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        Objects.equals(this.uuid, taskProgressEvent.uuid) &amp;&amp;</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        Objects.equals(this.total, taskProgressEvent.total) &amp;&amp;</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">        Objects.equals(this.progress, taskProgressEvent.progress) &amp;&amp;</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">        Objects.equals(this.startedAt, taskProgressEvent.startedAt) &amp;&amp;</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        Objects.equals(this.taskData, taskProgressEvent.taskData);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L198">    return Objects.hash(type, uuid, total, progress, startedAt, taskData);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L203">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L204">    sb.append(&quot;class TaskProgressEvent {\n&quot;);</span>
+<span class="nc" id="L205">    sb.append(&quot;    type: &quot;).append(toIndentedString(type)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L206">    sb.append(&quot;    uuid: &quot;).append(toIndentedString(uuid)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L207">    sb.append(&quot;    total: &quot;).append(toIndentedString(total)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L208">    sb.append(&quot;    progress: &quot;).append(toIndentedString(progress)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L209">    sb.append(&quot;    startedAt: &quot;).append(toIndentedString(startedAt)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L210">    sb.append(&quot;    taskData: &quot;).append(toIndentedString(taskData)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L211">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L212">    return sb.toString();</span>
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+<span class="nc bnc" id="L220" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L221">      return &quot;null&quot;;</span>
+    }
+<span class="nc" id="L223">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

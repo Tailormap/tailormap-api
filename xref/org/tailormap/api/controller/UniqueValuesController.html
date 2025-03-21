@@ -150,26 +150,24 @@
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         logger.trace(<span class="jxr_string">"Using geotools unique collection function to get unique values"</span>);
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>         Function unique = ff.function(<span class="jxr_string">"Collection_Unique"</span>, ff.property(attributeName));
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>         Object o = unique.evaluate(fs.getFeatures(q));
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>         <strong class="jxr_keyword">if</strong> (o instanceof Set) {
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>           @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>           Set&lt;Object&gt; uniqueValues = (Set&lt;Object&gt;) o;
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>           uniqueValuesResponse.setValues(<strong class="jxr_keyword">new</strong> TreeSet&lt;&gt;(uniqueValues));
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>         }
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>       }
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>     } <strong class="jxr_keyword">catch</strong> (CQLException e) {
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>       logger.error(<span class="jxr_string">"Could not parse requested filter"</span>, e);
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.BAD_REQUEST, <span class="jxr_string">"Could not parse requested filter"</span>);
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>     } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>       logger.error(<span class="jxr_string">"Could not retrieve attribute data"</span>, e);
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>     } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>       <strong class="jxr_keyword">if</strong> (fs != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>         fs.getDataStore().dispose();
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>       }
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>     }
-<a class="jxr_linenumber" name="L161" href="#L161">161</a> 
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>     <strong class="jxr_keyword">return</strong> uniqueValuesResponse;
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>   }
-<a class="jxr_linenumber" name="L164" href="#L164">164</a> }
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>         <strong class="jxr_keyword">if</strong> (o instanceof Set&lt;?&gt; uniqueValues) {
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>           uniqueValuesResponse.setValues(<strong class="jxr_keyword">new</strong> TreeSet&lt;&gt;(uniqueValues));
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>         }
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>       }
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>     } <strong class="jxr_keyword">catch</strong> (CQLException e) {
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>       logger.error(<span class="jxr_string">"Could not parse requested filter"</span>, e);
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.BAD_REQUEST, <span class="jxr_string">"Could not parse requested filter"</span>);
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>     } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>       logger.error(<span class="jxr_string">"Could not retrieve attribute data"</span>, e);
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>     } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>       <strong class="jxr_keyword">if</strong> (fs != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>         fs.getDataStore().dispose();
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>       }
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>     }
+<a class="jxr_linenumber" name="L159" href="#L159">159</a> 
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>     <strong class="jxr_keyword">return</strong> uniqueValuesResponse;
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>   }
+<a class="jxr_linenumber" name="L162" href="#L162">162</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

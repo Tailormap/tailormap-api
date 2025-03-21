@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TaskSchedule.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.admin.model</a> &gt; <span class="el_source">TaskSchedule.java</span></div><h1>TaskSchedule.java</h1><pre class="source lang-java linenums">package org.tailormap.api.admin.model;
+
+import java.net.URI;
+import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.UUID;
+import org.springframework.lang.Nullable;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
+import java.util.*;
+import jakarta.annotation.Generated;
+
+/**
+ * TaskSchedule
+ */
+
+@Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;, comments = &quot;Generator version: 7.12.0&quot;)
+public class TaskSchedule implements Serializable {
+
+  private static final long serialVersionUID = 1L;
+
+<span class="nc" id="L28">  private UUID uuid = null;</span>
+
+<span class="nc" id="L30">  private String description = null;</span>
+
+  private String cronExpression;
+
+<span class="nc" id="L34">  private Integer priority = null;</span>
+
+  public TaskSchedule() {
+<span class="nc" id="L37">    super();</span>
+<span class="nc" id="L38">  }</span>
+
+  public TaskSchedule uuid(UUID uuid) {
+<span class="nc" id="L41">    this.uuid = uuid;</span>
+<span class="nc" id="L42">    return this;</span>
+  }
+
+  /**
+   * UUID of the task; this is the unique identifier of the task
+   * @return uuid
+   */
+  @Valid 
+  @Schema(name = &quot;uuid&quot;, accessMode = Schema.AccessMode.READ_ONLY, description = &quot;UUID of the task; this is the unique identifier of the task&quot;, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty(&quot;uuid&quot;)
+  public UUID getUuid() {
+<span class="nc" id="L53">    return uuid;</span>
+  }
+
+  public void setUuid(UUID uuid) {
+<span class="nc" id="L57">    this.uuid = uuid;</span>
+<span class="nc" id="L58">  }</span>
+
+  public TaskSchedule description(String description) {
+<span class="nc" id="L61">    this.description = description;</span>
+<span class="nc" id="L62">    return this;</span>
+  }
+
+  /**
+   * Human-readable description of the task.
+   * @return description
+   */
+  
+  @Schema(name = &quot;description&quot;, description = &quot;Human-readable description of the task.&quot;, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty(&quot;description&quot;)
+  public String getDescription() {
+<span class="nc" id="L73">    return description;</span>
+  }
+
+  public void setDescription(String description) {
+<span class="nc" id="L77">    this.description = description;</span>
+<span class="nc" id="L78">  }</span>
+
+  public TaskSchedule cronExpression(String cronExpression) {
+<span class="nc" id="L81">    this.cronExpression = cronExpression;</span>
+<span class="nc" id="L82">    return this;</span>
+  }
+
+  /**
+   * Cron expression for the task
+   * @return cronExpression
+   */
+  @NotNull 
+  @Schema(name = &quot;cronExpression&quot;, description = &quot;Cron expression for the task&quot;, requiredMode = Schema.RequiredMode.REQUIRED)
+  @JsonProperty(&quot;cronExpression&quot;)
+  public String getCronExpression() {
+<span class="nc" id="L93">    return cronExpression;</span>
+  }
+
+  public void setCronExpression(String cronExpression) {
+<span class="nc" id="L97">    this.cronExpression = cronExpression;</span>
+<span class="nc" id="L98">  }</span>
+
+  public TaskSchedule priority(Integer priority) {
+<span class="nc" id="L101">    this.priority = priority;</span>
+<span class="nc" id="L102">    return this;</span>
+  }
+
+  /**
+   * Priority of the task
+   * @return priority
+   */
+  
+  @Schema(name = &quot;priority&quot;, description = &quot;Priority of the task&quot;, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty(&quot;priority&quot;)
+  public Integer getPriority() {
+<span class="nc" id="L113">    return priority;</span>
+  }
+
+  public void setPriority(Integer priority) {
+<span class="nc" id="L117">    this.priority = priority;</span>
+<span class="nc" id="L118">  }</span>
+
+  @Override
+  public boolean equals(Object o) {
+<span class="nc bnc" id="L122" title="All 2 branches missed.">    if (this == o) {</span>
+<span class="nc" id="L123">      return true;</span>
+    }
+<span class="nc bnc" id="L125" title="All 4 branches missed.">    if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L126">      return false;</span>
+    }
+<span class="nc" id="L128">    TaskSchedule taskSchedule = (TaskSchedule) o;</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">    return Objects.equals(this.uuid, taskSchedule.uuid) &amp;&amp;</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        Objects.equals(this.description, taskSchedule.description) &amp;&amp;</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        Objects.equals(this.cronExpression, taskSchedule.cronExpression) &amp;&amp;</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        Objects.equals(this.priority, taskSchedule.priority);</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L137">    return Objects.hash(uuid, description, cronExpression, priority);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L142">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L143">    sb.append(&quot;class TaskSchedule {\n&quot;);</span>
+<span class="nc" id="L144">    sb.append(&quot;    uuid: &quot;).append(toIndentedString(uuid)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L145">    sb.append(&quot;    description: &quot;).append(toIndentedString(description)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L146">    sb.append(&quot;    cronExpression: &quot;).append(toIndentedString(cronExpression)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L147">    sb.append(&quot;    priority: &quot;).append(toIndentedString(priority)).append(&quot;\n&quot;);</span>
+<span class="nc" id="L148">    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L149">    return sb.toString();</span>
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+<span class="nc bnc" id="L157" title="All 2 branches missed.">    if (o == null) {</span>
+<span class="nc" id="L158">      return &quot;null&quot;;</span>
+    }
+<span class="nc" id="L160">    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</span>
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

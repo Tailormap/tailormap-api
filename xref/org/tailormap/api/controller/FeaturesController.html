@@ -435,11 +435,11 @@
 <a class="jxr_linenumber" name="L427" href="#L427">427</a>         <strong class="jxr_keyword">if</strong> (!onlyGeometries) {
 <a class="jxr_linenumber" name="L428" href="#L428">428</a>           <strong class="jxr_keyword">for</strong> (String attName : configuredAttributes.keySet()) {
 <a class="jxr_linenumber" name="L429" href="#L429">429</a>             Object value = feature.getAttribute(attName);
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>             <strong class="jxr_keyword">if</strong> (value instanceof Geometry) {
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>             <strong class="jxr_keyword">if</strong> (value instanceof Geometry geometry) {
 <a class="jxr_linenumber" name="L431" href="#L431">431</a>               <strong class="jxr_keyword">if</strong> (skipGeometryOutput) {
 <a class="jxr_linenumber" name="L432" href="#L432">432</a>                 value = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L433" href="#L433">433</a>               } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>                 value = GeometryProcessor.geometryToWKT((Geometry) value);
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>                 value = GeometryProcessor.geometryToWKT(geometry);
 <a class="jxr_linenumber" name="L435" href="#L435">435</a>               }
 <a class="jxr_linenumber" name="L436" href="#L436">436</a>             }
 <a class="jxr_linenumber" name="L437" href="#L437">437</a>             newFeat.putAttributesItem(attName, value);
