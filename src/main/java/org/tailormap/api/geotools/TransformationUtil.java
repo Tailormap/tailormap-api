@@ -31,15 +31,15 @@ public class TransformationUtil {
   public static MathTransform getTransformationToApplication(
       @NotNull Application application, @NotNull SimpleFeatureSource simpleFeatureSource)
       throws FactoryException {
-    MathTransform transform = null;
     // this is the CRS of the "default geometry" attribute
     final CoordinateReferenceSystem dataSourceCRS =
         simpleFeatureSource.getSchema().getCoordinateReferenceSystem();
     final CoordinateReferenceSystem appCRS = CRS.decode(application.getCrs());
     if (!CRS.equalsIgnoreMetadata(dataSourceCRS, appCRS)) {
-      transform = CRS.findMathTransform(dataSourceCRS, appCRS);
+      return CRS.findMathTransform(dataSourceCRS, appCRS);
+    } else {
+      return null;
     }
-    return transform;
   }
 
   /**
