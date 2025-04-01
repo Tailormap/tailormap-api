@@ -123,6 +123,8 @@ public class GeoServiceProxyController {
           return null;
         }
         return doProxy(legendURI, service, request);
+      case TILES3D:
+        return doProxy(buildTILES3DUrl(service, request), service, request);
       default:
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported proxy protocol: " + protocol);
     }
@@ -186,6 +188,12 @@ public class GeoServiceProxyController {
       }
     }
     return params;
+  }
+
+  private URI buildTILES3DUrl(GeoService service, HttpServletRequest request) {
+    final UriComponentsBuilder originalServiceUrl = UriComponentsBuilder.fromUriString(service.getUrl());
+    String requestString = request.getQueryString();
+    return originalServiceUrl.build(true).toUri();
   }
 
   private static ResponseEntity<?> doProxy(URI uri, GeoService service, HttpServletRequest request) {
