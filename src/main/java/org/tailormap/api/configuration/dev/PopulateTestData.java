@@ -575,7 +575,7 @@ public class PopulateTestData {
         geoServiceHelper.loadServiceCapabilities(geoService);
       } catch (Exception e) {
         logger.error(
-            "Error loading capabilities for service {} URL {}: {}: {}",
+            "Error loading capabilities for {} service URL {}: {}, {}",
             geoService.getProtocol().getValue(),
             geoService.getUrl(),
             e.getClass(),
