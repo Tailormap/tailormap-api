@@ -571,7 +571,11 @@ public class PopulateTestData {
     }
 
     for (GeoService geoService : services) {
-      geoServiceHelper.loadServiceCapabilities(geoService);
+      try {
+        geoServiceHelper.loadServiceCapabilities(geoService);
+      } catch(Exception e) {
+        logger.error("Error loading capabilities for service {} URL {}: {}: {}", geoService.getProtocol().getValue(), geoService.getUrl(), e.getClass(), e.getMessage());
+      }
 
       geoServiceRepository.save(geoService);
       catalogNode.addItemsItem(new TailormapObjectRef()
