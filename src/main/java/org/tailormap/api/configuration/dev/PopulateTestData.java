@@ -573,8 +573,13 @@ public class PopulateTestData {
     for (GeoService geoService : services) {
       try {
         geoServiceHelper.loadServiceCapabilities(geoService);
-      } catch(Exception e) {
-        logger.error("Error loading capabilities for service {} URL {}: {}: {}", geoService.getProtocol().getValue(), geoService.getUrl(), e.getClass(), e.getMessage());
+      } catch (Exception e) {
+        logger.error(
+            "Error loading capabilities for service {} URL {}: {}: {}",
+            geoService.getProtocol().getValue(),
+            geoService.getUrl(),
+            e.getClass(),
+            e.getMessage());
       }
 
       geoServiceRepository.save(geoService);
