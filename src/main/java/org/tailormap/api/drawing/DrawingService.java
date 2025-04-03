@@ -283,8 +283,7 @@ WHERE id = :id RETURNING *""")
       return Set.of();
     }
     return jdbcClient
-        .sql("SELECT * FROM data.drawing WHERE created_by = :userName OR updated_by = :userName")
-        .param("userName", authentication.getName())
+        .sql("SELECT * FROM data.drawing")
         .query(drawingRowMapper)
         .set()
         .stream()
