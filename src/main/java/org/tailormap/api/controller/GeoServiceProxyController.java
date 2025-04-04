@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -192,8 +193,20 @@ public class GeoServiceProxyController {
 
   private URI buildTILES3DUrl(GeoService service, HttpServletRequest request) {
     final UriComponentsBuilder originalServiceUrl = UriComponentsBuilder.fromUriString(service.getUrl());
-    String requestString = request.getQueryString();
-    return originalServiceUrl.build(true).toUri();
+    String requestString = "";
+    if (request.getQueryString() != null) {
+      String queryString = URLDecoder.decode(request.getQueryString(), StandardCharsets.UTF_8);
+      String hostName = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+      requestString = queryString.replace(hostName, "");
+    }
+    String baseUrl = originalServiceUrl.build(true).toUriString();
+    int lastSlashIndex = baseUrl.lastIndexOf('/');
+    if (lastSlashIndex != -1 && !requestString.isEmpty()) {
+      baseUrl = baseUrl.substring(0, lastSlashIndex);
+    }
+
+    String finalUrl = baseUrl + requestString;
+    return UriComponentsBuilder.fromUriString(finalUrl).build(true).toUri();
   }
 
   private static ResponseEntity<?> doProxy(URI uri, GeoService service, HttpServletRequest request) {
