@@ -132,10 +132,10 @@
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>         .andExpect(jsonPath(<span class="jxr_string">"$.featureCollection.features[0].geometry.type"</span>)
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>             .value(<span class="jxr_string">"Polygon"</span>))
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>         .andExpect(jsonPath(<span class="jxr_string">"$.featureCollection.features[0].id"</span>, matchesPattern(UUID_REGEX)))
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>         .andExpect(jsonPath(<span class="jxr_string">"$.featureCollection.features[0].properties.prop0"</span>)
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>             .value(<span class="jxr_string">"value0"</span>))
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>         .andExpect(jsonPath(<span class="jxr_string">"$.featureCollection.features[1].properties.rendering.fill"</span>)
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>             .value(<span class="jxr_string">"red"</span>));
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>         .andExpect(jsonPath(<span class="jxr_string">"$.featureCollection.features[0].properties.type"</span>)
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>             .value(<span class="jxr_string">"POLYGON"</span>))
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>         .andExpect(jsonPath(<span class="jxr_string">"$.featureCollection.features[1].properties.style.fillColor"</span>)
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>             .value(<span class="jxr_string">"rgb(117, 117, 117)"</span>));
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>   }
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> 
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>   @Test
