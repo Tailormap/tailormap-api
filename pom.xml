@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
-    <version>11.5.1-SNAPSHOT</version>
+    <version>12.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Tailormap API</name>
     <description>Tailormap API provides the backend for Tailormap</description>
@@ -704,7 +704,7 @@ SPDX-License-Identifier: MIT
                 <plugin>
                     <groupId>io.fabric8</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
-                    <version>0.45.1</version>
+                    <version>0.46.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-scm-publish-plugin</artifactId>
@@ -1663,6 +1663,7 @@ SPDX-License-Identifier: MIT
                         <!-- deploy latest and versioned tag -->
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
+                        <extensions>true</extensions>
                         <configuration>
                             <verbose>true</verbose>
                             <imagePullPolicy>Always</imagePullPolicy>
