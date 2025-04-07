@@ -192,19 +192,29 @@ public class GeoServiceProxyController {
   }
 
   private URI buildTILES3DUrl(GeoService service, HttpServletRequest request) {
+    // The URL in the GeoService refers to the location of the JSON file describing the tileset,
+    // e.g. example.com/buildings/3dtiles. The paths to the subtrees and tiles of the tilesets do not include the
+    // '/3dtiles' (or '/tileset.json') part of the path. Their paths are e.g.
+    // example.com/buildings/subtrees/... or example.com/buildings/t/...
     final UriComponentsBuilder originalServiceUrl = UriComponentsBuilder.fromUriString(service.getUrl());
+
+    // The proxy functionality in CesiumJS used to create the requests adds the path to a tile or subtree as a query
+    // parameter.
+    // The path is retrieved and the scheme, servername, and port (which CesiumJS adds to the parameter) are removed
     String requestString = "";
     if (request.getQueryString() != null) {
       String queryString = URLDecoder.decode(request.getQueryString(), StandardCharsets.UTF_8);
       String hostName = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
       requestString = queryString.replace(hostName, "");
     }
+
+    // If the request is for a specific subtree or tile,
+    // remove the part of the service URL referring to the JSON file describing the tileset
     String baseUrl = originalServiceUrl.build(true).toUriString();
     int lastSlashIndex = baseUrl.lastIndexOf('/');
     if (lastSlashIndex != -1 && !requestString.isEmpty()) {
       baseUrl = baseUrl.substring(0, lastSlashIndex);
     }
-
     String finalUrl = baseUrl + requestString;
     return UriComponentsBuilder.fromUriString(finalUrl).build(true).toUri();
   }
