@@ -55,9 +55,9 @@ import org.tailormap.api.persistence.json.ServiceAuthentication;
 import org.tailormap.api.security.AuthorizationService;
 
 /**
- * Proxy controller for OGC WMS and WMTS services. Does not attempt to hide the original service URL. Mostly useful for
- * access to HTTP Basic secured services without sending the credentials to the client. The access control is handled by
- * Spring Security and the authorizations configured on the service.
+ * Proxy controller for OGC WMS, WMTS, and 3D Tiles services. Does not attempt to hide the original service URL. Mostly
+ * useful for access to HTTP Basic secured services without sending the credentials to the client. The access control is
+ * handled by Spring Security and the authorizations configured on the service.
  *
  * <p>Only supports GET requests. Does not support CORS, only meant for tailormap-viewer from the same origin.
  *
@@ -125,7 +125,7 @@ public class GeoServiceProxyController {
         }
         return doProxy(legendURI, service, request);
       case TILES3D:
-        return doProxy(buildTILES3DUrl(service, request), service, request);
+        return doProxy(build3DTilesUrl(service, request), service, request);
       default:
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported proxy protocol: " + protocol);
     }
@@ -191,31 +191,33 @@ public class GeoServiceProxyController {
     return params;
   }
 
-  private URI buildTILES3DUrl(GeoService service, HttpServletRequest request) {
+  private URI build3DTilesUrl(GeoService service, HttpServletRequest request) {
     // The URL in the GeoService refers to the location of the JSON file describing the tileset,
     // e.g. example.com/buildings/3dtiles. The paths to the subtrees and tiles of the tilesets do not include the
     // '/3dtiles' (or '/tileset.json') part of the path. Their paths are e.g.
     // example.com/buildings/subtrees/... or example.com/buildings/t/...
     final UriComponentsBuilder originalServiceUrl = UriComponentsBuilder.fromUriString(service.getUrl());
+    String baseUrl = originalServiceUrl.build(true).toUriString();
+
+    // Return service URL when the request is for the JSON file describing the tileset
+    if (request.getQueryString() == null || request.getQueryString().isEmpty()) {
+      return UriComponentsBuilder.fromUriString(baseUrl).build(true).toUri();
+    }
 
     // The proxy functionality in CesiumJS used to create the requests adds the path to a tile or subtree as a query
-    // parameter.
-    // The path is retrieved and the scheme, servername, and port (which CesiumJS adds to the parameter) are removed
-    String requestString = "";
-    if (request.getQueryString() != null) {
-      String queryString = URLDecoder.decode(request.getQueryString(), StandardCharsets.UTF_8);
-      String hostName = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-      requestString = queryString.replace(hostName, "");
-    }
+    // parameter. The path is retrieved and the scheme, servername, and port (which CesiumJS adds) are removed
+    String queryString = URLDecoder.decode(request.getQueryString(), StandardCharsets.UTF_8);
+    String hostPrefix = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+    String contentPath = queryString.replace(hostPrefix, "");
 
-    // If the request is for a specific subtree or tile,
-    // remove the part of the service URL referring to the JSON file describing the tileset
-    String baseUrl = originalServiceUrl.build(true).toUriString();
+    // Remove the part of the service URL referring to the JSON file describing the tileset
     int lastSlashIndex = baseUrl.lastIndexOf('/');
-    if (lastSlashIndex != -1 && !requestString.isEmpty()) {
+    if (lastSlashIndex != -1) {
       baseUrl = baseUrl.substring(0, lastSlashIndex);
     }
-    String finalUrl = baseUrl + requestString;
+
+    // Return final URL with specific path to the tile or subtree
+    String finalUrl = baseUrl + contentPath;
     return UriComponentsBuilder.fromUriString(finalUrl).build(true).toUri();
   }
 
