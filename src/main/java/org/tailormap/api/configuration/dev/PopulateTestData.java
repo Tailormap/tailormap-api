@@ -524,7 +524,16 @@ public class PopulateTestData {
                 "https://api.pdok.nl/kadaster/3d-basisvoorziening/ogc/v1/collections/digitaalterreinmodel")
             .setTitle("AHN Terrain Model")
             .setPublished(true)
+            .setAuthorizationRules(ruleAnonymousRead),
+        new GeoService()
+            .setId("3d_basisvoorziening_gebouwen_proxy")
+            .setProtocol(TILES3D)
+            .setUrl(
+                "https://api.pdok.nl/kadaster/3d-basisvoorziening/ogc/v1_0/collections/gebouwen/3dtiles")
+            .setTitle("3D Basisvoorziening Gebouwen Proxy")
+            .setPublished(true)
             .setAuthorizationRules(ruleAnonymousRead)
+            .setSettings(new GeoServiceSettings().useProxy(true))
         // TODO MapServer WMS "https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk"
         );
 
@@ -1404,13 +1413,20 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .title("Layers")
                 .childrenIds(List.of(
                     "lyr:3dbag_utrecht:tiles3d",
-                    "lyr:snapshot-geoserver:postgis:begroeidterreindeel")))
+                    "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
+                    "lyr:3d_basisvoorziening_gebouwen_proxy:tiles3d")))
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:3dbag_utrecht:tiles3d")
                 .serviceId("3dbag_utrecht")
                 .layerName("tiles3d")
                 .visible(true))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:3d_basisvoorziening_gebouwen_proxy:tiles3d")
+                .serviceId("3d_basisvoorziening_gebouwen_proxy")
+                .layerName("tiles3d")
+                .visible(false))
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:snapshot-geoserver:postgis:begroeidterreindeel")

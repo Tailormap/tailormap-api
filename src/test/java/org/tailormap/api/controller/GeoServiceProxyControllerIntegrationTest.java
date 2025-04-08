@@ -72,6 +72,9 @@ class GeoServiceProxyControllerIntegrationTest {
   private final String pdokWmsGemeentegebiedUrl =
       "/app/default/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Gemeentegebied/proxy/wms";
 
+  private final String pdok3dBasisvoorzieningGebouwenUrl =
+      "/app/3d_utrecht/layer/lyr:3d_basisvoorziening_gebouwen_proxy:tiles3d/proxy/tiles3d";
+
   @Autowired
   private WebApplicationContext context;
 
@@ -339,6 +342,19 @@ class GeoServiceProxyControllerIntegrationTest {
             .with(setServletPath(path))
             .header("If-Modified-Since", httpDateHeaderFormatter.format(Instant.now())))
         .andExpect(status().isNotModified());
+  }
+
+  @Test
+  void test_3d_tiles_proxy() throws Exception {
+    final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl;
+    mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
+  }
+
+  @Test
+  void test_3d_tiles_proxy_subtree() throws Exception {
+    final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl;
+    mockMvc.perform(get(path).param("subtrees/0/0/0.subtree", "").with(setServletPath(path)))
+        .andExpect(status().isOk());
   }
 
   private static class StringIsNotZeroMatcher extends TypeSafeMatcher<String> {
