@@ -124,10 +124,10 @@ class DrawingControllerIntegrationTest {
         .andExpect(jsonPath("$.featureCollection.features[0].geometry.type")
             .value("Polygon"))
         .andExpect(jsonPath("$.featureCollection.features[0].id", matchesPattern(UUID_REGEX)))
-        .andExpect(jsonPath("$.featureCollection.features[0].properties.prop0")
-            .value("value0"))
-        .andExpect(jsonPath("$.featureCollection.features[1].properties.rendering.fill")
-            .value("red"));
+        .andExpect(jsonPath("$.featureCollection.features[0].properties.type")
+            .value("POLYGON"))
+        .andExpect(jsonPath("$.featureCollection.features[1].properties.style.fillColor")
+            .value("rgb(117, 117, 117)"));
   }
 
   @Test

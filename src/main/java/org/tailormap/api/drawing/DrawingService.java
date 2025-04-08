@@ -282,12 +282,7 @@ WHERE id = :id RETURNING *""")
     if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
       return Set.of();
     }
-    return jdbcClient
-        .sql("SELECT * FROM data.drawing WHERE created_by = :userName OR updated_by = :userName")
-        .param("userName", authentication.getName())
-        .query(drawingRowMapper)
-        .set()
-        .stream()
+    return jdbcClient.sql("SELECT * FROM data.drawing").query(drawingRowMapper).set().stream()
         .filter(d -> {
           try {
             canReadDrawing(d, authentication);

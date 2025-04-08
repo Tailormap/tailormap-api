@@ -571,7 +571,16 @@ public class PopulateTestData {
     }
 
     for (GeoService geoService : services) {
-      geoServiceHelper.loadServiceCapabilities(geoService);
+      try {
+        geoServiceHelper.loadServiceCapabilities(geoService);
+      } catch (Exception e) {
+        logger.error(
+            "Error loading capabilities for {} service URL {}: {}, {}",
+            geoService.getProtocol().getValue(),
+            geoService.getUrl(),
+            e.getClass(),
+            e.getMessage());
+      }
 
       geoServiceRepository.save(geoService);
       catalogNode.addItemsItem(new TailormapObjectRef()
@@ -1791,8 +1800,9 @@ INSERT INTO data.drawing (id,name,description,domain_data,"access",created_by,cr
           .sql(
               """
 INSERT INTO data.drawing_feature (drawing_id,id,geometry,properties) VALUES
-('38faa008-013e-49d4-9528-8f58c94d8791'::uuid,'9637cda5-c2f5-414e-ae2f-8a8195354ee1'::uuid,'SRID=28992;POLYGON ((132300.928 458629.588, 132302.724 458633.881, 132302.947 458634.318, 132303.327 458634.91400000005, 132303.772 458635.463, 132304.277 458635.95800000004, 132304.834 458636.393, 132305.436 458636.76200000005, 132306.076 458637.061, 132306.746 458637.28599999996, 132307.437 458637.433, 132308.141 458637.502, 132308.847 458637.49, 132309.548 458637.399, 132309.586 458637.39099999995, 132310.246 458637.205, 132311.059 458639.08, 132308.945 458639.943, 132306.112 458641.216, 132305.358 458639.943, 132304.898 458639.368, 132304.292 458638.757, 132303.703 458638.277, 132302.98 458637.805, 132302.304 458637.459, 132301.497 458637.14699999994, 132300.764 458636.94999999995, 132298.981 458636.524, 132297.813 458636.3460000001, 132296.568 458636.24199999997, 132295.387 458636.223, 132294.148 458636.288, 132292.419 458636.46499999997, 132290.614 458636.73099999997, 132288.866 458637.069, 132287.14 458637.485, 132270.926 458640.482, 132267.328 458613.3950000001, 132264.028 458607.445, 132258.431 458602.51900000003, 132259.646 458600, 132260.791 458597.624, 132267.141 458592.053, 132271.287 458591.25299999997, 132284.279 458588.227, 132294.24 458585.92399999994, 132295.651 458595.245, 132296.248 458600, 132297.991 458613.87, 132300.928 458629.588))'::public.geometry,'{"prop0": "value0"}'),
-('38faa008-013e-49d4-9528-8f58c94d8791'::uuid,'21d1b15f-9b1a-48cc-9770-9a70ba1a4637'::uuid,'SRID=28992;POINT (132300 458629)'::public.geometry,'{"prop0": "value1", "prop1": 0.0, "rendering": {"fill": "red", "stroke": "black"}}');
+('38faa008-013e-49d4-9528-8f58c94d8791'::uuid, '394e0d4a-b374-4d00-94c8-1758ea70e9d9'::uuid, 'SRID=28992;POLYGON ((131982.01 458929.27, 131957.31 458755.45, 132072.39 458736.69, 132099.06 458910.51, 131982.01 458929.27))'::public.geometry, '{"type": "POLYGON", "style": {"label": "", "marker": "circle", "fillColor": "rgb(117, 117, 117)", "labelSize": 15, "labelColor": "rgb(0, 0, 0)", "markerSize": 5, "fillOpacity": 30, "strokeColor": "rgb(98, 54, 255)", "strokeWidth": 3, "strokeOpacity": 100, "markerRotation": 0, "markerFillColor": "rgb(98, 54, 255)", "labelOutlineColor": "rgb(189, 189, 189)", "markerStrokeColor": "rgb(98, 54, 255)", "markerStrokeWidth": 1}}'::jsonb),
+('38faa008-013e-49d4-9528-8f58c94d8791'::uuid, '89fc320c-41a3-4635-8d98-39d822339692'::uuid, 'SRID=28992;POINT (131897.55 458971.24)'::public.geometry, '{"type": "CIRCLE", "style": {"label": "CIRCLE", "marker": "circle", "fillColor": "rgb(117, 117, 117)", "labelSize": 15, "labelColor": "rgb(0, 0, 0)", "markerSize": 5, "fillOpacity": 30, "strokeColor": "rgb(98, 54, 255)", "strokeWidth": 3, "strokeOpacity": 100, "markerRotation": 0, "markerFillColor": "rgb(98, 54, 255)", "labelOutlineColor": "rgb(189, 189, 189)", "markerStrokeColor": "rgb(98, 54, 255)", "markerStrokeWidth": 1}, "radius": 14.989999999990687}'::jsonb),
+('38faa008-013e-49d4-9528-8f58c94d8791'::uuid, '5d6252cc-25b6-4a43-9053-0779b86895a7'::uuid, 'SRID=28992;LINESTRING (131920.76 458754.96, 131923.73 458783.1, 131930.15 458793.97, 131945.95 458912.98, 131967.68 458946.06)'::public.geometry, '{"type": "LINE", "style": {"label": "", "marker": "circle", "fillColor": "rgb(255, 82, 82)", "labelSize": 15, "labelColor": "rgb(0, 0, 0)", "markerSize": 5, "fillOpacity": 30, "strokeColor": "rgb(255, 82, 82)", "strokeWidth": 13, "strokeOpacity": 100, "markerRotation": 0, "markerFillColor": "rgb(98, 54, 255)", "labelOutlineColor": "rgb(189, 189, 189)", "markerStrokeColor": "rgb(98, 54, 255)", "markerStrokeWidth": 1}}'::jsonb)
 """)
           .update();
     } catch (Exception any) {
