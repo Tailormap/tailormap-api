@@ -346,15 +346,27 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Test
   void test_3d_tiles_proxy() throws Exception {
-    final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl;
+    final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/"
+        + GeoServiceProxyController.tiles3dCapabilitiesPath;
     mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
   }
 
   @Test
   void test_3d_tiles_proxy_subtree() throws Exception {
+    final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/subtrees/0/0/0.subtree";
+    mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
+  }
+
+  @Test
+  void test_3d_tiles_proxy_tile() throws Exception {
+    final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/t/9/236/251.glb";
+    mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
+  }
+
+  @Test
+  void test_3d_tiles_proxy_no_path() throws Exception {
     final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl;
-    mockMvc.perform(get(path).param("subtrees/0/0/0.subtree", "").with(setServletPath(path)))
-        .andExpect(status().isOk());
+    mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isBadRequest());
   }
 
   private static class StringIsNotZeroMatcher extends TypeSafeMatcher<String> {

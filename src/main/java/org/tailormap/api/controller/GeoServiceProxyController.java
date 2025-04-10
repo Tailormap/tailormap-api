@@ -116,16 +116,16 @@ public class GeoServiceProxyController {
           return null;
         }
         return doProxy(legendURI, service, request);
+      case TILES3D:
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Incorrect 3D Tiles proxy request: No path to capabilities or content");
       default:
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported proxy protocol: " + protocol);
     }
   }
 
   private void checkRequestValidity(
-      Application application,
-      GeoService service,
-      GeoServiceLayer layer,
-      GeoServiceProtocol protocol) {
+      Application application, GeoService service, GeoServiceLayer layer, GeoServiceProtocol protocol) {
     if (service == null || layer == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
