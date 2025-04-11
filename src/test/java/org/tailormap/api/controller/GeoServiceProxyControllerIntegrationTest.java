@@ -50,8 +50,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
+import org.tailormap.api.persistence.GeoService;
+import org.tailormap.api.repository.GeoServiceRepository;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
@@ -77,6 +80,9 @@ class GeoServiceProxyControllerIntegrationTest {
 
   @Autowired
   private WebApplicationContext context;
+
+  @Autowired
+  private GeoServiceRepository geoServiceRepository;
 
   private MockMvc mockMvc;
 
@@ -345,6 +351,7 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
+  @WithMockUser(username = "user")
   void test_3d_tiles_proxy() throws Exception {
     final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/"
         + GeoServiceProxyController.tiles3dCapabilitiesPath;
@@ -352,21 +359,49 @@ class GeoServiceProxyControllerIntegrationTest {
   }
 
   @Test
+  @WithMockUser(username = "user")
   void test_3d_tiles_proxy_subtree() throws Exception {
     final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/subtrees/0/0/0.subtree";
     mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
   }
 
   @Test
+  @WithMockUser(username = "user")
   void test_3d_tiles_proxy_tile() throws Exception {
     final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/t/9/236/251.glb";
     mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
   }
 
   @Test
+  @WithMockUser(username = "user")
   void test_3d_tiles_proxy_no_path() throws Exception {
     final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl;
     mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @WithMockUser(username = "user")
+  void test_3d_tiles_proxy_auth() throws Exception {
+    final String path = apiBasePath + "/app/3d_utrecht/layer/lyr:3d_utrecht_proxied_auth:tiles3d/proxy/tiles3d"
+        + "/" + GeoServiceProxyController.tiles3dCapabilitiesPath;
+    mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
+  }
+
+  @Test
+  @WithMockUser(username = "user")
+  @Transactional
+  void test_3d_tiles_proxy_bad_password() throws Exception {
+    GeoService geoService =
+        geoServiceRepository.findById("3d_utrecht_proxied_auth").orElseThrow();
+    String originalPassword = geoService.getAuthentication().getPassword();
+    geoService.getAuthentication().setPassword("wrong_password");
+    final String path = apiBasePath + "/app/3d_utrecht/layer/lyr:3d_utrecht_proxied_auth:tiles3d/proxy/tiles3d"
+        + "/" + GeoServiceProxyController.tiles3dCapabilitiesPath;
+    try {
+      mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isUnauthorized());
+    } finally {
+      geoService.getAuthentication().setPassword(originalPassword);
+    }
   }
 
   private static class StringIsNotZeroMatcher extends TypeSafeMatcher<String> {
