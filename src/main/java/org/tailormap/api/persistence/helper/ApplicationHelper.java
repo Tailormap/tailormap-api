@@ -161,14 +161,20 @@ public class ApplicationHelper {
   }
 
   private String getProxyUrl(GeoService geoService, Application application, AppTreeLayerNode appTreeLayerNode) {
-    return linkTo(
+    String baseProxyUrl = linkTo(
             GeoServiceProxyController.class,
             Map.of(
                 "viewerKind", "app", // XXX
                 "viewerName", application.getName(),
-                "appLayerId", appTreeLayerNode.getId(),
-                "protocol", geoService.getProtocol().getValue()))
+                "appLayerId", appTreeLayerNode.getId()))
         .toString();
+
+    String protocolPath = "/" + geoService.getProtocol().getValue();
+
+    if (geoService.getProtocol() == TILES3D) {
+      return baseProxyUrl + protocolPath + "/" + GeoServiceProxyController.TILES3D_DESCRIPTION_PATH;
+    }
+    return baseProxyUrl + protocolPath;
   }
 
   private String getLegendProxyUrl(Application application, AppTreeLayerNode appTreeLayerNode) {
