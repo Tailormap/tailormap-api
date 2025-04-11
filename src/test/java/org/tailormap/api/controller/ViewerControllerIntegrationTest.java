@@ -343,6 +343,7 @@ class ViewerControllerIntegrationTest {
   }
 
   @Test
+  @WithMockUser(username = "foo")
   void should_contain_terrain_layers() throws Exception {
     final String path = apiBasePath + "/app/3d_utrecht/map";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
