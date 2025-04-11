@@ -354,7 +354,7 @@ class GeoServiceProxyControllerIntegrationTest {
   @WithMockUser(username = "user")
   void test_3d_tiles_proxy() throws Exception {
     final String path = apiBasePath + pdok3dBasisvoorzieningGebouwenUrl + "/"
-        + GeoServiceProxyController.tiles3dCapabilitiesPath;
+        + GeoServiceProxyController.TILES3D_DESCRIPTION_PATH;
     mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
   }
 
@@ -383,8 +383,15 @@ class GeoServiceProxyControllerIntegrationTest {
   @WithMockUser(username = "user")
   void test_3d_tiles_proxy_auth() throws Exception {
     final String path = apiBasePath + "/app/3d_utrecht/layer/lyr:3d_utrecht_proxied_auth:tiles3d/proxy/tiles3d"
-        + "/" + GeoServiceProxyController.tiles3dCapabilitiesPath;
+        + "/" + GeoServiceProxyController.TILES3D_DESCRIPTION_PATH;
     mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isOk());
+  }
+
+  @Test
+  void test_3d_tiles_proxy_no_user() throws Exception {
+    final String path = apiBasePath + "/app/3d_utrecht/layer/lyr:3d_utrecht_proxied_auth:tiles3d/proxy/tiles3d"
+        + "/" + GeoServiceProxyController.TILES3D_DESCRIPTION_PATH;
+    mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isUnauthorized());
   }
 
   @Test
@@ -396,7 +403,7 @@ class GeoServiceProxyControllerIntegrationTest {
     String originalPassword = geoService.getAuthentication().getPassword();
     geoService.getAuthentication().setPassword("wrong_password");
     final String path = apiBasePath + "/app/3d_utrecht/layer/lyr:3d_utrecht_proxied_auth:tiles3d/proxy/tiles3d"
-        + "/" + GeoServiceProxyController.tiles3dCapabilitiesPath;
+        + "/" + GeoServiceProxyController.TILES3D_DESCRIPTION_PATH;
     try {
       mockMvc.perform(get(path).with(setServletPath(path))).andExpect(status().isUnauthorized());
     } finally {

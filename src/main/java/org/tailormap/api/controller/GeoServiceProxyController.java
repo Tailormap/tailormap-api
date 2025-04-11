@@ -72,7 +72,7 @@ public class GeoServiceProxyController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final AuthorizationService authorizationService;
-  public static String tiles3dCapabilitiesPath = "tiles3dCapabilities";
+  public static final String TILES3D_DESCRIPTION_PATH = "tiles3dDescription";
 
   public GeoServiceProxyController(AuthorizationService authorizationService) {
     this.authorizationService = authorizationService;
@@ -224,7 +224,7 @@ public class GeoServiceProxyController {
     String pathToContent = request.getRequestURI().split("/proxy/tiles3d/", 2)[1];
 
     // Return service URL when the request is for the JSON file describing the tileset
-    if (Objects.equals(pathToContent, tiles3dCapabilitiesPath)) {
+    if (Objects.equals(pathToContent, TILES3D_DESCRIPTION_PATH)) {
       return UriComponentsBuilder.fromUriString(baseUrl).build(true).toUri();
     }
 

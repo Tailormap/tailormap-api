@@ -172,7 +172,7 @@ public class ApplicationHelper {
     String protocolPath = "/" + geoService.getProtocol().getValue();
 
     if (geoService.getProtocol() == TILES3D) {
-      return baseProxyUrl + protocolPath + "/" + GeoServiceProxyController.tiles3dCapabilitiesPath;
+      return baseProxyUrl + protocolPath + "/" + GeoServiceProxyController.TILES3D_DESCRIPTION_PATH;
     }
     return baseProxyUrl + protocolPath;
   }
