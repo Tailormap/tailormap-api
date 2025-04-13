@@ -351,15 +351,16 @@
 <a class="jxr_linenumber" name="L343" href="#L343">343</a>   }
 <a class="jxr_linenumber" name="L344" href="#L344">344</a> 
 <a class="jxr_linenumber" name="L345" href="#L345">345</a>   @Test
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>   <strong class="jxr_keyword">void</strong> should_contain_terrain_layers() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>     <strong class="jxr_keyword">final</strong> String path = apiBasePath + <span class="jxr_string">"/app/3d_utrecht/map"</span>;
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>         .andExpect(status().isOk())
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>         .andExpect(jsonPath(<span class="jxr_string">"$.terrainLayerTreeNodes[0].id"</span>).value(<span class="jxr_string">"root-terrain-layers"</span>))
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>         .andExpect(jsonPath(<span class="jxr_string">"$.terrainLayerTreeNodes[1].id"</span>).value(<span class="jxr_string">"lyr:ahn_terrain_model:quantizedmesh"</span>));
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>   }
-<a class="jxr_linenumber" name="L354" href="#L354">354</a> }
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>   @WithMockUser(username = <span class="jxr_string">"foo"</span>)
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>   <strong class="jxr_keyword">void</strong> should_contain_terrain_layers() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>     <strong class="jxr_keyword">final</strong> String path = apiBasePath + <span class="jxr_string">"/app/3d_utrecht/map"</span>;
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>         .andExpect(status().isOk())
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>         .andExpect(jsonPath(<span class="jxr_string">"$.terrainLayerTreeNodes[0].id"</span>).value(<span class="jxr_string">"root-terrain-layers"</span>))
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>         .andExpect(jsonPath(<span class="jxr_string">"$.terrainLayerTreeNodes[1].id"</span>).value(<span class="jxr_string">"lyr:ahn_terrain_model:quantizedmesh"</span>));
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>   }
+<a class="jxr_linenumber" name="L355" href="#L355">355</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
