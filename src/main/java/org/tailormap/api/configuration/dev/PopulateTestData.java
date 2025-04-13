@@ -153,6 +153,11 @@ public class PopulateTestData {
   @Value("${MAP5_URL:#{null}}")
   private String map5url;
 
+  private final String tiles3dProxyUsername = "b3p";
+
+  // Password is for proxying a public service for testing purposes, not really secret
+  private final String tiles3dProxyPassword = "cOxPlJFWmtndFk0eVg5VdL";
+
   @Value("${tailormap-api.solr-batch-size:1000}")
   private int solrBatchSize;
 
@@ -524,7 +529,28 @@ public class PopulateTestData {
                 "https://api.pdok.nl/kadaster/3d-basisvoorziening/ogc/v1/collections/digitaalterreinmodel")
             .setTitle("AHN Terrain Model")
             .setPublished(true)
+            .setAuthorizationRules(ruleAnonymousRead),
+        new GeoService()
+            .setId("3d_basisvoorziening_gebouwen_proxy")
+            .setProtocol(TILES3D)
+            .setUrl(
+                "https://api.pdok.nl/kadaster/3d-basisvoorziening/ogc/v1_0/collections/gebouwen/3dtiles")
+            .setTitle("3D Basisvoorziening Gebouwen Proxy")
+            .setPublished(true)
             .setAuthorizationRules(ruleAnonymousRead)
+            .setSettings(new GeoServiceSettings().useProxy(true)),
+        new GeoService()
+            .setId("3d_utrecht_proxied_auth")
+            .setProtocol(TILES3D)
+            .setUrl("https://snapshot.tailormap.nl/tiles3d-proxy/3dtiles")
+            .setTitle("3D Utrecht Proxied with Authorization")
+            .setPublished(true)
+            .setAuthorizationRules(ruleAnonymousRead)
+            .setAuthentication(new ServiceAuthentication()
+                .method(ServiceAuthentication.MethodEnum.PASSWORD)
+                .username(tiles3dProxyUsername)
+                .password(tiles3dProxyPassword))
+            .setSettings(new GeoServiceSettings().useProxy(true))
         // TODO MapServer WMS "https://wms.geonorge.no/skwms1/wms.adm_enheter_historisk"
         );
 
@@ -1371,7 +1397,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     app = new Application()
         .setName("3d_utrecht")
         .setCrs("EPSG:3857")
-        .setAuthorizationRules(ruleAnonymousRead)
+        .setAuthorizationRules(ruleLoggedIn)
         .setTitle("3D Utrecht")
         .setInitialExtent(
             new Bounds().minx(558390d).miny(6818485d).maxx(566751d).maxy(6824036d))
@@ -1404,13 +1430,27 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .title("Layers")
                 .childrenIds(List.of(
                     "lyr:3dbag_utrecht:tiles3d",
-                    "lyr:snapshot-geoserver:postgis:begroeidterreindeel")))
+                    "lyr:snapshot-geoserver:postgis:begroeidterreindeel",
+                    "lyr:3d_basisvoorziening_gebouwen_proxy:tiles3d",
+                    "lyr:3d_utrecht_proxied_auth:tiles3d")))
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:3dbag_utrecht:tiles3d")
                 .serviceId("3dbag_utrecht")
                 .layerName("tiles3d")
                 .visible(true))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:3d_basisvoorziening_gebouwen_proxy:tiles3d")
+                .serviceId("3d_basisvoorziening_gebouwen_proxy")
+                .layerName("tiles3d")
+                .visible(false))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:3d_utrecht_proxied_auth:tiles3d")
+                .serviceId("3d_utrecht_proxied_auth")
+                .layerName("tiles3d")
+                .visible(false))
             .addLayerNodesItem(new AppTreeLayerNode()
                 .objectType("AppTreeLayerNode")
                 .id("lyr:snapshot-geoserver:postgis:begroeidterreindeel")

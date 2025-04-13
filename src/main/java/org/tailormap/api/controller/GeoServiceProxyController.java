@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -54,9 +55,9 @@ import org.tailormap.api.persistence.json.ServiceAuthentication;
 import org.tailormap.api.security.AuthorizationService;
 
 /**
- * Proxy controller for OGC WMS and WMTS services. Does not attempt to hide the original service URL. Mostly useful for
- * access to HTTP Basic secured services without sending the credentials to the client. The access control is handled by
- * Spring Security and the authorizations configured on the service.
+ * Proxy controller for OGC WMS, WMTS, and 3D Tiles services. Does not attempt to hide the original service URL. Mostly
+ * useful for access to HTTP Basic secured services without sending the credentials to the client. The access control is
+ * handled by Spring Security and the authorizations configured on the service.
  *
  * <p>Only supports GET requests. Does not support CORS, only meant for tailormap-viewer from the same origin.
  *
@@ -66,17 +67,34 @@ import org.tailormap.api.security.AuthorizationService;
 @AppRestController
 @Validated
 // Can't use ${tailormap-api.base-path} because linkTo() won't work
-@RequestMapping(path = "/api/{viewerKind}/{viewerName}/layer/{appLayerId}/proxy/{protocol}")
+@RequestMapping(path = "/api/{viewerKind}/{viewerName}/layer/{appLayerId}/proxy")
 public class GeoServiceProxyController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final AuthorizationService authorizationService;
+  public static final String TILES3D_DESCRIPTION_PATH = "tiles3dDescription";
 
   public GeoServiceProxyController(AuthorizationService authorizationService) {
     this.authorizationService = authorizationService;
   }
 
-  @RequestMapping(method = {GET, POST})
+  @RequestMapping(
+      method = {GET, POST},
+      path = "/tiles3d/**")
+  public ResponseEntity<?> proxy3dtiles(
+      @ModelAttribute Application application,
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
+      HttpServletRequest request) {
+
+    checkRequestValidity(application, service, layer, GeoServiceProtocol.TILES3D);
+
+    return doProxy(build3DTilesUrl(service, request), service, request);
+  }
+
+  @RequestMapping(
+      method = {GET, POST},
+      path = "/{protocol}")
   @Timed(value = "proxy", description = "Proxy OGC service calls")
   public ResponseEntity<?> proxy(
       @ModelAttribute Application application,
@@ -85,6 +103,29 @@ public class GeoServiceProxyController {
       @PathVariable("protocol") GeoServiceProtocol protocol,
       HttpServletRequest request) {
 
+    checkRequestValidity(application, service, layer, protocol);
+
+    switch (protocol) {
+      case WMS:
+      case WMTS:
+        return doProxy(buildWMSUrl(service, request), service, request);
+      case PROXIEDLEGEND:
+        URI legendURI = buildLegendURI(service, layer, request);
+        if (null == legendURI) {
+          logger.warn("No legend URL found for layer {}", layer.getName());
+          return null;
+        }
+        return doProxy(legendURI, service, request);
+      case TILES3D:
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Incorrect 3D Tiles proxy request: No path to capabilities or content");
+      default:
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported proxy protocol: " + protocol);
+    }
+  }
+
+  private void checkRequestValidity(
+      Application application, GeoService service, GeoServiceLayer layer, GeoServiceProtocol protocol) {
     if (service == null || layer == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
@@ -110,21 +151,6 @@ public class GeoServiceProxyController {
           service.getUrl(),
           service.getAuthentication().getUsername());
       throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-    }
-
-    switch (protocol) {
-      case WMS:
-      case WMTS:
-        return doProxy(buildWMSUrl(service, request), service, request);
-      case PROXIEDLEGEND:
-        URI legendURI = buildLegendURI(service, layer, request);
-        if (null == legendURI) {
-          logger.warn("No legend URL found for layer {}", layer.getName());
-          return null;
-        }
-        return doProxy(legendURI, service, request);
-      default:
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported proxy protocol: " + protocol);
     }
   }
 
@@ -186,6 +212,31 @@ public class GeoServiceProxyController {
       }
     }
     return params;
+  }
+
+  private URI build3DTilesUrl(GeoService service, HttpServletRequest request) {
+    // The URL in the GeoService refers to the location of the JSON file describing the tileset,
+    // e.g. example.com/buildings/3dtiles. The paths to the subtrees and tiles of the tilesets do not include the
+    // '/3dtiles' (or '/tileset.json') part of the path. Their paths are e.g.
+    // example.com/buildings/subtrees/... or example.com/buildings/t/...
+    final UriComponentsBuilder originalServiceUrl = UriComponentsBuilder.fromUriString(service.getUrl());
+    String baseUrl = originalServiceUrl.build(true).toUriString();
+    String pathToContent = request.getRequestURI().split("/proxy/tiles3d/", 2)[1];
+
+    // Return service URL when the request is for the JSON file describing the tileset
+    if (Objects.equals(pathToContent, TILES3D_DESCRIPTION_PATH)) {
+      return UriComponentsBuilder.fromUriString(baseUrl).build(true).toUri();
+    }
+
+    // Remove the part of the service URL referring to the JSON file describing the tileset
+    int lastSlashIndex = baseUrl.lastIndexOf('/');
+    if (lastSlashIndex != -1) {
+      baseUrl = baseUrl.substring(0, lastSlashIndex + 1);
+    }
+
+    // Return final URL with specific path to the tile or subtree
+    String finalUrl = baseUrl + pathToContent;
+    return UriComponentsBuilder.fromUriString(finalUrl).build(true).toUri();
   }
 
   private static ResponseEntity<?> doProxy(URI uri, GeoService service, HttpServletRequest request) {
