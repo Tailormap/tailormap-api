@@ -1036,6 +1036,7 @@ SPDX-License-Identifier: MIT
                                 AppI18nSettings=org.tailormap.api.persistence.json.AppI18nSettings,
                                 AppUiSettings=org.tailormap.api.persistence.json.AppUiSettings,
                                 FilterGroup=org.tailormap.api.persistence.json.FilterGroup,
+                                Filter=org.tailormap.api.persistence.json.Filter,
                                 FormOptions=org.tailormap.api.persistence.json.FormOptions,
                                 FormTab=org.tailormap.api.persistence.json.FormTab,
                                 FormField=org.tailormap.api.persistence.json.FormField,
