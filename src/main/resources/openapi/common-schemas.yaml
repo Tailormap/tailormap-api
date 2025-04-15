@@ -195,7 +195,6 @@ components:
           nullable: false
           type: boolean
 
-    # TODO this is a copy of the model in projects/core/src/lib/filter/models/filter-group.model.ts
     FilterGroup:
       title: FilterGroup
       description: TODO modeled after projects/core/src/lib/filter/models/filter-group.model.ts
@@ -228,7 +227,7 @@ components:
           description: TODO FilterType[];
           type: array
           items:
-            type: object
+            $ref: '#/components/schemas/Filter'
           minItems: 1
         disabled:
           type: boolean
@@ -237,6 +236,80 @@ components:
           type: string
           nullable: true
 
+    Filter:
+      title: Filter
+      description: TODO modeled after projects/core/src/lib/filter/models/attribute-filter.model.ts
+      type: object
+      properties:
+        id:
+          description: 'id of the filter'
+          type: string
+          nullable: false
+        type:
+          description: 'type of the filter'
+          enum:
+            - ATTRIBUTE
+          # - SPATIAL
+        condition:
+          enum:
+            - 'UNIQUE_VALUES'
+            - '='
+            - '<>'
+            - '>'
+            - '<'
+            - '>='
+            - '<='
+            - '><'
+            - 'EQUALS'
+            - 'LIKE'
+            - 'STARTS_WITH'
+            - 'ENDS_WITH'
+            - 'ON'
+            - 'AFTER'
+            - 'BEFORE'
+            - 'BETWEEN'
+            - 'TRUE'
+            - 'FALSE'
+            - 'NULL'
+        #   - 'INTERSECTS'
+        invertCondition:
+          description: 'when true the condition is inverted'
+          type: boolean
+          nullable: false
+          default: false
+        attribute:
+          description: 'name of the attribute'
+          type: string
+          nullable: false
+        attributeType:
+          description: 'type of the attribute'
+          enum:
+            - date
+            - timestamp
+            - string
+            - double
+            - number
+            - integer
+            - boolean
+        #   - linestring
+        #   - multilinestring
+        #   - point
+        #   - multipoint
+        #   - polygon
+        #   - multipolygon
+        #   - geometry
+        #   - geometry_collection
+        value:
+          description: 'value of the filter'
+          type: array
+          items:
+            type: string
+            minItems: 1
+        caseSensitive:
+          description: 'when true the filter is case sensitive'
+          type: boolean
+          nullable: false
+          default: false
 
     FormOptions:
       description: 'model with options for an form'
