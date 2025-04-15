@@ -591,6 +591,12 @@ components:
           $ref: './common-schemas.yaml#/components/schemas/AppI18nSettings'
         uiSettings:
           $ref: './common-schemas.yaml#/components/schemas/AppUiSettings'
+        filterGroups:
+          description: List of filter groups to show in the application.
+          type: array
+          items:
+              $ref: './common-schemas.yaml#/components/schemas/FilterGroup'
+          minItems: 0
         layerSettings:
           title: AppLayerSettings
           description: Map of id of an AppTreeLayerNode to its' settings.

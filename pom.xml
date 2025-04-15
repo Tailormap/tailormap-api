@@ -1035,6 +1035,7 @@ SPDX-License-Identifier: MIT
                                 WMSStyle=org.tailormap.api.persistence.json.WMSStyle,
                                 AppI18nSettings=org.tailormap.api.persistence.json.AppI18nSettings,
                                 AppUiSettings=org.tailormap.api.persistence.json.AppUiSettings,
+                                FilterGroup=org.tailormap.api.persistence.json.FilterGroup,
                                 FormOptions=org.tailormap.api.persistence.json.FormOptions,
                                 FormTab=org.tailormap.api.persistence.json.FormTab,
                                 FormField=org.tailormap.api.persistence.json.FormField,

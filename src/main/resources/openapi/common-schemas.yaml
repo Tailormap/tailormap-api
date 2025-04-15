@@ -195,6 +195,49 @@ components:
           nullable: false
           type: boolean
 
+    # TODO this is a copy of the model in projects/core/src/lib/filter/models/filter-group.model.ts
+    FilterGroup:
+      title: FilterGroup
+      description: TODO modeled after projects/core/src/lib/filter/models/filter-group.model.ts
+      type: object
+      properties:
+        id:
+          description: 'id of the filter group'
+          type: string
+          nullable: false
+        source:
+          description: 'source of the filter group'
+          type: string
+          nullable: false
+        layerIds:
+          description: 'list of layer ids'
+          type: array
+          items:
+            type: string
+          minItems: 1
+        type:
+          description: TODO spatial is not supported (for now)
+          enum:
+            - ATTRIBUTE
+        #   - SPATIAL
+        operator:
+          enum:
+            - AND
+            - OR
+        filters:
+          description: TODO FilterType[];
+          type: array
+          items:
+            type: object
+          minItems: 1
+        disabled:
+          type: boolean
+          nullable: true
+        parentGroup:
+          type: string
+          nullable: true
+
+
     FormOptions:
       description: 'model with options for an form'
       type: object
