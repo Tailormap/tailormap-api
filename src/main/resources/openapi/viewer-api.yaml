@@ -196,6 +196,12 @@ components:
           $ref: './common-schemas.yaml#/components/schemas/AppI18nSettings'
         uiSettings:
           $ref: './common-schemas.yaml#/components/schemas/AppUiSettings'
+        filterGroups:
+          description: List of filter groups to show in the application.
+          type: array
+          items:
+            $ref: './common-schemas.yaml#/components/schemas/FilterGroup'
+          minItems: 0
         projections:
           description: Available projections for this application. The first item is the default.
             Not all layers may be available in all projections.
