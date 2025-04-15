@@ -197,7 +197,7 @@ components:
 
     FilterGroup:
       title: FilterGroup
-      description: TODO modeled after projects/core/src/lib/filter/models/filter-group.model.ts
+      description: A group of filters. The group can be used to group filters together, or to disable a group of filters.
       type: object
       properties:
         id:
@@ -215,16 +215,18 @@ components:
             type: string
           minItems: 1
         type:
-          description: TODO spatial is not supported (for now)
+          description: NOTE spatial is not supported (for now) for preconfigured filters
           enum:
             - ATTRIBUTE
         #   - SPATIAL
         operator:
+          description: The operator for the filter group, we may want to support the OR operator in the future
           enum:
             - AND
             - OR
+          default: AND
         filters:
-          description: TODO FilterType[];
+          description: A list of filters
           type: array
           items:
             $ref: '#/components/schemas/Filter'
@@ -238,7 +240,7 @@ components:
 
     Filter:
       title: Filter
-      description: TODO modeled after projects/core/src/lib/filter/models/attribute-filter.model.ts
+      description: A filter for an attribute. The filter can be used to filter the features of a layer, based on attribute value
       type: object
       properties:
         id:
@@ -249,6 +251,7 @@ components:
           description: 'type of the filter'
           enum:
             - ATTRIBUTE
+          # NOTE spatial is not supported (for now) for preconfigured filters
           # - SPATIAL
         condition:
           enum:
@@ -271,9 +274,9 @@ components:
             - 'TRUE'
             - 'FALSE'
             - 'NULL'
-        #   - 'INTERSECTS'
+        #   - 'INTERSECTS' spatial not supported (for now)
         invertCondition:
-          description: 'when true the condition is inverted'
+          description: 'when true the condition is to be inverted'
           type: boolean
           nullable: false
           default: false
@@ -291,6 +294,7 @@ components:
             - number
             - integer
             - boolean
+        # spatial not supported (for now)
         #   - linestring
         #   - multilinestring
         #   - point
@@ -306,7 +310,7 @@ components:
             type: string
             minItems: 1
         caseSensitive:
-          description: 'when true the filter is case sensitive'
+          description: 'true when the filter is case sensitive'
           type: boolean
           nullable: false
           default: false
