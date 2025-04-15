@@ -5,6 +5,8 @@
  */
 package org.tailormap.api.persistence;
 
+import static java.util.Objects.requireNonNullElse;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
@@ -17,6 +19,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.geotools.referencing.CRS;
 import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
@@ -33,14 +40,6 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.tailormap.api.viewer.model.AppStyling;
 import org.tailormap.api.viewer.model.Component;
 import org.tailormap.api.viewer.model.ViewerResponse;
-
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static java.util.Objects.requireNonNullElse;
 
 @Entity
 @EntityListeners(EntityEventPublisher.class)
