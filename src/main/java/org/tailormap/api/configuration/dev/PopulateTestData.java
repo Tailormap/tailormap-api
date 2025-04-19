@@ -74,6 +74,8 @@ import org.tailormap.api.persistence.json.Bounds;
 import org.tailormap.api.persistence.json.CatalogNode;
 import org.tailormap.api.persistence.json.FeatureTypeRef;
 import org.tailormap.api.persistence.json.FeatureTypeTemplate;
+import org.tailormap.api.persistence.json.Filter;
+import org.tailormap.api.persistence.json.FilterGroup;
 import org.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
 import org.tailormap.api.persistence.json.GeoServiceSettings;
@@ -1155,7 +1157,20 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
             .putLayerSettingsItem(
                 "lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied",
                 new AppLayerSettings()
-                    .hiddenFunctionality(Set.of(FEATURE_INFO, ATTRIBUTE_LIST, EXPORT))));
+                    .hiddenFunctionality(Set.of(FEATURE_INFO, ATTRIBUTE_LIST, EXPORT)))
+            .addFilterGroupsItem(new FilterGroup()
+                .id("filtergroup1")
+                .source("PRESET")
+                .type(FilterGroup.TypeEnum.ATTRIBUTE)
+                .layerIds(List.of("lyr:snapshot-geoserver:postgis:begroeidterreindeel"))
+                .operator(FilterGroup.OperatorEnum.AND)
+                .addFiltersItem(new Filter()
+                    .id("filter1")
+                    .type(Filter.TypeEnum.ATTRIBUTE)
+                    .condition(Filter.ConditionEnum.EQUALS)
+                    .addValueItem("G0344")
+                    .attribute("bronhouder")
+                    .attributeType(Filter.AttributeTypeEnum.STRING))));
 
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     app.setInitialExtent(

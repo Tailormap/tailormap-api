@@ -291,7 +291,8 @@ public class Application {
         .i18nSettings(requireNonNullElse(
             settings.getI18nSettings(), new AppI18nSettings().hideLanguageSwitcher(false)))
         .uiSettings(requireNonNullElse(settings.getUiSettings(), new AppUiSettings().hideLoginButton(false)))
-        .projections(List.of(getCrs()));
+        .projections(List.of(getCrs()))
+        .filterGroups(settings.getFilterGroups());
   }
 
   @NotNull public AppLayerSettings getAppLayerSettings(@NotNull AppTreeLayerNode node) {

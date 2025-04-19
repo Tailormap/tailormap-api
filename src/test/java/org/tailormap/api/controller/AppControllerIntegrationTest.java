@@ -61,7 +61,11 @@ class AppControllerIntegrationTest {
             jsonPath(
                 "$.styling.logo",
                 matchesPattern(
-                    "^http://localhost/api/uploads/app-logo/[\\da-f]{8}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{12}/gradient\\.svg$")));
+                    "^http://localhost/api/uploads/app-logo/[\\da-f]{8}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{12}/gradient\\.svg$")))
+        .andExpect(jsonPath("$.filterGroups").isArray())
+        .andExpect(jsonPath("$.filterGroups.length()").value(1))
+        .andExpect(jsonPath("$.filterGroups[0].id").value("filtergroup1"))
+        .andExpect(jsonPath("$.filterGroups[0].filters[0].id").value("filter1"));
   }
 
   @Test

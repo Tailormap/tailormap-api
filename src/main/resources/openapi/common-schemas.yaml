@@ -195,6 +195,126 @@ components:
           nullable: false
           type: boolean
 
+    FilterGroup:
+      title: FilterGroup
+      description: A group of filters. The group can be used to group filters together, or to disable a group of filters.
+      type: object
+      properties:
+        id:
+          description: 'id of the filter group'
+          type: string
+          nullable: false
+        source:
+          description: 'source of the filter group'
+          type: string
+          nullable: false
+        layerIds:
+          description: 'list of layer ids'
+          type: array
+          items:
+            type: string
+          minItems: 1
+        type:
+          description: NOTE spatial is not supported (for now) for preconfigured filters
+          enum:
+            - ATTRIBUTE
+        #   - SPATIAL
+        operator:
+          description: The operator for the filter group, we may want to support the OR operator in the future
+          enum:
+            - AND
+            - OR
+          default: AND
+        filters:
+          description: A list of filters
+          type: array
+          items:
+            $ref: '#/components/schemas/Filter'
+          minItems: 1
+        disabled:
+          type: boolean
+          nullable: true
+        parentGroup:
+          type: string
+          nullable: true
+
+    Filter:
+      title: Filter
+      description: A filter for an attribute. The filter can be used to filter the features of a layer, based on attribute value
+      type: object
+      properties:
+        id:
+          description: 'id of the filter'
+          type: string
+          nullable: false
+        type:
+          description: 'type of the filter'
+          enum:
+            - ATTRIBUTE
+          # NOTE spatial is not supported (for now) for preconfigured filters
+          # - SPATIAL
+        condition:
+          enum:
+            - 'UNIQUE_VALUES'
+            - '='
+            - '<>'
+            - '>'
+            - '<'
+            - '>='
+            - '<='
+            - '><'
+            - 'EQUALS'
+            - 'LIKE'
+            - 'STARTS_WITH'
+            - 'ENDS_WITH'
+            - 'ON'
+            - 'AFTER'
+            - 'BEFORE'
+            - 'BETWEEN'
+            - 'TRUE'
+            - 'FALSE'
+            - 'NULL'
+        #   - 'INTERSECTS' spatial not supported (for now)
+        invertCondition:
+          description: 'when true the condition is to be inverted'
+          type: boolean
+          nullable: false
+          default: false
+        attribute:
+          description: 'name of the attribute'
+          type: string
+          nullable: false
+        attributeType:
+          description: 'type of the attribute'
+          enum:
+            - date
+            - timestamp
+            - string
+            - double
+            - number
+            - integer
+            - boolean
+        # spatial not supported (for now)
+        #   - linestring
+        #   - multilinestring
+        #   - point
+        #   - multipoint
+        #   - polygon
+        #   - multipolygon
+        #   - geometry
+        #   - geometry_collection
+        value:
+          description: 'value of the filter'
+          type: array
+          items:
+            type: string
+            minItems: 1
+        caseSensitive:
+          description: 'true when the filter is case sensitive'
+          type: boolean
+          nullable: false
+          default: false
+
     FormOptions:
       description: 'model with options for an form'
       type: object
