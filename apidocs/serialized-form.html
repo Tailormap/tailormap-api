@@ -464,6 +464,10 @@ loadScripts(document, 'script');</script>
 <h4>Serialized Fields</h4>
 <ul class="block-list">
 <li class="block-list">
+<h5>filterGroups</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="org/tailormap/api/persistence/json/FilterGroup.html" title="class in org.tailormap.api.persistence.json">FilterGroup</a>&gt; filterGroups</pre>
+</li>
+<li class="block-list">
 <h5>i18nSettings</h5>
 <pre><a href="org/tailormap/api/persistence/json/AppI18nSettings.html" title="class in org.tailormap.api.persistence.json">AppI18nSettings</a> i18nSettings</pre>
 </li>
@@ -808,6 +812,108 @@ loadScripts(document, 'script');</script>
 <li class="block-list">
 <h5>templateLanguage</h5>
 <pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> templateLanguage</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
+<section class="serialized-class-details" id="org.tailormap.api.persistence.json.Filter">
+<h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/Filter.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.Filter</a></h3>
+<div class="type-signature">class Filter extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>attribute</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> attribute</pre>
+</li>
+<li class="block-list">
+<h5>attributeType</h5>
+<pre><a href="org/tailormap/api/persistence/json/Filter.AttributeTypeEnum.html" title="enum class in org.tailormap.api.persistence.json">Filter.AttributeTypeEnum</a> attributeType</pre>
+</li>
+<li class="block-list">
+<h5>caseSensitive</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> caseSensitive</pre>
+</li>
+<li class="block-list">
+<h5>condition</h5>
+<pre><a href="org/tailormap/api/persistence/json/Filter.ConditionEnum.html" title="enum class in org.tailormap.api.persistence.json">Filter.ConditionEnum</a> condition</pre>
+</li>
+<li class="block-list">
+<h5>id</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> id</pre>
+</li>
+<li class="block-list">
+<h5>invertCondition</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> invertCondition</pre>
+</li>
+<li class="block-list">
+<h5>type</h5>
+<pre><a href="org/tailormap/api/persistence/json/Filter.TypeEnum.html" title="enum class in org.tailormap.api.persistence.json">Filter.TypeEnum</a> type</pre>
+</li>
+<li class="block-list">
+<h5>value</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt; value</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
+<section class="serialized-class-details" id="org.tailormap.api.persistence.json.FilterGroup">
+<h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/FilterGroup.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.FilterGroup</a></h3>
+<div class="type-signature">class FilterGroup extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>disabled</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> disabled</pre>
+</li>
+<li class="block-list">
+<h5>filters</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="org/tailormap/api/persistence/json/Filter.html" title="class in org.tailormap.api.persistence.json">Filter</a>&gt; filters</pre>
+</li>
+<li class="block-list">
+<h5>id</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> id</pre>
+</li>
+<li class="block-list">
+<h5>layerIds</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt; layerIds</pre>
+</li>
+<li class="block-list">
+<h5>operator</h5>
+<pre><a href="org/tailormap/api/persistence/json/FilterGroup.OperatorEnum.html" title="enum class in org.tailormap.api.persistence.json">FilterGroup.OperatorEnum</a> operator</pre>
+</li>
+<li class="block-list">
+<h5>parentGroup</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> parentGroup</pre>
+</li>
+<li class="block-list">
+<h5>source</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> source</pre>
+</li>
+<li class="block-list">
+<h5>type</h5>
+<pre><a href="org/tailormap/api/persistence/json/FilterGroup.TypeEnum.html" title="enum class in org.tailormap.api.persistence.json">FilterGroup.TypeEnum</a> type</pre>
 </li>
 </ul>
 </section>
@@ -2884,6 +2990,108 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="serialized-class-details" id="org.tailormap.api.viewer.model.Filter">
+<h3>Class&nbsp;<a href="org/tailormap/api/viewer/model/Filter.html" title="class in org.tailormap.api.viewer.model">org.tailormap.api.viewer.model.Filter</a></h3>
+<div class="type-signature">class Filter extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>attribute</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> attribute</pre>
+</li>
+<li class="block-list">
+<h5>attributeType</h5>
+<pre><a href="org/tailormap/api/viewer/model/Filter.AttributeTypeEnum.html" title="enum class in org.tailormap.api.viewer.model">Filter.AttributeTypeEnum</a> attributeType</pre>
+</li>
+<li class="block-list">
+<h5>caseSensitive</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> caseSensitive</pre>
+</li>
+<li class="block-list">
+<h5>condition</h5>
+<pre><a href="org/tailormap/api/viewer/model/Filter.ConditionEnum.html" title="enum class in org.tailormap.api.viewer.model">Filter.ConditionEnum</a> condition</pre>
+</li>
+<li class="block-list">
+<h5>id</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> id</pre>
+</li>
+<li class="block-list">
+<h5>invertCondition</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> invertCondition</pre>
+</li>
+<li class="block-list">
+<h5>type</h5>
+<pre><a href="org/tailormap/api/viewer/model/Filter.TypeEnum.html" title="enum class in org.tailormap.api.viewer.model">Filter.TypeEnum</a> type</pre>
+</li>
+<li class="block-list">
+<h5>value</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt; value</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
+<section class="serialized-class-details" id="org.tailormap.api.viewer.model.FilterGroup">
+<h3>Class&nbsp;<a href="org/tailormap/api/viewer/model/FilterGroup.html" title="class in org.tailormap.api.viewer.model">org.tailormap.api.viewer.model.FilterGroup</a></h3>
+<div class="type-signature">class FilterGroup extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>disabled</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> disabled</pre>
+</li>
+<li class="block-list">
+<h5>filters</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="org/tailormap/api/persistence/json/Filter.html" title="class in org.tailormap.api.persistence.json">Filter</a>&gt; filters</pre>
+</li>
+<li class="block-list">
+<h5>id</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> id</pre>
+</li>
+<li class="block-list">
+<h5>layerIds</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt; layerIds</pre>
+</li>
+<li class="block-list">
+<h5>operator</h5>
+<pre><a href="org/tailormap/api/viewer/model/FilterGroup.OperatorEnum.html" title="enum class in org.tailormap.api.viewer.model">FilterGroup.OperatorEnum</a> operator</pre>
+</li>
+<li class="block-list">
+<h5>parentGroup</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> parentGroup</pre>
+</li>
+<li class="block-list">
+<h5>source</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> source</pre>
+</li>
+<li class="block-list">
+<h5>type</h5>
+<pre><a href="org/tailormap/api/viewer/model/FilterGroup.TypeEnum.html" title="enum class in org.tailormap.api.viewer.model">FilterGroup.TypeEnum</a> type</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
 <section class="serialized-class-details" id="org.tailormap.api.viewer.model.LayerDetails">
 <h3>Class&nbsp;<a href="org/tailormap/api/viewer/model/LayerDetails.html" title="class in org.tailormap.api.viewer.model">org.tailormap.api.viewer.model.LayerDetails</a></h3>
 <div class="type-signature">class LayerDetails extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
@@ -3643,6 +3851,10 @@ loadScripts(document, 'script');</script>
 <li class="block-list">
 <h5>components</h5>
 <pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="org/tailormap/api/viewer/model/Component.html" title="class in org.tailormap.api.viewer.model">Component</a>&gt; components</pre>
+</li>
+<li class="block-list">
+<h5>filterGroups</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="org/tailormap/api/persistence/json/FilterGroup.html" title="class in org.tailormap.api.persistence.json">FilterGroup</a>&gt; filterGroups</pre>
 </li>
 <li class="block-list">
 <h5>i18nSettings</h5>

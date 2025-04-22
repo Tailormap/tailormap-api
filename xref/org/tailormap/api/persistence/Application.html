@@ -299,16 +299,17 @@
 <a class="jxr_linenumber" name="L291" href="#L291">291</a>         .i18nSettings(requireNonNullElse(
 <a class="jxr_linenumber" name="L292" href="#L292">292</a>             settings.getI18nSettings(), <strong class="jxr_keyword">new</strong> AppI18nSettings().hideLanguageSwitcher(false)))
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>         .uiSettings(requireNonNullElse(settings.getUiSettings(), <strong class="jxr_keyword">new</strong> AppUiSettings().hideLoginButton(false)))
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>         .projections(List.of(getCrs()));
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>   }
-<a class="jxr_linenumber" name="L296" href="#L296">296</a> 
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>   @NotNull <strong class="jxr_keyword">public</strong> AppLayerSettings getAppLayerSettings(@NotNull AppTreeLayerNode node) {
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>     <strong class="jxr_keyword">return</strong> Optional.ofNullable(getSettings())
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>         .map(AppSettings::getLayerSettings)
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>         .map(layerSettingsMap -&gt; layerSettingsMap.get(node.getId()))
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>         .orElseGet(AppLayerSettings::<strong class="jxr_keyword">new</strong>);
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>   }
-<a class="jxr_linenumber" name="L303" href="#L303">303</a> }
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>         .projections(List.of(getCrs()))
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>         .filterGroups(settings.getFilterGroups());
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>   }
+<a class="jxr_linenumber" name="L297" href="#L297">297</a> 
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>   @NotNull <strong class="jxr_keyword">public</strong> AppLayerSettings getAppLayerSettings(@NotNull AppTreeLayerNode node) {
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>     <strong class="jxr_keyword">return</strong> Optional.ofNullable(getSettings())
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>         .map(AppSettings::getLayerSettings)
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>         .map(layerSettingsMap -&gt; layerSettingsMap.get(node.getId()))
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>         .orElseGet(AppLayerSettings::<strong class="jxr_keyword">new</strong>);
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>   }
+<a class="jxr_linenumber" name="L304" href="#L304">304</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
