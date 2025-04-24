@@ -444,7 +444,8 @@ public class ApplicationHelper {
       }
       if (hiDpiSubstituteLayer != null) {
         GeoServiceLayer hiDpiSubstituteServiceLayer = service.findLayer(hiDpiSubstituteLayer);
-        if (!this.isWebMercatorAvailable(service, hiDpiSubstituteServiceLayer, null)) {
+        if (hiDpiSubstituteServiceLayer != null
+            && !this.isWebMercatorAvailable(service, hiDpiSubstituteServiceLayer, null)) {
           return false;
         }
       }
