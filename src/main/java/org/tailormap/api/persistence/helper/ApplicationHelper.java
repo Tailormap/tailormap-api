@@ -439,14 +439,14 @@ public class ApplicationHelper {
       if (service.getProtocol() == XYZ) {
         return DEFAULT_WEB_MERCATOR_CRS.equals(service.getSettings().getXyzCrs());
       }
+      if (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH) {
+        return false;
+      }
       if (hiDpiSubstituteLayer != null) {
         GeoServiceLayer hiDpiSubstituteServiceLayer = service.findLayer(hiDpiSubstituteLayer);
         if (!this.isWebMercatorAvailable(service, hiDpiSubstituteServiceLayer, null)) {
           return false;
         }
-      }
-      if (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH) {
-        return false;
       }
       while (serviceLayer != null) {
         Set<String> layerCrs = serviceLayer.getCrs();
