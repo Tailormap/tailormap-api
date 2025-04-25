@@ -352,7 +352,7 @@
 <a class="jxr_linenumber" name="L344" href="#L344">344</a>             .orElse(<strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L345" href="#L345">345</a>       }
 <a class="jxr_linenumber" name="L346" href="#L346">346</a> 
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>       <strong class="jxr_keyword">boolean</strong> webMercatorAvailable = <strong class="jxr_keyword">this</strong>.isWebMercatorAvailable(service, serviceLayer);
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>       <strong class="jxr_keyword">boolean</strong> webMercatorAvailable = <strong class="jxr_keyword">this</strong>.isWebMercatorAvailable(service, serviceLayer, hiDpiSubstituteLayer);
 <a class="jxr_linenumber" name="L348" href="#L348">348</a> 
 <a class="jxr_linenumber" name="L349" href="#L349">349</a>       mr.addAppLayersItem(<strong class="jxr_keyword">new</strong> AppLayer()
 <a class="jxr_linenumber" name="L350" href="#L350">350</a>           .id(layerRef.getId())
@@ -442,27 +442,35 @@
 <a class="jxr_linenumber" name="L434" href="#L434">434</a>       <strong class="jxr_keyword">return</strong> Triple.of(service, serviceLayer, layerSettings);
 <a class="jxr_linenumber" name="L435" href="#L435">435</a>     }
 <a class="jxr_linenumber" name="L436" href="#L436">436</a> 
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> isWebMercatorAvailable(<a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, GeoServiceLayer serviceLayer) {
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>       <strong class="jxr_keyword">if</strong> (service.getProtocol() == XYZ) {
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>         <strong class="jxr_keyword">return</strong> DEFAULT_WEB_MERCATOR_CRS.equals(service.getSettings().getXyzCrs());
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>       }
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>       <strong class="jxr_keyword">if</strong> (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH) {
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>         <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>       }
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>       <strong class="jxr_keyword">while</strong> (serviceLayer != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>         Set&lt;String&gt; layerCrs = serviceLayer.getCrs();
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>         <strong class="jxr_keyword">if</strong> (layerCrs.contains(DEFAULT_WEB_MERCATOR_CRS)) {
-<a class="jxr_linenumber" name="L447" href="#L447">447</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>         }
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>         <strong class="jxr_keyword">if</strong> (serviceLayer.getRoot()) {
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>           <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>         }
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>         serviceLayer = service.getParentLayer(serviceLayer.getId());
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>       }
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>       <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L455" href="#L455">455</a>     }
-<a class="jxr_linenumber" name="L456" href="#L456">456</a>   }
-<a class="jxr_linenumber" name="L457" href="#L457">457</a> }
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> isWebMercatorAvailable(
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>         <a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, GeoServiceLayer serviceLayer, String hiDpiSubstituteLayer) {
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>       <strong class="jxr_keyword">if</strong> (service.getProtocol() == XYZ) {
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>         <strong class="jxr_keyword">return</strong> DEFAULT_WEB_MERCATOR_CRS.equals(service.getSettings().getXyzCrs());
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>       }
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>       <strong class="jxr_keyword">if</strong> (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH) {
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>         <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>       }
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>       <strong class="jxr_keyword">if</strong> (hiDpiSubstituteLayer != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>         GeoServiceLayer hiDpiSubstituteServiceLayer = service.findLayer(hiDpiSubstituteLayer);
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>         <strong class="jxr_keyword">if</strong> (hiDpiSubstituteServiceLayer != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>             &amp;&amp; !<strong class="jxr_keyword">this</strong>.isWebMercatorAvailable(service, hiDpiSubstituteServiceLayer, <strong class="jxr_keyword">null</strong>)) {
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>           <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>         }
+<a class="jxr_linenumber" name="L451" href="#L451">451</a>       }
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>       <strong class="jxr_keyword">while</strong> (serviceLayer != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>         Set&lt;String&gt; layerCrs = serviceLayer.getCrs();
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>         <strong class="jxr_keyword">if</strong> (layerCrs.contains(DEFAULT_WEB_MERCATOR_CRS)) {
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>         }
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>         <strong class="jxr_keyword">if</strong> (serviceLayer.getRoot()) {
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>           <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>         }
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>         serviceLayer = service.getParentLayer(serviceLayer.getId());
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>       }
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>       <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>     }
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>   }
+<a class="jxr_linenumber" name="L465" href="#L465">465</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
