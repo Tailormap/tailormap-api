@@ -344,7 +344,7 @@ public class ApplicationHelper {
             .orElse(null);
       }
 
-      boolean webMercatorAvailable = this.isWebMercatorAvailable(service, serviceLayer);
+      boolean webMercatorAvailable = this.isWebMercatorAvailable(service, serviceLayer, hiDpiSubstituteLayer);
 
       mr.addAppLayersItem(new AppLayer()
           .id(layerRef.getId())
@@ -434,12 +434,20 @@ public class ApplicationHelper {
       return Triple.of(service, serviceLayer, layerSettings);
     }
 
-    private boolean isWebMercatorAvailable(GeoService service, GeoServiceLayer serviceLayer) {
+    private boolean isWebMercatorAvailable(
+        GeoService service, GeoServiceLayer serviceLayer, String hiDpiSubstituteLayer) {
       if (service.getProtocol() == XYZ) {
         return DEFAULT_WEB_MERCATOR_CRS.equals(service.getSettings().getXyzCrs());
       }
       if (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH) {
         return false;
+      }
+      if (hiDpiSubstituteLayer != null) {
+        GeoServiceLayer hiDpiSubstituteServiceLayer = service.findLayer(hiDpiSubstituteLayer);
+        if (hiDpiSubstituteServiceLayer != null
+            && !this.isWebMercatorAvailable(service, hiDpiSubstituteServiceLayer, null)) {
+          return false;
+        }
       }
       while (serviceLayer != null) {
         Set<String> layerCrs = serviceLayer.getCrs();
