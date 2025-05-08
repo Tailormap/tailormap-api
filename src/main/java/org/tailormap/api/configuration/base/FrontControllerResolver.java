@@ -82,10 +82,12 @@ public class FrontControllerResolver implements ResourceResolver, InitializingBe
         Path resourcePath = resourceLocation.startsWith("file:")
             ? Path.of(StringUtils.removeStart(resourceLocation, "file:"))
             : null;
-        // Check whether the resource path has the Tailormap frontend which always has a version.json
+        // Check whether the resource path has the Tailormap frontend which always has a
+        // version.json
         if (resourcePath != null
             && resourcePath.resolve("version.json").toFile().exists()) {
-          // Only check for locale bundle directories when the frontend is built with localization. When
+          // Only check for locale bundle directories when the frontend is built with localization.
+          // When
           // index.html exists this is a non-localized build -- leave supportedLanguages empty
           if (resourcePath.resolve("index.html").toFile().exists()) {
             break;

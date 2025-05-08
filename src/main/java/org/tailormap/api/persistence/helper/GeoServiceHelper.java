@@ -133,15 +133,10 @@ public class GeoServiceHelper {
     // TODO: micrometer met tags voor URL/id van service
 
     switch (geoService.getProtocol()) {
-      case WMS:
-        loadWMSCapabilities(geoService, client);
-        break;
-      case WMTS:
-        loadWMTSCapabilities(geoService, client);
-        break;
-      default:
-        throw new UnsupportedOperationException(
-            "Unsupported geo service protocol: " + geoService.getProtocol());
+      case WMS -> loadWMSCapabilities(geoService, client);
+      case WMTS -> loadWMTSCapabilities(geoService, client);
+      default -> throw new UnsupportedOperationException(
+          "Unsupported geo service protocol: " + geoService.getProtocol());
     }
 
     if (geoService.getTitle() == null) {

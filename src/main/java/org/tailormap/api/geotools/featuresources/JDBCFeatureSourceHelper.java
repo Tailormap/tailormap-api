@@ -57,15 +57,16 @@ public class JDBCFeatureSourceHelper extends FeatureSourceHelper {
     Map<String, Object> params = new HashMap<>();
     // database specific settings
     switch (c.getDbtype()) {
-      case POSTGIS:
+      case POSTGIS -> {
         // use spatial index to estimate the extents
         params.put(PostgisNGDataStoreFactory.ESTIMATED_EXTENTS.key, true);
         if (!connectionOpts.contains("ApplicationName")) {
-          connectionOpts = connectionOpts + (connectionOpts.contains("?") ? "&amp;" : "?")
+          connectionOpts = connectionOpts
+              + (connectionOpts.contains("?") ? "&amp;" : "?")
               + "ApplicationName=tailormap-api";
         }
-        break;
-      case SQLSERVER:
+      }
+      case SQLSERVER -> {
         // use spatial index to estimate the extents
         params.put(SQLServerDataStoreFactory.ESTIMATED_EXTENTS.key, true);
         // we need this for mssql to determine a feature type on an empty table
@@ -75,9 +76,9 @@ public class JDBCFeatureSourceHelper extends FeatureSourceHelper {
           // https://learn.microsoft.com/en-us/sql/connect/jdbc/building-the-connection-url?view=sql-server-ver16
           connectionOpts = connectionOpts + ";applicationName=tailormap-api";
         }
-        break;
-      case ORACLE:
-        break;
+      }
+        // No specific settings for Oracle
+      case ORACLE -> {}
     }
 
     params.put(DBTYPE.key, c.getDbtype().getValue());

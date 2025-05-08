@@ -1601,7 +1601,8 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
               }
             });
 
-        // creating a solr index of config this will/should fail because there is no primary key in the FT
+        // creating a solr index of config this will/should fail because there is no primary key in
+        // the FT
         featureSourceRepository
             .getByTitle("PostGIS OSM")
             .flatMap(fs -> fs.getFeatureTypes().stream()

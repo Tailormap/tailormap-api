@@ -106,21 +106,21 @@ public class GeoServiceProxyController {
     checkRequestValidity(application, service, layer, protocol);
 
     switch (protocol) {
-      case WMS:
-      case WMTS:
+      case WMS, WMTS -> {
         return doProxy(buildWMSUrl(service, request), service, request);
-      case PROXIEDLEGEND:
+      }
+      case PROXIEDLEGEND -> {
         URI legendURI = buildLegendURI(service, layer, request);
-        if (null == legendURI) {
+        if (legendURI == null) {
           logger.warn("No legend URL found for layer {}", layer.getName());
           return null;
         }
         return doProxy(legendURI, service, request);
-      case TILES3D:
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST, "Incorrect 3D Tiles proxy request: No path to capabilities or content");
-      default:
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported proxy protocol: " + protocol);
+      }
+      case TILES3D -> throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Incorrect 3D Tiles proxy request: No path to capabilities or content");
+      default -> throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Unsupported proxy protocol: " + protocol);
     }
   }
 
@@ -216,7 +216,8 @@ public class GeoServiceProxyController {
 
   private URI build3DTilesUrl(GeoService service, HttpServletRequest request) {
     // The URL in the GeoService refers to the location of the JSON file describing the tileset,
-    // e.g. example.com/buildings/3dtiles. The paths to the subtrees and tiles of the tilesets do not include the
+    // e.g. example.com/buildings/3dtiles. The paths to the subtrees and tiles of the tilesets do
+    // not include the
     // '/3dtiles' (or '/tileset.json') part of the path. Their paths are e.g.
     // example.com/buildings/subtrees/... or example.com/buildings/t/...
     final UriComponentsBuilder originalServiceUrl = UriComponentsBuilder.fromUriString(service.getUrl());
