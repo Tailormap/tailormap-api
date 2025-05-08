@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version>
+        <version>3.4.5</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -120,15 +120,11 @@ SPDX-License-Identifier: MIT
             mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates
         to check
         -->
-        <commons-lang3.version>3.17.0</commons-lang3.version>
         <flyway.version>10.22.0</flyway.version>
         <hamcrest.version>3.0</hamcrest.version>
         <hibernate.version>6.6.13.Final</hibernate.version>
-        <jackson-bom.version>2.18.3</jackson-bom.version>
-        <json-smart.version>2.5.2</json-smart.version>
         <junit-jupiter.version>5.12.2</junit-jupiter.version>
-        <logback.version>1.5.14</logback.version>
-        <micrometer.version>1.14.5</micrometer.version>
+        <micrometer.version>1.14.6</micrometer.version>
         <mssql-jdbc.version>12.10.0.jre11</mssql-jdbc.version>
         <oracle-database.version>23.7.0.25.01</oracle-database.version>
         <postgresql.version>42.7.5</postgresql.version>
@@ -156,8 +152,8 @@ SPDX-License-Identifier: MIT
         <dependency-check-maven.version>12.1.1</dependency-check-maven.version>
         <modernizer-maven-plugin.version>3.1.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
-        <swagger-ui.version>5.20.7</swagger-ui.version>
-        <sentry.version>8.8.0</sentry.version>
+        <swagger-ui.version>5.21.0</swagger-ui.version>
+        <sentry.version>8.11.0</sentry.version>
         <errorProne.version>2.37.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
@@ -247,7 +243,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.hypersistence</groupId>
             <artifactId>hypersistence-utils-hibernate-63</artifactId>
-            <version>3.9.9</version>
+            <version>3.9.10</version>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
