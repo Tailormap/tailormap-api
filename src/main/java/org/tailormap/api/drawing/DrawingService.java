@@ -170,8 +170,10 @@ ST_AsGeoJSON(data.drawing_feature.*, geom_column =>'geometry', id_column => 'id'
           public JsonNode mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
             try {
               JsonNode jsonNode = objectMapper.readTree(rs.getString(1));
-              // merge/un-nest properties with nested properties, because we have a jsonb column
-              // called "properties" and we are using the `ST_AsGeoJSON(::record,...)` function
+              // merge/un-nest properties with nested properties, because we have a jsonb
+              // column
+              // called "properties" and we are using the `ST_AsGeoJSON(::record,...)`
+              // function
               final ObjectNode properties = (ObjectNode) jsonNode.get("properties");
               JsonNode nestedProperties = properties.get("properties");
               if (nestedProperties != null) {
@@ -253,7 +255,8 @@ WHERE id = :id RETURNING *""")
         .query(drawingRowMapper)
         .single();
 
-    // delete even if drawing.getFeatureCollection()==null, because all features could have been removed,
+    // delete even if drawing.getFeatureCollection()==null, because all features could have been
+    // removed,
     // afterwards (re)insert the featureCollection
     jdbcClient
         .sql("DELETE FROM data.drawing_feature WHERE drawing_id = ?")
@@ -421,7 +424,8 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
       throw new ResponseStatusException(
           HttpStatus.UNAUTHORIZED, "Insufficient permissions to create new drawing");
     }
-    // TODO check if this user is allowed to create/add drawings using additional properties, currently none are
+    // TODO check if this user is allowed to create/add drawings using additional properties,
+    // currently none are
     //  defined
   }
 
@@ -444,7 +448,8 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
                 yield true;
               }
               if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
-                // check if the user has either the `drawings-admin` or `drawings-read-all` property set
+                // check if the user has either the `drawings-admin` or `drawings-read-all` property
+                // set
                 for (AdminAdditionalProperty ap : userDetails.getAdditionalProperties()) {
                   if (ap.getKey().equals(KEY_DRAWINGS_ADMIN)
                       || ap.getKey().equals(KEY_DRAWINGS_READ_ALL)) {
