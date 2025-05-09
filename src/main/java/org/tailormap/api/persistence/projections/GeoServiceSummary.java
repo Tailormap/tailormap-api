@@ -29,4 +29,6 @@ public interface GeoServiceSummary {
   GeoServiceSettings getSettings();
 
   List<AuthorizationRule> getAuthorizationRules();
+
+  String getUrl();
 }
