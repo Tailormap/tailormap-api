@@ -34,7 +34,7 @@
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  @com.fasterxml.jackson.annotation.JsonIgnoreProperties(ignoreUnknown = <strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  @Schema(name = <span class="jxr_string">"FilterGroup"</span>, description = <span class="jxr_string">"A group of filters. The group can be used to group filters together, or to disable a group of filters."</span>)
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.12.0"</span>)
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  @Generated(value = <span class="jxr_string">"org.openapitools.codegen.languages.SpringCodegen"</span>, comments = <span class="jxr_string">"Generator version: 7.13.0"</span>)
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="FilterGroup" href="../../../../../org/tailormap/api/persistence/json/FilterGroup.html#FilterGroup">FilterGroup</a> <strong class="jxr_keyword">implements</strong> Serializable {
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
@@ -52,7 +52,7 @@
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>    <strong class="jxr_keyword">public</strong> enum TypeEnum {
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>      ATTRIBUTE(<span class="jxr_string">"ATTRIBUTE"</span>);
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">private</strong> String value;
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String value;
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      TypeEnum(String value) {
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>        <strong class="jxr_keyword">this</strong>.value = value;
@@ -89,7 +89,7 @@
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>      
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>      OR(<span class="jxr_string">"OR"</span>);
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>      <strong class="jxr_keyword">private</strong> String value;
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String value;
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>      OperatorEnum(String value) {
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>        <strong class="jxr_keyword">this</strong>.value = value;

@@ -90,111 +90,113 @@
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>          Path resourcePath = resourceLocation.startsWith(<span class="jxr_string">"file:"</span>)
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>              ? Path.of(StringUtils.removeStart(resourceLocation, <span class="jxr_string">"file:"</span>))
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>              : <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>          <em class="jxr_comment">// Check whether the resource path has the Tailormap frontend which always has a version.json</em>
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>          <strong class="jxr_keyword">if</strong> (resourcePath != <strong class="jxr_keyword">null</strong>
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>              &amp;&amp; resourcePath.resolve(<span class="jxr_string">"version.json"</span>).toFile().exists()) {
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>            <em class="jxr_comment">// Only check for locale bundle directories when the frontend is built with localization. When</em>
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>            <em class="jxr_comment">// index.html exists this is a non-localized build -- leave supportedLanguages empty</em>
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>            <strong class="jxr_keyword">if</strong> (resourcePath.resolve(<span class="jxr_string">"index.html"</span>).toFile().exists()) {
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>              <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>            }
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>            File[] languageBundleDirs =
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>                resourcePath.toFile().listFiles((file, name) -&gt; name.matches(<span class="jxr_string">"^[a-z]{2}$"</span>));
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>            <strong class="jxr_keyword">if</strong> (languageBundleDirs != <strong class="jxr_keyword">null</strong> &amp;&amp; languageBundleDirs.length &gt; 0) {
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>              supportedLanguages = Arrays.stream(languageBundleDirs)
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>                  .map(File::getName)
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>                  .toList();
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>             logger.info(<span class="jxr_string">"Detected frontend bundles for languages: {}"</span>, supportedLanguages);
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>           }
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>           <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>         }
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>       }
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>     } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>       logger.error(<span class="jxr_string">"Error while trying to determine frontend languages bundles"</span>, e);
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>     }
-<a class="jxr_linenumber" name="L108" href="#L108">108</a> 
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>     <strong class="jxr_keyword">if</strong> (!supportedLanguages.isEmpty()) {
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>       localeResolver.setSupportedLocales(
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>           supportedLanguages.stream().map(Locale::<strong class="jxr_keyword">new</strong>).toList());
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>       Locale defaultLocale = supportedLanguages.contains(defaultLanguage)
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>           ? <strong class="jxr_keyword">new</strong> Locale(defaultLanguage)
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>           : localeResolver.getSupportedLocales().get(0);
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>       localeResolver.setDefaultLocale(defaultLocale);
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>       logger.info(<span class="jxr_string">"Default language set to: {}"</span>, defaultLocale.toLanguageTag());
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>     }
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>   }
-<a class="jxr_linenumber" name="L119" href="#L119">119</a> 
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>   @Override
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>   <strong class="jxr_keyword">public</strong> Resource resolveResource(
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>       HttpServletRequest request,
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>       @NonNull String requestPath,
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>       @NonNull List&lt;? <strong class="jxr_keyword">extends</strong> Resource&gt; locations,
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>       ResourceResolverChain chain) {
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>     <em class="jxr_comment">// Front controller logic: when routes used by the frontend are directly requested, return the</em>
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>     <em class="jxr_comment">// index.html instead of a 404.</em>
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>     <em class="jxr_comment">// Paths in @RequestMapping have higher priority than this resolver</em>
-<a class="jxr_linenumber" name="L129" href="#L129">129</a> 
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>     <em class="jxr_comment">// When the resource exists (such as HTML, CSS, JS, etc.), return it</em>
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>     Resource resource = chain.resolveResource(request, requestPath, locations);
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>     <strong class="jxr_keyword">if</strong> (resource != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>       <strong class="jxr_keyword">return</strong> resource;
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>     }
-<a class="jxr_linenumber" name="L135" href="#L135">135</a> 
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>     <em class="jxr_comment">// Check if the request path already starts with a locale prefix like en/ or nl/</em>
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>     String localePrefix = StringUtils.left(requestPath, 2);
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>     <strong class="jxr_keyword">if</strong> ((localeBundlePrefixPattern.matcher(requestPath).matches() &amp;&amp; supportedLanguages.contains(localePrefix))
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>         <em class="jxr_comment">// When the request is just "GET /nl/" or "GET /nl" the requestPath is "nl" without a</em>
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>         <em class="jxr_comment">// trailing slash</em>
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>         || supportedLanguages.contains(requestPath)) {
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>       <strong class="jxr_keyword">return</strong> chain.resolveResource(request, localePrefix + <span class="jxr_string">"/index.html"</span>, locations);
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>     }
-<a class="jxr_linenumber" name="L144" href="#L144">144</a> 
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>     <em class="jxr_comment">// When the request path denotes an app, return the index.html for the default language</em>
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>     <em class="jxr_comment">// configured for the app</em>
-<a class="jxr_linenumber" name="L147" href="#L147">147</a> 
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>     <strong class="jxr_keyword">if</strong> (!staticOnly) {
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>       <a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>       <strong class="jxr_keyword">if</strong> (<span class="jxr_string">"index.html"</span>.equals(requestPath) || requestPath.matches(<span class="jxr_string">"^app/?"</span>)) {
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>         String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>         app = applicationRepository.findByName(defaultAppName);
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>       } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (requestPath.startsWith(<span class="jxr_string">"app/"</span>)) {
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>         String[] parts = requestPath.split(<span class="jxr_string">"/"</span>, -1);
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>         <strong class="jxr_keyword">if</strong> (parts.length &gt; 1) {
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>           String appName = UriUtils.decode(parts[1], StandardCharsets.UTF_8);
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>           app = applicationRepository.findByName(appName);
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>         }
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>       }
-<a class="jxr_linenumber" name="L160" href="#L160">160</a> 
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>       <strong class="jxr_keyword">if</strong> (app != <strong class="jxr_keyword">null</strong> &amp;&amp; app.getSettings().getI18nSettings() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>         String appLanguage = app.getSettings().getI18nSettings().getDefaultLanguage();
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>         <strong class="jxr_keyword">if</strong> (appLanguage != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>           resource = chain.resolveResource(request, appLanguage + <span class="jxr_string">"/index.html"</span>, locations);
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>           <strong class="jxr_keyword">if</strong> (resource != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>             <strong class="jxr_keyword">return</strong> resource;
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>           }
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>         }
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>       }
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>     }
-<a class="jxr_linenumber" name="L171" href="#L171">171</a> 
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>     <em class="jxr_comment">// Otherwise use the LocaleResolver to return the index.html for the language of the</em>
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>     <em class="jxr_comment">// Accept-Language header</em>
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>     Locale locale = localeResolver.resolveLocale(request);
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>     resource = chain.resolveResource(request, locale.toLanguageTag() + <span class="jxr_string">"/index.html"</span>, locations);
-<a class="jxr_linenumber" name="L176" href="#L176">176</a> 
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>     <em class="jxr_comment">// When frontend is built without localization, return the index.html in the root</em>
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>     <strong class="jxr_keyword">if</strong> (resource == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>       resource = chain.resolveResource(request, <span class="jxr_string">"/index.html"</span>, locations);
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>     }
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>     <strong class="jxr_keyword">return</strong> resource;
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>   }
-<a class="jxr_linenumber" name="L183" href="#L183">183</a> 
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>   @Override
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>   <strong class="jxr_keyword">public</strong> String resolveUrlPath(
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>       @NonNull String resourcePath, @NonNull List&lt;? <strong class="jxr_keyword">extends</strong> Resource&gt; locations, ResourceResolverChain chain) {
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>     <strong class="jxr_keyword">return</strong> chain.resolveUrlPath(resourcePath, locations);
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>   }
-<a class="jxr_linenumber" name="L189" href="#L189">189</a> }
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          <em class="jxr_comment">// Check whether the resource path has the Tailormap frontend which always has a</em>
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          <em class="jxr_comment">// version.json</em>
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          <strong class="jxr_keyword">if</strong> (resourcePath != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>              &amp;&amp; resourcePath.resolve(<span class="jxr_string">"version.json"</span>).toFile().exists()) {
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>            <em class="jxr_comment">// Only check for locale bundle directories when the frontend is built with localization.</em>
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>            <em class="jxr_comment">// When</em>
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>            <em class="jxr_comment">// index.html exists this is a non-localized build -- leave supportedLanguages empty</em>
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>            <strong class="jxr_keyword">if</strong> (resourcePath.resolve(<span class="jxr_string">"index.html"</span>).toFile().exists()) {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>              <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>            }
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>            File[] languageBundleDirs =
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>                resourcePath.toFile().listFiles((file, name) -&gt; name.matches(<span class="jxr_string">"^[a-z]{2}$"</span>));
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>            <strong class="jxr_keyword">if</strong> (languageBundleDirs != <strong class="jxr_keyword">null</strong> &amp;&amp; languageBundleDirs.length &gt; 0) {
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>              supportedLanguages = Arrays.stream(languageBundleDirs)
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>                 .map(File::getName)
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>                 .toList();
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>             logger.info(<span class="jxr_string">"Detected frontend bundles for languages: {}"</span>, supportedLanguages);
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>           }
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>           <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>         }
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>       }
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>     } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>       logger.error(<span class="jxr_string">"Error while trying to determine frontend languages bundles"</span>, e);
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>     }
+<a class="jxr_linenumber" name="L110" href="#L110">110</a> 
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>     <strong class="jxr_keyword">if</strong> (!supportedLanguages.isEmpty()) {
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>       localeResolver.setSupportedLocales(
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>           supportedLanguages.stream().map(Locale::<strong class="jxr_keyword">new</strong>).toList());
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>       Locale defaultLocale = supportedLanguages.contains(defaultLanguage)
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>           ? <strong class="jxr_keyword">new</strong> Locale(defaultLanguage)
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>           : localeResolver.getSupportedLocales().get(0);
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>       localeResolver.setDefaultLocale(defaultLocale);
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>       logger.info(<span class="jxr_string">"Default language set to: {}"</span>, defaultLocale.toLanguageTag());
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>     }
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>   }
+<a class="jxr_linenumber" name="L121" href="#L121">121</a> 
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>   @Override
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>   <strong class="jxr_keyword">public</strong> Resource resolveResource(
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>       HttpServletRequest request,
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>       @NonNull String requestPath,
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>       @NonNull List&lt;? <strong class="jxr_keyword">extends</strong> Resource&gt; locations,
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>       ResourceResolverChain chain) {
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>     <em class="jxr_comment">// Front controller logic: when routes used by the frontend are directly requested, return the</em>
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>     <em class="jxr_comment">// index.html instead of a 404.</em>
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>     <em class="jxr_comment">// Paths in @RequestMapping have higher priority than this resolver</em>
+<a class="jxr_linenumber" name="L131" href="#L131">131</a> 
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>     <em class="jxr_comment">// When the resource exists (such as HTML, CSS, JS, etc.), return it</em>
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>     Resource resource = chain.resolveResource(request, requestPath, locations);
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>     <strong class="jxr_keyword">if</strong> (resource != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>       <strong class="jxr_keyword">return</strong> resource;
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>     }
+<a class="jxr_linenumber" name="L137" href="#L137">137</a> 
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>     <em class="jxr_comment">// Check if the request path already starts with a locale prefix like en/ or nl/</em>
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>     String localePrefix = StringUtils.left(requestPath, 2);
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>     <strong class="jxr_keyword">if</strong> ((localeBundlePrefixPattern.matcher(requestPath).matches() &amp;&amp; supportedLanguages.contains(localePrefix))
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>         <em class="jxr_comment">// When the request is just "GET /nl/" or "GET /nl" the requestPath is "nl" without a</em>
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>         <em class="jxr_comment">// trailing slash</em>
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>         || supportedLanguages.contains(requestPath)) {
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>       <strong class="jxr_keyword">return</strong> chain.resolveResource(request, localePrefix + <span class="jxr_string">"/index.html"</span>, locations);
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>     }
+<a class="jxr_linenumber" name="L146" href="#L146">146</a> 
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>     <em class="jxr_comment">// When the request path denotes an app, return the index.html for the default language</em>
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>     <em class="jxr_comment">// configured for the app</em>
+<a class="jxr_linenumber" name="L149" href="#L149">149</a> 
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>     <strong class="jxr_keyword">if</strong> (!staticOnly) {
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>       <a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>       <strong class="jxr_keyword">if</strong> (<span class="jxr_string">"index.html"</span>.equals(requestPath) || requestPath.matches(<span class="jxr_string">"^app/?"</span>)) {
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>         String defaultAppName = configurationRepository.get(Configuration.DEFAULT_APP);
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>         app = applicationRepository.findByName(defaultAppName);
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>       } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (requestPath.startsWith(<span class="jxr_string">"app/"</span>)) {
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>         String[] parts = requestPath.split(<span class="jxr_string">"/"</span>, -1);
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>         <strong class="jxr_keyword">if</strong> (parts.length &gt; 1) {
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>           String appName = UriUtils.decode(parts[1], StandardCharsets.UTF_8);
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>           app = applicationRepository.findByName(appName);
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>         }
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>       }
+<a class="jxr_linenumber" name="L162" href="#L162">162</a> 
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>       <strong class="jxr_keyword">if</strong> (app != <strong class="jxr_keyword">null</strong> &amp;&amp; app.getSettings().getI18nSettings() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>         String appLanguage = app.getSettings().getI18nSettings().getDefaultLanguage();
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>         <strong class="jxr_keyword">if</strong> (appLanguage != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>           resource = chain.resolveResource(request, appLanguage + <span class="jxr_string">"/index.html"</span>, locations);
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>           <strong class="jxr_keyword">if</strong> (resource != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>             <strong class="jxr_keyword">return</strong> resource;
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>           }
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>         }
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>       }
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>     }
+<a class="jxr_linenumber" name="L173" href="#L173">173</a> 
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>     <em class="jxr_comment">// Otherwise use the LocaleResolver to return the index.html for the language of the</em>
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>     <em class="jxr_comment">// Accept-Language header</em>
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>     Locale locale = localeResolver.resolveLocale(request);
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>     resource = chain.resolveResource(request, locale.toLanguageTag() + <span class="jxr_string">"/index.html"</span>, locations);
+<a class="jxr_linenumber" name="L178" href="#L178">178</a> 
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>     <em class="jxr_comment">// When frontend is built without localization, return the index.html in the root</em>
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>     <strong class="jxr_keyword">if</strong> (resource == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>       resource = chain.resolveResource(request, <span class="jxr_string">"/index.html"</span>, locations);
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>     }
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>     <strong class="jxr_keyword">return</strong> resource;
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>   }
+<a class="jxr_linenumber" name="L185" href="#L185">185</a> 
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>   @Override
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>   <strong class="jxr_keyword">public</strong> String resolveUrlPath(
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>       @NonNull String resourcePath, @NonNull List&lt;? <strong class="jxr_keyword">extends</strong> Resource&gt; locations, ResourceResolverChain chain) {
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>     <strong class="jxr_keyword">return</strong> chain.resolveUrlPath(resourcePath, locations);
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>   }
+<a class="jxr_linenumber" name="L191" href="#L191">191</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
