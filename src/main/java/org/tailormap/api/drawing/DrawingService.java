@@ -256,8 +256,7 @@ WHERE id = :id RETURNING *""")
         .single();
 
     // delete even if drawing.getFeatureCollection()==null, because all features could have been
-    // removed,
-    // afterwards (re)insert the featureCollection
+    // removed, (re)insert the featureCollection afterward
     jdbcClient
         .sql("DELETE FROM data.drawing_feature WHERE drawing_id = ?")
         .param(drawing.getId())
@@ -424,9 +423,8 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
       throw new ResponseStatusException(
           HttpStatus.UNAUTHORIZED, "Insufficient permissions to create new drawing");
     }
-    // TODO check if this user is allowed to create/add drawings using additional properties,
-    // currently none are
-    //  defined
+    // TODO check if this user is allowed to create/add drawings using additional properties, currently none are
+    // defined
   }
 
   /**

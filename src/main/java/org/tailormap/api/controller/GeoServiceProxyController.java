@@ -217,8 +217,7 @@ public class GeoServiceProxyController {
   private URI build3DTilesUrl(GeoService service, HttpServletRequest request) {
     // The URL in the GeoService refers to the location of the JSON file describing the tileset,
     // e.g. example.com/buildings/3dtiles. The paths to the subtrees and tiles of the tilesets do
-    // not include the
-    // '/3dtiles' (or '/tileset.json') part of the path. Their paths are e.g.
+    // not include the '/3dtiles' (or '/tileset.json') part of the path. Their paths are e.g.
     // example.com/buildings/subtrees/... or example.com/buildings/t/...
     final UriComponentsBuilder originalServiceUrl = UriComponentsBuilder.fromUriString(service.getUrl());
     String baseUrl = originalServiceUrl.build(true).toUriString();

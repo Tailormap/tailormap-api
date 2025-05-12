@@ -28,10 +28,8 @@ public class RestExceptionHandler {
   @Nullable public ResponseEntity<Object> handleException(final HttpMessageNotReadableException ex, final WebRequest request) {
     logger.debug("Invalid message exception", ex);
 
-    // Invalid password was given
-    // ideally we would use @ExceptionHandler({InvalidPasswordException.class}) but that does not
-    // trigger the
-    // exception handler because it is wrapped in HttpMessageNotReadableException
+    // Invalid password was given: ideally we would use @ExceptionHandler({InvalidPasswordException.class}) but that
+    // does not trigger the exception handler because it is wrapped in HttpMessageNotReadableException
     if (ex.getCause() != null && ex.getMostSpecificCause() instanceof InvalidPasswordException ipe) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .contentType(MediaType.APPLICATION_JSON)

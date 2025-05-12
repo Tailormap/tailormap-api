@@ -77,8 +77,9 @@ public class JDBCFeatureSourceHelper extends FeatureSourceHelper {
           connectionOpts = connectionOpts + ";applicationName=tailormap-api";
         }
       }
+      case ORACLE -> {
         // No specific settings for Oracle
-      case ORACLE -> {}
+      }
     }
 
     params.put(DBTYPE.key, c.getDbtype().getValue());
