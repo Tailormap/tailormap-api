@@ -3,6 +3,9 @@ name: 'REUSE Compliance Check'
 on:
   push:
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: 'Check compliance'
