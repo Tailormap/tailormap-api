@@ -265,6 +265,8 @@ jobs:
     if: ${{ always() }}
     needs: [ build, publish, postgresql-test ]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/cache@v4
         with:
