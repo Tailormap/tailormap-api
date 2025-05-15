@@ -77,7 +77,7 @@ public class GeoServiceHelper {
     this.featureSourceRepository = featureSourceRepository;
   }
 
-  public org.tailormap.api.viewer.model.Service.ServerTypeEnum guessServerTypeFromUrl(String url) {
+  public static org.tailormap.api.viewer.model.Service.ServerTypeEnum guessServerTypeFromUrl(String url) {
 
     if (StringUtils.isBlank(url)) {
       return org.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;
