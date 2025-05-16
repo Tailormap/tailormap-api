@@ -389,6 +389,12 @@ components:
         required:
           type: boolean
           nullable: true
+        autoFillUser:
+          type: boolean
+          nullable: true
+        autoFillDate:
+          type: boolean
+          nullable: true
         placeholder:
           type: string
           nullable: true
