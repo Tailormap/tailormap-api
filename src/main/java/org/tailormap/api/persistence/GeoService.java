@@ -302,21 +302,22 @@ public class GeoService {
     }
   }
 
-  public Service toJsonPojo(GeoServiceHelper geoServiceHelper) {
-    Service.ServerTypeEnum serverTypeEnum;
+  /** Resolve the server type if set to AUTO. */
+  public org.tailormap.api.viewer.model.Service.ServerTypeEnum getResolvedServerType() {
     if (settings.getServerType() == GeoServiceSettings.ServerTypeEnum.AUTO) {
-      serverTypeEnum = geoServiceHelper.guessServerTypeFromUrl(getUrl());
+      return GeoServiceHelper.guessServerTypeFromUrl(getUrl());
     } else {
-      serverTypeEnum =
-          Service.ServerTypeEnum.fromValue(settings.getServerType().getValue());
+      return Service.ServerTypeEnum.fromValue(settings.getServerType().getValue());
     }
+  }
 
+  public Service toJsonPojo(GeoServiceHelper geoServiceHelper) {
     Service s = new Service()
         .id(this.id)
         .title(this.title)
         .url(Boolean.TRUE.equals(this.getSettings().getUseProxy()) ? null : this.url)
         .protocol(this.protocol)
-        .serverType(serverTypeEnum);
+        .serverType(getResolvedServerType());
 
     if (this.protocol == GeoServiceProtocol.WMTS) {
       // Frontend requires WMTS capabilities to parse TilingMatrix, but WMS capabilities aren't used
