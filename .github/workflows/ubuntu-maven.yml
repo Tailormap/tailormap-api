@@ -1,5 +1,10 @@
 name: 'Ubuntu Maven build'
 
+permissions:
+  contents: read
+  packages: read
+  id-token: write
+
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
   MAVEN_VERSION: '3.9.9'
@@ -21,6 +26,10 @@ jobs:
   build:
     name: 'Build w/ Java 17'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      actions: write
     steps:
       - uses: actions/checkout@v4
 
@@ -64,6 +73,10 @@ jobs:
   postgresql-test:
     name: 'PostgreSQL verify'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      actions: write
     if: ${{ github.author != 'dependabot[bot]' }}
     needs: build
     steps:
@@ -120,6 +133,9 @@ jobs:
   event_file:
     name: "Event File"
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
     steps:
       - name: 'Upload'
         uses: actions/upload-artifact@v4
