@@ -124,7 +124,7 @@ SPDX-License-Identifier: MIT
         <hamcrest.version>3.0</hamcrest.version>
         <hibernate.version>6.6.15.Final</hibernate.version>
         <junit-jupiter.version>5.12.2</junit-jupiter.version>
-        <micrometer.version>1.14.6</micrometer.version>
+        <micrometer.version>1.15.0</micrometer.version>
         <mssql-jdbc.version>12.10.0.jre11</mssql-jdbc.version>
         <oracle-database.version>23.8.0.25.04</oracle-database.version>
         <postgresql.version>42.7.5</postgresql.version>
