@@ -43,4 +43,11 @@ SPDX-License-Identifier: MIT
    ]]></notes>
         <cve>CVE-2024-6763</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file names: http2-common-10.0.24.jar
+   We have Jetty dependencies because SolrJ uses the Jetty http classes, but this is for the server
+   ]]></notes>
+        <cve>CVE-2025-1948</cve>
+    </suppress>
 </suppressions>
