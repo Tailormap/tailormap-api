@@ -105,7 +105,9 @@ SPDX-License-Identifier: MIT
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <!-- solr and jetty versions may need to match to prevent errors such as
-        Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener -->
+        Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener 
+        because Solr uses http libraries from the Jetty project
+        -->
         <jetty.version>10.0.24</jetty.version>
         <solr.version>9.8.1</solr.version>
         <!--
@@ -397,11 +399,6 @@ SPDX-License-Identifier: MIT
             <artifactId>gt-jdbc-oracle</artifactId>
             <version>${geotools.version}</version>
             <exclusions>
-                <exclusion>
-                    <!-- TODO: probably not needed after GeoTools 33.0 -->
-                    <groupId>com.oracle.database.jdbc</groupId>
-                    <artifactId>ojdbc8</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>com.oracle.database.jdbc</groupId>
                     <artifactId>ojdbc11</artifactId>
@@ -1064,15 +1061,17 @@ SPDX-License-Identifier: MIT
                         </goals>
                         <phase>process-sources</phase>
                         <configuration>
-                            <target name="fix-generated-sources">
-                                <!-- HTM-1051 replace javax.validation with jakarta.validation in generated sources
+                            <!--
+                           <target name="fix-generated-sources">
+                                 HTM-1051 replace javax.validation with jakarta.validation in generated sources
                                 the current config still generates javax.validation, but we want jakarta.validation
-                                -->
+                                
                                 <replace dir="target/generated-sources/openapi/src/main/java/org/tailormap/api/" summary="true">
                                     <replacetoken><![CDATA[import javax.validation.]]></replacetoken>
                                     <replacevalue><![CDATA[import jakarta.validation.]]></replacevalue>
                                 </replace>
                             </target>
+                            -->
                         </configuration>
                     </execution>
                     <execution>
