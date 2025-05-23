@@ -120,20 +120,21 @@ SPDX-License-Identifier: MIT
             mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates
         to check
         -->
-        <!--        <flyway.version>11.7.2</flyway.version>-->
+        <!-- <flyway.version>11.7.2</flyway.version>-->
+        <!-- <flyway.version>11.7.2</flyway.version>-->
         <hamcrest.version>3.0</hamcrest.version>
-        <hibernate.version>6.6.15.Final</hibernate.version>
-        <!--        <junit-jupiter.version>5.12.2</junit-jupiter.version>-->
-        <!--        <micrometer.version>1.15.0</micrometer.version>-->
+        <!-- <hibernate.version>6.6.15.Final</hibernate.version>-->
+        <!-- <junit-jupiter.version>5.12.2</junit-jupiter.version>-->
+        <!-- <micrometer.version>1.15.0</micrometer.version>-->
         <mssql-jdbc.version>12.10.0.jre11</mssql-jdbc.version>
         <oracle-database.version>23.8.0.25.04</oracle-database.version>
         <postgresql.version>42.7.5</postgresql.version>
-        <!-- <spring-data-bom.version>2024.0.6</spring-data-bom.version> -->
-        <!-- <spring-hateoas.version>2.3.3</spring-hateoas.version> -->
-        <!-- <spring-security.version>6.3.4</spring-security.version> -->
-        <!--        <quartz.version>2.5.0</quartz.version>-->
-        <!--        <webjars-locator-core.version>0.59</webjars-locator-core.version>-->
-        <!--        <xmlunit2.version>2.10.1</xmlunit2.version>-->
+        <!-- <spring-data-bom.version>2024.0.6</spring-data-bom.version>-->
+        <!-- <spring-hateoas.version>2.3.3</spring-hateoas.version>-->
+        <!-- <spring-security.version>6.3.4</spring-security.version>-->
+        <!-- <quartz.version>2.5.0</quartz.version>-->
+        <!-- <webjars-locator-core.version>0.59</webjars-locator-core.version>-->
+        <!-- <xmlunit2.version>2.10.1</xmlunit2.version>-->
         <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
@@ -152,7 +153,7 @@ SPDX-License-Identifier: MIT
         <dependency-check-maven.version>12.1.1</dependency-check-maven.version>
         <modernizer-maven-plugin.version>3.1.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
-        <swagger-ui.version>5.21.0</swagger-ui.version>
+        <swagger-ui.version>5.22.0</swagger-ui.version>
         <sentry.version>8.12.0</sentry.version>
         <errorProne.version>2.38.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
