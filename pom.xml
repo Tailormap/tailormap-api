@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.6</version>
+        <version>3.5.0</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -105,7 +105,9 @@ SPDX-License-Identifier: MIT
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <!-- solr and jetty versions may need to match to prevent errors such as
-        Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener -->
+        Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener 
+        because Solr uses http libraries from the Jetty project
+        -->
         <jetty.version>10.0.24</jetty.version>
         <solr.version>9.8.1</solr.version>
         <!--
@@ -120,20 +122,20 @@ SPDX-License-Identifier: MIT
             mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates
         to check
         -->
-        <flyway.version>10.22.0</flyway.version>
-        <hamcrest.version>3.0</hamcrest.version>
-        <hibernate.version>6.6.15.Final</hibernate.version>
-        <junit-jupiter.version>5.12.2</junit-jupiter.version>
-        <micrometer.version>1.15.0</micrometer.version>
+        <flyway.version>11.8.2</flyway.version>
+        <!-- <hamcrest.version>3.0</hamcrest.version>-->
+        <!-- <hibernate.version>6.6.15.Final</hibernate.version>-->
+        <!-- <junit-jupiter.version>5.12.2</junit-jupiter.version>-->
+        <!-- <micrometer.version>1.15.0</micrometer.version>-->
         <mssql-jdbc.version>12.10.0.jre11</mssql-jdbc.version>
         <oracle-database.version>23.8.0.25.04</oracle-database.version>
         <postgresql.version>42.7.5</postgresql.version>
-        <!-- <spring-data-bom.version>2024.0.6</spring-data-bom.version> -->
-        <!-- <spring-hateoas.version>2.3.3</spring-hateoas.version> -->
-        <!-- <spring-security.version>6.3.4</spring-security.version> -->
-        <quartz.version>2.5.0</quartz.version>
-        <webjars-locator-core.version>0.59</webjars-locator-core.version>
-        <xmlunit2.version>2.10.0</xmlunit2.version>
+        <!-- <spring-data-bom.version>2024.0.6</spring-data-bom.version>-->
+        <!-- <spring-hateoas.version>2.3.3</spring-hateoas.version>-->
+        <!-- <spring-security.version>6.3.4</spring-security.version>-->
+        <!-- <quartz.version>2.5.0</quartz.version>-->
+        <!-- <webjars-locator-core.version>0.59</webjars-locator-core.version>-->
+        <!-- <xmlunit2.version>2.10.1</xmlunit2.version>-->
         <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
@@ -152,7 +154,7 @@ SPDX-License-Identifier: MIT
         <dependency-check-maven.version>12.1.1</dependency-check-maven.version>
         <modernizer-maven-plugin.version>3.1.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
-        <swagger-ui.version>5.21.0</swagger-ui.version>
+        <swagger-ui.version>5.22.0</swagger-ui.version>
         <sentry.version>8.12.0</sentry.version>
         <errorProne.version>2.38.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
@@ -397,11 +399,6 @@ SPDX-License-Identifier: MIT
             <artifactId>gt-jdbc-oracle</artifactId>
             <version>${geotools.version}</version>
             <exclusions>
-                <exclusion>
-                    <!-- TODO: probably not needed after GeoTools 33.0 -->
-                    <groupId>com.oracle.database.jdbc</groupId>
-                    <artifactId>ojdbc8</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>com.oracle.database.jdbc</groupId>
                     <artifactId>ojdbc11</artifactId>
@@ -1064,15 +1061,17 @@ SPDX-License-Identifier: MIT
                         </goals>
                         <phase>process-sources</phase>
                         <configuration>
-                            <target name="fix-generated-sources">
-                                <!-- HTM-1051 replace javax.validation with jakarta.validation in generated sources
+                            <!--
+                           <target name="fix-generated-sources">
+                                 HTM-1051 replace javax.validation with jakarta.validation in generated sources
                                 the current config still generates javax.validation, but we want jakarta.validation
-                                -->
+                                
                                 <replace dir="target/generated-sources/openapi/src/main/java/org/tailormap/api/" summary="true">
                                     <replacetoken><![CDATA[import javax.validation.]]></replacetoken>
                                     <replacevalue><![CDATA[import jakarta.validation.]]></replacevalue>
                                 </replace>
                             </target>
+                            -->
                         </configuration>
                     </execution>
                     <execution>
