@@ -9,8 +9,6 @@ updates:
       timezone: Europe/Amsterdam
     open-pull-requests-limit: 25
     target-branch: main
-    reviewers:
-      - mprins
     assignees:
       - mprins
     labels:
@@ -48,8 +46,6 @@ updates:
       time: "23:00"
       timezone: Europe/Amsterdam
     target-branch: main
-    reviewers:
-      - mprins
     assignees:
       - mprins
     labels:
