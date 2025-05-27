@@ -124,7 +124,7 @@ SPDX-License-Identifier: MIT
         -->
         <flyway.version>11.8.2</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
-        <!-- <hibernate.version>6.6.15.Final</hibernate.version>-->
+        <hibernate.version>6.6.16.Final</hibernate.version>
         <!-- <junit-jupiter.version>5.12.2</junit-jupiter.version>-->
         <!-- <micrometer.version>1.15.0</micrometer.version>-->
         <mssql-jdbc.version>12.10.0.jre11</mssql-jdbc.version>
@@ -898,7 +898,13 @@ SPDX-License-Identifier: MIT
                     <compilerArgs combine.children="append">
                         <arg>-XDcompilePolicy=simple</arg>
                         <arg>--should-stop=ifError=FLOW</arg>
-                        <arg>-Xplugin:ErrorProne -XepExcludedPaths:${errorProneExcludePaths} ${errorProneFlags}</arg>
+                        <arg>-Xplugin:ErrorProne -XepExcludedPaths:${errorProneExcludePaths} \
+                            -Xep:DeadException:WARN \
+                            -Xep:BanJNDI:WARN \
+                            -Xep:SelfAssertion:WARN \
+                            -Xep:InvalidBlockTag:WARN \
+                            -Xep:InvalidLink:WARN \
+                            ${errorProneFlags}</arg>
                         <arg>-Xlint:${compiler.lint}</arg>
                         <arg>-Werror</arg>
                         <arg>-Xmaxwarns</arg>
@@ -1287,12 +1293,12 @@ SPDX-License-Identifier: MIT
                             <rules>
                                 <!-- see https://maven.apache.org/enforcer/enforcer-rules/index.html -->
                                 <requireMavenVersion>
-                                    <version>3.9.5</version>
-                                    <message>Requires Maven 3.9.5 or higher</message>
+                                    <version>[3.9.5, 4)</version>
+                                    <message>Maven 3.9.5 or higher is required to build</message>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>${java.version}</version>
-                                    <message>Requires Java ${java.version} or higher</message>
+                                    <message>Java ${java.version} or higher is required to build</message>
                                 </requireJavaVersion>
                                 <bannedDependencies>
                                     <message>Do not use banned dependencies</message>
