@@ -354,6 +354,25 @@ components:
       title: CheckboxFilterConfiguration
       description: Configuration for a checkbox filter
       type: object
+      properties:
+        filterTool:
+          description: 'the type of filter tool'
+          enum:
+            - 'CHECKBOX'
+        attributeValuesSettings:
+            description: 'settings for the attribute values'
+            type: array
+            items:
+              type: object
+              properties:
+                value:
+                  type: string
+                initiallySelected:
+                  type: boolean
+                selectable:
+                  type: boolean
+                alias:
+                  type: string
 
     FormOptions:
       description: 'model with options for an form'
