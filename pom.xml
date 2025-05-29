@@ -124,7 +124,7 @@ SPDX-License-Identifier: MIT
         -->
         <flyway.version>11.8.2</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
-        <hibernate.version>6.6.16.Final</hibernate.version>
+        <hibernate.version>6.6.17.Final</hibernate.version>
         <!-- <junit-jupiter.version>5.12.2</junit-jupiter.version>-->
         <!-- <micrometer.version>1.15.0</micrometer.version>-->
         <mssql-jdbc.version>12.10.0.jre11</mssql-jdbc.version>
