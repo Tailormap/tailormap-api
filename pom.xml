@@ -9,6 +9,7 @@ SPDX-License-Identifier: MIT
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
+        <!-- when updating please check version overrides using the commands in the properties section -->
         <version>3.5.0</version>
     </parent>
     <groupId>org.tailormap</groupId>
@@ -102,7 +103,7 @@ SPDX-License-Identifier: MIT
         <project.build.outputTimestamp>2025-03-21T11:33:29Z</project.build.outputTimestamp>
         <geotools.version>33.1</geotools.version>
         <jts.version>1.20.0</jts.version>
-        <okhttp.version>5.0.0-alpha.14</okhttp.version>
+        <okhttp.version>5.0.0-alpha.16</okhttp.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <!-- solr and jetty versions may need to match to prevent errors such as
         Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener 
@@ -124,12 +125,12 @@ SPDX-License-Identifier: MIT
         -->
         <flyway.version>11.8.2</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
-        <hibernate.version>6.6.16.Final</hibernate.version>
-        <!-- <junit-jupiter.version>5.12.2</junit-jupiter.version>-->
+        <hibernate.version>6.6.17.Final</hibernate.version>
+        <junit-jupiter.version>5.13.0</junit-jupiter.version>
         <!-- <micrometer.version>1.15.0</micrometer.version>-->
         <mssql-jdbc.version>12.10.0.jre11</mssql-jdbc.version>
         <oracle-database.version>23.8.0.25.04</oracle-database.version>
-        <postgresql.version>42.7.5</postgresql.version>
+        <postgresql.version>42.7.6</postgresql.version>
         <!-- <spring-data-bom.version>2024.0.6</spring-data-bom.version>-->
         <!-- <spring-hateoas.version>2.3.3</spring-hateoas.version>-->
         <!-- <spring-security.version>6.3.4</spring-security.version>-->
