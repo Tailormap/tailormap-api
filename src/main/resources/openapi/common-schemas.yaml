@@ -316,19 +316,23 @@ components:
           default: false
         editConfiguration:
           description: 'configuration for editing filter'
-          anyOf:
-            - $ref: '#/components/schemas/SliderFilterConfiguration'
-            - $ref: '#/components/schemas/CheckboxFilterConfiguration'
+          allOf:
+            - type: object
+              properties:
+                filterTool:
+                  description: 'the type of filter tool'
+                  enum:
+                    - 'SLIDER'
+                    - 'CHECKBOX'
+            - anyOf:
+                - $ref: '#/components/schemas/SliderFilterConfiguration'
+                - $ref: '#/components/schemas/CheckboxFilterConfiguration'
 
     SliderFilterConfiguration:
       title: SliderFilterConfiguration
       description: Configuration for a slider filter
       type: object
       properties:
-        filterTool:
-          description: 'the type of filter tool'
-          enum:
-              - 'SLIDER'
         minimumValue:
           description: 'minimum value for the slider'
           type: number
@@ -355,10 +359,6 @@ components:
       description: Configuration for a checkbox filter
       type: object
       properties:
-        filterTool:
-          description: 'the type of filter tool'
-          enum:
-            - 'CHECKBOX'
         attributeValuesSettings:
             description: 'settings for the attribute values'
             type: array
