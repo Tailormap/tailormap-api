@@ -130,7 +130,7 @@ SPDX-License-Identifier: MIT
         <!-- <micrometer.version>1.15.0</micrometer.version>-->
         <mssql-jdbc.version>12.10.0.jre11</mssql-jdbc.version>
         <oracle-database.version>23.8.0.25.04</oracle-database.version>
-        <postgresql.version>42.7.5</postgresql.version>
+        <postgresql.version>42.7.6</postgresql.version>
         <!-- <spring-data-bom.version>2024.0.6</spring-data-bom.version>-->
         <!-- <spring-hateoas.version>2.3.3</spring-hateoas.version>-->
         <!-- <spring-security.version>6.3.4</spring-security.version>-->
