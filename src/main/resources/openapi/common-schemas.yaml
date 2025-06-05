@@ -367,10 +367,13 @@ components:
               properties:
                 value:
                   type: string
+                  required: true
                 initiallySelected:
                   type: boolean
+                  default: true
                 selectable:
                   type: boolean
+                  default: true
                 alias:
                   type: string
 
