@@ -382,7 +382,8 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
                 JsonNode nestedProperties = properties.get("properties");
                 if (nestedProperties != null) {
                   nestedProperties
-                      .fields()
+                      .properties()
+                      .iterator()
                       .forEachRemaining(
                           entry -> properties.putIfAbsent(entry.getKey(), entry.getValue()));
                 }
