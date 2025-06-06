@@ -24,60 +24,63 @@
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.geotools.data.wfs.internal.FeatureTypeInfo;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.springframework.util.LinkedCaseInsensitiveMap;
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.util.UriComponentsBuilder;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.wfs.SimpleWFSHelper;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureSource;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureType;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.helper.GeoToolsHelper;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.ServiceAuthentication;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.TMFeatureTypeInfo;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="WFSFeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/WFSFeatureSourceHelper.html#WFSFeatureSourceHelper">WFSFeatureSourceHelper</a> <strong class="jxr_keyword">extends</strong> <a name="FeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/FeatureSourceHelper.html#FeatureSourceHelper">FeatureSourceHelper</a> {
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>    @Override
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>    <strong class="jxr_keyword">public</strong> DataStore createDataStore(<a name="TMFeatureSource" href="../../../../../org/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> tmfs, Integer timeout) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>      Map&lt;String, Object&gt; params = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">if</strong> (timeout != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>        params.put(WFSDataStoreFactory.TIMEOUT.key, timeout);
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>      }
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>      LinkedCaseInsensitiveMap&lt;String&gt; wfsUrlParams = <strong class="jxr_keyword">new</strong> LinkedCaseInsensitiveMap&lt;&gt;();
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      wfsUrlParams.putAll(UriComponentsBuilder.fromUriString(tmfs.getUrl())
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>          .build()
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>          .getQueryParams()
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>          .toSingleValueMap());
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>      String version = wfsUrlParams.get(<span class="jxr_string">"VERSION"</span>);
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">if</strong> (!<span class="jxr_string">"2.0.0"</span>.equals(version)) {
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>        version = SimpleWFSHelper.DEFAULT_WFS_VERSION;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>      }
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>      params.put(
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>          WFSDataStoreFactory.URL.key,
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>          SimpleWFSHelper.getWFSRequestURL(tmfs.getUrl(), <span class="jxr_string">"GetCapabilities"</span>, version, <strong class="jxr_keyword">null</strong>)
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>              .toURL());
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>      ServiceAuthentication authentication = tmfs.getAuthentication();
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>      <strong class="jxr_keyword">if</strong> (authentication != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>        <strong class="jxr_keyword">if</strong> (authentication.getMethod() != ServiceAuthentication.MethodEnum.PASSWORD) {
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>          <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(authentication.getMethod().getValue());
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>        }
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>        params.put(WFSDataStoreFactory.USERNAME.key, authentication.getUsername());
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>        params.put(WFSDataStoreFactory.PASSWORD.key, authentication.getPassword());
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>      }
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">return</strong> openDatastore(params, WFSDataStoreFactory.PASSWORD.key);
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>    }
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>    @Override
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>    <strong class="jxr_keyword">protected</strong> TMFeatureTypeInfo getFeatureTypeInfo(<a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> pft, ResourceInfo info, SimpleFeatureSource gtFs) {
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      TMFeatureTypeInfo tmInfo = <strong class="jxr_keyword">super</strong>.getFeatureTypeInfo(pft, info, gtFs);
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">if</strong> (info instanceof FeatureTypeInfo ftInfo) {
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>        tmInfo.schema(info.getSchema())
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>            .wgs84BoundingBox(GeoToolsHelper.fromEnvelope(ftInfo.getWGS84BoundingBox()))
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>            .defaultSrs(ftInfo.getDefaultSRS())
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>            .otherSrs(Set.copyOf(ftInfo.getOtherSRS()))
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>            .outputFormats(ftInfo.getOutputFormats())
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>            .abstractText(ftInfo.getAbstract());
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      }
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      <strong class="jxr_keyword">return</strong> tmInfo;
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>    }
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>  }
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.PreventLocalAllowNestedJarEntityResolver;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.geotools.wfs.SimpleWFSHelper;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureSource;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.TMFeatureType;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.helper.GeoToolsHelper;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.ServiceAuthentication;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.TMFeatureTypeInfo;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="WFSFeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/WFSFeatureSourceHelper.html#WFSFeatureSourceHelper">WFSFeatureSourceHelper</a> <strong class="jxr_keyword">extends</strong> <a name="FeatureSourceHelper" href="../../../../../org/tailormap/api/geotools/featuresources/FeatureSourceHelper.html#FeatureSourceHelper">FeatureSourceHelper</a> {
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>    @Override
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>    <strong class="jxr_keyword">public</strong> DataStore createDataStore(<a name="TMFeatureSource" href="../../../../../org/tailormap/api/persistence/TMFeatureSource.html#TMFeatureSource">TMFeatureSource</a> tmfs, Integer timeout) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      Map&lt;String, Object&gt; params = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      params.put(WFSDataStoreFactory.ENTITY_RESOLVER.key, PreventLocalAllowNestedJarEntityResolver.INSTANCE);
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">if</strong> (timeout != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>        params.put(WFSDataStoreFactory.TIMEOUT.key, timeout);
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      }
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      LinkedCaseInsensitiveMap&lt;String&gt; wfsUrlParams = <strong class="jxr_keyword">new</strong> LinkedCaseInsensitiveMap&lt;&gt;();
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      wfsUrlParams.putAll(UriComponentsBuilder.fromUriString(tmfs.getUrl())
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>          .build()
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>          .getQueryParams()
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>          .toSingleValueMap());
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      String version = wfsUrlParams.get(<span class="jxr_string">"VERSION"</span>);
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      <strong class="jxr_keyword">if</strong> (!<span class="jxr_string">"2.0.0"</span>.equals(version)) {
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>        version = SimpleWFSHelper.DEFAULT_WFS_VERSION;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      }
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>      params.put(
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          WFSDataStoreFactory.URL.key,
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          SimpleWFSHelper.getWFSRequestURL(tmfs.getUrl(), <span class="jxr_string">"GetCapabilities"</span>, version, <strong class="jxr_keyword">null</strong>)
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>              .toURL());
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      ServiceAuthentication authentication = tmfs.getAuthentication();
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">if</strong> (authentication != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>        <strong class="jxr_keyword">if</strong> (authentication.getMethod() != ServiceAuthentication.MethodEnum.PASSWORD) {
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>          <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(authentication.getMethod().getValue());
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>        }
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>        params.put(WFSDataStoreFactory.USERNAME.key, authentication.getUsername());
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>        params.put(WFSDataStoreFactory.PASSWORD.key, authentication.getPassword());
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      }
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">return</strong> openDatastore(params, WFSDataStoreFactory.PASSWORD.key);
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>    }
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>    @Override
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>    <strong class="jxr_keyword">protected</strong> TMFeatureTypeInfo getFeatureTypeInfo(<a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> pft, ResourceInfo info, SimpleFeatureSource gtFs) {
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>      TMFeatureTypeInfo tmInfo = <strong class="jxr_keyword">super</strong>.getFeatureTypeInfo(pft, info, gtFs);
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">if</strong> (info instanceof FeatureTypeInfo ftInfo) {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>        tmInfo.schema(info.getSchema())
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>            .wgs84BoundingBox(GeoToolsHelper.fromEnvelope(ftInfo.getWGS84BoundingBox()))
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>            .defaultSrs(ftInfo.getDefaultSRS())
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>            .otherSrs(Set.copyOf(ftInfo.getOtherSRS()))
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>            .outputFormats(ftInfo.getOutputFormats())
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>            .abstractText(ftInfo.getAbstract());
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      }
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>      <strong class="jxr_keyword">return</strong> tmInfo;
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>    }
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
