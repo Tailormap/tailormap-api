@@ -72,9 +72,11 @@ import org.tailormap.api.persistence.json.AuthorizationRule;
 import org.tailormap.api.persistence.json.AuthorizationRuleDecision;
 import org.tailormap.api.persistence.json.Bounds;
 import org.tailormap.api.persistence.json.CatalogNode;
+import org.tailormap.api.persistence.json.CheckboxFilterConfigurationAttributeValuesSettingsInner;
 import org.tailormap.api.persistence.json.FeatureTypeRef;
 import org.tailormap.api.persistence.json.FeatureTypeTemplate;
 import org.tailormap.api.persistence.json.Filter;
+import org.tailormap.api.persistence.json.FilterEditConfiguration;
 import org.tailormap.api.persistence.json.FilterGroup;
 import org.tailormap.api.persistence.json.GeoServiceDefaultLayerSettings;
 import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
@@ -1167,10 +1169,77 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .addFiltersItem(new Filter()
                     .id("filter1")
                     .type(Filter.TypeEnum.ATTRIBUTE)
-                    .condition(Filter.ConditionEnum.EQUALS)
-                    .addValueItem("G0344")
-                    .attribute("bronhouder")
-                    .attributeType(Filter.AttributeTypeEnum.STRING))));
+                    .condition(Filter.ConditionEnum.BEFORE)
+                    .addValueItem("2025-06-05")
+                    .attribute("creationdate")
+                    .attributeType(Filter.AttributeTypeEnum.DATE))
+                .addFiltersItem(new Filter()
+                    .id("filter2")
+                    .type(Filter.TypeEnum.ATTRIBUTE)
+                    .condition(Filter.ConditionEnum.UNIQUE_VALUES)
+                    .addValueItem("bodembedekkers")
+                    .addValueItem("bosplantsoen")
+                    .addValueItem("gras- en kruidachtigen")
+                    .attribute("plus_fysiekvoorkomen")
+                    .attributeType(Filter.AttributeTypeEnum.STRING)
+                    .editConfiguration(new FilterEditConfiguration()
+                        .filterTool(FilterEditConfiguration.FilterToolEnum.CHECKBOX)
+                        .attributeValuesSettings(List.of(
+                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                                .value("bodembedekkers")
+                                .initiallySelected(true)
+                                .selectable(true)
+                                .alias("Bodembedekkers"),
+                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                                .value("bosplantsoen")
+                                .initiallySelected(true)
+                                .selectable(true)
+                                .alias("Bosplantsoen"),
+                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                                .value("gras- en kruidachtigen")
+                                .initiallySelected(true)
+                                .selectable(true)
+                                .alias("Gras- en kruidachtigen"),
+                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                                .value("griend en hakhout")
+                                .initiallySelected(false)
+                                .selectable(true),
+                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                                .value("heesters")
+                                .initiallySelected(false)
+                                .selectable(true),
+                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                                .value("planten")
+                                .initiallySelected(false)
+                                .selectable(true),
+                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                                .value("struikrozen")
+                                .initiallySelected(false)
+                                .selectable(true),
+                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                                .value("waardeOnbekend")
+                                .initiallySelected(false)
+                                .selectable(true))))))
+            .addFilterGroupsItem(new FilterGroup()
+                .id("filtergroup2")
+                .source("PRESET")
+                .type(FilterGroup.TypeEnum.ATTRIBUTE)
+                .layerIds(List.of("lyr:snapshot-geoserver:postgis:kadastraal_perceel"))
+                .operator(FilterGroup.OperatorEnum.AND)
+                .addFiltersItem(new Filter()
+                    .id("filter3")
+                    .type(Filter.TypeEnum.ATTRIBUTE)
+                    .condition(Filter.ConditionEnum.u)
+                    .addValueItem("1")
+                    .addValueItem("12419")
+                    .attribute("perceelnummer")
+                    .attributeType(Filter.AttributeTypeEnum.DOUBLE)
+                    .editConfiguration(new FilterEditConfiguration()
+                        .filterTool(FilterEditConfiguration.FilterToolEnum.SLIDER)
+                        .initialLowerValue(1d)
+                        .initialUpperValue(12419d)
+                        .minimumValue(1d)
+                        .maximumValue(12419d)))));
 
     app.getContentRoot().getBaseLayerNodes().addAll(baseNodes);
     app.setInitialExtent(

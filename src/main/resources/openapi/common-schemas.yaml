@@ -314,6 +314,68 @@ components:
           type: boolean
           nullable: false
           default: false
+        editConfiguration:
+          description: 'configuration for editing filter'
+          allOf:
+            - type: object
+              properties:
+                filterTool:
+                  description: 'the type of filter tool'
+                  enum:
+                    - 'SLIDER'
+                    - 'CHECKBOX'
+            - anyOf:
+                - $ref: '#/components/schemas/SliderFilterConfiguration'
+                - $ref: '#/components/schemas/CheckboxFilterConfiguration'
+
+    SliderFilterConfiguration:
+      title: SliderFilterConfiguration
+      description: Configuration for a slider filter
+      type: object
+      properties:
+        minimumValue:
+          description: 'minimum value for the slider'
+          type: number
+          format: double
+        maximumValue:
+          description: 'maximum value for the slider'
+          type: number
+          format: double
+        initialValue:
+          description: 'initial value for the slider'
+          type: number
+          format: double
+        initialLowerValue:
+          description: 'initial lower value for a slider filter with between condition'
+          type: number
+          format: double
+        initialUpperValue:
+          description: 'initial upper value for a slider filter with between condition'
+          type: number
+          format: double
+
+    CheckboxFilterConfiguration:
+      title: CheckboxFilterConfiguration
+      description: Configuration for a checkbox filter
+      type: object
+      properties:
+        attributeValuesSettings:
+            description: 'settings for the attribute values'
+            type: array
+            items:
+              type: object
+              properties:
+                value:
+                  type: string
+                  required: true
+                initiallySelected:
+                  type: boolean
+                  default: true
+                selectable:
+                  type: boolean
+                  default: true
+                alias:
+                  type: string
 
     FormOptions:
       description: 'model with options for an form'
