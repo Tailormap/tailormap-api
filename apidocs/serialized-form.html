@@ -723,6 +723,64 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="serialized-class-details" id="org.tailormap.api.persistence.json.CheckboxFilterConfiguration">
+<h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/CheckboxFilterConfiguration.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.CheckboxFilterConfiguration</a></h3>
+<div class="type-signature">class CheckboxFilterConfiguration extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>attributeValuesSettings</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="org/tailormap/api/persistence/json/CheckboxFilterConfigurationAttributeValuesSettingsInner.html" title="class in org.tailormap.api.persistence.json">CheckboxFilterConfigurationAttributeValuesSettingsInner</a>&gt; attributeValuesSettings</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
+<section class="serialized-class-details" id="org.tailormap.api.persistence.json.CheckboxFilterConfigurationAttributeValuesSettingsInner">
+<h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/CheckboxFilterConfigurationAttributeValuesSettingsInner.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.CheckboxFilterConfigurationAttributeValuesSettingsInner</a></h3>
+<div class="type-signature">class CheckboxFilterConfigurationAttributeValuesSettingsInner extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>alias</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> alias</pre>
+</li>
+<li class="block-list">
+<h5>initiallySelected</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> initiallySelected</pre>
+</li>
+<li class="block-list">
+<h5>selectable</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> selectable</pre>
+</li>
+<li class="block-list">
+<h5>value</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> value</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
 <section class="serialized-class-details" id="org.tailormap.api.persistence.json.FeatureTypeRef">
 <h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/FeatureTypeRef.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.FeatureTypeRef</a></h3>
 <div class="type-signature">class FeatureTypeRef extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
@@ -849,6 +907,10 @@ loadScripts(document, 'script');</script>
 <pre><a href="org/tailormap/api/persistence/json/Filter.ConditionEnum.html" title="enum class in org.tailormap.api.persistence.json">Filter.ConditionEnum</a> condition</pre>
 </li>
 <li class="block-list">
+<h5>editConfiguration</h5>
+<pre><a href="org/tailormap/api/persistence/json/FilterEditConfiguration.html" title="class in org.tailormap.api.persistence.json">FilterEditConfiguration</a> editConfiguration</pre>
+</li>
+<li class="block-list">
 <h5>id</h5>
 <pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> id</pre>
 </li>
@@ -863,6 +925,53 @@ loadScripts(document, 'script');</script>
 <li class="block-list">
 <h5>value</h5>
 <pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt; value</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
+<section class="serialized-class-details" id="org.tailormap.api.persistence.json.FilterEditConfiguration">
+<h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/FilterEditConfiguration.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.FilterEditConfiguration</a></h3>
+<div class="type-signature">class FilterEditConfiguration extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>attributeValuesSettings</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="org/tailormap/api/persistence/json/CheckboxFilterConfigurationAttributeValuesSettingsInner.html" title="class in org.tailormap.api.persistence.json">CheckboxFilterConfigurationAttributeValuesSettingsInner</a>&gt; attributeValuesSettings</pre>
+</li>
+<li class="block-list">
+<h5>filterTool</h5>
+<pre><a href="org/tailormap/api/persistence/json/FilterEditConfiguration.FilterToolEnum.html" title="enum class in org.tailormap.api.persistence.json">FilterEditConfiguration.FilterToolEnum</a> filterTool</pre>
+</li>
+<li class="block-list">
+<h5>initialLowerValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> initialLowerValue</pre>
+</li>
+<li class="block-list">
+<h5>initialUpperValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> initialUpperValue</pre>
+</li>
+<li class="block-list">
+<h5>initialValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> initialValue</pre>
+</li>
+<li class="block-list">
+<h5>maximumValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> maximumValue</pre>
+</li>
+<li class="block-list">
+<h5>minimumValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> minimumValue</pre>
 </li>
 </ul>
 </section>
@@ -1643,6 +1752,45 @@ loadScripts(document, 'script');</script>
 <li class="block-list">
 <h5>projections</h5>
 <pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt; projections</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
+<section class="serialized-class-details" id="org.tailormap.api.persistence.json.SliderFilterConfiguration">
+<h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/SliderFilterConfiguration.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.SliderFilterConfiguration</a></h3>
+<div class="type-signature">class SliderFilterConfiguration extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>initialLowerValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> initialLowerValue</pre>
+</li>
+<li class="block-list">
+<h5>initialUpperValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> initialUpperValue</pre>
+</li>
+<li class="block-list">
+<h5>initialValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> initialValue</pre>
+</li>
+<li class="block-list">
+<h5>maximumValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> maximumValue</pre>
+</li>
+<li class="block-list">
+<h5>minimumValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> minimumValue</pre>
 </li>
 </ul>
 </section>
@@ -2577,6 +2725,64 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="serialized-class-details" id="org.tailormap.api.viewer.model.CheckboxFilterConfiguration">
+<h3>Class&nbsp;<a href="org/tailormap/api/viewer/model/CheckboxFilterConfiguration.html" title="class in org.tailormap.api.viewer.model">org.tailormap.api.viewer.model.CheckboxFilterConfiguration</a></h3>
+<div class="type-signature">class CheckboxFilterConfiguration extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>attributeValuesSettings</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="org/tailormap/api/viewer/model/CheckboxFilterConfigurationAttributeValuesSettingsInner.html" title="class in org.tailormap.api.viewer.model">CheckboxFilterConfigurationAttributeValuesSettingsInner</a>&gt; attributeValuesSettings</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
+<section class="serialized-class-details" id="org.tailormap.api.viewer.model.CheckboxFilterConfigurationAttributeValuesSettingsInner">
+<h3>Class&nbsp;<a href="org/tailormap/api/viewer/model/CheckboxFilterConfigurationAttributeValuesSettingsInner.html" title="class in org.tailormap.api.viewer.model">org.tailormap.api.viewer.model.CheckboxFilterConfigurationAttributeValuesSettingsInner</a></h3>
+<div class="type-signature">class CheckboxFilterConfigurationAttributeValuesSettingsInner extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>alias</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> alias</pre>
+</li>
+<li class="block-list">
+<h5>initiallySelected</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> initiallySelected</pre>
+</li>
+<li class="block-list">
+<h5>selectable</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a> selectable</pre>
+</li>
+<li class="block-list">
+<h5>value</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> value</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
 <section class="serialized-class-details" id="org.tailormap.api.viewer.model.ColumnMetadata">
 <h3>Class&nbsp;<a href="org/tailormap/api/viewer/model/ColumnMetadata.html" title="class in org.tailormap.api.viewer.model">org.tailormap.api.viewer.model.ColumnMetadata</a></h3>
 <div class="type-signature">class ColumnMetadata extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
@@ -3027,6 +3233,10 @@ loadScripts(document, 'script');</script>
 <pre><a href="org/tailormap/api/viewer/model/Filter.ConditionEnum.html" title="enum class in org.tailormap.api.viewer.model">Filter.ConditionEnum</a> condition</pre>
 </li>
 <li class="block-list">
+<h5>editConfiguration</h5>
+<pre><a href="org/tailormap/api/viewer/model/FilterEditConfiguration.html" title="class in org.tailormap.api.viewer.model">FilterEditConfiguration</a> editConfiguration</pre>
+</li>
+<li class="block-list">
 <h5>id</h5>
 <pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> id</pre>
 </li>
@@ -3041,6 +3251,53 @@ loadScripts(document, 'script');</script>
 <li class="block-list">
 <h5>value</h5>
 <pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt; value</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
+<section class="serialized-class-details" id="org.tailormap.api.viewer.model.FilterEditConfiguration">
+<h3>Class&nbsp;<a href="org/tailormap/api/viewer/model/FilterEditConfiguration.html" title="class in org.tailormap.api.viewer.model">org.tailormap.api.viewer.model.FilterEditConfiguration</a></h3>
+<div class="type-signature">class FilterEditConfiguration extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>attributeValuesSettings</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;@Valid <a href="org/tailormap/api/viewer/model/CheckboxFilterConfigurationAttributeValuesSettingsInner.html" title="class in org.tailormap.api.viewer.model">CheckboxFilterConfigurationAttributeValuesSettingsInner</a>&gt; attributeValuesSettings</pre>
+</li>
+<li class="block-list">
+<h5>filterTool</h5>
+<pre><a href="org/tailormap/api/viewer/model/FilterEditConfiguration.FilterToolEnum.html" title="enum class in org.tailormap.api.viewer.model">FilterEditConfiguration.FilterToolEnum</a> filterTool</pre>
+</li>
+<li class="block-list">
+<h5>initialLowerValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> initialLowerValue</pre>
+</li>
+<li class="block-list">
+<h5>initialUpperValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> initialUpperValue</pre>
+</li>
+<li class="block-list">
+<h5>initialValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> initialValue</pre>
+</li>
+<li class="block-list">
+<h5>maximumValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> maximumValue</pre>
+</li>
+<li class="block-list">
+<h5>minimumValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> minimumValue</pre>
 </li>
 </ul>
 </section>
@@ -3618,6 +3875,45 @@ loadScripts(document, 'script');</script>
 <li class="block-list">
 <h5>url</h5>
 <pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> url</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
+<section class="serialized-class-details" id="org.tailormap.api.viewer.model.SliderFilterConfiguration">
+<h3>Class&nbsp;<a href="org/tailormap/api/viewer/model/SliderFilterConfiguration.html" title="class in org.tailormap.api.viewer.model">org.tailormap.api.viewer.model.SliderFilterConfiguration</a></h3>
+<div class="type-signature">class SliderFilterConfiguration extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>initialLowerValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> initialLowerValue</pre>
+</li>
+<li class="block-list">
+<h5>initialUpperValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> initialUpperValue</pre>
+</li>
+<li class="block-list">
+<h5>initialValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> initialValue</pre>
+</li>
+<li class="block-list">
+<h5>maximumValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> maximumValue</pre>
+</li>
+<li class="block-list">
+<h5>minimumValue</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a> minimumValue</pre>
 </li>
 </ul>
 </section>
