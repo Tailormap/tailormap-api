@@ -171,24 +171,25 @@
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>               pft.getAttributes().add(tmAttr);
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>             }
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>             pft.setPrimaryKeyAttribute(primaryKeyName);
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>           }
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>           logger.error(<span class="jxr_string">"Exception reading feature type \&quot;{}\&quot;"</span>, typeName, e);
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>         }
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>       }
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>     } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>       ds.dispose();
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>     }
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>   }
-<a class="jxr_linenumber" name="L175" href="#L175">175</a> 
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>   <strong class="jxr_keyword">protected</strong> TMFeatureTypeInfo getFeatureTypeInfo(<a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> pft, ResourceInfo info, SimpleFeatureSource gtFs) {
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> TMFeatureTypeInfo()
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>         .keywords(info.getKeywords())
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>         .description(info.getDescription())
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>         .bounds(GeoToolsHelper.fromEnvelope(info.getBounds()))
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>         .crs(crsToString(info.getCRS()));
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>   }
-<a class="jxr_linenumber" name="L183" href="#L183">183</a> }
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>             pft.setDefaultGeometryAttribute(pft.findDefaultGeometryAttribute());
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>           }
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>           logger.error(<span class="jxr_string">"Exception reading feature type \&quot;{}\&quot;"</span>, typeName, e);
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>         }
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>       }
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>     } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>       ds.dispose();
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>     }
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>   }
+<a class="jxr_linenumber" name="L176" href="#L176">176</a> 
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>   <strong class="jxr_keyword">protected</strong> TMFeatureTypeInfo getFeatureTypeInfo(<a name="TMFeatureType" href="../../../../../org/tailormap/api/persistence/TMFeatureType.html#TMFeatureType">TMFeatureType</a> pft, ResourceInfo info, SimpleFeatureSource gtFs) {
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> TMFeatureTypeInfo()
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>         .keywords(info.getKeywords())
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>         .description(info.getDescription())
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>         .bounds(GeoToolsHelper.fromEnvelope(info.getBounds()))
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>         .crs(crsToString(info.getCRS()));
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>   }
+<a class="jxr_linenumber" name="L184" href="#L184">184</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
