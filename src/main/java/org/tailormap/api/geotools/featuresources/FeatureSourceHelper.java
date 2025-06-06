@@ -163,6 +163,7 @@ public abstract class FeatureSourceHelper {
               pft.getAttributes().add(tmAttr);
             }
             pft.setPrimaryKeyAttribute(primaryKeyName);
+            pft.setDefaultGeometryAttribute(pft.findDefaultGeometryAttribute());
           }
         } catch (Exception e) {
           logger.error("Exception reading feature type \"{}\"", typeName, e);
