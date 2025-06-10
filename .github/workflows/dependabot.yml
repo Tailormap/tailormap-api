@@ -8,6 +8,8 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'Tailormap/tailormap-api'
     steps:
       - name: 'Fetch Dependabot metadata'
@@ -15,25 +17,19 @@ jobs:
         uses: dependabot/fetch-metadata@v2
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - name: 'Enable auto-merge for Dependabot PRs on JUnit, Sentry dependencies for patch and minor version updates'
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: 'Enable auto-merge for Dependabot PRs on selected dependencies for patch and minor version updates'
         if: |
           ( 
             contains(steps.metadata.outputs.dependency-names, 'junit') || 
-            contains(steps.metadata.outputs.dependency-names, 'sentry')
+            contains(steps.metadata.outputs.dependency-names, 'sentry') ||
+            contains(steps.metadata.outputs.dependency-names, 'hibernate') || 
+            contains(steps.metadata.outputs.dependency-names, 'swagger-ui')
           ) && (
             steps.metadata.outputs.update-type == 'version-update:semver-patch' || 
             steps.metadata.outputs.update-type == 'version-update:semver-minor'
           )
-        run: |
-          gh pr edit --remove-label "infrastructure" "$PR_URL"
-          gh pr merge --auto --squash "$PR_URL"
+        run: gh pr edit --remove-label "infrastructure" "${{ github.event.pull_request.html_url }}"
       - name: 'Enable auto-merge for Dependabot PRs on Maven plugins and GH actions for patch and minor version updates'
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
         if: |
           (
             contains(steps.metadata.outputs.dependency-names, 'maven') ||
@@ -43,7 +39,6 @@ jobs:
             steps.metadata.outputs.update-type == 'version-update:semver-patch' || 
             steps.metadata.outputs.update-type == 'version-update:semver-minor'
           )
-        run: |
-          gh pr edit --remove-label "dependency" "$PR_URL"
-          gh pr merge --auto --squash "$PR_URL"
-
+        run: gh pr edit --remove-label "dependency" "${{ github.event.pull_request.html_url }}"
+      - name: 'Set auto-merge for all Dependabot PRs'
+        run: gh pr merge --auto --squash "${{ github.event.pull_request.html_url }}"
