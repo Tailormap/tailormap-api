@@ -28,7 +28,10 @@ jobs:
             steps.metadata.outputs.update-type == 'version-update:semver-patch' || 
             steps.metadata.outputs.update-type == 'version-update:semver-minor'
           )
-        run: gh pr edit --remove-label "infrastructure" "${{ github.event.pull_request.html_url }}"
+        run: |
+          gh pr edit --remove-label "infrastructure" "${{ github.event.pull_request.html_url }}" --repo Tailormap/tailormap-api
+          gh pr merge --auto --squash "${{ github.event.pull_request.html_url }}" --repo Tailormap/tailormap-api
+        # the --repo flag can be removed once the GH tool is fixed, see https://github.com/cli/cli/issues/11055
       - name: 'Enable auto-merge for Dependabot PRs on Maven plugins and GH actions for patch and minor version updates'
         if: |
           (
@@ -39,6 +42,6 @@ jobs:
             steps.metadata.outputs.update-type == 'version-update:semver-patch' || 
             steps.metadata.outputs.update-type == 'version-update:semver-minor'
           )
-        run: gh pr edit --remove-label "dependency" "${{ github.event.pull_request.html_url }}"
-      - name: 'Set auto-merge for all Dependabot PRs'
-        run: gh pr merge --auto --squash "${{ github.event.pull_request.html_url }}"
+        run:
+          gh pr edit --remove-label "dependency" "${{ github.event.pull_request.html_url }}" --repo Tailormap/tailormap-api
+          gh pr merge --auto --squash "${{ github.event.pull_request.html_url }}" --repo Tailormap/tailormap-api
