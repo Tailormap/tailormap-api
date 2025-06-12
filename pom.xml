@@ -14,7 +14,7 @@ SPDX-License-Identifier: MIT
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
-    <version>12.0.0</version>
+    <version>12.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Tailormap API</name>
     <description>Tailormap API provides the backend for Tailormap</description>
@@ -64,7 +64,7 @@ SPDX-License-Identifier: MIT
     <scm>
         <connection>scm:git:git@github.com:Tailormap/tailormap-api.git</connection>
         <developerConnection>scm:git:git@github.com:Tailormap/tailormap-api.git</developerConnection>
-        <tag>tailormap-api-12.0.0</tag>
+        <tag>tailormap-api-11.4.4</tag>
         <url>https://github.com/Tailormap/tailormap-api/</url>
     </scm>
     <issueManagement>
@@ -100,7 +100,7 @@ SPDX-License-Identifier: MIT
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
-        <project.build.outputTimestamp>2025-06-12T12:06:27Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-06-12T12:08:05Z</project.build.outputTimestamp>
         <geotools.version>33.1</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.0.0-alpha.16</okhttp.version>
