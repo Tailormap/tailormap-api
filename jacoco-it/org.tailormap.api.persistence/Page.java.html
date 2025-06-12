@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Page.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.persistence</a> &gt; <span class="el_source">Page.java</span></div><h1>Page.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2024 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+package org.tailormap.api.persistence;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Version;
+import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
+import org.hibernate.annotations.Type;
+import org.tailormap.api.persistence.json.PageTile;
+import org.tailormap.api.persistence.listener.EntityEventPublisher;
+
+@Entity
+@EntityListeners(EntityEventPublisher.class)
+<span class="nc" id="L25">public class Page {</span>
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @Version
+  private Long version;
+
+  /** Used by the frontend that displays pages to determine how to show the page, a string like 'page'. */
+  private String type;
+
+  @Column(unique = true)
+  @NotNull private String name;
+
+  private String title;
+
+  /** Content of the page, interpreted by the page display frontend, can contain Markdown for example. */
+  @Column(columnDefinition = &quot;text&quot;)
+  private String content;
+
+  /** CSS class name to apply to the page. */
+  private String className;
+
+<span class="nc" id="L49">  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)</span>
+  @Column(columnDefinition = &quot;jsonb&quot;)
+  private List&lt;PageTile&gt; tiles = new ArrayList&lt;&gt;();
+
+  public Long getId() {
+<span class="nc" id="L54">    return id;</span>
+  }
+
+  public void setId(Long id) {
+<span class="nc" id="L58">    this.id = id;</span>
+<span class="nc" id="L59">  }</span>
+
+  public Long getVersion() {
+<span class="nc" id="L62">    return version;</span>
+  }
+
+  public void setVersion(Long version) {
+<span class="nc" id="L66">    this.version = version;</span>
+<span class="nc" id="L67">  }</span>
+
+  public String getType() {
+<span class="nc" id="L70">    return type;</span>
+  }
+
+  public void setType(String type) {
+<span class="nc" id="L74">    this.type = type;</span>
+<span class="nc" id="L75">  }</span>
+
+  public String getName() {
+<span class="nc" id="L78">    return name;</span>
+  }
+
+  public void setName(String name) {
+<span class="nc" id="L82">    this.name = name;</span>
+<span class="nc" id="L83">  }</span>
+
+  public String getTitle() {
+<span class="nc" id="L86">    return title;</span>
+  }
+
+  public void setTitle(String title) {
+<span class="nc" id="L90">    this.title = title;</span>
+<span class="nc" id="L91">  }</span>
+
+  public String getContent() {
+<span class="nc" id="L94">    return content;</span>
+  }
+
+  public void setContent(String content) {
+<span class="nc" id="L98">    this.content = content;</span>
+<span class="nc" id="L99">  }</span>
+
+  public String getClassName() {
+<span class="nc" id="L102">    return className;</span>
+  }
+
+  public void setClassName(String className) {
+<span class="nc" id="L106">    this.className = className;</span>
+<span class="nc" id="L107">  }</span>
+
+  public List&lt;PageTile&gt; getTiles() {
+<span class="nc" id="L110">    return tiles;</span>
+  }
+
+  public void setTiles(List&lt;PageTile&gt; tiles) {
+<span class="nc" id="L114">    this.tiles = tiles;</span>
+<span class="nc" id="L115">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

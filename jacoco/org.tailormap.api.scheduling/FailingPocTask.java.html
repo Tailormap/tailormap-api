@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FailingPocTask.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.scheduling</a> &gt; <span class="el_source">FailingPocTask.java</span></div><h1>FailingPocTask.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2024 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.scheduling;
+
+import java.lang.invoke.MethodHandles;
+import org.quartz.DisallowConcurrentExecution;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.PersistJobDataAfterExecution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.quartz.QuartzJobBean;
+
+/** POC task for testing purposes. This task always fails. */
+@DisallowConcurrentExecution
+@PersistJobDataAfterExecution
+<span class="nc" id="L22">public class FailingPocTask extends QuartzJobBean implements Task {</span>
+<span class="nc" id="L23">  private static final Logger logger =</span>
+<span class="nc" id="L24">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+  private String description;
+
+  @Override
+  protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+<span class="nc" id="L29">    final JobDetail jobDetail = context.getJobDetail();</span>
+
+    // NOTE: This map is mutable and can be used to store job data.
+<span class="nc" id="L32">    final JobDataMap jobDataMap = jobDetail.getJobDataMap();</span>
+
+    try {
+      // Simulate some work for a random period of time
+<span class="nc" id="L36">      long workingTime = (long) (Math.random() * 10000);</span>
+<span class="nc" id="L37">      logger.debug(&quot;Working for {} ms&quot;, workingTime);</span>
+<span class="nc" id="L38">      Thread.sleep(workingTime);</span>
+<span class="nc" id="L39">      throw new UnsupportedOperationException(&quot;Failing POC task failed.&quot;);</span>
+<span class="nc" id="L40">    } catch (Exception e) {</span>
+<span class="nc" id="L41">      logger.error(&quot;Failing POC task failed.&quot;, e);</span>
+<span class="nc" id="L42">      jobDataMap.put(Task.LAST_RESULT_KEY, &quot;POC task executed unsuccessfully&quot;);</span>
+<span class="nc" id="L43">      context.setResult(&quot;POC task executed unsuccessfully&quot;);</span>
+<span class="nc" id="L44">      throw new JobExecutionException(e);</span>
+    }
+  }
+
+  // &lt;editor-fold desc=&quot;Getters and Setters&quot;&gt;
+
+  @Override
+  public TaskType getType() {
+<span class="nc" id="L52">    return TaskType.FAILINGPOC;</span>
+  }
+
+  @Override
+  public String getDescription() {
+<span class="nc" id="L57">    return description;</span>
+  }
+
+  @Override
+  public void setDescription(String description) {
+<span class="nc" id="L62">    this.description = description;</span>
+<span class="nc" id="L63">  }</span>
+  // &lt;/editor-fold&gt;
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
