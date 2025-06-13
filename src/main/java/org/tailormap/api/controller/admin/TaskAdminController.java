@@ -407,7 +407,7 @@ A stopped task cannot be restarted, it fire again depending on the schedule.
         case FAILINGPOC:
         case POC:
         case INTERRUPTABLEPOC:
-          // no action required, as these are not managed in Tailormap
+        // no action required, as these are not managed in Tailormap
         default:
           break;
       }

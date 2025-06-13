@@ -23,12 +23,12 @@ import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.json.GeoServiceLayerSettings;
 
 /**
- * Validates access control rules. Any call to userMayView will verify that the currently logged in user is not only
- * allowed to read the current object, but any object above and below it in the hierarchy.
+ * Validates access control rules. Any call to userAllowedToViewApplication will verify that the currently logged in
+ * user is not only allowed to read the current object, but any object above and below it in the hierarchy.
  */
 @Service
-public class AuthorizationService {
-  public static final String ACCESS_TYPE_READ = "read";
+public class AuthorisationService {
+  public static final String ACCESS_TYPE_VIEW = "read";
 
   private Optional<AuthorizationRuleDecision> isAuthorizedByRules(List<AuthorizationRule> rules, String type) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -84,8 +84,8 @@ public class AuthorizationService {
    * @param application the Application to check
    * @return the result from the access control checks.
    */
-  public boolean userMayView(Application application) {
-    return isAuthorizedByRules(application.getAuthorizationRules(), ACCESS_TYPE_READ)
+  public boolean userAllowedToViewApplication(Application application) {
+    return isAuthorizedByRules(application.getAuthorizationRules(), ACCESS_TYPE_VIEW)
         .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
   }
 
@@ -95,8 +95,8 @@ public class AuthorizationService {
    * @param geoService the GeoService to check
    * @return the result from the access control checks.
    */
-  public boolean userMayView(GeoService geoService) {
-    return isAuthorizedByRules(geoService.getAuthorizationRules(), ACCESS_TYPE_READ)
+  public boolean userAllowedToViewGeoService(GeoService geoService) {
+    return isAuthorizedByRules(geoService.getAuthorizationRules(), ACCESS_TYPE_VIEW)
         .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
   }
 
@@ -107,21 +107,21 @@ public class AuthorizationService {
    * @param layer the GeoServiceLayer to check
    * @return the result from the access control checks.
    */
-  public boolean userMayView(GeoService geoService, GeoServiceLayer layer) {
+  public boolean userAllowedToViewGeoServiceLayer(GeoService geoService, GeoServiceLayer layer) {
     Optional<AuthorizationRuleDecision> geoserviceDecision =
-        isAuthorizedByRules(geoService.getAuthorizationRules(), ACCESS_TYPE_READ);
+        isAuthorizedByRules(geoService.getAuthorizationRules(), ACCESS_TYPE_VIEW);
 
     if (geoserviceDecision.equals(Optional.of(AuthorizationRuleDecision.DENY))) {
       return false;
     }
 
-    GeoServiceLayerSettings settings =
+    GeoServiceLayerSettings layerSettings =
         geoService.getSettings().getLayerSettings().get(layer.getName());
-    if (settings != null && settings.getAuthorizationRules() != null) {
+    if (layerSettings != null && layerSettings.getAuthorizationRules() != null) {
       Optional<AuthorizationRuleDecision> decision =
-          isAuthorizedByRules(settings.getAuthorizationRules(), ACCESS_TYPE_READ);
+          isAuthorizedByRules(layerSettings.getAuthorizationRules(), ACCESS_TYPE_VIEW);
       // If no authorization rules are present, fall back to GeoService authorization.
-      if (decision.isPresent() || !settings.getAuthorizationRules().isEmpty()) {
+      if (decision.isPresent() || !layerSettings.getAuthorizationRules().isEmpty()) {
         return decision.equals(Optional.of(AuthorizationRuleDecision.ALLOW));
       }
     }
@@ -148,6 +148,6 @@ public class AuthorizationService {
     return application.getAuthorizationRules().stream()
         .anyMatch(rule -> Group.ANONYMOUS.equals(rule.getGroupName())
             && AuthorizationRuleDecision.ALLOW.equals(
-                rule.getDecisions().get(ACCESS_TYPE_READ)));
+                rule.getDecisions().get(ACCESS_TYPE_VIEW)));
   }
 }
