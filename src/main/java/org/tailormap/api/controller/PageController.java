@@ -29,7 +29,7 @@ import org.tailormap.api.persistence.json.PageTile;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
 import org.tailormap.api.repository.PageRepository;
-import org.tailormap.api.security.AuthorizationService;
+import org.tailormap.api.security.AuthorisationService;
 import org.tailormap.api.viewer.model.PageResponse;
 import org.tailormap.api.viewer.model.ViewerMenuItem;
 import org.tailormap.api.viewer.model.ViewerPageTile;
@@ -39,20 +39,20 @@ public class PageController {
 
   private final ConfigurationRepository configurationRepository;
   private final ApplicationRepository applicationRepository;
-  private final AuthorizationService authorizationService;
+  private final AuthorisationService authorisationService;
   private final PageRepository pageRepository;
   private final UploadHelper uploadHelper;
 
   public PageController(
       ConfigurationRepository configurationRepository,
       ApplicationRepository applicationRepository,
-      AuthorizationService authorizationService,
+      AuthorisationService authorisationService,
       PageRepository pageRepository,
       UploadHelper uploadHelper) {
     this.configurationRepository = configurationRepository;
     this.applicationRepository = applicationRepository;
     this.pageRepository = pageRepository;
-    this.authorizationService = authorizationService;
+    this.authorisationService = authorisationService;
     this.uploadHelper = uploadHelper;
   }
 
@@ -135,12 +135,12 @@ public class PageController {
       Optional.ofNullable(tile.getApplicationId())
           .flatMap(applicationRepository::findById)
           .filter(application -> !Boolean.TRUE.equals(tile.getFilterRequireAuthorization())
-              || authorizationService.userMayView(application))
+              || authorisationService.userAllowedToViewApplication(application))
           .ifPresentOrElse(
               application -> {
                 viewerPageTile.applicationUrl("/app/" + application.getName());
                 viewerPageTile.setApplicationRequiresLogin(
-                    !authorizationService.userMayView(application));
+                    !authorisationService.userAllowedToViewApplication(application));
               },
               () -> result.shouldBeFiltered = true);
     }
