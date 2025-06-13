@@ -52,7 +52,7 @@ import org.tailormap.api.repository.ConfigurationRepository;
 import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.repository.GeoServiceRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
-import org.tailormap.api.security.AuthorizationService;
+import org.tailormap.api.security.AuthorisationService;
 import org.tailormap.api.viewer.model.AppLayer;
 import org.tailormap.api.viewer.model.LayerSearchIndex;
 import org.tailormap.api.viewer.model.LayerTreeNode;
@@ -71,7 +71,7 @@ public class ApplicationHelper {
   private final ApplicationRepository applicationRepository;
   private final FeatureSourceRepository featureSourceRepository;
   private final EntityManager entityManager;
-  private final AuthorizationService authorizationService;
+  private final AuthorisationService authorisationService;
   private final SearchIndexRepository searchIndexRepository;
 
   public ApplicationHelper(
@@ -81,7 +81,7 @@ public class ApplicationHelper {
       ApplicationRepository applicationRepository,
       FeatureSourceRepository featureSourceRepository,
       EntityManager entityManager,
-      AuthorizationService authorizationService,
+      AuthorisationService authorisationService,
       SearchIndexRepository searchIndexRepository) {
     this.geoServiceHelper = geoServiceHelper;
     this.geoServiceRepository = geoServiceRepository;
@@ -89,7 +89,7 @@ public class ApplicationHelper {
     this.applicationRepository = applicationRepository;
     this.featureSourceRepository = featureSourceRepository;
     this.entityManager = entityManager;
-    this.authorizationService = authorizationService;
+    this.authorisationService = authorisationService;
     this.searchIndexRepository = searchIndexRepository;
   }
 
@@ -398,11 +398,11 @@ public class ApplicationHelper {
         return Triple.of(null, null, null);
       }
 
-      if (!authorizationService.userMayView(service)) {
+      if (!authorisationService.userAllowedToViewGeoService(service)) {
         return Triple.of(null, null, null);
       }
 
-      if (authorizationService.mustDenyAccessForSecuredProxy(app, service)) {
+      if (authorisationService.mustDenyAccessForSecuredProxy(app, service)) {
         return Triple.of(null, null, null);
       }
 
@@ -417,7 +417,7 @@ public class ApplicationHelper {
         return Triple.of(null, null, null);
       }
 
-      if (!authorizationService.userMayView(service, serviceLayer)) {
+      if (!authorisationService.userAllowedToViewGeoServiceLayer(service, serviceLayer)) {
         return Triple.of(null, null, null);
       }
 
