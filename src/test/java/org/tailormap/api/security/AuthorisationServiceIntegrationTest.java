@@ -19,12 +19,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Application;
+import org.tailormap.api.persistence.GeoService;
+import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.repository.ApplicationRepository;
+import org.tailormap.api.repository.GeoServiceRepository;
 
 @PostgresIntegrationTest
 class AuthorisationServiceIntegrationTest {
   @Autowired
   private ApplicationRepository applicationRepository;
+
+  @Autowired
+  private GeoServiceRepository geoServiceRepository;
 
   @Autowired
   AuthorisationService authorisationService;
@@ -87,5 +93,43 @@ class AuthorisationServiceIntegrationTest {
         app.getAuthorizationRules().size(),
         greaterThan(0));
     assertFalse(authorisationService.userAllowedToViewApplication(app));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "foo",
+      authorities = {"test-foo"},
+      password = "foo")
+  void testFooUserNotAllowedToViewBGT() {
+    final String applicationId = "secured-auth";
+    Application app = applicationRepository.findByName(applicationId);
+    assertNotNull(app, () -> "Application " + applicationId + " should exist");
+    assertThat(
+        "Application " + applicationId + " should have authorization rules",
+        app.getAuthorizationRules().size(),
+        greaterThan(0));
+    assertTrue(authorisationService.userAllowedToViewApplication(app));
+    // this id matches title "Test GeoServer (with authorization rules)"
+    // this service is allowed for user with authority test-foo
+    GeoService geoService =
+        geoServiceRepository.findById("filtered-snapshot-geoserver").orElse(null);
+    assertNotNull(geoService, () -> "GeoService should exist");
+    assertTrue(authorisationService.userAllowedToViewGeoService(geoService));
+
+    GeoServiceLayer bgtLayer = geoService.getLayers().stream()
+        .filter(l -> "BGT".equals(l.getName()))
+        .findFirst()
+        .orElse(null);
+    assertNotNull(bgtLayer, () -> "BGT layer should exist");
+    // this layer is not allowed for user with authority test-foo
+    assertFalse(authorisationService.userAllowedToViewGeoServiceLayer(geoService, bgtLayer));
+
+    // this layer is allowed for user with authority test-foo
+    GeoServiceLayer terreindeelLayer = geoService.getLayers().stream()
+        .filter(l -> "postgis:begroeidterreindeel".equals(l.getName()))
+        .findFirst()
+        .orElse(null);
+    assertNotNull(terreindeelLayer, () -> "begroeidterreindeel layer should exist");
+    assertTrue(authorisationService.userAllowedToViewGeoServiceLayer(geoService, terreindeelLayer));
   }
 }
