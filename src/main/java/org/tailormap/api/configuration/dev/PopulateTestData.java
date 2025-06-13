@@ -273,6 +273,15 @@ public class PopulateTestData {
     u.getGroups().addAll(List.of(groupFoo, groupBar, groupBaz));
     userRepository.save(u);
 
+    // Foo only user
+    u = new User()
+        .setUsername("foo")
+        .setPassword("{noop}foo")
+        .setEmail("foo@example.com")
+        .setName("Foo only user");
+    u.getGroups().add(groupFoo);
+    userRepository.save(u);
+
     // Superuser with all access
     u = new User().setUsername("tm-admin").setPassword(adminHashedPassword);
     u.addOrUpdateAdminProperty("some-property", "some-value", true);
@@ -1386,7 +1395,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .id("root")
                 .root(true)
                 .title("Layers")
-                .childrenIds(List.of("lyr:needs-auth", "lyr:public")))
+                .childrenIds(List.of("lvl:needs-auth", "lvl:public")))
             .addLayerNodesItem(new AppTreeLevelNode()
                 .objectType("AppTreeLevelNode")
                 .id("lvl:public")
