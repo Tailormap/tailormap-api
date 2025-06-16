@@ -324,9 +324,12 @@ components:
                   enum:
                     - 'SLIDER'
                     - 'CHECKBOX'
+                    - 'BOOLEAN'
+                    - 'DATE'
             - anyOf:
                 - $ref: '#/components/schemas/SliderFilterConfiguration'
                 - $ref: '#/components/schemas/CheckboxFilterConfiguration'
+                - $ref: '#/components/schemas/BooleanFilterConfiguration'
 
     SliderFilterConfiguration:
       title: SliderFilterConfiguration
@@ -376,6 +379,20 @@ components:
                   default: true
                 alias:
                   type: string
+
+    BooleanFilterConfiguration:
+      title: BooleanFilterConfiguration
+      description: Configuration for a boolean filter
+      type: object
+      properties:
+        value1:
+          type: string
+        value2:
+          type: string
+        alias1:
+          type: string
+        alias2:
+          type: string
 
     FormOptions:
       description: 'model with options for an form'
