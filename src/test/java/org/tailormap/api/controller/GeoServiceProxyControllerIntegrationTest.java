@@ -65,10 +65,10 @@ class GeoServiceProxyControllerIntegrationTest {
       "/app/default/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/wms";
 
   private final String begroeidterreindeelLegendUrl =
-      "/app/secured/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/proxiedlegend";
+      "/app/secured/layer/lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel/proxy/legend";
 
   private final String pdokWmsProvinciegebiedLegendUrl =
-      "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/proxy/proxiedlegend";
+      "/app/secured/layer/lyr:pdok-kadaster-bestuurlijkegebieden:Provinciegebied/proxy/legend";
 
   private final String obkUrl = "/app/secured/layer/lyr:openbasiskaart-proxied:osm/proxy/wmts";
 

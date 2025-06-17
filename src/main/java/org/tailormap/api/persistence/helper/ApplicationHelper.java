@@ -6,7 +6,7 @@
 package org.tailormap.api.persistence.helper;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.tailormap.api.persistence.json.GeoServiceProtocol.PROXIEDLEGEND;
+import static org.tailormap.api.persistence.json.GeoServiceProtocol.LEGEND;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.QUANTIZEDMESH;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.TILES3D;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
@@ -187,7 +187,7 @@ public class ApplicationHelper {
                 application.getName(),
                 "appLayerId",
                 appTreeLayerNode.getId()))
-        + "/" + PROXIEDLEGEND.getValue();
+        + "/" + LEGEND.getValue();
   }
 
   private class MapResponseLayerBuilder {

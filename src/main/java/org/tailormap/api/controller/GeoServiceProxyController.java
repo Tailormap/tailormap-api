@@ -109,7 +109,7 @@ public class GeoServiceProxyController {
       case WMS, WMTS -> {
         return doProxy(buildWMSUrl(service, request), service, request);
       }
-      case PROXIEDLEGEND -> {
+      case LEGEND -> {
         URI legendURI = buildLegendURI(service, layer, request);
         if (legendURI == null) {
           logger.warn("No legend URL found for layer {}", layer.getName());
@@ -134,7 +134,7 @@ public class GeoServiceProxyController {
       throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "XYZ proxying not implemented");
     }
 
-    if (!(service.getProtocol().equals(protocol) || GeoServiceProtocol.PROXIEDLEGEND.equals(protocol))) {
+    if (!(service.getProtocol().equals(protocol) || GeoServiceProtocol.LEGEND.equals(protocol))) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid proxy protocol: " + protocol);
     }
 
