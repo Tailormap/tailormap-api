@@ -186,10 +186,8 @@ public class ApplicationHelper {
                 "viewerName",
                 application.getName(),
                 "appLayerId",
-                appTreeLayerNode.getId(),
-                "protocol",
-                PROXIEDLEGEND.getValue()))
-        .toString();
+                appTreeLayerNode.getId()))
+        + "/" + PROXIEDLEGEND.getValue();
   }
 
   private class MapResponseLayerBuilder {
