@@ -326,6 +326,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/tailormap/api/viewer/model/AppLayer.html#%3Cinit%3E()" class="member-name-link">AppLayer()</a> - Constructor for class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html" class="type-name-link" title="enum class in org.tailormap.api.viewer.model">AppLayer.LegendTypeEnum</a> - Enum Class in <a href="org/tailormap/api/viewer/model/package-summary.html">org.tailormap.api.viewer.model</a></dt>
+<dd>
+<div class="block">Whether the legend is a static image or a dynamic WMS legend.</div>
+</dd>
 <dt><a href="org/tailormap/api/viewer/model/LayerTreeNode.html#appLayerId(java.lang.String)" class="member-name-link">appLayerId(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/LayerTreeNode.html" title="class in org.tailormap.api.viewer.model">LayerTreeNode</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/MapResponse.html#appLayers(java.util.List)" class="member-name-link">appLayers(List&lt;AppLayer&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/MapResponse.html" title="class in org.tailormap.api.viewer.model">MapResponse</a></dt>
@@ -1016,6 +1020,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/admin/model/SearchIndexSummary.html#duration(java.lang.Double)" class="member-name-link">duration(Double)</a> - Method in class org.tailormap.api.admin.model.<a href="org/tailormap/api/admin/model/SearchIndexSummary.html" title="class in org.tailormap.api.admin.model">SearchIndexSummary</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html#DYNAMIC" class="member-name-link">DYNAMIC</a> - Enum constant in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html" title="enum class in org.tailormap.api.viewer.model">AppLayer.LegendTypeEnum</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:E">E</h2>
 <dl class="index">
@@ -1700,6 +1706,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/scheduling/TaskType.html#fromValue(java.lang.String)" class="member-name-link">fromValue(String)</a> - Static method in enum class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskType.html" title="enum class in org.tailormap.api.scheduling">TaskType</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html#fromValue(java.lang.String)" class="member-name-link">fromValue(String)</a> - Static method in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html" title="enum class in org.tailormap.api.viewer.model">AppLayer.LegendTypeEnum</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/Drawing.AccessEnum.html#fromValue(java.lang.String)" class="member-name-link">fromValue(String)</a> - Static method in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Drawing.AccessEnum.html" title="enum class in org.tailormap.api.viewer.model">Drawing.AccessEnum</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/DrawingRequest.AccessEnum.html#fromValue(java.lang.String)" class="member-name-link">fromValue(String)</a> - Static method in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/DrawingRequest.AccessEnum.html" title="enum class in org.tailormap.api.viewer.model">DrawingRequest.AccessEnum</a></dt>
@@ -1801,7 +1809,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/GeoServiceProtocol.html" class="type-name-link" title="enum class in org.tailormap.api.persistence.json">GeoServiceProtocol</a> - Enum Class in <a href="org/tailormap/api/persistence/json/package-summary.html">org.tailormap.api.persistence.json</a></dt>
 <dd>
-<div class="block">Note that the values are case-insensitive and that `proxiedlegend` is a pseudo-protocol for proxied legend requests.</div>
+<div class="block">Note that the values are case-insensitive and that `legend` is a pseudo-protocol for proxying legend requests.</div>
 </dd>
 <dt><a href="org/tailormap/api/controller/GeoServiceProxyController.html" class="type-name-link" title="class in org.tailormap.api.controller">GeoServiceProxyController</a> - Class in <a href="org/tailormap/api/controller/package-summary.html">org.tailormap.api.controller</a></dt>
 <dd>
@@ -3331,6 +3339,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">URL to an image with the layer legend.</div>
 </dd>
+<dt><a href="org/tailormap/api/viewer/model/AppLayer.html#getLegendType()" class="member-name-link">getLegendType()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></dt>
+<dd>
+<div class="block">Whether the legend is a static image or a dynamic WMS legend.</div>
+</dd>
 <dt><a href="org/tailormap/api/persistence/json/WMSStyle.html#getLegendURL()" class="member-name-link">getLegendURL()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a></dt>
 <dd>
 <div class="block">Get legendURL</div>
@@ -4513,6 +4525,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Get value</div>
 </dd>
+<dt><a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html#getValue()" class="member-name-link">getValue()</a> - Method in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html" title="enum class in org.tailormap.api.viewer.model">AppLayer.LegendTypeEnum</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/CheckboxFilterConfigurationAttributeValuesSettingsInner.html#getValue()" class="member-name-link">getValue()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/CheckboxFilterConfigurationAttributeValuesSettingsInner.html" title="class in org.tailormap.api.viewer.model">CheckboxFilterConfigurationAttributeValuesSettingsInner</a></dt>
 <dd>
 <div class="block">Get value</div>
@@ -4620,6 +4634,12 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html#getWgs84BoundingBox()" class="member-name-link">getWgs84BoundingBox()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/TMFeatureTypeInfo.html" title="class in org.tailormap.api.persistence.json">TMFeatureTypeInfo</a></dt>
 <dd>
 <div class="block">Get wgs84BoundingBox</div>
+</dd>
+<dt><a href="org/tailormap/api/persistence/helper/GeoServiceHelper.html#getWmsRequest(java.lang.String)" class="member-name-link">getWmsRequest(String)</a> - Static method in class org.tailormap.api.persistence.helper.<a href="org/tailormap/api/persistence/helper/GeoServiceHelper.html" title="class in org.tailormap.api.persistence.helper">GeoServiceHelper</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/persistence/helper/GeoServiceHelper.html#getWmsRequest(java.net.URI)" class="member-name-link">getWmsRequest(URI)</a> - Static method in class org.tailormap.api.persistence.helper.<a href="org/tailormap/api/persistence/helper/GeoServiceHelper.html" title="class in org.tailormap.api.persistence.helper">GeoServiceHelper</a></dt>
+<dd>
+<div class="block">Extracts the value of the WMS &quot;REQUEST&quot; parameter (case-insensitive) from the given URI.</div>
 </dd>
 <dt><a href="org/tailormap/api/persistence/json/GeoServiceSettings.html#getXyzCrs()" class="member-name-link">getXyzCrs()</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GeoServiceSettings.html" title="class in org.tailormap.api.persistence.json">GeoServiceSettings</a></dt>
 <dd>
@@ -5276,6 +5296,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/MapResponse.html#layerTreeNodes(java.util.List)" class="member-name-link">layerTreeNodes(List&lt;LayerTreeNode&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/MapResponse.html" title="class in org.tailormap.api.viewer.model">MapResponse</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/persistence/json/GeoServiceProtocol.html#LEGEND" class="member-name-link">LEGEND</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GeoServiceProtocol.html" title="enum class in org.tailormap.api.persistence.json">GeoServiceProtocol</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html#legendImageId(java.lang.String)" class="member-name-link">legendImageId(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GeoServiceDefaultLayerSettings.html" title="class in org.tailormap.api.persistence.json">GeoServiceDefaultLayerSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/GeoServiceLayerSettings.html#legendImageId(java.lang.String)" class="member-name-link">legendImageId(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GeoServiceLayerSettings.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayerSettings</a></dt>
@@ -5293,6 +5315,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/json/XYZLayerSettings.html#legendImageId(java.lang.String)" class="member-name-link">legendImageId(String)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/XYZLayerSettings.html" title="class in org.tailormap.api.persistence.json">XYZLayerSettings</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AppLayer.html#legendImageUrl(java.lang.String)" class="member-name-link">legendImageUrl(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AppLayer.html#legendType(org.tailormap.api.viewer.model.AppLayer.LegendTypeEnum)" class="member-name-link">legendType(AppLayer.LegendTypeEnum)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/WMSStyle.html#legendURL(java.net.URI)" class="member-name-link">legendURL(URI)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a></dt>
 <dd>&nbsp;</dd>
@@ -5812,8 +5836,6 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/viewer/model/UserResponse.html#properties(java.util.List)" class="member-name-link">properties(List&lt;AdditionalProperty&gt;)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/UserResponse.html" title="class in org.tailormap.api.viewer.model">UserResponse</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/Service.html#protocol(org.tailormap.api.persistence.json.GeoServiceProtocol)" class="member-name-link">protocol(GeoServiceProtocol)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Service.html" title="class in org.tailormap.api.viewer.model">Service</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="org/tailormap/api/persistence/json/GeoServiceProtocol.html#PROXIEDLEGEND" class="member-name-link">PROXIEDLEGEND</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/GeoServiceProtocol.html" title="enum class in org.tailormap.api.persistence.json">GeoServiceProtocol</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/GeoServiceProxyController.html#proxy(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.json.GeoServiceProtocol,jakarta.servlet.http.HttpServletRequest)" class="member-name-link">proxy(Application, GeoService, GeoServiceLayer, GeoServiceProtocol, HttpServletRequest)</a> - Method in class org.tailormap.api.controller.<a href="org/tailormap/api/controller/GeoServiceProxyController.html" title="class in org.tailormap.api.controller">GeoServiceProxyController</a></dt>
 <dd>&nbsp;</dd>
@@ -6810,6 +6832,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AppLayer.html#setLegendImageUrl(java.lang.String)" class="member-name-link">setLegendImageUrl(String)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AppLayer.html#setLegendType(org.tailormap.api.viewer.model.AppLayer.LegendTypeEnum)" class="member-name-link">setLegendType(AppLayer.LegendTypeEnum)</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/WMSStyle.html#setLegendURL(java.net.URI)" class="member-name-link">setLegendURL(URI)</a> - Method in class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/WMSStyle.html" title="class in org.tailormap.api.persistence.json">WMSStyle</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/TMFeatureSource.html#setLinkedService(org.tailormap.api.persistence.GeoService)" class="member-name-link">setLinkedService(GeoService)</a> - Method in class org.tailormap.api.persistence.<a href="org/tailormap/api/persistence/TMFeatureSource.html" title="class in org.tailormap.api.persistence">TMFeatureSource</a></dt>
@@ -7542,6 +7566,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/scheduling/Task.html#STATE_KEY" class="member-name-link">STATE_KEY</a> - Static variable in interface org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/Task.html" title="interface in org.tailormap.api.scheduling">Task</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html#STATIC" class="member-name-link">STATIC</a> - Enum constant in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html" title="enum class in org.tailormap.api.viewer.model">AppLayer.LegendTypeEnum</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html#stopTask(org.tailormap.api.scheduling.TaskType,java.util.UUID)" class="member-name-link">stopTask(TaskType, UUID)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/TaskAdminController.html" title="class in org.tailormap.api.controller.admin">TaskAdminController</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/persistence/json/Filter.AttributeTypeEnum.html#STRING" class="member-name-link">STRING</a> - Enum constant in enum class org.tailormap.api.persistence.json.<a href="org/tailormap/api/persistence/json/Filter.AttributeTypeEnum.html" title="enum class in org.tailormap.api.persistence.json">Filter.AttributeTypeEnum</a></dt>
@@ -8071,6 +8097,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AdditionalProperty.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AdditionalProperty.html" title="class in org.tailormap.api.viewer.model">AdditionalProperty</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html#toString()" class="member-name-link">toString()</a> - Method in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html" title="enum class in org.tailormap.api.viewer.model">AppLayer.LegendTypeEnum</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AppLayer.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.html" title="class in org.tailormap.api.viewer.model">AppLayer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/viewer/model/AppStyling.html#toString()" class="member-name-link">toString()</a> - Method in class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppStyling.html" title="class in org.tailormap.api.viewer.model">AppStyling</a></dt>
@@ -8501,6 +8529,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the enum constant of this class with the specified name.</div>
 </dd>
+<dt><a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html" title="enum class in org.tailormap.api.viewer.model">AppLayer.LegendTypeEnum</a></dt>
+<dd>
+<div class="block">Returns the enum constant of this class with the specified name.</div>
+</dd>
 <dt><a href="org/tailormap/api/viewer/model/Drawing.AccessEnum.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/Drawing.AccessEnum.html" title="enum class in org.tailormap.api.viewer.model">Drawing.AccessEnum</a></dt>
 <dd>
 <div class="block">Returns the enum constant of this class with the specified name.</div>
@@ -8646,6 +8678,11 @@ the order they are declared.</div>
 the order they are declared.</div>
 </dd>
 <dt><a href="org/tailormap/api/scheduling/TaskType.html#values()" class="member-name-link">values()</a> - Static method in enum class org.tailormap.api.scheduling.<a href="org/tailormap/api/scheduling/TaskType.html" title="enum class in org.tailormap.api.scheduling">TaskType</a></dt>
+<dd>
+<div class="block">Returns an array containing the constants of this enum class, in
+the order they are declared.</div>
+</dd>
+<dt><a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html#values()" class="member-name-link">values()</a> - Static method in enum class org.tailormap.api.viewer.model.<a href="org/tailormap/api/viewer/model/AppLayer.LegendTypeEnum.html" title="enum class in org.tailormap.api.viewer.model">AppLayer.LegendTypeEnum</a></dt>
 <dd>
 <div class="block">Returns an array containing the constants of this enum class, in
 the order they are declared.</div>
