@@ -28,14 +28,14 @@ components:
   schemas:
     GeoServiceProtocol:
       type: string
-      description: Note that the values are case-insensitive and that `proxiedlegend` is a pseudo-protocol for proxied legend requests.
+      description: Note that the values are case-insensitive and that `legend` is a pseudo-protocol for proxying legend requests.
       enum:
         - wms
         - wmts
         - xyz
         - tiles3d
         - quantizedmesh
-        - proxiedlegend
+        - legend
       # force the enum variable names to be uppercase without underscores
       # see:
       #  https://github.com/OpenAPITools/openapi-generator/issues/19086
@@ -46,7 +46,7 @@ components:
         - XYZ
         - TILES3D
         - QUANTIZEDMESH
-        - PROXIEDLEGEND
+        - LEGEND
 
     TileLayerHiDpiMode:
       type: string

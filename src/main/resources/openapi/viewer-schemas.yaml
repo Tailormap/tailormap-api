@@ -104,6 +104,12 @@ components:
         legendImageUrl:
           description: URL to an image with the layer legend.
           type: string
+        legendType:
+          description: Whether the legend is a static image or a dynamic WMS legend.
+          type: string
+          enum:
+            - static
+            - dynamic
         tilingDisabled:
           description: Set to true to request a single tile for WMS (may result in errors when max size/mem exceeded)
           type: boolean

@@ -7,6 +7,7 @@ package org.tailormap.api.controller;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.tailormap.api.persistence.helper.GeoServiceHelper.getWmsRequest;
 import static org.tailormap.api.util.HttpProxyUtil.addForwardedForRequestHeaders;
 import static org.tailormap.api.util.HttpProxyUtil.passthroughRequestHeaders;
 import static org.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
@@ -109,7 +110,7 @@ public class GeoServiceProxyController {
       case WMS, WMTS -> {
         return doProxy(buildWMSUrl(service, request), service, request);
       }
-      case PROXIEDLEGEND -> {
+      case LEGEND -> {
         URI legendURI = buildLegendURI(service, layer, request);
         if (legendURI == null) {
           logger.warn("No legend URL found for layer {}", layer.getName());
@@ -134,7 +135,7 @@ public class GeoServiceProxyController {
       throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "XYZ proxying not implemented");
     }
 
-    if (!(service.getProtocol().equals(protocol) || GeoServiceProtocol.PROXIEDLEGEND.equals(protocol))) {
+    if (!(service.getProtocol().equals(protocol) || GeoServiceProtocol.LEGEND.equals(protocol))) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid proxy protocol: " + protocol);
     }
 
@@ -156,27 +157,32 @@ public class GeoServiceProxyController {
 
   private @Nullable URI buildLegendURI(GeoService service, GeoServiceLayer layer, HttpServletRequest request) {
     URI legendURI = GeoServiceHelper.getLayerLegendUrlFromStyles(service, layer);
-    if (null != legendURI && null != legendURI.getQuery() && null != request.getQueryString()) {
-      // assume this is a getLegendGraphic request
-      UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUri(legendURI);
-      switch (service.getSettings().getServerType()) {
-        case GEOSERVER:
-          uriComponentsBuilder.queryParam(
-              "LEGEND_OPTIONS", "fontAntiAliasing:true;labelMargin:0;forceLabels:on");
-          break;
-        case MAPSERVER:
-        case AUTO:
-        default:
-          // no special options
-      }
-      if (null != request.getParameterMap().get("SCALE")) {
-        legendURI = uriComponentsBuilder
-            .queryParam("SCALE", request.getParameterMap().get("SCALE")[0])
-            .build(true)
-            .toUri();
-      }
+    if (legendURI == null) {
+      return null;
     }
-    return legendURI;
+
+    // If the original service legend URL is not a GetLegendGraphic request, do not add any parameters from the
+    // incoming request and proxy the request as is
+    String wmsRequest = getWmsRequest(legendURI);
+    if (!"getlegendgraphic".equalsIgnoreCase(wmsRequest)) {
+      return legendURI;
+    }
+
+    // Add all parameters from the incoming request to allow for vendor-specific parameters to enhance the legend
+    // image, such as font antialiasing, hi-DPI, label margins, and so on
+    UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUri(legendURI);
+    if (request.getParameterMap() != null) {
+      request.getParameterMap().forEach((key, values) -> {
+        for (String value : values) {
+          uriComponentsBuilder.replaceQueryParam(key, UriUtils.encode(value, StandardCharsets.UTF_8));
+        }
+      });
+    }
+    // Make sure the REQUEST parameter is set to GetLegendGraphic. No SSRF risk as WMSes should not do anything with
+    // other parameters other than returning a legend image
+    uriComponentsBuilder.replaceQueryParam("REQUEST", "GetLegendGraphic");
+
+    return uriComponentsBuilder.build(true).toUri();
   }
 
   private URI buildWMSUrl(GeoService service, HttpServletRequest request) {
