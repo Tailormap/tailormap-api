@@ -6,6 +6,7 @@
 package org.tailormap.api.persistence.helper;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.tailormap.api.persistence.helper.GeoServiceHelper.getWmsRequest;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.LEGEND;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.QUANTIZEDMESH;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.TILES3D;
@@ -325,13 +326,26 @@ public class ApplicationHelper {
       boolean proxied = service.getSettings().getUseProxy();
 
       String legendImageUrl = serviceLayerSettings.getLegendImageId();
+      AppLayer.LegendTypeEnum legendType = AppLayer.LegendTypeEnum.STATIC;
+
       if (legendImageUrl == null && serviceLayer.getStyles() != null) {
         // no user defined legend image, try to get legend image from styles
-        URI serviceLegendUrl = GeoServiceHelper.getLayerLegendUrlFromStyles(service, serviceLayer);
-        legendImageUrl = serviceLegendUrl != null ? serviceLegendUrl.toString() : null;
-        if (null != legendImageUrl && proxied) {
-          // service styles provides a legend image, but we need to proxy it
-          legendImageUrl = getLegendProxyUrl(app, layerRef);
+        legendImageUrl = Optional.ofNullable(
+                GeoServiceHelper.getLayerLegendUrlFromStyles(service, serviceLayer))
+            .map(URI::toString)
+            .orElse(null);
+
+        if (legendImageUrl != null) {
+          // Check whether the legend is dynamic or static based on the original legend URL, before it is
+          // possibly replaced by URL to the proxy controller
+          legendType = "GetLegendGraphic".equalsIgnoreCase(getWmsRequest(legendImageUrl))
+              ? AppLayer.LegendTypeEnum.DYNAMIC
+              : AppLayer.LegendTypeEnum.STATIC;
+
+          if (proxied) {
+            // service styles provides a legend image, but we need to proxy it
+            legendImageUrl = getLegendProxyUrl(app, layerRef);
+          }
         }
       }
 
@@ -374,6 +388,7 @@ public class ApplicationHelper {
                       .name(searchIndex.getName())
                   : null)
           .legendImageUrl(legendImageUrl)
+          .legendType(legendType)
           .visible(layerRef.getVisible())
           .attribution(attribution)
           .description(description)

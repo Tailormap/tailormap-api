@@ -7,6 +7,7 @@ package org.tailormap.api.controller;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.tailormap.api.persistence.helper.GeoServiceHelper.getWmsRequest;
 import static org.tailormap.api.util.HttpProxyUtil.addForwardedForRequestHeaders;
 import static org.tailormap.api.util.HttpProxyUtil.passthroughRequestHeaders;
 import static org.tailormap.api.util.HttpProxyUtil.passthroughResponseHeaders;
@@ -160,21 +161,16 @@ public class GeoServiceProxyController {
       return null;
     }
 
-    UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUri(legendURI);
-    String wmsRequest = uriComponentsBuilder.build().getQueryParams().entrySet().stream()
-        .filter(e -> "request".equalsIgnoreCase(e.getKey()))
-        .map(e -> e.getValue().get(0))
-        .findFirst()
-        .orElse(null);
-
     // If the original service legend URL is not a GetLegendGraphic request, do not add any parameters from the
     // incoming request and proxy the request as is
+    String wmsRequest = getWmsRequest(legendURI);
     if (!"getlegendgraphic".equalsIgnoreCase(wmsRequest)) {
       return legendURI;
     }
 
     // Add all parameters from the incoming request to allow for vendor-specific parameters to enhance the legend
     // image, such as font antialiasing, hi-DPI, label margins, and so on
+    UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUri(legendURI);
     if (request.getParameterMap() != null) {
       request.getParameterMap().forEach((key, values) -> {
         for (String value : values) {

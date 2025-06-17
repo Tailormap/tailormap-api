@@ -44,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.tailormap.api.configuration.TailormapConfig;
 import org.tailormap.api.geotools.ResponseTeeingHTTPClient;
 import org.tailormap.api.geotools.WMSServiceExceptionUtil;
@@ -92,6 +93,27 @@ public class GeoServiceHelper {
       return org.tailormap.api.viewer.model.Service.ServerTypeEnum.MAPSERVER;
     }
     return org.tailormap.api.viewer.model.Service.ServerTypeEnum.GENERIC;
+  }
+
+  public static String getWmsRequest(String uri) {
+    return getWmsRequest(uri == null ? null : URI.create(uri));
+  }
+
+  /**
+   * Extracts the value of the WMS &quot;REQUEST&quot; parameter (case-insensitive) from the given URI.
+   *
+   * @param uri the URI to extract the request parameter from
+   * @return the value of the request parameter, or null if not found
+   */
+  public static String getWmsRequest(URI uri) {
+    if (uri == null || uri.getQuery() == null) {
+      return null;
+    }
+    return UriComponentsBuilder.fromUri(uri).build().getQueryParams().entrySet().stream()
+        .filter(entry -> "request".equalsIgnoreCase(entry.getKey()))
+        .map(entry -> entry.getValue().get(0))
+        .findFirst()
+        .orElse(null);
   }
 
   public void loadServiceCapabilities(GeoService geoService) throws Exception {
