@@ -336,7 +336,7 @@ public class FeaturesController implements Constants {
       //noinspection ConstantConditions
       shapeFact.setSize(distance * 2d);
       Geometry p = shapeFact.createCircle();
-      logger.debug("created geometry: {}", p);
+      logger.trace("created selection geometry: {}", p);
 
       MathTransform transform = null;
       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
@@ -348,12 +348,12 @@ public class FeaturesController implements Constants {
       if (null != transform) {
         try {
           p = JTS.transform(p, transform);
-          logger.debug("reprojected geometry to: {}", p);
+          logger.trace("reprojected selection geometry to: {}", p);
         } catch (TransformException e) {
           logger.warn("Unable to transform query geometry to desired CRS, trying with original CRS");
         }
       }
-      logger.debug("using selection geometry: {}", p);
+      logger.trace("using selection geometry: {}", p);
       Filter spatialFilter =
           ff.intersects(ff.property(tmFeatureType.getDefaultGeometryAttribute()), ff.literal(p));
 
