@@ -344,7 +344,7 @@
 <a class="jxr_linenumber" name="L336" href="#L336">336</a>       <em class="jxr_comment">//noinspection ConstantConditions</em>
 <a class="jxr_linenumber" name="L337" href="#L337">337</a>       shapeFact.setSize(distance * 2d);
 <a class="jxr_linenumber" name="L338" href="#L338">338</a>       Geometry p = shapeFact.createCircle();
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>       logger.debug(<span class="jxr_string">"created geometry: {}"</span>, p);
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>       logger.trace(<span class="jxr_string">"created selection geometry: {}"</span>, p);
 <a class="jxr_linenumber" name="L340" href="#L340">340</a> 
 <a class="jxr_linenumber" name="L341" href="#L341">341</a>       MathTransform transform = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L342" href="#L342">342</a>       fs = featureSourceFactoryHelper.openGeoToolsFeatureSource(tmFeatureType);
@@ -356,12 +356,12 @@
 <a class="jxr_linenumber" name="L348" href="#L348">348</a>       <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> != transform) {
 <a class="jxr_linenumber" name="L349" href="#L349">349</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L350" href="#L350">350</a>           p = JTS.transform(p, transform);
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>           logger.debug(<span class="jxr_string">"reprojected geometry to: {}"</span>, p);
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>           logger.trace(<span class="jxr_string">"reprojected selection geometry to: {}"</span>, p);
 <a class="jxr_linenumber" name="L352" href="#L352">352</a>         } <strong class="jxr_keyword">catch</strong> (TransformException e) {
 <a class="jxr_linenumber" name="L353" href="#L353">353</a>           logger.warn(<span class="jxr_string">"Unable to transform query geometry to desired CRS, trying with original CRS"</span>);
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>         }
 <a class="jxr_linenumber" name="L355" href="#L355">355</a>       }
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>       logger.debug(<span class="jxr_string">"using selection geometry: {}"</span>, p);
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>       logger.trace(<span class="jxr_string">"using selection geometry: {}"</span>, p);
 <a class="jxr_linenumber" name="L357" href="#L357">357</a>       Filter spatialFilter =
 <a class="jxr_linenumber" name="L358" href="#L358">358</a>           ff.intersects(ff.property(tmFeatureType.getDefaultGeometryAttribute()), ff.literal(p));
 <a class="jxr_linenumber" name="L359" href="#L359">359</a> 
