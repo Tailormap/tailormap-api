@@ -6,6 +6,7 @@
 package org.tailormap.api.security;
 
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +52,7 @@ public class AuthorisationService {
         groups.add(authority.getAuthority());
       }
     }
-    logger.trace("Groups to check against: {}", groups);
+    logger.trace("Groups to check rules against: {}", groups);
 
     // Admins are allowed access to anything.
     if (groups.contains(Group.ADMIN)) {
@@ -63,11 +64,10 @@ public class AuthorisationService {
     }
 
     boolean hasValidRule = false;
-    String traceRule = null;
+
     for (AuthorizationRule rule : rules) {
       if (logger.isTraceEnabled()) {
-        traceRule = rule.toString().replaceAll("\n", "").replaceAll(" {4}", ", ");
-        logger.trace("Checking rule: {} against groups {}.", traceRule, groups);
+        logger.trace("Checking rule: \n{} against groups {}.", rule, groups);
       }
 
       boolean matchesGroup = groups.contains(rule.getGroupName());
@@ -80,17 +80,17 @@ public class AuthorisationService {
       AuthorizationRuleDecision value = rule.getDecisions().get(AuthorisationService.ACCESS_TYPE_VIEW);
       if (value == null) {
         logger.trace(
-            "No decision found for rule: {} and access: {}, returning <EMPTY>.",
-            traceRule,
+            "No decision found for rule: \n{} and access: {}, returning <EMPTY>.",
+            rule,
             AuthorisationService.ACCESS_TYPE_VIEW);
         return Optional.empty();
       }
 
       if (value.equals(AuthorizationRuleDecision.ALLOW)) {
         logger.trace(
-            "Returning {} because rule: {} allows {} access for access: {}.",
+            "Returning {} because rule: \n{} allows {} access for access: {}.",
             value,
-            traceRule,
+            rule,
             rule.getGroupName(),
             AuthorisationService.ACCESS_TYPE_VIEW);
         return Optional.of(value);
@@ -117,7 +117,10 @@ public class AuthorisationService {
    * @return the result from the access control checks.
    */
   public boolean userAllowedToViewApplication(Application application) {
-    logger.trace("Checking if user is allowed to view Application {}.", application.getTitle());
+    logger.trace(
+        "Checking if user is allowed to view Application {} ({}).",
+        application.getTitle(),
+        application.getTitle());
     final boolean allowed = isAuthorizedByRules(application.getAuthorizationRules())
         .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
     logger.trace(
@@ -135,7 +138,8 @@ public class AuthorisationService {
    * @return the result from the access control checks.
    */
   public boolean userAllowedToViewGeoService(GeoService geoService) {
-    logger.trace("Checking if user is allowed to view GeoService {}.", geoService.getTitle());
+    logger.trace(
+        "Checking if user is allowed to view GeoService {} ({}).", geoService.getId(), geoService.getTitle());
     final boolean allowed = isAuthorizedByRules(geoService.getAuthorizationRules())
         .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
     logger.trace(
@@ -155,9 +159,10 @@ public class AuthorisationService {
    */
   public boolean userAllowedToViewGeoServiceLayer(GeoService geoService, GeoServiceLayer layer) {
     logger.trace(
-        "Checking if user is allowed to view GeoService {} and layer {}.",
+        "Checking if user is allowed to view GeoService '{}' and layer {} ({}).",
         geoService.getTitle(),
-        layer.getName());
+        layer.getName(),
+        layer.getTitle());
     // check if user is allowed to view the geoService
     Optional<AuthorizationRuleDecision> geoserviceDecision =
         isAuthorizedByRules(geoService.getAuthorizationRules());
@@ -169,13 +174,31 @@ public class AuthorisationService {
     GeoServiceLayerSettings layerSettings =
         geoService.getSettings().getLayerSettings().get(layer.getName());
     if (layerSettings != null && layerSettings.getAuthorizationRules() != null) {
-      Optional<AuthorizationRuleDecision> decision = isAuthorizedByRules(layerSettings.getAuthorizationRules());
+      logger.trace(
+          "Checking layer settings rules for GeoService '{}' and layer '{}'. \nRules: {}",
+          geoService.getTitle(),
+          layer.getName(),
+          layerSettings.getAuthorizationRules());
+      List<AuthorizationRule> combinedRules = new ArrayList<>(geoService.getAuthorizationRules());
+      for (AuthorizationRule rule : layerSettings.getAuthorizationRules()) {
+        // replace any rule with the same group name, so we end up with a merged
+        // set of rules where the layer rules override
+        combinedRules.removeIf(r -> r.getGroupName().equals(rule.getGroupName()));
+        combinedRules.add(rule);
+      }
+      logger.trace(
+          "Combined rules for GeoService '{}' and layer '{}': \n{}",
+          geoService.getTitle(),
+          layer.getName(),
+          combinedRules);
+
+      Optional<AuthorizationRuleDecision> decision = isAuthorizedByRules(combinedRules);
       // If no authorization rules are present, fall back to geoService authorization.
       if (decision.isPresent() || !layerSettings.getAuthorizationRules().isEmpty()) {
         boolean allowed = decision.equals(Optional.of(AuthorizationRuleDecision.ALLOW));
 
         logger.trace(
-            "Viewing GeoService {} and layer {} ({}) is {} for user.",
+            "Viewing GeoService '{}' and layer '{}' ({}) is {} for user.",
             geoService.getTitle(),
             layer.getName(),
             layer.getTitle(),
@@ -186,8 +209,8 @@ public class AuthorisationService {
 
     boolean allowed = geoserviceDecision.equals(Optional.of(AuthorizationRuleDecision.ALLOW));
     logger.trace(
-        "Viewing GeoService {} and layer {} is {} for user because service access is {3}.",
-        geoService.getTitle(), layer.getName(), (allowed ? "allowed" : "denied"));
+        "Viewing GeoService '{}' and layer '{}' ({}) is {} for user because service access is {3}.",
+        geoService.getTitle(), layer.getName(), layer.getTitle(), (allowed ? "allowed" : "denied"));
     return allowed;
   }
 
@@ -206,17 +229,19 @@ public class AuthorisationService {
         geoService.getTitle(),
         application.getName());
     if (!Boolean.TRUE.equals(geoService.getSettings().getUseProxy())) {
-      logger.trace("Must deny access to GeoService {}, 'useProxy' not set to true.", geoService.getTitle());
+      logger.trace(
+          "Must not deny proxy access to GeoService {}, 'useProxy' not set to true.", geoService.getTitle());
       return false;
     }
     if (geoService.getAuthentication() == null) {
-      logger.trace("Must deny access to GeoService {}, authentication is not set.", geoService.getTitle());
+      logger.trace(
+          "Must not deny proxy access to GeoService {}, authentication is not set.", geoService.getTitle());
       return false;
     }
     boolean mustDeny = application.getAuthorizationRules().stream().anyMatch(rule -> {
       logger.trace(
           "Checking application rule: {} for group: {} and access type: {} if proxy access must be denied.",
-          rule.toString().replaceAll("\n", "").replaceAll(" {4}", ", "),
+          rule,
           Group.ANONYMOUS,
           ACCESS_TYPE_VIEW);
       return Group.ANONYMOUS.equals(rule.getGroupName())
@@ -224,7 +249,8 @@ public class AuthorisationService {
               rule.getDecisions().get(ACCESS_TYPE_VIEW));
     });
     logger.trace(
-        "Must deny access to GeoService {} in application {}, because of rules.",
+        "Must {}deny access to GeoService '{}' in application {}, because of rules.",
+        mustDeny ? "not " : "",
         geoService.getTitle(),
         application.getName());
     return mustDeny;

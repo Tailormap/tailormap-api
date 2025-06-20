@@ -193,13 +193,13 @@ public class ApplicationHelper {
 
   private class MapResponseLayerBuilder {
     private final Application app;
-    private final MapResponse mr;
+    private final MapResponse mapResponse;
     // XXX not needed if we have GeoServiceLayer.getService().getName()
     private final Map<GeoServiceLayer, String> serviceLayerServiceIds = new HashMap<>();
 
-    public MapResponseLayerBuilder(Application app, MapResponse mr) {
+    public MapResponseLayerBuilder(Application app, MapResponse mapResponse) {
       this.app = app;
-      this.mr = mr;
+      this.mapResponse = mapResponse;
     }
 
     public void buildLayers() {
@@ -213,7 +213,7 @@ public class ApplicationHelper {
     private void buildBackgroundLayers() {
       if (app.getContentRoot().getBaseLayerNodes() != null) {
         for (AppTreeNode node : app.getContentRoot().getBaseLayerNodes()) {
-          addAppTreeNodeItem(node, mr.getBaseLayerTreeNodes());
+          addAppTreeNodeItem(node, mapResponse.getBaseLayerTreeNodes());
         }
       }
     }
@@ -221,7 +221,7 @@ public class ApplicationHelper {
     private void buildOverlayLayers() {
       if (app.getContentRoot().getLayerNodes() != null) {
         for (AppTreeNode node : app.getContentRoot().getLayerNodes()) {
-          addAppTreeNodeItem(node, mr.getLayerTreeNodes());
+          addAppTreeNodeItem(node, mapResponse.getLayerTreeNodes());
         }
       }
     }
@@ -229,7 +229,7 @@ public class ApplicationHelper {
     private void buildTerrainLayers() {
       if (app.getContentRoot().getTerrainLayerNodes() != null) {
         for (AppTreeNode node : app.getContentRoot().getTerrainLayerNodes()) {
-          addAppTreeNodeItem(node, mr.getTerrainLayerTreeNodes());
+          addAppTreeNodeItem(node, mapResponse.getTerrainLayerTreeNodes());
         }
       }
     }
@@ -358,7 +358,7 @@ public class ApplicationHelper {
 
       boolean webMercatorAvailable = this.isWebMercatorAvailable(service, serviceLayer, hiDpiSubstituteLayer);
 
-      mr.addAppLayersItem(new AppLayer()
+      mapResponse.addAppLayersItem(new AppLayer()
           .id(layerRef.getId())
           .serviceId(serviceLayerServiceIds.get(serviceLayer))
           .layerName(layerRef.getLayerName())
@@ -431,16 +431,18 @@ public class ApplicationHelper {
       }
 
       if (!authorisationService.userAllowedToViewGeoServiceLayer(service, serviceLayer)) {
+        logger.debug(
+            "User not allowed to view layer {} of service {}", serviceLayer.getName(), service.getId());
         return Triple.of(null, null, null);
       }
 
       serviceLayerServiceIds.put(serviceLayer, service.getId());
 
-      if (mr.getServices().stream()
+      if (mapResponse.getServices().stream()
           .filter(s -> s.getId().equals(service.getId()))
           .findAny()
           .isEmpty()) {
-        mr.addServicesItem(service.toJsonPojo(geoServiceHelper));
+        mapResponse.addServicesItem(service.toJsonPojo(geoServiceHelper));
       }
 
       GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());
