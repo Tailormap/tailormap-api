@@ -323,12 +323,12 @@ components:
                   description: 'the type of filter tool'
                   enum:
                     - 'SLIDER'
-                    - 'CHECKBOXES'
+                    - 'CHECKBOX'
                     - 'SWITCH'
                     - 'DATE_PICKER'
             - anyOf:
                 - $ref: '#/components/schemas/SliderFilterConfiguration'
-                - $ref: '#/components/schemas/CheckboxesFilterConfiguration'
+                - $ref: '#/components/schemas/CheckboxFilterConfiguration'
                 - $ref: '#/components/schemas/SwitchFilterConfiguration'
                 - $ref: '#/components/schemas/DatePickerFilterConfiguration'
 
@@ -358,7 +358,7 @@ components:
           type: number
           format: double
 
-    CheckboxesFilterConfiguration:
+    CheckboxFilterConfiguration:
       title: CheckboxFilterConfiguration
       description: Configuration for a checkbox filter
       type: object
