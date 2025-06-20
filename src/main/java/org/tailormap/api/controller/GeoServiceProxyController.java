@@ -53,7 +53,7 @@ import org.tailormap.api.persistence.helper.GeoServiceHelper;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.json.GeoServiceProtocol;
 import org.tailormap.api.persistence.json.ServiceAuthentication;
-import org.tailormap.api.security.AuthorizationService;
+import org.tailormap.api.security.AuthorisationService;
 
 /**
  * Proxy controller for OGC WMS, WMTS, and 3D Tiles services. Does not attempt to hide the original service URL. Mostly
@@ -72,11 +72,11 @@ import org.tailormap.api.security.AuthorizationService;
 public class GeoServiceProxyController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private final AuthorizationService authorizationService;
+  private final AuthorisationService authorisationService;
   public static final String TILES3D_DESCRIPTION_PATH = "tiles3dDescription";
 
-  public GeoServiceProxyController(AuthorizationService authorizationService) {
-    this.authorizationService = authorizationService;
+  public GeoServiceProxyController(AuthorisationService authorisationService) {
+    this.authorisationService = authorisationService;
   }
 
   @RequestMapping(
@@ -118,10 +118,11 @@ public class GeoServiceProxyController {
         }
         return doProxy(legendURI, service, request);
       }
-      case TILES3D -> throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Incorrect 3D Tiles proxy request: No path to capabilities or content");
-      default -> throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "Unsupported proxy protocol: " + protocol);
+      case TILES3D ->
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Incorrect 3D Tiles proxy request: No path to capabilities or content");
+      default ->
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported proxy protocol: " + protocol);
     }
   }
 
@@ -143,7 +144,7 @@ public class GeoServiceProxyController {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Proxy not enabled for requested service");
     }
 
-    if (authorizationService.mustDenyAccessForSecuredProxy(application, service)) {
+    if (authorisationService.mustDenyAccessForSecuredProxy(application, service)) {
       logger.warn(
           "App {} (\"{}\") is using layer \"{}\" from proxied secured service URL {} (username \"{}\"), but app is publicly accessible. Denying proxy, even if user is authenticated.",
           application.getId(),

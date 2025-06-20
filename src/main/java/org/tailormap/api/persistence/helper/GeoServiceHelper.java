@@ -157,8 +157,9 @@ public class GeoServiceHelper {
     switch (geoService.getProtocol()) {
       case WMS -> loadWMSCapabilities(geoService, client);
       case WMTS -> loadWMTSCapabilities(geoService, client);
-      default -> throw new UnsupportedOperationException(
-          "Unsupported geo service protocol: " + geoService.getProtocol());
+      default ->
+        throw new UnsupportedOperationException(
+            "Unsupported geo service protocol: " + geoService.getProtocol());
     }
 
     if (geoService.getTitle() == null) {

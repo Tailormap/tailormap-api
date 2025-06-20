@@ -15,7 +15,7 @@ import static org.tailormap.api.persistence.json.GeoServiceProtocol.XYZ;
 import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.ATTRIBUTE_LIST;
 import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.EXPORT;
 import static org.tailormap.api.persistence.json.HiddenLayerFunctionalityEnum.FEATURE_INFO;
-import static org.tailormap.api.security.AuthorizationService.ACCESS_TYPE_READ;
+import static org.tailormap.api.security.AuthorisationService.ACCESS_TYPE_VIEW;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -273,6 +273,15 @@ public class PopulateTestData {
     u.getGroups().addAll(List.of(groupFoo, groupBar, groupBaz));
     userRepository.save(u);
 
+    // Foo only user
+    u = new User()
+        .setUsername("foo")
+        .setPassword("{noop}foo")
+        .setEmail("foo@example.com")
+        .setName("Foo only user");
+    u.getGroups().add(groupFoo);
+    userRepository.save(u);
+
     // Superuser with all access
     u = new User().setUsername("tm-admin").setPassword(adminHashedPassword);
     u.addOrUpdateAdminProperty("some-property", "some-value", true);
@@ -284,11 +293,11 @@ public class PopulateTestData {
 
   private final List<AuthorizationRule> ruleAnonymousRead = List.of(new AuthorizationRule()
       .groupName(Group.ANONYMOUS)
-      .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)));
+      .decisions(Map.of(ACCESS_TYPE_VIEW, AuthorizationRuleDecision.ALLOW)));
 
   private final List<AuthorizationRule> ruleLoggedIn = List.of(new AuthorizationRule()
       .groupName(Group.AUTHENTICATED)
-      .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)));
+      .decisions(Map.of(ACCESS_TYPE_VIEW, AuthorizationRuleDecision.ALLOW)));
 
   @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
   private void createCatalogTestData() throws Exception {
@@ -348,10 +357,10 @@ public class PopulateTestData {
             .setAuthorizationRules(List.of(
                 new AuthorizationRule()
                     .groupName("test-foo")
-                    .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)),
+                    .decisions(Map.of(ACCESS_TYPE_VIEW, AuthorizationRuleDecision.ALLOW)),
                 new AuthorizationRule()
                     .groupName("test-baz")
-                    .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW))))
+                    .decisions(Map.of(ACCESS_TYPE_VIEW, AuthorizationRuleDecision.ALLOW))))
             .setSettings(new GeoServiceSettings()
                 .layerSettings(Map.of(
                     "BGT",
@@ -359,11 +368,11 @@ public class PopulateTestData {
                         .addAuthorizationRulesItem(new AuthorizationRule()
                             .groupName("test-foo")
                             .decisions(Map.of(
-                                ACCESS_TYPE_READ, AuthorizationRuleDecision.DENY)))
+                                ACCESS_TYPE_VIEW, AuthorizationRuleDecision.DENY)))
                         .addAuthorizationRulesItem(new AuthorizationRule()
                             .groupName("test-baz")
                             .decisions(Map.of(
-                                ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW))))))
+                                ACCESS_TYPE_VIEW, AuthorizationRuleDecision.ALLOW))))))
             .setPublished(true),
         new GeoService()
             .setId("snapshot-geoserver-proxied")
@@ -1376,17 +1385,17 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
         .setAuthorizationRules(List.of(
             new AuthorizationRule()
                 .groupName("test-foo")
-                .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW)),
+                .decisions(Map.of(ACCESS_TYPE_VIEW, AuthorizationRuleDecision.ALLOW)),
             new AuthorizationRule()
                 .groupName("test-bar")
-                .decisions(Map.of(ACCESS_TYPE_READ, AuthorizationRuleDecision.ALLOW))))
+                .decisions(Map.of(ACCESS_TYPE_VIEW, AuthorizationRuleDecision.ALLOW))))
         .setContentRoot(new AppContent()
             .addLayerNodesItem(new AppTreeLevelNode()
                 .objectType("AppTreeLevelNode")
                 .id("root")
                 .root(true)
                 .title("Layers")
-                .childrenIds(List.of("lyr:needs-auth", "lyr:public")))
+                .childrenIds(List.of("lvl:needs-auth", "lvl:public")))
             .addLayerNodesItem(new AppTreeLevelNode()
                 .objectType("AppTreeLevelNode")
                 .id("lvl:public")

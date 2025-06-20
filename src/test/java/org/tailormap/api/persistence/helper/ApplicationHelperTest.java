@@ -21,7 +21,7 @@ import org.tailormap.api.repository.ConfigurationRepository;
 import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.repository.GeoServiceRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
-import org.tailormap.api.security.AuthorizationService;
+import org.tailormap.api.security.AuthorisationService;
 import org.tailormap.api.viewer.model.MapResponse;
 import org.tailormap.api.viewer.model.TMCoordinateReferenceSystem;
 
@@ -47,7 +47,7 @@ class ApplicationHelperTest {
   EntityManager entityManager;
 
   @MockitoBean
-  AuthorizationService authorizationService;
+  AuthorisationService authorisationService;
 
   @MockitoBean
   SearchIndexRepository searchIndexRepository;
