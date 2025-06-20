@@ -323,14 +323,14 @@ components:
                   description: 'the type of filter tool'
                   enum:
                     - 'SLIDER'
-                    - 'CHECKBOX'
-                    - 'BOOLEAN'
-                    - 'DATE'
+                    - 'CHECKBOXES'
+                    - 'SWITCH'
+                    - 'DATE_PICKER'
             - anyOf:
                 - $ref: '#/components/schemas/SliderFilterConfiguration'
-                - $ref: '#/components/schemas/CheckboxFilterConfiguration'
-                - $ref: '#/components/schemas/BooleanFilterConfiguration'
-                - $ref: '#/components/schemas/DateFilterConfiguration'
+                - $ref: '#/components/schemas/CheckboxesFilterConfiguration'
+                - $ref: '#/components/schemas/SwitchFilterConfiguration'
+                - $ref: '#/components/schemas/DatePickerFilterConfiguration'
 
     SliderFilterConfiguration:
       title: SliderFilterConfiguration
@@ -358,7 +358,7 @@ components:
           type: number
           format: double
 
-    CheckboxFilterConfiguration:
+    CheckboxesFilterConfiguration:
       title: CheckboxFilterConfiguration
       description: Configuration for a checkbox filter
       type: object
@@ -381,7 +381,7 @@ components:
                 alias:
                   type: string
 
-    BooleanFilterConfiguration:
+    SwitchFilterConfiguration:
       title: BooleanFilterConfiguration
       description: Configuration for a boolean filter
       type: object
@@ -399,7 +399,7 @@ components:
           type: boolean
           default: false
 
-    DateFilterConfiguration:
+    DatePickerFilterConfiguration:
       title: DateFilterConfiguration
       description: Configuration for a date filter
       type: object
