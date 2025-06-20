@@ -72,7 +72,7 @@ import org.tailormap.api.persistence.json.AuthorizationRule;
 import org.tailormap.api.persistence.json.AuthorizationRuleDecision;
 import org.tailormap.api.persistence.json.Bounds;
 import org.tailormap.api.persistence.json.CatalogNode;
-import org.tailormap.api.persistence.json.CheckboxFilterConfigurationAttributeValuesSettingsInner;
+import org.tailormap.api.persistence.json.CheckboxesFilterConfigurationAttributeValuesSettingsInner;
 import org.tailormap.api.persistence.json.FeatureTypeRef;
 import org.tailormap.api.persistence.json.FeatureTypeTemplate;
 import org.tailormap.api.persistence.json.Filter;
@@ -1183,40 +1183,40 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                     .attribute("plus_fysiekvoorkomen")
                     .attributeType(Filter.AttributeTypeEnum.STRING)
                     .editConfiguration(new FilterEditConfiguration()
-                        .filterTool(FilterEditConfiguration.FilterToolEnum.CHECKBOX)
+                        .filterTool(FilterEditConfiguration.FilterToolEnum.CHECKBOXES)
                         .attributeValuesSettings(List.of(
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxesFilterConfigurationAttributeValuesSettingsInner()
                                 .value("bodembedekkers")
                                 .initiallySelected(true)
                                 .selectable(true)
                                 .alias("Bodembedekkers"),
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxesFilterConfigurationAttributeValuesSettingsInner()
                                 .value("bosplantsoen")
                                 .initiallySelected(true)
                                 .selectable(true)
                                 .alias("Bosplantsoen"),
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxesFilterConfigurationAttributeValuesSettingsInner()
                                 .value("gras- en kruidachtigen")
                                 .initiallySelected(true)
                                 .selectable(true)
                                 .alias("Gras- en kruidachtigen"),
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxesFilterConfigurationAttributeValuesSettingsInner()
                                 .value("griend en hakhout")
                                 .initiallySelected(false)
                                 .selectable(true),
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxesFilterConfigurationAttributeValuesSettingsInner()
                                 .value("heesters")
                                 .initiallySelected(false)
                                 .selectable(true),
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxesFilterConfigurationAttributeValuesSettingsInner()
                                 .value("planten")
                                 .initiallySelected(false)
                                 .selectable(true),
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxesFilterConfigurationAttributeValuesSettingsInner()
                                 .value("struikrozen")
                                 .initiallySelected(false)
                                 .selectable(true),
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxesFilterConfigurationAttributeValuesSettingsInner()
                                 .value("waardeOnbekend")
                                 .initiallySelected(false)
                                 .selectable(true))))))
