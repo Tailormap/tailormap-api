@@ -324,9 +324,13 @@ components:
                   enum:
                     - 'SLIDER'
                     - 'CHECKBOX'
+                    - 'SWITCH'
+                    - 'DATE_PICKER'
             - anyOf:
                 - $ref: '#/components/schemas/SliderFilterConfiguration'
                 - $ref: '#/components/schemas/CheckboxFilterConfiguration'
+                - $ref: '#/components/schemas/SwitchFilterConfiguration'
+                - $ref: '#/components/schemas/DatePickerFilterConfiguration'
 
     SliderFilterConfiguration:
       title: SliderFilterConfiguration
@@ -376,6 +380,42 @@ components:
                   default: true
                 alias:
                   type: string
+
+    SwitchFilterConfiguration:
+      title: BooleanFilterConfiguration
+      description: Configuration for a boolean filter
+      type: object
+      properties:
+        value1:
+          type: string
+        value2:
+          type: string
+        alias1:
+          type: string
+        alias2:
+          type: string
+        startWithValue2:
+          description: 'when true the filter starts with value2 selected'
+          type: boolean
+          default: false
+
+    DatePickerFilterConfiguration:
+      title: DateFilterConfiguration
+      description: Configuration for a date filter
+      type: object
+      properties:
+        initialDate:
+          description: 'initial value for the date filter'
+          type: string
+          format: date-time
+        initialLowerDate:
+          description: 'initial lower value for a date filter with between condition'
+          type: string
+          format: date-time
+        initialUpperDate:
+          description: 'initial upper value for a date filter with between condition'
+          type: string
+          format: date-time
 
     FormOptions:
       description: 'model with options for an form'
