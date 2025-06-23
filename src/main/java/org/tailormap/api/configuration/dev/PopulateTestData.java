@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -235,6 +236,12 @@ public class PopulateTestData {
       if (categories.contains("drawing")) {
         insertTestDrawing();
         logger.info("Test drawing created");
+        try {
+          insertDrawingStyle();
+          logger.info("Test drawing style created");
+        } catch (Exception e) {
+          logger.error("Exception creating drawing style", e);
+        }
       }
     } finally {
       InternalAdminAuthentication.clearSecurityContextAuthentication();
@@ -1942,5 +1949,46 @@ INSERT INTO data.drawing_feature (drawing_id,id,geometry,properties) VALUES
     } catch (Exception any) {
       logger.error("Error inserting test drawing in data schema, some tests may fail", any);
     }
+  }
+
+  private void insertDrawingStyle() throws IOException {
+    Upload upload = new Upload()
+        .setCategory(Upload.CATEGORY_DRAWING_STYLE_IMAGE)
+        .setMimeType("image/svg+xml")
+        .setFilename("drinkwater.svg")
+        .setContent(new ClassPathResource("test/drinkwater.svg").getContentAsByteArray())
+        .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
+    upload = uploadRepository.save(upload);
+    UUID drinkwaterImageId = upload.getId();
+
+    upload = new Upload()
+        .setCategory(Upload.CATEGORY_DRAWING_STYLE_IMAGE)
+        .setMimeType("image/svg+xml")
+        .setFilename("first-aid.svg")
+        .setContent(new ClassPathResource("test/first-aid.svg").getContentAsByteArray())
+        .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
+    upload = uploadRepository.save(upload);
+    UUID firstAidImageId = upload.getId();
+
+    ClassPathResource drawingStyleResource = new ClassPathResource("test/object-drawing-style.json");
+    final byte[] styleJson = drawingStyleResource
+        .getContentAsString(StandardCharsets.UTF_8)
+        .replace(
+            "\"markerImage\": \"drinkwater.svg\",",
+            "\"markerImage\": \"https://snapshot.tailormap.nl/api/uploads/drawing-style-image/"
+                + drinkwaterImageId.toString() + "/drinkwater.svg\",")
+        .replace(
+            "\"markerImage\": \"first-aid.svg\",",
+            "\"markerImage\": \"https://snapshot.tailormap.nl/api/uploads/drawing-style-image/"
+                + firstAidImageId.toString() + "/first-aid.svg\",")
+        .getBytes(StandardCharsets.UTF_8);
+    // save the updated drawing style
+    upload = new Upload()
+        .setCategory(Upload.CATEGORY_DRAWING_STYLE)
+        .setMimeType("application/json")
+        .setFilename("object-drawing-style.json")
+        .setContent(styleJson)
+        .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
+    uploadRepository.save(upload);
   }
 }
