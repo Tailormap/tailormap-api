@@ -26,7 +26,7 @@ import org.tailormap.api.persistence.json.AppTreeLayerNode;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.GeoServiceRepository;
-import org.tailormap.api.security.AuthorizationService;
+import org.tailormap.api.security.AuthorisationService;
 import org.tailormap.api.viewer.model.ErrorResponse;
 import org.tailormap.api.viewer.model.RedirectResponse;
 import org.tailormap.api.viewer.model.ViewerResponse;
@@ -36,7 +36,7 @@ public class AppRestControllerAdvice {
   private final ApplicationRepository applicationRepository;
   private final GeoServiceRepository geoServiceRepository;
   private final ApplicationHelper applicationHelper;
-  private final AuthorizationService authorizationService;
+  private final AuthorisationService authorisationService;
 
   @Value("${tailormap-api.base-path}")
   private String basePath;
@@ -45,11 +45,11 @@ public class AppRestControllerAdvice {
       ApplicationRepository applicationRepository,
       GeoServiceRepository geoServiceRepository,
       ApplicationHelper applicationHelper,
-      AuthorizationService authorizationService) {
+      AuthorisationService authorisationService) {
     this.applicationRepository = applicationRepository;
     this.geoServiceRepository = geoServiceRepository;
     this.applicationHelper = applicationHelper;
-    this.authorizationService = authorizationService;
+    this.authorisationService = authorisationService;
   }
 
   @InitBinder
@@ -111,7 +111,7 @@ public class AppRestControllerAdvice {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
       }
 
-      if (!authorizationService.userMayView(service)) {
+      if (!authorisationService.userAllowedToViewGeoService(service)) {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
       }
 
@@ -124,7 +124,7 @@ public class AppRestControllerAdvice {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
-    if (!this.authorizationService.userMayView(app)) {
+    if (!this.authorisationService.userAllowedToViewApplication(app)) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
     return app;
@@ -148,7 +148,7 @@ public class AppRestControllerAdvice {
     }
 
     // TODO
-    //    if (!this.authorizationService.userMayView(applicationLayer, application)) {
+    //    if (!this.authorizationService.userAllowedToViewApplication(applicationLayer, application)) {
     //      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
     //    }
     return layerNode;
@@ -166,11 +166,11 @@ public class AppRestControllerAdvice {
     }
     GeoService service =
         geoServiceRepository.findById(appTreeLayerNode.getServiceId()).orElse(null);
-    if (service != null && !authorizationService.userMayView(service)) {
+    if (service != null && !authorisationService.userAllowedToViewGeoService(service)) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
 
-    if (service != null && authorizationService.mustDenyAccessForSecuredProxy(app, service)) {
+    if (service != null && authorisationService.mustDenyAccessForSecuredProxy(app, service)) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
@@ -189,7 +189,7 @@ public class AppRestControllerAdvice {
         .findFirst()
         .orElse(null);
 
-    if (layer != null && !authorizationService.userMayView(service, layer)) {
+    if (layer != null && !authorisationService.userAllowedToViewGeoServiceLayer(service, layer)) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
 

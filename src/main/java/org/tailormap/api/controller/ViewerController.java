@@ -22,7 +22,7 @@ import org.tailormap.api.persistence.helper.ApplicationHelper;
 import org.tailormap.api.persistence.helper.UploadHelper;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
-import org.tailormap.api.security.AuthorizationService;
+import org.tailormap.api.security.AuthorisationService;
 import org.tailormap.api.viewer.model.AppStyling;
 import org.tailormap.api.viewer.model.MapResponse;
 import org.tailormap.api.viewer.model.ViewerResponse;
@@ -33,19 +33,19 @@ public class ViewerController {
   private final ConfigurationRepository configurationRepository;
   private final ApplicationRepository applicationRepository;
   private final ApplicationHelper applicationHelper;
-  private final AuthorizationService authorizationService;
+  private final AuthorisationService authorisationService;
   private final UploadHelper uploadHelper;
 
   public ViewerController(
       ConfigurationRepository configurationRepository,
       ApplicationRepository applicationRepository,
       ApplicationHelper applicationHelper,
-      AuthorizationService authorizationService,
+      AuthorisationService authorisationService,
       UploadHelper uploadHelper) {
     this.configurationRepository = configurationRepository;
     this.applicationRepository = applicationRepository;
     this.applicationHelper = applicationHelper;
-    this.authorizationService = authorizationService;
+    this.authorisationService = authorisationService;
     this.uploadHelper = uploadHelper;
   }
 
@@ -58,7 +58,7 @@ public class ViewerController {
     if (app == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
-    if (!this.authorizationService.userMayView(app)) {
+    if (!this.authorisationService.userAllowedToViewApplication(app)) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
     return viewer(app, ViewerResponse.KindEnum.APP);
