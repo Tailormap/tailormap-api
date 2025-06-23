@@ -61,7 +61,7 @@
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.FeatureSourceRepository;
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.GeoServiceRepository;
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.repository.SearchIndexRepository;
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.security.AuthorizationService;
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.security.AuthorisationService;
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.AppLayer;
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.LayerSearchIndex;
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.LayerTreeNode;
@@ -80,7 +80,7 @@
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="ApplicationRepository" href="../../../../../org/tailormap/api/repository/ApplicationRepository.html#ApplicationRepository">ApplicationRepository</a> applicationRepository;
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="FeatureSourceRepository" href="../../../../../org/tailormap/api/repository/FeatureSourceRepository.html#FeatureSourceRepository">FeatureSourceRepository</a> featureSourceRepository;
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> EntityManager entityManager;
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="AuthorizationService" href="../../../../../org/tailormap/api/security/AuthorizationService.html#AuthorizationService">AuthorizationService</a> authorizationService;
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="AuthorisationService" href="../../../../../org/tailormap/api/security/AuthorisationService.html#AuthorisationService">AuthorisationService</a> authorisationService;
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="SearchIndexRepository" href="../../../../../org/tailormap/api/repository/SearchIndexRepository.html#SearchIndexRepository">SearchIndexRepository</a> searchIndexRepository;
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>    <strong class="jxr_keyword">public</strong> <a name="ApplicationHelper" href="../../../../../org/tailormap/api/persistence/helper/ApplicationHelper.html#ApplicationHelper">ApplicationHelper</a>(
@@ -90,7 +90,7 @@
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>        <a name="ApplicationRepository" href="../../../../../org/tailormap/api/repository/ApplicationRepository.html#ApplicationRepository">ApplicationRepository</a> applicationRepository,
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>        <a name="FeatureSourceRepository" href="../../../../../org/tailormap/api/repository/FeatureSourceRepository.html#FeatureSourceRepository">FeatureSourceRepository</a> featureSourceRepository,
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>        EntityManager entityManager,
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>        <a name="AuthorizationService" href="../../../../../org/tailormap/api/security/AuthorizationService.html#AuthorizationService">AuthorizationService</a> authorizationService,
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>        <a name="AuthorisationService" href="../../../../../org/tailormap/api/security/AuthorisationService.html#AuthorisationService">AuthorisationService</a> authorisationService,
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>        <a name="SearchIndexRepository" href="../../../../../org/tailormap/api/repository/SearchIndexRepository.html#SearchIndexRepository">SearchIndexRepository</a> searchIndexRepository) {
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">this</strong>.geoServiceHelper = geoServiceHelper;
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      <strong class="jxr_keyword">this</strong>.geoServiceRepository = geoServiceRepository;
@@ -98,7 +98,7 @@
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">this</strong>.applicationRepository = applicationRepository;
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>      <strong class="jxr_keyword">this</strong>.featureSourceRepository = featureSourceRepository;
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">this</strong>.entityManager = entityManager;
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">this</strong>.authorizationService = authorizationService;
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">this</strong>.authorisationService = authorisationService;
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>      <strong class="jxr_keyword">this</strong>.searchIndexRepository = searchIndexRepository;
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>    }
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>  
@@ -201,13 +201,13 @@
 <a class="jxr_linenumber" name="L193" href="#L193">193</a> 
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">class</strong> MapResponseLayerBuilder {
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app;
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> MapResponse mr;
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> MapResponse mapResponse;
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>     <em class="jxr_comment">// XXX not needed if we have GeoServiceLayer.getService().getName()</em>
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Map&lt;GeoServiceLayer, String&gt; serviceLayerServiceIds = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
 <a class="jxr_linenumber" name="L199" href="#L199">199</a> 
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>     <strong class="jxr_keyword">public</strong> MapResponseLayerBuilder(<a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app, MapResponse mr) {
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>     <strong class="jxr_keyword">public</strong> MapResponseLayerBuilder(<a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app, MapResponse mapResponse) {
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>       <strong class="jxr_keyword">this</strong>.app = app;
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>       <strong class="jxr_keyword">this</strong>.mr = mr;
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>       <strong class="jxr_keyword">this</strong>.mapResponse = mapResponse;
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>     }
 <a class="jxr_linenumber" name="L204" href="#L204">204</a> 
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> buildLayers() {
@@ -221,7 +221,7 @@
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> buildBackgroundLayers() {
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>       <strong class="jxr_keyword">if</strong> (app.getContentRoot().getBaseLayerNodes() != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L215" href="#L215">215</a>         <strong class="jxr_keyword">for</strong> (AppTreeNode node : app.getContentRoot().getBaseLayerNodes()) {
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>           addAppTreeNodeItem(node, mr.getBaseLayerTreeNodes());
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>           addAppTreeNodeItem(node, mapResponse.getBaseLayerTreeNodes());
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>         }
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>       }
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>     }
@@ -229,7 +229,7 @@
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> buildOverlayLayers() {
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>       <strong class="jxr_keyword">if</strong> (app.getContentRoot().getLayerNodes() != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>         <strong class="jxr_keyword">for</strong> (AppTreeNode node : app.getContentRoot().getLayerNodes()) {
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>           addAppTreeNodeItem(node, mr.getLayerTreeNodes());
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>           addAppTreeNodeItem(node, mapResponse.getLayerTreeNodes());
 <a class="jxr_linenumber" name="L225" href="#L225">225</a>         }
 <a class="jxr_linenumber" name="L226" href="#L226">226</a>       }
 <a class="jxr_linenumber" name="L227" href="#L227">227</a>     }
@@ -237,7 +237,7 @@
 <a class="jxr_linenumber" name="L229" href="#L229">229</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> buildTerrainLayers() {
 <a class="jxr_linenumber" name="L230" href="#L230">230</a>       <strong class="jxr_keyword">if</strong> (app.getContentRoot().getTerrainLayerNodes() != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L231" href="#L231">231</a>         <strong class="jxr_keyword">for</strong> (AppTreeNode node : app.getContentRoot().getTerrainLayerNodes()) {
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>           addAppTreeNodeItem(node, mr.getTerrainLayerTreeNodes());
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>           addAppTreeNodeItem(node, mapResponse.getTerrainLayerTreeNodes());
 <a class="jxr_linenumber" name="L233" href="#L233">233</a>         }
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>       }
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>     }
@@ -366,7 +366,7 @@
 <a class="jxr_linenumber" name="L358" href="#L358">358</a> 
 <a class="jxr_linenumber" name="L359" href="#L359">359</a>       <strong class="jxr_keyword">boolean</strong> webMercatorAvailable = <strong class="jxr_keyword">this</strong>.isWebMercatorAvailable(service, serviceLayer, hiDpiSubstituteLayer);
 <a class="jxr_linenumber" name="L360" href="#L360">360</a> 
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>       mr.addAppLayersItem(<strong class="jxr_keyword">new</strong> AppLayer()
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>       mapResponse.addAppLayersItem(<strong class="jxr_keyword">new</strong> AppLayer()
 <a class="jxr_linenumber" name="L362" href="#L362">362</a>           .id(layerRef.getId())
 <a class="jxr_linenumber" name="L363" href="#L363">363</a>           .serviceId(serviceLayerServiceIds.get(serviceLayer))
 <a class="jxr_linenumber" name="L364" href="#L364">364</a>           .layerName(layerRef.getLayerName())
@@ -419,11 +419,11 @@
 <a class="jxr_linenumber" name="L411" href="#L411">411</a>         <strong class="jxr_keyword">return</strong> Triple.of(<strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L412" href="#L412">412</a>       }
 <a class="jxr_linenumber" name="L413" href="#L413">413</a> 
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>       <strong class="jxr_keyword">if</strong> (!authorizationService.userMayView(service)) {
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>       <strong class="jxr_keyword">if</strong> (!authorisationService.userAllowedToViewGeoService(service)) {
 <a class="jxr_linenumber" name="L415" href="#L415">415</a>         <strong class="jxr_keyword">return</strong> Triple.of(<strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L416" href="#L416">416</a>       }
 <a class="jxr_linenumber" name="L417" href="#L417">417</a> 
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>       <strong class="jxr_keyword">if</strong> (authorizationService.mustDenyAccessForSecuredProxy(app, service)) {
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>       <strong class="jxr_keyword">if</strong> (authorisationService.mustDenyAccessForSecuredProxy(app, service)) {
 <a class="jxr_linenumber" name="L419" href="#L419">419</a>         <strong class="jxr_keyword">return</strong> Triple.of(<strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L420" href="#L420">420</a>       }
 <a class="jxr_linenumber" name="L421" href="#L421">421</a> 
@@ -438,52 +438,54 @@
 <a class="jxr_linenumber" name="L430" href="#L430">430</a>         <strong class="jxr_keyword">return</strong> Triple.of(<strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L431" href="#L431">431</a>       }
 <a class="jxr_linenumber" name="L432" href="#L432">432</a> 
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>       <strong class="jxr_keyword">if</strong> (!authorizationService.userMayView(service, serviceLayer)) {
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>         <strong class="jxr_keyword">return</strong> Triple.of(<strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>       }
-<a class="jxr_linenumber" name="L436" href="#L436">436</a> 
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>       serviceLayerServiceIds.put(serviceLayer, service.getId());
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>       <strong class="jxr_keyword">if</strong> (!authorisationService.userAllowedToViewGeoServiceLayer(service, serviceLayer)) {
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>         logger.debug(
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>             <span class="jxr_string">"User not allowed to view layer {} of service {}"</span>, serviceLayer.getName(), service.getId());
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>         <strong class="jxr_keyword">return</strong> Triple.of(<strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>, <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>       }
 <a class="jxr_linenumber" name="L438" href="#L438">438</a> 
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>       <strong class="jxr_keyword">if</strong> (mr.getServices().stream()
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>           .filter(s -&gt; s.getId().equals(service.getId()))
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>           .findAny()
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>           .isEmpty()) {
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>         mr.addServicesItem(service.toJsonPojo(geoServiceHelper));
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>       }
-<a class="jxr_linenumber" name="L445" href="#L445">445</a> 
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>       GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());
-<a class="jxr_linenumber" name="L447" href="#L447">447</a>       <strong class="jxr_keyword">return</strong> Triple.of(service, serviceLayer, layerSettings);
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>     }
-<a class="jxr_linenumber" name="L449" href="#L449">449</a> 
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> isWebMercatorAvailable(
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>         <a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, GeoServiceLayer serviceLayer, String hiDpiSubstituteLayer) {
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>       <strong class="jxr_keyword">if</strong> (service.getProtocol() == XYZ) {
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>         <strong class="jxr_keyword">return</strong> DEFAULT_WEB_MERCATOR_CRS.equals(service.getSettings().getXyzCrs());
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>       }
-<a class="jxr_linenumber" name="L455" href="#L455">455</a>       <strong class="jxr_keyword">if</strong> (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH) {
-<a class="jxr_linenumber" name="L456" href="#L456">456</a>         <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L457" href="#L457">457</a>       }
-<a class="jxr_linenumber" name="L458" href="#L458">458</a>       <strong class="jxr_keyword">if</strong> (hiDpiSubstituteLayer != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L459" href="#L459">459</a>         GeoServiceLayer hiDpiSubstituteServiceLayer = service.findLayer(hiDpiSubstituteLayer);
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>         <strong class="jxr_keyword">if</strong> (hiDpiSubstituteServiceLayer != <strong class="jxr_keyword">null</strong>
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>             &amp;&amp; !<strong class="jxr_keyword">this</strong>.isWebMercatorAvailable(service, hiDpiSubstituteServiceLayer, <strong class="jxr_keyword">null</strong>)) {
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>           <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>         }
-<a class="jxr_linenumber" name="L464" href="#L464">464</a>       }
-<a class="jxr_linenumber" name="L465" href="#L465">465</a>       <strong class="jxr_keyword">while</strong> (serviceLayer != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L466" href="#L466">466</a>         Set&lt;String&gt; layerCrs = serviceLayer.getCrs();
-<a class="jxr_linenumber" name="L467" href="#L467">467</a>         <strong class="jxr_keyword">if</strong> (layerCrs.contains(DEFAULT_WEB_MERCATOR_CRS)) {
-<a class="jxr_linenumber" name="L468" href="#L468">468</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L469" href="#L469">469</a>         }
-<a class="jxr_linenumber" name="L470" href="#L470">470</a>         <strong class="jxr_keyword">if</strong> (serviceLayer.getRoot()) {
-<a class="jxr_linenumber" name="L471" href="#L471">471</a>           <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L472" href="#L472">472</a>         }
-<a class="jxr_linenumber" name="L473" href="#L473">473</a>         serviceLayer = service.getParentLayer(serviceLayer.getId());
-<a class="jxr_linenumber" name="L474" href="#L474">474</a>       }
-<a class="jxr_linenumber" name="L475" href="#L475">475</a>       <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>     }
-<a class="jxr_linenumber" name="L477" href="#L477">477</a>   }
-<a class="jxr_linenumber" name="L478" href="#L478">478</a> }
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>       serviceLayerServiceIds.put(serviceLayer, service.getId());
+<a class="jxr_linenumber" name="L440" href="#L440">440</a> 
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>       <strong class="jxr_keyword">if</strong> (mapResponse.getServices().stream()
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>           .filter(s -&gt; s.getId().equals(service.getId()))
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>           .findAny()
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>           .isEmpty()) {
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>         mapResponse.addServicesItem(service.toJsonPojo(geoServiceHelper));
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>       }
+<a class="jxr_linenumber" name="L447" href="#L447">447</a> 
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>       GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>       <strong class="jxr_keyword">return</strong> Triple.of(service, serviceLayer, layerSettings);
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>     }
+<a class="jxr_linenumber" name="L451" href="#L451">451</a> 
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> isWebMercatorAvailable(
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>         <a name="GeoService" href="../../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> service, GeoServiceLayer serviceLayer, String hiDpiSubstituteLayer) {
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>       <strong class="jxr_keyword">if</strong> (service.getProtocol() == XYZ) {
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>         <strong class="jxr_keyword">return</strong> DEFAULT_WEB_MERCATOR_CRS.equals(service.getSettings().getXyzCrs());
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>       }
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>       <strong class="jxr_keyword">if</strong> (service.getProtocol() == TILES3D || service.getProtocol() == QUANTIZEDMESH) {
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>         <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>       }
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>       <strong class="jxr_keyword">if</strong> (hiDpiSubstituteLayer != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>         GeoServiceLayer hiDpiSubstituteServiceLayer = service.findLayer(hiDpiSubstituteLayer);
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>         <strong class="jxr_keyword">if</strong> (hiDpiSubstituteServiceLayer != <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>             &amp;&amp; !<strong class="jxr_keyword">this</strong>.isWebMercatorAvailable(service, hiDpiSubstituteServiceLayer, <strong class="jxr_keyword">null</strong>)) {
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>           <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>         }
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>       }
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>       <strong class="jxr_keyword">while</strong> (serviceLayer != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>         Set&lt;String&gt; layerCrs = serviceLayer.getCrs();
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>         <strong class="jxr_keyword">if</strong> (layerCrs.contains(DEFAULT_WEB_MERCATOR_CRS)) {
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L471" href="#L471">471</a>         }
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>         <strong class="jxr_keyword">if</strong> (serviceLayer.getRoot()) {
+<a class="jxr_linenumber" name="L473" href="#L473">473</a>           <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>         }
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>         serviceLayer = service.getParentLayer(serviceLayer.getId());
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>       }
+<a class="jxr_linenumber" name="L477" href="#L477">477</a>       <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>     }
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>   }
+<a class="jxr_linenumber" name="L480" href="#L480">480</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
