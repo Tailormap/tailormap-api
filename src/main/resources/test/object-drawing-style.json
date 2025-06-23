@@ -1,0 +1,48 @@
+{
+  "styles": [
+    {
+      "type": "IMAGE",
+      "style": {
+        "markerImage": "drinkwater.svg",
+        "description": "Drinkwater",
+        "marker": "circle",
+        "markerSize": 11,
+        "markerRotation": 0,
+        "markerFillColor": "rgb(0, 136, 85)",
+        "markerStrokeColor": "rgb(255, 255, 255)",
+        "markerStrokeWidth": 1,
+        "label": "",
+        "labelSize": 8,
+        "labelColor": "rgb(0, 0, 0)",
+        "labelOutlineColor": "rgb(255, 255, 255)",
+        "fillOpacity": 30,
+        "strokeColor": "rgb(98, 54, 255)",
+        "strokeWidth": 3,
+        "strokeOpacity": 100,
+        "fillColor": "rgb(98, 54, 255)"
+      }
+    },
+    {
+      "type": "IMAGE",
+      "style": {
+        "markerImage": "first-aid.svg",
+        "description": "First Aid",
+        "marker": "circle",
+        "markerSize": 11,
+        "markerRotation": 0,
+        "markerFillColor": "rgb(0, 136, 85)",
+        "markerStrokeColor": "rgb(255, 255, 255)",
+        "markerStrokeWidth": 1,
+        "label": "",
+        "labelSize": 8,
+        "labelColor": "rgb(0, 0, 0)",
+        "labelOutlineColor": "rgb(255, 255, 255)",
+        "fillOpacity": 30,
+        "strokeColor": "rgb(98, 54, 255)",
+        "strokeWidth": 3,
+        "strokeOpacity": 100,
+        "fillColor": "rgb(98, 54, 255)"
+      }
+    }
+  ]
+}

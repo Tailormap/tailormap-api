@@ -6,11 +6,15 @@
 
 package org.tailormap.api.controller;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -83,5 +87,35 @@ class UploadsControllerIntegrationTest {
     mockMvc.perform(get(logoUrl).header("If-Modified-Since", "Wed, 12 Jun 2001 09:48:38 GMT"))
         .andExpect(status().isOk())
         .andExpect(content().bytes(new ClassPathResource("test/gradient-logo.svg").getContentAsByteArray()));
+  }
+
+  @Test
+  @Transactional
+  void testDrawingStyle() throws Exception {
+    final Upload theOnlyStyle =
+        uploadRepository.findByCategory(Upload.CATEGORY_DRAWING_STYLE).get(0);
+
+    MvcResult result = mockMvc.perform(get(apiBasePath
+            + "/uploads/%s/%s/style.json".formatted(theOnlyStyle.getCategory(), theOnlyStyle.getId())))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json"))
+        .andExpect(header().longValue("content-length", theOnlyStyle.getContentLength()))
+        .andReturn();
+
+    final String body = result.getResponse().getContentAsString();
+    final String drinkwaterUrl = JsonPath.parse(body).read("$.styles[0].style.markerImage", String.class);
+    assertThat(drinkwaterUrl, startsWith("https://snapshot.tailormap.nl/api/uploads/drawing-style-image/"));
+    assertThat(drinkwaterUrl, endsWith("/drinkwater.svg"));
+
+    mockMvc.perform(get(drinkwaterUrl.replace("https://snapshot.tailormap.nl/api", apiBasePath)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("image/svg+xml"))
+        .andExpect(content().bytes(new ClassPathResource("test/drinkwater.svg").getContentAsByteArray()));
+
+    final String firstAidUrl = JsonPath.parse(body).read("$.styles[1].style.markerImage", String.class);
+    mockMvc.perform(get(firstAidUrl.replace("https://snapshot.tailormap.nl/api", apiBasePath)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("image/svg+xml"))
+        .andExpect(content().bytes(new ClassPathResource("test/first-aid.svg").getContentAsByteArray()));
   }
 }

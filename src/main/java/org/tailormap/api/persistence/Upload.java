@@ -25,6 +25,8 @@ public class Upload {
   public static final String CATEGORY_APP_LOGO = "app-logo";
   public static final String CATEGORY_LEGEND = "legend";
   public static final String CATEGORY_PORTAL_IMAGE = "portal-image";
+  public static final String CATEGORY_DRAWING_STYLE = "drawing-style";
+  public static final String CATEGORY_DRAWING_STYLE_IMAGE = "drawing-style-image";
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
