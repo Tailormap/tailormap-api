@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.annotation.AppRestController;
+import org.tailormap.api.geotools.PreventLocalAllowNestedJarEntityResolver;
 import org.tailormap.api.geotools.wfs.SimpleWFSHelper;
 import org.tailormap.api.geotools.wfs.SimpleWFSLayerDescription;
 import org.tailormap.api.geotools.wfs.WFSProxy;
@@ -337,6 +338,8 @@ public class LayerExportController {
    */
   private static List<String> getWFSAttributeNames(WFSTypeNameDescriptor wfsTypeNameDescriptor) throws IOException {
     Map<String, Object> connectionParameters = new HashMap<>();
+    connectionParameters.put(
+        WFSDataStoreFactory.ENTITY_RESOLVER.key, PreventLocalAllowNestedJarEntityResolver.INSTANCE);
     connectionParameters.put(
         WFSDataStoreFactory.URL.key,
         SimpleWFSHelper.getWFSRequestURL(wfsTypeNameDescriptor.wfsUrl(), "GetCapabilities")
