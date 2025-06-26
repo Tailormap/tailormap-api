@@ -357,6 +357,13 @@ components:
           description: 'initial upper value for a slider filter with between condition'
           type: number
           format: double
+        inputMode:
+          description: 'the mode of input for the filter'
+          enum:
+            - 'SLIDER'
+            - 'INPUT_FIELD'
+            - 'SLIDER_AND_INPUT_FIELD'
+          default: 'SLIDER'
 
     CheckboxFilterConfiguration:
       title: CheckboxFilterConfiguration
