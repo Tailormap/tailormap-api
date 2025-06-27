@@ -31,4 +31,9 @@ public interface UploadRepository extends JpaRepository<Upload, UUID> {
 
   @PreAuthorize(value = "permitAll()")
   List<Upload> findByCategory(String category);
+
+  @PreAuthorize("permitAll()")
+  @NonNull @EntityGraph(attributePaths = {"content"})
+  // Find the most recent upload for a specific category with its content
+  Optional<Upload> findFirstWithContentByCategoryOrderByLastModifiedDesc(@NonNull String category);
 }

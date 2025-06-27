@@ -18,15 +18,12 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.repository.UploadRepository;
 
 @RestController
-// Can't use ${tailormap-api.base-path} because linkTo() won't work
-@RequestMapping(path = "/api/uploads/{category}/{id}/{filename}")
 public class UploadsController {
   private final UploadRepository uploadRepository;
 
@@ -34,7 +31,8 @@ public class UploadsController {
     this.uploadRepository = uploadRepository;
   }
 
-  @GetMapping
+  // Can't use ${tailormap-api.base-path} because linkTo() won't work
+  @GetMapping(path = "/api/uploads/{category}/{id}/{filename}")
   public ResponseEntity<byte[]> getUpload(
       HttpServletRequest request,
       @PathVariable String category,
@@ -69,5 +67,22 @@ public class UploadsController {
         .contentLength(upload.getContentLength())
         .cacheControl(CacheControl.noCache().cachePublic())
         .body(upload.getContent());
+  }
+
+  /**
+   * Gets the latest upload for a specific category, if any. This is most useful for
+   * {@code Upload.CATEGORY_DRAWING_STYLE} .
+   */
+  @GetMapping("/api/uploads/{category}/latest")
+  public ResponseEntity<byte[]> getLatestUpload(@PathVariable String category) {
+    return uploadRepository
+        .findFirstWithContentByCategoryOrderByLastModifiedDesc(category)
+        .map(upload -> ResponseEntity.ok()
+            .header("Content-Type", upload.getMimeType())
+            .lastModified(upload.getLastModified().toInstant())
+            .contentLength(upload.getContentLength())
+            .cacheControl(CacheControl.noCache().cachePublic())
+            .body(upload.getContent()))
+        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
   }
 }
