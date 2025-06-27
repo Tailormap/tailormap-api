@@ -134,7 +134,7 @@ public class EditFeatureController implements Constants {
       SimpleFeatureBuilder simpleFeatureBuilder = new SimpleFeatureBuilder(fs.getSchema());
       if (null != completeFeature.getFid() && !completeFeature.getFid().isEmpty()) {
         simpleFeature = simpleFeatureBuilder.buildFeature(completeFeature.getFid());
-        simpleFeature.getUserData().put(Hints.USE_PROVIDED_FID, Boolean.TRUE);
+        simpleFeature.getUserData().put(Hints.USE_PROVIDED_FID, true);
       } else {
         simpleFeature = simpleFeatureBuilder.buildFeature(null);
       }

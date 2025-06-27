@@ -16,7 +16,7 @@ import org.tailormap.api.persistence.User;
 import org.tailormap.api.security.annotation.PreAuthorizeAdmin;
 
 @PreAuthorizeAdmin
-@RepositoryRestResource()
+@RepositoryRestResource
 public interface UserRepository extends JpaRepository<User, String> {
   @Override
   @PreAuthorize("permitAll()")

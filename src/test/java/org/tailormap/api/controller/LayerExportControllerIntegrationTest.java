@@ -54,7 +54,7 @@ class LayerExportControllerIntegrationTest {
     mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON).with(setServletPath(url)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.exportable").value(Boolean.TRUE))
+        .andExpect(jsonPath("$.exportable").value(true))
         .andExpect(jsonPath("$.outputFormats")
             .value(Matchers.containsInAnyOrder(
                 "text/xml; subtype=gml/3.1.1",
@@ -89,7 +89,7 @@ class LayerExportControllerIntegrationTest {
     mockMvc.perform(get(url).with(setServletPath(url)).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.exportable").value(Boolean.TRUE))
+        .andExpect(jsonPath("$.exportable").value(true))
         .andExpect(jsonPath("$.outputFormats")
             .value(Matchers.containsInAnyOrder(
                 "text/xml; subtype=gml/3.1.1",
