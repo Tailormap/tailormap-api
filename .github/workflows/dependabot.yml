@@ -42,6 +42,6 @@ jobs:
             steps.metadata.outputs.update-type == 'version-update:semver-patch' || 
             steps.metadata.outputs.update-type == 'version-update:semver-minor'
           )
-        run:
+        run: |
           gh pr edit --remove-label "dependency" "${{ github.event.pull_request.html_url }}" --repo Tailormap/tailormap-api
           gh pr merge --auto --squash "${{ github.event.pull_request.html_url }}" --repo Tailormap/tailormap-api
