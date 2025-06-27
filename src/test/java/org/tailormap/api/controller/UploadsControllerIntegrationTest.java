@@ -118,4 +118,18 @@ class UploadsControllerIntegrationTest {
         .andExpect(content().contentType("image/svg+xml"))
         .andExpect(content().bytes(new ClassPathResource("test/first-aid.svg").getContentAsByteArray()));
   }
+
+  @Test
+  void testLatestUpload() throws Exception {
+    mockMvc.perform(get(apiBasePath + "/uploads/%s/latest".formatted(Upload.CATEGORY_DRAWING_STYLE_IMAGE)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("image/svg+xml"))
+        .andExpect(content().bytes(new ClassPathResource("test/first-aid.svg").getContentAsByteArray()));
+  }
+
+  @Test
+  void testNonExistentLatestUpload() throws Exception {
+    mockMvc.perform(get(apiBasePath + "/uploads/%s/latest".formatted("non-existent-category")))
+        .andExpect(status().isNotFound());
+  }
 }
