@@ -68,6 +68,6 @@ class UserControllerIntegrationTest {
         .andExpect(jsonPath("$.properties[0].value").value("some-value"))
         .andExpect(jsonPath("$.groupProperties.length()").value(1))
         .andExpect(jsonPath("$.groupProperties[0].key").value("group-property"))
-        .andExpect(jsonPath("$.groupProperties[0].value").value(Boolean.TRUE));
+        .andExpect(jsonPath("$.groupProperties[0].value").value(true));
   }
 }

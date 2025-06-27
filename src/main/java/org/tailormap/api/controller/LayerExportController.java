@@ -344,9 +344,9 @@ public class LayerExportController {
         WFSDataStoreFactory.URL.key,
         SimpleWFSHelper.getWFSRequestURL(wfsTypeNameDescriptor.wfsUrl(), "GetCapabilities")
             .toURL());
-    connectionParameters.put(WFSDataStoreFactory.PROTOCOL.key, Boolean.FALSE);
+    connectionParameters.put(WFSDataStoreFactory.PROTOCOL.key, false);
     connectionParameters.put(WFSDataStoreFactory.WFS_STRATEGY.key, "geoserver");
-    connectionParameters.put(WFSDataStoreFactory.LENIENT.key, Boolean.TRUE);
+    connectionParameters.put(WFSDataStoreFactory.LENIENT.key, true);
     connectionParameters.put(WFSDataStoreFactory.TIMEOUT.key, SimpleWFSHelper.TIMEOUT);
     if (wfsTypeNameDescriptor.username() != null) {
       connectionParameters.put(WFSDataStoreFactory.USERNAME.key, wfsTypeNameDescriptor.username());
