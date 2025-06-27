@@ -352,9 +352,9 @@
 <a class="jxr_linenumber" name="L344" href="#L344">344</a>         WFSDataStoreFactory.URL.key,
 <a class="jxr_linenumber" name="L345" href="#L345">345</a>         SimpleWFSHelper.getWFSRequestURL(wfsTypeNameDescriptor.wfsUrl(), <span class="jxr_string">"GetCapabilities"</span>)
 <a class="jxr_linenumber" name="L346" href="#L346">346</a>             .toURL());
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>     connectionParameters.put(WFSDataStoreFactory.PROTOCOL.key, Boolean.FALSE);
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>     connectionParameters.put(WFSDataStoreFactory.PROTOCOL.key, false);
 <a class="jxr_linenumber" name="L348" href="#L348">348</a>     connectionParameters.put(WFSDataStoreFactory.WFS_STRATEGY.key, <span class="jxr_string">"geoserver"</span>);
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>     connectionParameters.put(WFSDataStoreFactory.LENIENT.key, Boolean.TRUE);
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>     connectionParameters.put(WFSDataStoreFactory.LENIENT.key, <strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L350" href="#L350">350</a>     connectionParameters.put(WFSDataStoreFactory.TIMEOUT.key, SimpleWFSHelper.TIMEOUT);
 <a class="jxr_linenumber" name="L351" href="#L351">351</a>     <strong class="jxr_keyword">if</strong> (wfsTypeNameDescriptor.username() != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L352" href="#L352">352</a>       connectionParameters.put(WFSDataStoreFactory.USERNAME.key, wfsTypeNameDescriptor.username());
