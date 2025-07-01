@@ -6,7 +6,7 @@ set -e
 
 export SOLR_OPTS=""
 
-docker compose -f ./build/ci/docker-compose.yml up --pull=always -d --wait
+docker compose -f ./build/ci/docker-compose.yml up --pull=always --quiet-pull -d --wait --wait-timeout=600
 
 POSTGIS_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" postgis)
 ORACLE_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" oracle)
