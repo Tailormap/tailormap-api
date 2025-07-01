@@ -39,7 +39,12 @@
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>    @PreAuthorize(value = <span class="jxr_string">"permitAll()"</span>)
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>    List&lt;Upload&gt; findByCategory(String category);
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  }
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>    @PreAuthorize(<span class="jxr_string">"permitAll()"</span>)
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>    @NonNull @EntityGraph(attributePaths = {<span class="jxr_string">"content"</span>})
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>    <em class="jxr_comment">// Find the most recent upload for a specific category with its content</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>    Optional&lt;Upload&gt; findFirstWithContentByCategoryOrderByLastModifiedDesc(@NonNull String category);
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

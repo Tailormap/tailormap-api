@@ -77,7 +77,6 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <hr>
 <div class="type-signature"><span class="annotations">@RestController
-@RequestMapping(path="/api/uploads/{category}/{id}/{filename}")
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">UploadsController</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 </section>
@@ -108,11 +107,16 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity&lt;byte[]&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUpload(jakarta.servlet.http.HttpServletRequest,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">getUpload</a><wbr>(jakarta.servlet.http.HttpServletRequest&nbsp;request,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getLatestUpload(java.lang.String)" class="member-name-link">getLatestUpload</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets the latest upload for a specific category, if any.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity&lt;byte[]&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUpload(jakarta.servlet.http.HttpServletRequest,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">getUpload</a><wbr>(jakarta.servlet.http.HttpServletRequest&nbsp;request,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;idString,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filename)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -147,7 +151,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="getUpload(jakarta.servlet.http.HttpServletRequest,java.lang.String,java.lang.String,java.lang.String)">
 <h3>getUpload</h3>
-<div class="member-signature"><span class="annotations">@GetMapping
+<div class="member-signature"><span class="annotations">@GetMapping(path="/api/uploads/{category}/{id}/{filename}")
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;byte[]&gt;</span>&nbsp;<span class="element-name">getUpload</span><wbr><span class="parameters">(jakarta.servlet.http.HttpServletRequest&nbsp;request,
  @PathVariable
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category,
@@ -155,6 +159,16 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;idString,
  @PathVariable(required=false)
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filename)</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="getLatestUpload(java.lang.String)">
+<h3>getLatestUpload</h3>
+<div class="member-signature"><span class="annotations">@GetMapping("/api/uploads/{category}/latest")
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;byte[]&gt;</span>&nbsp;<span class="element-name">getLatestUpload</span><wbr><span class="parameters">(@PathVariable
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;category)</span></div>
+<div class="block">Gets the latest upload for a specific category, if any. This is most useful for
+ <code>Upload.CATEGORY_DRAWING_STYLE</code> .</div>
 </section>
 </li>
 </ul>
