@@ -112,16 +112,16 @@
 <a class="jxr_linenumber" name="L104" href="#L104">104</a> 
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>     <strong class="jxr_keyword">final</strong> String body = result.getResponse().getContentAsString();
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>     <strong class="jxr_keyword">final</strong> String drinkwaterUrl = JsonPath.parse(body).read(<span class="jxr_string">"$.styles[0].style.markerImage"</span>, String.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>     assertThat(drinkwaterUrl, startsWith(<span class="jxr_string">"https://snapshot.tailormap.nl/api/uploads/drawing-style-image/"</span>));
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>     assertThat(drinkwaterUrl, startsWith(<span class="jxr_string">"/uploads/drawing-style-image/"</span>));
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>     assertThat(drinkwaterUrl, endsWith(<span class="jxr_string">"/drinkwater.svg"</span>));
 <a class="jxr_linenumber" name="L109" href="#L109">109</a> 
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>     mockMvc.perform(get(drinkwaterUrl.replace(<span class="jxr_string">"https://snapshot.tailormap.nl/api"</span>, apiBasePath)))
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>     mockMvc.perform(get(apiBasePath + drinkwaterUrl))
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         .andExpect(content().contentType(<span class="jxr_string">"image/svg+xml"</span>))
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>         .andExpect(content().bytes(<strong class="jxr_keyword">new</strong> ClassPathResource(<span class="jxr_string">"test/drinkwater.svg"</span>).getContentAsByteArray()));
 <a class="jxr_linenumber" name="L114" href="#L114">114</a> 
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>     <strong class="jxr_keyword">final</strong> String firstAidUrl = JsonPath.parse(body).read(<span class="jxr_string">"$.styles[1].style.markerImage"</span>, String.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>     mockMvc.perform(get(firstAidUrl.replace(<span class="jxr_string">"https://snapshot.tailormap.nl/api"</span>, apiBasePath)))
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>     mockMvc.perform(get(apiBasePath + firstAidUrl))
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         .andExpect(status().isOk())
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>         .andExpect(content().contentType(<span class="jxr_string">"image/svg+xml"</span>))
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>         .andExpect(content().bytes(<strong class="jxr_keyword">new</strong> ClassPathResource(<span class="jxr_string">"test/first-aid.svg"</span>).getContentAsByteArray()));
