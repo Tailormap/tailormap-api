@@ -3,7 +3,7 @@
     {
       "type": "IMAGE",
       "style": {
-        "markerImage": "drinkwater.svg",
+        "markerImage": "/uploads/drawing-style-image/${drinkwater-uuid}/drinkwater.svg",
         "description": "Drinkwater",
         "marker": "circle",
         "markerSize": 11,
@@ -25,7 +25,7 @@
     {
       "type": "IMAGE",
       "style": {
-        "markerImage": "first-aid.svg",
+        "markerImage": "/uploads/drawing-style-image/${first-aid-uuid}/first-aid.svg",
         "description": "First Aid",
         "marker": "circle",
         "markerSize": 11,

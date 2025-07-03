@@ -36,4 +36,12 @@ public interface UploadRepository extends JpaRepository<Upload, UUID> {
   @NonNull @EntityGraph(attributePaths = {"content"})
   // Find the most recent upload for a specific category with its content
   Optional<Upload> findFirstWithContentByCategoryOrderByLastModifiedDesc(@NonNull String category);
+
+  @PreAuthorize("permitAll()")
+  @Query(
+      "select new org.tailormap.api.repository.UploadMatch(u.id, function('md5', u.content)) from Upload u where u.category = :category and function('md5', u.content) in :hashes")
+  List<UploadMatch> findByContentMd5In(@NonNull String category, @NonNull List<String> hashes);
+
+  @PreAuthorize("permitAll()")
+  List<Upload> findByFilename(String filename);
 }
