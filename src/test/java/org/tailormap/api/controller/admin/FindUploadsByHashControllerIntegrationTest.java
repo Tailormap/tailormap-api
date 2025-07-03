@@ -23,7 +23,7 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
 
 @PostgresIntegrationTest
-class FindUploadsByHashControllerTest {
+class FindUploadsByHashControllerIntegrationTest {
   @Autowired
   private WebApplicationContext context;
 
