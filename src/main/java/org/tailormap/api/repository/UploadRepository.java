@@ -39,6 +39,6 @@ public interface UploadRepository extends JpaRepository<Upload, UUID> {
 
   @PreAuthorize("permitAll()")
   @Query(
-      "select new org.tailormap.api.repository.UploadMd5Match(u.id, u.content) from Upload u where u.category = :category and function('md5', u.content) in :hashes")
-  List<UploadMd5Match> findByContentMd5In(@NonNull String category, @NonNull List<String> hashes);
+      "select new org.tailormap.api.repository.UploadMatch(u.id, function('md5', u.content)) from Upload u where u.category = :category and function('md5', u.content) in :hashes")
+  List<UploadMatch> findByContentMd5In(@NonNull String category, @NonNull List<String> hashes);
 }

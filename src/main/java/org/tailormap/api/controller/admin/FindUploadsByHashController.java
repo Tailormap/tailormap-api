@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.tailormap.api.repository.UploadMd5Match;
+import org.tailormap.api.repository.UploadMatch;
 import org.tailormap.api.repository.UploadRepository;
 
 @RestController
@@ -25,7 +25,7 @@ public class FindUploadsByHashController {
   @PostMapping(
       path = "${tailormap-api.admin.base-path}/uploads/find-by-hash/{category}",
       consumes = "application/json")
-  public List<UploadMd5Match> findUploadsByHash(@PathVariable String category, @RequestBody List<String> hashes) {
+  public List<UploadMatch> findUploadsByHash(@PathVariable String category, @RequestBody List<String> hashes) {
     return uploadRepository.findByContentMd5In(category, hashes);
   }
 }
