@@ -21,11 +21,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Group;
+import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.repository.UploadRepository;
 
 @PostgresIntegrationTest
 class FindUploadsByHashControllerIntegrationTest {
   @Autowired
   private WebApplicationContext context;
+
+  @Autowired
+  private UploadRepository uploadRepository;
 
   @Value("${tailormap-api.admin.base-path}")
   private String adminBasePath;
@@ -43,14 +48,20 @@ class FindUploadsByHashControllerIntegrationTest {
 ]
 """;
 
-    String expected =
+    Upload drinkwater = uploadRepository.findByFilename("drinkwater.svg").stream()
+        .findAny()
+        .orElseThrow(() -> new IllegalStateException(
+            "Expected upload with filename 'drinkwater.svg' not found in the database"));
+
+    String expected = String.format(
         """
 [
 {
-"id": "1c24fcfa-2c68-476b-b49b-baf172726e5d",
+"id": "%s",
 "hash": "30a69db6165c325c174187e3182f83a2"
 }
-]""";
+]""",
+        drinkwater.getId().toString());
 
     mockMvc.perform(post(adminBasePath + "/uploads/find-by-hash/drawing-style-image")
             .contentType(MediaType.APPLICATION_JSON)
