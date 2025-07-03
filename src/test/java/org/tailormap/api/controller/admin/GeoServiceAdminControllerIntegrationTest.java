@@ -105,7 +105,7 @@ class GeoServiceAdminControllerIntegrationTest {
 
       assertEquals(
           "GetCapabilities",
-          Objects.requireNonNull(server.takeRequest().getRequestUrl()).queryParameter("REQUEST"));
+          Objects.requireNonNull(server.takeRequest().getUrl()).queryParameter("REQUEST"));
 
       // This capabilities document has an extra layer
       body = getResourceString(wmsTestCapabilitiesUpdated);
@@ -118,7 +118,7 @@ class GeoServiceAdminControllerIntegrationTest {
 
       assertEquals(
           "GetCapabilities",
-          Objects.requireNonNull(server.takeRequest().getRequestUrl()).queryParameter("REQUEST"));
+          Objects.requireNonNull(server.takeRequest().getUrl()).queryParameter("REQUEST"));
 
       mockMvc.perform(get(selfLink).accept(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk())
@@ -136,8 +136,6 @@ class GeoServiceAdminControllerIntegrationTest {
           .andExpect(jsonPath("$.layers[2].name").value("Layer3"))
           .andExpect(jsonPath("$.layers[2].crs.length()").value(1))
           .andExpect(jsonPath("$.layers[2].crs[0]").value("EPSG:4326"));
-
-      server.shutdown();
     }
   }
 
@@ -224,8 +222,6 @@ class GeoServiceAdminControllerIntegrationTest {
                       "Error loading capabilities from URL \""
                           + url
                           + "\": Exception: Error loading WMS capabilities: code: SomeCode: locator: somewhere: An example error text."));
-
-      server.shutdown();
     }
   }
 
@@ -256,7 +252,6 @@ class GeoServiceAdminControllerIntegrationTest {
                       "Error loading capabilities from URL \""
                           + url
                           + "\": Exception: Error loading WMS, got 401 unauthorized response (credentials may be required or invalid)"));
-      server.shutdown();
     }
   }
 
@@ -289,7 +284,6 @@ class GeoServiceAdminControllerIntegrationTest {
               .content(geoServicePOSTBody))
           .andExpect(status().isCreated())
           .andExpect(jsonPath("$.serviceCapabilities.corsAllowOrigin").value("https://my-origin"));
-      server.shutdown();
     }
   }
 }
