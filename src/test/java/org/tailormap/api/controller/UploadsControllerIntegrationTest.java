@@ -104,16 +104,16 @@ class UploadsControllerIntegrationTest {
 
     final String body = result.getResponse().getContentAsString();
     final String drinkwaterUrl = JsonPath.parse(body).read("$.styles[0].style.markerImage", String.class);
-    assertThat(drinkwaterUrl, startsWith("https://snapshot.tailormap.nl/api/uploads/drawing-style-image/"));
+    assertThat(drinkwaterUrl, startsWith("/uploads/drawing-style-image/"));
     assertThat(drinkwaterUrl, endsWith("/drinkwater.svg"));
 
-    mockMvc.perform(get(drinkwaterUrl.replace("https://snapshot.tailormap.nl/api", apiBasePath)))
+    mockMvc.perform(get(apiBasePath + drinkwaterUrl))
         .andExpect(status().isOk())
         .andExpect(content().contentType("image/svg+xml"))
         .andExpect(content().bytes(new ClassPathResource("test/drinkwater.svg").getContentAsByteArray()));
 
     final String firstAidUrl = JsonPath.parse(body).read("$.styles[1].style.markerImage", String.class);
-    mockMvc.perform(get(firstAidUrl.replace("https://snapshot.tailormap.nl/api", apiBasePath)))
+    mockMvc.perform(get(apiBasePath + firstAidUrl))
         .andExpect(status().isOk())
         .andExpect(content().contentType("image/svg+xml"))
         .andExpect(content().bytes(new ClassPathResource("test/first-aid.svg").getContentAsByteArray()));
