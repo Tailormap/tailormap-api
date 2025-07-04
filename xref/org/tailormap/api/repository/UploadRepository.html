@@ -47,8 +47,8 @@
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>    @PreAuthorize(<span class="jxr_string">"permitAll()"</span>)
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>    @Query(
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>        <span class="jxr_string">"select new org.tailormap.api.repository.UploadMatch(u.id, function('md5', u.content)) from Upload u where u.category = :category and function('md5', u.content) in :hashes"</span>)
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>    List&lt;UploadMatch&gt; findByContentMd5In(@NonNull String category, @NonNull List&lt;String&gt; hashes);
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>        <span class="jxr_string">"select new org.tailormap.api.repository.UploadMatch(u.id, u.hash) from Upload u where u.category = :category and u.hash in :hashes"</span>)
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>    List&lt;UploadMatch&gt; findByHashIn(@NonNull String category, @NonNull List&lt;String&gt; hashes);
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>    @PreAuthorize(<span class="jxr_string">"permitAll()"</span>)
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>    List&lt;Upload&gt; findByFilename(String filename);

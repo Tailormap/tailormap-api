@@ -1,3 +1,4 @@
+db.migration
 org.tailormap.api
 org.tailormap.api.admin.model
 org.tailormap.api.annotation
