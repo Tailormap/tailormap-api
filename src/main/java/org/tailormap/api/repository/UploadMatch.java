@@ -8,4 +8,4 @@ package org.tailormap.api.repository;
 
 import java.util.UUID;
 
-public record UploadMatch(UUID id, Object hash) {}
+public record UploadMatch(UUID id, String hash) {}

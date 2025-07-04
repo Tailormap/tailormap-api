@@ -26,6 +26,6 @@ public class FindUploadsByHashController {
       path = "${tailormap-api.admin.base-path}/uploads/find-by-hash/{category}",
       consumes = "application/json")
   public List<UploadMatch> findUploadsByHash(@PathVariable String category, @RequestBody List<String> hashes) {
-    return uploadRepository.findByContentMd5In(category, hashes);
+    return uploadRepository.findByHashIn(category, hashes);
   }
 }

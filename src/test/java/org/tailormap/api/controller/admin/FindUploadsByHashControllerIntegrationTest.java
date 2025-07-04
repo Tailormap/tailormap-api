@@ -41,10 +41,11 @@ class FindUploadsByHashControllerIntegrationTest {
       authorities = {Group.ADMIN})
   void testUploadMatches() throws Exception {
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build(); // Required for Spring Data Rest APIs
-    String body = """
+    String body =
+        """
 [
-"30a69db6165c325c174187e3182f83a2",
-"334c4a4c42fdb79d7ebc3e73b517e6f8"
+"108d266b132661285a7533339958a77dfd06821a",
+"71f8e7976e4cbc4561c9d62fb283e7f788202acb"
 ]
 """;
 
@@ -58,7 +59,7 @@ class FindUploadsByHashControllerIntegrationTest {
 [
 {
 "id": "%s",
-"hash": "30a69db6165c325c174187e3182f83a2"
+"hash": "108d266b132661285a7533339958a77dfd06821a"
 }
 ]""",
         drinkwater.getId().toString());
