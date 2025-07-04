@@ -152,7 +152,7 @@ public class Upload {
 
   @PrePersist
   @PreUpdate
-  private void computeHash() {
+  public void computeHash() {
     if (content != null) {
       this.hash = DigestUtils.sha1Hex(content);
     } else {
