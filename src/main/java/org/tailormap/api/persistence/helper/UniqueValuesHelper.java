@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2025 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
 package org.tailormap.api.persistence.helper;
 
 import java.io.IOException;
