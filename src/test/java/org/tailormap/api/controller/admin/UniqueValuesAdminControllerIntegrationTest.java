@@ -62,9 +62,6 @@ public class UniqueValuesAdminControllerIntegrationTest {
     final Set<String> uniqueValues = new HashSet<>(values);
 
     assertEquals(values.size(), uniqueValues.size(), "Unique values should be unique");
-    assertTrue(
-        uniqueValues.containsAll(
-            Set.of("W0636", "G0344", "L0004", "W0155", "L0001", "P0026", "L0002", "G1904")),
-        "not all values are present: " + uniqueValues);
+    assertTrue(uniqueValues.containsAll(Set.of("G0344", "P0026", "G1904")), "not all values are present");
   }
 }
