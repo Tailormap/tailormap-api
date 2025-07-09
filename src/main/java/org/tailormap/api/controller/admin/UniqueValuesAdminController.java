@@ -23,7 +23,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.helper.UniqueValuesHelper;
-import org.tailormap.api.persistence.json.TMAttributeDescriptor;
 import org.tailormap.api.repository.FeatureTypeRepository;
 import org.tailormap.api.viewer.model.ErrorResponse;
 import org.tailormap.api.viewer.model.UniqueValuesResponse;
@@ -75,7 +74,7 @@ public class UniqueValuesAdminController {
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Feature type not found"));
 
     if (tmft.getAttributeByName(attributeName).isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attribute does not exist: " + tmft.getAttributes().stream().map(TMAttributeDescriptor::getName).toList());
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attribute does not exist");
     }
 
     UniqueValuesResponse response = UniqueValuesHelper.getUniqueValues(
