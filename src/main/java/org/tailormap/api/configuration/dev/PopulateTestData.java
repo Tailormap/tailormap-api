@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -45,6 +46,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.PropertyPlaceholderHelper;
 import org.tailormap.api.admin.model.TaskSchedule;
 import org.tailormap.api.geotools.featuresources.FeatureSourceFactoryHelper;
 import org.tailormap.api.geotools.featuresources.JDBCFeatureSourceHelper;
@@ -1970,24 +1972,21 @@ INSERT INTO data.drawing_feature (drawing_id,id,geometry,properties) VALUES
     upload = uploadRepository.save(upload);
     UUID firstAidImageId = upload.getId();
 
-    ClassPathResource drawingStyleResource = new ClassPathResource("test/object-drawing-style.json");
-    final byte[] styleJson = drawingStyleResource
-        .getContentAsString(StandardCharsets.UTF_8)
-        .replace(
-            "\"markerImage\": \"drinkwater.svg\",",
-            "\"markerImage\": \"https://snapshot.tailormap.nl/api/uploads/drawing-style-image/"
-                + drinkwaterImageId.toString() + "/drinkwater.svg\",")
-        .replace(
-            "\"markerImage\": \"first-aid.svg\",",
-            "\"markerImage\": \"https://snapshot.tailormap.nl/api/uploads/drawing-style-image/"
-                + firstAidImageId.toString() + "/first-aid.svg\",")
-        .getBytes(StandardCharsets.UTF_8);
+    Properties props = new Properties();
+    props.putAll(Map.of(
+        "drinkwater-uuid", drinkwaterImageId.toString(),
+        "first-aid-uuid", firstAidImageId.toString()));
+
+    String drawingStyles =
+        new ClassPathResource("test/object-drawing-style.json").getContentAsString(StandardCharsets.UTF_8);
+    drawingStyles = new PropertyPlaceholderHelper("${", "}").replacePlaceholders(drawingStyles, props);
+
     // save the updated drawing style
     upload = new Upload()
         .setCategory(Upload.CATEGORY_DRAWING_STYLE)
         .setMimeType("application/json")
         .setFilename("object-drawing-style.json")
-        .setContent(styleJson)
+        .setContent(drawingStyles.getBytes(StandardCharsets.UTF_8))
         .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
     uploadRepository.save(upload);
   }

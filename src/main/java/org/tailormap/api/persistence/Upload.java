@@ -13,10 +13,13 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
 @Entity
@@ -49,6 +52,9 @@ public class Upload {
   @Basic(fetch = FetchType.LAZY)
   private byte[] content;
 
+  private String hash;
+
+  // <editor-fold desc="getters and setters">
   public int getContentLength() {
     return getContent() == null ? 0 : content.length;
   }
@@ -132,5 +138,25 @@ public class Upload {
   public Upload setContent(byte[] content) {
     this.content = content;
     return this;
+  }
+
+  public String getHash() {
+    return hash;
+  }
+
+  public Upload setHash(String hash) {
+    this.hash = hash;
+    return this;
+  }
+  // </editor-fold>
+
+  @PrePersist
+  @PreUpdate
+  public void computeHash() {
+    if (content != null) {
+      this.hash = DigestUtils.sha1Hex(content);
+    } else {
+      this.hash = null;
+    }
   }
 }
