@@ -65,6 +65,6 @@ public class UniqueValuesAdminControllerIntegrationTest {
     assertTrue(
         uniqueValues.containsAll(
             Set.of("W0636", "G0344", "L0004", "W0155", "L0001", "P0026", "L0002", "G1904")),
-        "not all values are present");
+        "not all values are present: " + uniqueValues);
   }
 }
