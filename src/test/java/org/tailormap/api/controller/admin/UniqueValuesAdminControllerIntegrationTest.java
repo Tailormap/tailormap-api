@@ -36,7 +36,7 @@ import org.tailormap.api.persistence.Group;
 @Execution(ExecutionMode.CONCURRENT)
 @Stopwatch
 @Order(1)
-public class UniqueValuesAdminControllerIntegrationTest {
+class UniqueValuesAdminControllerIntegrationTest {
   @Value("${tailormap-api.admin.base-path}/unique-values")
   private String adminUniqueValuesPath;
 
