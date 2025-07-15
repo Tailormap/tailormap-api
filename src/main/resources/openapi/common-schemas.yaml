@@ -326,6 +326,7 @@ components:
                     - 'CHECKBOX'
                     - 'SWITCH'
                     - 'DATE_PICKER'
+                    - 'DROPDOWN_LIST'
             - anyOf:
                 - $ref: '#/components/schemas/SliderFilterConfiguration'
                 - $ref: '#/components/schemas/CheckboxFilterConfiguration'
