@@ -376,6 +376,7 @@ components:
             type: array
             items:
               type: object
+              title: AttributeValueSettings
               properties:
                 value:
                   type: string
