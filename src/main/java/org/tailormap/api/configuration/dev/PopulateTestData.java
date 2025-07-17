@@ -75,7 +75,7 @@ import org.tailormap.api.persistence.json.AuthorizationRule;
 import org.tailormap.api.persistence.json.AuthorizationRuleDecision;
 import org.tailormap.api.persistence.json.Bounds;
 import org.tailormap.api.persistence.json.CatalogNode;
-import org.tailormap.api.persistence.json.CheckboxFilterConfigurationAttributeValuesSettingsInner;
+import org.tailormap.api.persistence.json.CheckboxDropdownListFilterConfigurationAttributeValuesSettingsInner;
 import org.tailormap.api.persistence.json.FeatureTypeRef;
 import org.tailormap.api.persistence.json.FeatureTypeTemplate;
 import org.tailormap.api.persistence.json.Filter;
@@ -1203,38 +1203,38 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                     .editConfiguration(new FilterEditConfiguration()
                         .filterTool(FilterEditConfiguration.FilterToolEnum.CHECKBOX)
                         .attributeValuesSettings(List.of(
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxDropdownListFilterConfigurationAttributeValuesSettingsInner()
                                 .value("bodembedekkers")
                                 .initiallySelected(true)
                                 .selectable(true)
                                 .alias("Bodembedekkers"),
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxDropdownListFilterConfigurationAttributeValuesSettingsInner()
                                 .value("bosplantsoen")
                                 .initiallySelected(true)
                                 .selectable(true)
                                 .alias("Bosplantsoen"),
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxDropdownListFilterConfigurationAttributeValuesSettingsInner()
                                 .value("gras- en kruidachtigen")
                                 .initiallySelected(true)
                                 .selectable(true)
                                 .alias("Gras- en kruidachtigen"),
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxDropdownListFilterConfigurationAttributeValuesSettingsInner()
                                 .value("griend en hakhout")
                                 .initiallySelected(false)
                                 .selectable(true),
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxDropdownListFilterConfigurationAttributeValuesSettingsInner()
                                 .value("heesters")
                                 .initiallySelected(false)
                                 .selectable(true),
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxDropdownListFilterConfigurationAttributeValuesSettingsInner()
                                 .value("planten")
                                 .initiallySelected(false)
                                 .selectable(true),
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxDropdownListFilterConfigurationAttributeValuesSettingsInner()
                                 .value("struikrozen")
                                 .initiallySelected(false)
                                 .selectable(true),
-                            new CheckboxFilterConfigurationAttributeValuesSettingsInner()
+                            new CheckboxDropdownListFilterConfigurationAttributeValuesSettingsInner()
                                 .value("waardeOnbekend")
                                 .initiallySelected(false)
                                 .selectable(true))))))
