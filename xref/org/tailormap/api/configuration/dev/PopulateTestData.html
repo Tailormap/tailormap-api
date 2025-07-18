@@ -79,11 +79,11 @@
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppTreeNode;
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppUiSettings;
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AttributeSettings;
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AuthorizationRule;
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AuthorizationRuleDecision;
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.Bounds;
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.CatalogNode;
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.CheckboxFilterConfigurationAttributeValuesSettingsInner;
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AttributeValueSettings;
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AuthorizationRule;
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AuthorizationRuleDecision;
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.Bounds;
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.CatalogNode;
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.FeatureTypeRef;
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.FeatureTypeTemplate;
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.Filter;
@@ -1211,38 +1211,38 @@
 <a class="jxr_linenumber" name="L1203" href="#L1203">1203</a>                     .editConfiguration(<strong class="jxr_keyword">new</strong> FilterEditConfiguration()
 <a class="jxr_linenumber" name="L1204" href="#L1204">1204</a>                         .filterTool(FilterEditConfiguration.FilterToolEnum.CHECKBOX)
 <a class="jxr_linenumber" name="L1205" href="#L1205">1205</a>                         .attributeValuesSettings(List.of(
-<a class="jxr_linenumber" name="L1206" href="#L1206">1206</a>                             <strong class="jxr_keyword">new</strong> CheckboxFilterConfigurationAttributeValuesSettingsInner()
+<a class="jxr_linenumber" name="L1206" href="#L1206">1206</a>                             <strong class="jxr_keyword">new</strong> AttributeValueSettings()
 <a class="jxr_linenumber" name="L1207" href="#L1207">1207</a>                                 .value(<span class="jxr_string">"bodembedekkers"</span>)
 <a class="jxr_linenumber" name="L1208" href="#L1208">1208</a>                                 .initiallySelected(<strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L1209" href="#L1209">1209</a>                                 .selectable(<strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L1210" href="#L1210">1210</a>                                 .alias(<span class="jxr_string">"Bodembedekkers"</span>),
-<a class="jxr_linenumber" name="L1211" href="#L1211">1211</a>                             <strong class="jxr_keyword">new</strong> CheckboxFilterConfigurationAttributeValuesSettingsInner()
+<a class="jxr_linenumber" name="L1211" href="#L1211">1211</a>                             <strong class="jxr_keyword">new</strong> AttributeValueSettings()
 <a class="jxr_linenumber" name="L1212" href="#L1212">1212</a>                                 .value(<span class="jxr_string">"bosplantsoen"</span>)
 <a class="jxr_linenumber" name="L1213" href="#L1213">1213</a>                                 .initiallySelected(<strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L1214" href="#L1214">1214</a>                                 .selectable(<strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L1215" href="#L1215">1215</a>                                 .alias(<span class="jxr_string">"Bosplantsoen"</span>),
-<a class="jxr_linenumber" name="L1216" href="#L1216">1216</a>                             <strong class="jxr_keyword">new</strong> CheckboxFilterConfigurationAttributeValuesSettingsInner()
+<a class="jxr_linenumber" name="L1216" href="#L1216">1216</a>                             <strong class="jxr_keyword">new</strong> AttributeValueSettings()
 <a class="jxr_linenumber" name="L1217" href="#L1217">1217</a>                                 .value(<span class="jxr_string">"gras- en kruidachtigen"</span>)
 <a class="jxr_linenumber" name="L1218" href="#L1218">1218</a>                                 .initiallySelected(<strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L1219" href="#L1219">1219</a>                                 .selectable(<strong class="jxr_keyword">true</strong>)
 <a class="jxr_linenumber" name="L1220" href="#L1220">1220</a>                                 .alias(<span class="jxr_string">"Gras- en kruidachtigen"</span>),
-<a class="jxr_linenumber" name="L1221" href="#L1221">1221</a>                             <strong class="jxr_keyword">new</strong> CheckboxFilterConfigurationAttributeValuesSettingsInner()
+<a class="jxr_linenumber" name="L1221" href="#L1221">1221</a>                             <strong class="jxr_keyword">new</strong> AttributeValueSettings()
 <a class="jxr_linenumber" name="L1222" href="#L1222">1222</a>                                 .value(<span class="jxr_string">"griend en hakhout"</span>)
 <a class="jxr_linenumber" name="L1223" href="#L1223">1223</a>                                 .initiallySelected(false)
 <a class="jxr_linenumber" name="L1224" href="#L1224">1224</a>                                 .selectable(<strong class="jxr_keyword">true</strong>),
-<a class="jxr_linenumber" name="L1225" href="#L1225">1225</a>                             <strong class="jxr_keyword">new</strong> CheckboxFilterConfigurationAttributeValuesSettingsInner()
+<a class="jxr_linenumber" name="L1225" href="#L1225">1225</a>                             <strong class="jxr_keyword">new</strong> AttributeValueSettings()
 <a class="jxr_linenumber" name="L1226" href="#L1226">1226</a>                                 .value(<span class="jxr_string">"heesters"</span>)
 <a class="jxr_linenumber" name="L1227" href="#L1227">1227</a>                                 .initiallySelected(false)
 <a class="jxr_linenumber" name="L1228" href="#L1228">1228</a>                                 .selectable(<strong class="jxr_keyword">true</strong>),
-<a class="jxr_linenumber" name="L1229" href="#L1229">1229</a>                             <strong class="jxr_keyword">new</strong> CheckboxFilterConfigurationAttributeValuesSettingsInner()
+<a class="jxr_linenumber" name="L1229" href="#L1229">1229</a>                             <strong class="jxr_keyword">new</strong> AttributeValueSettings()
 <a class="jxr_linenumber" name="L1230" href="#L1230">1230</a>                                 .value(<span class="jxr_string">"planten"</span>)
 <a class="jxr_linenumber" name="L1231" href="#L1231">1231</a>                                 .initiallySelected(false)
 <a class="jxr_linenumber" name="L1232" href="#L1232">1232</a>                                 .selectable(<strong class="jxr_keyword">true</strong>),
-<a class="jxr_linenumber" name="L1233" href="#L1233">1233</a>                             <strong class="jxr_keyword">new</strong> CheckboxFilterConfigurationAttributeValuesSettingsInner()
+<a class="jxr_linenumber" name="L1233" href="#L1233">1233</a>                             <strong class="jxr_keyword">new</strong> AttributeValueSettings()
 <a class="jxr_linenumber" name="L1234" href="#L1234">1234</a>                                 .value(<span class="jxr_string">"struikrozen"</span>)
 <a class="jxr_linenumber" name="L1235" href="#L1235">1235</a>                                 .initiallySelected(false)
 <a class="jxr_linenumber" name="L1236" href="#L1236">1236</a>                                 .selectable(<strong class="jxr_keyword">true</strong>),
-<a class="jxr_linenumber" name="L1237" href="#L1237">1237</a>                             <strong class="jxr_keyword">new</strong> CheckboxFilterConfigurationAttributeValuesSettingsInner()
+<a class="jxr_linenumber" name="L1237" href="#L1237">1237</a>                             <strong class="jxr_keyword">new</strong> AttributeValueSettings()
 <a class="jxr_linenumber" name="L1238" href="#L1238">1238</a>                                 .value(<span class="jxr_string">"waardeOnbekend"</span>)
 <a class="jxr_linenumber" name="L1239" href="#L1239">1239</a>                                 .initiallySelected(false)
 <a class="jxr_linenumber" name="L1240" href="#L1240">1240</a>                                 .selectable(<strong class="jxr_keyword">true</strong>))))))
