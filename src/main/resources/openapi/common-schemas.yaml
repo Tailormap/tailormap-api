@@ -326,9 +326,10 @@ components:
                     - 'CHECKBOX'
                     - 'SWITCH'
                     - 'DATE_PICKER'
+                    - 'DROPDOWN_LIST'
             - anyOf:
                 - $ref: '#/components/schemas/SliderFilterConfiguration'
-                - $ref: '#/components/schemas/CheckboxFilterConfiguration'
+                - $ref: '#/components/schemas/CheckboxDropdownListFilterConfiguration'
                 - $ref: '#/components/schemas/SwitchFilterConfiguration'
                 - $ref: '#/components/schemas/DatePickerFilterConfiguration'
 
@@ -365,9 +366,9 @@ components:
             - 'SLIDER_AND_INPUT_FIELD'
           default: 'SLIDER'
 
-    CheckboxFilterConfiguration:
-      title: CheckboxFilterConfiguration
-      description: Configuration for a checkbox filter
+    CheckboxDropdownListFilterConfiguration:
+      title: CheckboxDropdownListFilterConfiguration
+      description: Configuration for a checkbox filter or a dropdown list filter
       type: object
       properties:
         attributeValuesSettings:
@@ -375,6 +376,7 @@ components:
             type: array
             items:
               type: object
+              title: AttributeValueSettings
               properties:
                 value:
                   type: string
