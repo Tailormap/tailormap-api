@@ -6,7 +6,7 @@ set -e
 
 export SOLR_OPTS=""
 
-docker compose -f ./build/ci/docker-compose.yml up --pull=always -d --wait
+docker compose -f ./build/ci/docker-compose.yml up --pull=always -d
 
 POSTGIS_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" postgis)
 ORACLE_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" oracle)
@@ -38,13 +38,13 @@ do
   SOLR_HEALTHY=$(docker inspect --format="{{.State.Health.Status}}" solr)
 done
 
-printf "\n%(%T)T Waiting for Oracle $1 database to report it is ready to use.... "
+printf "\n%(%T)T Waiting for Oracle database to report it is ready to use.... "
 _WAIT=0;
 while :
 do
     printf " $_WAIT"
     if $(docker logs oracle | grep -q 'DATABASE IS READY TO USE!'); then
-        printf "\n %(%T)TOracle $1 database is ready to use\n\n" -1
+        printf "\n %(%T)TOracle database is ready to use\n\n" -1
         break
     fi
     sleep 10
@@ -53,10 +53,9 @@ done
 
 printf "\nPostGIS logs:\n"
 docker logs -t postgis
-#docker inspect postgis
+
 printf "\nOracle logs:\n"
 docker logs -t oracle
-#docker inspect oracle
+
 printf "\nSQL Server logs:\n"
 docker logs -t sqlserver
-#docker inspect sqlserver
