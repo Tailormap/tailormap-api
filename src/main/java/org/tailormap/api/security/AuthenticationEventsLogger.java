@@ -6,6 +6,7 @@
 
 package org.tailormap.api.security;
 
+import io.micrometer.core.instrument.Metrics;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,18 +39,17 @@ public class AuthenticationEventsLogger {
   @EventListener
   public void onSuccess(AuthenticationSuccessEvent success) {
     String authInfo = "";
+    String clientId = "";
+    String clientName = "";
     if (success.getSource() instanceof OAuth2LoginAuthenticationToken token) {
       // prevent leaking personal data in logs unless trace logging is enabled
       String userClaims = "";
       if (logger.isTraceEnabled() && token.getPrincipal() instanceof DefaultOidcUser oidcUser) {
         userClaims = ", user claims: " + oidcUser.getUserInfo().getClaims();
       }
-
-      authInfo = "via OIDC registration \"%s\" with client ID %s%s"
-          .formatted(
-              token.getClientRegistration().getClientName(),
-              token.getClientRegistration().getClientId(),
-              userClaims);
+      clientId = token.getClientRegistration().getClientId();
+      clientName = token.getClientRegistration().getClientName();
+      authInfo = "via OIDC registration \"%s\" with client ID %s%s".formatted(clientName, clientId, userClaims);
     }
     if (success.getSource() instanceof UsernamePasswordAuthenticationToken) {
       authInfo = "using username/password";
@@ -62,6 +62,15 @@ public class AuthenticationEventsLogger {
         getIPAddressInfo(success),
         success.getAuthentication().getAuthorities().toString(),
         authInfo);
+    Metrics.counter(
+            "tailormap_authentication_success",
+            "type",
+            success.getSource() instanceof OAuth2LoginAuthenticationToken ? "oauth2" : "username_password",
+            "clientId",
+            clientId,
+            "clientName",
+            clientName)
+        .increment();
   }
 
   @EventListener
@@ -77,6 +86,11 @@ public class AuthenticationEventsLogger {
         // in this case logging the "login" is useful/warranted for analysis
         userInfo,
         getIPAddressInfo(failure));
+    Metrics.counter(
+            "tailormap_authentication_failure",
+            "type",
+            failure.getSource() instanceof OAuth2LoginAuthenticationToken ? "oauth2" : "username_password")
+        .increment();
   }
 
   @EventListener
