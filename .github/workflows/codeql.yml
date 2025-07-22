@@ -6,7 +6,7 @@ concurrency:
 
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
-  MAVEN_VERSION: '3.9.9'
+  MAVEN_VERSION: '3.9.11'
 
 on:
   push:
