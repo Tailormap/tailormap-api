@@ -14,50 +14,50 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> org.tailormap.api.security;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.event.EventListener;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.authentication.event.AbstractAuthenticationEvent;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.authentication.event.AuthenticationSuccessEvent;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.web.authentication.WebAuthenticationDetails;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.springframework.stereotype.Component;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.security.events.DefaultAuthenticationFailureEvent;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  @Component
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AuthenticationEventsLogger" href="../../../../org/tailormap/api/security/AuthenticationEventsLogger.html#AuthenticationEventsLogger">AuthenticationEventsLogger</a> {
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> String getIPAddressInfo(AbstractAuthenticationEvent event) {
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>      String extraInfo = <span class="jxr_string">""</span>;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <em class="jxr_comment">// prevent leaking personal data in logs unless trace logging is enabled</em>
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">if</strong> (logger.isTraceEnabled()
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>          &amp;&amp; event.getAuthentication().getDetails() instanceof WebAuthenticationDetails details) {
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>        extraInfo = <span class="jxr_string">" (IP: %s)"</span>.formatted(details.getRemoteAddress());
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>      }
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">return</strong> extraInfo;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>    }
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>    @EventListener
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onSuccess(AuthenticationSuccessEvent success) {
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      String authInfo = <span class="jxr_string">""</span>;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">if</strong> (success.getSource() instanceof OAuth2LoginAuthenticationToken token) {
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>        <em class="jxr_comment">// prevent leaking personal data in logs unless trace logging is enabled</em>
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>        String userClaims = <span class="jxr_string">""</span>;
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>        <strong class="jxr_keyword">if</strong> (logger.isTraceEnabled() &amp;&amp; token.getPrincipal() instanceof DefaultOidcUser oidcUser) {
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>          userClaims = <span class="jxr_string">", user claims: "</span> + oidcUser.getUserInfo().getClaims();
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>        }
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>        authInfo = <span class="jxr_string">"via OIDC registration \&quot;%s\&quot; with client ID %s%s"</span>
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>            .formatted(
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>                token.getClientRegistration().getClientName(),
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>                token.getClientRegistration().getClientId(),
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>                userClaims);
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> io.micrometer.core.instrument.Metrics;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.springframework.context.event.EventListener;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.authentication.event.AbstractAuthenticationEvent;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.springframework.security.web.authentication.WebAuthenticationDetails;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.springframework.stereotype.Component;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.security.events.DefaultAuthenticationFailureEvent;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  @Component
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AuthenticationEventsLogger" href="../../../../org/tailormap/api/security/AuthenticationEventsLogger.html#AuthenticationEventsLogger">AuthenticationEventsLogger</a> {
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Logger logger =
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>        LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> String getIPAddressInfo(AbstractAuthenticationEvent event) {
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      String extraInfo = <span class="jxr_string">""</span>;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <em class="jxr_comment">// prevent leaking personal data in logs unless trace logging is enabled</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      <strong class="jxr_keyword">if</strong> (logger.isTraceEnabled()
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>          &amp;&amp; event.getAuthentication().getDetails() instanceof WebAuthenticationDetails details) {
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>        extraInfo = <span class="jxr_string">" (IP: %s)"</span>.formatted(details.getRemoteAddress());
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      }
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>      <strong class="jxr_keyword">return</strong> extraInfo;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>    }
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>    @EventListener
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onSuccess(AuthenticationSuccessEvent success) {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      String authInfo = <span class="jxr_string">""</span>;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      String clientId = <span class="jxr_string">""</span>;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      String clientName = <span class="jxr_string">""</span>;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      <strong class="jxr_keyword">if</strong> (success.getSource() instanceof OAuth2LoginAuthenticationToken token) {
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>        <em class="jxr_comment">// prevent leaking personal data in logs unless trace logging is enabled</em>
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>        String userClaims = <span class="jxr_string">""</span>;
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>        <strong class="jxr_keyword">if</strong> (logger.isTraceEnabled() &amp;&amp; token.getPrincipal() instanceof DefaultOidcUser oidcUser) {
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          userClaims = <span class="jxr_string">", user claims: "</span> + oidcUser.getUserInfo().getClaims();
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>        }
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>        clientId = token.getClientRegistration().getClientId();
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>        clientName = token.getClientRegistration().getClientName();
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>        authInfo = <span class="jxr_string">"via OIDC registration \&quot;%s\&quot; with client ID %s%s"</span>.formatted(clientName, clientId, userClaims);
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      }
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>      <strong class="jxr_keyword">if</strong> (success.getSource() instanceof UsernamePasswordAuthenticationToken) {
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>        authInfo = <span class="jxr_string">"using username/password"</span>;
@@ -70,28 +70,42 @@
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          getIPAddressInfo(success),
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          success.getAuthentication().getAuthorities().toString(),
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>          authInfo);
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>    }
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>    @EventListener
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onFailure(AbstractAuthenticationFailureEvent failure) {
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      String userInfo = <span class="jxr_string">""</span>;
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      <strong class="jxr_keyword">if</strong> (failure.getAuthentication().getPrincipal() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>        userInfo = String.format(
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>            <span class="jxr_string">" for user \&quot;%s\&quot;"</span>, failure.getAuthentication().getPrincipal());
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>      }
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>      logger.info(
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>          <span class="jxr_string">"Authentication failure: {} {}{}"</span>,
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>          failure.getException().getMessage(),
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>          <em class="jxr_comment">// in this case logging the "login" is useful/warranted for analysis</em>
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>          userInfo,
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>          getIPAddressInfo(failure));
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>    }
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>  
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>    @EventListener
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onDefaultAuthenticationFailureEvent(<a name="DefaultAuthenticationFailureEvent" href="../../../../org/tailormap/api/security/events/DefaultAuthenticationFailureEvent.html#DefaultAuthenticationFailureEvent">DefaultAuthenticationFailureEvent</a> event) {
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>      logger.info(<span class="jxr_string">"Default authentication failure"</span>, event.getException());
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>    }
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>  }
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      Metrics.counter(
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>              <span class="jxr_string">"tailormap_authentication_success"</span>,
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>              <span class="jxr_string">"type"</span>,
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>              success.getSource() instanceof OAuth2LoginAuthenticationToken ? <span class="jxr_string">"oauth2"</span> : <span class="jxr_string">"username_password"</span>,
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>              <span class="jxr_string">"clientId"</span>,
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>              clientId,
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>              <span class="jxr_string">"clientName"</span>,
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>              clientName)
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          .increment();
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>    }
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>    @EventListener
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onFailure(AbstractAuthenticationFailureEvent failure) {
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>      String userInfo = <span class="jxr_string">""</span>;
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>      <strong class="jxr_keyword">if</strong> (failure.getAuthentication().getPrincipal() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>        userInfo = String.format(
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>            <span class="jxr_string">" for user \&quot;%s\&quot;"</span>, failure.getAuthentication().getPrincipal());
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>      }
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      logger.info(
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          <span class="jxr_string">"Authentication failure: {} {}{}"</span>,
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          failure.getException().getMessage(),
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          <em class="jxr_comment">// in this case logging the "login" is useful/warranted for analysis</em>
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          userInfo,
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>          getIPAddressInfo(failure));
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>      Metrics.counter(
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>              <span class="jxr_string">"tailormap_authentication_failure"</span>,
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>              <span class="jxr_string">"type"</span>,
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>              failure.getSource() instanceof OAuth2LoginAuthenticationToken ? <span class="jxr_string">"oauth2"</span> : <span class="jxr_string">"username_password"</span>)
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>          .increment();
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>    }
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>    @EventListener
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onDefaultAuthenticationFailureEvent(<a name="DefaultAuthenticationFailureEvent" href="../../../../org/tailormap/api/security/events/DefaultAuthenticationFailureEvent.html#DefaultAuthenticationFailureEvent">DefaultAuthenticationFailureEvent</a> event) {
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>      logger.info(<span class="jxr_string">"Default authentication failure"</span>, event.getException());
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>    }
+<a class="jxr_linenumber" name="L100" href="#L100">100</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
