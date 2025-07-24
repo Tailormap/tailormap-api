@@ -411,7 +411,7 @@ public class ApplicationHelper {
         return null;
       }
 
-      if (authorisationService.mustDenyAccessForSecuredProxy(app, service)) {
+      if (authorisationService.mustDenyAccessForSecuredProxy(service)) {
         return null;
       }
 

@@ -218,11 +218,10 @@ public class AuthorisationService {
    * To avoid exposing a secured service by proxying it to everyone, do not proxy a secured GeoService when the user
    * is not logged in.
    *
-   * @param application The application
    * @param geoService The geo service to check
-   * @return Whether to deny proxying this service for the application
+   * @return Whether to deny proxying this service
    */
-  public boolean mustDenyAccessForSecuredProxy(Application application, GeoService geoService) {
+  public boolean mustDenyAccessForSecuredProxy(GeoService geoService) {
     if (!Boolean.TRUE.equals(geoService.getSettings().getUseProxy())) {
       return false;
     }
