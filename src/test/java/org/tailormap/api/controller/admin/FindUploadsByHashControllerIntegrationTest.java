@@ -44,25 +44,25 @@ class FindUploadsByHashControllerIntegrationTest {
     String body =
         """
 [
-"108d266b132661285a7533339958a77dfd06821a",
+"cfb1b538761a21f8d39c0555ba9802b8af4d09a6",
 "71f8e7976e4cbc4561c9d62fb283e7f788202acb"
 ]
 """;
 
-    Upload drinkwater = uploadRepository.findByFilename("drinkwater.svg").stream()
+    Upload water = uploadRepository.findByFilename("ISO_7001_PI_PF_007.svg").stream()
         .findAny()
         .orElseThrow(() -> new IllegalStateException(
-            "Expected upload with filename 'drinkwater.svg' not found in the database"));
+            "Expected upload with filename 'ISO_7001_PI_PF_007.svg' not found in the database"));
 
     String expected = String.format(
         """
 [
 {
 "id": "%s",
-"hash": "108d266b132661285a7533339958a77dfd06821a"
+"hash": "cfb1b538761a21f8d39c0555ba9802b8af4d09a6"
 }
 ]""",
-        drinkwater.getId().toString());
+        water.getId().toString());
 
     mockMvc.perform(post(adminBasePath + "/uploads/find-by-hash/drawing-style-image")
             .contentType(MediaType.APPLICATION_JSON)

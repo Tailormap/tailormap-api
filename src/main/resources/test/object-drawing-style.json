@@ -3,46 +3,84 @@
     {
       "type": "IMAGE",
       "style": {
-        "markerImage": "/uploads/drawing-style-image/${drinkwater-uuid}/drinkwater.svg",
-        "description": "Drinkwater",
-        "marker": "circle",
-        "markerSize": 11,
-        "markerRotation": 0,
-        "markerFillColor": "rgb(0, 136, 85)",
-        "markerStrokeColor": "rgb(255, 255, 255)",
-        "markerStrokeWidth": 1,
-        "label": "",
-        "labelSize": 8,
-        "labelColor": "rgb(0, 0, 0)",
-        "labelOutlineColor": "rgb(255, 255, 255)",
-        "fillOpacity": 30,
-        "strokeColor": "rgb(98, 54, 255)",
-        "strokeWidth": 3,
-        "strokeOpacity": 100,
-        "fillColor": "rgb(98, 54, 255)"
+        "description": "Drinking water",
+        "markerImage": "/uploads/drawing-style-image/${water-uuid}/ISO_7001_PI_PF_007.svg",
+        "markerImageWidth": 32,
+        "markerImageHeight": 32,
+        "markerSize": 100,
+        "markerRotation": 0
       }
     },
     {
       "type": "IMAGE",
       "style": {
-        "markerImage": "/uploads/drawing-style-image/${first-aid-uuid}/first-aid.svg",
         "description": "First Aid",
-        "marker": "circle",
-        "markerSize": 11,
-        "markerRotation": 0,
-        "markerFillColor": "rgb(0, 136, 85)",
-        "markerStrokeColor": "rgb(255, 255, 255)",
-        "markerStrokeWidth": 1,
-        "label": "",
-        "labelSize": 8,
-        "labelColor": "rgb(0, 0, 0)",
-        "labelOutlineColor": "rgb(255, 255, 255)",
-        "fillOpacity": 30,
-        "strokeColor": "rgb(98, 54, 255)",
-        "strokeWidth": 3,
-        "strokeOpacity": 100,
-        "fillColor": "rgb(98, 54, 255)"
+        "markerImage": "/uploads/drawing-style-image/${first-aid-uuid}/ISO_7010_E003_-_First_aid_sign.svg",
+        "markerImageWidth": 32,
+        "markerImageHeight": 32,
+        "markerSize": 100,
+        "markerRotation": 0
       }
-    }
+    },
+    {
+      "type": "LINE",
+      "lockedStyle": true,
+      "style":
+      {
+        "description": "Double stroked",
+        "strokeColor": "rgb(255, 0255, 0)",
+        "strokeOpacity": 100,
+        "strokeWidth": 4,
+        "strokeType": "dash",
+        "secondaryStroke": {
+          "strokeColor": "rgb(0, 100, 255)",
+          "strokeType": "solid"
+        }
+      }
+    },
+    {
+      "type": "POLYGON",
+      "style": {
+        "description": "Spéciàl chåračters",
+        "strokeColor": "rgb(20, 40, 80)",
+        "fillColor": "rgb(220, 123, 99)",
+        "fillOpacity": 50
+      }
+    },  
+    {
+      "type": "RECTANGLE_SPECIFIED_SIZE",
+      "rectangleSize": {
+        "width": 100,
+        "height": 50
+      },
+      "style": {
+        "description": "Box 100 \u00d7 50 m",
+        "strokeColor": "rgb(0, 0, 0)",
+        "fillColor": "rgb(100, 0, 0)",
+        "fillOpacity": 10
+      }
+    } ,   
+    {
+      "type": "LINE",
+      "style": {
+        "description": "Railway",
+        "strokeColor": "rgb(0, 0, 0)",
+        "strokeWidth": 2,
+        "secondaryStroke": {
+          "strokeColor": "rgb(0, 0, 0)",
+          "strokeType": [1, 4],
+          "strokeWidth": 8
+        }
+      }
+    },
+    {
+      "type": "IMAGE",
+      "style": {
+        "description": "Non-square icon",
+        "markerImage": "/uploads/drawing-style-image/${lichtpunt-uuid}/lichtpunt.svg",
+        "markerImageWidth": 32,
+        "markerImageHeight": 48
+      }
+    }   
   ]
 }

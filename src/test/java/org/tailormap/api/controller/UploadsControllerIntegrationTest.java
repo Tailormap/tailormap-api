@@ -103,20 +103,15 @@ class UploadsControllerIntegrationTest {
         .andReturn();
 
     final String body = result.getResponse().getContentAsString();
-    final String drinkwaterUrl = JsonPath.parse(body).read("$.styles[0].style.markerImage", String.class);
-    assertThat(drinkwaterUrl, startsWith("/uploads/drawing-style-image/"));
-    assertThat(drinkwaterUrl, endsWith("/drinkwater.svg"));
+    final String waterUrl = JsonPath.parse(body).read("$.styles[0].style.markerImage", String.class);
+    assertThat(waterUrl, startsWith("/uploads/drawing-style-image/"));
+    assertThat(waterUrl, endsWith("/ISO_7001_PI_PF_007.svg"));
 
-    mockMvc.perform(get(apiBasePath + drinkwaterUrl))
+    mockMvc.perform(get(apiBasePath + waterUrl))
         .andExpect(status().isOk())
         .andExpect(content().contentType("image/svg+xml"))
-        .andExpect(content().bytes(new ClassPathResource("test/drinkwater.svg").getContentAsByteArray()));
-
-    final String firstAidUrl = JsonPath.parse(body).read("$.styles[1].style.markerImage", String.class);
-    mockMvc.perform(get(apiBasePath + firstAidUrl))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType("image/svg+xml"))
-        .andExpect(content().bytes(new ClassPathResource("test/first-aid.svg").getContentAsByteArray()));
+        .andExpect(
+            content().bytes(new ClassPathResource("test/ISO_7001_PI_PF_007.svg").getContentAsByteArray()));
   }
 
   @Test
@@ -124,7 +119,9 @@ class UploadsControllerIntegrationTest {
     mockMvc.perform(get(apiBasePath + "/uploads/%s/latest".formatted(Upload.CATEGORY_DRAWING_STYLE_IMAGE)))
         .andExpect(status().isOk())
         .andExpect(content().contentType("image/svg+xml"))
-        .andExpect(content().bytes(new ClassPathResource("test/first-aid.svg").getContentAsByteArray()));
+        .andExpect(content()
+            .bytes(new ClassPathResource("test/ISO_7010_E003_-_First_aid_sign.svg")
+                .getContentAsByteArray()));
   }
 
   @Test
