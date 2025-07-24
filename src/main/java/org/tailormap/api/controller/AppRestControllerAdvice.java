@@ -166,14 +166,15 @@ public class AppRestControllerAdvice {
     }
     GeoService service =
         geoServiceRepository.findById(appTreeLayerNode.getServiceId()).orElse(null);
-    if (service != null && !authorisationService.userAllowedToViewGeoService(service)) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    if (service == null) {
+      return null;
     }
-
-    if (service != null && authorisationService.mustDenyAccessForSecuredProxy(app, service)) {
+    if (authorisationService.mustDenyAccessForSecuredProxy(app, service)) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
-
+    if (!authorisationService.userAllowedToViewGeoService(service)) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    }
     return service;
   }
 

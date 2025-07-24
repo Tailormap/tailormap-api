@@ -260,7 +260,6 @@ public class ApplicationHelper {
     private boolean addAppLayerItem(AppTreeLayerNode layerRef) {
       ServiceLayerInfo layerInfo = findServiceLayer(layerRef);
       if (layerInfo == null) {
-        // No service or layer found, skip this layer
         return false;
       }
       GeoService service = layerInfo.service();
@@ -398,12 +397,9 @@ public class ApplicationHelper {
     }
 
     record ServiceLayerInfo(
-        GeoService service,
-        GeoServiceLayer serviceLayer,
-        GeoServiceLayerSettings layerSettings) {}
+        GeoService service, GeoServiceLayer serviceLayer, GeoServiceLayerSettings layerSettings) {}
 
-    private ServiceLayerInfo findServiceLayer(
-        AppTreeLayerNode layerRef) {
+    private ServiceLayerInfo findServiceLayer(AppTreeLayerNode layerRef) {
       GeoService service =
           geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);
       if (service == null) {
@@ -415,11 +411,11 @@ public class ApplicationHelper {
         return null;
       }
 
-      if (!authorisationService.userAllowedToViewGeoService(service)) {
+      if (authorisationService.mustDenyAccessForSecuredProxy(app, service)) {
         return null;
       }
 
-      if (authorisationService.mustDenyAccessForSecuredProxy(app, service)) {
+      if (!authorisationService.userAllowedToViewGeoService(service)) {
         return null;
       }
 

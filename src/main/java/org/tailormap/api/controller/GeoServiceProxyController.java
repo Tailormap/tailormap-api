@@ -146,12 +146,12 @@ public class GeoServiceProxyController {
 
     if (authorisationService.mustDenyAccessForSecuredProxy(application, service)) {
       logger.warn(
-          "App {} (\"{}\") is using layer \"{}\" from proxied secured service URL {} (username \"{}\"), but app is publicly accessible. Denying proxy, even if user is authenticated.",
+          "Denying proxy for layer \"{}\" in app #{} (\"{}\") from secured service #{} (URL {}): user is not authenticated",
+          layer.getName(),
           application.getId(),
           application.getName(),
-          layer.getName(),
-          service.getUrl(),
-          service.getAuthentication().getUsername());
+          service.getId(),
+          service.getUrl());
       throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
   }
