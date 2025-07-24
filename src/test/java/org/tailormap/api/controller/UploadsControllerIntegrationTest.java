@@ -110,7 +110,8 @@ class UploadsControllerIntegrationTest {
     mockMvc.perform(get(apiBasePath + waterUrl))
         .andExpect(status().isOk())
         .andExpect(content().contentType("image/svg+xml"))
-        .andExpect(content().bytes(new ClassPathResource("test/ISO_7001_PI_PF_007.svg").getContentAsByteArray()));
+        .andExpect(
+            content().bytes(new ClassPathResource("test/ISO_7001_PI_PF_007.svg").getContentAsByteArray()));
   }
 
   @Test
@@ -118,7 +119,9 @@ class UploadsControllerIntegrationTest {
     mockMvc.perform(get(apiBasePath + "/uploads/%s/latest".formatted(Upload.CATEGORY_DRAWING_STYLE_IMAGE)))
         .andExpect(status().isOk())
         .andExpect(content().contentType("image/svg+xml"))
-        .andExpect(content().bytes(new ClassPathResource("test/ISO_7010_E003_-_First_aid_sign.svg").getContentAsByteArray()));
+        .andExpect(content()
+            .bytes(new ClassPathResource("test/ISO_7010_E003_-_First_aid_sign.svg")
+                .getContentAsByteArray()));
   }
 
   @Test
