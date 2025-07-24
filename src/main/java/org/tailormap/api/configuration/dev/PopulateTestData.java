@@ -1957,8 +1957,8 @@ INSERT INTO data.drawing_feature (drawing_id,id,geometry,properties) VALUES
     Upload upload = new Upload()
         .setCategory(Upload.CATEGORY_DRAWING_STYLE_IMAGE)
         .setMimeType("image/svg+xml")
-        .setFilename("drinkwater.svg")
-        .setContent(new ClassPathResource("test/drinkwater.svg").getContentAsByteArray())
+        .setFilename("ISO_7001_PI_PF_007.svg")
+        .setContent(new ClassPathResource("test/ISO_7001_PI_PF_007.svg").getContentAsByteArray())
         .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
     upload = uploadRepository.save(upload);
     UUID drinkwaterImageId = upload.getId();
@@ -1966,15 +1966,25 @@ INSERT INTO data.drawing_feature (drawing_id,id,geometry,properties) VALUES
     upload = new Upload()
         .setCategory(Upload.CATEGORY_DRAWING_STYLE_IMAGE)
         .setMimeType("image/svg+xml")
-        .setFilename("first-aid.svg")
-        .setContent(new ClassPathResource("test/first-aid.svg").getContentAsByteArray())
+        .setFilename("lichtpunt.svg")
+        .setContent(new ClassPathResource("test/lichtpunt.svg").getContentAsByteArray())
+        .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
+    upload = uploadRepository.save(upload);
+    UUID lichtpuntImageId = upload.getId();
+
+    upload = new Upload()
+        .setCategory(Upload.CATEGORY_DRAWING_STYLE_IMAGE)
+        .setMimeType("image/svg+xml")
+        .setFilename("ISO_7010_E003_-_First_aid_sign.svg")
+        .setContent(new ClassPathResource("test/ISO_7010_E003_-_First_aid_sign.svg").getContentAsByteArray())
         .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
     upload = uploadRepository.save(upload);
     UUID firstAidImageId = upload.getId();
 
     Properties props = new Properties();
     props.putAll(Map.of(
-        "drinkwater-uuid", drinkwaterImageId.toString(),
+        "water-uuid", drinkwaterImageId.toString(),
+        "lichtpunt-uuid", lichtpuntImageId.toString(),
         "first-aid-uuid", firstAidImageId.toString()));
 
     String drawingStyles =
