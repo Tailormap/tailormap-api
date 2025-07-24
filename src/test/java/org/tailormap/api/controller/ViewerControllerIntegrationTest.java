@@ -167,7 +167,23 @@ class ViewerControllerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {"admin"})
-  void should_not_contain_proxied_secured_service_layer_on_public_app_even_when_authorized() throws Exception {
+  void should_contain_proxied_secured_service_layer_on_public_app_when_authorized() throws Exception {
+    final String path = apiBasePath + "/app/default/map";
+    mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-proxied:osm')]")
+            .exists())
+        .andExpect(jsonPath("$.services[?(@.id == 'openbasiskaart-proxied')]")
+            .exists())
+        .andExpect(jsonPath("$.appLayers[?(@.id == 'lyr:bestuurlijkegebieden-proxied:Provinciegebied')]")
+            .exists())
+        .andExpect(jsonPath("$.services[?(@.id == 'bestuurlijkegebieden-proxied')]")
+            .exists());
+  }
+
+  @Test
+  void should_not_contain_proxied_secured_service_layer_on_public_app_when_unauthorized() throws Exception {
     final String path = apiBasePath + "/app/default/map";
     mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
         .andExpect(status().isOk())
@@ -212,7 +228,7 @@ class ViewerControllerIntegrationTest {
         .andExpect(jsonPath("$.appLayers[0]").isMap())
         // Note: if the testdata was created with MAP5_URL set, the appLayers array will have 4 more
         // layers
-        .andExpect(jsonPath("$.appLayers.length()").value(15))
+        .andExpect(jsonPath("$.appLayers.length()").value(17))
         .andExpect(jsonPath("$.appLayers[?(@.id == 'lyr:openbasiskaart-tms:xyz')].hasAttributes")
             .value(false))
         .andExpect(jsonPath("$.appLayers[?(@.id == 'lyr:b3p-mapproxy-luchtfoto:xyz')].hasAttributes")
