@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.tuple.Triple;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.referencing.util.CRSUtilities;
 import org.geotools.referencing.wkt.Formattable;
@@ -259,13 +258,13 @@ public class ApplicationHelper {
     }
 
     private boolean addAppLayerItem(AppTreeLayerNode layerRef) {
-      Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> serviceWithLayer = findServiceLayer(layerRef);
-      GeoService service = serviceWithLayer.getLeft();
-      GeoServiceLayer serviceLayer = serviceWithLayer.getMiddle();
-
-      if (service == null || serviceLayer == null) {
+      ServiceLayerInfo layerInfo = findServiceLayer(layerRef);
+      if (layerInfo == null) {
+        // No service or layer found, skip this layer
         return false;
       }
+      GeoService service = layerInfo.service();
+      GeoServiceLayer serviceLayer = layerInfo.serviceLayer();
 
       // Some settings can be set on the app layer level, layer level or service level (default
       // layer settings). These settings should be used in-order: from app layer if set, otherwise
@@ -274,8 +273,8 @@ public class ApplicationHelper {
       // An empty (blank) string means it is not set. To explicitly clear a layer level string
       // setting for an app, an admin should set the app layer setting to spaces.
 
-      // The JSON wrapper classes have "null" values as defaults which means not-set. The defaults
-      // (such as tilingDisabled being true) are applied below although the frontend would also
+      // The JSON wrapper classes have "null" values as defaults, which means not-set. The defaults
+      // (such as tilingDisabled being true) are applied below, although the frontend would also
       // treat null as non-truthy.
 
       // When default layer settings or settings for a specific layer are missing, construct new
@@ -285,7 +284,7 @@ public class ApplicationHelper {
               service.getSettings().getDefaultLayerSettings())
           .orElseGet(GeoServiceDefaultLayerSettings::new);
       GeoServiceLayerSettings serviceLayerSettings =
-          Optional.ofNullable(serviceWithLayer.getRight()).orElseGet(GeoServiceLayerSettings::new);
+          Optional.ofNullable(layerInfo.layerSettings()).orElseGet(GeoServiceLayerSettings::new);
 
       AppLayerSettings appLayerSettings = app.getAppLayerSettings(layerRef);
 
@@ -398,7 +397,12 @@ public class ApplicationHelper {
       return true;
     }
 
-    private Triple<GeoService, GeoServiceLayer, GeoServiceLayerSettings> findServiceLayer(
+    record ServiceLayerInfo(
+        GeoService service,
+        GeoServiceLayer serviceLayer,
+        GeoServiceLayerSettings layerSettings) {}
+
+    private ServiceLayerInfo findServiceLayer(
         AppTreeLayerNode layerRef) {
       GeoService service =
           geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);
@@ -408,15 +412,15 @@ public class ApplicationHelper {
             app.getId(),
             layerRef.getLayerName(),
             layerRef.getServiceId());
-        return Triple.of(null, null, null);
+        return null;
       }
 
       if (!authorisationService.userAllowedToViewGeoService(service)) {
-        return Triple.of(null, null, null);
+        return null;
       }
 
       if (authorisationService.mustDenyAccessForSecuredProxy(app, service)) {
-        return Triple.of(null, null, null);
+        return null;
       }
 
       GeoServiceLayer serviceLayer = service.findLayer(layerRef.getLayerName());
@@ -427,13 +431,13 @@ public class ApplicationHelper {
             app.getId(),
             layerRef.getLayerName(),
             service.getId());
-        return Triple.of(null, null, null);
+        return null;
       }
 
       if (!authorisationService.userAllowedToViewGeoServiceLayer(service, serviceLayer)) {
         logger.debug(
             "User not allowed to view layer {} of service {}", serviceLayer.getName(), service.getId());
-        return Triple.of(null, null, null);
+        return null;
       }
 
       serviceLayerServiceIds.put(serviceLayer, service.getId());
@@ -446,7 +450,7 @@ public class ApplicationHelper {
       }
 
       GeoServiceLayerSettings layerSettings = service.getLayerSettings(layerRef.getLayerName());
-      return Triple.of(service, serviceLayer, layerSettings);
+      return new ServiceLayerInfo(service, serviceLayer, layerSettings);
     }
 
     private boolean isWebMercatorAvailable(
