@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdminAdditionalPropertyHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.persistence.helper</a> &gt; <span class="el_source">AdminAdditionalPropertyHelper.java</span></div><h1>AdminAdditionalPropertyHelper.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2025 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+package org.tailormap.api.persistence.helper;
+
+import java.util.List;
+import java.util.function.Function;
+import org.tailormap.api.persistence.json.AdminAdditionalProperty;
+
+<span class="nc" id="L13">public class AdminAdditionalPropertyHelper {</span>
+  // these are known keys used in this API and other projects, do not reuse them for other purposes:
+  //      used in Drawing
+  public static final String KEY_DRAWINGS_ADMIN = &quot;drawings-admin&quot;;
+  public static final String KEY_DRAWINGS_READ_ALL = &quot;drawings-read-all&quot;;
+  //      used in PlanmonitorWonen:
+  // -
+  // https://github.com/B3Partners/tailormap-planmonitor-wonen/blob/fbe5dd34d64ab0a2b61e1f5db558c7c147d81587/projects/planmonitor-wonen/src/lib/services/planmonitor-authentication.service.ts#L26-L27
+  // -
+  // https://github.com/B3Partners/planmonitor-wonen-api/blob/d66180f4b015e1e4e7800f8f0fbe1f3450f1ae80/src/main/java/nl/b3p/planmonitorwonen/api/model/auth/PlanmonitorAuthentication.java#L63-L64
+  public static final String KEY_TYPE_GEBRUIKER = &quot;typeGebruiker&quot;;
+  public static final String KEY_GEMEENTE = &quot;gemeente&quot;;
+
+  public static void addOrUpdateAdminProperty(
+      List&lt;AdminAdditionalProperty&gt; list, String key, Object value, boolean isPublic) {
+<span class="nc bnc" id="L28" title="All 2 branches missed.">    if (key == null) {</span>
+<span class="nc" id="L29">      return;</span>
+    }
+<span class="nc" id="L31">    list.removeIf(p -&gt; p.getKey().equals(key));</span>
+<span class="nc" id="L32">    list.add(new AdminAdditionalProperty().key(key).value(value).isPublic(isPublic));</span>
+<span class="nc" id="L33">  }</span>
+
+  public static void mapAdminPropertyValue(
+      List&lt;AdminAdditionalProperty&gt; additionalProperties,
+      String key,
+      boolean isPublic,
+      Function&lt;Object, Object&gt; valueMapper) {
+<span class="nc bnc" id="L40" title="All 2 branches missed.">    if (key == null) {</span>
+<span class="nc" id="L41">      return;</span>
+    }
+<span class="nc" id="L43">    AdminAdditionalProperty property = additionalProperties.stream()</span>
+<span class="nc" id="L44">        .filter(p -&gt; p.getKey().equals(key))</span>
+<span class="nc" id="L45">        .findFirst()</span>
+<span class="nc" id="L46">        .orElseGet(() -&gt; {</span>
+<span class="nc" id="L47">          AdminAdditionalProperty newProperty =</span>
+<span class="nc" id="L48">              new AdminAdditionalProperty().key(key).isPublic(isPublic);</span>
+<span class="nc" id="L49">          additionalProperties.add(newProperty);</span>
+<span class="nc" id="L50">          return newProperty;</span>
+        });
+<span class="nc" id="L52">    property.setValue(valueMapper.apply(property.getValue()));</span>
+<span class="nc" id="L53">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
