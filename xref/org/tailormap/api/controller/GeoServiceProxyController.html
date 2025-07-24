@@ -152,14 +152,14 @@
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.FORBIDDEN, <span class="jxr_string">"Proxy not enabled for requested service"</span>);
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>     }
 <a class="jxr_linenumber" name="L146" href="#L146">146</a> 
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>     <strong class="jxr_keyword">if</strong> (authorisationService.mustDenyAccessForSecuredProxy(application, service)) {
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>       logger.warn(
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>           <span class="jxr_string">"App {} (\&quot;{}\&quot;) is using layer \&quot;{}\&quot; from proxied secured service URL {} (username \&quot;{}\&quot;), but app is publicly accessible. Denying proxy, even if user is authenticated."</span>,
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>           application.getId(),
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>           application.getName(),
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>           layer.getName(),
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>           service.getUrl(),
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>           service.getAuthentication().getUsername());
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>     <strong class="jxr_keyword">if</strong> (authorisationService.mustDenyAccessForSecuredProxy(service)) {
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>       logger.debug(
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>           <span class="jxr_string">"Denying proxy for layer \&quot;{}\&quot; in app #{} (\&quot;{}\&quot;) from secured service #{} (URL {}): user is not authenticated"</span>,
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>           layer.getName(),
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>           application.getId(),
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>           application.getName(),
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>           service.getId(),
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>           service.getUrl());
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(HttpStatus.FORBIDDEN);
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>     }
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>   }

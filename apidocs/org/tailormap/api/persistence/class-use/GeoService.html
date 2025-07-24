@@ -78,8 +78,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">AppRestControllerAdvice.</span><code><a href="../../controller/AppRestControllerAdvice.html#populateGeoService(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.json.AppTreeLayerNode)" class="member-name-link">populateGeoService</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;app,
- <a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AppRestControllerAdvice.</span><code><a href="../../controller/AppRestControllerAdvice.html#populateGeoService(org.tailormap.api.persistence.json.AppTreeLayerNode)" class="member-name-link">populateGeoService</a><wbr>(<a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Methods in <a href="../../controller/package-summary.html">org.tailormap.api.controller</a> with parameters of type <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></span></div>
@@ -339,11 +338,10 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>boolean</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">AuthorisationService.</span><code><a href="../../security/AuthorisationService.html#mustDenyAccessForSecuredProxy(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService)" class="member-name-link">mustDenyAccessForSecuredProxy</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
- <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">AuthorisationService.</span><code><a href="../../security/AuthorisationService.html#mustDenyAccessForSecuredProxy(org.tailormap.api.persistence.GeoService)" class="member-name-link">mustDenyAccessForSecuredProxy</a><wbr>(<a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
 <div class="col-last even-row-color">
-<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured GeoService when the
- application is public (accessible by anonymous users).</div>
+<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured GeoService when the user
+ is not logged in.</div>
 </div>
 <div class="col-first odd-row-color"><code>boolean</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">AuthorisationService.</span><code><a href="../../security/AuthorisationService.html#userAllowedToViewGeoService(org.tailormap.api.persistence.GeoService)" class="member-name-link">userAllowedToViewGeoService</a><wbr>(<a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>

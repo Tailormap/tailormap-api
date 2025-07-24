@@ -124,11 +124,10 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#mustDenyAccessForSecuredProxy(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService)" class="member-name-link">mustDenyAccessForSecuredProxy</a><wbr>(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
- <a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#mustDenyAccessForSecuredProxy(org.tailormap.api.persistence.GeoService)" class="member-name-link">mustDenyAccessForSecuredProxy</a><wbr>(<a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured GeoService when the
- application is public (accessible by anonymous users).</div>
+<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured GeoService when the user
+ is not logged in.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#userAllowedToViewApplication(org.tailormap.api.persistence.Application)" class="member-name-link">userAllowedToViewApplication</a><wbr>(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
@@ -241,19 +240,16 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="mustDenyAccessForSecuredProxy(org.tailormap.api.persistence.Application,org.tailormap.api.persistence.GeoService)">
+<section class="detail" id="mustDenyAccessForSecuredProxy(org.tailormap.api.persistence.GeoService)">
 <h3>mustDenyAccessForSecuredProxy</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">mustDenyAccessForSecuredProxy</span><wbr><span class="parameters">(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
- <a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</span></div>
-<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured GeoService when the
- application is public (accessible by anonymous users). Do not even allow proxying a secured service if the user
- is logged viewing a public app!</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">mustDenyAccessForSecuredProxy</span><wbr><span class="parameters">(<a href="../persistence/GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService)</span></div>
+<div class="block">To avoid exposing a secured service by proxying it to everyone, do not proxy a secured GeoService when the user
+ is not logged in.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>application</code> - The application</dd>
 <dd><code>geoService</code> - The geo service to check</dd>
 <dt>Returns:</dt>
-<dd>Whether to deny proxying this service for the application</dd>
+<dd>Whether to deny proxying this service</dd>
 </dl>
 </section>
 </li>
