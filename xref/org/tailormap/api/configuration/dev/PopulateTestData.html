@@ -1965,8 +1965,8 @@
 <a class="jxr_linenumber" name="L1957" href="#L1957">1957</a>     <a name="Upload" href="../../../../../org/tailormap/api/persistence/Upload.html#Upload">Upload</a> upload = <strong class="jxr_keyword">new</strong> <a name="Upload" href="../../../../../org/tailormap/api/persistence/Upload.html#Upload">Upload</a>()
 <a class="jxr_linenumber" name="L1958" href="#L1958">1958</a>         .setCategory(Upload.CATEGORY_DRAWING_STYLE_IMAGE)
 <a class="jxr_linenumber" name="L1959" href="#L1959">1959</a>         .setMimeType(<span class="jxr_string">"image/svg+xml"</span>)
-<a class="jxr_linenumber" name="L1960" href="#L1960">1960</a>         .setFilename(<span class="jxr_string">"drinkwater.svg"</span>)
-<a class="jxr_linenumber" name="L1961" href="#L1961">1961</a>         .setContent(<strong class="jxr_keyword">new</strong> ClassPathResource(<span class="jxr_string">"test/drinkwater.svg"</span>).getContentAsByteArray())
+<a class="jxr_linenumber" name="L1960" href="#L1960">1960</a>         .setFilename(<span class="jxr_string">"ISO_7001_PI_PF_007.svg"</span>)
+<a class="jxr_linenumber" name="L1961" href="#L1961">1961</a>         .setContent(<strong class="jxr_keyword">new</strong> ClassPathResource(<span class="jxr_string">"test/ISO_7001_PI_PF_007.svg"</span>).getContentAsByteArray())
 <a class="jxr_linenumber" name="L1962" href="#L1962">1962</a>         .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
 <a class="jxr_linenumber" name="L1963" href="#L1963">1963</a>     upload = uploadRepository.save(upload);
 <a class="jxr_linenumber" name="L1964" href="#L1964">1964</a>     UUID drinkwaterImageId = upload.getId();
@@ -1974,31 +1974,41 @@
 <a class="jxr_linenumber" name="L1966" href="#L1966">1966</a>     upload = <strong class="jxr_keyword">new</strong> <a name="Upload" href="../../../../../org/tailormap/api/persistence/Upload.html#Upload">Upload</a>()
 <a class="jxr_linenumber" name="L1967" href="#L1967">1967</a>         .setCategory(Upload.CATEGORY_DRAWING_STYLE_IMAGE)
 <a class="jxr_linenumber" name="L1968" href="#L1968">1968</a>         .setMimeType(<span class="jxr_string">"image/svg+xml"</span>)
-<a class="jxr_linenumber" name="L1969" href="#L1969">1969</a>         .setFilename(<span class="jxr_string">"first-aid.svg"</span>)
-<a class="jxr_linenumber" name="L1970" href="#L1970">1970</a>         .setContent(<strong class="jxr_keyword">new</strong> ClassPathResource(<span class="jxr_string">"test/first-aid.svg"</span>).getContentAsByteArray())
+<a class="jxr_linenumber" name="L1969" href="#L1969">1969</a>         .setFilename(<span class="jxr_string">"lichtpunt.svg"</span>)
+<a class="jxr_linenumber" name="L1970" href="#L1970">1970</a>         .setContent(<strong class="jxr_keyword">new</strong> ClassPathResource(<span class="jxr_string">"test/lichtpunt.svg"</span>).getContentAsByteArray())
 <a class="jxr_linenumber" name="L1971" href="#L1971">1971</a>         .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
 <a class="jxr_linenumber" name="L1972" href="#L1972">1972</a>     upload = uploadRepository.save(upload);
-<a class="jxr_linenumber" name="L1973" href="#L1973">1973</a>     UUID firstAidImageId = upload.getId();
+<a class="jxr_linenumber" name="L1973" href="#L1973">1973</a>     UUID lichtpuntImageId = upload.getId();
 <a class="jxr_linenumber" name="L1974" href="#L1974">1974</a> 
-<a class="jxr_linenumber" name="L1975" href="#L1975">1975</a>     Properties props = <strong class="jxr_keyword">new</strong> Properties();
-<a class="jxr_linenumber" name="L1976" href="#L1976">1976</a>     props.putAll(Map.of(
-<a class="jxr_linenumber" name="L1977" href="#L1977">1977</a>         <span class="jxr_string">"drinkwater-uuid"</span>, drinkwaterImageId.toString(),
-<a class="jxr_linenumber" name="L1978" href="#L1978">1978</a>         <span class="jxr_string">"first-aid-uuid"</span>, firstAidImageId.toString()));
-<a class="jxr_linenumber" name="L1979" href="#L1979">1979</a> 
-<a class="jxr_linenumber" name="L1980" href="#L1980">1980</a>     String drawingStyles =
-<a class="jxr_linenumber" name="L1981" href="#L1981">1981</a>         <strong class="jxr_keyword">new</strong> ClassPathResource(<span class="jxr_string">"test/object-drawing-style.json"</span>).getContentAsString(StandardCharsets.UTF_8);
-<a class="jxr_linenumber" name="L1982" href="#L1982">1982</a>     drawingStyles = <strong class="jxr_keyword">new</strong> PropertyPlaceholderHelper(<span class="jxr_string">"${"</span>, <span class="jxr_string">"}"</span>).replacePlaceholders(drawingStyles, props);
+<a class="jxr_linenumber" name="L1975" href="#L1975">1975</a>     upload = <strong class="jxr_keyword">new</strong> <a name="Upload" href="../../../../../org/tailormap/api/persistence/Upload.html#Upload">Upload</a>()
+<a class="jxr_linenumber" name="L1976" href="#L1976">1976</a>         .setCategory(Upload.CATEGORY_DRAWING_STYLE_IMAGE)
+<a class="jxr_linenumber" name="L1977" href="#L1977">1977</a>         .setMimeType(<span class="jxr_string">"image/svg+xml"</span>)
+<a class="jxr_linenumber" name="L1978" href="#L1978">1978</a>         .setFilename(<span class="jxr_string">"ISO_7010_E003_-_First_aid_sign.svg"</span>)
+<a class="jxr_linenumber" name="L1979" href="#L1979">1979</a>         .setContent(<strong class="jxr_keyword">new</strong> ClassPathResource(<span class="jxr_string">"test/ISO_7010_E003_-_First_aid_sign.svg"</span>).getContentAsByteArray())
+<a class="jxr_linenumber" name="L1980" href="#L1980">1980</a>         .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
+<a class="jxr_linenumber" name="L1981" href="#L1981">1981</a>     upload = uploadRepository.save(upload);
+<a class="jxr_linenumber" name="L1982" href="#L1982">1982</a>     UUID firstAidImageId = upload.getId();
 <a class="jxr_linenumber" name="L1983" href="#L1983">1983</a> 
-<a class="jxr_linenumber" name="L1984" href="#L1984">1984</a>     <em class="jxr_comment">// save the updated drawing style</em>
-<a class="jxr_linenumber" name="L1985" href="#L1985">1985</a>     upload = <strong class="jxr_keyword">new</strong> <a name="Upload" href="../../../../../org/tailormap/api/persistence/Upload.html#Upload">Upload</a>()
-<a class="jxr_linenumber" name="L1986" href="#L1986">1986</a>         .setCategory(Upload.CATEGORY_DRAWING_STYLE)
-<a class="jxr_linenumber" name="L1987" href="#L1987">1987</a>         .setMimeType(<span class="jxr_string">"application/json"</span>)
-<a class="jxr_linenumber" name="L1988" href="#L1988">1988</a>         .setFilename(<span class="jxr_string">"object-drawing-style.json"</span>)
-<a class="jxr_linenumber" name="L1989" href="#L1989">1989</a>         .setContent(drawingStyles.getBytes(StandardCharsets.UTF_8))
-<a class="jxr_linenumber" name="L1990" href="#L1990">1990</a>         .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
-<a class="jxr_linenumber" name="L1991" href="#L1991">1991</a>     uploadRepository.save(upload);
-<a class="jxr_linenumber" name="L1992" href="#L1992">1992</a>   }
-<a class="jxr_linenumber" name="L1993" href="#L1993">1993</a> }
+<a class="jxr_linenumber" name="L1984" href="#L1984">1984</a>     Properties props = <strong class="jxr_keyword">new</strong> Properties();
+<a class="jxr_linenumber" name="L1985" href="#L1985">1985</a>     props.putAll(Map.of(
+<a class="jxr_linenumber" name="L1986" href="#L1986">1986</a>         <span class="jxr_string">"water-uuid"</span>, drinkwaterImageId.toString(),
+<a class="jxr_linenumber" name="L1987" href="#L1987">1987</a>         <span class="jxr_string">"lichtpunt-uuid"</span>, lichtpuntImageId.toString(),
+<a class="jxr_linenumber" name="L1988" href="#L1988">1988</a>         <span class="jxr_string">"first-aid-uuid"</span>, firstAidImageId.toString()));
+<a class="jxr_linenumber" name="L1989" href="#L1989">1989</a> 
+<a class="jxr_linenumber" name="L1990" href="#L1990">1990</a>     String drawingStyles =
+<a class="jxr_linenumber" name="L1991" href="#L1991">1991</a>         <strong class="jxr_keyword">new</strong> ClassPathResource(<span class="jxr_string">"test/object-drawing-style.json"</span>).getContentAsString(StandardCharsets.UTF_8);
+<a class="jxr_linenumber" name="L1992" href="#L1992">1992</a>     drawingStyles = <strong class="jxr_keyword">new</strong> PropertyPlaceholderHelper(<span class="jxr_string">"${"</span>, <span class="jxr_string">"}"</span>).replacePlaceholders(drawingStyles, props);
+<a class="jxr_linenumber" name="L1993" href="#L1993">1993</a> 
+<a class="jxr_linenumber" name="L1994" href="#L1994">1994</a>     <em class="jxr_comment">// save the updated drawing style</em>
+<a class="jxr_linenumber" name="L1995" href="#L1995">1995</a>     upload = <strong class="jxr_keyword">new</strong> <a name="Upload" href="../../../../../org/tailormap/api/persistence/Upload.html#Upload">Upload</a>()
+<a class="jxr_linenumber" name="L1996" href="#L1996">1996</a>         .setCategory(Upload.CATEGORY_DRAWING_STYLE)
+<a class="jxr_linenumber" name="L1997" href="#L1997">1997</a>         .setMimeType(<span class="jxr_string">"application/json"</span>)
+<a class="jxr_linenumber" name="L1998" href="#L1998">1998</a>         .setFilename(<span class="jxr_string">"object-drawing-style.json"</span>)
+<a class="jxr_linenumber" name="L1999" href="#L1999">1999</a>         .setContent(drawingStyles.getBytes(StandardCharsets.UTF_8))
+<a class="jxr_linenumber" name="L2000" href="#L2000">2000</a>         .setLastModified(OffsetDateTime.now(ZoneId.systemDefault()));
+<a class="jxr_linenumber" name="L2001" href="#L2001">2001</a>     uploadRepository.save(upload);
+<a class="jxr_linenumber" name="L2002" href="#L2002">2002</a>   }
+<a class="jxr_linenumber" name="L2003" href="#L2003">2003</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
