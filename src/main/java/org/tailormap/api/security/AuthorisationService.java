@@ -215,44 +215,20 @@ public class AuthorisationService {
   }
 
   /**
-   * To avoid exposing a secured service by proxying it to everyone, do not proxy a secured GeoService when the
-   * application is public (accessible by anonymous users). Do not even allow proxying a secured service if the user
-   * is logged viewing a public app!
+   * To avoid exposing a secured service by proxying it to everyone, do not proxy a secured GeoService when the user
+   * is not logged in.
    *
-   * @param application The application
    * @param geoService The geo service to check
-   * @return Whether to deny proxying this service for the application
+   * @return Whether to deny proxying this service
    */
-  public boolean mustDenyAccessForSecuredProxy(Application application, GeoService geoService) {
-    logger.trace(
-        "Checking if proxy access to GeoService {} must be denied for application {}.",
-        geoService.getTitle(),
-        application.getName());
+  public boolean mustDenyAccessForSecuredProxy(GeoService geoService) {
     if (!Boolean.TRUE.equals(geoService.getSettings().getUseProxy())) {
-      logger.trace(
-          "Must not deny proxy access to GeoService {}, 'useProxy' not set to true.", geoService.getTitle());
       return false;
     }
     if (geoService.getAuthentication() == null) {
-      logger.trace(
-          "Must not deny proxy access to GeoService {}, authentication is not set.", geoService.getTitle());
       return false;
     }
-    boolean mustDeny = application.getAuthorizationRules().stream().anyMatch(rule -> {
-      logger.trace(
-          "Checking application rule: {} for group: {} and access type: {} if proxy access must be denied.",
-          rule,
-          Group.ANONYMOUS,
-          ACCESS_TYPE_VIEW);
-      return Group.ANONYMOUS.equals(rule.getGroupName())
-          && AuthorizationRuleDecision.ALLOW.equals(
-              rule.getDecisions().get(ACCESS_TYPE_VIEW));
-    });
-    logger.trace(
-        "Must {}deny access to GeoService '{}' in application {}, because of rules.",
-        mustDeny ? "not " : "",
-        geoService.getTitle(),
-        application.getName());
-    return mustDeny;
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    return auth == null || auth instanceof AnonymousAuthenticationToken;
   }
 }
