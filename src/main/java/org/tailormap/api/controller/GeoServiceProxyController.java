@@ -145,7 +145,7 @@ public class GeoServiceProxyController {
     }
 
     if (authorisationService.mustDenyAccessForSecuredProxy(service)) {
-      logger.warn(
+      logger.debug(
           "Denying proxy for layer \"{}\" in app #{} (\"{}\") from secured service #{} (URL {}): user is not authenticated",
           layer.getName(),
           application.getId(),
