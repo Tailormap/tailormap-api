@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -80,7 +81,7 @@ public class FrontControllerResolver implements ResourceResolver, InitializingBe
     try {
       for (String resourceLocation : staticResourceLocations) {
         Path resourcePath = resourceLocation.startsWith("file:")
-            ? Path.of(StringUtils.removeStart(resourceLocation, "file:"))
+            ? Path.of(Strings.CS.removeStart(resourceLocation, "file:"))
             : null;
         // Check whether the resource path has the Tailormap frontend which always has a
         // version.json

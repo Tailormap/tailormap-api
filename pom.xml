@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <!-- when updating please check version overrides using the commands in the properties section -->
-        <version>3.5.3</version>
+        <version>3.5.4</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -123,7 +123,8 @@ SPDX-License-Identifier: MIT
             mvn -U org.codehaus.mojo:versions-maven-plugin:display-plugin-updates
         to check
         -->
-        <flyway.version>11.8.2</flyway.version>
+        <commons-lang3.version>3.18.0</commons-lang3.version>
+        <flyway.version>11.10.4</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
         <hibernate.version>6.6.22.Final</hibernate.version>
         <junit-jupiter.version>5.13.4</junit-jupiter.version>
