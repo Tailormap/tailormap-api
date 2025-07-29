@@ -28,6 +28,22 @@ Administrative REST controllers in the `org.tailormap.api.controller` package us
 `src/main/resources/openapi/admin-schemas.yaml` description, any controllers in this package should preferably use
 Swagger annotations such as `@Operation` and `@ApiResponse`.
 
+## Code Standards
+- **Java Version**: Use Java 17 features and syntax.
+- **GeoTools**: Use GeoTools 33.x for geospatial data handling.
+- **Hibernate**: Use Hibernate 6.6.x for ORM and database interactions.
+- **Spring Boot**: Use Spring Boot 3.5.x for building RESTful APIs.
+- **Spring Data JPA**: Use Spring Data JPA for database access and repository management.
+- **Spring Security**: Use Spring Security for authentication and authorization.
+- **Spring Boot Actuator**: Use Spring Boot Actuator for monitoring and management of the application.
+- **JUnit Jupiter**: Use JUnit 5 (Jupiter) for unit testing.
+- **OpenAPI**: Use OpenAPI 3.0.3 for API documentation and definitions.
+- **Maven**: Use Maven for dependency management and project builds.
+
+### Required Before Each Commit
+- **Code Formatting**: Ensure code is formatted according to the project's style guide using `mvn spotless:apply`.
+- **Code Linting**: Run `mvn install` to ensure code adheres to the project's coding standards.
+
 # Best Practices
 
 ## General Guidelines
