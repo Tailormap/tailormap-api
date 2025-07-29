@@ -204,12 +204,12 @@
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>     <em class="jxr_comment">// XXX not needed if we have GeoServiceLayer.getService().getName()</em>
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Map&lt;GeoServiceLayer, String&gt; serviceLayerServiceIds = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
 <a class="jxr_linenumber" name="L198" href="#L198">198</a> 
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>     <strong class="jxr_keyword">public</strong> MapResponseLayerBuilder(<a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app, MapResponse mapResponse) {
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>     MapResponseLayerBuilder(<a name="Application" href="../../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app, MapResponse mapResponse) {
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>       <strong class="jxr_keyword">this</strong>.app = app;
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>       <strong class="jxr_keyword">this</strong>.mapResponse = mapResponse;
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>     }
 <a class="jxr_linenumber" name="L203" href="#L203">203</a> 
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> buildLayers() {
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>     <strong class="jxr_keyword">void</strong> buildLayers() {
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>       <strong class="jxr_keyword">if</strong> (app.getContentRoot() != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L206" href="#L206">206</a>         buildBackgroundLayers();
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>         buildOverlayLayers();
