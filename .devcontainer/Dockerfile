@@ -1,10 +1,10 @@
 # Copyright (C) 2024 B3Partners B.V.
 #
 # SPDX-License-Identifier: MIT
-FROM mcr.microsoft.com/devcontainers/java:1-17-bookworm
+FROM mcr.microsoft.com/devcontainers/java:17
 
 ARG INSTALL_MAVEN="true"
-ARG MAVEN_VERSION="3.9.9"
+ARG MAVEN_VERSION="3.9.11"
 
 ARG INSTALL_GRADLE="false"
 ARG GRADLE_VERSION=""
