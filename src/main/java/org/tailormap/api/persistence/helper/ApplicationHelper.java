@@ -196,12 +196,12 @@ public class ApplicationHelper {
     // XXX not needed if we have GeoServiceLayer.getService().getName()
     private final Map<GeoServiceLayer, String> serviceLayerServiceIds = new HashMap<>();
 
-    public MapResponseLayerBuilder(Application app, MapResponse mapResponse) {
+    MapResponseLayerBuilder(Application app, MapResponse mapResponse) {
       this.app = app;
       this.mapResponse = mapResponse;
     }
 
-    public void buildLayers() {
+    void buildLayers() {
       if (app.getContentRoot() != null) {
         buildBackgroundLayers();
         buildOverlayLayers();
