@@ -130,7 +130,7 @@ SPDX-License-Identifier: MIT
         <junit-jupiter.version>5.13.4</junit-jupiter.version>
         <!-- <micrometer.version>1.15.0</micrometer.version>-->
         <mssql-jdbc.version>12.10.1.jre11</mssql-jdbc.version>
-        <oracle-database.version>23.8.0.25.04</oracle-database.version>
+        <oracle-database.version>23.9.0.25.07</oracle-database.version>
         <postgresql.version>42.7.7</postgresql.version>
         <!-- <spring-data-bom.version>2024.0.6</spring-data-bom.version>-->
         <!-- <spring-hateoas.version>2.3.3</spring-hateoas.version>-->
@@ -230,7 +230,7 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
-            <artifactId>ojdbc11</artifactId>
+            <artifactId>ojdbc17</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
