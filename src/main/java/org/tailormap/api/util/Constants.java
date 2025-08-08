@@ -19,4 +19,11 @@ public interface Constants {
   String UUID_REGEX = "(?i)^[\\da-f]{8}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{12}$";
 
   String TEST_TASK_TYPE = "poc";
+
+  String METRICS_APP_REQUEST_COUNTER_NAME = "tailormap_app_request";
+  String METRICS_NAME_TAG = "appName";
+  String METRICS_TYPE_TAG = "appType";
+  String METRICS_ID_TAG = "appId";
+
+  String METRICS_APPLAYER_SWITCHED_ON_COUNTER_NAME = "tailormap_applayer_switched_on";
 }
