@@ -159,6 +159,9 @@ services:
     command:
       - --enable-feature=exemplar-storage
       - --config.file=/prometheus.yaml
+#     see: https://prometheus.io/docs/prometheus/latest/storage/#operational-aspects
+#     keep data for 91 days
+      - --storage.tsdb.retention.time=91d
       - --log.level=debug
       - --web.enable-lifecycle
     healthcheck:
