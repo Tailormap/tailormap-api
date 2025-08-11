@@ -20,12 +20,15 @@ import static org.tailormap.api.util.Constants.METRICS_APP_REQUEST_COUNTER_NAME;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.lang.invoke.MethodHandles;
 import java.util.Objects;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junitpioneer.jupiter.RetryingTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -51,6 +54,8 @@ import org.tailormap.api.persistence.Group;
       "management.prometheus.metrics.export.descriptions=true",
     })
 class PrometheusIntegrationTest {
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Autowired
   private MockMvc mockMvc;
@@ -105,7 +110,6 @@ class PrometheusIntegrationTest {
   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
   @Order(Integer.MAX_VALUE)
   void prometheusAppCounters() throws Exception {
-    // Example using RestTemplate to call the Prometheus API directly
     // This assumes that the Prometheus server is running on localhost:9090
     // and that the tailormap_app_request_total metric is available.
 
@@ -120,6 +124,40 @@ class PrometheusIntegrationTest {
         Objects.requireNonNull(response.getHeaders().getContentType()).toString());
 
     JsonNode root = new ObjectMapper().readTree(response.getBody());
+    logger.debug("App usage response: {}", root.toPrettyString());
+    assertEquals("success", root.path("status").asText());
+    assertTrue(root.path("data").path("result").isArray());
+    assertEquals(3, root.path("data").path("result").size());
+    assertEquals(
+        "tailormap-api",
+        root.path("data")
+            .path("result")
+            .get(0)
+            .path("metric")
+            .path("application")
+            .asText());
+    // Check that total count is greater than 0
+    assertThat(root.path("data").path("result").get(0).path("value").get(1).asInt(), is(greaterThan(0)));
+  }
+
+  @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
+  @Order(Integer.MAX_VALUE)
+  void prometheusAppCountersLastUpdated() throws Exception {
+    // This assumes that the Prometheus server is running on localhost:9090
+    // and that the tailormap_app_request_total metric is available.
+
+    // get the last update within the last 90 days
+    final String promUrl =
+        "http://localhost:9090/api/v1/query?query=floor(time()-max_over_time(timestamp(changes(tailormap_app_request_total[5m])>0)[90d:1m]))";
+    ResponseEntity<String> response = new RestTemplate().getForEntity(promUrl, String.class);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(
+        "application/json",
+        Objects.requireNonNull(response.getHeaders().getContentType()).toString());
+
+    JsonNode root = new ObjectMapper().readTree(response.getBody());
+    logger.debug("App usage last updated response: {}", root.toPrettyString());
     assertEquals("success", root.path("status").asText());
     assertTrue(root.path("data").path("result").isArray());
     assertEquals(3, root.path("data").path("result").size());
