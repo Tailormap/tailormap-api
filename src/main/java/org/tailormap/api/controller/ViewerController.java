@@ -8,6 +8,7 @@ package org.tailormap.api.controller;
 
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.aop.MeterTag;
 import io.micrometer.core.instrument.Metrics;
 import java.util.Locale;
 import org.springframework.http.HttpStatus;
@@ -71,7 +72,8 @@ public class ViewerController implements Constants {
       path = {"${tailormap-api.base-path}/app/{viewerName}", "${tailormap-api.base-path}/service/{viewerName}"})
   @Timed(value = "get_named_app", description = "Get named app")
   @Counted(value = "get_named_app", description = "Count of get named app")
-  public ViewerResponse viewer(@ModelAttribute Application app, @ModelAttribute ViewerResponse.KindEnum viewerKind) {
+  public ViewerResponse viewer(
+      @MeterTag("app") @ModelAttribute Application app, @ModelAttribute ViewerResponse.KindEnum viewerKind) {
     ViewerResponse viewerResponse = app.getViewerResponse().kind(viewerKind);
 
     AppStyling styling = viewerResponse.getStyling();
