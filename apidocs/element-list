@@ -18,6 +18,7 @@ org.tailormap.api.persistence.helper
 org.tailormap.api.persistence.json
 org.tailormap.api.persistence.listener
 org.tailormap.api.persistence.projections
+org.tailormap.api.prometheus
 org.tailormap.api.repository
 org.tailormap.api.repository.events
 org.tailormap.api.repository.validation
