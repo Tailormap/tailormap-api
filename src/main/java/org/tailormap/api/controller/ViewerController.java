@@ -10,6 +10,8 @@ import static org.tailormap.api.util.Constants.UUID_REGEX;
 
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Metrics;
+import java.util.Locale;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,6 +22,7 @@ import org.tailormap.api.persistence.Configuration;
 import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.helper.ApplicationHelper;
 import org.tailormap.api.persistence.helper.UploadHelper;
+import org.tailormap.api.prometheus.TagNames;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
 import org.tailormap.api.security.AuthorisationService;
@@ -28,7 +31,7 @@ import org.tailormap.api.viewer.model.MapResponse;
 import org.tailormap.api.viewer.model.ViewerResponse;
 
 @AppRestController
-public class ViewerController {
+public class ViewerController implements TagNames {
 
   private final ConfigurationRepository configurationRepository;
   private final ApplicationRepository applicationRepository;
@@ -77,6 +80,18 @@ public class ViewerController {
     if (styling != null) {
       styling.setLogo(uploadHelper.getUrlForImage(styling.getLogo(), Upload.CATEGORY_APP_LOGO));
     }
+
+    // count/increment the number of times this viewer has been requested
+    Metrics.counter(
+            METRICS_APP_REQUEST_COUNTER_NAME,
+            METRICS_APP_TYPE_TAG,
+            viewerKind.name().toLowerCase(Locale.getDefault()),
+            METRICS_APP_NAME_TAG,
+            app.getName(),
+            METRICS_APP_ID_TAG,
+            app.getId().toString())
+        .increment();
+
     return viewerResponse;
   }
 
