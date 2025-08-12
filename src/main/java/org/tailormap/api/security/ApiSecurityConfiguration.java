@@ -109,8 +109,11 @@ public class ApiSecurityConfiguration {
       // https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
       http.csrf(csrf -> csrf.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
           .csrfTokenRepository(csrfTokenRepository)
-          // This uses POST for large filter in body, but is safe (read-only)
-          .ignoringRequestMatchers(apiBasePath + "/{viewerKind}/{viewerName}/layer/{appLayerId}/features"));
+          .ignoringRequestMatchers(
+              // This uses POST for large filter in body, but is safe (read-only)
+              apiBasePath + "/{viewerKind}/{viewerName}/layer/{appLayerId}/features",
+              // Allow PUT for ingest metrics, but only for allowed metrics
+              apiBasePath + "/{viewerKind}/{viewerName}/metrics/ingest/{appLayerId}/{allowedMetric}"));
       http.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
     }
 
