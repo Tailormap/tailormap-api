@@ -1,0 +1,28 @@
+#  Copyright (C) 2025 B3Partners B.V.
+#  SPDX-License-Identifier: MIT
+#
+#  Only to be used for development and testing purposes.
+#
+global:
+  # very short interval for development purposes
+  scrape_interval: '5s'
+
+scrape_configs:
+  - job_name: 'tailormap-api-snapshot'
+    scheme: 'http'
+    basic_auth:
+      password: 'tm-admin'
+      username: 'tm-admin'
+    static_configs:
+      - targets:
+          - 'host.docker.internal:8080'
+    metrics_path: '/api/actuator/prometheus'
+    # request only the metrics that are relevant from the actuator API
+    #    params:
+    #      includedNames:
+    #        - 'tailormap_app_request,tailormap_applayer_switched_on'
+    # discard any metrics that are not related to Tailormap
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: '^tailormap_.*'
+        action: keep
