@@ -22,11 +22,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.tailormap.api.annotation.AppRestController;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.json.AppTreeLayerNode;
+import org.tailormap.api.prometheus.TagNames;
 import org.tailormap.api.viewer.model.ViewerResponse;
 
 @AppRestController
 @Validated
-public class IngestMetricsController {
+public class IngestMetricsController implements TagNames {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -56,13 +57,13 @@ public class IngestMetricsController {
     // count/increment the number of times this layer has been switched on for this viewer
     Metrics.counter(
             allowedMetric,
-            "appId",
+            METRICS_APP_ID_TAG,
             app.getId().toString(),
-            "appType",
+            METRICS_APP_TYPE_TAG,
             viewerKind.name().toLowerCase(Locale.getDefault()),
-            "appName",
+            METRICS_APP_NAME_TAG,
             app.getName(),
-            "appLayerId",
+            METRICS_APP_LAYER_ID_TAG,
             appTreeLayerNode.getId())
         .increment();
 
