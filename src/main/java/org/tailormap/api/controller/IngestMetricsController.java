@@ -31,8 +31,6 @@ public class IngestMetricsController {
         "${tailormap-api.base-path}/app/{viewerName}/metrics/ingest/{appLayerId}/switched-on",
         "${tailormap-api.base-path}/service/{viewerName}/metrics/ingest/{appLayerId}/switched-on"
       })
-  @Timed(value = "ingest_applayer_switched_on_metric", description = "time spent to prepare a switched-on metric")
-  @Counted(value = "ingest_applayer_switched_on_metric", description = "number of applayer switched on calls")
   @Valid public ResponseEntity<Serializable> layerSwitchedOn(
       @ModelAttribute Application app,
       @ModelAttribute ViewerResponse.KindEnum viewerKind,
