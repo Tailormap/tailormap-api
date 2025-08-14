@@ -8,7 +8,6 @@ package org.tailormap.api.controller;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.tailormap.api.TestRequestProcessor.setServletPath;
@@ -64,7 +63,6 @@ class IngestMetricsControllerIntegrationTest {
             .accept(MediaType.TEXT_PLAIN))
         .andExpect(status().isOk())
         .andExpect(content().contentType("text/plain;version=0.0.4;charset=utf-8"))
-        .andDo(print())
         .andExpect(
             content()
                 .string(
