@@ -1,6 +1,9 @@
 # Copyright (C) 2022 B3Partners B.V.
 #
 # SPDX-License-Identifier: MIT
+#
+# Only to be used for development and testing purposes.
+#
 name: 'tailormap-ci'
 
 volumes:
@@ -9,6 +12,7 @@ volumes:
   sqlserver-data:
   oracle-data:
   solr-data:
+  prometheus-data:
 
 
 networks:
@@ -132,6 +136,38 @@ services:
       - tailormap
     healthcheck:
       test: 'curl -s http://localhost:8983/solr/tailormap/admin/ping | grep -q "OK" || exit 1'
+      start_period: 60s
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v3.5.0
+    environment:
+      TZ: Europe/Amsterdam
+    volumes:
+      - ./compose-config-files/prometheus.yaml:/prometheus.yaml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "127.0.0.1:9090:9090"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - tailormap-ci
+    restart: unless-stopped
+    command:
+      - --enable-feature=exemplar-storage
+      - --config.file=/prometheus.yaml
+      # see: https://prometheus.io/docs/prometheus/latest/storage/#operational-aspects
+      # keep data for 91 days or 100MB, whichever comes first
+      - --storage.tsdb.retention.time=91d
+      - --storage.tsdb.retention.size=100MB
+      - --log.level=debug
+      - --web.enable-lifecycle
+    healthcheck:
+      test: 'wget --server-response --spider http://localhost:9090/query?query=up || exit 1'
       start_period: 60s
       interval: 15s
       timeout: 5s
