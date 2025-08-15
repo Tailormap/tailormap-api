@@ -30,7 +30,7 @@ jobs:
       packages: read
 #      actions: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: 'Set up JDK'
         uses: actions/setup-java@v4
@@ -79,7 +79,7 @@ jobs:
     if: ${{ github.author != 'dependabot[bot]' }}
     needs: build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: 'Set up JDK'
         uses: actions/setup-java@v4
@@ -151,7 +151,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: 'Set up JDK'
         uses: actions/setup-java@v4
@@ -186,7 +186,7 @@ jobs:
       contents: read
     if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: 'Set up JDK'
         uses: actions/setup-java@v4
@@ -249,7 +249,7 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 15s --health-timeout 5s --health-retries 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: 'Set up JDK'
         uses: actions/setup-java@v4
