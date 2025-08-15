@@ -165,7 +165,11 @@ services:
       - --storage.tsdb.retention.time=91d
       - --storage.tsdb.retention.size=100MB
       - --log.level=debug
+      # to be able to reload the config file without restarting the container, development-only!
       - --web.enable-lifecycle
+      # to be able to delete/cleanup metrics on request we need the admin API
+      # see: https://prometheus.io/docs/prometheus/latest/querying/api/#tsdb-admin-apis
+      - --web.enable-admin-api
     healthcheck:
       test: 'wget --server-response --spider http://localhost:9090/query?query=up || exit 1'
       start_period: 60s
