@@ -51,6 +51,8 @@ public class PrometheusIntegrationTest {
   @Value("${tailormap-api.prometheus-api-url:http://localhost:9090/api/v1}")
   private String prometheusUrl;
 
+  // The number of applications we expect to have metrics for, CI setup has 1 app
+  private final int countedApps = 1;
   // get the total count over the last 90 days
   final String totalsQuery = "floor(increase(tailormap_app_request_total[90d]))";
 
@@ -82,7 +84,7 @@ public class PrometheusIntegrationTest {
     logger.debug("App usage response: {}", root.toPrettyString());
     assertEquals("success", root.path("status").asText());
     assertTrue(root.path("data").path("result").isArray());
-    assertEquals(3, root.path("data").path("result").size());
+    assertEquals(countedApps, root.path("data").path("result").size());
     assertEquals(
         "tailormap-api",
         root.path("data")
@@ -109,7 +111,11 @@ public class PrometheusIntegrationTest {
     logger.debug("App usage last updated response: {}", root.toPrettyString());
     assertEquals("success", root.path("status").asText());
     assertTrue(root.path("data").path("result").isArray());
-    assertEquals(3, root.path("data").path("result").size());
+    assertEquals(
+        countedApps,
+        root.path("data").path("result").size(),
+        () -> "Expected " + countedApps + " (countedApps) apps, but got "
+            + root.path("data").path("result").size());
     assertEquals(
         "tailormap-api",
         root.path("data")
@@ -142,7 +148,11 @@ public class PrometheusIntegrationTest {
     logger.debug("App usage last updated response: {}", root.toPrettyString());
     assertEquals("success", root.path("status").asText());
     assertTrue(root.path("data").path("result").isArray());
-    assertEquals(6, root.path("data").path("result").size());
+    assertEquals(
+        2 * countedApps,
+        root.path("data").path("result").size(),
+        () -> "Expected " + (2 * countedApps) + " results, but got "
+            + root.path("data").path("result").size());
   }
 
   @Tag("prometheus-service-testcase")
@@ -172,7 +182,10 @@ public class PrometheusIntegrationTest {
       JsonNode root2 = new ObjectMapper().readTree(response2.getBody());
       PrometheusResultProcessor processor = new PrometheusResultProcessor();
       ArrayNode combined = processor.processPrometheusResultsToJsonArray(root, root2);
-      assertEquals(3, combined.size());
+      assertEquals(
+          countedApps,
+          combined.size(),
+          () -> "Expected " + countedApps + " (countedApps) apps, but got " + combined.size());
       combined.forEach(metricsNode -> {
         String appId = metricsNode.get(METRICS_APP_ID_TAG).asText();
         logger.debug("Metrics for appId {}: {}", appId, metricsNode);
@@ -185,24 +198,24 @@ public class PrometheusIntegrationTest {
                     metricsNode
                         .get(PrometheusResultProcessor.METRICS_APP_NAME_TAG)
                         .asText())));
-        assumingThat(
-            "2".equals(appId),
-            () -> assertAll(
-                "Snapshot Geoserver Metrics",
-                () -> assertEquals(
-                    "snapshot-geoserver",
-                    metricsNode
-                        .get(PrometheusResultProcessor.METRICS_APP_NAME_TAG)
-                        .asText())));
-        assumingThat(
-            "5".equals(appId),
-            () -> assertAll(
-                "Austria App Metrics",
-                () -> assertEquals(
-                    "austria",
-                    metricsNode
-                        .get(PrometheusResultProcessor.METRICS_APP_NAME_TAG)
-                        .asText())));
+        //        assumingThat(
+        //            "2".equals(appId),
+        //            () -> assertAll(
+        //                "Snapshot Geoserver Metrics",
+        //                () -> assertEquals(
+        //                    "snapshot-geoserver",
+        //                    metricsNode
+        //                        .get(PrometheusResultProcessor.METRICS_APP_NAME_TAG)
+        //                        .asText())));
+        //        assumingThat(
+        //            "5".equals(appId),
+        //            () -> assertAll(
+        //                "Austria App Metrics",
+        //                () -> assertEquals(
+        //                    "austria",
+        //                    metricsNode
+        //                        .get(PrometheusResultProcessor.METRICS_APP_NAME_TAG)
+        //                        .asText())));
 
         assertAll(
             () -> assertThat(metricsNode.get("totalCount").asInt(), is(greaterThan(0))),
