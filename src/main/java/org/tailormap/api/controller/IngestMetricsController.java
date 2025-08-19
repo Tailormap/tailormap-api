@@ -64,7 +64,11 @@ public class IngestMetricsController implements TagNames {
             METRICS_APP_NAME_TAG,
             app.getName(),
             METRICS_APP_LAYER_ID_TAG,
-            appTreeLayerNode.getId())
+            appTreeLayerNode.getId()
+            // we don't add the appLayerName here, as in many cases you want the allLayerTitle, but that
+            // requires an extra lookup in the appLayerSettings when publishing the metric and does not take
+            // renaming into account, that can better be done when rendering the metrics
+            )
         .increment();
 
     // Return a 204 No Content response, to indicate that the request was successful but there is no content to

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
@@ -68,11 +69,11 @@ public class PrometheusService {
    */
   public JsonNode executeQuery(String promQuery) throws JsonProcessingException, IOException {
     ResponseEntity<String> response;
-    String promUrl = UriComponentsBuilder.fromUriString(prometheusUrl)
+    URI promUrl = UriComponentsBuilder.fromUriString(prometheusUrl)
         .path("/query")
-        .query("query=" + promQuery)
+        .queryParam("query", promQuery)
         .build()
-        .toUriString();
+        .toUri();
     logger.debug("Executing Prometheus query: {}", promUrl);
     try {
       response = restTemplate.getForEntity(promUrl, String.class);

@@ -5,22 +5,23 @@
  */
 package org.tailormap.api.prometheus;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PrometheusResultProcessor implements TagNames {
 
   /**
-   * Processes the JSON response from a Prometheus query and groups the results by appId. Each appId will have a map
-   * of metrics, where the key is the metric type (e.g., "total", "lastUpdated") and the value is the metric value.
-   * Additionally, the appName is included in the map for each appId.
+   * Processes the JSON response from a Prometheus query and groups the results by
+   * {@link TagNames#METRICS_APP_ID_TAG}. Each appId will have a map of metrics, where the key is the metric type
+   * (e.g., "total", "lastUpdated") and the value is the metric value. Additionally, the appName is included in the
+   * map for each appId.
    *
    * @param root the root JSON node containing the Prometheus query results (expected structure: root.data.result)
    *     where each result has a "metric" object with "appId", "type", and "value" fields, and a "value" array where
@@ -28,37 +29,59 @@ public class PrometheusResultProcessor implements TagNames {
    * @return a map where the key is the appId and the value is another map containing metric types as keys and their
    *     corresponding values. The inner map also includes the appName under the key "appName". If an appId has no
    *     metrics, it will not be included in the results.
+   * @see TagNames#METRICS_APP_ID_TAG
    */
-  public Map<String, Map<String, String>> processPrometheusResults(JsonNode root) {
+  public Collection<Map<String, String>> processPrometheusResultsForApplications(JsonNode root) {
     final Map<String, Map<String, String>> groupedResults = new HashMap<>();
     for (JsonNode result : root.path("data").path("result")) {
       String appId = result.path("metric").path(METRICS_APP_ID_TAG).asText();
+      String appName = result.path("metric").path(METRICS_APP_NAME_TAG).asText();
       String type = result.path("metric").path("type").asText();
       String value = result.path("value").get(1).asText();
-
+      // combine measurements
       groupedResults.computeIfAbsent(appId, k -> new HashMap<>()).put(type, value);
 
-      String appName = result.path("metric").path(METRICS_APP_NAME_TAG).asText();
+      // Add appName and appId to the map for this appId
       groupedResults.get(appId).put(METRICS_APP_NAME_TAG, appName);
+      groupedResults.get(appId).put(METRICS_APP_ID_TAG, appId);
     }
 
-    return groupedResults;
+    return groupedResults.values();
   }
 
   /**
-   * Processes the JSON response from a Prometheus query and groups the results by appId. This method is a convenience
-   * wrapper around {@link #processPrometheusResults(JsonNode)}.
+   * Processes the JSON response from a Prometheus query and groups the results by
+   * {@link TagNames#METRICS_APP_LAYER_ID_TAG}. Each appLayerId will have a map of metrics, where the key is the
+   * metric type (e.g., "total", "lastUpdated") and the value is the metric value. Additionally, the appName is
+   * included in the map for each appId.
    *
-   * @param jsonResponse the JSON response string from a Prometheus query
-   * @return a map where the key is the appId and the value is another map containing metric types as keys and their
-   *     corresponding values.
-   * @throws JsonProcessingException if there is an error parsing the JSON response
+   * @param root the root JSON node containing the Prometheus query results (expected structure: root.data.result)
+   *     where each result has a "metric" object with "appId", "type", and "value" fields, and a "value" array where
+   *     the second element is the metric value. The "metric" object may also contain "appName".
+   * @return a map where the key is the appLayerId and the value is another map containing metric types as keys and
+   *     their corresponding values. The inner map also includes the appName under the key "appName". If an appId has
+   *     no metrics, it will not be included in the results.
+   * @see TagNames#METRICS_APP_LAYER_ID_TAG
    */
-  public Map<String, Map<String, String>> processPrometheusResults(String jsonResponse)
-      throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper();
-    JsonNode root = objectMapper.readTree(jsonResponse);
-    return this.processPrometheusResults(root);
+  public Collection<Map<String, String>> processPrometheusResultsForApplicationLayers(JsonNode root) {
+    final Map<String, Map<String, String>> groupedResults = new HashMap<>();
+    for (JsonNode result : root.path("data").path("result")) {
+      String appLayerId =
+          result.path("metric").path(METRICS_APP_LAYER_ID_TAG).asText();
+      String appId = result.path("metric").path(METRICS_APP_ID_TAG).asText();
+      String appName = result.path("metric").path(METRICS_APP_NAME_TAG).asText();
+      String type = result.path("metric").path("type").asText();
+      String value = result.path("value").get(1).asText();
+      // combine all measurements
+      groupedResults.computeIfAbsent(appLayerId, k -> new HashMap<>()).put(type, value);
+
+      // Add appName and appId and appLayerId to the map for this appLayerId
+      groupedResults.get(appLayerId).put(METRICS_APP_NAME_TAG, appName);
+      groupedResults.get(appLayerId).put(METRICS_APP_ID_TAG, appId);
+      groupedResults.get(appLayerId).put(METRICS_APP_LAYER_ID_TAG, appLayerId);
+    }
+
+    return groupedResults.values();
   }
 
   /**
@@ -74,11 +97,7 @@ public class PrometheusResultProcessor implements TagNames {
       throws IOException {
     JsonNode mergedResults =
         new ObjectMapper().readerForUpdating(jsonResponse1).readValue(jsonResponse2);
-    Map<String, Map<String, String>> processed = this.processPrometheusResults(mergedResults);
-    for (String key : processed.keySet()) {
-      processed.get(key).put(METRICS_APP_ID_TAG, key);
-    }
-    List<Map<String, String>> mergedResultsList = new ArrayList<>(processed.values());
+    Collection<Map<String, String>> mergedResultsList = this.processPrometheusResultsForApplications(mergedResults);
     return new ObjectMapper().valueToTree(mergedResultsList);
   }
 }
