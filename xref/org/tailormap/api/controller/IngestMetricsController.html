@@ -72,14 +72,18 @@
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>              METRICS_APP_NAME_TAG,
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>              app.getName(),
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>              METRICS_APP_LAYER_ID_TAG,
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>              appTreeLayerNode.getId())
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>          .increment();
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>  
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      <em class="jxr_comment">// Return a 204 No Content response, to indicate that the request was successful but there is no content to</em>
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>      <em class="jxr_comment">// return.</em>
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>      <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>    }
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  }
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>              appTreeLayerNode.getId()
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>              <em class="jxr_comment">// we don't add the appLayerName here, as in many cases you want the allLayerTitle, but that</em>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>              <em class="jxr_comment">// requires an extra lookup in the appLayerSettings when publishing the metric and does not take</em>
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>              <em class="jxr_comment">// renaming into account, that can better be done when rendering the metrics</em>
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>              )
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          .increment();
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>      <em class="jxr_comment">// Return a 204 No Content response, to indicate that the request was successful but there is no content to</em>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>      <em class="jxr_comment">// return.</em>
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>      <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>    }
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

@@ -70,7 +70,7 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Known Implementing Classes:</dt>
-<dd><code><a href="../controller/IngestMetricsController.html" title="class in org.tailormap.api.controller">IngestMetricsController</a></code>, <code><a href="PrometheusResultProcessor.html" title="class in org.tailormap.api.prometheus">PrometheusResultProcessor</a></code>, <code><a href="../controller/ViewerController.html" title="class in org.tailormap.api.controller">ViewerController</a></code></dd>
+<dd><code><a href="../controller/IngestMetricsController.html" title="class in org.tailormap.api.controller">IngestMetricsController</a></code>, <code><a href="../controller/admin/PrometheusDataController.html" title="class in org.tailormap.api.controller.admin">PrometheusDataController</a></code>, <code><a href="PrometheusResultProcessor.html" title="class in org.tailormap.api.prometheus">PrometheusResultProcessor</a></code>, <code><a href="../controller/ViewerController.html" title="class in org.tailormap.api.controller">ViewerController</a></code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">TagNames</span></div>
@@ -88,19 +88,31 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Field</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color"><code><a href="#METRICS_APP_ID_TAG" class="member-name-link">METRICS_APP_ID_TAG</a></code></div>
+<div class="col-second even-row-color"><code><a href="#APP_ID_REPLACE_TOKEN" class="member-name-link">APP_ID_REPLACE_TOKEN</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color"><code><a href="#METRICS_APP_LAYER_ID_TAG" class="member-name-link">METRICS_APP_LAYER_ID_TAG</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#METRICS_APP_ID_TAG" class="member-name-link">METRICS_APP_ID_TAG</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color"><code><a href="#METRICS_APP_NAME_TAG" class="member-name-link">METRICS_APP_NAME_TAG</a></code></div>
+<div class="col-second even-row-color"><code><a href="#METRICS_APP_LAYER_ID_TAG" class="member-name-link">METRICS_APP_LAYER_ID_TAG</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color"><code><a href="#METRICS_APP_REQUEST_COUNTER_NAME" class="member-name-link">METRICS_APP_REQUEST_COUNTER_NAME</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#METRICS_APP_LAYER_NAME_TAG" class="member-name-link">METRICS_APP_LAYER_NAME_TAG</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color"><code><a href="#METRICS_APP_TYPE_TAG" class="member-name-link">METRICS_APP_TYPE_TAG</a></code></div>
+<div class="col-second even-row-color"><code><a href="#METRICS_APP_LAYER_TITLE_TAG" class="member-name-link">METRICS_APP_LAYER_TITLE_TAG</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#METRICS_APP_NAME_TAG" class="member-name-link">METRICS_APP_NAME_TAG</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><code><a href="#METRICS_APP_REQUEST_COUNTER_NAME" class="member-name-link">METRICS_APP_REQUEST_COUNTER_NAME</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#METRICS_APP_TYPE_TAG" class="member-name-link">METRICS_APP_TYPE_TAG</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color"><code><a href="#NUMBER_OF_DAYS_REPLACE_TOKEN" class="member-name-link">NUMBER_OF_DAYS_REPLACE_TOKEN</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -179,6 +191,62 @@ loadScripts(document, 'script');</script>
 <dd>
 <ul class="see-list">
 <li><a href="../../../../constant-values.html#org.tailormap.api.prometheus.TagNames.METRICS_APP_LAYER_ID_TAG">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="METRICS_APP_LAYER_NAME_TAG">
+<h3>METRICS_APP_LAYER_NAME_TAG</h3>
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">METRICS_APP_LAYER_NAME_TAG</span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../../../constant-values.html#org.tailormap.api.prometheus.TagNames.METRICS_APP_LAYER_NAME_TAG">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="METRICS_APP_LAYER_TITLE_TAG">
+<h3>METRICS_APP_LAYER_TITLE_TAG</h3>
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">METRICS_APP_LAYER_TITLE_TAG</span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../../../constant-values.html#org.tailormap.api.prometheus.TagNames.METRICS_APP_LAYER_TITLE_TAG">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="APP_ID_REPLACE_TOKEN">
+<h3>APP_ID_REPLACE_TOKEN</h3>
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">APP_ID_REPLACE_TOKEN</span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../../../constant-values.html#org.tailormap.api.prometheus.TagNames.APP_ID_REPLACE_TOKEN">Constant Field Values</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="NUMBER_OF_DAYS_REPLACE_TOKEN">
+<h3>NUMBER_OF_DAYS_REPLACE_TOKEN</h3>
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">NUMBER_OF_DAYS_REPLACE_TOKEN</span></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="../../../../constant-values.html#org.tailormap.api.prometheus.TagNames.NUMBER_OF_DAYS_REPLACE_TOKEN">Constant Field Values</a></li>
 </ul>
 </dd>
 </dl>

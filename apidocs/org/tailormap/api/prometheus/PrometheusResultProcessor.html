@@ -80,7 +80,8 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="TagNames.html" title="interface in org.tailormap.api.prometheus">TagNames</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">PrometheusResultProcessor</span>
+<div class="type-signature"><span class="annotations">@Component
+</span><span class="modifiers">public class </span><span class="element-name type-name-label">PrometheusResultProcessor</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="TagNames.html" title="interface in org.tailormap.api.prometheus">TagNames</a></span></div>
 </section>
@@ -92,7 +93,7 @@ implements <a href="TagNames.html" title="interface in org.tailormap.api.prometh
 <h2>Field Summary</h2>
 <div class="inherited-list">
 <h3 id="fields-inherited-from-class-org.tailormap.api.prometheus.TagNames">Fields inherited from interface&nbsp;org.tailormap.api.prometheus.<a href="TagNames.html" title="interface in org.tailormap.api.prometheus">TagNames</a></h3>
-<code><a href="TagNames.html#METRICS_APP_ID_TAG">METRICS_APP_ID_TAG</a>, <a href="TagNames.html#METRICS_APP_LAYER_ID_TAG">METRICS_APP_LAYER_ID_TAG</a>, <a href="TagNames.html#METRICS_APP_NAME_TAG">METRICS_APP_NAME_TAG</a>, <a href="TagNames.html#METRICS_APP_REQUEST_COUNTER_NAME">METRICS_APP_REQUEST_COUNTER_NAME</a>, <a href="TagNames.html#METRICS_APP_TYPE_TAG">METRICS_APP_TYPE_TAG</a></code></div>
+<code><a href="TagNames.html#APP_ID_REPLACE_TOKEN">APP_ID_REPLACE_TOKEN</a>, <a href="TagNames.html#METRICS_APP_ID_TAG">METRICS_APP_ID_TAG</a>, <a href="TagNames.html#METRICS_APP_LAYER_ID_TAG">METRICS_APP_LAYER_ID_TAG</a>, <a href="TagNames.html#METRICS_APP_LAYER_NAME_TAG">METRICS_APP_LAYER_NAME_TAG</a>, <a href="TagNames.html#METRICS_APP_LAYER_TITLE_TAG">METRICS_APP_LAYER_TITLE_TAG</a>, <a href="TagNames.html#METRICS_APP_NAME_TAG">METRICS_APP_NAME_TAG</a>, <a href="TagNames.html#METRICS_APP_REQUEST_COUNTER_NAME">METRICS_APP_REQUEST_COUNTER_NAME</a>, <a href="TagNames.html#METRICS_APP_TYPE_TAG">METRICS_APP_TYPE_TAG</a>, <a href="TagNames.html#NUMBER_OF_DAYS_REPLACE_TOKEN">NUMBER_OF_DAYS_REPLACE_TOKEN</a></code></div>
 </section>
 </li>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
@@ -119,15 +120,17 @@ implements <a href="TagNames.html" title="interface in org.tailormap.api.prometh
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processPrometheusResults(com.fasterxml.jackson.databind.JsonNode)" class="member-name-link">processPrometheusResults</a><wbr>(com.fasterxml.jackson.databind.JsonNode&nbsp;root)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processPrometheusResultsForApplicationLayers(com.fasterxml.jackson.databind.JsonNode)" class="member-name-link">processPrometheusResultsForApplicationLayers</a><wbr>(com.fasterxml.jackson.databind.JsonNode&nbsp;root)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Processes the JSON response from a Prometheus query and groups the results by appId.</div>
+<div class="block">Processes the JSON response from a Prometheus query and groups the results by
+ <a href="TagNames.html#METRICS_APP_LAYER_ID_TAG"><code>TagNames.METRICS_APP_LAYER_ID_TAG</code></a>.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processPrometheusResults(java.lang.String)" class="member-name-link">processPrometheusResults</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;jsonResponse)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processPrometheusResultsForApplications(com.fasterxml.jackson.databind.JsonNode)" class="member-name-link">processPrometheusResultsForApplications</a><wbr>(com.fasterxml.jackson.databind.JsonNode&nbsp;root)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Processes the JSON response from a Prometheus query and groups the results by appId.</div>
+<div class="block">Processes the JSON response from a Prometheus query and groups the results by
+ <a href="TagNames.html#METRICS_APP_ID_TAG"><code>TagNames.METRICS_APP_ID_TAG</code></a>.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.fasterxml.jackson.databind.node.ArrayNode</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#processPrometheusResultsToJsonArray(com.fasterxml.jackson.databind.JsonNode,com.fasterxml.jackson.databind.JsonNode)" class="member-name-link">processPrometheusResultsToJsonArray</a><wbr>(com.fasterxml.jackson.databind.JsonNode&nbsp;jsonResponse1,
@@ -167,12 +170,13 @@ implements <a href="TagNames.html" title="interface in org.tailormap.api.prometh
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="processPrometheusResults(com.fasterxml.jackson.databind.JsonNode)">
-<h3>processPrometheusResults</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&gt;</span>&nbsp;<span class="element-name">processPrometheusResults</span><wbr><span class="parameters">(com.fasterxml.jackson.databind.JsonNode&nbsp;root)</span></div>
-<div class="block">Processes the JSON response from a Prometheus query and groups the results by appId. Each appId will have a map
- of metrics, where the key is the metric type (e.g., "total", "lastUpdated") and the value is the metric value.
- Additionally, the appName is included in the map for each appId.</div>
+<section class="detail" id="processPrometheusResultsForApplications(com.fasterxml.jackson.databind.JsonNode)">
+<h3>processPrometheusResultsForApplications</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&gt;</span>&nbsp;<span class="element-name">processPrometheusResultsForApplications</span><wbr><span class="parameters">(com.fasterxml.jackson.databind.JsonNode&nbsp;root)</span></div>
+<div class="block">Processes the JSON response from a Prometheus query and groups the results by
+ <a href="TagNames.html#METRICS_APP_ID_TAG"><code>TagNames.METRICS_APP_ID_TAG</code></a>. Each appId will have a map of metrics, where the key is the metric type
+ (e.g., "total", "lastUpdated") and the value is the metric value. Additionally, the appName is included in the
+ map for each appId.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>root</code> - the root JSON node containing the Prometheus query results (expected structure: root.data.result)
@@ -182,24 +186,38 @@ implements <a href="TagNames.html" title="interface in org.tailormap.api.prometh
 <dd>a map where the key is the appId and the value is another map containing metric types as keys and their
      corresponding values. The inner map also includes the appName under the key "appName". If an appId has no
      metrics, it will not be included in the results.</dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="TagNames.html#METRICS_APP_ID_TAG"><code>TagNames.METRICS_APP_ID_TAG</code></a></li>
+</ul>
+</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="processPrometheusResults(java.lang.String)">
-<h3>processPrometheusResults</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&gt;</span>&nbsp;<span class="element-name">processPrometheusResults</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;jsonResponse)</span>
-                                                        throws <span class="exceptions">com.fasterxml.jackson.core.JsonProcessingException</span></div>
-<div class="block">Processes the JSON response from a Prometheus query and groups the results by appId. This method is a convenience
- wrapper around <a href="#processPrometheusResults(com.fasterxml.jackson.databind.JsonNode)"><code>processPrometheusResults(JsonNode)</code></a>.</div>
+<section class="detail" id="processPrometheusResultsForApplicationLayers(com.fasterxml.jackson.databind.JsonNode)">
+<h3>processPrometheusResultsForApplicationLayers</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&gt;</span>&nbsp;<span class="element-name">processPrometheusResultsForApplicationLayers</span><wbr><span class="parameters">(com.fasterxml.jackson.databind.JsonNode&nbsp;root)</span></div>
+<div class="block">Processes the JSON response from a Prometheus query and groups the results by
+ <a href="TagNames.html#METRICS_APP_LAYER_ID_TAG"><code>TagNames.METRICS_APP_LAYER_ID_TAG</code></a>. Each appLayerId will have a map of metrics, where the key is the
+ metric type (e.g., "total", "lastUpdated") and the value is the metric value. Additionally, the appName is
+ included in the map for each appId.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>jsonResponse</code> - the JSON response string from a Prometheus query</dd>
+<dd><code>root</code> - the root JSON node containing the Prometheus query results (expected structure: root.data.result)
+     where each result has a "metric" object with "appId", "type", and "value" fields, and a "value" array where
+     the second element is the metric value. The "metric" object may also contain "appName".</dd>
 <dt>Returns:</dt>
-<dd>a map where the key is the appId and the value is another map containing metric types as keys and their
-     corresponding values.</dd>
-<dt>Throws:</dt>
-<dd><code>com.fasterxml.jackson.core.JsonProcessingException</code> - if there is an error parsing the JSON response</dd>
+<dd>a map where the key is the appLayerId and the value is another map containing metric types as keys and
+     their corresponding values. The inner map also includes the appName under the key "appName". If an appId has
+     no metrics, it will not be included in the results.</dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list-long">
+<li><a href="TagNames.html#METRICS_APP_LAYER_ID_TAG"><code>TagNames.METRICS_APP_LAYER_ID_TAG</code></a></li>
+</ul>
+</dd>
 </dl>
 </section>
 </li>
