@@ -121,11 +121,13 @@ implements <a href="../prometheus/TagNames.html" title="interface in org.tailorm
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#ingestMetric(org.tailormap.api.persistence.Application,org.tailormap.api.viewer.model.ViewerResponse.KindEnum,org.tailormap.api.persistence.json.AppTreeLayerNode,java.lang.String)" class="member-name-link">ingestMetric</a><wbr>(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;app,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#ingestMetric(org.tailormap.api.persistence.Application,org.tailormap.api.viewer.model.ViewerResponse.KindEnum,java.util.Set,java.lang.String)" class="member-name-link">ingestMetric</a><wbr>(<a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;app,
  <a href="../viewer/model/ViewerResponse.KindEnum.html" title="enum class in org.tailormap.api.viewer.model">ViewerResponse.KindEnum</a>&nbsp;viewerKind,
- <a href="../persistence/json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;appLayerIds,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;allowedMetric)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Ingests a metric for the given application layers and viewer kind.</div>
+</div>
 </div>
 </div>
 </div>
@@ -158,17 +160,28 @@ implements <a href="../prometheus/TagNames.html" title="interface in org.tailorm
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="ingestMetric(org.tailormap.api.persistence.Application,org.tailormap.api.viewer.model.ViewerResponse.KindEnum,org.tailormap.api.persistence.json.AppTreeLayerNode,java.lang.String)">
+<section class="detail" id="ingestMetric(org.tailormap.api.persistence.Application,org.tailormap.api.viewer.model.ViewerResponse.KindEnum,java.util.Set,java.lang.String)">
 <h3>ingestMetric</h3>
-<div class="member-signature"><span class="annotations">@PutMapping(path="${tailormap-api.base-path}/{viewerKind}/{viewerName}/metrics/ingest/{appLayerId}/{allowedMetric}")
+<div class="member-signature"><span class="annotations">@PutMapping(path="${tailormap-api.base-path}/{viewerKind}/{viewerName}/metrics/ingest/{appLayerIds}/{allowedMetric}")
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.http.ResponseEntity&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>&gt;</span>&nbsp;<span class="element-name">ingestMetric</span><wbr><span class="parameters">(@ModelAttribute
  <a href="../persistence/Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;app,
  @ModelAttribute
  <a href="../viewer/model/ViewerResponse.KindEnum.html" title="enum class in org.tailormap.api.viewer.model">ViewerResponse.KindEnum</a>&nbsp;viewerKind,
- @ModelAttribute
- <a href="../persistence/json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;appTreeLayerNode,
+ @PathVariable
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;appLayerIds,
  @PathVariable
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;allowedMetric)</span></div>
+<div class="block">Ingests a metric for the given application layers and viewer kind.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>app</code> - the application</dd>
+<dd><code>viewerKind</code> - the kind of viewer</dd>
+<dd><code>appLayerIds</code> - the application layer IDs to ingest the metric for</dd>
+<dd><code>allowedMetric</code> - the metric to ingest</dd>
+<dt>Returns:</dt>
+<dd>a ResponseEntity with status 204 No Content if successful, or 400 Bad Request if the metric is not
+     allowed</dd>
+</dl>
 </section>
 </li>
 </ul>

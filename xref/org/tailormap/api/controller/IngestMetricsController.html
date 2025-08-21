@@ -14,22 +14,22 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <strong class="jxr_keyword">package</strong> org.tailormap.api.controller;
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> io.micrometer.core.instrument.Metrics;
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> java.io.Serializable;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.util.Locale;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.HttpStatus;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.ResponseEntity;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.springframework.validation.annotation.Validated;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.ModelAttribute;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.PathVariable;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.PutMapping;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.annotation.AppRestController;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Application;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.json.AppTreeLayerNode;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> io.swagger.v3.oas.annotations.Operation;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.io.Serializable;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.lang.invoke.MethodHandles;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> java.util.Locale;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.slf4j.Logger;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.slf4j.LoggerFactory;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.springframework.beans.factory.annotation.Value;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.HttpStatus;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.springframework.http.ResponseEntity;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.springframework.validation.annotation.Validated;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.ModelAttribute;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.PathVariable;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.springframework.web.bind.annotation.PutMapping;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.annotation.AppRestController;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Application;
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.prometheus.TagNames;
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.viewer.model.ViewerResponse;
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  
@@ -42,48 +42,74 @@
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>    @Value(<span class="jxr_string">"${tailormap-api.allowed-metrics}"</span>)
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>    <strong class="jxr_keyword">private</strong> Set&lt;String&gt; allowedMetrics;
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>    @PutMapping(
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>        path = <span class="jxr_string">"${tailormap-api.base-path}/{viewerKind}/{viewerName}/metrics/ingest/{appLayerId}/{allowedMetric}"</span>)
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Serializable&gt; ingestMetric(
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>        @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app,
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>        @ModelAttribute ViewerResponse.KindEnum viewerKind,
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>        @ModelAttribute AppTreeLayerNode appTreeLayerNode,
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>        @PathVariable String allowedMetric) {
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>      <strong class="jxr_keyword">if</strong> (!allowedMetrics.contains(allowedMetric)) {
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>        logger.warn(<span class="jxr_string">"Invalid metric: {}, not in allowed metrics: {}"</span>, allowedMetric, allowedMetrics);
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>        <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ResponseEntity&lt;&gt;(HttpStatus.BAD_REQUEST);
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>      }
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>      logger.debug(
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>          <span class="jxr_string">"Ingesting metric: {}, appId={}, viewerKind={}, appLayerId={} to be published through the actuator endpoint"</span>,
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>          allowedMetric,
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>          app.getId(),
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          viewerKind,
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>          appTreeLayerNode.getId());
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      <em class="jxr_comment">// count/increment the number of times this layer has been switched on for this viewer</em>
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>      Metrics.counter(
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>              allowedMetric,
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>              METRICS_APP_ID_TAG,
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>              app.getId().toString(),
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>              METRICS_APP_TYPE_TAG,
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>              viewerKind.name().toLowerCase(Locale.getDefault()),
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>              METRICS_APP_NAME_TAG,
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>              app.getName(),
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>              METRICS_APP_LAYER_ID_TAG,
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>              appTreeLayerNode.getId()
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>              <em class="jxr_comment">// we don't add the appLayerName here, as in many cases you want the allLayerTitle, but that</em>
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>              <em class="jxr_comment">// requires an extra lookup in the appLayerSettings when publishing the metric and does not take</em>
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>              <em class="jxr_comment">// renaming into account, that can better be done when rendering the metrics</em>
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>              )
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          .increment();
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>      <em class="jxr_comment">// Return a 204 No Content response, to indicate that the request was successful but there is no content to</em>
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>      <em class="jxr_comment">// return.</em>
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>      <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>    }
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>  }
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">   * Ingests a metric for the given application layers and viewer kind.</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment">   * @param app the application</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">   * @param viewerKind the kind of viewer</em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">   * @param appLayerIds the application layer IDs to ingest the metric for</em>
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment">   * @param allowedMetric the metric to ingest</em>
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">   * @return a ResponseEntity with status 204 No Content if successful, or 400 Bad Request if the metric is not</em>
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment">   *     allowed</em>
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>    @Operation(
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>        summary = <span class="jxr_string">"Ingest a metric for the given application layer(s)"</span>,
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>        description =
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>            <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  Ingests a metric <strong class="jxr_keyword">for</strong> the given application layer(s), the metric will be published through the actuator endpoint as
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  a Micrometer counter. All application layers in the appLayerIds that are part of the application will be processed.
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  The metric must be one of the allowed metrics defined in the application configuration.<span class="jxr_string">""</span><span class="jxr_string">")
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>    @PutMapping(
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>        path = <span class="jxr_string">"${tailormap-api.base-path}/{viewerKind}/{viewerName}/metrics/ingest/{appLayerIds}/{allowedMetric}"</span>)
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>    <strong class="jxr_keyword">public</strong> ResponseEntity&lt;Serializable&gt; ingestMetric(
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>        @ModelAttribute <a name="Application" href="../../../../org/tailormap/api/persistence/Application.html#Application">Application</a> app,
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>        @ModelAttribute ViewerResponse.KindEnum viewerKind,
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>        @PathVariable Set&lt;String&gt; appLayerIds,
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>        @PathVariable String allowedMetric) {
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">if</strong> (!allowedMetrics.contains(allowedMetric)) {
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>        logger.warn(<span class="jxr_string">"Invalid metric: {}, not in allowed metrics: {}"</span>, allowedMetric, allowedMetrics);
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>        <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ResponseEntity&lt;&gt;(HttpStatus.BAD_REQUEST);
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      }
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">if</strong> (appLayerIds.isEmpty()) {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>        <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ResponseEntity&lt;&gt;(HttpStatus.BAD_REQUEST);
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      }
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>      logger.trace(<span class="jxr_string">"Ingesting metric for {} layer(s)"</span>, appLayerIds);
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      <em class="jxr_comment">// Validate that the given application layers in appLayerIds are actually part of this application</em>
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      app.getAllAppTreeLayerNode()
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          .filter(appTreeLayerNode -&gt; appLayerIds.contains(appTreeLayerNode.getId()))
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          <em class="jxr_comment">// for each valid appLayer publish metrics</em>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>          .forEach(appTreeLayerNode -&gt; {
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>            logger.debug(
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>                <span class="jxr_string">"Ingesting metric: {}, appId={}, viewerKind={}, appLayerId={} to be published through the actuator endpoint"</span>,
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>                allowedMetric,
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>                app.getId(),
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>                viewerKind,
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>                appTreeLayerNode.getId());
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>            <em class="jxr_comment">// count/increment the number of times this layer has been switched on for this viewer</em>
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>            Metrics.counter(
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>                    allowedMetric,
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>                    METRICS_APP_ID_TAG,
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>                    app.getId().toString(),
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>                    METRICS_APP_TYPE_TAG,
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>                    viewerKind.name().toLowerCase(Locale.getDefault()),
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>                    METRICS_APP_NAME_TAG,
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>                    app.getName(),
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>                    METRICS_APP_LAYER_ID_TAG,
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>                    appTreeLayerNode.getId())
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>                <em class="jxr_comment">// we don't add the appLayerName here, as in many cases you want the allLayerTitle, but that</em>
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>                <em class="jxr_comment">// requires an extra lookup in the appLayerSettings when publishing the metric and does not</em>
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>                <em class="jxr_comment">// take</em>
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>                <em class="jxr_comment">// renaming into account, that can better be done when rendering the metrics</em>
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>                .increment();
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>          });
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>     <em class="jxr_comment">// Return a 204 No Content response, to indicate that the request was successful but there is no content to</em>
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>     <em class="jxr_comment">// return.</em>
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     <strong class="jxr_keyword">return</strong> ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>   }
+<a class="jxr_linenumber" name="L104" href="#L104">104</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
