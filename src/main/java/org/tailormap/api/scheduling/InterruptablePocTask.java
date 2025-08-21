@@ -78,9 +78,9 @@ public class InterruptablePocTask extends QuartzJobBean implements Task, Interru
           logger.debug("Interruptable POC task interrupted at {}%", Instant.now());
           jobDataMap.put(
               Task.LAST_RESULT_KEY,
-              "Interruptable POC task interrupted after %d%% iterations".formatted(i));
+              "Interruptable POC task interrupted after %d iterations".formatted(i));
           jobDataMap.put(EXECUTION_FINISHED_KEY, null);
-          context.setResult("Interruptable POC task interrupted after %d%% iterations".formatted(i));
+          context.setResult("Interruptable POC task interrupted after %d iterations".formatted(i));
           // bail out after interruption
           return;
         }

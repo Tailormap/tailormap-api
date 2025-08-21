@@ -15,4 +15,9 @@ public interface TagNames {
   String METRICS_APP_TYPE_TAG = "appType";
   String METRICS_APP_ID_TAG = "appId";
   String METRICS_APP_LAYER_ID_TAG = "appLayerId";
+  String METRICS_APP_LAYER_NAME_TAG = "appLayerName";
+  String METRICS_APP_LAYER_TITLE_TAG = "appLayerTitle";
+
+  String APP_ID_REPLACE_TOKEN = "#APP_ID#";
+  String NUMBER_OF_DAYS_REPLACE_TOKEN = "#NUMBER_OF_DAYS#";
 }

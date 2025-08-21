@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.jupiter.api.Assumptions.assumingThat;
 import static org.tailormap.api.prometheus.TagNames.METRICS_APP_ID_TAG;
+import static org.tailormap.api.prometheus.TagNames.NUMBER_OF_DAYS_REPLACE_TOKEN;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,17 +49,17 @@ public class PrometheusIntegrationTest {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Value("${tailormap-api.prometheus-api-url:http://localhost:9090/api/v1}")
+  @Value("${tailormap-api.prometheus-api-url}")
   private String prometheusUrl;
 
-  // The number of applications we expect to have metrics for, CI setup has 1 app
-  private final int countedApps = 1;
-  // get the total count over the last 90 days
-  final String totalsQuery = "floor(increase(tailormap_app_request_total[90d]))";
+  // The number of applications we expect to have metrics for, CI setup has 2 apps
+  private final int countedApps = 2;
 
-  // get the last update within the last 90 days
-  final String counterLastUpdatedQuery =
-      "floor(time()-max_over_time(timestamp(changes(tailormap_app_request_total[5m])>0)[90d:1m]))";
+  @Value("${tailormap-api.prometheus-api-appmetrics-totals}")
+  private String totalsQuery;
+
+  @Value("${tailormap-api.prometheus-api-appmetrics-updated}")
+  private String counterLastUpdatedQuery;
 
   @BeforeAll
   static void checkIfPrometheusIsUpOnLocalhost() {
@@ -72,8 +73,10 @@ public class PrometheusIntegrationTest {
   @Tag("prometheus-service-testcase")
   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
   void prometheusAppCountersOver90days() throws Exception {
-    ResponseEntity<String> response =
-        new RestTemplate().getForEntity(prometheusUrl + "/query?query=" + totalsQuery, String.class);
+    ResponseEntity<String> response = new RestTemplate()
+        .getForEntity(
+            prometheusUrl + "/query?query=" + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90"),
+            String.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(
@@ -101,7 +104,10 @@ public class PrometheusIntegrationTest {
   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
   void prometheusAppCountersLastUpdated() throws Exception {
     ResponseEntity<String> response = new RestTemplate()
-        .getForEntity(prometheusUrl + "/query?query=" + counterLastUpdatedQuery, String.class);
+        .getForEntity(
+            prometheusUrl + "/query?query="
+                + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90"),
+            String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(
         "application/json",
@@ -131,10 +137,10 @@ public class PrometheusIntegrationTest {
   @Tag("prometheus-service-testcase")
   @RetryingTest(maxAttempts = 3, suspendForMs = 5000)
   void prometheusAppCountersCombinedWithOr() throws Exception {
-    final String completeQuery =
-        "label_replace(" + totalsQuery + ", \"type\", \"totalCount\", \"__name__\", \".*\")"
-            + " or label_replace(" + counterLastUpdatedQuery
-            + ", \"type\", \"lastUpdateSecondsAgo\", \"__name__\", \".*\")";
+    final String completeQuery = "label_replace(" + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
+        + ", \"type\", \"totalCount\", \"__name__\", \".*\")"
+        + " or label_replace(" + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
+        + ", \"type\", \"lastUpdateSecondsAgo\", \"__name__\", \".*\")";
     logger.debug("Complete query: {}", completeQuery);
 
     ResponseEntity<String> response =
@@ -163,7 +169,8 @@ public class PrometheusIntegrationTest {
             prometheusUrl + "/query?query=" +
                 // we need to relabel so we can merge the results later
                 "label_replace("
-                + totalsQuery + ", \"type\", \"totalCount\", \"__name__\", \".*\")",
+                + totalsQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
+                + ", \"type\", \"totalCount\", \"__name__\", \".*\")",
             String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -172,7 +179,7 @@ public class PrometheusIntegrationTest {
             prometheusUrl + "/query?query=" +
                 // we need to relabel so we can merge the results later
                 "label_replace("
-                + counterLastUpdatedQuery
+                + counterLastUpdatedQuery.replace(NUMBER_OF_DAYS_REPLACE_TOKEN, "90")
                 + ", \"type\", \"lastUpdateSecondsAgo\", \"__name__\", \".*\")",
             String.class);
     assertEquals(HttpStatus.OK, response2.getStatusCode());
@@ -198,24 +205,15 @@ public class PrometheusIntegrationTest {
                     metricsNode
                         .get(PrometheusResultProcessor.METRICS_APP_NAME_TAG)
                         .asText())));
-        //        assumingThat(
-        //            "2".equals(appId),
-        //            () -> assertAll(
-        //                "Snapshot Geoserver Metrics",
-        //                () -> assertEquals(
-        //                    "snapshot-geoserver",
-        //                    metricsNode
-        //                        .get(PrometheusResultProcessor.METRICS_APP_NAME_TAG)
-        //                        .asText())));
-        //        assumingThat(
-        //            "5".equals(appId),
-        //            () -> assertAll(
-        //                "Austria App Metrics",
-        //                () -> assertEquals(
-        //                    "austria",
-        //                    metricsNode
-        //                        .get(PrometheusResultProcessor.METRICS_APP_NAME_TAG)
-        //                        .asText())));
+        assumingThat(
+            "5".equals(appId),
+            () -> assertAll(
+                "Austria App Metrics",
+                () -> assertEquals(
+                    "austria",
+                    metricsNode
+                        .get(PrometheusResultProcessor.METRICS_APP_NAME_TAG)
+                        .asText())));
 
         assertAll(
             () -> assertThat(metricsNode.get("totalCount").asInt(), is(greaterThan(0))),

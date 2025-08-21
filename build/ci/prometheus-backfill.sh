@@ -32,6 +32,7 @@ EOF
 
 # Generate app request metrics
 generate_metrics "tailormap_app_request_total" 'appId="1",appName="default",appType="app",application="tailormap-api",hostname="localhost"'
+generate_metrics "tailormap_app_request_total" 'appId="5",appName="austria",appType="app",application="tailormap-api",hostname="localhost"'
 
 cat << EOF
 # HELP tailormap_applayer_switched_on_total Generated test data for tailormap_applayer_switched_on_total
@@ -40,5 +41,12 @@ EOF
 
 # Generate app layer switched-on metrics
 generate_metrics "tailormap_applayer_switched_on_total" 'appId="1",appLayerId="lyr:snapshot-geoserver:postgis:begroeidterreindeel",appName="default",appType="app",application="tailormap-api",hostname="localhost"'
+generate_metrics "tailormap_applayer_switched_on_total" 'appId="1",appLayerId="lyr:snapshot-geoserver:postgis:kadastraal_perceel",appName="default",appType="app",application="tailormap-api",hostname="localhost"'
+generate_metrics "tailormap_applayer_switched_on_total" 'appId="1",appLayerId="lyr:snapshot-geoserver:postgis:bak",appName="default",appType="app",application="tailormap-api",hostname="localhost"'
+generate_metrics "tailormap_applayer_switched_on_total" 'appId="1",appLayerId="lyr:openbasiskaart:osm",appName="default",appType="app",application="tailormap-api",hostname="localhost"'
+generate_metrics "tailormap_applayer_switched_on_total" 'appId="5",appLayerId="lyr:at-basemap:geolandbasemap",appName="austria",appType="app",application="tailormap-api",hostname="localhost"'
+generate_metrics "tailormap_applayer_switched_on_total" 'appId="5",appLayerId="lyr:at-basemap:orthofoto_2",appName="austria",appType="app",application="tailormap-api",hostname="localhost"'
+generate_metrics "tailormap_applayer_switched_on_total" 'appId="5",appLayerId="lyr:osm:xyz",appName="austria",appType="app",application="tailormap-api",hostname="localhost"'
+
 
 echo "# EOF"
