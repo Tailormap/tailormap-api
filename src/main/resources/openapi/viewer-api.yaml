@@ -1534,7 +1534,7 @@ paths:
           description: 'Deleted'
 
 
-  /{viewerKind}/{viewerName}/metrics/ingest/{appLayerId}/{allowedMetric}:
+  /{viewerKind}/{viewerName}/metrics/ingest/{appLayerIds}/{allowedMetric}:
     summary: 'Use this endpoint to ingest a "layer switched on" metric.'
     parameters:
       - in: path
@@ -1551,10 +1551,14 @@ paths:
         schema:
           type: string
       - in: path
-        name: appLayerId
+        name: appLayerIds
+        description: 'The app layer Ids to ingest the metric for, comma separated.'
         required: true
         schema:
-          type: string
+          type: array
+          items:
+            type: string
+            example: ['layer1', 'layer2']
       - in: path
         name: allowedMetric
         description: 'The metric to ingest, must be one of the allowed metrics as configured for the instance.'
