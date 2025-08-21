@@ -15,8 +15,10 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,15 +33,21 @@ import org.tailormap.api.prometheus.PrometheusResultProcessor;
 import org.tailormap.api.prometheus.PrometheusService;
 import org.tailormap.api.prometheus.TagNames;
 import org.tailormap.api.repository.ApplicationRepository;
+import org.tailormap.api.scheduling.PrometheusPingTask;
+import org.tailormap.api.scheduling.TMJobDataMap;
+import org.tailormap.api.scheduling.Task;
+import org.tailormap.api.scheduling.TaskManagerService;
+import org.tailormap.api.scheduling.TaskType;
 import org.tailormap.api.viewer.model.ErrorResponse;
 
 @RestController
-public class PrometheusDataController implements TagNames {
+public class PrometheusDataController implements TagNames, InitializingBean {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final PrometheusService prometheusService;
   private final PrometheusResultProcessor prometheusResultProcessor;
   private final ApplicationRepository applicationRepository;
+  private final TaskManagerService taskManagerService;
 
   @Value("${tailormap-api.prometheus-api-appmetrics-totals}")
   private String totalsQuery;
@@ -53,13 +61,44 @@ public class PrometheusDataController implements TagNames {
   @Value("${tailormap-api.prometheus-api-appmetrics-layer-switched-on-updated}")
   private String appLayersSwitchedOnLastUpdatedQuery;
 
+  @Value("${tailormap-api.prometheus-api-ping-cron:0 0/5 * 1/1 * ? *}")
+  private String prometheusPingCron;
+
   public PrometheusDataController(
       PrometheusService prometheusService,
       PrometheusResultProcessor prometheusResultProcessor,
-      ApplicationRepository applicationRepository) {
+      ApplicationRepository applicationRepository,
+      TaskManagerService taskManagerService) {
     this.prometheusService = prometheusService;
     this.prometheusResultProcessor = prometheusResultProcessor;
     this.applicationRepository = applicationRepository;
+    this.taskManagerService = taskManagerService;
+  }
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    if (prometheusService.isPrometheusAvailable()) {
+      logger.info("Prometheus is available, initializing PrometheusDataController.");
+      try {
+        // there should be only one Prometheus ping task, so we delete any existing ones
+        taskManagerService.deleteTasksByGroupName(TaskType.PROMETHEUS_PING.getValue());
+        final UUID taskUuid = taskManagerService.createTask(
+            PrometheusPingTask.class,
+            new TMJobDataMap(Map.of(
+                Task.TYPE_KEY,
+                TaskType.PROMETHEUS_PING.getValue(),
+                Task.DESCRIPTION_KEY,
+                "Ping Prometheus service for availability.",
+                Task.PRIORITY_KEY,
+                57)),
+            prometheusPingCron);
+        logger.debug("Added Prometheus ping task with UUID: {}", taskUuid);
+      } catch (Exception e) {
+        logger.error("Error initializing Prometheus ping task", e);
+      }
+    } else {
+      logger.warn("Prometheus is not available, /graph/ endpoint will not be functional.");
+    }
   }
 
   @ExceptionHandler({ResponseStatusException.class})
@@ -98,6 +137,9 @@ public class PrometheusDataController implements TagNames {
   public ResponseEntity<?> getApplicationGraphicData(@RequestParam(defaultValue = "30") int numberOfDays) {
     if (numberOfDays < 1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid number of days provided.");
+    }
+    if (!prometheusService.isPrometheusAvailable()) {
+      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Prometheus is not available.");
     }
     // we need to (at least) relabel the "__name__" query result type to avoid conflicts and omissions in the
     // flattened results
@@ -152,6 +194,9 @@ public class PrometheusDataController implements TagNames {
           HttpStatus.BAD_REQUEST, "Invalid application id or number of days provided.");
       // not a problem to have an applicationId that does not exist, as the Prometheus query will
       // return an empty result set
+    }
+    if (!prometheusService.isPrometheusAvailable()) {
+      throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Prometheus is not available.");
     }
     // relabel the "__name__" query result type to avoid conflicts and omissions in the flattened results and
     // replace the APP_ID_REPLACE_TOKEN with the actual applicationId and NUMBER_OF_DAYS_REPLACE_TOKEN

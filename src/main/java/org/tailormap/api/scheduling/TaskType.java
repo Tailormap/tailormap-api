@@ -9,7 +9,9 @@ public enum TaskType {
   POC("poc"),
   INTERRUPTABLEPOC("interruptablepoc"),
   FAILINGPOC("failingpoc"),
-  INDEX("index");
+  INDEX("index"),
+  PROMETHEUS_PING("prometheus_ping"),
+  ;
 
   private final String value;
 
