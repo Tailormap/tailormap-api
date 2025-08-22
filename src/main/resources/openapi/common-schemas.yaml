@@ -389,6 +389,10 @@ components:
                   default: true
                 alias:
                   type: string
+                substringFilter:
+                  description: 'Use this value as a substring filter'
+                  type: boolean
+                  default: false
 
     SwitchFilterConfiguration:
       title: BooleanFilterConfiguration
