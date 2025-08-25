@@ -51,11 +51,17 @@ do
     _WAIT=$(($_WAIT+10))
 done
 
-printf "\nPostGIS logs:\n"
-docker logs -t postgis
+#printf "\nPostGIS logs:\n"
+#docker logs -t postgis
+#
+#printf "\nOracle logs:\n"
+#docker logs -t oracle
+#
+#printf "\nSQL Server logs:\n"
+#docker logs -t sqlserver
 
-printf "\nOracle logs:\n"
-docker logs -t oracle
-
-printf "\nSQL Server logs:\n"
-docker logs -t sqlserver
+# backfill Prometheus test data
+echo "Backfilling Prometheus test data..."
+$(dirname "$0")/prometheus-backfill.sh > /tmp/prometheus-backfill.log
+docker compose -f ./build/ci/docker-compose.yml cp /tmp/prometheus-backfill.log prometheus:/prometheus/prometheus-backfill.log
+docker compose -f ./build/ci/docker-compose.yml exec -T prometheus promtool tsdb create-blocks-from openmetrics /prometheus/prometheus-backfill.log

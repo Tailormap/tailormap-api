@@ -164,4 +164,19 @@ public class TaskManagerService {
         .findFirst()
         .orElse(null);
   }
+
+  /**
+   * Delete all tasks in a specific group.
+   *
+   * @param groupName the name of the group to delete tasks from
+   * @throws SchedulerException if the scheduler cannot be reached or if there is an error deleting the tasks
+   */
+  public void deleteTasksByGroupName(String groupName) throws SchedulerException {
+    logger.debug("Deleting tasks in group: {}", groupName);
+    Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.groupEquals(groupName));
+    for (JobKey jobKey : jobKeys) {
+      logger.info("Deleting task: {}", jobKey);
+      scheduler.deleteJob(jobKey);
+    }
+  }
 }

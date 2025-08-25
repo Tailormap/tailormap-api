@@ -70,29 +70,33 @@ class TaskAdminControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.tasks").isArray())
-        .andExpect(jsonPath("$.tasks.length()").value(6))
+        .andExpect(jsonPath("$.tasks.length()").value(7))
         // value is either 'poc' or 'index'
         .andExpect(jsonPath("$.tasks[0].type")
             .value(anyOf(
                 is(TaskType.INDEX.getValue()),
+                is(TaskType.PROMETHEUS_PING.getValue()),
                 is(TaskType.POC.getValue()),
                 is(TaskType.FAILINGPOC.getValue()),
                 is(TaskType.INTERRUPTABLEPOC.getValue()))))
         .andExpect(jsonPath("$.tasks[1].type")
             .value(anyOf(
                 is(TaskType.INDEX.getValue()),
+                is(TaskType.PROMETHEUS_PING.getValue()),
                 is(TaskType.POC.getValue()),
                 is(TaskType.FAILINGPOC.getValue()),
                 is(TaskType.INTERRUPTABLEPOC.getValue()))))
         .andExpect(jsonPath("$.tasks[2].type")
             .value(anyOf(
                 is(TaskType.INDEX.getValue()),
+                is(TaskType.PROMETHEUS_PING.getValue()),
                 is(TaskType.POC.getValue()),
                 is(TaskType.FAILINGPOC.getValue()),
                 is(TaskType.INTERRUPTABLEPOC.getValue()))))
         .andExpect(jsonPath("$.tasks[3].type")
             .value(anyOf(
                 is(TaskType.INDEX.getValue()),
+                is(TaskType.PROMETHEUS_PING.getValue()),
                 is(TaskType.POC.getValue()),
                 is(TaskType.FAILINGPOC.getValue()),
                 is(TaskType.INTERRUPTABLEPOC.getValue()))))
