@@ -389,8 +389,8 @@ components:
                   default: true
                 alias:
                   type: string
-                substringFilter:
-                  description: 'Use this value as a substring filter'
+                useAsLikeSubstringFilter:
+                  description: 'Use this value as a separate substring filter using the LIKE condition'
                   type: boolean
                   default: false
 
