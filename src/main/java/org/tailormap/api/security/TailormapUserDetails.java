@@ -5,30 +5,36 @@
  */
 package org.tailormap.api.security;
 
+import java.io.Serial;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.tailormap.api.persistence.Group;
 import org.tailormap.api.persistence.User;
-import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 
 public class TailormapUserDetails implements UserDetails {
+  @Serial
+  private static final long serialVersionUID = 1L;
 
-  private final User user;
+  private final Collection<GrantedAuthority> authorities;
+  private final String username;
+  private final String password;
+  private final ZonedDateTime validUntil;
+  private final boolean enabled;
+
+  private final List<Map.Entry<String, Object>> additionalProperties = new ArrayList<>();
 
   public TailormapUserDetails(User user) {
-    this.user = user;
-  }
-
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    Collection<GrantedAuthority> authorities = new HashSet<>();
+    authorities = new HashSet<>();
     user.getGroups().stream()
         .map(Group::getName)
         .map(SimpleGrantedAuthority::new)
@@ -39,30 +45,42 @@ public class TailormapUserDetails implements UserDetails {
         .filter(StringUtils::isNotBlank)
         .map(SimpleGrantedAuthority::new)
         .forEach(authorities::add);
+
+    username = user.getUsername();
+    password = user.getPassword();
+    validUntil = user.getValidUntil();
+    enabled = user.isEnabled();
+    user.getAdditionalProperties().stream()
+        .map(p -> new AbstractMap.SimpleImmutableEntry<>(p.getKey(), p.getValue()))
+        .forEach(additionalProperties::add);
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
     return authorities;
   }
 
   @Override
   public String getPassword() {
-    return user.getPassword();
+    return password;
   }
 
   @Override
   public String getUsername() {
-    return user.getUsername();
+    return username;
   }
 
   @Override
   public boolean isAccountNonExpired() {
-    return user.getValidUntil() == null || user.getValidUntil().isAfter(ZonedDateTime.now(ZoneId.systemDefault()));
+    return validUntil == null || validUntil.isAfter(ZonedDateTime.now(ZoneId.systemDefault()));
   }
 
   @Override
   public boolean isEnabled() {
-    return user.isEnabled();
+    return enabled;
   }
 
-  public List<AdminAdditionalProperty> getAdditionalProperties() {
-    return user.getAdditionalProperties();
+  public List<Map.Entry<String, Object>> getAdditionalProperties() {
+    return additionalProperties;
   }
 }
