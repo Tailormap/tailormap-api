@@ -389,7 +389,7 @@ components:
                   default: true
                 alias:
                   type: string
-                useAsLikeSubstringFilter:
+                useAsIlikeSubstringFilter:
                   description: 'Use this value as a separate substring filter using the ILIKE condition'
                   type: boolean
                   default: false
