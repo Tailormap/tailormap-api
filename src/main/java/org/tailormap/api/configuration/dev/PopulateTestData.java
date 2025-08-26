@@ -1811,7 +1811,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .cronExpression("0 0 0/1 1/1 * ? *")
                 // /* 15 min */
                 // .cronExpression("0 0/15 * 1/1 * ? *")
-                .description("Update Solr index \" " + name + "\" every hour"));
+                .description("Update Solr index \"" + name + "\" every hour"));
             try {
               final UUID uuid = taskManagerService.createTask(
                   IndexTask.class,
