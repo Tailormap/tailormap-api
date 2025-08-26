@@ -66,11 +66,13 @@ class ActuatorSecurityConfigurationIntegrationTest {
         .andExpect(content().json("{\"status\":\"UP\"}"));
   }
 
+  @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
   private static final RequestPostProcessor internetRequest = (MockHttpServletRequest request) -> {
     request.setRemoteAddr("8.8.8.8");
     return request;
   };
 
+  @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
   private static final RequestPostProcessor localNetworkRequest = (MockHttpServletRequest request) -> {
     request.setRemoteAddr("172.1.1.1");
     return request;
