@@ -1384,6 +1384,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>com.jayway.jsonpath</exclude>
                                         <exclude>org.junit.jupiter:junit-jupiter-api</exclude>
                                         <exclude>org.junit.jupiter:junit-jupiter-params</exclude>
+                                        <exclude>org.springframework.session:spring-session-jdbc</exclude>
                                     </excludes>
                                 </banTransitiveDependencies>
                             </rules>
