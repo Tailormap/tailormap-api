@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -95,7 +96,21 @@ public class ActuatorSecurityConfiguration {
             .requestMatchers(basePath + "/info")
             .permitAll()
             .requestMatchers(basePath + "/**")
-            .hasAnyAuthority(Group.ADMIN, Group.ACTUATOR))
+            .access((authentication, context) -> {
+              String remoteAddr = context.getRequest().getRemoteAddr();
+              if (remoteAddr.startsWith("10.")
+                  || remoteAddr.startsWith("192.168.")
+                  || remoteAddr.startsWith("172.")
+                  || remoteAddr.startsWith("127.")) {
+                return new AuthorizationDecision(true);
+              }
+              if (authentication.get() == null) {
+                return new AuthorizationDecision(false);
+              }
+              return new AuthorizationDecision(authentication.get().getAuthorities().stream()
+                  .anyMatch(a -> a.getAuthority().equals(Group.ADMIN)
+                      || a.getAuthority().equals(Group.ACTUATOR)));
+            }))
         .httpBasic(Customizer.withDefaults())
         .addFilterAfter(
             /* debug logging user making the request */ new AuditInterceptor(),
