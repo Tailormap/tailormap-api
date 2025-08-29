@@ -28,7 +28,7 @@ import org.tailormap.api.annotation.PostgresIntegrationTest;
 @Stopwatch
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisableIfTestFails
-@Order(Integer.MAX_VALUE)
+@Order(Integer.MAX_VALUE - 1)
 class PrometheusServiceIntegrationTest {
   @Autowired
   private PrometheusService prometheusService;
@@ -107,7 +107,6 @@ label_replace(floor(time()-max_over_time(timestamp(changes(tailormap_app_request
     final String delete = "scrape_samples_scraped";
     try {
       prometheusService.deleteMetric(delete);
-
     } catch (Exception e) {
       fail("Delete failed: " + e.getMessage());
     }
