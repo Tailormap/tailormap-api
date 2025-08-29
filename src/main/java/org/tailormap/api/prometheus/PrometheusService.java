@@ -16,7 +16,6 @@ import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -74,7 +73,7 @@ public class PrometheusService {
         .queryParam("query", promQuery)
         .build()
         .toUri();
-    logger.debug("Executing Prometheus query: {}", promUrl);
+    logger.trace("Executing Prometheus query (GET): {}", promUrl);
     try {
       response = restTemplate.getForEntity(promUrl, String.class);
       if (response.getStatusCode() != HttpStatus.OK) {
@@ -87,7 +86,7 @@ public class PrometheusService {
     }
 
     final JsonNode jsonResponse = new ObjectMapper().readTree(response.getBody());
-    logger.debug("Prometheus query response: {}", jsonResponse.toPrettyString());
+    logger.trace("Prometheus query response: {}", jsonResponse.toPrettyString());
 
     if (!"success".equals(jsonResponse.path("status").asText())) {
       logger.error(
@@ -107,16 +106,11 @@ public class PrometheusService {
   public void deleteMetric(String... metricMatches) throws IOException {
     final URL url =
         new URL(prometheusUrl + "/admin/tsdb/delete_series?match[]=" + String.join("&match[]=", metricMatches));
-
-    logger.debug("Deleting metrics using: {}", url);
+    logger.trace("Deleting metrics using (PUT): {}", url);
     HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
     httpURLConnection.setRequestMethod("PUT");
 
     if (httpURLConnection.getResponseCode() != HttpStatus.NO_CONTENT.value()) {
-      logger.error(
-          "Failed to delete Prometheus metrics {}, status: {}",
-          String.join(", ", metricMatches),
-          httpURLConnection.getResponseCode());
       throw new IOException("Failed to delete Prometheus metric: " + httpURLConnection.getResponseCode());
     }
   }
@@ -127,17 +121,12 @@ public class PrometheusService {
    * @throws IOException if there is an error executing the delete query
    */
   public void cleanTombstones() throws IOException {
-    try {
-      ResponseEntity<String> response = restTemplate.exchange(
-          prometheusUrl + "/admin/tsdb/clean_tombstones", HttpMethod.PUT, null, String.class);
+    final URL url = new URL(prometheusUrl + "/admin/tsdb/clean_tombstones");
+    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+    httpURLConnection.setRequestMethod("PUT");
 
-      if (response.getStatusCode() != HttpStatus.NO_CONTENT) {
-        logger.error("Failed to cleanup Prometheus tombstones: {}", response.getStatusCode());
-        throw new IOException("Failed to cleanup Prometheus tombstones: " + response.getStatusCode());
-      }
-    } catch (RestClientException e) {
-      logger.error("Error cleaning up Prometheus tombstones: {}", e.getMessage());
-      throw new IOException("Error cleaning up Prometheus tombstones: " + e.getMessage(), e);
+    if (httpURLConnection.getResponseCode() != HttpStatus.NO_CONTENT.value()) {
+      throw new IOException("Failed to cleanup Prometheus tombstones: " + httpURLConnection.getResponseCode());
     }
   }
 }

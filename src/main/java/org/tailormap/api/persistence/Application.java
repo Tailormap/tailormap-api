@@ -89,6 +89,9 @@ public class Application {
   @Column(columnDefinition = "jsonb")
   @NotNull private AppContent contentRoot = new AppContent();
 
+  @JsonIgnore
+  private transient AppContent oldContentRoot;
+
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   @NotNull private AppSettings settings = new AppSettings();
@@ -192,8 +195,18 @@ public class Application {
   }
 
   public Application setContentRoot(AppContent contentRoot) {
+    this.oldContentRoot = this.contentRoot;
     this.contentRoot = contentRoot;
     return this;
+  }
+  /**
+   * This method is used to get the old content root before it is updated. It is used in the ApplicationEventHandler
+   * to compare the old and new content roots, more specifically to get the old AppTreeLayerNode nodes.
+   *
+   * @see #getAllOldAppTreeLayerNode()
+   */
+  public AppContent getOldContentRoot() {
+    return this.oldContentRoot;
   }
 
   public AppSettings getSettings() {
@@ -233,21 +246,30 @@ public class Application {
   }
 
   // </editor-fold>
+  @JsonIgnore
+  public Stream<AppTreeLayerNode> getAllOldAppTreeLayerNode() {
+    return this.getAppTreeLayerNodeStream(this.getOldContentRoot());
+  }
 
   @JsonIgnore
   public Stream<AppTreeLayerNode> getAllAppTreeLayerNode() {
-    if (this.getContentRoot() == null) {
+    return this.getAppTreeLayerNodeStream(this.getContentRoot());
+  }
+
+  @JsonIgnore
+  private Stream<AppTreeLayerNode> getAppTreeLayerNodeStream(AppContent contentRoot) {
+    if (contentRoot == null) {
       return Stream.empty();
     }
     Stream<AppTreeLayerNode> baseLayers = Stream.empty();
-    if (this.getContentRoot().getBaseLayerNodes() != null) {
-      baseLayers = this.getContentRoot().getBaseLayerNodes().stream()
+    if (contentRoot.getBaseLayerNodes() != null) {
+      baseLayers = contentRoot.getBaseLayerNodes().stream()
           .filter(n -> "AppTreeLayerNode".equals(n.getObjectType()))
           .map(n -> (AppTreeLayerNode) n);
     }
     Stream<AppTreeLayerNode> layers = Stream.empty();
-    if (this.getContentRoot().getLayerNodes() != null) {
-      layers = this.getContentRoot().getLayerNodes().stream()
+    if (contentRoot.getLayerNodes() != null) {
+      layers = contentRoot.getLayerNodes().stream()
           .filter(n -> "AppTreeLayerNode".equals(n.getObjectType()))
           .map(n -> (AppTreeLayerNode) n);
     }
