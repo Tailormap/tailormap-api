@@ -12,13 +12,16 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.core.annotation.HandleAfterDelete;
+import org.springframework.data.rest.core.annotation.HandleBeforeSave;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.stereotype.Component;
 import org.tailormap.api.persistence.Application;
+import org.tailormap.api.persistence.json.AppTreeLayerNode;
 import org.tailormap.api.prometheus.PrometheusService;
 
 @Component
@@ -43,7 +46,7 @@ public class ApplicationEventHandler {
    */
   @HandleAfterDelete
   public void afterDeleteApplicationEventHandler(Application application) {
-    logger.debug("Application '{}' (id: {}) was deleted.", application.getName(), application.getId());
+    logger.trace("Application '{}' (id: {}) was deleted.", application.getName(), application.getId());
     if (prometheusService.isPrometheusAvailable()) {
       // cleanup any metrics from Prometheus or other systems if needed
       ArrayList<String> metricsToDelete = new ArrayList<>();
@@ -60,10 +63,53 @@ public class ApplicationEventHandler {
             "Cleaning up all metrics for deleted application with id: {}, (name: '{}')",
             application.getId(),
             application.getName());
-        logger.debug("Deleting metrics matching: {}", metricsToDelete);
-        prometheusService.deleteMetric(metricsToDelete.toArray(new String[metricsToDelete.size()]));
+        prometheusService.deleteMetric(metricsToDelete.toArray(new String[0]));
       } catch (IOException e) {
         logger.error("Error cleaning up metrics for deleted application with id: {}", application.getId(), e);
+      }
+    }
+  }
+
+  @HandleBeforeSave
+  public void beforeSaveApplicationEventHandler(Application application) {
+    if (prometheusService.isPrometheusAvailable()) {
+      // cleanup any metrics from Prometheus if needed
+      Set<String> oldNodeIds = application
+          .getAllOldAppTreeLayerNode()
+          .map(AppTreeLayerNode::getId)
+          .collect(Collectors.toSet());
+
+      Set<String> updatedNodeIds = application
+          .getAllAppTreeLayerNode()
+          .map(AppTreeLayerNode::getId)
+          .collect(Collectors.toSet());
+
+      // Find old nodes in application that are not in the updated application (we don't care about new nodes)
+      Set<String> removedNodeIds = oldNodeIds.stream()
+          .filter(id -> !updatedNodeIds.contains(id))
+          .collect(Collectors.toSet());
+
+      if (!removedNodeIds.isEmpty()) {
+        ArrayList<String> metricsToDelete = new ArrayList<>();
+        for (String metricName : allowedMetrics) {
+          for (String nodeId : removedNodeIds) {
+            metricsToDelete.add(metricName + "_total{" + METRICS_APP_ID_TAG + "=\""
+                + application.getId().toString() + "\",appLayerId=\"" + nodeId + "\"}");
+          }
+        }
+        try {
+          logger.info(
+              "Cleaning up application layer metrics for application with id: {}, (name: '{}'), removed nodes: {}",
+              application.getId(),
+              application.getName(),
+              removedNodeIds);
+          prometheusService.deleteMetric(metricsToDelete.toArray(new String[0]));
+        } catch (IOException e) {
+          logger.error(
+              "Error cleaning up layer metrics for updated application with id: {}",
+              application.getId(),
+              e);
+        }
       }
     }
   }
