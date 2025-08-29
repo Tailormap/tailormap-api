@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.json.AppTreeLayerNode;
 import org.tailormap.api.prometheus.PrometheusService;
-import org.tailormap.api.repository.ApplicationRepository;
 
 @Component
 @RepositoryEventHandler
@@ -32,14 +31,12 @@ public class ApplicationEventHandler {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final PrometheusService prometheusService;
-  private final ApplicationRepository applicationRepository;
 
   @Value("${tailormap-api.allowed-metrics}")
   private Set<String> allowedMetrics;
 
-  public ApplicationEventHandler(PrometheusService prometheusService, ApplicationRepository applicationRepository) {
+  public ApplicationEventHandler(PrometheusService prometheusService) {
     this.prometheusService = prometheusService;
-    this.applicationRepository = applicationRepository;
   }
 
   /**
@@ -67,7 +64,7 @@ public class ApplicationEventHandler {
             application.getId(),
             application.getName());
         logger.debug("Deleting metrics matching: {}", metricsToDelete);
-        prometheusService.deleteMetric(metricsToDelete.toArray(new String[metricsToDelete.size()]));
+        prometheusService.deleteMetric(metricsToDelete.toArray(new String[0]));
       } catch (IOException e) {
         logger.error("Error cleaning up metrics for deleted application with id: {}", application.getId(), e);
       }
@@ -77,25 +74,23 @@ public class ApplicationEventHandler {
   @HandleBeforeSave
   public void beforeSaveApplicationEventHandler(Application application) {
     if (prometheusService.isPrometheusAvailable()) {
-      // get the old application from the database
-      Application oldApplication = applicationRepository.getReferenceById(application.getId());
-      logger.debug(
-          "Application '{}' (id: {}) about to be saved with version {}.",
-          oldApplication.getName(),
-          oldApplication.getId(),
-          oldApplication.getVersion());
+      Set<String> oldNodeIds = application
+          .getAllOldAppTreeLayerNode()
+          .map(AppTreeLayerNode::getId)
+          .collect(Collectors.toSet());
+      logger.debug("Old node IDs: {}", oldNodeIds);
 
+      // cleanup any metrics from Prometheus or other systems if needed
       // filter out appTreeLayerNode that are no longer present in the updated application
       // Get all AppTreeLayerNode IDs from the updated application
       Set<String> updatedNodeIds = application
           .getAllAppTreeLayerNode()
           .map(AppTreeLayerNode::getId)
           .collect(Collectors.toSet());
+      logger.debug("Updated node IDs: {}", updatedNodeIds);
 
-      // Find nodes in oldApplication that are not in the updated application
-      Set<String> removedNodeIds = oldApplication
-          .getAllAppTreeLayerNode()
-          .map(AppTreeLayerNode::getId)
+      // Find old nodes in application that are not in the updated application (we don't care about new nodes)
+      Set<String> removedNodeIds = oldNodeIds.stream()
           .filter(id -> !updatedNodeIds.contains(id))
           .collect(Collectors.toSet());
 
@@ -110,12 +105,12 @@ public class ApplicationEventHandler {
         }
         try {
           logger.info(
-              "Cleaning up metrics for updated application with id: {}, (name: '{}`), removed nodes: {}",
+              "Cleaning up application layer metrics for application with id: {}, (name: '{}`), removed nodes: {}",
               application.getId(),
               application.getName(),
               removedNodeIds);
-          logger.debug("Deleting metrics matching: {}", metricsToDelete);
-          prometheusService.deleteMetric(metricsToDelete.toArray(new String[metricsToDelete.size()]));
+          logger.debug("Deleting layer metrics matching: {}", metricsToDelete);
+          prometheusService.deleteMetric(metricsToDelete.toArray(new String[0]));
         } catch (IOException e) {
           logger.error(
               "Error cleaning up metrics for updated application with id: {}", application.getId(), e);

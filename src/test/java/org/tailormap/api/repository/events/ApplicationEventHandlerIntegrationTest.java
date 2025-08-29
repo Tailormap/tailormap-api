@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Collections;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.Group;
+import org.tailormap.api.persistence.json.AppContent;
 import org.tailormap.api.prometheus.PrometheusService;
 import org.tailormap.api.repository.ApplicationRepository;
 
@@ -64,7 +66,7 @@ class ApplicationEventHandlerIntegrationTest {
   @WithMockUser(
       username = "tm-admin",
       authorities = {Group.ADMIN})
-  void test() throws Exception {
+  void testApplicationDeleted() throws Exception {
     Application application = applicationRepository.findByName("default");
     assertEquals(1, application.getId(), "default application should have id 1");
     assertTrue(prometheusService.isPrometheusAvailable());
@@ -73,6 +75,30 @@ class ApplicationEventHandlerIntegrationTest {
     applicationEventHandler.afterDeleteApplicationEventHandler(application);
 
     mockMvc.perform(get(adminBasePath + "/graph/applications"))
+        .andExpect(status().isOk())
+        .andDo(print())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.applications").isArray())
+        .andExpect(jsonPath("$.applications[0].appId").value("5"));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "tm-admin",
+      authorities = {Group.ADMIN})
+  void testApplayerRemoved() throws Exception {
+    Application application = applicationRepository.findByName("default");
+    assertEquals(1, application.getId(), "default application should have id 1");
+    assertTrue(prometheusService.isPrometheusAvailable());
+
+    //        remove all app layers
+    AppContent appContent = application.getContentRoot();
+    appContent.setLayerNodes(Collections.emptyList());
+
+    // trigger the delete event handler
+    applicationEventHandler.beforeSaveApplicationEventHandler(application.setContentRoot(appContent));
+
+    mockMvc.perform(get(adminBasePath + "/graph/applayers/1"))
         .andExpect(status().isOk())
         .andDo(print())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
