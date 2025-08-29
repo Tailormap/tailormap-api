@@ -448,7 +448,7 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
               if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
                 // check if the user has either the `drawings-admin` or `drawings-read-all` property
                 // set
-                for (var ap : userDetails.getAdditionalProperties()) {
+                for (Map.Entry<String, Object> ap : userDetails.getAdditionalProperties()) {
                   if (ap.getKey().equals(KEY_DRAWINGS_ADMIN)
                       || ap.getKey().equals(KEY_DRAWINGS_READ_ALL)) {
                     if ("true".equals(ap.getValue().toString())) {
@@ -492,7 +492,7 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
             }
             if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
               // check if the user has the drawings-admin property set
-              for (var ap : userDetails.getAdditionalProperties()) {
+              for (Map.Entry<String, Object> ap : userDetails.getAdditionalProperties()) {
                 if (ap.getKey().equals(KEY_DRAWINGS_ADMIN)
                     && "true".equals(ap.getValue().toString())) {
                   yield true;
