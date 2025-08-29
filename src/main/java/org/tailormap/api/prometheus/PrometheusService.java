@@ -10,9 +10,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -101,25 +101,23 @@ public class PrometheusService {
   /**
    * Executes a Prometheus delete query.
    *
-   * @param metricName the Prometheus metric to be deleted
+   * @param metricMatches the Prometheus metric matches to be deleted
    * @throws IOException if there is an error executing the delete query
    */
-  public void deleteMetric(String metricName) throws IOException {
-    try {
-      ResponseEntity<String> response = restTemplate.exchange(
-          prometheusUrl + "/admin/tsdb/delete_series?match[]="
-              + URLEncoder.encode(metricName, StandardCharsets.UTF_8),
-          HttpMethod.PUT,
-          null,
-          String.class);
+  public void deleteMetric(String... metricMatches) throws IOException {
+    final URL url =
+        new URL(prometheusUrl + "/admin/tsdb/delete_series?match[]=" + String.join("&match[]=", metricMatches));
 
-      if (response.getStatusCode() != HttpStatus.NO_CONTENT) {
-        logger.error("Failed to delete Prometheus metric: {}", response.getStatusCode());
-        throw new IOException("Failed to delete Prometheus metric: " + response.getStatusCode());
-      }
-    } catch (RestClientException e) {
-      logger.error("Error deleting Prometheus metric: {}", e.getMessage());
-      throw new IOException("Error deleting Prometheus metric: " + e.getMessage(), e);
+    logger.debug("Deleting metrics using: {}", url);
+    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+    httpURLConnection.setRequestMethod("PUT");
+
+    if (httpURLConnection.getResponseCode() != HttpStatus.NO_CONTENT.value()) {
+      logger.error(
+          "Failed to delete Prometheus metrics {}, status: {}",
+          String.join(", ", metricMatches),
+          httpURLConnection.getResponseCode());
+      throw new IOException("Failed to delete Prometheus metric: " + httpURLConnection.getResponseCode());
     }
   }
 
