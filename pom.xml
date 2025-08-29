@@ -540,6 +540,10 @@ SPDX-License-Identifier: MIT
             <artifactId>spring-hateoas</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-jdbc</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>swagger-ui</artifactId>
             <version>${swagger-ui.version}</version>
@@ -1380,6 +1384,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>com.jayway.jsonpath</exclude>
                                         <exclude>org.junit.jupiter:junit-jupiter-api</exclude>
                                         <exclude>org.junit.jupiter:junit-jupiter-params</exclude>
+                                        <exclude>org.springframework.session:spring-session-jdbc</exclude>
                                     </excludes>
                                 </banTransitiveDependencies>
                             </rules>
