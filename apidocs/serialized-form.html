@@ -2586,14 +2586,38 @@ loadScripts(document, 'script');</script>
 <section class="serialized-class-details" id="org.tailormap.api.security.TailormapUserDetails">
 <h3>Class&nbsp;<a href="org/tailormap/api/security/TailormapUserDetails.html" title="class in org.tailormap.api.security">org.tailormap.api.security.TailormapUserDetails</a></h3>
 <div class="type-signature">class TailormapUserDetails extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
 <ul class="block-list">
 <li>
 <section class="detail">
 <h4>Serialized Fields</h4>
 <ul class="block-list">
 <li class="block-list">
-<h5>user</h5>
-<pre><a href="org/tailormap/api/persistence/User.html" title="class in org.tailormap.api.persistence">User</a> user</pre>
+<h5>additionalProperties</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.Entry.html" title="class or interface in java.util" class="external-link">Map.Entry</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;&gt; additionalProperties</pre>
+</li>
+<li class="block-list">
+<h5>authorities</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;org.springframework.security.core.GrantedAuthority&gt; authorities</pre>
+</li>
+<li class="block-list">
+<h5>enabled</h5>
+<pre>boolean enabled</pre>
+</li>
+<li class="block-list">
+<h5>password</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> password</pre>
+</li>
+<li class="block-list">
+<h5>username</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> username</pre>
+</li>
+<li class="block-list">
+<h5>validUntil</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/ZonedDateTime.html" title="class or interface in java.time" class="external-link">ZonedDateTime</a> validUntil</pre>
 </li>
 </ul>
 </section>
