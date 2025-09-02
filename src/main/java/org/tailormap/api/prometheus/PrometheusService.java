@@ -53,7 +53,7 @@ public class PrometheusService {
         return false;
       }
     } catch (Exception e) {
-      logger.warn("Error checking Prometheus availability", e);
+      logger.debug("Error checking Prometheus availability", e);
       return false;
     }
   }

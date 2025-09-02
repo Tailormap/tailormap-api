@@ -97,7 +97,7 @@ public class PrometheusDataController implements TagNames, InitializingBean {
         logger.error("Error initializing Prometheus ping task", e);
       }
     } else {
-      logger.warn("Prometheus is not available, /graph/ endpoint will not be functional.");
+      logger.info("Prometheus is not available, /graph/ endpoint will not be functional.");
     }
   }
 
