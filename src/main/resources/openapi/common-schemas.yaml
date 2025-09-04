@@ -365,6 +365,10 @@ components:
             - 'INPUT_FIELD'
             - 'SLIDER_AND_INPUT_FIELD'
           default: 'SLIDER'
+        stepSize:
+          description: 'the step size for the slider'
+          type: number
+          format: double
 
     CheckboxDropdownListFilterConfiguration:
       title: CheckboxDropdownListFilterConfiguration
