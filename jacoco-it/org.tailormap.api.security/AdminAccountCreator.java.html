@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdminAccountCreator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tailormap API</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.security</a> &gt; <span class="el_source">AdminAccountCreator.java</span></div><h1>AdminAccountCreator.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2021 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.security;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ansi.AnsiPropertySource;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertySourcesPropertyResolver;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StreamUtils;
+import org.tailormap.api.persistence.Group;
+import org.tailormap.api.persistence.User;
+import org.tailormap.api.repository.GroupRepository;
+import org.tailormap.api.repository.UserRepository;
+
+@Configuration
+@ConditionalOnProperty(name = &quot;tailormap-api.security.admin.create-if-not-exists&quot;, havingValue = &quot;true&quot;)
+public class AdminAccountCreator {
+<span class="nc" id="L40">  private static final Logger logger =</span>
+<span class="nc" id="L41">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  @Value(&quot;${tailormap-api.security.admin.username}&quot;)
+  private String newAdminUsername;
+
+  @Value(&quot;${tailormap-api.security.admin.hashed-password}&quot;)
+  private String newAdminHashedPassword;
+
+  private final UserRepository userRepository;
+  private final GroupRepository groupRepository;
+
+<span class="nc" id="L52">  private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();</span>
+
+<span class="nc" id="L54">  public AdminAccountCreator(UserRepository userRepository, GroupRepository groupRepository) {</span>
+<span class="nc" id="L55">    this.userRepository = userRepository;</span>
+<span class="nc" id="L56">    this.groupRepository = groupRepository;</span>
+<span class="nc" id="L57">  }</span>
+
+  @EventListener(ApplicationReadyEvent.class)
+  @Transactional
+  public void postConstruct() throws IOException {
+<span class="nc" id="L62">    logger.trace(&quot;Checking whether an admin account exists...&quot;);</span>
+
+<span class="nc" id="L64">    InternalAdminAuthentication.setInSecurityContext();</span>
+    try {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">      if (!userRepository.existsByGroupsNameIn(List.of(Group.ADMIN))) {</span>
+<span class="nc bnc" id="L67" title="All 4 branches missed.">        if (isNotBlank(newAdminHashedPassword) &amp;&amp; newAdminHashedPassword.startsWith(&quot;{bcrypt}&quot;)) {</span>
+<span class="nc" id="L68">          createAdmin(newAdminUsername, newAdminHashedPassword);</span>
+<span class="nc" id="L69">          logger.info(</span>
+              &quot;New admin account \&quot;{}\&quot; created with hashed password from environment&quot;, newAdminUsername);
+        } else {
+          // Create a new admin account with a random generated password
+<span class="nc" id="L73">          String password = UUID.randomUUID().toString();</span>
+<span class="nc" id="L74">          createAdmin(newAdminUsername, passwordEncoder.encode(password));</span>
+          // Log generated password
+<span class="nc" id="L76">          logger.info(getAccountBanner(newAdminUsername, password));</span>
+        }
+      }
+    } finally {
+<span class="nc" id="L80">      InternalAdminAuthentication.clearSecurityContextAuthentication();</span>
+    }
+<span class="nc" id="L82">  }</span>
+
+  private void createAdmin(String username, String hashedPassword) {
+<span class="nc" id="L85">    User u = new User().setUsername(username).setPassword(hashedPassword);</span>
+<span class="nc" id="L86">    u.getGroups().add(groupRepository.getReferenceById(Group.ADMIN));</span>
+<span class="nc" id="L87">    userRepository.saveAndFlush(u);</span>
+<span class="nc" id="L88">  }</span>
+
+  private static String getAccountBanner(String username, String password) throws IOException {
+<span class="nc" id="L91">    String accountBanner = StreamUtils.copyToString(</span>
+<span class="nc" id="L92">        new ClassPathResource(&quot;account-banner.txt&quot;).getInputStream(), StandardCharsets.US_ASCII);</span>
+<span class="nc" id="L93">    MutablePropertySources sources = new MutablePropertySources();</span>
+<span class="nc" id="L94">    sources.addFirst(new AnsiPropertySource(&quot;ansi&quot;, true));</span>
+<span class="nc" id="L95">    sources.addFirst(new MapPropertySource(</span>
+        &quot;account&quot;,
+<span class="nc" id="L97">        Map.of(</span>
+            &quot;username&quot;, username,
+            &quot;password&quot;, password)));
+<span class="nc" id="L100">    return new PropertySourcesPropertyResolver(sources).resolvePlaceholders(accountBanner);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
