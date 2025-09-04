@@ -442,20 +442,12 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
           case PRIVATE -> {
             if (isAuthenticated) {
               if (Objects.equals(authentication.getName(), drawing.getCreatedBy())) {
-                // is drawing owner
+                // is a drawing owner
                 yield true;
               }
               if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
-                // check if the user has either the `drawings-admin` or `drawings-read-all` property
-                // set
-                for (Map.Entry<String, Object> ap : userDetails.getAdditionalProperties()) {
-                  if (ap.getKey().equals(KEY_DRAWINGS_ADMIN)
-                      || ap.getKey().equals(KEY_DRAWINGS_READ_ALL)) {
-                    if ("true".equals(ap.getValue().toString())) {
-                      yield true;
-                    }
-                  }
-                }
+                yield userDetails.getBooleanUserProperty(KEY_DRAWINGS_ADMIN)
+                    || userDetails.getBooleanUserProperty(KEY_DRAWINGS_READ_ALL);
               }
             }
             yield false;
@@ -487,17 +479,11 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
         switch (drawing.getAccess()) {
           case PRIVATE -> {
             if (Objects.equals(authentication.getName(), drawing.getCreatedBy())) {
-              // is drawing owner
+              // is a drawing owner
               yield true;
             }
             if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
-              // check if the user has the drawings-admin property set
-              for (Map.Entry<String, Object> ap : userDetails.getAdditionalProperties()) {
-                if (ap.getKey().equals(KEY_DRAWINGS_ADMIN)
-                    && "true".equals(ap.getValue().toString())) {
-                  yield true;
-                }
-              }
+              yield userDetails.getBooleanUserProperty(KEY_DRAWINGS_ADMIN);
             }
             yield false;
           }
