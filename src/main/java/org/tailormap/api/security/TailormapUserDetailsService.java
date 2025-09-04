@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.tailormap.api.persistence.User;
+import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.repository.UserRepository;
 
 @Service
@@ -21,9 +22,11 @@ public class TailormapUserDetailsService implements UserDetailsService {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final UserRepository userRepository;
+  private final GroupRepository groupRepository;
 
-  public TailormapUserDetailsService(UserRepository userRepository) {
+  public TailormapUserDetailsService(UserRepository userRepository, GroupRepository groupRepository) {
     this.userRepository = userRepository;
+    this.groupRepository = groupRepository;
   }
 
   @Override
@@ -35,6 +38,6 @@ public class TailormapUserDetailsService implements UserDetailsService {
     // This will usually log a {bcrypt}... password unless it was explicitly changed to {noop}...
     // So no plaintext passwords are logged
     logger.trace("Found user: {}, password {}", user.getUsername(), user.getPassword());
-    return new TailormapUserDetails(user);
+    return new TailormapUserDetails(user, groupRepository);
   }
 }
