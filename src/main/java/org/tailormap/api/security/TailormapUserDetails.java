@@ -6,6 +6,7 @@
 package org.tailormap.api.security;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import org.tailormap.api.persistence.User;
 import org.tailormap.api.repository.GroupRepository;
 
 public class TailormapUserDetails implements UserDetails {
-  public record UDAdditionalProperty(String key, Boolean isPublic, Object value) {}
+  public record UDAdditionalProperty(String key, Boolean isPublic, Object value) implements Serializable {}
 
   @Serial
   private static final long serialVersionUID = 2L;
