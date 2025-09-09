@@ -404,9 +404,7 @@ A stopped task cannot be restarted, it fire again depending on the schedule.
         case INDEX:
           deleteScheduleFromSearchIndex(uuid);
           break;
-        case FAILINGPOC:
-        case POC:
-        case INTERRUPTABLEPOC:
+        case PROMETHEUS_PING:
         // no action required, as these are not managed in Tailormap
         default:
           break;

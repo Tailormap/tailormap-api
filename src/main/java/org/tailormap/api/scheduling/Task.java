@@ -54,7 +54,8 @@ public interface Task {
   }
 
   /**
-   * Determine if this task can be stopped on demand (implements {@code InterruptableJob}).
+   * Determine if this task can be stopped on demand (the task must implement {@code InterruptableJob} for this to
+   * work).
    *
    * @return {@code true} if the task can be stopped on demand, false otherwise
    * @see InterruptableJob
