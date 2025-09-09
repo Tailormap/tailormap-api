@@ -225,8 +225,8 @@ public class PopulateTestData {
           logger.error("Exception creating Solr Index for testdata (continuing)", e);
         }
       }
-      if (categories.contains("tasks")) {
-        createScheduledTasks();
+      if (categories.contains("search-index")) {
+        createSearchIndexTasks();
       }
       if (categories.contains("pages")) {
         createPages();
@@ -1741,40 +1741,38 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
     }
   }
 
-  private void createScheduledTasks() {
-    if (categories.contains("search-index")) {
-      logger.info("Creating INDEX tasks");
-      List.of("Begroeidterreindeel", "kadastraal_perceel")
-          .forEach(name -> searchIndexRepository.findByName(name).ifPresent(index -> {
-            index.setSchedule(new TaskSchedule()
-                /* hour */
-                .cronExpression("0 0 0/1 1/1 * ? *")
-                // /* 15 min */
-                // .cronExpression("0 0/15 * 1/1 * ? *")
-                .description("Update Solr index \"" + name + "\" every hour"));
-            try {
-              final UUID uuid = taskManagerService.createTask(
-                  IndexTask.class,
-                  new TMJobDataMap(Map.of(
-                      Task.TYPE_KEY,
-                      TaskType.INDEX,
-                      Task.DESCRIPTION_KEY,
-                      index.getSchedule().getDescription(),
-                      IndexTask.INDEX_KEY,
-                      index.getId().toString(),
-                      Task.PRIORITY_KEY,
-                      10)),
-                  index.getSchedule().getCronExpression());
+  private void createSearchIndexTasks() {
+    logger.info("Creating search index tasks");
+    List.of("Begroeidterreindeel", "kadastraal_perceel")
+        .forEach(name -> searchIndexRepository.findByName(name).ifPresent(index -> {
+          index.setSchedule(new TaskSchedule()
+              /* hour */
+              .cronExpression("0 0 0/1 1/1 * ? *")
+              // /* 15 min */
+              // .cronExpression("0 0/15 * 1/1 * ? *")
+              .description("Update Solr index \"" + name + "\" every hour"));
+          try {
+            final UUID uuid = taskManagerService.createTask(
+                IndexTask.class,
+                new TMJobDataMap(Map.of(
+                    Task.TYPE_KEY,
+                    TaskType.INDEX,
+                    Task.DESCRIPTION_KEY,
+                    index.getSchedule().getDescription(),
+                    IndexTask.INDEX_KEY,
+                    index.getId().toString(),
+                    Task.PRIORITY_KEY,
+                    10)),
+                index.getSchedule().getCronExpression());
 
-              index.getSchedule().setUuid(uuid);
-              searchIndexRepository.save(index);
+            index.getSchedule().setUuid(uuid);
+            searchIndexRepository.save(index);
 
-              logger.info("Created task to update Solr index with key: {}", uuid);
-            } catch (SchedulerException e) {
-              logger.error("Error creating scheduled solr index task", e);
-            }
-          }));
-    }
+            logger.info("Created task to update Solr index with key: {}", uuid);
+          } catch (SchedulerException e) {
+            logger.error("Error creating scheduled solr index task", e);
+          }
+        }));
   }
 
   private void createPages() throws IOException {
