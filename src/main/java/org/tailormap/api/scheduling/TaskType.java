@@ -6,9 +6,6 @@
 package org.tailormap.api.scheduling;
 
 public enum TaskType {
-  POC("poc"),
-  INTERRUPTABLEPOC("interruptablepoc"),
-  FAILINGPOC("failingpoc"),
   INDEX("index"),
   PROMETHEUS_PING("prometheus_ping"),
   ;

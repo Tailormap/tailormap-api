@@ -100,10 +100,7 @@ import org.tailormap.api.repository.PageRepository;
 import org.tailormap.api.repository.SearchIndexRepository;
 import org.tailormap.api.repository.UploadRepository;
 import org.tailormap.api.repository.UserRepository;
-import org.tailormap.api.scheduling.FailingPocTask;
 import org.tailormap.api.scheduling.IndexTask;
-import org.tailormap.api.scheduling.InterruptablePocTask;
-import org.tailormap.api.scheduling.PocTask;
 import org.tailormap.api.scheduling.TMJobDataMap;
 import org.tailormap.api.scheduling.Task;
 import org.tailormap.api.scheduling.TaskManagerService;
@@ -1745,63 +1742,6 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
   }
 
   private void createScheduledTasks() {
-    try {
-      logger.info("Creating POC tasks");
-      logger.info(
-          "Created 15 minutely task with key: {}",
-          taskManagerService.createTask(
-              PocTask.class,
-              new TMJobDataMap(Map.of(
-                  Task.TYPE_KEY,
-                  TaskType.POC.getValue(),
-                  "foo",
-                  "foobar",
-                  Task.DESCRIPTION_KEY,
-                  "POC task that runs every 15 minutes")),
-              /* run every 15 minutes */ "0 0/15 * 1/1 * ? *"));
-      logger.info(
-          "Created hourly task with key: {}",
-          taskManagerService.createTask(
-              PocTask.class,
-              new TMJobDataMap(Map.of(
-                  Task.TYPE_KEY,
-                  TaskType.POC.getValue(),
-                  "foo",
-                  "bar",
-                  Task.DESCRIPTION_KEY,
-                  "POC task that runs every hour",
-                  Task.PRIORITY_KEY,
-                  10)),
-              /* run every hour */ "0 0 0/1 1/1 * ? *"));
-
-      logger.info(
-          "Created hourly failing task with key: {}",
-          taskManagerService.createTask(
-              FailingPocTask.class,
-              new TMJobDataMap(Map.of(
-                  Task.TYPE_KEY,
-                  TaskType.FAILINGPOC.getValue(),
-                  Task.DESCRIPTION_KEY,
-                  "POC task that fails every hour with low priority",
-                  Task.PRIORITY_KEY,
-                  100)),
-              /* run every hour */ "0 0 0/1 1/1 * ? *"));
-      logger.info(
-          "Created daily task with key: {}",
-          taskManagerService.createTask(
-              InterruptablePocTask.class,
-              new TMJobDataMap(Map.of(
-                  Task.TYPE_KEY,
-                  TaskType.INTERRUPTABLEPOC.getValue(),
-                  Task.DESCRIPTION_KEY,
-                  "Interruptable POC task that runs every 15 minutes",
-                  Task.PRIORITY_KEY,
-                  5)),
-              /* run every 15 minutes */ "0 0/15 * 1/1 * ? *"));
-    } catch (SchedulerException e) {
-      logger.error("Error creating scheduled one or more poc tasks", e);
-    }
-
     if (categories.contains("search-index")) {
       logger.info("Creating INDEX tasks");
       List.of("Begroeidterreindeel", "kadastraal_perceel")

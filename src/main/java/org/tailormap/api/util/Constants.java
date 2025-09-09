@@ -17,6 +17,4 @@ public interface Constants {
   String INDEX_GEOM_FIELD = "geometry";
 
   String UUID_REGEX = "(?i)^[\\da-f]{8}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{12}$";
-
-  String TEST_TASK_TYPE = "poc";
 }
