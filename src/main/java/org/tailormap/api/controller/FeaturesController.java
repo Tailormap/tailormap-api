@@ -176,7 +176,10 @@ public class FeaturesController implements Constants {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Layer does not have feature type");
     }
     AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
-    FeaturesResponse columnMetadataResponse = getColumnMetadata(tmft, appLayerSettings);
+    FeaturesResponse featuresResponse = new FeaturesResponse();
+    Map<String, Pair<TMAttributeDescriptor, AttributeSettings>> configuredAttributes =
+        getConfiguredAttributes(tmft, appLayerSettings);
+    FeaturesResponse columnMetadataResponse = addColumnMetadata(featuresResponse, configuredAttributes);
     return ResponseEntity.status(HttpStatus.OK).body(columnMetadataResponse);
   }
 
@@ -469,23 +472,14 @@ public class FeaturesController implements Constants {
       featuresResponse.setTemplate(ftt.getTemplate());
     }
     if (addFields) {
-      configuredAttributes.values().stream()
-          .map(pair -> {
-            TMAttributeDescriptor attributeDescriptor = pair.getLeft();
-            TMAttributeType type = attributeDescriptor.getType();
-            AttributeSettings settings = pair.getRight();
-            return new ColumnMetadata()
-                .key(attributeDescriptor.getName())
-                .alias(settings.getTitle())
-                .type(isGeometry(type) ? TMAttributeType.GEOMETRY : type);
-          })
-          .forEach(featuresResponse::addColumnMetadataItem);
+      this.addColumnMetadata(featuresResponse, configuredAttributes);
     }
   }
 
-  private FeaturesResponse getColumnMetadata(TMFeatureType tmFeatureType, AppLayerSettings appLayerSettings) {
-    FeaturesResponse featuresResponse = new FeaturesResponse();
-    getConfiguredAttributes(tmFeatureType, appLayerSettings).values().stream()
+  private FeaturesResponse addColumnMetadata(
+      FeaturesResponse featuresResponse,
+      Map<String, Pair<TMAttributeDescriptor, AttributeSettings>> configuredAttributes) {
+    configuredAttributes.values().stream()
         .map(pair -> {
           TMAttributeDescriptor attributeDescriptor = pair.getLeft();
           TMAttributeType type = attributeDescriptor.getType();
