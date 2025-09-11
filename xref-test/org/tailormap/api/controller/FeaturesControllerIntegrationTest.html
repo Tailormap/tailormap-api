@@ -264,10 +264,10 @@
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>       jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isArray(),
 <a class="jxr_linenumber" name="L257" href="#L257">257</a>       jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isNotEmpty(),
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>       jsonPath(<span class="jxr_string">"$.template"</span>).isNotEmpty(),
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[?(@.key == 'naam')].alias"</span>).value(<span class="jxr_string">"Naam"</span>),
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[?(@.key == 'identificatie')].key"</span>).isEmpty(),
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[?(@.key == 'ligtInLandCode')].key"</span>).isEmpty(),
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[?(@.key == 'fuuid')].key"</span>).isEmpty(),
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[?(@.name == 'naam')].alias"</span>).value(<span class="jxr_string">"Naam"</span>),
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[?(@.name == 'identificatie')].name"</span>).isEmpty(),
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[?(@.name == 'ligtInLandCode')].name"</span>).isEmpty(),
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[?(@.name == 'fuuid')].name"</span>).isEmpty(),
 <a class="jxr_linenumber" name="L263" href="#L263">263</a>     };
 <a class="jxr_linenumber" name="L264" href="#L264">264</a>   }
 <a class="jxr_linenumber" name="L265" href="#L265">265</a> 
@@ -564,26 +564,26 @@
 <a class="jxr_linenumber" name="L556" href="#L556">556</a> 
 <a class="jxr_linenumber" name="L557" href="#L557">557</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> ResultMatcher[] begroeidterreindeelPostgisResultMatchers() {
 <a class="jxr_linenumber" name="L558" href="#L558">558</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ResultMatcher[] {
-<a class="jxr_linenumber" name="L559" href="#L559">559</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[?(@.key == 'gmlid')].alias"</span>).value(<span class="jxr_string">"GML ID"</span>),
+<a class="jxr_linenumber" name="L559" href="#L559">559</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[?(@.name == 'gmlid')].alias"</span>).value(<span class="jxr_string">"GML ID"</span>),
 <a class="jxr_linenumber" name="L560" href="#L560">560</a>       jsonPath(<span class="jxr_string">"$.columnMetadata"</span>).isArray(),
 <a class="jxr_linenumber" name="L561" href="#L561">561</a>       jsonPath(<span class="jxr_string">"$.columnMetadata.length()"</span>).value(14),
 <a class="jxr_linenumber" name="L562" href="#L562">562</a>       <em class="jxr_comment">// Verify attributeOrder</em>
-<a class="jxr_linenumber" name="L563" href="#L563">563</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[0].key"</span>).value(<span class="jxr_string">"identificatie"</span>),
-<a class="jxr_linenumber" name="L564" href="#L564">564</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[1].key"</span>).value(<span class="jxr_string">"bronhouder"</span>),
-<a class="jxr_linenumber" name="L565" href="#L565">565</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[2].key"</span>).value(<span class="jxr_string">"class"</span>),
+<a class="jxr_linenumber" name="L563" href="#L563">563</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[0].name"</span>).value(<span class="jxr_string">"identificatie"</span>),
+<a class="jxr_linenumber" name="L564" href="#L564">564</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[1].name"</span>).value(<span class="jxr_string">"bronhouder"</span>),
+<a class="jxr_linenumber" name="L565" href="#L565">565</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[2].name"</span>).value(<span class="jxr_string">"class"</span>),
 <a class="jxr_linenumber" name="L566" href="#L566">566</a>       <em class="jxr_comment">// Verify attributes not hidden but also not in attributeOrder are added after sorted</em>
 <a class="jxr_linenumber" name="L567" href="#L567">567</a>       <em class="jxr_comment">// attributes, in feature type order</em>
-<a class="jxr_linenumber" name="L568" href="#L568">568</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[3].key"</span>).value(<span class="jxr_string">"gmlid"</span>),
-<a class="jxr_linenumber" name="L569" href="#L569">569</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[4].key"</span>).value(<span class="jxr_string">"lv_publicatiedatum"</span>),
-<a class="jxr_linenumber" name="L570" href="#L570">570</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[5].key"</span>).value(<span class="jxr_string">"creationdate"</span>),
-<a class="jxr_linenumber" name="L571" href="#L571">571</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[6].key"</span>).value(<span class="jxr_string">"tijdstipregistratie"</span>),
-<a class="jxr_linenumber" name="L572" href="#L572">572</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[7].key"</span>).value(<span class="jxr_string">"eindregistratie"</span>),
-<a class="jxr_linenumber" name="L573" href="#L573">573</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[8].key"</span>).value(<span class="jxr_string">"inonderzoek"</span>),
-<a class="jxr_linenumber" name="L574" href="#L574">574</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[9].key"</span>).value(<span class="jxr_string">"relatievehoogteligging"</span>),
-<a class="jxr_linenumber" name="L575" href="#L575">575</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[10].key"</span>).value(<span class="jxr_string">"bgt_status"</span>),
-<a class="jxr_linenumber" name="L576" href="#L576">576</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[11].key"</span>).value(<span class="jxr_string">"plus_status"</span>),
-<a class="jxr_linenumber" name="L577" href="#L577">577</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[12].key"</span>).value(<span class="jxr_string">"plus_fysiekvoorkomen"</span>),
-<a class="jxr_linenumber" name="L578" href="#L578">578</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[13].key"</span>).value(<span class="jxr_string">"geom"</span>),
+<a class="jxr_linenumber" name="L568" href="#L568">568</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[3].name"</span>).value(<span class="jxr_string">"gmlid"</span>),
+<a class="jxr_linenumber" name="L569" href="#L569">569</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[4].name"</span>).value(<span class="jxr_string">"lv_publicatiedatum"</span>),
+<a class="jxr_linenumber" name="L570" href="#L570">570</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[5].name"</span>).value(<span class="jxr_string">"creationdate"</span>),
+<a class="jxr_linenumber" name="L571" href="#L571">571</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[6].name"</span>).value(<span class="jxr_string">"tijdstipregistratie"</span>),
+<a class="jxr_linenumber" name="L572" href="#L572">572</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[7].name"</span>).value(<span class="jxr_string">"eindregistratie"</span>),
+<a class="jxr_linenumber" name="L573" href="#L573">573</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[8].name"</span>).value(<span class="jxr_string">"inonderzoek"</span>),
+<a class="jxr_linenumber" name="L574" href="#L574">574</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[9].name"</span>).value(<span class="jxr_string">"relatievehoogteligging"</span>),
+<a class="jxr_linenumber" name="L575" href="#L575">575</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[10].name"</span>).value(<span class="jxr_string">"bgt_status"</span>),
+<a class="jxr_linenumber" name="L576" href="#L576">576</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[11].name"</span>).value(<span class="jxr_string">"plus_status"</span>),
+<a class="jxr_linenumber" name="L577" href="#L577">577</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[12].name"</span>).value(<span class="jxr_string">"plus_fysiekvoorkomen"</span>),
+<a class="jxr_linenumber" name="L578" href="#L578">578</a>       jsonPath(<span class="jxr_string">"$.columnMetadata[13].name"</span>).value(<span class="jxr_string">"geom"</span>),
 <a class="jxr_linenumber" name="L579" href="#L579">579</a>     };
 <a class="jxr_linenumber" name="L580" href="#L580">580</a>   }
 <a class="jxr_linenumber" name="L581" href="#L581">581</a> 

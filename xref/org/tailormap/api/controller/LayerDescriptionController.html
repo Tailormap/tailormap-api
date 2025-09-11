@@ -107,11 +107,11 @@
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>      Set&lt;String&gt; readOnlyAttributes = TMFeatureTypeHelper.getReadOnlyAttributes(tmft, appLayerSettings);
 <a class="jxr_linenumber" name="L100" href="#L100">100</a> 
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>     getConfiguredAttributes(tmft, appLayerSettings).values().stream()
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>         .map(pair -&gt; {
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>           TMAttributeDescriptor a = pair.getLeft();
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>         .map(attributeWithSettings -&gt; {
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>           TMAttributeDescriptor a = attributeWithSettings.attributeDescriptor();
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Attribute()
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>               .featureType(tmft.getId())
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>               .key(a.getName())
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>               .name(a.getName())
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>               .alias(attributeWithSettings.settings().getTitle())
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>               <em class="jxr_comment">// Only return generic 'geometry' type for now, frontend doesn't</em>
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>               <em class="jxr_comment">// handle different geometry types. For the default geometry</em>
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>               <em class="jxr_comment">// attribute there is a specific geometry type set</em>
