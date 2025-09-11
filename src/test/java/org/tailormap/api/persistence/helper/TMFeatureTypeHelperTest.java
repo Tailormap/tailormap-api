@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.json.AppLayerSettings;
@@ -54,7 +53,7 @@ class TMFeatureTypeHelperTest {
     AppLayerSettings appLayerSettings = new AppLayerSettings();
     appLayerSettings.setHideAttributes(List.of("e", "f"));
 
-    Map<String, Pair<TMAttributeDescriptor, AttributeSettings>> configuredAttributes =
+    Map<String, TMFeatureTypeHelper.AttributeWithSettings> configuredAttributes =
         getConfiguredAttributes(ft, appLayerSettings);
     // Compare using Lists to explicitly check the ordering
     assertEquals(
@@ -69,8 +68,10 @@ class TMFeatureTypeHelperTest {
             "n"),
         new ArrayList<>(configuredAttributes.keySet()));
 
-    assertEquals("d title", configuredAttributes.get("d").getRight().getTitle());
+    assertEquals("d title", configuredAttributes.get("d").settings().getTitle());
 
-    assertEquals("comment for m", configuredAttributes.get("m").getLeft().getComment());
+    assertEquals(
+        "comment for m",
+        configuredAttributes.get("m").attributeDescriptor().getComment());
   }
 }

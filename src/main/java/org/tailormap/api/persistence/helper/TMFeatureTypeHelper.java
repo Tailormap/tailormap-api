@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.Pair;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.json.AppLayerSettings;
@@ -60,15 +59,17 @@ public class TMFeatureTypeHelper {
     return readOnlyAttributes;
   }
 
+  public record AttributeWithSettings(TMAttributeDescriptor attributeDescriptor, AttributeSettings settings) {}
+
   /**
-   * Return a map of attribute names (in order, using a LinkedHashMap implementation) to an attribute descriptor and
-   * configured settings pair, taking into account the configured attribute order and hidden attributes.
+   * Return a map of attribute names (in order, using a LinkedHashMap implementation) to an attribute descriptor with
+   * configured settings, taking into account the configured attribute order and hidden attributes.
    *
    * @param featureType The feature type
    * @param appLayerSettings The app layer settings
    * @return A sorted map as described
    */
-  public static Map<String, Pair<TMAttributeDescriptor, AttributeSettings>> getConfiguredAttributes(
+  public static Map<String, AttributeWithSettings> getConfiguredAttributes(
       @NotNull TMFeatureType featureType, @NotNull AppLayerSettings appLayerSettings) {
     LinkedHashMap<String, TMAttributeDescriptor> originalAttributesOrder = new LinkedHashMap<>();
     for (TMAttributeDescriptor attributeDescriptor : featureType.getAttributes()) {
@@ -98,12 +99,12 @@ public class TMFeatureTypeHelper {
 
     Map<String, AttributeSettings> attributeSettings =
         featureType.getSettings().getAttributeSettings();
-    LinkedHashMap<String, Pair<TMAttributeDescriptor, AttributeSettings>> result = new LinkedHashMap<>();
+    LinkedHashMap<String, AttributeWithSettings> result = new LinkedHashMap<>();
     for (String attribute : finalAttributeOrder) {
       AttributeSettings settings =
           Optional.ofNullable(attributeSettings.get(attribute)).orElseGet(AttributeSettings::new);
       TMAttributeDescriptor attributeDescriptor = originalAttributesOrder.get(attribute);
-      result.put(attribute, Pair.of(attributeDescriptor, settings));
+      result.put(attribute, new AttributeWithSettings(attributeDescriptor, settings));
     }
     return result;
   }
