@@ -258,12 +258,11 @@ components:
       type: object
       required: [name]
       properties:
-        featureType:
-          type: integer
-          format: int64
-          readOnly: true
-        key:
+        name:
           description: 'Name of the attribute.'
+          type: string
+        alias:
+          description: 'Alias of the attribute.'
           type: string
         type:
           $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
@@ -317,7 +316,7 @@ components:
       type: object
       description: 'presentation metadata for a feature'
       properties:
-        key:
+        name:
           description: 'Name of the attribute.'
           type: string
         alias:
@@ -326,7 +325,7 @@ components:
         type:
           $ref: './common-schemas.yaml#/components/schemas/TMAttributeType'
       example:
-        key: 'geom'
+        name: 'geom'
         alias: 'Geometry'
         type: 'geometry'
 

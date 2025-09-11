@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.api.data.Query;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.feature.simple.SimpleFeature;
@@ -57,9 +56,9 @@ import org.tailormap.api.geotools.processing.GeometryProcessor;
 import org.tailormap.api.persistence.Application;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.TMFeatureType;
+import org.tailormap.api.persistence.helper.TMFeatureTypeHelper;
 import org.tailormap.api.persistence.json.AppLayerSettings;
 import org.tailormap.api.persistence.json.AppTreeLayerNode;
-import org.tailormap.api.persistence.json.AttributeSettings;
 import org.tailormap.api.persistence.json.FeatureTypeTemplate;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.json.TMAttributeDescriptor;
@@ -179,7 +178,7 @@ public class FeaturesController implements Constants {
 
       // Property names for query: only non-geometry attributes that aren't hidden
       List<String> propNames = getConfiguredAttributes(tmft, appLayerSettings).values().stream()
-          .map(Pair::getLeft)
+          .map(TMFeatureTypeHelper.AttributeWithSettings::attributeDescriptor)
           .filter(a -> !isGeometry(a.getType()))
           .map(TMAttributeDescriptor::getName)
           .collect(Collectors.toList());
@@ -405,7 +404,7 @@ public class FeaturesController implements Constants {
       logger.error("Can not transform geometry to desired CRS", e);
     }
 
-    Map<String, Pair<TMAttributeDescriptor, AttributeSettings>> configuredAttributes =
+    Map<String, TMFeatureTypeHelper.AttributeWithSettings> configuredAttributes =
         getConfiguredAttributes(tmFeatureType, appLayerSettings);
 
     // send request to attribute source
@@ -448,13 +447,14 @@ public class FeaturesController implements Constants {
     }
     if (addFields) {
       configuredAttributes.values().stream()
-          .map(pair -> {
-            TMAttributeDescriptor attributeDescriptor = pair.getLeft();
-            TMAttributeType type = attributeDescriptor.getType();
-            AttributeSettings settings = pair.getRight();
+          .map(attributeWithSettings -> {
+            TMAttributeType type =
+                attributeWithSettings.attributeDescriptor().getType();
             return new ColumnMetadata()
-                .key(attributeDescriptor.getName())
-                .alias(settings.getTitle())
+                .name(attributeWithSettings
+                    .attributeDescriptor()
+                    .getName())
+                .alias(attributeWithSettings.settings().getTitle())
                 .type(isGeometry(type) ? TMAttributeType.GEOMETRY : type);
           })
           .forEach(featuresResponse::addColumnMetadataItem);

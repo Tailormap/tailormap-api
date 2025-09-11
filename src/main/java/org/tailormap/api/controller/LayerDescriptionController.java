@@ -99,11 +99,11 @@ public class LayerDescriptionController {
     Set<String> readOnlyAttributes = TMFeatureTypeHelper.getReadOnlyAttributes(tmft, appLayerSettings);
 
     getConfiguredAttributes(tmft, appLayerSettings).values().stream()
-        .map(pair -> {
-          TMAttributeDescriptor a = pair.getLeft();
+        .map(attributeWithSettings -> {
+          TMAttributeDescriptor a = attributeWithSettings.attributeDescriptor();
           return new Attribute()
-              .featureType(tmft.getId())
-              .key(a.getName())
+              .name(a.getName())
+              .alias(attributeWithSettings.settings().getTitle())
               // Only return generic 'geometry' type for now, frontend doesn't
               // handle different geometry types. For the default geometry
               // attribute there is a specific geometry type set
