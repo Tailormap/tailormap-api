@@ -256,10 +256,10 @@ class FeaturesControllerIntegrationTest {
       jsonPath("$.columnMetadata").isArray(),
       jsonPath("$.columnMetadata").isNotEmpty(),
       jsonPath("$.template").isNotEmpty(),
-      jsonPath("$.columnMetadata[?(@.key == 'naam')].alias").value("Naam"),
-      jsonPath("$.columnMetadata[?(@.key == 'identificatie')].key").isEmpty(),
-      jsonPath("$.columnMetadata[?(@.key == 'ligtInLandCode')].key").isEmpty(),
-      jsonPath("$.columnMetadata[?(@.key == 'fuuid')].key").isEmpty(),
+      jsonPath("$.columnMetadata[?(@.name == 'naam')].alias").value("Naam"),
+      jsonPath("$.columnMetadata[?(@.name == 'identificatie')].name").isEmpty(),
+      jsonPath("$.columnMetadata[?(@.name == 'ligtInLandCode')].name").isEmpty(),
+      jsonPath("$.columnMetadata[?(@.name == 'fuuid')].name").isEmpty(),
     };
   }
 
@@ -556,26 +556,26 @@ class FeaturesControllerIntegrationTest {
 
   private static ResultMatcher[] begroeidterreindeelPostgisResultMatchers() {
     return new ResultMatcher[] {
-      jsonPath("$.columnMetadata[?(@.key == 'gmlid')].alias").value("GML ID"),
+      jsonPath("$.columnMetadata[?(@.name == 'gmlid')].alias").value("GML ID"),
       jsonPath("$.columnMetadata").isArray(),
       jsonPath("$.columnMetadata.length()").value(14),
       // Verify attributeOrder
-      jsonPath("$.columnMetadata[0].key").value("identificatie"),
-      jsonPath("$.columnMetadata[1].key").value("bronhouder"),
-      jsonPath("$.columnMetadata[2].key").value("class"),
+      jsonPath("$.columnMetadata[0].name").value("identificatie"),
+      jsonPath("$.columnMetadata[1].name").value("bronhouder"),
+      jsonPath("$.columnMetadata[2].name").value("class"),
       // Verify attributes not hidden but also not in attributeOrder are added after sorted
       // attributes, in feature type order
-      jsonPath("$.columnMetadata[3].key").value("gmlid"),
-      jsonPath("$.columnMetadata[4].key").value("lv_publicatiedatum"),
-      jsonPath("$.columnMetadata[5].key").value("creationdate"),
-      jsonPath("$.columnMetadata[6].key").value("tijdstipregistratie"),
-      jsonPath("$.columnMetadata[7].key").value("eindregistratie"),
-      jsonPath("$.columnMetadata[8].key").value("inonderzoek"),
-      jsonPath("$.columnMetadata[9].key").value("relatievehoogteligging"),
-      jsonPath("$.columnMetadata[10].key").value("bgt_status"),
-      jsonPath("$.columnMetadata[11].key").value("plus_status"),
-      jsonPath("$.columnMetadata[12].key").value("plus_fysiekvoorkomen"),
-      jsonPath("$.columnMetadata[13].key").value("geom"),
+      jsonPath("$.columnMetadata[3].name").value("gmlid"),
+      jsonPath("$.columnMetadata[4].name").value("lv_publicatiedatum"),
+      jsonPath("$.columnMetadata[5].name").value("creationdate"),
+      jsonPath("$.columnMetadata[6].name").value("tijdstipregistratie"),
+      jsonPath("$.columnMetadata[7].name").value("eindregistratie"),
+      jsonPath("$.columnMetadata[8].name").value("inonderzoek"),
+      jsonPath("$.columnMetadata[9].name").value("relatievehoogteligging"),
+      jsonPath("$.columnMetadata[10].name").value("bgt_status"),
+      jsonPath("$.columnMetadata[11].name").value("plus_status"),
+      jsonPath("$.columnMetadata[12].name").value("plus_fysiekvoorkomen"),
+      jsonPath("$.columnMetadata[13].name").value("geom"),
     };
   }
 
