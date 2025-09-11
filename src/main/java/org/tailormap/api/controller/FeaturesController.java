@@ -158,6 +158,28 @@ public class FeaturesController implements Constants {
     return ResponseEntity.status(HttpStatus.OK).body(featuresResponse);
   }
 
+  @Transactional
+  @RequestMapping(
+      method = {GET, POST},
+      path = "/columnMetadata")
+  public ResponseEntity<Serializable> getColumnMetadataForLayer(
+      @ModelAttribute AppTreeLayerNode appTreeLayerNode,
+      @ModelAttribute GeoService service,
+      @ModelAttribute GeoServiceLayer layer,
+      @ModelAttribute Application application) {
+    if (layer == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find layer " + appTreeLayerNode);
+    }
+
+    TMFeatureType tmft = service.findFeatureTypeForLayer(layer, featureSourceRepository);
+    if (tmft == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Layer does not have feature type");
+    }
+    AppLayerSettings appLayerSettings = application.getAppLayerSettings(appTreeLayerNode);
+    FeaturesResponse columnMetadataResponse = getColumnMetadata(tmft, appLayerSettings);
+    return ResponseEntity.status(HttpStatus.OK).body(columnMetadataResponse);
+  }
+
   @NotNull private FeaturesResponse getAllFeatures(
       @NotNull TMFeatureType tmft,
       @NotNull Application application,
@@ -459,5 +481,21 @@ public class FeaturesController implements Constants {
           })
           .forEach(featuresResponse::addColumnMetadataItem);
     }
+  }
+
+  private FeaturesResponse getColumnMetadata(TMFeatureType tmFeatureType, AppLayerSettings appLayerSettings) {
+    FeaturesResponse featuresResponse = new FeaturesResponse();
+    getConfiguredAttributes(tmFeatureType, appLayerSettings).values().stream()
+        .map(pair -> {
+          TMAttributeDescriptor attributeDescriptor = pair.getLeft();
+          TMAttributeType type = attributeDescriptor.getType();
+          AttributeSettings settings = pair.getRight();
+          return new ColumnMetadata()
+              .key(attributeDescriptor.getName())
+              .alias(settings.getTitle())
+              .type(isGeometry(type) ? TMAttributeType.GEOMETRY : type);
+        })
+        .forEach(featuresResponse::addColumnMetadataItem);
+    return featuresResponse;
   }
 }
