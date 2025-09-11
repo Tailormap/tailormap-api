@@ -54,15 +54,15 @@ class LayerDescriptionControllerIntegrationTest {
         .andExpect(jsonPath("$.id").value("lyr:snapshot-geoserver:postgis:begroeidterreindeel"))
         .andExpect(jsonPath("$.serviceId").value("snapshot-geoserver"))
         .andExpect(jsonPath("$.attributes").isArray())
-        .andExpect(jsonPath("$.attributes[?(@.key == 'relatievehoogteligging')].type")
+        .andExpect(jsonPath("$.attributes[?(@.name == 'relatievehoogteligging')].type")
             .value("integer"))
         .andExpectAll(
-            jsonPath("$.attributes[?(@.key == 'terminationdate')]").doesNotHaveJsonPath(),
-            jsonPath("$.attributes[?(@.key == 'geom_kruinlijn')]").doesNotHaveJsonPath())
+            jsonPath("$.attributes[?(@.name == 'terminationdate')]").doesNotHaveJsonPath(),
+            jsonPath("$.attributes[?(@.name == 'geom_kruinlijn')]").doesNotHaveJsonPath())
         .andExpect(
-            jsonPath("$.attributes[?(@.key == 'gmlid')].nullable").value(false))
+            jsonPath("$.attributes[?(@.name == 'gmlid')].nullable").value(false))
         .andExpect(
-            jsonPath("$.attributes[?(@.key == 'gmlid')].editable").value(false))
+            jsonPath("$.attributes[?(@.name == 'gmlid')].editable").value(false))
         .andExpect(jsonPath("$.editable").value(true));
   }
 
@@ -78,12 +78,12 @@ class LayerDescriptionControllerIntegrationTest {
         .andExpect(jsonPath("$.id").value("lyr:snapshot-geoserver-proxied:postgis:begroeidterreindeel"))
         .andExpect(jsonPath("$.serviceId").value("snapshot-geoserver-proxied"))
         .andExpect(jsonPath("$.attributes").isArray())
-        .andExpect(jsonPath("$.attributes[?(@.key == 'relatievehoogteligging')].type")
+        .andExpect(jsonPath("$.attributes[?(@.name == 'relatievehoogteligging')].type")
             .value("integer"))
         .andExpect(
-            jsonPath("$.attributes[?(@.key == 'gmlid')].nullable").value(false))
+            jsonPath("$.attributes[?(@.name == 'gmlid')].nullable").value(false))
         .andExpect(
-            jsonPath("$.attributes[?(@.key == 'gmlid')].editable").value(false))
+            jsonPath("$.attributes[?(@.name == 'gmlid')].editable").value(false))
         .andExpect(jsonPath("$.editable").value(false));
   }
 
