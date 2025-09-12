@@ -25,6 +25,7 @@ import org.tailormap.api.persistence.helper.UploadHelper;
 import org.tailormap.api.prometheus.TagNames;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
+import org.tailormap.api.repository.GeoServiceRepository;
 import org.tailormap.api.security.AuthorisationService;
 import org.tailormap.api.viewer.model.AppStyling;
 import org.tailormap.api.viewer.model.MapResponse;
@@ -35,6 +36,7 @@ public class ViewerController implements TagNames {
 
   private final ConfigurationRepository configurationRepository;
   private final ApplicationRepository applicationRepository;
+  private final GeoServiceRepository geoServiceRepository;
   private final ApplicationHelper applicationHelper;
   private final AuthorisationService authorisationService;
   private final UploadHelper uploadHelper;
@@ -42,11 +44,13 @@ public class ViewerController implements TagNames {
   public ViewerController(
       ConfigurationRepository configurationRepository,
       ApplicationRepository applicationRepository,
+      GeoServiceRepository geoServiceRepository,
       ApplicationHelper applicationHelper,
       AuthorisationService authorisationService,
       UploadHelper uploadHelper) {
     this.configurationRepository = configurationRepository;
     this.applicationRepository = applicationRepository;
+    this.geoServiceRepository = geoServiceRepository;
     this.applicationHelper = applicationHelper;
     this.authorisationService = authorisationService;
     this.uploadHelper = uploadHelper;
@@ -74,7 +78,8 @@ public class ViewerController implements TagNames {
   @Timed(value = "get_named_app", description = "Get named app")
   @Counted(value = "get_named_app", description = "Count of get named app")
   public ViewerResponse viewer(@ModelAttribute Application app, @ModelAttribute ViewerResponse.KindEnum viewerKind) {
-    ViewerResponse viewerResponse = app.getViewerResponse().kind(viewerKind);
+    ViewerResponse viewerResponse = app.getViewerResponse(geoServiceRepository, authorisationService)
+        .kind(viewerKind);
 
     AppStyling styling = viewerResponse.getStyling();
     if (styling != null) {
