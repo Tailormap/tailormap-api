@@ -201,7 +201,7 @@ SPDX-License-Identifier: MIT
                 -->
                 <groupId>com.nimbusds</groupId>
                 <artifactId>nimbus-jose-jwt</artifactId>
-                <version>9.37.4</version>
+                <version>10.5</version>
             </dependency>
             <dependency>
                 <groupId>org.gaul</groupId>
