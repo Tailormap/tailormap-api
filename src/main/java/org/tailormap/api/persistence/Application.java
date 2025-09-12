@@ -5,8 +5,6 @@
  */
 package org.tailormap.api.persistence;
 
-import static java.util.Objects.requireNonNullElse;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
@@ -22,7 +20,6 @@ import jakarta.validation.constraints.NotNull;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.geotools.referencing.CRS;
@@ -30,21 +27,14 @@ import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tailormap.api.persistence.json.AppContent;
-import org.tailormap.api.persistence.json.AppI18nSettings;
 import org.tailormap.api.persistence.json.AppLayerSettings;
 import org.tailormap.api.persistence.json.AppSettings;
 import org.tailormap.api.persistence.json.AppTreeLayerNode;
-import org.tailormap.api.persistence.json.AppUiSettings;
 import org.tailormap.api.persistence.json.AuthorizationRule;
 import org.tailormap.api.persistence.json.Bounds;
-import org.tailormap.api.persistence.json.FilterGroup;
-import org.tailormap.api.persistence.json.GeoServiceLayer;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
-import org.tailormap.api.repository.GeoServiceRepository;
-import org.tailormap.api.security.AuthorisationService;
 import org.tailormap.api.viewer.model.AppStyling;
 import org.tailormap.api.viewer.model.Component;
-import org.tailormap.api.viewer.model.ViewerResponse;
 
 @Entity
 @EntityListeners(EntityEventPublisher.class)
@@ -305,66 +295,6 @@ public class Application {
       }
     }
     return gtCrs;
-  }
-
-  @JsonIgnore
-  public ViewerResponse getViewerResponse(
-      GeoServiceRepository geoServiceRepository, AuthorisationService authorisationService) {
-    //  filter the filterGroups to only have filtergroups with layerIds
-    //  that are allowed for this user.
-    List<FilterGroup> allowedFilterGroups = settings.getFilterGroups().stream()
-        // for each filtergroup, check if the layerIds are allowed
-        .filter(fg -> {
-          List<String> allowedLayerIds = new ArrayList<>();
-          // for each layerId, get the service and layer, then check if viewing is allowed
-          for (String layerId : fg.getLayerIds()) {
-            AppTreeLayerNode lyrNode = this.getAllAppTreeLayerNode()
-                .filter(node -> node.getId().equals(layerId))
-                .findFirst()
-                .orElse(null);
-            logger.debug("found lyrNode {}", lyrNode);
-            if (lyrNode != null) {
-              GeoService service = geoServiceRepository
-                  .findById(lyrNode.getServiceId())
-                  .orElse(null);
-              logger.debug("found service {}", service);
-              if (service != null) {
-                GeoServiceLayer layer = service.getLayers().stream()
-                    .filter(l -> Objects.equals(l.getName(), lyrNode.getLayerName()))
-                    .findFirst()
-                    .orElse(null);
-                logger.debug("found layer {}", layer);
-                if (layer != null) {
-                  if (authorisationService.userAllowedToViewGeoServiceLayer(service, layer)) {
-                    allowedLayerIds.add(layerId);
-                  }
-                }
-              }
-            }
-          }
-          if (allowedLayerIds.isEmpty()) {
-            // no allowed layers in this filtergroup, skip the entire filtergroup
-            logger.debug("Skipping filtergroup {} because no allowed layers", fg);
-            return false;
-          } else {
-            // set the allowed layerIds
-            fg.setLayerIds(allowedLayerIds);
-            return true;
-          }
-        })
-        .toList();
-
-    return new ViewerResponse()
-        .kind(ViewerResponse.KindEnum.APP)
-        .name(getName())
-        .title(getTitle())
-        .styling(styling)
-        .components(components)
-        .i18nSettings(requireNonNullElse(
-            settings.getI18nSettings(), new AppI18nSettings().hideLanguageSwitcher(false)))
-        .uiSettings(requireNonNullElse(settings.getUiSettings(), new AppUiSettings().hideLoginButton(false)))
-        .projections(List.of(getCrs()))
-        .filterGroups(allowedFilterGroups);
   }
 
   @NotNull public AppLayerSettings getAppLayerSettings(@NotNull AppTreeLayerNode node) {
