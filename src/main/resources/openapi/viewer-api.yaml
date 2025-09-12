@@ -433,6 +433,35 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
+
+  /password-reset:
+    post:
+      operationId: 'passwordReset'
+      summary: 'Request a password reset message.'
+      security: [ ]
+      requestBody:
+        required: true
+        description: A message containing the username.
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              title: 'password-reset'
+              type: object
+              properties:
+                username:
+                  type: string
+              required:
+                - username
+      responses:
+        '200':
+          description: 'If the username exists, a password reset email will be sent.'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
   /config/{key}:
     summary: 'get global config value by key'
     get:
