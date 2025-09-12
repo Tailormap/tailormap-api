@@ -44,6 +44,7 @@ class AppControllerIntegrationTest {
   @Test
   void returns_default_when_no_arguments() throws Exception {
     mockMvc.perform(get(basePath + "/app").accept(MediaType.APPLICATION_JSON))
+        .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.kind").value("app"))

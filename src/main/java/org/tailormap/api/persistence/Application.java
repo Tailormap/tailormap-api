@@ -322,17 +322,20 @@ public class Application {
                 .filter(node -> node.getId().equals(layerId))
                 .findFirst()
                 .orElse(null);
+            logger.debug("found lyrNode {}", lyrNode);
             if (lyrNode != null) {
               GeoService service = geoServiceRepository
                   .findById(lyrNode.getServiceId())
                   .orElse(null);
+              logger.debug("found service {}", service);
               if (service != null) {
                 GeoServiceLayer layer = service.getLayers().stream()
                     .filter(l -> Objects.equals(l.getName(), lyrNode.getLayerName()))
                     .findFirst()
                     .orElse(null);
+                logger.debug("found layer {}", layer);
                 if (layer != null) {
-                  if (!authorisationService.userAllowedToViewGeoServiceLayer(service, layer)) {
+                  if (authorisationService.userAllowedToViewGeoServiceLayer(service, layer)) {
                     allowedLayerIds.add(layerId);
                   }
                 }
