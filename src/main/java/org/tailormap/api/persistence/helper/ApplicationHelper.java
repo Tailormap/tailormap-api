@@ -156,7 +156,7 @@ public class ApplicationHelper {
     mapResponse.crs(crs).maxExtent(maxExtent).initialExtent(initialExtent);
   }
 
-  public void setLayers(Application app, MapResponse mr) {
+  private void setLayers(Application app, MapResponse mr) {
     new MapResponseLayerBuilder(app, mr).buildLayers();
   }
 
@@ -222,6 +222,25 @@ public class ApplicationHelper {
         for (AppTreeNode node : app.getContentRoot().getLayerNodes()) {
           addAppTreeNodeItem(node, mapResponse.getLayerTreeNodes());
         }
+
+        Set<String> validAppLayerId = mapResponse.getAppLayers().stream()
+            .map(AppLayer::getId)
+            .collect(java.util.stream.Collectors.toSet());
+        mapResponse.setLayerTreeNodes(mapResponse.getLayerTreeNodes().stream()
+            .map(n -> {
+              // if a level node has no children, it should not be included in the response, unless it is
+              // root
+              if ((n.getChildrenIds() == null
+                      || n.getChildrenIds().isEmpty())
+                  && !Boolean.TRUE.equals(n.getRoot())) {
+                return null;
+              }
+              // remove childId from childrenIds when not in validAppLayerId
+              n.getChildrenIds().removeIf(childId -> !validAppLayerId.contains(childId));
+              return n;
+            })
+            .filter(Objects::nonNull)
+            .toList());
       }
     }
 
