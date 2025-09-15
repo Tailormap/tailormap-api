@@ -5,8 +5,6 @@
  */
 package org.tailormap.api.persistence;
 
-import static java.util.Objects.requireNonNullElse;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
@@ -29,17 +27,14 @@ import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tailormap.api.persistence.json.AppContent;
-import org.tailormap.api.persistence.json.AppI18nSettings;
 import org.tailormap.api.persistence.json.AppLayerSettings;
 import org.tailormap.api.persistence.json.AppSettings;
 import org.tailormap.api.persistence.json.AppTreeLayerNode;
-import org.tailormap.api.persistence.json.AppUiSettings;
 import org.tailormap.api.persistence.json.AuthorizationRule;
 import org.tailormap.api.persistence.json.Bounds;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.tailormap.api.viewer.model.AppStyling;
 import org.tailormap.api.viewer.model.Component;
-import org.tailormap.api.viewer.model.ViewerResponse;
 
 @Entity
 @EntityListeners(EntityEventPublisher.class)
@@ -300,21 +295,6 @@ public class Application {
       }
     }
     return gtCrs;
-  }
-
-  @JsonIgnore
-  public ViewerResponse getViewerResponse() {
-    return new ViewerResponse()
-        .kind(ViewerResponse.KindEnum.APP)
-        .name(getName())
-        .title(getTitle())
-        .styling(styling)
-        .components(components)
-        .i18nSettings(requireNonNullElse(
-            settings.getI18nSettings(), new AppI18nSettings().hideLanguageSwitcher(false)))
-        .uiSettings(requireNonNullElse(settings.getUiSettings(), new AppUiSettings().hideLoginButton(false)))
-        .projections(List.of(getCrs()))
-        .filterGroups(settings.getFilterGroups());
   }
 
   @NotNull public AppLayerSettings getAppLayerSettings(@NotNull AppTreeLayerNode node) {
