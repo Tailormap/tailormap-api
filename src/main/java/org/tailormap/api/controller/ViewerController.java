@@ -26,7 +26,6 @@ import org.tailormap.api.persistence.helper.ViewerHelper;
 import org.tailormap.api.prometheus.TagNames;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
-import org.tailormap.api.repository.GeoServiceRepository;
 import org.tailormap.api.security.AuthorisationService;
 import org.tailormap.api.viewer.model.AppStyling;
 import org.tailormap.api.viewer.model.MapResponse;
@@ -45,7 +44,6 @@ public class ViewerController implements TagNames {
   public ViewerController(
       ConfigurationRepository configurationRepository,
       ApplicationRepository applicationRepository,
-      GeoServiceRepository geoServiceRepository,
       ApplicationHelper applicationHelper,
       AuthorisationService authorisationService,
       UploadHelper uploadHelper,
