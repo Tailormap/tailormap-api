@@ -26,6 +26,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -1568,6 +1569,83 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .serviceId("ahn_terrain_model")
                 .layerName("quantizedmesh")
                 .visible(false)));
+
+    applicationRepository.save(app);
+
+    app = new Application()
+        .setName("public-with-auth")
+        .setTitle("Public app with one restricted layer in a group")
+        .setCrs("EPSG:28992")
+        .setAuthorizationRules(ruleAnonymousRead)
+        .setInitialExtent(
+            new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d))
+        .setMaxExtent(
+            new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d))
+        .setStyling(new AppStyling().logo(logo.getId().toString()))
+        .setContentRoot(new AppContent()
+            .addBaseLayerNodesItem(new AppTreeLevelNode()
+                .objectType("AppTreeLevelNode")
+                .id("root")
+                .root(true)
+                .title("Basemaps")
+                .childrenIds(List.of("lyr:openbasiskaart:osm")))
+            .addBaseLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:openbasiskaart:osm")
+                .serviceId("openbasiskaart")
+                .layerName("osm")
+                .visible(true))
+            .addTerrainLayerNodesItem(new AppTreeLevelNode()
+                .id("root")
+                .root(true)
+                .title("Terrain layers")
+                .childrenIds(Collections.emptyList()))
+            .addLayerNodesItem(new AppTreeLevelNode()
+                .objectType("AppTreeLevelNode")
+                .id("root")
+                .root(true)
+                .title("Application layers")
+                .childrenIds(List.of(
+                    "lyr:snapshot-geoserver:postgis:kadastraal_perceel", "xpfhl34VmghkU12nP9Jer")))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .id("lyr:snapshot-geoserver:postgis:kadastraal_perceel")
+                .visible(true)
+                .layerName("postgis:kadastraal_perceel")
+                .serviceId("snapshot-geoserver")
+                .objectType("AppTreeLayerNode"))
+            .addLayerNodesItem(new AppTreeLevelNode()
+                .id("xpfhl34VmghkU12nP9Jer")
+                .root(false)
+                .title("restricted")
+                .objectType("AppTreeLevelNode")
+                .childrenIds(List.of("lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel")))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel")
+                .visible(true)
+                .serviceId("filtered-snapshot-geoserver")
+                .layerName("postgis:begroeidterreindeel")))
+        .setSettings(new AppSettings()
+            .addFilterGroupsItem(new FilterGroup()
+                .id("filtergroup2")
+                .source("PRESET")
+                .type(FilterGroup.TypeEnum.ATTRIBUTE)
+                .layerIds(List.of("lyr:snapshot-geoserver:postgis:kadastraal_perceel"))
+                .operator(FilterGroup.OperatorEnum.AND)
+                .addFiltersItem(new Filter()
+                    .id("filter3")
+                    .type(Filter.TypeEnum.ATTRIBUTE)
+                    .condition(Filter.ConditionEnum.u)
+                    .addValueItem("1")
+                    .addValueItem("12419")
+                    .attribute("perceelnummer")
+                    .attributeType(Filter.AttributeTypeEnum.DOUBLE)
+                    .editConfiguration(new FilterEditConfiguration()
+                        .filterTool(FilterEditConfiguration.FilterToolEnum.SLIDER)
+                        .initialLowerValue(1d)
+                        .initialUpperValue(12419d)
+                        .minimumValue(1d)
+                        .maximumValue(12419d)))));
 
     applicationRepository.save(app);
 

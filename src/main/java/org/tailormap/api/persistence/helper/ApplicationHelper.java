@@ -226,21 +226,29 @@ public class ApplicationHelper {
         Set<String> validAppLayerId = mapResponse.getAppLayers().stream()
             .map(AppLayer::getId)
             .collect(java.util.stream.Collectors.toSet());
-        mapResponse.setLayerTreeNodes(mapResponse.getLayerTreeNodes().stream()
-            .map(n -> {
-              // if a level node has no children, it should not be included in the response, unless it is
-              // root
-              if ((n.getChildrenIds() == null
-                      || n.getChildrenIds().isEmpty())
-                  && !Boolean.TRUE.equals(n.getRoot())) {
-                return null;
-              }
+
+        List<LayerTreeNode> initialLayerTreeNodes = mapResponse.getLayerTreeNodes();
+        logger.debug("initial layer tree nodes: {}", initialLayerTreeNodes);
+
+        List<LayerTreeNode> newLayerTreeNodes = mapResponse.getLayerTreeNodes().stream()
+            .peek(n -> {
               // remove childId from childrenIds when not in validAppLayerId
-              n.getChildrenIds().removeIf(childId -> !validAppLayerId.contains(childId));
-              return n;
+              n.getChildrenIds().removeIf(childId -> {
+                boolean inValid = !validAppLayerId.contains(childId);
+                logger.debug("{}Removing child node {}", inValid ? "" : "Not ", childId);
+                return inValid;
+              });
             })
-            .filter(Objects::nonNull)
-            .toList());
+            // discard level nodes that are not root and have no childrenIds
+            .filter(n -> !(n.getChildrenIds().isEmpty() && Objects.equals(n.getRoot(), false)))
+            .toList();
+
+        logger.debug("filtered layer tree nodes: {}", newLayerTreeNodes);
+        logger.debug(
+            "layer tree nodes are {}different",
+            Objects.equals(initialLayerTreeNodes, newLayerTreeNodes) ? "not " : "");
+
+        mapResponse.setLayerTreeNodes(newLayerTreeNodes);
       }
     }
 
@@ -415,9 +423,6 @@ public class ApplicationHelper {
       return true;
     }
 
-    record ServiceLayerInfo(
-        GeoService service, GeoServiceLayer serviceLayer, GeoServiceLayerSettings layerSettings) {}
-
     private ServiceLayerInfo findServiceLayer(AppTreeLayerNode layerRef) {
       GeoService service =
           geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);
@@ -495,5 +500,8 @@ public class ApplicationHelper {
       }
       return false;
     }
+
+    record ServiceLayerInfo(
+        GeoService service, GeoServiceLayer serviceLayer, GeoServiceLayerSettings layerSettings) {}
   }
 }
