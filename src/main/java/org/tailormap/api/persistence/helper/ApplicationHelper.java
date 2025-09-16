@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.ObjectUtils;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.referencing.util.CRSUtilities;
@@ -223,24 +224,59 @@ public class ApplicationHelper {
           addAppTreeNodeItem(node, mapResponse.getLayerTreeNodes());
         }
 
-        Set<String> validAppLayerId = mapResponse.getAppLayers().stream()
+        Set<String> validAppLayerIds = mapResponse.getAppLayers().stream()
             .map(AppLayer::getId)
             .collect(java.util.stream.Collectors.toSet());
 
         List<LayerTreeNode> initialLayerTreeNodes = mapResponse.getLayerTreeNodes();
         logger.debug("initial layer tree nodes: {}", initialLayerTreeNodes);
 
-        List<LayerTreeNode> newLayerTreeNodes = mapResponse.getLayerTreeNodes().stream()
+        Map<String, LayerTreeNode> initialLayerTreeNodesById = mapResponse.getLayerTreeNodes().stream()
+            .collect(Collectors.toMap(LayerTreeNode::getId, n -> n));
+        logger.debug("initial layer tree nodes mapped: {}", initialLayerTreeNodesById);
+
+        // new list so we can reverse it again later to keep original order
+        List<LayerTreeNode> newLayerTreeNodes = initialLayerTreeNodes.stream()
             .peek(n -> {
-              // remove childId from childrenIds when not in validAppLayerId
+              // remove childId from childrenIds when not in validAppLayerIds
               n.getChildrenIds().removeIf(childId -> {
-                boolean inValid = !validAppLayerId.contains(childId);
-                logger.debug("{}Removing child node {}", inValid ? "" : "Not ", childId);
-                return inValid;
+                boolean remove =
+                    (!validAppLayerIds.contains(childId) && /*sub-level nodes*/ n.getRoot() == null)
+                        || (
+                        /*non-root level node*/ !n.getRoot()
+                            && !validAppLayerIds.contains(childId));
+                logger.debug(
+                    "{}removing child node {} from ({}, {})",
+                    remove ? "" : "Not ",
+                    childId,
+                    n.getName(),
+                    n.getId());
+                return remove;
               });
             })
             // discard level nodes that are not root and have no childrenIds
-            .filter(n -> !(n.getChildrenIds().isEmpty() && Objects.equals(n.getRoot(), false)))
+            .filter(n -> {
+              boolean valid = !(n.getChildrenIds().isEmpty() && Objects.equals(n.getRoot(), false));
+              logger.debug(
+                  "{} node {} ({}), it has {} children",
+                  valid ? "Keeping" : "Discarding",
+                  n.getId(),
+                  n.getName(),
+                  n.getChildrenIds().size());
+              return valid;
+            })
+            //                // discard layer nodes that do not have a valid appLayer attached
+            //                .filter(n -> {
+            //                    boolean valid = !(n.getAppLayerId() == null &&
+            // Collections.disjoint(n.getChildrenIds(), validAppLayerIds));
+            //                    logger.debug(
+            //                            "{} node {} ({}), appLayerId {}",
+            //                            valid ? "Keeping" : "Discarding",
+            //                            n.getId(),
+            //                            n.getName(),
+            //                            n.getAppLayerId());
+            //                    return valid;
+            //                })
             .toList();
 
         logger.debug("filtered layer tree nodes: {}", newLayerTreeNodes);
