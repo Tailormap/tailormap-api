@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IngestMetricsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.controller</a> &gt; <span class="el_source">IngestMetricsController.java</span></div><h1>IngestMetricsController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2025 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+package org.tailormap.api.controller;
+
+import io.micrometer.core.instrument.Metrics;
+import io.swagger.v3.oas.annotations.Operation;
+import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
+import java.util.Locale;
+import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.tailormap.api.annotation.AppRestController;
+import org.tailormap.api.persistence.Application;
+import org.tailormap.api.prometheus.TagNames;
+import org.tailormap.api.viewer.model.ViewerResponse;
+
+@AppRestController
+@Validated
+<span class="nc" id="L30">public class IngestMetricsController implements TagNames {</span>
+<span class="nc" id="L31">  private static final Logger logger =</span>
+<span class="nc" id="L32">      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());</span>
+
+  @Value(&quot;${tailormap-api.allowed-metrics}&quot;)
+  private Set&lt;String&gt; allowedMetrics;
+
+  /**
+   * Ingests a metric for the given application layers and viewer kind.
+   *
+   * @param app the application
+   * @param viewerKind the kind of viewer
+   * @param appLayerIds the application layer IDs to ingest the metric for
+   * @param allowedMetric the metric to ingest
+   * @return a ResponseEntity with status 204 No Content if successful, or 400 Bad Request if the metric is not
+   *     allowed
+   */
+  @Operation(
+      summary = &quot;Ingest a metric for the given application layer(s)&quot;,
+      description =
+          &quot;&quot;&quot;
+Ingests a metric for the given application layer(s), the metric will be published through the actuator endpoint as
+a Micrometer counter. All application layers in the appLayerIds that are part of the application will be processed.
+The metric must be one of the allowed metrics defined in the application configuration.&quot;&quot;&quot;)
+  @PutMapping(
+      path = &quot;${tailormap-api.base-path}/{viewerKind}/{viewerName}/metrics/ingest/{appLayerIds}/{allowedMetric}&quot;)
+  public ResponseEntity&lt;Serializable&gt; ingestMetric(
+      @ModelAttribute Application app,
+      @ModelAttribute ViewerResponse.KindEnum viewerKind,
+      @PathVariable Set&lt;String&gt; appLayerIds,
+      @PathVariable String allowedMetric) {
+
+<span class="nc bnc" id="L62" title="All 2 branches missed.">    if (!allowedMetrics.contains(allowedMetric)) {</span>
+<span class="nc" id="L63">      logger.warn(&quot;Invalid metric: {}, not in allowed metrics: {}&quot;, allowedMetric, allowedMetrics);</span>
+<span class="nc" id="L64">      return new ResponseEntity&lt;&gt;(HttpStatus.BAD_REQUEST);</span>
+    }
+<span class="nc bnc" id="L66" title="All 2 branches missed.">    if (appLayerIds.isEmpty()) {</span>
+<span class="nc" id="L67">      return new ResponseEntity&lt;&gt;(HttpStatus.BAD_REQUEST);</span>
+    }
+<span class="nc" id="L69">    logger.trace(&quot;Ingesting metric for {} layer(s)&quot;, appLayerIds);</span>
+
+    // Validate that the given application layers in appLayerIds are actually part of this application
+<span class="nc" id="L72">    app.getAllAppTreeLayerNode()</span>
+<span class="nc" id="L73">        .filter(appTreeLayerNode -&gt; appLayerIds.contains(appTreeLayerNode.getId()))</span>
+        // for each valid appLayer publish metrics
+<span class="nc" id="L75">        .forEach(appTreeLayerNode -&gt; {</span>
+<span class="nc" id="L76">          logger.debug(</span>
+              &quot;Ingesting metric: {}, appId={}, viewerKind={}, appLayerId={} to be published through the actuator endpoint&quot;,
+              allowedMetric,
+<span class="nc" id="L79">              app.getId(),</span>
+              viewerKind,
+<span class="nc" id="L81">              appTreeLayerNode.getId());</span>
+
+          // count/increment the number of times this layer has been switched on for this viewer
+<span class="nc" id="L84">          Metrics.counter(</span>
+                  allowedMetric,
+                  METRICS_APP_ID_TAG,
+<span class="nc" id="L87">                  app.getId().toString(),</span>
+                  METRICS_APP_TYPE_TAG,
+<span class="nc" id="L89">                  viewerKind.name().toLowerCase(Locale.getDefault()),</span>
+                  METRICS_APP_NAME_TAG,
+<span class="nc" id="L91">                  app.getName(),</span>
+                  METRICS_APP_LAYER_ID_TAG,
+<span class="nc" id="L93">                  appTreeLayerNode.getId())</span>
+              // we don't add the appLayerName here, as in many cases you want the allLayerTitle, but that
+              // requires an extra lookup in the appLayerSettings when publishing the metric and does not
+              // take
+              // renaming into account, that can better be done when rendering the metrics
+<span class="nc" id="L98">              .increment();</span>
+<span class="nc" id="L99">        });</span>
+    // Return a 204 No Content response, to indicate that the request was successful but there is no content to
+    // return.
+<span class="nc" id="L102">    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
