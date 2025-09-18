@@ -39,7 +39,7 @@ class TMPasswordDeserializerTest {
 
   @Test
   void testEmptyPassword() {
-    final String testJson = String.format(testJsonTemplate, "");
+    final String testJson = testJsonTemplate.formatted("");
     assertThrows(
         InvalidPasswordException.class,
         () -> this.deserializeJson(testJson),
@@ -48,7 +48,7 @@ class TMPasswordDeserializerTest {
 
   @Test
   void testWeakPassword() {
-    final String testJson = String.format(testJsonTemplate, "flamingo");
+    final String testJson = testJsonTemplate.formatted("flamingo");
     assertThrows(
         InvalidPasswordException.class,
         () -> this.deserializeJson(testJson),
@@ -57,7 +57,7 @@ class TMPasswordDeserializerTest {
 
   @Test
   void testValidPassword() throws IOException {
-    final String testJson = String.format(testJsonTemplate, "myValidSecret$@12");
+    final String testJson = testJsonTemplate.formatted("myValidSecret$@12");
     String actual = this.deserializeJson(testJson);
 
     assertNotNull(actual, "encrypted password should not be null");
