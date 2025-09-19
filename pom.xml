@@ -124,7 +124,7 @@ SPDX-License-Identifier: MIT
         to check
         -->
         <commons-lang3.version>3.18.0</commons-lang3.version>
-        <flyway.version>11.11.2</flyway.version>
+        <flyway.version>11.13.1</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
         <!-- <hibernate.version>6.6.26.Final</hibernate.version>-->
         <junit-jupiter.version>5.13.4</junit-jupiter.version>
