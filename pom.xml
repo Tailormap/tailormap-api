@@ -195,15 +195,6 @@ SPDX-License-Identifier: MIT
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <!--
-                Override for CVE-2025-53864, see https://github.com/Tailormap/tailormap-api/security/dependabot/20
-                Should probably be removed when Spring Security / Spring Boot is updated to 6.5.3/3.5.5 or later, check the dependency tree
-                -->
-                <groupId>com.nimbusds</groupId>
-                <artifactId>nimbus-jose-jwt</artifactId>
-                <version>9.37.4</version>
-            </dependency>
-            <dependency>
                 <groupId>org.gaul</groupId>
                 <artifactId>modernizer-maven-annotations</artifactId>
                 <version>${modernizer-maven-plugin.version}</version>
