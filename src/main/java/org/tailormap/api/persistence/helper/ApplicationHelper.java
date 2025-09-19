@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.ObjectUtils;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.referencing.util.CRSUtilities;
@@ -223,69 +222,92 @@ public class ApplicationHelper {
         for (AppTreeNode node : app.getContentRoot().getLayerNodes()) {
           addAppTreeNodeItem(node, mapResponse.getLayerTreeNodes());
         }
-
-        Set<String> validAppLayerIds = mapResponse.getAppLayers().stream()
+        Set<String> validLayerIds = mapResponse.getAppLayers().stream()
             .map(AppLayer::getId)
             .collect(java.util.stream.Collectors.toSet());
-
         List<LayerTreeNode> initialLayerTreeNodes = mapResponse.getLayerTreeNodes();
-        logger.debug("initial layer tree nodes: {}", initialLayerTreeNodes);
 
-        Map<String, LayerTreeNode> initialLayerTreeNodesById = mapResponse.getLayerTreeNodes().stream()
-            .collect(Collectors.toMap(LayerTreeNode::getId, n -> n));
-        logger.debug("initial layer tree nodes mapped: {}", initialLayerTreeNodesById);
-
-        // new list so we can reverse it again later to keep original order
-        List<LayerTreeNode> newLayerTreeNodes = initialLayerTreeNodes.stream()
-            .peek(n -> {
-              // remove childId from childrenIds when not in validAppLayerIds
-              n.getChildrenIds().removeIf(childId -> {
-                boolean remove =
-                    (!validAppLayerIds.contains(childId) && /*sub-level nodes*/ n.getRoot() == null)
-                        || (
-                        /*non-root level node*/ !n.getRoot()
-                            && !validAppLayerIds.contains(childId));
-                logger.debug(
-                    "{}removing child node {} from ({}, {})",
-                    remove ? "" : "Not ",
-                    childId,
-                    n.getName(),
-                    n.getId());
-                return remove;
-              });
-            })
-            // discard level nodes that are not root and have no childrenIds
-            .filter(n -> {
-              boolean valid = !(n.getChildrenIds().isEmpty() && Objects.equals(n.getRoot(), false));
-              logger.debug(
-                  "{} node {} ({}), it has {} children",
-                  valid ? "Keeping" : "Discarding",
-                  n.getId(),
-                  n.getName(),
-                  n.getChildrenIds().size());
-              return valid;
-            })
-            //                // discard layer nodes that do not have a valid appLayer attached
-            //                .filter(n -> {
-            //                    boolean valid = !(n.getAppLayerId() == null &&
-            // Collections.disjoint(n.getChildrenIds(), validAppLayerIds));
-            //                    logger.debug(
-            //                            "{} node {} ({}), appLayerId {}",
-            //                            valid ? "Keeping" : "Discarding",
-            //                            n.getId(),
-            //                            n.getName(),
-            //                            n.getAppLayerId());
-            //                    return valid;
-            //                })
-            .toList();
-
-        logger.debug("filtered layer tree nodes: {}", newLayerTreeNodes);
-        logger.debug(
-            "layer tree nodes are {}different",
-            Objects.equals(initialLayerTreeNodes, newLayerTreeNodes) ? "not " : "");
-
-        mapResponse.setLayerTreeNodes(newLayerTreeNodes);
+        mapResponse.setLayerTreeNodes(cleanLayerTreeNodes(validLayerIds, initialLayerTreeNodes));
       }
+    }
+
+    private List<LayerTreeNode> cleanLayerTreeNodes(
+        Set<String> validLayerIds, List<LayerTreeNode> initialLayerTreeNodes) {
+      List<String> levelNodes = initialLayerTreeNodes.stream()
+          .filter(n -> n.getAppLayerId() == null)
+          .map(LayerTreeNode::getId)
+          .toList();
+      //      logger.debug("level nodes: {}", levelNodes);
+
+      //      List<String> layerNodesIds = initialLayerTreeNodes.stream()
+      //          .filter(n -> n.getAppLayerId() != null)
+      //          .map(LayerTreeNode::getId)
+      //          .toList();
+      //      logger.debug("layer nodes: {}", layerNodesIds);
+
+      //      logger.debug("initial layer tree nodes: {}", initialLayerTreeNodes);
+
+      List<LayerTreeNode> newLayerTreeNodes = initialLayerTreeNodes.stream()
+          .peek(n -> {
+            n.getChildrenIds().removeIf(childId -> {
+              // remove invalid layers from the children
+              boolean removeInvalidChild =
+                  !validLayerIds.contains(childId) && !levelNodes.contains(childId);
+              logger.debug(
+                  "{} child element {} from ({}, {})",
+                  removeInvalidChild ? "Removing" : "Not removing",
+                  childId,
+                  n.getName(),
+                  n.getId());
+              return removeInvalidChild;
+            });
+          })
+          .filter(n -> {
+            // remove level nodes without children
+            boolean discardNode = n.getAppLayerId() == null
+                && (n.getChildrenIds() != null
+                    && n.getChildrenIds().isEmpty());
+            logger.debug(
+                "{} node ({}, {}), {} children",
+                discardNode ? "Discarding" : "Keeping",
+                n.getName(),
+                n.getId(),
+                discardNode ? "without" : "with");
+            return !discardNode;
+          })
+          .toList();
+
+      //      logger.debug("cleanup 1 nodes: {}", newLayerTreeNodes);
+      logger.debug(
+          "layer tree nodes are {}different",
+          Objects.equals(initialLayerTreeNodes, newLayerTreeNodes) ? "not " : "");
+
+      List<String> cleanLevelNodeIds = newLayerTreeNodes.stream()
+          .filter(n -> n.getAppLayerId() == null)
+          .map(LayerTreeNode::getId)
+          .toList();
+
+      List<LayerTreeNode> cleanedLayerTreeNodes = newLayerTreeNodes.stream()
+          .peek(n -> {
+            n.getChildrenIds().removeIf(childId -> {
+              // remove invalid layers from the children
+              boolean removeInvalidChild =
+                  !cleanLevelNodeIds.contains(childId) && levelNodes.contains(childId);
+              logger.debug(
+                  "{} child element {} from ({}, {}) in cleanup 2",
+                  removeInvalidChild ? "Removing" : "Not removing",
+                  childId,
+                  n.getName(),
+                  n.getId());
+              return removeInvalidChild;
+            });
+          })
+          .toList();
+
+      logger.debug(
+          "layer tree nodes are {}different",
+          Objects.equals(initialLayerTreeNodes, cleanedLayerTreeNodes) ? "not " : "");
+      return cleanedLayerTreeNodes;
     }
 
     private void buildTerrainLayers() {

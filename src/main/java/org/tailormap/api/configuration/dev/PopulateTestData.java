@@ -26,7 +26,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -1595,11 +1594,6 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .serviceId("openbasiskaart")
                 .layerName("osm")
                 .visible(true))
-            .addTerrainLayerNodesItem(new AppTreeLevelNode()
-                .id("root")
-                .root(true)
-                .title("Terrain layers")
-                .childrenIds(Collections.emptyList()))
             .addLayerNodesItem(new AppTreeLevelNode()
                 .objectType("AppTreeLevelNode")
                 .id("root")
@@ -1608,11 +1602,11 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .childrenIds(List.of(
                     "lyr:snapshot-geoserver:postgis:kadastraal_perceel", "xpfhl34VmghkU12nP9Jer")))
             .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
                 .id("lyr:snapshot-geoserver:postgis:kadastraal_perceel")
-                .visible(true)
-                .layerName("postgis:kadastraal_perceel")
                 .serviceId("snapshot-geoserver")
-                .objectType("AppTreeLayerNode"))
+                .layerName("postgis:kadastraal_perceel")
+                .visible(true))
             .addLayerNodesItem(new AppTreeLevelNode()
                 .id("xpfhl34VmghkU12nP9Jer")
                 .root(false)
@@ -1625,27 +1619,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
                 .visible(true)
                 .serviceId("filtered-snapshot-geoserver")
                 .layerName("postgis:begroeidterreindeel")))
-        .setSettings(new AppSettings()
-            .addFilterGroupsItem(new FilterGroup()
-                .id("filtergroup2")
-                .source("PRESET")
-                .type(FilterGroup.TypeEnum.ATTRIBUTE)
-                .layerIds(List.of("lyr:snapshot-geoserver:postgis:kadastraal_perceel"))
-                .operator(FilterGroup.OperatorEnum.AND)
-                .addFiltersItem(new Filter()
-                    .id("filter3")
-                    .type(Filter.TypeEnum.ATTRIBUTE)
-                    .condition(Filter.ConditionEnum.u)
-                    .addValueItem("1")
-                    .addValueItem("12419")
-                    .attribute("perceelnummer")
-                    .attributeType(Filter.AttributeTypeEnum.DOUBLE)
-                    .editConfiguration(new FilterEditConfiguration()
-                        .filterTool(FilterEditConfiguration.FilterToolEnum.SLIDER)
-                        .initialLowerValue(1d)
-                        .initialUpperValue(12419d)
-                        .minimumValue(1d)
-                        .maximumValue(12419d)))));
+        .setSettings(new AppSettings());
 
     applicationRepository.save(app);
 
