@@ -62,24 +62,23 @@
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>          .orElseThrow(() -&gt; <strong class="jxr_keyword">new</strong> IllegalStateException(
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>              <span class="jxr_string">"Expected upload with filename 'ISO_7001_PI_PF_007.svg' not found in the database"</span>));
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      String expected = String.format(
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>          <span class="jxr_string">""</span><span class="jxr_string">"
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  [
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  {
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <span class="jxr_string">"id"</span>: <span class="jxr_string">"%s"</span>,
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <span class="jxr_string">"hash"</span>: <span class="jxr_string">"cfb1b538761a21f8d39c0555ba9802b8af4d09a6"</span>
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>  }
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>  ]<span class="jxr_string">""</span><span class="jxr_string">",
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>          water.getId().toString());
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      mockMvc.perform(post(adminBasePath + <span class="jxr_string">"/uploads/find-by-hash/drawing-style-image"</span>)
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>              .contentType(MediaType.APPLICATION_JSON)
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>              .content(body))
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          .andExpect(status().is2xxSuccessful())
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>          .andExpect(header().string(<span class="jxr_string">"Content-Type"</span>, MediaType.APPLICATION_JSON_VALUE))
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          .andExpect(content().json(expected));
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>    }
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  }
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      String expected = <span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  [
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  {
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <span class="jxr_string">"id"</span>: <span class="jxr_string">"%s"</span>,
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <span class="jxr_string">"hash"</span>: <span class="jxr_string">"cfb1b538761a21f8d39c0555ba9802b8af4d09a6"</span>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  }
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  ]<span class="jxr_string">""</span><span class="jxr_string">"
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          .formatted(water.getId().toString());
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      mockMvc.perform(post(adminBasePath + <span class="jxr_string">"/uploads/find-by-hash/drawing-style-image"</span>)
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>              .contentType(MediaType.APPLICATION_JSON)
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>              .content(body))
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          .andExpect(status().is2xxSuccessful())
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          .andExpect(header().string(<span class="jxr_string">"Content-Type"</span>, MediaType.APPLICATION_JSON_VALUE))
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          .andExpect(content().json(expected));
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>    }
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
