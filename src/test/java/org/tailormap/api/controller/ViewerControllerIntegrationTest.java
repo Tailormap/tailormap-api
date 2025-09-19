@@ -33,7 +33,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
-import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.viewer.model.Service;
 
 @PostgresIntegrationTest
@@ -41,9 +40,6 @@ import org.tailormap.api.viewer.model.Service;
 @Stopwatch
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ViewerControllerIntegrationTest {
-  @Autowired
-  ApplicationRepository applicationRepository;
-
   @Autowired
   private MockMvc mockMvc;
 
@@ -408,7 +404,6 @@ class ViewerControllerIntegrationTest {
         .andExpect(jsonPath("$.layerTreeNodes.length()").value(4))
         .andExpect(jsonPath("$.layerTreeNodes[0].id").value("root"))
         .andExpect(jsonPath("$.layerTreeNodes[0].childrenIds.length()").value(2))
-        .andExpect(jsonPath("$.layerTreeNodes[0].id").value("root"))
         .andExpect(
             jsonPath("$.layerTreeNodes[1].id").value("lyr:snapshot-geoserver:postgis:kadastraal_perceel"))
         .andExpect(jsonPath("$.layerTreeNodes[2].id").value("xpfhl34VmghkU12nP9Jer"))
