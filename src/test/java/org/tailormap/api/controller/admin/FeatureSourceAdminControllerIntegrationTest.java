@@ -50,13 +50,13 @@ class FeatureSourceAdminControllerIntegrationTest {
 
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
     dataSource.setDriverClassName("org.postgresql.Driver");
-    dataSource.setUrl(String.format("jdbc:postgresql://%s:%s/%s", host, port, database));
+    dataSource.setUrl("jdbc:postgresql://%s:%s/%s".formatted(host, port, database));
     dataSource.setUsername(user);
     dataSource.setPassword(password);
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     jdbcTemplate.execute("drop table if exists test");
 
-    String featureSourcePOSTBody = String.format(
+    String featureSourcePOSTBody =
         """
 {
 "title": "My Test Source",
@@ -75,8 +75,8 @@ class FeatureSourceAdminControllerIntegrationTest {
 "username": "%s",
 "password": "%s"
 }
-}""",
-        port, host, database, user, password);
+}"""
+            .formatted(port, host, database, user, password);
 
     MvcResult result = mockMvc.perform(post(adminBasePath + "/feature-sources")
             .contentType(MediaType.APPLICATION_JSON)
@@ -92,8 +92,7 @@ class FeatureSourceAdminControllerIntegrationTest {
     try {
       jdbcTemplate.execute("create table test(id serial primary key)");
 
-      mockMvc.perform(post(
-              adminBasePath + String.format("/feature-sources/%s/refresh-capabilities", featureSourceId)))
+      mockMvc.perform(post(adminBasePath + "/feature-sources/%s/refresh-capabilities".formatted(featureSourceId)))
           .andExpect(status().isFound())
           .andExpect(header().string("Location", equalTo(selfLink)));
 
@@ -111,8 +110,7 @@ class FeatureSourceAdminControllerIntegrationTest {
       }
     }
 
-    mockMvc.perform(post(
-            adminBasePath + String.format("/feature-sources/%s/refresh-capabilities", featureSourceId)))
+    mockMvc.perform(post(adminBasePath + "/feature-sources/%s/refresh-capabilities".formatted(featureSourceId)))
         .andExpect(status().isFound())
         .andExpect(header().string("Location", equalTo(selfLink)));
 

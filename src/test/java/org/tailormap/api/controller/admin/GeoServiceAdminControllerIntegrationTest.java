@@ -112,7 +112,7 @@ class GeoServiceAdminControllerIntegrationTest {
       server.enqueue(
           new MockResponse.Builder().headers(contentType).body(body).build());
 
-      mockMvc.perform(post(adminBasePath + String.format("/geo-services/%s/refresh-capabilities", serviceId)))
+      mockMvc.perform(post(adminBasePath + "/geo-services/%s/refresh-capabilities".formatted(serviceId)))
           .andExpect(status().isFound())
           .andExpect(header().string("Location", equalTo(selfLink)));
 
@@ -169,7 +169,7 @@ class GeoServiceAdminControllerIntegrationTest {
         .andReturn();
     String serviceId = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
 
-    mockMvc.perform(post(adminBasePath + String.format("/geo-services/%s/refresh-capabilities", serviceId)))
+    mockMvc.perform(post(adminBasePath + "/geo-services/%s/refresh-capabilities".formatted(serviceId)))
         .andExpect(status().isBadRequest())
         .andExpect(
             content()

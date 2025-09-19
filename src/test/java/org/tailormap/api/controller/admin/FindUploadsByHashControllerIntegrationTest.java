@@ -54,15 +54,14 @@ class FindUploadsByHashControllerIntegrationTest {
         .orElseThrow(() -> new IllegalStateException(
             "Expected upload with filename 'ISO_7001_PI_PF_007.svg' not found in the database"));
 
-    String expected = String.format(
-        """
+    String expected = """
 [
 {
 "id": "%s",
 "hash": "cfb1b538761a21f8d39c0555ba9802b8af4d09a6"
 }
-]""",
-        water.getId().toString());
+]"""
+        .formatted(water.getId().toString());
 
     mockMvc.perform(post(adminBasePath + "/uploads/find-by-hash/drawing-style-image")
             .contentType(MediaType.APPLICATION_JSON)
