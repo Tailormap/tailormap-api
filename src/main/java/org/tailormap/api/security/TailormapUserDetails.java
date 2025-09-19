@@ -20,6 +20,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.tailormap.api.persistence.Group;
 import org.tailormap.api.persistence.User;
+import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.repository.GroupRepository;
 
 public class TailormapUserDetails implements UserDetails {
@@ -55,9 +56,12 @@ public class TailormapUserDetails implements UserDetails {
     validUntil = user.getValidUntil();
     enabled = user.isEnabled();
 
-    user.getAdditionalProperties().stream()
-        .map(p -> new UDAdditionalProperty(p.getKey(), p.getIsPublic(), p.getValue()))
-        .forEach(additionalProperties::add);
+    if (user.getAdditionalProperties() != null) {
+      for (AdminAdditionalProperty property : user.getAdditionalProperties()) {
+        additionalProperties.add(
+            new UDAdditionalProperty(property.getKey(), property.getIsPublic(), property.getValue()));
+      }
+    }
 
     // For group properties, look in the database instead of user.getGroups(), so aliasForGroup is taken into
     // account

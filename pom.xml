@@ -10,11 +10,11 @@ SPDX-License-Identifier: MIT
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <!-- when updating please check version overrides using the commands in the properties section -->
-        <version>3.5.5</version>
+        <version>3.5.6</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
-    <version>12.1.3-SNAPSHOT</version>
+    <version>12.1.4-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Tailormap API</name>
     <description>Tailormap API provides the backend for Tailormap</description>
@@ -64,7 +64,7 @@ SPDX-License-Identifier: MIT
     <scm>
         <connection>scm:git:git@github.com:Tailormap/tailormap-api.git</connection>
         <developerConnection>scm:git:git@github.com:Tailormap/tailormap-api.git</developerConnection>
-        <tag>tailormap-api-12.1.1</tag>
+        <tag>tailormap-api-12.1.3</tag>
         <url>https://github.com/Tailormap/tailormap-api/</url>
     </scm>
     <issueManagement>
@@ -100,7 +100,7 @@ SPDX-License-Identifier: MIT
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
-        <project.build.outputTimestamp>2025-09-15T11:59:35Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-09-16T10:10:49Z</project.build.outputTimestamp>
         <geotools.version>33.2</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.1.0</okhttp.version>
@@ -124,14 +124,14 @@ SPDX-License-Identifier: MIT
         to check
         -->
         <commons-lang3.version>3.18.0</commons-lang3.version>
-        <flyway.version>11.11.2</flyway.version>
+        <flyway.version>11.13.1</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
         <!-- <hibernate.version>6.6.26.Final</hibernate.version>-->
         <junit-jupiter.version>5.13.4</junit-jupiter.version>
         <!-- <micrometer.version>1.15.3</micrometer.version>-->
         <mssql-jdbc.version>13.2.0.jre11</mssql-jdbc.version>
         <oracle-database.version>23.9.0.25.07</oracle-database.version>
-        <postgresql.version>42.7.7</postgresql.version>
+        <postgresql.version>42.7.8</postgresql.version>
         <!-- <spring-data-bom.version>2024.0.6</spring-data-bom.version>-->
         <!-- <spring-hateoas.version>2.3.3</spring-hateoas.version>-->
         <!-- <spring-security.version>6.3.4</spring-security.version>-->
@@ -193,15 +193,6 @@ SPDX-License-Identifier: MIT
                 <version>${junit-jupiter.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <!--
-                Override for CVE-2025-53864, see https://github.com/Tailormap/tailormap-api/security/dependabot/20
-                Should probably be removed when Spring Security / Spring Boot is updated to 6.5.3/3.5.5 or later, check the dependency tree
-                -->
-                <groupId>com.nimbusds</groupId>
-                <artifactId>nimbus-jose-jwt</artifactId>
-                <version>9.37.4</version>
             </dependency>
             <dependency>
                 <groupId>org.gaul</groupId>
@@ -289,11 +280,7 @@ SPDX-License-Identifier: MIT
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>2.2.36</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.annotation</groupId>
-            <artifactId>jakarta.annotation-api</artifactId>
+            <version>2.2.37</version>
         </dependency>
         <dependency>
             <groupId>jakarta.persistence</groupId>
@@ -553,6 +540,11 @@ SPDX-License-Identifier: MIT
             <artifactId>webjars-locator-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.github.romankh3</groupId>
             <artifactId>image-comparison</artifactId>
             <version>4.4.0</version>
@@ -728,6 +720,23 @@ SPDX-License-Identifier: MIT
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.openrewrite.maven</groupId>
+                <artifactId>rewrite-maven-plugin</artifactId>
+                <version>6.18.0</version>
+                <configuration>
+                    <activeRecipes>
+                        <recipe>org.openrewrite.java.migrate.UpgradeToJava17</recipe>
+                    </activeRecipes>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.openrewrite.recipe</groupId>
+                        <artifactId>rewrite-migrate-java</artifactId>
+                        <version>3.17.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
                 <configuration>

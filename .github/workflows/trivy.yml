@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: 'Set up JDK'
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: 17
@@ -37,12 +37,12 @@ jobs:
         run: mvn -U package -DskipTests -DskipITs -Dmaven.javadoc.skip=true
 
       - name: Trivy Cache
-        uses: yogeshlonkar/trivy-cache-action@v0.1.14
+        uses: yogeshlonkar/trivy-cache-action@v0.1.15
         with:
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Run Trivy vulnerability scanner'
-        uses: aquasecurity/trivy-action@0.32.0
+        uses: aquasecurity/trivy-action@0.33.1
         # docker run --rm -v trivy_cache:/root/.cache/ aquasec/trivy image ghcr.io/tailormap/tailormap-api:snapshot
         with:
           image-ref: 'ghcr.io/tailormap/tailormap-api:snapshot'
