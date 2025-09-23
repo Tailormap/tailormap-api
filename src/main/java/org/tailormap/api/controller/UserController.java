@@ -5,7 +5,12 @@
  */
 package org.tailormap.api.controller;
 
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
@@ -17,6 +22,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.helper.UploadHelper;
@@ -99,5 +105,14 @@ public class UserController {
     }
 
     return ResponseEntity.status(HttpStatus.OK).body(result);
+  }
+
+  @GetMapping(
+      /* Can't use ${tailormap-api.base-path} because WebMvcLinkBuilder.linkTo() won't work */
+      path = "/api/reset_password/{uuid}",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Serializable> getPasswordReset(@NotNull @PathVariable UUID uuid) {
+    // TODO lookup the token, check if valid, return something useful
+    throw new UnsupportedOperationException("TODO: Not implemented yet");
   }
 }
