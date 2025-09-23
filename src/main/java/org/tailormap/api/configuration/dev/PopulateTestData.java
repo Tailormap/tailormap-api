@@ -1571,6 +1571,58 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
 
     applicationRepository.save(app);
 
+    app = new Application()
+        .setName("public-with-auth")
+        .setTitle("Public app with one restricted layer in a group")
+        .setCrs("EPSG:28992")
+        .setAuthorizationRules(ruleAnonymousRead)
+        .setInitialExtent(
+            new Bounds().minx(130011d).miny(458031d).maxx(132703d).maxy(459995d))
+        .setMaxExtent(
+            new Bounds().minx(-285401d).miny(22598d).maxx(595401d).maxy(903401d))
+        .setStyling(new AppStyling().logo(logo.getId().toString()))
+        .setContentRoot(new AppContent()
+            .addBaseLayerNodesItem(new AppTreeLevelNode()
+                .objectType("AppTreeLevelNode")
+                .id("root")
+                .root(true)
+                .title("Basemaps")
+                .childrenIds(List.of("lyr:openbasiskaart:osm")))
+            .addBaseLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:openbasiskaart:osm")
+                .serviceId("openbasiskaart")
+                .layerName("osm")
+                .visible(true))
+            .addLayerNodesItem(new AppTreeLevelNode()
+                .objectType("AppTreeLevelNode")
+                .id("root")
+                .root(true)
+                .title("Application layers")
+                .childrenIds(List.of(
+                    "lyr:snapshot-geoserver:postgis:kadastraal_perceel", "xpfhl34VmghkU12nP9Jer")))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:snapshot-geoserver:postgis:kadastraal_perceel")
+                .serviceId("snapshot-geoserver")
+                .layerName("postgis:kadastraal_perceel")
+                .visible(true))
+            .addLayerNodesItem(new AppTreeLevelNode()
+                .id("xpfhl34VmghkU12nP9Jer")
+                .root(false)
+                .title("restricted")
+                .objectType("AppTreeLevelNode")
+                .childrenIds(List.of("lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel")))
+            .addLayerNodesItem(new AppTreeLayerNode()
+                .objectType("AppTreeLayerNode")
+                .id("lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel")
+                .visible(true)
+                .serviceId("filtered-snapshot-geoserver")
+                .layerName("postgis:begroeidterreindeel")))
+        .setSettings(new AppSettings());
+
+    applicationRepository.save(app);
+
     Configuration config = new Configuration();
     config.setKey(Configuration.DEFAULT_APP);
     config.setValue("default");
