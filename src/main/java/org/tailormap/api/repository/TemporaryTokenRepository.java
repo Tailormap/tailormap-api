@@ -11,4 +11,6 @@ import org.tailormap.api.persistence.TemporaryToken;
 
 public interface TemporaryTokenRepository extends JpaRepository<TemporaryToken, UUID> {
   void deleteAllByTokenType(TemporaryToken.TokenType tokenType);
+
+  long countByUsername(String actuator);
 }

@@ -17,11 +17,9 @@ import static org.tailormap.api.TestRequestProcessor.setServletPath;
 
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
-import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import jakarta.mail.internet.MimeMessage;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.parallel.Execution;
@@ -31,15 +29,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
-import org.tailormap.api.persistence.TemporaryToken;
 import org.tailormap.api.repository.TemporaryTokenRepository;
 
 @PostgresIntegrationTest
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
-@Transactional
 class PasswordResetControllerIntegrationTest {
   private static final String MAIL_EMAIL = "tailormap@tailormap.com";
   private static final String MAIL_USER = "tailormap";
@@ -89,10 +84,26 @@ class PasswordResetControllerIntegrationTest {
     assertThat((String) emails[0].getContent(), containsString("Your reset token url: http://localhost"));
   }
 
-  @AfterEach
-  void afterEach() throws FolderException {
-    // cleanup any PASSWORD_RESET tokens created in the controller
-    temporaryTokenRepository.deleteAllByTokenType(TemporaryToken.TokenType.PASSWORD_RESET);
-    greenMail.purgeEmailFromAllMailboxes();
+  @Test
+  void testRequestPasswordResetDisabledForActuator() throws Exception {
+    final String url = apiBasePath + "/password-reset";
+    mockMvc.perform(post(url)
+            .content("username=actuator")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
+    Awaitility.await()
+        .pollDelay(5, SECONDS)
+        .untilAsserted(() -> assertEquals(
+            0,
+            temporaryTokenRepository.countByUsername("actuator"),
+            "There should be no tokens for actuator's request"));
+    Awaitility.await()
+        .pollDelay(3, SECONDS)
+        .untilAsserted(() -> assertEquals(
+            0, greenMail.getReceivedMessages().length, "There should be no emails for actuator's request"));
   }
 }

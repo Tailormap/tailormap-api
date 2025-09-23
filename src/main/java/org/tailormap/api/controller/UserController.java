@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,9 @@ public class UserController {
   private final OIDCRepository oidcRepository;
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
+
+  @Value("${tailormap-api.password-reset.enabled:true}")
+  private boolean passwordResetEnabled;
 
   public UserController(
       OIDCRepository oidcRepository, UserRepository userRepository, GroupRepository groupRepository) {
@@ -117,8 +121,13 @@ public class UserController {
       /* Can't use ${tailormap-api.base-path} because WebMvcLinkBuilder.linkTo() won't work */
       path = "/api/reset_password/{uuid}",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Serializable> getPasswordReset(@NotNull @PathVariable UUID uuid) {
-    // TODO lookup the token, check if valid, return something useful
-    throw new UnsupportedOperationException("TODO: Not implemented yet");
+  public ResponseEntity<?> getPasswordReset(@NotNull @PathVariable UUID uuid) {
+    if (passwordResetEnabled) {
+      // TODO lookup the token, check if valid, return something useful
+      throw new UnsupportedOperationException("TODO: Not implemented yet");
+    } else {
+      // Password reset is disabled
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
   }
 }

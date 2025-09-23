@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.slf4j.Logger;
@@ -43,8 +44,11 @@ public class PasswordResetController {
   @Value("${tailormap-api.mail.from}")
   private String mailFrom;
 
-  //  @Value("${tailormap-api.base-path}")
-  //  private String basePath;
+  @Value("${tailormap-api.password-reset.enabled:true}")
+  private boolean passwordResetEnabled;
+
+  @Value("${tailormap-api.password-reset.disabled-for}")
+  private Set<String> passwordResetDisabledFor;
 
   public PasswordResetController(
       JavaMailSender emailSender,
@@ -68,7 +72,9 @@ public class PasswordResetController {
   @Counted(value = "tailormap_api_password_reset_request", description = "number password reset requests")
   public ResponseEntity<Serializable> requestPasswordReset(
       @RequestParam @Valid String username, HttpServletRequest request) {
-    this.sendPasswordResetEmail(username, request);
+    if (passwordResetEnabled && !passwordResetDisabledFor.contains(username)) {
+      this.sendPasswordResetEmail(username, request);
+    }
 
     return ResponseEntity.ok(
         new ObjectMapper().createObjectNode().put("message", "Your password reset request is being processed"));
