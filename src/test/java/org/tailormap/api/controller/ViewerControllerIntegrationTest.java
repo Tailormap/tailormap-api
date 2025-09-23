@@ -33,7 +33,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.tailormap.api.annotation.PostgresIntegrationTest;
-import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.viewer.model.Service;
 
 @PostgresIntegrationTest
@@ -41,9 +40,6 @@ import org.tailormap.api.viewer.model.Service;
 @Stopwatch
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ViewerControllerIntegrationTest {
-  @Autowired
-  ApplicationRepository applicationRepository;
-
   @Autowired
   private MockMvc mockMvc;
 
@@ -367,5 +363,52 @@ class ViewerControllerIntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.terrainLayerTreeNodes[0].id").value("root-terrain-layers"))
         .andExpect(jsonPath("$.terrainLayerTreeNodes[1].id").value("lyr:ahn_terrain_model:quantizedmesh"));
+  }
+
+  @Test
+  void should_filter_treenodes_for_anonymous() throws Exception {
+    final String path = apiBasePath + "/app/public-with-auth/map";
+    mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.services.length()").value(2))
+        .andExpect(jsonPath("$.appLayers.length()").value(2))
+        .andExpect(jsonPath("$.appLayers[0].id").value("lyr:openbasiskaart:osm"))
+        .andExpect(jsonPath("$.appLayers[1].id").value("lyr:snapshot-geoserver:postgis:kadastraal_perceel"))
+        .andExpect(jsonPath("$.layerTreeNodes.length()").value(2))
+        .andExpect(jsonPath("$.layerTreeNodes[0].id").value("root"))
+        .andExpect(jsonPath("$.layerTreeNodes[0].childrenIds.length()").value(1))
+        // xpfhl34VmghkU12nP9Jer should not be here
+        .andExpect(jsonPath("$.layerTreeNodes[0].childrenIds[0]")
+            .value("lyr:snapshot-geoserver:postgis:kadastraal_perceel"))
+        .andExpect(
+            jsonPath("$.layerTreeNodes[1].id").value("lyr:snapshot-geoserver:postgis:kadastraal_perceel"))
+        .andExpect(jsonPath("$.baseLayerTreeNodes.length()").value(2));
+  }
+
+  @Test
+  @WithMockUser(
+      username = "foo",
+      authorities = {"test-foo"})
+  void should_not_filter_treenodes_for_foo() throws Exception {
+    final String path = apiBasePath + "/app/public-with-auth/map";
+    mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON).with(setServletPath(path)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.services.length()").value(3))
+        .andExpect(jsonPath("$.appLayers.length()").value(3))
+        .andExpect(jsonPath("$.appLayers[0].id").value("lyr:openbasiskaart:osm"))
+        .andExpect(jsonPath("$.appLayers[1].id").value("lyr:snapshot-geoserver:postgis:kadastraal_perceel"))
+        .andExpect(jsonPath("$.appLayers[2].id")
+            .value("lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel"))
+        .andExpect(jsonPath("$.layerTreeNodes.length()").value(4))
+        .andExpect(jsonPath("$.layerTreeNodes[0].id").value("root"))
+        .andExpect(jsonPath("$.layerTreeNodes[0].childrenIds.length()").value(2))
+        .andExpect(
+            jsonPath("$.layerTreeNodes[1].id").value("lyr:snapshot-geoserver:postgis:kadastraal_perceel"))
+        .andExpect(jsonPath("$.layerTreeNodes[2].id").value("xpfhl34VmghkU12nP9Jer"))
+        .andExpect(jsonPath("$.layerTreeNodes[3].id")
+            .value("lyr:filtered-snapshot-geoserver:postgis:begroeidterreindeel"))
+        .andExpect(jsonPath("$.baseLayerTreeNodes.length()").value(2));
   }
 }

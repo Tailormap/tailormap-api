@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.persistence.helper;
 
+import static java.util.stream.Collectors.toSet;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.tailormap.api.persistence.helper.GeoServiceHelper.getWmsRequest;
 import static org.tailormap.api.persistence.json.GeoServiceProtocol.LEGEND;
@@ -156,7 +157,7 @@ public class ApplicationHelper {
     mapResponse.crs(crs).maxExtent(maxExtent).initialExtent(initialExtent);
   }
 
-  public void setLayers(Application app, MapResponse mr) {
+  private void setLayers(Application app, MapResponse mr) {
     new MapResponseLayerBuilder(app, mr).buildLayers();
   }
 
@@ -214,6 +215,12 @@ public class ApplicationHelper {
         for (AppTreeNode node : app.getContentRoot().getBaseLayerNodes()) {
           addAppTreeNodeItem(node, mapResponse.getBaseLayerTreeNodes());
         }
+
+        Set<String> validLayerIds =
+            mapResponse.getAppLayers().stream().map(AppLayer::getId).collect(toSet());
+        List<LayerTreeNode> initialLayerTreeNodes = mapResponse.getBaseLayerTreeNodes();
+
+        mapResponse.setBaseLayerTreeNodes(cleanLayerTreeNodes(validLayerIds, initialLayerTreeNodes));
       }
     }
 
@@ -222,7 +229,56 @@ public class ApplicationHelper {
         for (AppTreeNode node : app.getContentRoot().getLayerNodes()) {
           addAppTreeNodeItem(node, mapResponse.getLayerTreeNodes());
         }
+        Set<String> validLayerIds =
+            mapResponse.getAppLayers().stream().map(AppLayer::getId).collect(toSet());
+        List<LayerTreeNode> initialLayerTreeNodes = mapResponse.getLayerTreeNodes();
+
+        mapResponse.setLayerTreeNodes(cleanLayerTreeNodes(validLayerIds, initialLayerTreeNodes));
       }
+    }
+
+    /**
+     * Cleans the layer tree nodes by removing references to non-existing layers and removing level nodes without
+     * children, thus preventing exposure of application internals to unauthorized users.
+     *
+     * @param validLayerIds the ids of the layers that exist
+     * @param initialLayerTreeNodes the initial list of layer tree nodes
+     * @return the cleaned list of layer tree nodes
+     */
+    private List<LayerTreeNode> cleanLayerTreeNodes(
+        Set<String> validLayerIds, List<LayerTreeNode> initialLayerTreeNodes) {
+      List<String> levelNodes = initialLayerTreeNodes.stream()
+          .filter(n -> n.getAppLayerId() == null)
+          .map(LayerTreeNode::getId)
+          .toList();
+
+      List<LayerTreeNode> newLayerTreeNodes = initialLayerTreeNodes.stream()
+          .peek(n -> {
+            n.getChildrenIds()
+                .removeIf(childId ->
+                    /* remove invalid layers from the children */
+                    !validLayerIds.contains(childId) && !levelNodes.contains(childId));
+          })
+          .filter(n ->
+              /* remove level nodes without children */
+              !(n.getAppLayerId() == null
+                  && (n.getChildrenIds() != null
+                      && n.getChildrenIds().isEmpty())))
+          .toList();
+
+      List<String> cleanLevelNodeIds = newLayerTreeNodes.stream()
+          .filter(n -> n.getAppLayerId() == null)
+          .map(LayerTreeNode::getId)
+          .toList();
+
+      return newLayerTreeNodes.stream()
+          .peek(n -> {
+            n.getChildrenIds()
+                .removeIf(childId ->
+                    /* remove invalid layers from the children */
+                    !cleanLevelNodeIds.contains(childId) && levelNodes.contains(childId));
+          })
+          .toList();
     }
 
     private void buildTerrainLayers() {
@@ -396,9 +452,6 @@ public class ApplicationHelper {
       return true;
     }
 
-    record ServiceLayerInfo(
-        GeoService service, GeoServiceLayer serviceLayer, GeoServiceLayerSettings layerSettings) {}
-
     private ServiceLayerInfo findServiceLayer(AppTreeLayerNode layerRef) {
       GeoService service =
           geoServiceRepository.findById(layerRef.getServiceId()).orElse(null);
@@ -476,5 +529,8 @@ public class ApplicationHelper {
       }
       return false;
     }
+
+    record ServiceLayerInfo(
+        GeoService service, GeoServiceLayer serviceLayer, GeoServiceLayerSettings layerSettings) {}
   }
 }
