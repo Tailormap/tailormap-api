@@ -6,9 +6,11 @@
 package org.tailormap.api.controller;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Counted;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
@@ -41,8 +43,8 @@ public class PasswordResetController {
   @Value("${tailormap-api.mail.from}")
   private String mailFrom;
 
-  @Value("${tailormap-api.base-path}")
-  private String basePath;
+  //  @Value("${tailormap-api.base-path}")
+  //  private String basePath;
 
   public PasswordResetController(
       JavaMailSender emailSender,
@@ -60,42 +62,54 @@ public class PasswordResetController {
    * @return 200 OK
    */
   @PostMapping(
-      /* Can't use ${tailormap-api.base-path} because WebMvcLinkBuilder.linkTo() won't work */
-      path = "/api/password-reset",
+      path = "${tailormap-api.base-path}/password-reset",
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
   @Counted(value = "tailormap_api_password_reset_request", description = "number password reset requests")
-  public ResponseEntity<Serializable> requestPasswordReset(@RequestParam @Valid String username) {
-    this.sendPasswordResetEmail(username);
+  public ResponseEntity<Serializable> requestPasswordReset(
+      @RequestParam @Valid String username, HttpServletRequest request) {
+    this.sendPasswordResetEmail(username, request);
 
     return ResponseEntity.ok(
         new ObjectMapper().createObjectNode().put("message", "Your password reset request is being processed"));
   }
 
-  private void sendPasswordResetEmail(String username) {
+  private void sendPasswordResetEmail(String username, HttpServletRequest request) {
     try {
+      // Build absolute URL considering proxy headers; we can't do this inside the email thread as it may throw an
+      // IllegalStateException: The request object has been recycled and is no longer associated with this facade
+      String scheme = request.getHeader("X-Forwarded-Proto") != null
+          ? request.getHeader("X-Forwarded-Proto")
+          : request.getScheme();
+      String host = request.getHeader("X-Forwarded-Host") != null
+          ? request.getHeader("X-Forwarded-Host")
+          : request.getServerName();
+      int port = request.getHeader("X-Forwarded-Port") != null
+          ? Integer.parseInt(request.getHeader("X-Forwarded-Port"))
+          : request.getServerPort();
+
       ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
       emailExecutor.execute(() -> {
         String email =
             this.userRepository.findById(username).orElseThrow().getEmail();
-        TemporaryToken token = new TemporaryToken(username);
+        TemporaryToken token = new TemporaryToken(TemporaryToken.TokenType.PASSWORD_RESET, username);
         token = temporaryTokenRepository.save(token);
 
-        String link = linkTo(UserController.class)
-            .slash(basePath)
-            .slash("TODO_reset_password")
-            .slash(token.getToken())
-            .toString();
+        String absoluteLink = scheme + "://" + host
+            + ((scheme.equals("http") && port != 80) || (scheme.equals("https") && port != 443)
+                ? ":" + port
+                : "")
+            + linkTo(methodOn(UserController.class).getPasswordReset(token.getToken()));
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(mailFrom);
         message.setTo(email);
         message.setSubject("Password reset request");
-        message.setText("Your reset token url: %s".formatted(link));
-        emailSender.send(message);
+        message.setText("Your reset token url: %s".formatted(absoluteLink));
 
-        logger.debug("Sending message {}", message);
+        logger.trace("Sending message {}", message);
         logger.info("Sending password reset email for user: {}", username);
+        emailSender.send(message);
       });
       emailExecutor.shutdown();
     } catch (Exception e) {
