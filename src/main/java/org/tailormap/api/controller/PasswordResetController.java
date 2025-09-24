@@ -50,6 +50,9 @@ public class PasswordResetController {
   @Value("${tailormap-api.password-reset.disabled-for}")
   private Set<String> passwordResetDisabledFor;
 
+  @Value("${tailormap-api.password-reset.token-expiration-minutes:5}")
+  private int passwordResetTokenExpirationMinutes;
+
   public PasswordResetController(
       JavaMailSender emailSender,
       UserRepository userRepository,
@@ -98,7 +101,8 @@ public class PasswordResetController {
       emailExecutor.execute(() -> {
         String email =
             this.userRepository.findById(username).orElseThrow().getEmail();
-        TemporaryToken token = new TemporaryToken(TemporaryToken.TokenType.PASSWORD_RESET, username);
+        TemporaryToken token = new TemporaryToken(
+            TemporaryToken.TokenType.PASSWORD_RESET, username, passwordResetTokenExpirationMinutes);
         token = temporaryTokenRepository.save(token);
 
         String absoluteLink = scheme + "://" + host

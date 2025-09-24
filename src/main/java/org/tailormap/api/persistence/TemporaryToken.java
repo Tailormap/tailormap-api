@@ -42,10 +42,10 @@ public class TemporaryToken {
     // Default constructor for JPA
   }
 
-  public TemporaryToken(TokenType tokenType, String username) {
+  public TemporaryToken(TokenType tokenType, String username, int expirationMinutes) {
     this.tokenType = tokenType;
     this.username = username;
-    this.expirationTime = OffsetDateTime.now(ZoneId.systemDefault());
+    this.expirationTime = OffsetDateTime.now(ZoneId.systemDefault()).plusMinutes(expirationMinutes);
     this.token = UUID.randomUUID();
   }
 
