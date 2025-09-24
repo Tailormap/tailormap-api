@@ -85,6 +85,25 @@ class PasswordResetControllerIntegrationTest {
   }
 
   @Test
+  void testRequestResetPasswordNoMail() throws Exception {
+    final String url = apiBasePath + "/password-reset";
+    mockMvc.perform(post(url)
+            .content("username=tm-admin")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
+    Awaitility.await()
+        .pollDelay(5, SECONDS)
+        .untilAsserted(() -> assertEquals(
+            0,
+            temporaryTokenRepository.countByUsername("tm-admin"),
+            "There should be no tokens for tm-admin's request"));
+  }
+
+  @Test
   void testRequestPasswordResetDisabledForActuator() throws Exception {
     final String url = apiBasePath + "/password-reset";
     mockMvc.perform(post(url)
