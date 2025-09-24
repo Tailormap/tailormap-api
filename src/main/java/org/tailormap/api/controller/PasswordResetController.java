@@ -17,11 +17,13 @@ import java.lang.invoke.MethodHandles;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.validation.annotation.Validated;
@@ -99,30 +101,36 @@ public class PasswordResetController {
 
       ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
       emailExecutor.execute(() -> {
-        String email =
-            this.userRepository.findById(username).orElseThrow().getEmail();
-        TemporaryToken token = new TemporaryToken(
-            TemporaryToken.TokenType.PASSWORD_RESET, username, passwordResetTokenExpirationMinutes);
-        token = temporaryTokenRepository.save(token);
+        this.userRepository.findById(username).ifPresent(user -> {
+          String email = user.getEmail();
+          if (email == null || email.isBlank()) {
+            logger.warn("User {} has no email address, cannot send password reset email", username);
+            return;
+          }
 
-        String absoluteLink = scheme + "://" + host
-            + ((scheme.equals("http") && port != 80) || (scheme.equals("https") && port != 443)
-                ? ":" + port
-                : "")
-            + linkTo(methodOn(UserController.class).getPasswordReset(token.getToken()));
+          TemporaryToken token = new TemporaryToken(
+              TemporaryToken.TokenType.PASSWORD_RESET, username, passwordResetTokenExpirationMinutes);
+          token = temporaryTokenRepository.save(token);
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(mailFrom);
-        message.setTo(email);
-        message.setSubject("Password reset request");
-        message.setText("Your reset token url: %s".formatted(absoluteLink));
+          String absoluteLink = scheme + "://" + host
+              + ((scheme.equals("http") && port != 80) || (scheme.equals("https") && port != 443)
+                  ? ":" + port
+                  : "")
+              + linkTo(methodOn(UserController.class).getPasswordReset(token.getToken()));
 
-        logger.trace("Sending message {}", message);
-        logger.info("Sending password reset email for user: {}", username);
-        emailSender.send(message);
+          SimpleMailMessage message = new SimpleMailMessage();
+          message.setFrom(mailFrom);
+          message.setTo(email);
+          message.setSubject("Password reset request");
+          message.setText("Your reset token url: %s".formatted(absoluteLink));
+
+          logger.trace("Sending message {}", message);
+          logger.info("Sending password reset email for user: {}", username);
+          emailSender.send(message);
+        });
       });
       emailExecutor.shutdown();
-    } catch (Exception e) {
+    } catch (MailException | RejectedExecutionException e) {
       logger.error("Failed to send password reset email", e);
     }
   }
