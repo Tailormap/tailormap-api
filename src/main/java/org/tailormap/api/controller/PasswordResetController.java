@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -102,6 +104,12 @@ public class PasswordResetController {
       ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
       emailExecutor.execute(() -> {
         this.userRepository.findByEmail(email).ifPresent(user -> {
+          if (!user.isEnabled()
+              || (user.getValidUntil() != null
+                  && user.getValidUntil()
+                      .isBefore(OffsetDateTime.now(ZoneId.systemDefault())
+                          .toZonedDateTime()))) return;
+
           TemporaryToken token = new TemporaryToken(
               TemporaryToken.TokenType.PASSWORD_RESET,
               user.getUsername(),

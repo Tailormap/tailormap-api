@@ -132,4 +132,50 @@ class PasswordResetControllerIntegrationTest {
             .with(csrf()))
         .andExpect(status().isBadRequest());
   }
+
+  @Test
+  void testRequestResetPasswordExpiredUser() throws Exception {
+    final String url = apiBasePath + "/password-reset";
+    mockMvc.perform(post(url)
+            .content("email=expired@example.com")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
+    Awaitility.await()
+        .pollDelay(5, SECONDS)
+        .untilAsserted(() -> assertEquals(
+            0,
+            temporaryTokenRepository.countByUsername("expired"),
+            "There should be no tokens for this request"));
+    Awaitility.await()
+        .pollDelay(3, SECONDS)
+        .untilAsserted(() -> assertEquals(
+            0, greenMail.getReceivedMessages().length, "There should be no emails this request"));
+  }
+
+  @Test
+  void testRequestResetPasswordDisabledUser() throws Exception {
+    final String url = apiBasePath + "/password-reset";
+    mockMvc.perform(post(url)
+            .content("email=disabled@example.com")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
+    Awaitility.await()
+        .pollDelay(5, SECONDS)
+        .untilAsserted(() -> assertEquals(
+            0,
+            temporaryTokenRepository.countByUsername("disabled"),
+            "There should be no tokens for this request"));
+    Awaitility.await()
+        .pollDelay(3, SECONDS)
+        .untilAsserted(() -> assertEquals(
+            0, greenMail.getReceivedMessages().length, "There should be no emails this request"));
+  }
 }

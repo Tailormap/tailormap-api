@@ -288,6 +288,21 @@ public class PopulateTestData {
     u.getGroups().add(groupFoo);
     userRepository.save(u);
 
+    u = new User()
+        .setUsername("disabled")
+        .setPassword("{noop}disabled")
+        .setEmail("disabled@example.com")
+        .setEnabled(false);
+    userRepository.save(u);
+
+    u = new User()
+        .setUsername("expired")
+        .setPassword("{noop}expired")
+        .setEmail("expired@example.com")
+        .setValidUntil(
+            OffsetDateTime.now(ZoneId.systemDefault()).minusDays(1).toZonedDateTime());
+    userRepository.save(u);
+
     // Superuser with all access
     u = new User().setUsername("tm-admin").setPassword(adminHashedPassword);
     u.addOrUpdateAdminProperty("some-property", "some-value", true);
