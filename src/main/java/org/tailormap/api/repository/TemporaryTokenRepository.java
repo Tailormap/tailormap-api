@@ -5,12 +5,16 @@
  */
 package org.tailormap.api.repository;
 
+import jakarta.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.tailormap.api.persistence.TemporaryToken;
 
 public interface TemporaryTokenRepository extends JpaRepository<TemporaryToken, UUID> {
-  void deleteAllByTokenType(TemporaryToken.TokenType tokenType);
+  void deleteAllByTokenType(@NotNull TemporaryToken.TokenType tokenType);
 
-  long countByUsername(String actuator);
+  long countByUsername(@NotNull String username);
+
+  long deleteByExpirationTimeIsBefore(@NotNull OffsetDateTime expirationTime);
 }
