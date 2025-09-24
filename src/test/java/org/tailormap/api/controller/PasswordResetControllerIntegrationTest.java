@@ -63,7 +63,7 @@ class PasswordResetControllerIntegrationTest {
   void testRequestPasswordReset() throws Exception {
     final String url = apiBasePath + "/password-reset";
     mockMvc.perform(post(url)
-            .content("username=foo")
+            .content("email=foo@example.com")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
@@ -85,10 +85,10 @@ class PasswordResetControllerIntegrationTest {
   }
 
   @Test
-  void testRequestResetPasswordNoMail() throws Exception {
+  void testRequestResetPasswordInvalidMail() throws Exception {
     final String url = apiBasePath + "/password-reset";
     mockMvc.perform(post(url)
-            .content("username=tm-admin")
+            .content("email=tm-admin")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
@@ -100,11 +100,29 @@ class PasswordResetControllerIntegrationTest {
         .untilAsserted(() -> assertEquals(
             0,
             temporaryTokenRepository.countByUsername("tm-admin"),
-            "There should be no tokens for tm-admin's request"));
+            "There should be no tokens for this request"));
   }
 
   @Test
-  void testRequestPasswordResetDisabledForActuator() throws Exception {
+  void testRequestResetPasswordEmpty() throws Exception {
+    final String url = apiBasePath + "/password-reset";
+    mockMvc.perform(post(url)
+            .content("email=")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .accept(MediaType.APPLICATION_JSON)
+            .with(setServletPath(url))
+            .with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
+
+    Awaitility.await()
+        .pollDelay(3, SECONDS)
+        .untilAsserted(() -> assertEquals(
+            0, greenMail.getReceivedMessages().length, "There should be no emails this request"));
+  }
+
+  @Test
+  void testRequestPasswordWrongParameter() throws Exception {
     final String url = apiBasePath + "/password-reset";
     mockMvc.perform(post(url)
             .content("username=actuator")
@@ -112,17 +130,6 @@ class PasswordResetControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .with(csrf()))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
-    Awaitility.await()
-        .pollDelay(5, SECONDS)
-        .untilAsserted(() -> assertEquals(
-            0,
-            temporaryTokenRepository.countByUsername("actuator"),
-            "There should be no tokens for actuator's request"));
-    Awaitility.await()
-        .pollDelay(3, SECONDS)
-        .untilAsserted(() -> assertEquals(
-            0, greenMail.getReceivedMessages().length, "There should be no emails for actuator's request"));
+        .andExpect(status().isBadRequest());
   }
 }

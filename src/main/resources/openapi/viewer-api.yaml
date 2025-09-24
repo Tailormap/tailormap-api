@@ -441,20 +441,20 @@ paths:
       security: [ ]
       requestBody:
         required: true
-        description: A message containing the username.
+        description: 'A message containing the email address to send the password reset link for.'
         content:
           application/x-www-form-urlencoded:
             schema:
               title: 'password-reset'
               type: object
               properties:
-                username:
+                email:
                   type: string
               required:
-                - username
+                - email
       responses:
         '200':
-          description: 'If the username exists, a password reset email will be sent.'
+          description: 'Request received'
         '500':
           description: 'Internal server error'
           content:
