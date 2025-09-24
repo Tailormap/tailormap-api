@@ -7,9 +7,6 @@ package org.tailormap.api.controller;
 
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -41,8 +38,10 @@ public class UserController {
   private final OIDCRepository oidcRepository;
   private final UploadHelper uploadHelper;
 
-  public UserController(
-      OIDCRepository oidcRepository, UserRepository userRepository, GroupRepository groupRepository, UploadHelper uploadHelper) {
+  @Value("${tailormap-api.password-reset.enabled:true}")
+  private boolean passwordResetEnabled;
+
+  public UserController(OIDCRepository oidcRepository, UploadHelper uploadHelper) {
     this.oidcRepository = oidcRepository;
     this.uploadHelper = uploadHelper;
   }
