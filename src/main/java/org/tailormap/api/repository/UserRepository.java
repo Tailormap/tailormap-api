@@ -24,4 +24,7 @@ public interface UserRepository extends JpaRepository<User, String> {
   @NonNull Optional<User> findById(@NonNull String username);
 
   boolean existsByGroupsNameIn(Collection<String> groupNames);
+
+  @PreAuthorize("permitAll()")
+  Optional<User> findByEmail(@NonNull String email);
 }
