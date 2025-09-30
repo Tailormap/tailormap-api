@@ -38,6 +38,6 @@ public class TailormapUserDetailsService implements UserDetailsService {
     // This will usually log a {bcrypt}... password unless it was explicitly changed to {noop}...
     // So no plaintext passwords are logged
     logger.trace("Found user: {}, password {}", user.getUsername(), user.getPassword());
-    return new TailormapUserDetails(user, groupRepository);
+    return new TailormapUserDetailsImpl(user, groupRepository);
   }
 }
