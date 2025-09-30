@@ -25,9 +25,12 @@ public interface TailormapUserDetails extends Serializable, UserDetails {
    * @return true if a Boolean property with the key is present with a true value
    */
   default boolean hasTruePropertyForKey(String key) {
+    return streamAllPropertiesForKey(key).anyMatch(Boolean.TRUE::equals);
+  }
+
+  default Stream<Object> streamAllPropertiesForKey(String key) {
     return Stream.concat(getAdditionalProperties().stream(), getAdditionalGroupProperties().stream())
         .filter(p -> p.key().equals(key))
-        .map(TailormapAdditionalProperty::value)
-        .anyMatch(Boolean.TRUE::equals);
+        .map(TailormapAdditionalProperty::value);
   }
 }
