@@ -112,7 +112,7 @@ public class UserController {
           .name(reg.getClientName())
           .url("/api/oauth2/authorization/" + reg.getRegistrationId())
           .showForViewer(metadata.getShowForViewer())
-          .image(uploadHelper.getUrlForImage(metadata.getImage(), Upload.SSO_IMAGE)));
+          .image(uploadHelper.getUrlForImage(metadata.getImage(), Upload.CATEGORY_SSO_IMAGE)));
     }
 
     return ResponseEntity.status(HttpStatus.OK).body(result);
