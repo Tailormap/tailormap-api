@@ -18,8 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.tailormap.api.repository.GroupRepository;
-import org.tailormap.api.repository.UserRepository;
 import org.tailormap.api.security.OIDCRepository;
 import org.tailormap.api.security.TailormapAdditionalProperty;
 import org.tailormap.api.security.TailormapUserDetails;
@@ -33,8 +31,7 @@ import org.tailormap.api.viewer.model.UserResponse;
 public class UserController {
   private final OIDCRepository oidcRepository;
 
-  public UserController(
-      OIDCRepository oidcRepository, UserRepository userRepository, GroupRepository groupRepository) {
+  public UserController(OIDCRepository oidcRepository) {
     this.oidcRepository = oidcRepository;
   }
 
