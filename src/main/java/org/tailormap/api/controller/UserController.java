@@ -22,7 +22,9 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.tailormap.api.persistence.Group;
+import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.User;
+import org.tailormap.api.persistence.helper.UploadHelper;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.repository.UserRepository;
@@ -38,12 +40,17 @@ public class UserController {
   private final OIDCRepository oidcRepository;
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
+  private final UploadHelper uploadHelper;
 
   public UserController(
-      OIDCRepository oidcRepository, UserRepository userRepository, GroupRepository groupRepository) {
+      OIDCRepository oidcRepository,
+      UserRepository userRepository,
+      GroupRepository groupRepository,
+      UploadHelper uploadHelper) {
     this.oidcRepository = oidcRepository;
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
+    this.uploadHelper = uploadHelper;
   }
 
   /**
@@ -104,7 +111,8 @@ public class UserController {
       result.addSsoLinksItem(new LoginConfigurationSsoLinksInner()
           .name(reg.getClientName())
           .url("/api/oauth2/authorization/" + reg.getRegistrationId())
-          .showForViewer(metadata.getShowForViewer()));
+          .showForViewer(metadata.getShowForViewer())
+          .image(uploadHelper.getUrlForImage(metadata.getImage(), Upload.SSO_IMAGE)));
     }
 
     return ResponseEntity.status(HttpStatus.OK).body(result);

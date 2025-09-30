@@ -31,9 +31,14 @@ import org.tailormap.api.repository.OIDCConfigurationRepository;
 public class OIDCRepository implements ClientRegistrationRepository, Iterable<ClientRegistration> {
   public static class OIDCRegistrationMetadata {
     private boolean showForViewer;
+    private String image;
 
     public boolean getShowForViewer() {
       return showForViewer;
+    }
+
+    public String getImage() {
+      return image;
     }
   }
 
@@ -83,6 +88,13 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
       metadata.showForViewer = oidcShowForViewer;
     } else {
       metadata.showForViewer = true;
+    }
+    OIDCConfiguration config =
+        oidcConfigurationRepository.findById(Long.valueOf(id)).orElse(null);
+    if (config != null && isNotBlank(config.getImage())) {
+      metadata.image = config.getImage();
+    } else {
+      metadata.image = null;
     }
 
     return metadata;

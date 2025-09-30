@@ -30,6 +30,7 @@ public class Upload {
   public static final String CATEGORY_PORTAL_IMAGE = "portal-image";
   public static final String CATEGORY_DRAWING_STYLE = "drawing-style";
   public static final String CATEGORY_DRAWING_STYLE_IMAGE = "drawing-style-image";
+  public static final String SSO_IMAGE = "sso-image";
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)

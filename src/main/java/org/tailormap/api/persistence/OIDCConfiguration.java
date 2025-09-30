@@ -36,6 +36,8 @@ public class OIDCConfiguration {
 
   private String status;
 
+  private String image;
+
   public Long getId() {
     return id;
   }
@@ -105,6 +107,15 @@ public class OIDCConfiguration {
 
   public OIDCConfiguration setStatus(String status) {
     this.status = status;
+    return this;
+  }
+
+  public String getImage() {
+    return image;
+  }
+
+  public OIDCConfiguration setImage(String image) {
+    this.image = image;
     return this;
   }
 }

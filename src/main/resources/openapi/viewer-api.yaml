@@ -62,6 +62,8 @@ components:
                 type: string
               showForViewer:
                 type: boolean
+              image:
+                type: string
 
     UserResponse:
       description: 'Information about authentication status and user information'
