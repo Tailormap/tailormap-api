@@ -6,9 +6,6 @@
 package org.tailormap.api.controller;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
@@ -21,12 +18,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.tailormap.api.persistence.Group;
-import org.tailormap.api.persistence.User;
-import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.repository.UserRepository;
 import org.tailormap.api.security.OIDCRepository;
+import org.tailormap.api.security.TailormapAdditionalProperty;
+import org.tailormap.api.security.TailormapUserDetails;
 import org.tailormap.api.viewer.model.AdditionalProperty;
 import org.tailormap.api.viewer.model.LoginConfiguration;
 import org.tailormap.api.viewer.model.LoginConfigurationSsoLinksInner;
@@ -36,14 +32,10 @@ import org.tailormap.api.viewer.model.UserResponse;
 @RestController
 public class UserController {
   private final OIDCRepository oidcRepository;
-  private final UserRepository userRepository;
-  private final GroupRepository groupRepository;
 
   public UserController(
       OIDCRepository oidcRepository, UserRepository userRepository, GroupRepository groupRepository) {
     this.oidcRepository = oidcRepository;
-    this.userRepository = userRepository;
-    this.groupRepository = groupRepository;
   }
 
   /**
@@ -63,33 +55,30 @@ public class UserController {
           .map(GrantedAuthority::getAuthority)
           .collect(Collectors.toSet()));
 
-      // Public user and group properties are meant for a (modified) frontend to implement custom
-      // logic depending on who's logged in. When used for authorization to something the check
-      // should also be performed server-side, possibly in an extra microservice.
+      if (authentication.getPrincipal() instanceof TailormapUserDetails userProperties) {
+        // Public user and group properties are meant for a (modified) frontend to implement custom
+        // logic depending on who's logged in. When used for authorization for something, the check
+        // should also be performed server-side, possibly in an extra microservice.
 
-      // Authentication may be external (OIDC) and a user may not exist in the Tailormap database,
-      // but for users which are from the Tailormap database we support additional properties. Only
-      // return public ones to the frontend.
-      Function<AdminAdditionalProperty, AdditionalProperty> mapToPublicProperty =
-          ap -> new AdditionalProperty().key(ap.getKey()).value(ap.getValue());
-      userRepository
-          .findById(authentication.getName())
-          .map(User::getAdditionalProperties)
-          .orElse(new ArrayList<>())
-          .stream()
-          .filter(AdminAdditionalProperty::getIsPublic)
-          .map(mapToPublicProperty)
-          .forEach(userResponse::addPropertiesItem);
+        // Authentication may be external (OIDC), and a user may not exist in the Tailormap database.
+        // For users from the Tailormap database, we support additional user properties. Only return
+        // public ones to the frontend.
 
-      // Even an externally authenticated user may have authorities which map to Groups from the
-      // Tailormap database and have public properties.
-      groupRepository.findAllById(userResponse.getRoles()).stream()
-          .map(Group::getAdditionalProperties)
-          .filter(Objects::nonNull)
-          .flatMap(Collection::stream)
-          .filter(AdminAdditionalProperty::getIsPublic)
-          .map(mapToPublicProperty)
-          .forEach(userResponse::addGroupPropertiesItem);
+        // Group properties are also supported for OIDC logins with roles that map to groups in the
+        // Tailormap database.
+
+        Function<TailormapAdditionalProperty, AdditionalProperty> mapToPublicProperty =
+            ap -> new AdditionalProperty().key(ap.key()).value(ap.value());
+        userProperties.getAdditionalProperties().stream()
+            .filter(TailormapAdditionalProperty::isPublic)
+            .map(mapToPublicProperty)
+            .forEach(userResponse::addPropertiesItem);
+
+        userProperties.getAdditionalGroupProperties().stream()
+            .filter(TailormapAdditionalProperty::isPublic)
+            .map(mapToPublicProperty)
+            .forEach(userResponse::addGroupPropertiesItem);
+      }
     }
     return ResponseEntity.status(HttpStatus.OK).body(userResponse);
   }

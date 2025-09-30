@@ -9,15 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.Cookie;
 import org.springframework.context.ApplicationEventPublisher;
@@ -30,12 +22,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
-import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -45,7 +32,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.tailormap.api.persistence.Group;
-import org.tailormap.api.repository.GroupRepository;
 import org.tailormap.api.repository.OIDCConfigurationRepository;
 import org.tailormap.api.security.events.DefaultAuthenticationFailureEvent;
 import org.tailormap.api.security.events.OAuth2AuthenticationFailureEvent;
@@ -54,8 +40,7 @@ import org.tailormap.api.security.events.OAuth2AuthenticationFailureEvent;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class ApiSecurityConfiguration {
-  private static final Logger log =
-      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private final TailormapOidcUserService oidcUserService;
 
   @Value("${tailormap-api.base-path}")
   private String apiBasePath;
@@ -65,6 +50,10 @@ public class ApiSecurityConfiguration {
 
   @Value("${tailormap-api.security.disable-csrf:false}")
   private boolean disableCsrf;
+
+  public ApiSecurityConfiguration(TailormapOidcUserService oidcUserService) {
+    this.oidcUserService = oidcUserService;
+  }
 
   @Bean
   public CookieCsrfTokenRepository csrfTokenRepository() {
@@ -159,6 +148,7 @@ public class ApiSecurityConfiguration {
                 endpoint -> endpoint.baseUri(apiBasePath + "/oauth2/authorization")
                     .authorizationRedirectStrategy(redirectStrategy))
             .redirectionEndpoint(endpoint -> endpoint.baseUri(apiBasePath + "/oauth2/callback"))
+            .userInfoEndpoint(endpoint -> endpoint.oidcUserService(oidcUserService))
             .successHandler(authenticationSuccessHandler))
         .anonymous(anonymous -> anonymous.authorities(Group.ANONYMOUS))
         .logout(logout -> logout.logoutUrl(apiBasePath + "/logout")
@@ -170,40 +160,5 @@ public class ApiSecurityConfiguration {
   @Bean
   public OIDCRepository clientRegistrationRepository(OIDCConfigurationRepository repository) {
     return new OIDCRepository(repository);
-  }
-
-  @Bean
-  public GrantedAuthoritiesMapper userAuthoritiesMapper(GroupRepository repository) {
-    return (authorities) -> {
-      Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-
-      try {
-        mappedAuthorities.addAll(authorities);
-
-        OidcIdToken idToken = authorities.stream()
-            .filter(OidcUserAuthority.class::isInstance)
-            .map(OidcUserAuthority.class::cast)
-            .map(OidcUserAuthority::getIdToken)
-            .findFirst()
-            .orElseThrow();
-
-        List<String> roles = Optional.ofNullable(idToken.getClaimAsStringList("roles"))
-            .orElse(Collections.emptyList());
-
-        for (String role : roles) {
-          mappedAuthorities.add(new SimpleGrantedAuthority(role));
-
-          Optional<Group> groupEntity = repository.findById(role);
-          groupEntity.ifPresent(group -> {
-            if (StringUtils.isNotBlank(group.getAliasForGroup())) {
-              mappedAuthorities.add(new SimpleGrantedAuthority(group.getAliasForGroup()));
-            }
-          });
-        }
-      } catch (Exception e) {
-        log.error("Error mapping OIDC authorities", e);
-      }
-      return mappedAuthorities;
-    };
   }
 }
