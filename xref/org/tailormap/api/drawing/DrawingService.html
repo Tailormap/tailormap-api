@@ -453,9 +453,9 @@
 <a class="jxr_linenumber" name="L445" href="#L445">445</a>                 <em class="jxr_comment">// is a drawing owner</em>
 <a class="jxr_linenumber" name="L446" href="#L446">446</a>                 yield <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L447" href="#L447">447</a>               }
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>               <strong class="jxr_keyword">if</strong> (authentication.getPrincipal() instanceof <a name="TailormapUserDetails" href="../../../../org/tailormap/api/security/TailormapUserDetails.html#TailormapUserDetails">TailormapUserDetails</a> userDetails) {
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>                 yield userDetails.getBooleanUserProperty(KEY_DRAWINGS_ADMIN)
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>                     || userDetails.getBooleanUserProperty(KEY_DRAWINGS_READ_ALL);
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>               <strong class="jxr_keyword">if</strong> (authentication.getPrincipal() instanceof <a name="TailormapUserDetails" href="../../../../org/tailormap/api/security/TailormapUserDetails.html#TailormapUserDetails">TailormapUserDetails</a> userProperties) {
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>                 yield userProperties.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN)
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>                     || userProperties.hasTruePropertyForKey(KEY_DRAWINGS_READ_ALL);
 <a class="jxr_linenumber" name="L451" href="#L451">451</a>               }
 <a class="jxr_linenumber" name="L452" href="#L452">452</a>             }
 <a class="jxr_linenumber" name="L453" href="#L453">453</a>             yield false;
@@ -491,7 +491,7 @@
 <a class="jxr_linenumber" name="L483" href="#L483">483</a>               yield <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L484" href="#L484">484</a>             }
 <a class="jxr_linenumber" name="L485" href="#L485">485</a>             <strong class="jxr_keyword">if</strong> (authentication.getPrincipal() instanceof <a name="TailormapUserDetails" href="../../../../org/tailormap/api/security/TailormapUserDetails.html#TailormapUserDetails">TailormapUserDetails</a> userDetails) {
-<a class="jxr_linenumber" name="L486" href="#L486">486</a>               yield userDetails.getBooleanUserProperty(KEY_DRAWINGS_ADMIN);
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>               yield userDetails.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN);
 <a class="jxr_linenumber" name="L487" href="#L487">487</a>             }
 <a class="jxr_linenumber" name="L488" href="#L488">488</a>             yield false;
 <a class="jxr_linenumber" name="L489" href="#L489">489</a>           }
