@@ -445,9 +445,9 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
                 // is a drawing owner
                 yield true;
               }
-              if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
-                yield userDetails.getBooleanUserProperty(KEY_DRAWINGS_ADMIN)
-                    || userDetails.getBooleanUserProperty(KEY_DRAWINGS_READ_ALL);
+              if (authentication.getPrincipal() instanceof TailormapUserDetails userProperties) {
+                yield userProperties.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN)
+                    || userProperties.hasTruePropertyForKey(KEY_DRAWINGS_READ_ALL);
               }
             }
             yield false;
@@ -483,7 +483,7 @@ FROM data.drawing_feature AS geomTable WHERE drawing_id = :drawingId::uuid) AS f
               yield true;
             }
             if (authentication.getPrincipal() instanceof TailormapUserDetails userDetails) {
-              yield userDetails.getBooleanUserProperty(KEY_DRAWINGS_ADMIN);
+              yield userDetails.hasTruePropertyForKey(KEY_DRAWINGS_ADMIN);
             }
             yield false;
           }
