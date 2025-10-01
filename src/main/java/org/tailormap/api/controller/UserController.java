@@ -18,6 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.tailormap.api.persistence.Upload;
+import org.tailormap.api.persistence.helper.UploadHelper;
 import org.tailormap.api.security.OIDCRepository;
 import org.tailormap.api.security.TailormapAdditionalProperty;
 import org.tailormap.api.security.TailormapUserDetails;
@@ -30,9 +32,11 @@ import org.tailormap.api.viewer.model.UserResponse;
 @RestController
 public class UserController {
   private final OIDCRepository oidcRepository;
+  private final UploadHelper uploadHelper;
 
-  public UserController(OIDCRepository oidcRepository) {
+  public UserController(OIDCRepository oidcRepository, UploadHelper uploadHelper) {
     this.oidcRepository = oidcRepository;
+    this.uploadHelper = uploadHelper;
   }
 
   /**
@@ -90,7 +94,8 @@ public class UserController {
       result.addSsoLinksItem(new LoginConfigurationSsoLinksInner()
           .name(reg.getClientName())
           .url("/api/oauth2/authorization/" + reg.getRegistrationId())
-          .showForViewer(metadata.getShowForViewer()));
+          .showForViewer(metadata.getShowForViewer())
+          .image(uploadHelper.getUrlForImage(metadata.getImage(), Upload.CATEGORY_SSO_IMAGE)));
     }
 
     return ResponseEntity.status(HttpStatus.OK).body(result);

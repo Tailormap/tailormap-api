@@ -18,6 +18,7 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,9 +32,14 @@ import org.tailormap.api.repository.OIDCConfigurationRepository;
 public class OIDCRepository implements ClientRegistrationRepository, Iterable<ClientRegistration> {
   public static class OIDCRegistrationMetadata {
     private boolean showForViewer;
+    private UUID image;
 
     public boolean getShowForViewer() {
       return showForViewer;
+    }
+
+    public UUID getImage() {
+      return image;
     }
   }
 
@@ -83,6 +89,13 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
       metadata.showForViewer = oidcShowForViewer;
     } else {
       metadata.showForViewer = true;
+    }
+    OIDCConfiguration config =
+        oidcConfigurationRepository.findById(Long.valueOf(id)).orElse(null);
+    if (config != null && config.getImage() != null) {
+      metadata.image = config.getImage();
+    } else {
+      metadata.image = null;
     }
 
     return metadata;
