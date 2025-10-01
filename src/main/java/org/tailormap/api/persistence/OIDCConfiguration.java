@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
 @Entity
@@ -36,7 +37,7 @@ public class OIDCConfiguration {
 
   private String status;
 
-  private String image;
+  private UUID image;
 
   public Long getId() {
     return id;
@@ -110,11 +111,11 @@ public class OIDCConfiguration {
     return this;
   }
 
-  public String getImage() {
+  public UUID getImage() {
     return image;
   }
 
-  public OIDCConfiguration setImage(String image) {
+  public OIDCConfiguration setImage(UUID image) {
     this.image = image;
     return this;
   }

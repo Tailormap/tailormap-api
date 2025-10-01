@@ -1,2 +1,2 @@
 alter table if exists oidcconfiguration
-    add column image text default null;
+    add column image uuid default null;

@@ -38,4 +38,22 @@ public class UploadHelper {
         })
         .orElse(null);
   }
+
+  public String getUrlForImage(UUID imageId, String category) {
+    if (imageId == null) {
+      return null;
+    }
+    return uploadRepository
+        .findByIdAndCategory(imageId, category)
+        .map(upload -> {
+          return linkTo(UploadsController.class)
+              .slash("api")
+              .slash("uploads")
+              .slash(category)
+              .slash(imageId.toString())
+              .slash(upload.getFilename())
+              .toString();
+        })
+        .orElse(null);
+  }
 }
