@@ -8,7 +8,6 @@ package org.tailormap.api.persistence.helper;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.tailormap.api.controller.UploadsController;
@@ -24,19 +23,16 @@ public class UploadHelper {
   }
 
   public String getUrlForImage(String imageId, String category) {
-    return Optional.ofNullable(imageId)
-        .map(UUID::fromString)
-        .flatMap(imageUuid -> uploadRepository.findByIdAndCategory(imageUuid, category))
-        .map(upload -> {
-          return linkTo(UploadsController.class)
-              .slash("api")
-              .slash("uploads")
-              .slash(category)
-              .slash(imageId)
-              .slash(upload.getFilename())
-              .toString();
-        })
-        .orElse(null);
+    if (imageId == null) {
+      return null;
+    }
+    try {
+      UUID uuid = UUID.fromString(imageId);
+      return getUrlForImage(uuid, category);
+    } catch (IllegalArgumentException e) {
+      // Illegal UUID, return null
+      return null;
+    }
   }
 
   public String getUrlForImage(UUID imageId, String category) {
@@ -45,15 +41,13 @@ public class UploadHelper {
     }
     return uploadRepository
         .findByIdAndCategory(imageId, category)
-        .map(upload -> {
-          return linkTo(UploadsController.class)
-              .slash("api")
-              .slash("uploads")
-              .slash(category)
-              .slash(imageId.toString())
-              .slash(upload.getFilename())
-              .toString();
-        })
+        .map(upload -> linkTo(UploadsController.class)
+            .slash("api")
+            .slash("uploads")
+            .slash(category)
+            .slash(imageId.toString())
+            .slash(upload.getFilename())
+            .toString())
         .orElse(null);
   }
 }
