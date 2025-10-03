@@ -50,6 +50,10 @@ components:
         hideLoginForm:
           description: 'If set, should hide the login form for any user-facing applications.'
           type: boolean
+        enablePasswordReset:
+          description: 'If set, enables the password reset functionality.'
+          type: boolean
+          default: true
         ssoLinks:
           description: 'Lists alternative SSO links.'
           type: array

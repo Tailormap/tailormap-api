@@ -92,7 +92,7 @@ public class UserController {
   }
 
   @GetMapping(path = "${tailormap-api.base-path}/login/configuration", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<LoginConfiguration> getSSOEndpoints() {
+  public ResponseEntity<LoginConfiguration> getLoginConfiguration() {
     LoginConfiguration result = new LoginConfiguration();
 
     for (ClientRegistration reg : oidcRepository) {
@@ -104,6 +104,8 @@ public class UserController {
           .showForViewer(metadata.getShowForViewer())
           .image(uploadHelper.getUrlForImage(metadata.getImage(), Upload.CATEGORY_SSO_IMAGE)));
     }
+
+    result.enablePasswordReset(passwordResetEnabled);
 
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
