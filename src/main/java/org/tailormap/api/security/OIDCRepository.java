@@ -89,13 +89,10 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
       metadata.showForViewer = oidcShowForViewer;
     } else {
       metadata.showForViewer = true;
-    }
-    OIDCConfiguration config =
-        oidcConfigurationRepository.findById(Long.valueOf(id)).orElse(null);
-    if (config != null && config.getImage() != null) {
-      metadata.image = config.getImage();
-    } else {
-      metadata.image = null;
+      metadata.image = oidcConfigurationRepository
+          .findById(Long.valueOf(id))
+          .map(OIDCConfiguration::getImage)
+          .orElse(null);
     }
 
     return metadata;
