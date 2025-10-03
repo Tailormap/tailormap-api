@@ -115,7 +115,8 @@ public class UserController {
   public ResponseEntity<?> getPasswordReset(@NotNull @PathVariable UUID uuid) {
     if (passwordResetEnabled) {
       // TODO lookup the token, check if valid, return something useful
-      throw new UnsupportedOperationException("TODO: Not implemented yet");
+      throw new UnsupportedOperationException(
+          "TODO: Not implemented yet, see https://b3partners.atlassian.net/browse/HTM-1649");
     } else {
       // Password reset is disabled
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
