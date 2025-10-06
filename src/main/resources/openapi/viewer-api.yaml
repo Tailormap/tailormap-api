@@ -459,6 +459,15 @@ paths:
       responses:
         '202':
           description: 'Request accepted'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
         '500':
           description: 'Internal server error'
           content:
