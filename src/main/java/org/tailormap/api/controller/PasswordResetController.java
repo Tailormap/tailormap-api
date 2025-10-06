@@ -5,28 +5,14 @@
  */
 package org.tailormap.api.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Counted;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.LocaleResolver;
-import org.tailormap.api.persistence.TemporaryToken;
-import org.tailormap.api.repository.TemporaryTokenRepository;
-import org.tailormap.api.repository.UserRepository;
-
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.constraints.Email;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.time.OffsetDateTime;
@@ -36,9 +22,26 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.LocaleResolver;
+import org.tailormap.api.persistence.TemporaryToken;
+import org.tailormap.api.repository.TemporaryTokenRepository;
+import org.tailormap.api.repository.UserRepository;
+import org.tailormap.api.viewer.model.ErrorResponse;
 
 @RestController
 @Validated
@@ -48,10 +51,10 @@ public class PasswordResetController {
   private final JavaMailSender emailSender;
   private final UserRepository userRepository;
   private final TemporaryTokenRepository temporaryTokenRepository;
-    private final MessageSource messageSource;
-    private final LocaleResolver localeResolver;
+  private final MessageSource messageSource;
+  private final LocaleResolver localeResolver;
 
-    @Value("${tailormap-api.mail.from}")
+  @Value("${tailormap-api.mail.from}")
   private String mailFrom;
 
   @Value("${tailormap-api.password-reset.enabled:true}")
@@ -64,14 +67,24 @@ public class PasswordResetController {
   private int passwordResetTokenExpirationMinutes;
 
   public PasswordResetController(
-          JavaMailSender emailSender,
-          UserRepository userRepository,
-          TemporaryTokenRepository temporaryTokenRepository, MessageSource messageSource, LocaleResolver localeResolver) {
+      JavaMailSender emailSender,
+      UserRepository userRepository,
+      TemporaryTokenRepository temporaryTokenRepository,
+      MessageSource messageSource,
+      LocaleResolver localeResolver) {
     this.emailSender = emailSender;
     this.userRepository = userRepository;
     this.temporaryTokenRepository = temporaryTokenRepository;
-      this.messageSource = messageSource;
-      this.localeResolver = localeResolver;
+    this.messageSource = messageSource;
+    this.localeResolver = localeResolver;
+  }
+
+  @ExceptionHandler({ConstraintViolationException.class})
+  public ResponseEntity<?> handleException(ConstraintViolationException e) {
+    // wrap the exception in a proper json response
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(new ErrorResponse().message(e.getMessage()).code(HttpStatus.BAD_REQUEST.value()));
   }
 
   /**
@@ -79,6 +92,7 @@ public class PasswordResetController {
    *
    * @param email the email address to request a password reset for
    * @return 202 ACCEPTED with a message that the request is being processed
+   * @throws ConstraintViolationException when the email is not valid
    */
   @PostMapping(
       path = "${tailormap-api.base-path}/password-reset",
@@ -86,7 +100,7 @@ public class PasswordResetController {
       consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
   @Counted(value = "tailormap_api_password_reset_request", description = "number of password reset requests")
   public ResponseEntity<Serializable> requestPasswordReset(
-      @RequestParam @Valid String email, HttpServletRequest request) {
+      @RequestParam @Email String email, HttpServletRequest request) throws ConstraintViolationException {
     if (passwordResetEnabled && !passwordResetDisabledFor.contains(email)) {
       this.sendPasswordResetEmail(email, request);
     }
@@ -99,55 +113,63 @@ public class PasswordResetController {
 
   private void sendPasswordResetEmail(String email, HttpServletRequest request) {
     try {
-      // Build absolute URL considering proxy headers; we can't do this inside the email thread as it may throw an
-      // IllegalStateException: The request object has been recycled and is no longer associated with this facade
-      String scheme = request.getHeader("X-Forwarded-Proto") != null
-          ? request.getHeader("X-Forwarded-Proto")
-          : request.getScheme();
-      String host = request.getHeader("X-Forwarded-Host") != null
-          ? request.getHeader("X-Forwarded-Host")
-          : request.getServerName();
-      int port = request.getHeader("X-Forwarded-Port") != null
-          ? Integer.parseInt(request.getHeader("X-Forwarded-Port"))
-          : request.getServerPort();
-
-      final Locale locale = localeResolver.resolveLocale(request);
-
+      // XXX We may need to build the absolute outside the email thread as it may throw an IllegalStateException:
+      // The request object has been recycled and is no longer associated with this facade
       ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
       emailExecutor.execute(() -> {
-        this.userRepository.findByEmail(email).ifPresent(user -> {
-          if (!user.isEnabled()
-              || (user.getValidUntil() != null
-                  && user.getValidUntil()
-                      .isBefore(OffsetDateTime.now(ZoneId.systemDefault())
-                          .toZonedDateTime()))) return;
+        try {
+          this.userRepository.findByEmail(email).ifPresent(user -> {
+            if (!user.isEnabled()
+                || (user.getValidUntil() != null
+                    && user.getValidUntil()
+                        .isBefore(OffsetDateTime.now(ZoneId.systemDefault())
+                            .toZonedDateTime()))) return;
 
-          TemporaryToken token = new TemporaryToken(
-              TemporaryToken.TokenType.PASSWORD_RESET,
-              user.getUsername(),
-              passwordResetTokenExpirationMinutes);
-          token = temporaryTokenRepository.save(token);
+            TemporaryToken token = new TemporaryToken(
+                TemporaryToken.TokenType.PASSWORD_RESET,
+                user.getUsername(),
+                passwordResetTokenExpirationMinutes);
+            token = temporaryTokenRepository.save(token);
 
-          String absoluteLink = scheme + "://" + host
-              + ((scheme.equals("http") && port != 80) || (scheme.equals("https") && port != 443)
-                  ? ":" + port
-                  : "")
-              + linkTo(methodOn(UserController.class).getPasswordReset(token.getToken()));
+            final Locale locale = localeResolver.resolveLocale(request);
+            // build the absolute URL considering proxy headers
+            String scheme = request.getHeader("X-Forwarded-Proto") != null
+                ? request.getHeader("X-Forwarded-Proto")
+                : request.getScheme();
+            String host = request.getHeader("X-Forwarded-Host") != null
+                ? request.getHeader("X-Forwarded-Host")
+                : request.getServerName();
+            int port = request.getHeader("X-Forwarded-Port") != null
+                ? Integer.parseInt(request.getHeader("X-Forwarded-Port"))
+                : request.getServerPort();
 
-          SimpleMailMessage message = new SimpleMailMessage();
-          message.setFrom(mailFrom);
-          message.setTo(user.getEmail());
-          message.setSubject(messageSource.getMessage("reset-password-request.email-subject",null, locale));
-          message.setText(messageSource.getMessage("reset-password-request.email-body", new Object[]{absoluteLink},locale));
+            String absoluteLink = scheme + "://" + host
+                + ((scheme.equals("http") && port != 80) || (scheme.equals("https") && port != 443)
+                    ? ":" + port
+                    : "")
+                + linkTo(methodOn(UserController.class).getPasswordReset(token.getToken()));
 
-          logger.trace("Sending message {}", message);
-          logger.info("Sending password reset email for user: {}", user.getUsername());
-          emailSender.send(message);
-        });
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(mailFrom);
+            message.setTo(user.getEmail());
+            message.setSubject(
+                messageSource.getMessage("reset-password-request.email-subject", null, locale));
+            message.setText(messageSource.getMessage(
+                "reset-password-request.email-body", new Object[] {absoluteLink}, locale));
+
+            logger.trace("Sending message {}", message);
+            logger.info("Sending password reset email for user: {}", user.getUsername());
+            emailSender.send(message);
+          });
+        } catch (MailException e) {
+          logger.error("Failed to send password reset email", e);
+        } catch (Exception e) {
+          logger.error("Unexpected exception in password reset email thread", e);
+        }
       });
       emailExecutor.shutdown();
-    } catch (MailException | RejectedExecutionException e) {
-      logger.error("Failed to send password reset email", e);
+    } catch (RejectedExecutionException e) {
+      logger.error("Failed to start password reset email thread", e);
     }
   }
 }

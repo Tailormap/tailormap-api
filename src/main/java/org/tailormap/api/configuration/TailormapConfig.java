@@ -6,14 +6,14 @@
 package org.tailormap.api.configuration;
 
 import ch.rasc.sse.eventbus.config.EnableSseEventBus;
+import java.util.Locale;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import org.springframework.web.servlet.LocaleResolver;
-import java.util.Locale;
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 @Configuration
 @EnableConfigurationProperties
@@ -32,10 +32,10 @@ public class TailormapConfig {
     return this;
   }
 
-    @Bean
-    public LocaleResolver localeResolver() {
-        AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
-        resolver.setDefaultLocale(Locale.ENGLISH);
-        return resolver;
-    }
+  @Bean
+  public LocaleResolver localeResolver() {
+    AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
+    resolver.setDefaultLocale(Locale.ENGLISH);
+    return resolver;
+  }
 }
