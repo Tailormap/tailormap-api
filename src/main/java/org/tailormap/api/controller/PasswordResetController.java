@@ -5,24 +5,14 @@
  */
 package org.tailormap.api.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Counted;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import java.io.Serializable;
-import java.lang.invoke.MethodHandles;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
@@ -32,9 +22,23 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.LocaleResolver;
 import org.tailormap.api.persistence.TemporaryToken;
 import org.tailormap.api.repository.TemporaryTokenRepository;
 import org.tailormap.api.repository.UserRepository;
+
+import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @Validated
@@ -44,8 +48,10 @@ public class PasswordResetController {
   private final JavaMailSender emailSender;
   private final UserRepository userRepository;
   private final TemporaryTokenRepository temporaryTokenRepository;
+    private final MessageSource messageSource;
+    private final LocaleResolver localeResolver;
 
-  @Value("${tailormap-api.mail.from}")
+    @Value("${tailormap-api.mail.from}")
   private String mailFrom;
 
   @Value("${tailormap-api.password-reset.enabled:true}")
@@ -58,12 +64,14 @@ public class PasswordResetController {
   private int passwordResetTokenExpirationMinutes;
 
   public PasswordResetController(
-      JavaMailSender emailSender,
-      UserRepository userRepository,
-      TemporaryTokenRepository temporaryTokenRepository) {
+          JavaMailSender emailSender,
+          UserRepository userRepository,
+          TemporaryTokenRepository temporaryTokenRepository, MessageSource messageSource, LocaleResolver localeResolver) {
     this.emailSender = emailSender;
     this.userRepository = userRepository;
     this.temporaryTokenRepository = temporaryTokenRepository;
+      this.messageSource = messageSource;
+      this.localeResolver = localeResolver;
   }
 
   /**
@@ -103,6 +111,8 @@ public class PasswordResetController {
           ? Integer.parseInt(request.getHeader("X-Forwarded-Port"))
           : request.getServerPort();
 
+      final Locale locale = localeResolver.resolveLocale(request);
+
       ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
       emailExecutor.execute(() -> {
         this.userRepository.findByEmail(email).ifPresent(user -> {
@@ -127,8 +137,8 @@ public class PasswordResetController {
           SimpleMailMessage message = new SimpleMailMessage();
           message.setFrom(mailFrom);
           message.setTo(user.getEmail());
-          message.setSubject("Password reset request");
-          message.setText("Your reset token url: %s".formatted(absoluteLink));
+          message.setSubject(messageSource.getMessage("reset-password-request.email-subject",null, locale));
+          message.setText(messageSource.getMessage("reset-password-request.email-body", new Object[]{absoluteLink},locale));
 
           logger.trace("Sending message {}", message);
           logger.info("Sending password reset email for user: {}", user.getUsername());
