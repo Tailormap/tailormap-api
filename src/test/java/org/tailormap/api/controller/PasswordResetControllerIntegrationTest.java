@@ -54,8 +54,8 @@ class PasswordResetControllerIntegrationTest {
   private TemporaryTokenRepository temporaryTokenRepository;
 
   /**
-   * Test the password reset request endpoint. This test only verifies that the endpoint returns a 200 OK response.
-   * The actual sending of the email is not tested here as it happens in a separate thread.
+   * Test the password reset request endpoint. This test only verifies that the endpoint returns a 202 ACCEPTED
+   * response. The actual sending of the email is not tested here as it happens in a separate thread.
    *
    * @throws Exception in case of errors
    */
@@ -68,7 +68,7 @@ class PasswordResetControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .with(csrf()))
-        .andExpect(status().isOk())
+        .andExpect(status().isAccepted())
         .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
 
     // we need some time here to wait for the email thread to complete
@@ -93,7 +93,7 @@ class PasswordResetControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .with(csrf()))
-        .andExpect(status().isOk())
+        .andExpect(status().isAccepted())
         .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
     Awaitility.await()
         .pollDelay(5, SECONDS)
@@ -112,7 +112,7 @@ class PasswordResetControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .with(csrf()))
-        .andExpect(status().isOk())
+        .andExpect(status().isAccepted())
         .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
 
     Awaitility.await()
@@ -142,7 +142,7 @@ class PasswordResetControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .with(csrf()))
-        .andExpect(status().isOk())
+        .andExpect(status().isAccepted())
         .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
     Awaitility.await()
         .pollDelay(5, SECONDS)
@@ -165,7 +165,7 @@ class PasswordResetControllerIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .with(setServletPath(url))
             .with(csrf()))
-        .andExpect(status().isOk())
+        .andExpect(status().isAccepted())
         .andExpect(jsonPath("$.message").value("Your password reset request is being processed"));
     Awaitility.await()
         .pollDelay(5, SECONDS)

@@ -457,8 +457,8 @@ paths:
               required:
                 - email
       responses:
-        '200':
-          description: 'Request received'
+        '202':
+          description: 'Request accepted'
         '500':
           description: 'Internal server error'
           content:

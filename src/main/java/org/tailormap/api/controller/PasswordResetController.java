@@ -70,7 +70,7 @@ public class PasswordResetController {
    * Request a password reset email. The email will be sent asynchronously.
    *
    * @param email the email address to request a password reset for
-   * @return 200 OK
+   * @return 202 ACCEPTED with a message that the request is being processed
    */
   @PostMapping(
       path = "${tailormap-api.base-path}/password-reset",
@@ -83,8 +83,10 @@ public class PasswordResetController {
       this.sendPasswordResetEmail(email, request);
     }
 
-    return ResponseEntity.ok(
-        new ObjectMapper().createObjectNode().put("message", "Your password reset request is being processed"));
+    return ResponseEntity.accepted()
+        .body(new ObjectMapper()
+            .createObjectNode()
+            .put("message", "Your password reset request is being processed"));
   }
 
   private void sendPasswordResetEmail(String email, HttpServletRequest request) {
