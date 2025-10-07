@@ -5,9 +5,6 @@
  */
 package org.tailormap.api.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Counted;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +22,7 @@ import java.util.concurrent.RejectedExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,6 +43,7 @@ import org.tailormap.api.viewer.model.ErrorResponse;
 
 @RestController
 @Validated
+@ConditionalOnProperty(name = "tailormap-api.password-reset.enabled")
 public class PasswordResetController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -112,6 +111,11 @@ public class PasswordResetController {
   }
 
   private void sendPasswordResetEmail(String email, HttpServletRequest request) {
+
+    final String absoluteLinkPrefix =
+        request.getRequestURL().toString().replace(request.getRequestURI(), request.getContextPath());
+    final Locale locale = localeResolver.resolveLocale(request);
+
     try {
       // XXX We may need to build the absolute outside the email thread as it may throw an IllegalStateException:
       // The request object has been recycled and is no longer associated with this facade
@@ -131,23 +135,9 @@ public class PasswordResetController {
                 passwordResetTokenExpirationMinutes);
             token = temporaryTokenRepository.save(token);
 
-            final Locale locale = localeResolver.resolveLocale(request);
-            // build the absolute URL considering proxy headers
-            String scheme = request.getHeader("X-Forwarded-Proto") != null
-                ? request.getHeader("X-Forwarded-Proto")
-                : request.getScheme();
-            String host = request.getHeader("X-Forwarded-Host") != null
-                ? request.getHeader("X-Forwarded-Host")
-                : request.getServerName();
-            int port = request.getHeader("X-Forwarded-Port") != null
-                ? Integer.parseInt(request.getHeader("X-Forwarded-Port"))
-                : request.getServerPort();
-
-            String absoluteLink = scheme + "://" + host
-                + ((scheme.equals("http") && port != 80) || (scheme.equals("https") && port != 443)
-                    ? ":" + port
-                    : "")
-                + linkTo(methodOn(UserController.class).getPasswordReset(token.getToken()));
+            String absoluteLink = absoluteLinkPrefix
+                + /* this is the route in the angular application */ "/user/password-reset/"
+                + token.getToken();
 
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(mailFrom);
