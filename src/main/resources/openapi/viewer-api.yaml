@@ -416,6 +416,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginConfiguration'
+  /validate-password:
+    post:
+      operationId: 'test'
+      summary: 'Validate if a password meets the password policy.'
+      security: [ ]
+      requestBody:
+        required: true
+        description: 'A message containing the password to validate.'
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              title: 'validate-password'
+              type: object
+              properties:
+                password:
+                  type: string
+              required:
+                - password
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  message:
+                    type: string
+                required:
+                  - result
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
   /user:
     summary: 'get user information, such as login'

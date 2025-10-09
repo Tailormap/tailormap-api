@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package org.tailormap.api.controller.admin;
+package org.tailormap.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Serializable;
@@ -17,7 +17,7 @@ import org.tailormap.api.util.TMPasswordDeserializer;
 
 @RestController
 public class PasswordValidationController {
-  @PostMapping(path = "${tailormap-api.admin.base-path}/validate-password")
+  @PostMapping(path = "${tailormap-api.base-path}/validate-password")
   public ResponseEntity<Serializable> test(@RequestParam String password) {
     int minLength = TailormapPasswordStrengthConfig.getMinLength();
     int minStrength = TailormapPasswordStrengthConfig.getMinStrength();
