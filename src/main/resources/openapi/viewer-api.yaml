@@ -455,6 +455,7 @@ paths:
               schema:
                 $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
 
+
   /user:
     summary: 'get user information, such as login'
     get:
@@ -468,6 +469,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
+
+  /user/reset-password:
+    post:
+      operationId: 'confirmPasswordReset'
+      summary: 'Reset the password using a reset token, username and password.'
+      security: [ ]
+      requestBody:
+        required: true
+        description: 'A message containing the reset token, username and the new password.'
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              title: 'confirm-password'
+              type: object
+              properties:
+                token:
+                  type: string
+                username:
+                  type: string
+                newPassword:
+                  type: string
+              required:
+                - token
+                - username
+                - newPassword
+      responses:
+        '200':
+          description: 'Password successfully changed'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: 'Bad Request. Invalid token or password does not meet the password policy.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
         '500':
           description: 'Internal server error'
           content:

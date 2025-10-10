@@ -6,7 +6,7 @@
 package org.tailormap.api.repository;
 
 import jakarta.validation.constraints.NotNull;
-import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.tailormap.api.persistence.TemporaryToken;
@@ -16,5 +16,5 @@ public interface TemporaryTokenRepository extends JpaRepository<TemporaryToken, 
 
   long countByUsername(@NotNull String username);
 
-  long deleteByExpirationTimeIsBefore(@NotNull OffsetDateTime expirationTime);
+  long deleteByExpirationTimeIsBefore(@NotNull ZonedDateTime expirationTime);
 }

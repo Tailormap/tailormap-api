@@ -5,6 +5,8 @@
  */
 package org.tailormap.api.persistence;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,8 +14,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Base64;
 import java.util.UUID;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -36,7 +39,7 @@ public class TemporaryToken {
   @NotNull private String username;
 
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  @NotNull private OffsetDateTime expirationTime;
+  @NotNull private ZonedDateTime expirationTime;
 
   public TemporaryToken() {
     // Default constructor for JPA
@@ -45,7 +48,8 @@ public class TemporaryToken {
   public TemporaryToken(TokenType tokenType, String username, int expirationMinutes) {
     this.tokenType = tokenType;
     this.username = username;
-    this.expirationTime = OffsetDateTime.now(ZoneId.systemDefault()).plusMinutes(expirationMinutes);
+
+    this.expirationTime = ZonedDateTime.now(ZoneId.of("UTC")).plusMinutes(expirationMinutes);
     this.token = UUID.randomUUID();
   }
 
@@ -76,12 +80,17 @@ public class TemporaryToken {
     return this;
   }
 
-  public OffsetDateTime getExpirationTime() {
+  public ZonedDateTime getExpirationTime() {
     return expirationTime;
   }
 
-  public TemporaryToken setExpirationTime(OffsetDateTime expirationTime) {
+  public TemporaryToken setExpirationTime(ZonedDateTime expirationTime) {
     this.expirationTime = expirationTime;
     return this;
+  }
+
+  public String getCombinedTokenAndExpirationAsBase64() {
+    return Base64.getEncoder()
+        .encodeToString((this.token + "#" + this.expirationTime.toEpochSecond()).getBytes(UTF_8));
   }
 }

@@ -43,7 +43,7 @@ import org.tailormap.api.viewer.model.ErrorResponse;
 
 @RestController
 @Validated
-@ConditionalOnProperty(name = "tailormap-api.password-reset.enabled")
+@ConditionalOnProperty(name = "tailormap-api.password-reset.enabled", havingValue = "true")
 public class PasswordResetController {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -137,7 +137,7 @@ public class PasswordResetController {
 
             String absoluteLink = absoluteLinkPrefix
                 + /* this is the route in the angular application */ "/user/password-reset/"
-                + token.getToken();
+                + token.getCombinedTokenAndExpirationAsBase64();
 
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(mailFrom);

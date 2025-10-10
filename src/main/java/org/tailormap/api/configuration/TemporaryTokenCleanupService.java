@@ -38,7 +38,7 @@ public class TemporaryTokenCleanupService {
     logger.trace("Running expired token cleanup...");
     long deletedCount = this.jdbcClient
         .sql("DELETE FROM temporary_token WHERE expiration_time < ?")
-        .param(OffsetDateTime.now(ZoneId.systemDefault()))
+        .param(OffsetDateTime.now(ZoneId.of("UTC")))
         .update();
 
     logger.trace("Cleaned up {} tokens", deletedCount);
