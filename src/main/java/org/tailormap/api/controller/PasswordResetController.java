@@ -56,7 +56,7 @@ public class PasswordResetController {
   @Value("${tailormap-api.mail.from}")
   private String mailFrom;
 
-  @Value("${tailormap-api.password-reset.enabled:true}")
+  @Value("${tailormap-api.password-reset.enabled:false}")
   private boolean passwordResetEnabled;
 
   @Value("${tailormap-api.password-reset.disabled-for}")
