@@ -106,10 +106,11 @@ implements <a href="TailormapUserDetails.html" title="interface in org.tailormap
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.util.Collection,org.springframework.security.oauth2.core.oidc.OidcIdToken,org.springframework.security.oauth2.core.oidc.OidcUserInfo,java.lang.String,java.util.Collection)" class="member-name-link">TailormapOidcUser</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;? extends org.springframework.security.core.GrantedAuthority&gt;&nbsp;authorities,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.util.Collection,org.springframework.security.oauth2.core.oidc.OidcIdToken,org.springframework.security.oauth2.core.oidc.OidcUserInfo,java.lang.String,java.lang.String,java.util.Collection)" class="member-name-link">TailormapOidcUser</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;? extends org.springframework.security.core.GrantedAuthority&gt;&nbsp;authorities,
  org.springframework.security.oauth2.core.oidc.OidcIdToken&nbsp;idToken,
  org.springframework.security.oauth2.core.oidc.OidcUserInfo&nbsp;userInfo,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;nameAttributeKey,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;oidcRegistrationName,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="TailormapAdditionalProperty.html" title="class in org.tailormap.api.security">TailormapAdditionalProperty</a>&gt;&nbsp;additionalGroupProperties)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
@@ -133,11 +134,14 @@ implements <a href="TailormapUserDetails.html" title="interface in org.tailormap
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAdditionalProperties()" class="member-name-link">getAdditionalProperties</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPassword()" class="member-name-link">getPassword</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getOrganisation()" class="member-name-link">getOrganisation</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUsername()" class="member-name-link">getUsername</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPassword()" class="member-name-link">getPassword</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUsername()" class="member-name-link">getUsername</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -183,12 +187,13 @@ implements <a href="TailormapUserDetails.html" title="interface in org.tailormap
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(java.util.Collection,org.springframework.security.oauth2.core.oidc.OidcIdToken,org.springframework.security.oauth2.core.oidc.OidcUserInfo,java.lang.String,java.util.Collection)">
+<section class="detail" id="&lt;init&gt;(java.util.Collection,org.springframework.security.oauth2.core.oidc.OidcIdToken,org.springframework.security.oauth2.core.oidc.OidcUserInfo,java.lang.String,java.lang.String,java.util.Collection)">
 <h3>TailormapOidcUser</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">TailormapOidcUser</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;? extends org.springframework.security.core.GrantedAuthority&gt;&nbsp;authorities,
  org.springframework.security.oauth2.core.oidc.OidcIdToken&nbsp;idToken,
  org.springframework.security.oauth2.core.oidc.OidcUserInfo&nbsp;userInfo,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;nameAttributeKey,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;oidcRegistrationName,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;<a href="TailormapAdditionalProperty.html" title="class in org.tailormap.api.security">TailormapAdditionalProperty</a>&gt;&nbsp;additionalGroupProperties)</span></div>
 </section>
 </li>
@@ -237,6 +242,16 @@ implements <a href="TailormapUserDetails.html" title="interface in org.tailormap
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code>getUsername</code>&nbsp;in interface&nbsp;<code>org.springframework.security.core.userdetails.UserDetails</code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getOrganisation()">
+<h3>getOrganisation</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getOrganisation</span>()</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="TailormapUserDetails.html#getOrganisation()">getOrganisation</a></code>&nbsp;in interface&nbsp;<code><a href="TailormapUserDetails.html" title="interface in org.tailormap.api.security">TailormapUserDetails</a></code></dd>
 </dl>
 </section>
 </li>
