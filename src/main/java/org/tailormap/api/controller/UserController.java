@@ -84,6 +84,8 @@ public class UserController {
           .collect(Collectors.toSet()));
 
       if (authentication.getPrincipal() instanceof TailormapUserDetails userProperties) {
+        userResponse.setOrganisation(userProperties.getOrganisation());
+
         // Public user and group properties are meant for a (modified) frontend to implement custom
         // logic depending on who's logged in. When used for authorization for something, the check
         // should also be performed server-side, possibly in an extra microservice.

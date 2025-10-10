@@ -79,6 +79,9 @@ components:
         username:
           type: string
           description: 'username of the authenticated user'
+        organisation:
+          type: string
+          description: 'organisation of the authenticated user'
         roles:
           type: array
           uniqueItems: true

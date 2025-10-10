@@ -55,7 +55,14 @@ public class TailormapOidcUserService extends OidcUserService {
         .getUserInfoEndpoint()
         .getUserNameAttributeName();
 
+    String oidcRegistrationName = userRequest.getClientRegistration().getClientName();
+
     return new TailormapOidcUser(
-        authorities, user.getIdToken(), user.getUserInfo(), userNameAttributeName, groupProperties);
+        authorities,
+        user.getIdToken(),
+        user.getUserInfo(),
+        userNameAttributeName,
+        oidcRegistrationName,
+        groupProperties);
   }
 }
