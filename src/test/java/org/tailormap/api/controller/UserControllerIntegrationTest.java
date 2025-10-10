@@ -80,6 +80,11 @@ class UserControllerIntegrationTest {
       }
 
       @Override
+      public String getOrganisation() {
+        return null;
+      }
+
+      @Override
       public Collection<TailormapAdditionalProperty> getAdditionalProperties() {
         return List.of(
             new TailormapAdditionalProperty("some-property", true, "some-value"),
@@ -103,6 +108,7 @@ class UserControllerIntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.isAuthenticated").value(true))
         .andExpect(jsonPath("$.username").value("tm-admin"))
+        .andExpect(jsonPath("$.organisation").isEmpty())
         .andExpect(jsonPath("$.roles.length()").value(3))
         .andExpect(jsonPath("$.roles").value(Matchers.containsInAnyOrder(Group.ADMIN, "test-bar", "test-baz")))
         .andExpect(jsonPath("$.properties.length()").value(1))
