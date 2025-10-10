@@ -33,4 +33,6 @@ public interface TailormapUserDetails extends Serializable, UserDetails {
         .filter(p -> p.key().equals(key))
         .map(TailormapAdditionalProperty::value);
   }
+
+  String getOrganisation();
 }

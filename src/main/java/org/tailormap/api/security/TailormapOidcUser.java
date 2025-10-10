@@ -21,13 +21,17 @@ public class TailormapOidcUser extends DefaultOidcUser implements TailormapUserD
 
   private final Collection<TailormapAdditionalProperty> additionalGroupProperties;
 
+  private final String oidcRegistrationName;
+
   public TailormapOidcUser(
       Collection<? extends GrantedAuthority> authorities,
       OidcIdToken idToken,
       OidcUserInfo userInfo,
       String nameAttributeKey,
+      String oidcRegistrationName,
       Collection<TailormapAdditionalProperty> additionalGroupProperties) {
     super(authorities, idToken, userInfo, nameAttributeKey);
+    this.oidcRegistrationName = oidcRegistrationName;
     this.additionalGroupProperties = Collections.unmodifiableCollection(additionalGroupProperties);
   }
 
@@ -49,5 +53,10 @@ public class TailormapOidcUser extends DefaultOidcUser implements TailormapUserD
   @Override
   public String getUsername() {
     return super.getName();
+  }
+
+  @Override
+  public String getOrganisation() {
+    return oidcRegistrationName;
   }
 }

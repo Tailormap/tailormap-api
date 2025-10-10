@@ -30,6 +30,7 @@ class TailormapUserDetailsImpl implements TailormapUserDetails {
   private final String password;
   private final ZonedDateTime validUntil;
   private final boolean enabled;
+  private final String organisation;
 
   private final Collection<TailormapAdditionalProperty> additionalProperties = new ArrayList<>();
   private final Collection<TailormapAdditionalProperty> additionalGroupProperties = new ArrayList<>();
@@ -51,6 +52,7 @@ class TailormapUserDetailsImpl implements TailormapUserDetails {
     password = user.getPassword();
     validUntil = user.getValidUntil();
     enabled = user.isEnabled();
+    organisation = user.getOrganisation();
 
     if (user.getAdditionalProperties() != null) {
       for (AdminAdditionalProperty property : user.getAdditionalProperties()) {
@@ -88,6 +90,11 @@ class TailormapUserDetailsImpl implements TailormapUserDetails {
   @Override
   public boolean isEnabled() {
     return enabled;
+  }
+
+  @Override
+  public String getOrganisation() {
+    return organisation;
   }
 
   @Override
