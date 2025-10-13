@@ -166,13 +166,14 @@ public class ViewerHelper {
       return List.of();
     }
     Set<String> sharedAttributeNames = new HashSet<>();
-    for (TMFeatureType tmft : tmfts) {
+    for (int i = 0; i < tmfts.size(); i++) {
+      TMFeatureType tmft = tmfts.get(i);
       List<String> hiddenAttributes = tmft.getSettings().getHideAttributes();
       List<String> attributeNames = tmft.getAttributes().stream()
           .map(TMAttributeDescriptor::getName)
           .filter(attributeName -> !hiddenAttributes.contains(attributeName))
           .toList();
-      if (sharedAttributeNames.isEmpty()) {
+      if (i == 0) {
         sharedAttributeNames.addAll(attributeNames);
       } else {
         sharedAttributeNames.retainAll(attributeNames);
