@@ -5,10 +5,14 @@
  */
 package org.tailormap.api.repository;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,4 +31,9 @@ public interface UserRepository extends JpaRepository<User, String> {
 
   @PreAuthorize("permitAll()")
   Optional<User> findByEmail(@NonNull String email);
+
+  @PreAuthorize("permitAll()")
+  @Modifying
+  @Query("update User u set u.password= :password where u.username = :username")
+  void updatePassword(@NotNull @Param("username") String username, @NotNull @Param("password") String password);
 }

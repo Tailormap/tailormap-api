@@ -7,10 +7,13 @@ package org.tailormap.api.persistence;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -30,6 +33,7 @@ public class TemporaryToken {
   }
 
   @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
   private UUID token;
 
   @Enumerated(EnumType.STRING)
@@ -45,15 +49,13 @@ public class TemporaryToken {
     // Default constructor for JPA
   }
 
-  public TemporaryToken(TokenType tokenType, String username, int expirationMinutes) {
+  public TemporaryToken(@NotNull TokenType tokenType, @NotNull String username, int expirationMinutes) {
     this.tokenType = tokenType;
     this.username = username;
-
     this.expirationTime = ZonedDateTime.now(ZoneId.of("UTC")).plusMinutes(expirationMinutes);
-    this.token = UUID.randomUUID();
   }
 
-  public UUID getToken() {
+  @NotNull public UUID getToken() {
     return token;
   }
 
@@ -89,7 +91,14 @@ public class TemporaryToken {
     return this;
   }
 
-  public String getCombinedTokenAndExpirationAsBase64() {
+  /**
+   * Get the token and expiration time as a base64 encoded string. The format before encoding is:
+   * token#expirationEpochSeconds.
+   *
+   * @return base64 encoded token and expiration time
+   */
+  @JsonIgnore
+  @NotNull public String getCombinedTokenAndExpirationAsBase64() {
     return Base64.getEncoder()
         .encodeToString((this.token + "#" + this.expirationTime.toEpochSecond()).getBytes(UTF_8));
   }

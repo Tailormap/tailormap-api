@@ -5,17 +5,23 @@
  */
 package org.tailormap.api.controller;
 
+import static org.tailormap.api.util.TMPasswordDeserializer.encoder;
+import static org.tailormap.api.util.TMPasswordDeserializer.validatePasswordStrength;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Counted;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
@@ -30,13 +36,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.LocaleResolver;
+import org.tailormap.api.configuration.TailormapPasswordStrengthConfig;
 import org.tailormap.api.persistence.TemporaryToken;
+import org.tailormap.api.persistence.User;
 import org.tailormap.api.repository.TemporaryTokenRepository;
 import org.tailormap.api.repository.UserRepository;
 import org.tailormap.api.viewer.model.ErrorResponse;
@@ -97,7 +107,7 @@ public class PasswordResetController {
       path = "${tailormap-api.base-path}/password-reset",
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-  @Counted(value = "tailormap_api_password_reset_request", description = "number of password reset requests")
+  @Counted(value = "tailormap_api_password_reset_request", description = "number of password reset requests by email")
   public ResponseEntity<Serializable> requestPasswordReset(
       @RequestParam @Email String email, HttpServletRequest request) throws ConstraintViolationException {
     if (passwordResetEnabled && !passwordResetDisabledFor.contains(email)) {
@@ -110,8 +120,57 @@ public class PasswordResetController {
             .put("message", "Your password reset request is being processed"));
   }
 
-  private void sendPasswordResetEmail(String email, HttpServletRequest request) {
+  @PostMapping(
+      path = "${tailormap-api.base-path}/user/reset-password",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+  @Counted(
+      value = "tailormap_api_password_reset_confirmation",
+      description = "number of submitted password reset confirmations")
+  @Transactional
+  public ResponseEntity<Serializable> confirmPasswordReset(
+      @NotNull UUID token, @NotNull String username, @NotNull String newPassword) throws ResponseStatusException {
 
+    final TemporaryToken temporaryToken = temporaryTokenRepository
+        .findById(token)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token invalid"));
+
+    // check if password is valid
+    boolean validation = TailormapPasswordStrengthConfig.getValidation();
+    int minLength = TailormapPasswordStrengthConfig.getMinLength();
+    int minStrength = TailormapPasswordStrengthConfig.getMinStrength();
+    if (validation && !validatePasswordStrength(newPassword, minLength, minStrength)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password too short or too easily guessable");
+    }
+
+    // check if token is valid (not expired, correct type and username matches)
+    if (temporaryToken.getExpirationTime().isAfter(Instant.now().atZone(ZoneId.of("UTC")))
+        && temporaryToken.getTokenType() == TemporaryToken.TokenType.PASSWORD_RESET
+        && temporaryToken.getUsername().equals(username)) {
+      // only reset password and return an OK response if user exists, is enabled and account has not expired
+      // even here we don't want to reveal if the user exists or not
+      final User user = userRepository.findById(username).orElse(null);
+      if (user != null
+          && user.isEnabled()
+          && (user.getValidUntil() == null
+              || (user.getValidUntil() != null
+                  && user.getValidUntil()
+                      .isAfter(Instant.now().atZone(ZoneId.of("UTC")))))) {
+
+        userRepository.updatePassword(username, encoder().encode(newPassword));
+        logger.info("Password reset successful for user: {}", user.getUsername());
+        temporaryTokenRepository.delete(temporaryToken);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new ObjectMapper()
+                .createObjectNode()
+                .put("message", "Your password reset was reset successful"));
+      }
+    }
+    // if we reach this, something was wrong with the token or the user
+    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token expired or invalid request");
+  }
+
+  private void sendPasswordResetEmail(String email, HttpServletRequest request) {
     final String absoluteLinkPrefix =
         request.getRequestURL().toString().replace(request.getRequestURI(), request.getContextPath());
     final Locale locale = localeResolver.resolveLocale(request);
