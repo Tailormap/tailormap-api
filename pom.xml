@@ -101,7 +101,7 @@ SPDX-License-Identifier: MIT
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
         <project.build.outputTimestamp>2025-09-16T10:10:49Z</project.build.outputTimestamp>
-        <geotools.version>34-M0</geotools.version>
+        <geotools.version>34.0</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.1.0</okhttp.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
