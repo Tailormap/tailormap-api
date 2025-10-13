@@ -10,11 +10,11 @@ import static java.util.Objects.requireNonNullElse;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -165,20 +165,20 @@ public class ViewerHelper {
     if (filters == null || filters.isEmpty() || tmfts == null || tmfts.isEmpty()) {
       return List.of();
     }
-    Set<String> sharedAttributeNames = new HashSet<>();
-    for (int i = 0; i < tmfts.size(); i++) {
-      TMFeatureType tmft = tmfts.get(i);
-      List<String> hiddenAttributes = tmft.getSettings().getHideAttributes();
-      List<String> attributeNames = tmft.getAttributes().stream()
-          .map(TMAttributeDescriptor::getName)
-          .filter(attributeName -> !hiddenAttributes.contains(attributeName))
-          .toList();
-      if (i == 0) {
-        sharedAttributeNames.addAll(attributeNames);
-      } else {
-        sharedAttributeNames.retainAll(attributeNames);
-      }
-    }
+
+    Set<String> sharedAttributeNames = tmfts.stream()
+        .map(tmft -> {
+          List<String> hiddenAttributes = tmft.getSettings().getHideAttributes();
+          return tmft.getAttributes().stream()
+              .map(TMAttributeDescriptor::getName)
+              .filter(attr -> !hiddenAttributes.contains(attr))
+              .collect(Collectors.toSet());
+        })
+        .reduce((a, b) -> {
+          a.retainAll(b);
+          return a;
+        })
+        .orElse(Set.of());
 
     Map<String, AttributeSettings> attributeSettings =
         tmfts.get(0).getSettings().getAttributeSettings();
