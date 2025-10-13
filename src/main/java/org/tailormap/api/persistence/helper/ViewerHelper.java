@@ -9,10 +9,12 @@ import static java.util.Objects.requireNonNullElse;
 
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -54,7 +56,7 @@ public class ViewerHelper {
 
   @Transactional
   public ViewerResponse getViewerResponse(Application application) {
-    Map<String, FeatureTypeRef> appLayerIdToFeatureTypeId = new java.util.HashMap<>();
+    Map<String, FeatureTypeRef> appLayerIdToFeatureTypeRef = new HashMap<>();
     //  filter the filterGroups to only have filterGroups with layerIds
     //  that are allowed for this user.
     List<FilterGroup> allowedFilterGroups = application.getSettings().getFilterGroups().stream()
@@ -85,9 +87,12 @@ public class ViewerHelper {
                 .orElse(null);
             if (layer != null && authorisationService.userAllowedToViewGeoServiceLayer(service, layer)) {
               allowedLayerIds.add(layerId);
-              appLayerIdToFeatureTypeId.put(
-                  layerId,
-                  service.getLayerSettings(layer.getName()).getFeatureType());
+              if (service.getLayerSettings(layer.getName()).getFeatureType() != null) {
+                appLayerIdToFeatureTypeRef.put(
+                    layerId,
+                    service.getLayerSettings(layer.getName())
+                        .getFeatureType());
+              }
             }
           }
 
@@ -105,8 +110,7 @@ public class ViewerHelper {
         .toList();
 
     List<TMFeatureSource> featureSources =
-        featureSourceRepository.findByIds(appLayerIdToFeatureTypeId.values().stream()
-            .filter(Objects::nonNull)
+        featureSourceRepository.findByIds(appLayerIdToFeatureTypeRef.values().stream()
             .map(FeatureTypeRef::getFeatureSourceId)
             .distinct()
             .toList());
@@ -115,10 +119,7 @@ public class ViewerHelper {
         .peek(fg -> {
           List<TMFeatureType> tmfts = new ArrayList<>();
           for (String layerId : fg.getLayerIds()) {
-            FeatureTypeRef ftr = appLayerIdToFeatureTypeId.get(layerId);
-            if (ftr == null) {
-              continue;
-            }
+            FeatureTypeRef ftr = appLayerIdToFeatureTypeRef.get(layerId);
             TMFeatureSource tmfs = featureSources.stream()
                 .filter(fs -> Objects.equals(fs.getId(), ftr.getFeatureSourceId()))
                 .findFirst()
@@ -134,6 +135,7 @@ public class ViewerHelper {
           List<Filter> verifiedFilters = this.verifyFilters(tmfts, fg.getFilters());
           fg.setFilters(verifiedFilters);
         })
+        .filter(fg -> !fg.getFilters().isEmpty())
         .toList();
 
     return new ViewerResponse()
@@ -150,32 +152,38 @@ public class ViewerHelper {
         .filterGroups(verifiedFilterGroups);
   }
 
+  /**
+   * Verify if the filters are valid for the given feature types. A filter is valid if its attribute exists in all
+   * feature types and is not hidden. If valid, the attribute alias is set from the attribute settings of the first
+   * feature type.
+   *
+   * @param tmfts the feature types to verify against
+   * @param filters the filters to verify
+   * @return the verified filters
+   */
   public List<Filter> verifyFilters(List<TMFeatureType> tmfts, List<Filter> filters) {
-    if (filters == null) {
+    if (filters == null || filters.isEmpty() || tmfts == null || tmfts.isEmpty()) {
       return List.of();
     }
-    List<TMAttributeDescriptor> sharedAttributes = new ArrayList<>();
+    Set<String> sharedAttributeNames = new HashSet<>();
     for (TMFeatureType tmft : tmfts) {
-      if (sharedAttributes.isEmpty()) {
-        sharedAttributes.addAll(tmft.getAttributes());
-      } else {
-        sharedAttributes.retainAll(tmft.getAttributes());
-      }
+      List<String> hiddenAttributes = tmft.getSettings().getHideAttributes();
+      sharedAttributeNames.addAll(tmft.getAttributes().stream()
+          .map(TMAttributeDescriptor::getName)
+          .filter(attributeName -> !hiddenAttributes.contains(attributeName))
+          .toList());
     }
 
-    List<Filter> verifiedFilters = new ArrayList<>();
-    for (Filter filter : filters) {
-      Optional<TMAttributeDescriptor> attr = sharedAttributes.stream()
-          .filter(a -> a.getName().equals(filter.getAttribute()))
-          .findFirst();
-      if (attr.isPresent()) {
-        AttributeSettings attributeSettings = tmfts.get(0).getSettings().getAttributeSettings().get(attr.get().getName());
-        if (attributeSettings != null && attributeSettings.getTitle() != null) {
-          filter.setAttributeAlias(attributeSettings.getTitle());
-        }
-        verifiedFilters.add(filter);
-      }
-    }
-    return verifiedFilters;
+    Map<String, AttributeSettings> attributeSettings =
+        tmfts.get(0).getSettings().getAttributeSettings();
+    return filters.stream()
+        .filter(filter -> sharedAttributeNames.contains(filter.getAttribute()))
+        .peek(filter -> {
+          AttributeSettings settings = attributeSettings.get(filter.getAttribute());
+          if (settings != null && settings.getTitle() != null) {
+            filter.setAttributeAlias(settings.getTitle());
+          }
+        })
+        .toList();
   }
 }
