@@ -54,6 +54,8 @@ public class User {
 
   private String name;
 
+  private String organisation;
+
   @Column(columnDefinition = "text")
   private String notes;
 
@@ -115,6 +117,15 @@ public class User {
 
   public User setName(String name) {
     this.name = name;
+    return this;
+  }
+
+  public String getOrganisation() {
+    return organisation;
+  }
+
+  public User setOrganisation(String organisation) {
+    this.organisation = organisation;
     return this;
   }
 

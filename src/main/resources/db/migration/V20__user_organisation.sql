@@ -1,0 +1,1 @@
+alter table users add organisation varchar(255);
