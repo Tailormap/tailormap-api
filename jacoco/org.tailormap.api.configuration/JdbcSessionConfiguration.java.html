@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JdbcSessionConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Aggregate Test Coverage</a> &gt; <a href="index.source.html" class="el_package">org.tailormap.api.configuration</a> &gt; <span class="el_source">JdbcSessionConfiguration.java</span></div><h1>JdbcSessionConfiguration.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (C) 2025 B3Partners B.V.
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+package org.tailormap.api.configuration;
+
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.GenericConversionService;
+import org.springframework.core.serializer.Deserializer;
+import org.springframework.core.serializer.support.DeserializingConverter;
+import org.springframework.core.serializer.support.SerializingConverter;
+
+/**
+ * Ignore deserialization exceptions, see &lt;a
+ * href=&quot;https://github.com/spring-projects/spring-session/issues/529#issuecomment-2761671945&quot;&gt;here&lt;/a&gt;.
+ */
+@Configuration
+<span class="nc" id="L24">public class JdbcSessionConfiguration {</span>
+  @Bean(&quot;springSessionConversionService&quot;)
+  public ConversionService springSessionConversionService() {
+<span class="nc" id="L27">    GenericConversionService converter = new GenericConversionService();</span>
+<span class="nc" id="L28">    converter.addConverter(Object.class, byte[].class, new SerializingConverter());</span>
+<span class="nc" id="L29">    converter.addConverter(byte[].class, Object.class, new DeserializingConverter(new CustomDeserializer()));</span>
+<span class="nc" id="L30">    return converter;</span>
+  }
+
+<span class="nc" id="L33">  static class CustomDeserializer implements Deserializer&lt;Object&gt; {</span>
+    @Override
+    public Object deserialize(InputStream inputStream) {
+<span class="nc" id="L36">      try (ObjectInputStream ois = new ObjectInputStream(inputStream)) {</span>
+<span class="nc" id="L37">        return ois.readObject();</span>
+<span class="nc" id="L38">      } catch (Exception ignored) {</span>
+<span class="nc" id="L39">        return null;</span>
+      }
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
