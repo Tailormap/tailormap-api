@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,7 @@ import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.TMFeatureSource;
 import org.tailormap.api.persistence.TMFeatureType;
 import org.tailormap.api.persistence.json.AppI18nSettings;
+import org.tailormap.api.persistence.json.AppLayerSettings;
 import org.tailormap.api.persistence.json.AppTreeLayerNode;
 import org.tailormap.api.persistence.json.AppUiSettings;
 import org.tailormap.api.persistence.json.AttributeSettings;
@@ -31,7 +31,6 @@ import org.tailormap.api.persistence.json.FeatureTypeRef;
 import org.tailormap.api.persistence.json.Filter;
 import org.tailormap.api.persistence.json.FilterGroup;
 import org.tailormap.api.persistence.json.GeoServiceLayer;
-import org.tailormap.api.persistence.json.TMAttributeDescriptor;
 import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.repository.GeoServiceRepository;
 import org.tailormap.api.security.AuthorisationService;
@@ -118,6 +117,8 @@ public class ViewerHelper {
     List<FilterGroup> verifiedFilterGroups = allowedFilterGroups.stream()
         .peek(fg -> {
           List<TMFeatureType> tmfts = new ArrayList<>();
+          List<AppLayerSettings> appLayerSettingsList = new ArrayList<>();
+          List<String> layerIdsToRemove = new ArrayList<>();
           for (String layerId : fg.getLayerIds()) {
             FeatureTypeRef ftr = appLayerIdToFeatureTypeRef.get(layerId);
             TMFeatureSource tmfs = featureSources.stream()
@@ -130,12 +131,19 @@ public class ViewerHelper {
             TMFeatureType tmft = tmfs.findFeatureTypeByName(ftr.getFeatureTypeName());
             if (tmft != null) {
               tmfts.add(tmft);
+              appLayerSettingsList.add(application.getAppLayerSettings(layerId));
+            } else {
+              layerIdsToRemove.add(layerId);
             }
           }
-          List<Filter> verifiedFilters = this.verifyFilters(tmfts, fg.getFilters());
+
+          fg.setLayerIds(fg.getLayerIds().stream()
+              .filter(layerId -> !layerIdsToRemove.contains(layerId))
+              .toList());
+          List<Filter> verifiedFilters = this.verifyFilters(tmfts, fg.getFilters(), appLayerSettingsList);
           fg.setFilters(verifiedFilters);
         })
-        .filter(fg -> !fg.getFilters().isEmpty())
+        .filter(fg -> !fg.getFilters().isEmpty() && !fg.getLayerIds().isEmpty())
         .toList();
 
     return new ViewerResponse()
@@ -161,25 +169,22 @@ public class ViewerHelper {
    * @param filters the filters to verify
    * @return the verified filters
    */
-  public List<Filter> verifyFilters(List<TMFeatureType> tmfts, List<Filter> filters) {
-    if (filters == null || filters.isEmpty() || tmfts == null || tmfts.isEmpty()) {
+  public List<Filter> verifyFilters(
+      List<TMFeatureType> tmfts, List<Filter> filters, List<AppLayerSettings> appLayerSettings) {
+    if (filters == null
+        || filters.isEmpty()
+        || tmfts == null
+        || tmfts.isEmpty()
+        || tmfts.size() != appLayerSettings.size()) {
       return List.of();
     }
 
-    Set<String> sharedAttributeNames = tmfts.stream()
-        .map(tmft -> {
-          List<String> hiddenAttributes = tmft.getSettings().getHideAttributes();
-          return tmft.getAttributes().stream()
-              .map(TMAttributeDescriptor::getName)
-              .filter(attr -> !hiddenAttributes.contains(attr))
-              .collect(Collectors.toSet());
-        })
-        .reduce((a, b) -> {
-          Set<String> intersection = new java.util.HashSet<>(a);
-          intersection.retainAll(b);
-          return intersection;
-        })
-        .orElse(Set.of());
+    Set<String> sharedAttributeNames =
+        TMFeatureTypeHelper.getNonHiddenAttributeNames(tmfts.get(0), appLayerSettings.get(0));
+    for (int i = 1; i < tmfts.size(); i++) {
+      sharedAttributeNames.retainAll(
+          TMFeatureTypeHelper.getNonHiddenAttributeNames(tmfts.get(i), appLayerSettings.get(i)));
+    }
 
     Map<String, AttributeSettings> attributeSettings =
         tmfts.get(0).getSettings().getAttributeSettings();
