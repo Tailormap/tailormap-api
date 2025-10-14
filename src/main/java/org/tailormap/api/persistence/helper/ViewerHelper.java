@@ -175,8 +175,9 @@ public class ViewerHelper {
               .collect(Collectors.toSet());
         })
         .reduce((a, b) -> {
-          a.retainAll(b);
-          return a;
+          Set<String> intersection = new java.util.HashSet<>(a);
+          intersection.retainAll(b);
+          return intersection;
         })
         .orElse(Set.of());
 
