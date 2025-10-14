@@ -332,6 +332,9 @@ components:
                 - $ref: '#/components/schemas/CheckboxDropdownListFilterConfiguration'
                 - $ref: '#/components/schemas/SwitchFilterConfiguration'
                 - $ref: '#/components/schemas/DatePickerFilterConfiguration'
+        attributeAlias:
+          description: 'alias for the attribute'
+          type: string
 
     SliderFilterConfiguration:
       title: SliderFilterConfiguration
