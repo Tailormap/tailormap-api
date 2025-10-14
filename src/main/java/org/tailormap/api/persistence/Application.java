@@ -301,10 +301,10 @@ public class Application {
     return getAppLayerSettings(node.getId());
   }
 
-  @NotNull public AppLayerSettings getAppLayerSettings(@NotNull String id) {
+  @NotNull public AppLayerSettings getAppLayerSettings(@NotNull String appLayerId) {
     return Optional.ofNullable(getSettings())
         .map(AppSettings::getLayerSettings)
-        .map(layerSettingsMap -> layerSettingsMap.get(id))
+        .map(layerSettingsMap -> layerSettingsMap.get(appLayerId))
         .orElseGet(AppLayerSettings::new);
   }
 }
