@@ -55,6 +55,21 @@ public class ViewerHelper {
 
   @Transactional
   public ViewerResponse getViewerResponse(Application application) {
+    return new ViewerResponse()
+        .kind(ViewerResponse.KindEnum.APP)
+        .name(application.getName())
+        .title(application.getTitle())
+        .styling(application.getStyling())
+        .components(application.getComponents())
+        .i18nSettings(requireNonNullElse(
+            application.getSettings().getI18nSettings(), new AppI18nSettings().hideLanguageSwitcher(false)))
+        .uiSettings(requireNonNullElse(
+            application.getSettings().getUiSettings(), new AppUiSettings().hideLoginButton(false)))
+        .projections(List.of(application.getCrs()))
+        .filterGroups(verifyFilterGroups(application));
+  }
+
+  private List<FilterGroup> verifyFilterGroups(Application application) {
     Map<String, FeatureTypeRef> appLayerIdToFeatureTypeRef = new HashMap<>();
     //  filter the filterGroups to only have filterGroups with layerIds
     //  that are allowed for this user.
@@ -114,7 +129,7 @@ public class ViewerHelper {
             .distinct()
             .toList());
 
-    List<FilterGroup> verifiedFilterGroups = allowedFilterGroups.stream()
+    return allowedFilterGroups.stream()
         .peek(fg -> {
           List<TMFeatureType> tmfts = new ArrayList<>();
           List<AppLayerSettings> appLayerSettingsList = new ArrayList<>();
@@ -145,19 +160,6 @@ public class ViewerHelper {
         })
         .filter(fg -> !fg.getFilters().isEmpty() && !fg.getLayerIds().isEmpty())
         .toList();
-
-    return new ViewerResponse()
-        .kind(ViewerResponse.KindEnum.APP)
-        .name(application.getName())
-        .title(application.getTitle())
-        .styling(application.getStyling())
-        .components(application.getComponents())
-        .i18nSettings(requireNonNullElse(
-            application.getSettings().getI18nSettings(), new AppI18nSettings().hideLanguageSwitcher(false)))
-        .uiSettings(requireNonNullElse(
-            application.getSettings().getUiSettings(), new AppUiSettings().hideLoginButton(false)))
-        .projections(List.of(application.getCrs()))
-        .filterGroups(verifiedFilterGroups);
   }
 
   /**
