@@ -159,6 +159,10 @@ components:
         webMercatorAvailable:
           description: Whether Web Mercator projection is available for this layer.
           type: boolean
+        tileset3dStyleUrl:
+          description: 'The URL of the 3D Tileset style in uploads'
+          type: string
+          nullable: true
         hiddenFunctionality:
           $ref: './common-schemas.yaml#/components/schemas/HiddenLayerFunctionality'
 

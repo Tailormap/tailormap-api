@@ -31,6 +31,7 @@ public class Upload {
   public static final String CATEGORY_DRAWING_STYLE = "drawing-style";
   public static final String CATEGORY_DRAWING_STYLE_IMAGE = "drawing-style-image";
   public static final String CATEGORY_SSO_IMAGE = "sso-image";
+  public static final String CATEGORY_TILESET_3D_STYLE = "tileset-3d-style";
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
