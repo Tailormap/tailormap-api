@@ -136,6 +136,7 @@ public class ViewerResponseHelper {
                 .getSettings()
                 .getAttributeSettings()
                 .get(filter.getAttribute()))
+            .filter(Objects::nonNull)
             .map(AttributeSettings::getTitle)
             .filter(Objects::nonNull)
             .findFirst()
