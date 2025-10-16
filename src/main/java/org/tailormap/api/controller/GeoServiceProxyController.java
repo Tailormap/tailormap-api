@@ -247,8 +247,6 @@ public class GeoServiceProxyController {
   }
 
   private static ResponseEntity<?> doProxy(URI uri, GeoService service, HttpServletRequest request) {
-    final HttpClient.Builder builder = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);
-    final HttpClient httpClient = builder.build();
 
     HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(uri);
 
@@ -276,7 +274,9 @@ public class GeoServiceProxyController {
           service.getAuthentication().getPassword());
     }
 
-    try {
+    try (final HttpClient httpClient = HttpClient.newBuilder()
+        .followRedirects(HttpClient.Redirect.NORMAL)
+        .build()) {
       // TODO: close JPA connection before proxying
       HttpResponse<InputStream> response =
           httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
