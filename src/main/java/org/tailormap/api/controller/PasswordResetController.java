@@ -17,7 +17,6 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Set;
@@ -150,12 +149,7 @@ public class PasswordResetController {
       // only reset password and return an OK response if user exists, is enabled and account has not expired
       // even here we don't want to reveal if the user exists or not
       final User user = userRepository.findById(username).orElse(null);
-      if (user != null
-          && user.isEnabled()
-          && (user.getValidUntil() == null
-              || (user.getValidUntil() != null
-                  && user.getValidUntil()
-                      .isAfter(Instant.now().atZone(ZoneId.of("UTC")))))) {
+      if (user != null && user.isEnabledAndValidUntil()) {
 
         userRepository.updatePassword(username, encoder().encode(newPassword));
         logger.info("Password reset successful for user: {}", user.getUsername());
@@ -180,11 +174,7 @@ public class PasswordResetController {
       emailExecutor.execute(() -> {
         try {
           this.userRepository.findByEmail(email).ifPresent(user -> {
-            if (!user.isEnabled()
-                || (user.getValidUntil() != null
-                    && user.getValidUntil()
-                        .isBefore(OffsetDateTime.now(ZoneId.systemDefault())
-                            .toZonedDateTime()))) return;
+            if (!user.isEnabledAndValidUntil()) return;
 
             TemporaryToken token = new TemporaryToken(
                 TemporaryToken.TokenType.PASSWORD_RESET,
