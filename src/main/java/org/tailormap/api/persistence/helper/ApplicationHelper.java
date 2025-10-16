@@ -37,7 +37,6 @@ import org.tailormap.api.persistence.Configuration;
 import org.tailormap.api.persistence.GeoService;
 import org.tailormap.api.persistence.SearchIndex;
 import org.tailormap.api.persistence.TMFeatureType;
-import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.json.AppContent;
 import org.tailormap.api.persistence.json.AppLayerSettings;
 import org.tailormap.api.persistence.json.AppTreeLayerNode;
@@ -75,7 +74,6 @@ public class ApplicationHelper {
   private final EntityManager entityManager;
   private final AuthorisationService authorisationService;
   private final SearchIndexRepository searchIndexRepository;
-  private final UploadHelper uploadHelper;
 
   public ApplicationHelper(
       GeoServiceHelper geoServiceHelper,
@@ -95,7 +93,6 @@ public class ApplicationHelper {
     this.entityManager = entityManager;
     this.authorisationService = authorisationService;
     this.searchIndexRepository = searchIndexRepository;
-    this.uploadHelper = uploadHelper;
   }
 
   public Application getServiceApplication(String baseAppName, String projection, GeoService service) {
@@ -416,10 +413,9 @@ public class ApplicationHelper {
 
       boolean webMercatorAvailable = this.isWebMercatorAvailable(service, serviceLayer, hiDpiSubstituteLayer);
 
-      String tileset3dStyleUrl = null;
-      if (service.getProtocol() == TILES3D && appLayerSettings.getTileset3dStyleId() != null) {
-        tileset3dStyleUrl = uploadHelper.getUrlForImage(
-            appLayerSettings.getTileset3dStyleId(), Upload.CATEGORY_TILESET_3D_STYLE);
+      Object tileset3dStyle = null;
+      if (service.getProtocol() == TILES3D && appLayerSettings.getTileset3dStyle() != null) {
+        tileset3dStyle = appLayerSettings.getTileset3dStyle();
       }
 
       mapResponse.addAppLayersItem(new AppLayer()
@@ -457,7 +453,7 @@ public class ApplicationHelper {
           .attribution(attribution)
           .description(description)
           .webMercatorAvailable(webMercatorAvailable)
-          .tileset3dStyleUrl(tileset3dStyleUrl)
+          .tileset3dStyle(tileset3dStyle)
           .hiddenFunctionality(appLayerSettings.getHiddenFunctionality()));
 
       return true;
