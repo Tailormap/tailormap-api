@@ -7,6 +7,7 @@ permissions:
 env:
   MAVEN_OPTS: -Djava.awt.headless=true
   MAVEN_VERSION: '3.9.11'
+  JAVA_VERSION: '21'
 
 concurrency:
   group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
@@ -35,7 +36,7 @@ jobs:
       - name: 'Set up JDK'
         uses: actions/setup-java@v5
         with:
-          java-version: 17
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'maven'
 
@@ -84,7 +85,7 @@ jobs:
       - name: 'Set up JDK'
         uses: actions/setup-java@v5
         with:
-          java-version: 17
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'maven'
 
@@ -156,7 +157,7 @@ jobs:
       - name: 'Set up JDK'
         uses: actions/setup-java@v5
         with:
-          java-version: 17
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'maven'
 
@@ -191,7 +192,7 @@ jobs:
       - name: 'Set up JDK'
         uses: actions/setup-java@v5
         with:
-          java-version: 17
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'maven'
 
@@ -254,7 +255,7 @@ jobs:
       - name: 'Set up JDK'
         uses: actions/setup-java@v5
         with:
-          java-version: 17
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'maven'
 
