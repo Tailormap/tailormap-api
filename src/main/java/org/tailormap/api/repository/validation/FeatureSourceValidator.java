@@ -71,9 +71,8 @@ public class FeatureSourceValidator implements Validator {
       } catch (UnknownHostException e) {
         errors.rejectValue("url", "errors.unknown-host", "Unknown host: \"" + uri.getHost() + "\"");
       } catch (Exception e) {
-        String msg = String.format(
-            "Error loading WFS capabilities from URL \"%s\": %s",
-            featureSource.getUrl(), joinAllThrowableMessages(e));
+        String msg = "Error loading WFS capabilities from URL \"%s\": %s"
+            .formatted(featureSource.getUrl(), joinAllThrowableMessages(e));
         logger.info(
             "The following exception may not be an application error but could be a problem with an external service or user-entered data: {}",
             msg,
@@ -101,8 +100,8 @@ public class FeatureSourceValidator implements Validator {
       try {
         new JDBCFeatureSourceHelper().loadCapabilities(featureSource);
       } catch (Exception e) {
-        String msg = String.format(
-            "Error loading capabilities from JDBC datastore: %s", ExceptionUtils.getRootCauseMessage(e));
+        String msg = "Error loading capabilities from JDBC datastore: %s"
+            .formatted(ExceptionUtils.getRootCauseMessage(e));
         logger.info(
             "The following exception may not be an application error but could be a problem with an external service or user-entered data: {}",
             msg,

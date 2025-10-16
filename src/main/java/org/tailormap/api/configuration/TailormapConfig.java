@@ -39,7 +39,7 @@ public class TailormapConfig {
   @Bean
   public LocaleResolver localeResolver() {
     AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
-    resolver.setDefaultLocale(new Locale(defaultLanguage));
+    resolver.setDefaultLocale(Locale.of(defaultLanguage));
     return resolver;
   }
 }

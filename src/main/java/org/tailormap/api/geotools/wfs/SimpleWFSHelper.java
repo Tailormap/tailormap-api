@@ -216,8 +216,8 @@ public class SimpleWFSHelper {
       }
       return Collections.unmodifiableMap(descriptions);
     } catch (Exception e) {
-      String msg = String.format(
-          "Error in DescribeLayer request to WMS \"%s\": %s: %s", url, e.getClass(), e.getMessage());
+      String msg =
+          "Error in DescribeLayer request to WMS \"%s\": %s: %s".formatted(url, e.getClass(), e.getMessage());
       if (logger.isTraceEnabled()) {
         logger.trace(msg, e);
       } else {

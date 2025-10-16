@@ -63,7 +63,7 @@ class UploadsControllerIntegrationTest {
   @Order(1)
   @Transactional
   void testExists() throws Exception {
-    Upload logo = uploadRepository.findByCategory(Upload.CATEGORY_APP_LOGO).get(0);
+    Upload logo = uploadRepository.findByCategory(Upload.CATEGORY_APP_LOGO).getFirst();
 
     logoUrl = apiBasePath + "/uploads/%s/%s/file.txt".formatted(logo.getCategory(), logo.getId());
     logoResult = mockMvc.perform(get(logoUrl))
@@ -93,7 +93,7 @@ class UploadsControllerIntegrationTest {
   @Transactional
   void testDrawingStyle() throws Exception {
     final Upload theOnlyStyle =
-        uploadRepository.findByCategory(Upload.CATEGORY_DRAWING_STYLE).get(0);
+        uploadRepository.findByCategory(Upload.CATEGORY_DRAWING_STYLE).getFirst();
 
     MvcResult result = mockMvc.perform(get(apiBasePath
             + "/uploads/%s/%s/style.json".formatted(theOnlyStyle.getCategory(), theOnlyStyle.getId())))

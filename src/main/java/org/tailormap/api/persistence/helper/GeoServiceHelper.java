@@ -111,7 +111,7 @@ public class GeoServiceHelper {
     }
     return UriComponentsBuilder.fromUri(uri).build().getQueryParams().entrySet().stream()
         .filter(entry -> "request".equalsIgnoreCase(entry.getKey()))
-        .map(entry -> entry.getValue().get(0))
+        .map(entry -> entry.getValue().getFirst())
         .findFirst()
         .orElse(null);
   }
@@ -276,8 +276,8 @@ public class GeoServiceHelper {
               try {
                 List<?> legendURLs = gtStyle.getLegendURLs();
                 // GeoTools will replace invalid URLs with null in legendURLs
-                if (legendURLs != null && !legendURLs.isEmpty() && legendURLs.get(0) != null) {
-                  style.legendURL(new URI((String) legendURLs.get(0)));
+                if (legendURLs != null && !legendURLs.isEmpty() && legendURLs.getFirst() != null) {
+                  style.legendURL(new URI((String) legendURLs.getFirst()));
                 }
               } catch (URISyntaxException ignored) {
                 // Won't occur because GeoTools would have already returned null on
@@ -482,8 +482,8 @@ public class GeoServiceHelper {
             try {
               new WFSFeatureSourceHelper().loadCapabilities(fs, tailormapConfig.getTimeout());
             } catch (IOException e) {
-              String msg = String.format(
-                  "Error loading WFS from URL %s: %s: %s", url, e.getClass(), e.getMessage());
+              String msg = "Error loading WFS from URL %s: %s: %s"
+                  .formatted(url, e.getClass(), e.getMessage());
               if (logger.isTraceEnabled()) {
                 logger.error(msg, e);
               } else {
@@ -517,7 +517,7 @@ public class GeoServiceHelper {
 
     final List<WMSStyle> allOurLayersStyles = serviceLayer.getStyles();
     if (allOurLayersStyles.size() == 1) {
-      return allOurLayersStyles.get(0).getLegendURL();
+      return allOurLayersStyles.getFirst().getLegendURL();
     }
     // remove the styles from all the other layer(s) from the list of all our layers styles
     service.getLayers().stream()

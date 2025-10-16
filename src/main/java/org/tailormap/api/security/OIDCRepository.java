@@ -106,7 +106,7 @@ public class OIDCRepository implements ClientRegistrationRepository, Iterable<Cl
         .followRedirects(HttpClient.Redirect.NORMAL)
         .build();
     for (OIDCConfiguration configuration : oidcConfigurationRepository.findAll()) {
-      String id = String.format("%d", configuration.getId());
+      String id = "%d".formatted(configuration.getId());
       try {
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
             .uri(new URI(configuration.getIssuerUrl() + "/.well-known/openid-configuration"));

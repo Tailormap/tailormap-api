@@ -95,8 +95,7 @@ public class LayerExportController {
               wfsTypeNameDescriptor.password());
           capabilities.setOutputFormats(outputFormats);
         } catch (Exception e) {
-          String msg =
-              String.format("Error getting capabilities for WFS \"%s\"", wfsTypeNameDescriptor.wfsUrl());
+          String msg = "Error getting capabilities for WFS \"%s\"".formatted(wfsTypeNameDescriptor.wfsUrl());
           if (logger.isTraceEnabled()) {
             logger.trace(msg, e);
           } else {
