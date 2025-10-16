@@ -8,6 +8,7 @@ package org.tailormap.api.controller;
 import java.io.Serializable;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,9 @@ import org.tailormap.api.viewer.model.UserResponse;
 public class UserController {
   private final OIDCRepository oidcRepository;
   private final UploadHelper uploadHelper;
+
+  @Value("${tailormap-api.password-reset.enabled:false}")
+  private boolean passwordResetEnabled;
 
   public UserController(OIDCRepository oidcRepository, UploadHelper uploadHelper) {
     this.oidcRepository = oidcRepository;
@@ -87,7 +91,7 @@ public class UserController {
   }
 
   @GetMapping(path = "${tailormap-api.base-path}/login/configuration", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<LoginConfiguration> getSSOEndpoints() {
+  public ResponseEntity<LoginConfiguration> getLoginConfiguration() {
     LoginConfiguration result = new LoginConfiguration();
 
     for (ClientRegistration reg : oidcRepository) {
@@ -99,6 +103,8 @@ public class UserController {
           .showForViewer(metadata.getShowForViewer())
           .image(uploadHelper.getUrlForImage(metadata.getImage(), Upload.CATEGORY_SSO_IMAGE)));
     }
+
+    result.enablePasswordReset(passwordResetEnabled);
 
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }

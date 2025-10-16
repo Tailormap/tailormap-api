@@ -104,6 +104,7 @@ SPDX-License-Identifier: MIT
         <geotools.version>34.0</geotools.version>
         <jts.version>1.20.0</jts.version>
         <okhttp.version>5.2.1</okhttp.version>
+        <greenmail.version>2.1.5</greenmail.version>
         <spring.boot.version>${project.parent.version}</spring.boot.version>
         <!-- solr and jetty versions may need to match to prevent errors such as
         Caused by: java.lang.NoClassDefFoundError: org/eclipse/jetty/client/util/InputStreamResponseListener 
@@ -500,6 +501,10 @@ SPDX-License-Identifier: MIT
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
         <dependency>
@@ -551,9 +556,21 @@ SPDX-License-Identifier: MIT
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>mockwebserver3</artifactId>
-            <version>${okhttp.version}</version>
+            <groupId>com.icegreen</groupId>
+            <artifactId>greenmail</artifactId>
+            <version>${greenmail.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.icegreen</groupId>
+            <artifactId>greenmail-junit5</artifactId>
+            <version>${greenmail.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -566,6 +583,11 @@ SPDX-License-Identifier: MIT
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>${okhttp.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -1360,6 +1382,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.springframework.boot:spring-boot-starter-oauth2-client</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-quartz</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-jdbc</exclude>
+                                        <exclude>org.springframework.boot:spring-boot-starter-mail</exclude>
                                         <exclude>org.quartz-scheduler:quartz</exclude>
                                         <exclude>org.springframework.security:spring-security-test</exclude>
                                         <exclude>org.hibernate.orm:hibernate-core</exclude>
@@ -1389,6 +1412,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.junit.jupiter:junit-jupiter-api</exclude>
                                         <exclude>org.junit.jupiter:junit-jupiter-params</exclude>
                                         <exclude>org.springframework.session:spring-session-jdbc</exclude>
+                                        <exclude>com.icegreen:greenmail</exclude>
                                     </excludes>
                                 </banTransitiveDependencies>
                             </rules>

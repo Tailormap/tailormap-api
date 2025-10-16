@@ -1,4 +1,4 @@
-package org.tailormap.api.controller.admin;
+package org.tailormap.api.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -40,8 +40,8 @@ class PasswordValidationControllerIntegrationTest {
     mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
   }
 
-  @Value("${tailormap-api.admin.base-path}")
-  private String adminBasePath;
+  @Value("${tailormap-api.base-path}")
+  private String basePath;
 
   @ParameterizedTest
   @CsvSource({
@@ -54,8 +54,7 @@ class PasswordValidationControllerIntegrationTest {
       username = "tm-admin",
       authorities = {Group.ADMIN})
   void test(String password, String expected) throws Exception {
-    mockMvc.perform(post(adminBasePath + "/validate-password")
-            //                    .servletPath(adminBasePath + "/validate-password")
+    mockMvc.perform(post(basePath + "/validate-password")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .param("password", password)
             .accept(MediaType.APPLICATION_JSON))
