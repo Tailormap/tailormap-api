@@ -464,10 +464,6 @@ public class ApplicationHelper {
         return null;
       }
 
-      if (authorisationService.mustDenyAccessForSecuredProxy(service)) {
-        return null;
-      }
-
       if (!authorisationService.userAllowedToViewGeoService(service)) {
         return null;
       }

@@ -298,9 +298,13 @@ public class Application {
   }
 
   @NotNull public AppLayerSettings getAppLayerSettings(@NotNull AppTreeLayerNode node) {
+    return getAppLayerSettings(node.getId());
+  }
+
+  @NotNull public AppLayerSettings getAppLayerSettings(@NotNull String appLayerId) {
     return Optional.ofNullable(getSettings())
         .map(AppSettings::getLayerSettings)
-        .map(layerSettingsMap -> layerSettingsMap.get(node.getId()))
+        .map(layerSettingsMap -> layerSettingsMap.get(appLayerId))
         .orElseGet(AppLayerSettings::new);
   }
 }
