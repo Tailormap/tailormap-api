@@ -39,6 +39,8 @@ import org.tailormap.api.persistence.Group;
       "management.endpoint.prometheus.access=read_only",
       "management.prometheus.metrics.export.enabled=true",
       "management.prometheus.metrics.export.descriptions=true",
+      // disable, because we don't have an SMTP service in this test
+      "management.health.mail.enabled=false"
     })
 class ActuatorSecurityConfigurationIntegrationTest {
   @Autowired

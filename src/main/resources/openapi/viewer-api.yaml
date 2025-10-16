@@ -50,6 +50,10 @@ components:
         hideLoginForm:
           description: 'If set, should hide the login form for any user-facing applications.'
           type: boolean
+        enablePasswordReset:
+          description: 'If set, enables the password reset functionality.'
+          type: boolean
+          default: true
         ssoLinks:
           description: 'Lists alternative SSO links.'
           type: array
@@ -415,6 +419,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginConfiguration'
+  /validate-password:
+    post:
+      operationId: 'test'
+      summary: 'Validate if a password meets the password policy.'
+      security: [ ]
+      requestBody:
+        required: true
+        description: 'A message containing the password to validate.'
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              title: 'validate-password'
+              type: object
+              properties:
+                password:
+                  type: string
+              required:
+                - password
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  message:
+                    type: string
+                required:
+                  - result
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
 
   /user:
     summary: 'get user information, such as login'
@@ -429,6 +472,93 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
+
+  /user/reset-password:
+    post:
+      operationId: 'confirmPasswordReset'
+      summary: 'Reset the password using a reset token, username and password.'
+      security: [ ]
+      requestBody:
+        required: true
+        description: 'A message containing the reset token, username and the new password.'
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              title: 'confirm-password'
+              type: object
+              properties:
+                token:
+                  type: string
+                username:
+                  type: string
+                newPassword:
+                  type: string
+              required:
+                - token
+                - username
+                - newPassword
+      responses:
+        '200':
+          description: 'Password successfully changed'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: 'Bad Request. Invalid token or password does not meet the password policy.'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './status-responses.yaml#/components/schemas/ErrorResponse'
+
+
+  /password-reset:
+    post:
+      operationId: 'passwordReset'
+      summary: 'Request a password reset message.'
+      security: [ ]
+      requestBody:
+        required: true
+        description: 'A message containing the email address to send the password reset link for.'
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              title: 'password-reset'
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required:
+                - email
+      responses:
+        '202':
+          description: 'Request accepted'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
         '500':
           description: 'Internal server error'
           content:

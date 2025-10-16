@@ -26,6 +26,7 @@ jobs:
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v4
         with:
+          allow-dependencies-licenses: pkg:maven/org.eclipse.angus/jakarta.mail@2.0.4?type=jar
           deny-licenses: GPL-2.0+, AGPL-3.0+
           comment-summary-in-pr: on-failure
 

@@ -25,6 +25,9 @@ import org.tailormap.api.security.InvalidPasswordException;
 public class TMPasswordDeserializer extends JsonDeserializer<String> {
   private static final PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
+  public static PasswordEncoder encoder() {
+    return encoder;
+  }
   /**
    * When deserializing a JSON field containing a plaintext password validate it is strong enough and hash it with the
    * default PasswordEncoder (bcrypt).
