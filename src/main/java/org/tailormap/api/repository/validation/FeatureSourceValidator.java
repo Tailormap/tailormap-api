@@ -10,7 +10,6 @@ import static org.tailormap.api.util.TMExceptionUtils.joinAllThrowableMessages;
 
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
-import java.net.URL;
 import java.net.UnknownHostException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -55,7 +54,7 @@ public class FeatureSourceValidator implements Validator {
 
     URI uri;
     try {
-      uri = new URL(featureSource.getUrl()).toURI();
+      uri = new URI(featureSource.getUrl());
     } catch (Exception e) {
       errors.rejectValue("url", "errors.url.invalid", "Invalid URI");
       return;

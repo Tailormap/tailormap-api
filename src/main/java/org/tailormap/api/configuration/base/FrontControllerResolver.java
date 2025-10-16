@@ -110,7 +110,7 @@ public class FrontControllerResolver implements ResourceResolver, InitializingBe
 
     if (!supportedLanguages.isEmpty()) {
       localeResolver.setSupportedLocales(
-          supportedLanguages.stream().map(Locale::new).toList());
+          supportedLanguages.stream().map(Locale::of).toList());
       Locale defaultLocale = supportedLanguages.contains(defaultLanguage)
           ? Locale.of(defaultLanguage)
           : localeResolver.getSupportedLocales().getFirst();

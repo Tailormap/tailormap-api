@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -310,7 +309,7 @@ public class GeoServiceHelper {
   void loadWMSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client) throws Exception {
     WebMapServer wms;
     try {
-      wms = new WebMapServer(new URL(geoService.getUrl()), client);
+      wms = new WebMapServer(new URI(geoService.getUrl()).toURL(), client);
     } catch (ClassCastException | IllegalStateException e) {
       // The gt-wms module tries to cast the XML unmarshalling result expecting capabilities, but a
       // WMS 1.0.0/1.1.0 ServiceException may have been unmarshalled which leads to a
@@ -397,7 +396,7 @@ public class GeoServiceHelper {
   }
 
   void loadWMTSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client) throws Exception {
-    WebMapTileServer wmts = new WebMapTileServer(new URL(geoService.getUrl()), client);
+    WebMapTileServer wmts = new WebMapTileServer(new URI(geoService.getUrl()).toURL(), client);
     setServiceInfo(geoService, client, wmts);
 
     // TODO set capabilities if we need something from it
