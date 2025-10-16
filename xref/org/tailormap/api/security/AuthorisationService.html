@@ -148,98 +148,101 @@
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> userAllowedToViewGeoService(<a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>     logger.trace(
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         <span class="jxr_string">"Checking if user is allowed to view GeoService {} ({})."</span>, geoService.getId(), geoService.getTitle());
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> allowed = isAuthorizedByRules(geoService.getAuthorizationRules())
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>         .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>     logger.trace(
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>         <span class="jxr_string">"User is{} allowed to view GeoService: {} (isAuthorizedByRules={})."</span>,
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>         allowed ? <span class="jxr_string">""</span> : <span class="jxr_string">" not"</span>,
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>         geoService.getTitle(),
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>         allowed);
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>     <strong class="jxr_keyword">return</strong> allowed;
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>   }
-<a class="jxr_linenumber" name="L152" href="#L152">152</a> 
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L154" href="#L154">154</a> <em class="jxr_javadoccomment">   * Verifies that the (authenticated) user may view the layer in context of the geoService.</em>
-<a class="jxr_linenumber" name="L155" href="#L155">155</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L156" href="#L156">156</a> <em class="jxr_javadoccomment">   * @param geoService the GeoService to check</em>
-<a class="jxr_linenumber" name="L157" href="#L157">157</a> <em class="jxr_javadoccomment">   * @param layer the GeoServiceLayer to check</em>
-<a class="jxr_linenumber" name="L158" href="#L158">158</a> <em class="jxr_javadoccomment">   * @return the result from the access control checks.</em>
-<a class="jxr_linenumber" name="L159" href="#L159">159</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> userAllowedToViewGeoServiceLayer(<a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService, GeoServiceLayer layer) {
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>     logger.trace(
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>         <span class="jxr_string">"Checking if user is allowed to view GeoService '{}' and layer {} ({})."</span>,
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>         geoService.getTitle(),
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>         layer.getName(),
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>         layer.getTitle());
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>     <em class="jxr_comment">// check if user is allowed to view the geoService</em>
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>     Optional&lt;AuthorizationRuleDecision&gt; geoserviceDecision =
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>         isAuthorizedByRules(geoService.getAuthorizationRules());
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>     <strong class="jxr_keyword">if</strong> (geoserviceDecision.equals(Optional.of(AuthorizationRuleDecision.DENY))) {
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>       logger.trace(<span class="jxr_string">"Viewing GeoService {} is denied for user."</span>, geoService.getTitle());
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>       <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>     }
-<a class="jxr_linenumber" name="L173" href="#L173">173</a> 
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>     GeoServiceLayerSettings layerSettings =
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>         geoService.getSettings().getLayerSettings().get(layer.getName());
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>     <strong class="jxr_keyword">if</strong> (layerSettings != <strong class="jxr_keyword">null</strong> &amp;&amp; layerSettings.getAuthorizationRules() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>       logger.trace(
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>           <span class="jxr_string">"Checking layer settings rules for GeoService '{}' and layer '{}'. \nRules: {}"</span>,
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>           geoService.getTitle(),
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>           layer.getName(),
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>           layerSettings.getAuthorizationRules());
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>       List&lt;AuthorizationRule&gt; combinedRules = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(geoService.getAuthorizationRules());
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>       <strong class="jxr_keyword">for</strong> (AuthorizationRule rule : layerSettings.getAuthorizationRules()) {
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>         <em class="jxr_comment">// replace any rule with the same group name, so we end up with a merged</em>
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>         <em class="jxr_comment">// set of rules where the layer rules override</em>
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>         combinedRules.removeIf(r -&gt; r.getGroupName().equals(rule.getGroupName()));
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>         combinedRules.add(rule);
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>       }
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>       logger.trace(
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>           <span class="jxr_string">"Combined rules for GeoService '{}' and layer '{}': \n{}"</span>,
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>           geoService.getTitle(),
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>           layer.getName(),
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>           combinedRules);
-<a class="jxr_linenumber" name="L194" href="#L194">194</a> 
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>       Optional&lt;AuthorizationRuleDecision&gt; decision = isAuthorizedByRules(combinedRules);
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>       <em class="jxr_comment">// If no authorization rules are present, fall back to geoService authorization.</em>
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>       <strong class="jxr_keyword">if</strong> (decision.isPresent() || !layerSettings.getAuthorizationRules().isEmpty()) {
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>         <strong class="jxr_keyword">boolean</strong> allowed = decision.equals(Optional.of(AuthorizationRuleDecision.ALLOW));
-<a class="jxr_linenumber" name="L199" href="#L199">199</a> 
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>         logger.trace(
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>             <span class="jxr_string">"Viewing GeoService '{}' and layer '{}' ({}) is {} for user."</span>,
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>             geoService.getTitle(),
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>             layer.getName(),
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>             layer.getTitle(),
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>             (allowed ? <span class="jxr_string">"allowed"</span> : <span class="jxr_string">"denied"</span>));
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>         <strong class="jxr_keyword">return</strong> allowed;
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>       }
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>     }
-<a class="jxr_linenumber" name="L209" href="#L209">209</a> 
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>     <strong class="jxr_keyword">boolean</strong> allowed = geoserviceDecision.equals(Optional.of(AuthorizationRuleDecision.ALLOW));
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>     logger.trace(
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>         <span class="jxr_string">"Viewing GeoService '{}' and layer '{}' ({}) is {} for user because service access is {3}."</span>,
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>         geoService.getTitle(), layer.getName(), layer.getTitle(), (allowed ? <span class="jxr_string">"allowed"</span> : <span class="jxr_string">"denied"</span>));
-<a class="jxr_linenumber" name="L214" href="#L214">214</a>     <strong class="jxr_keyword">return</strong> allowed;
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>   }
-<a class="jxr_linenumber" name="L216" href="#L216">216</a> 
-<a class="jxr_linenumber" name="L217" href="#L217">217</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L218" href="#L218">218</a> <em class="jxr_javadoccomment">   * To avoid exposing a secured service by proxying it to everyone, do not proxy a secured GeoService when the user</em>
-<a class="jxr_linenumber" name="L219" href="#L219">219</a> <em class="jxr_javadoccomment">   * is not logged in.</em>
-<a class="jxr_linenumber" name="L220" href="#L220">220</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L221" href="#L221">221</a> <em class="jxr_javadoccomment">   * @param geoService The geo service to check</em>
-<a class="jxr_linenumber" name="L222" href="#L222">222</a> <em class="jxr_javadoccomment">   * @return Whether to deny proxying this service</em>
-<a class="jxr_linenumber" name="L223" href="#L223">223</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> mustDenyAccessForSecuredProxy(<a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>     <strong class="jxr_keyword">if</strong> (!Boolean.TRUE.equals(geoService.getSettings().getUseProxy())) {
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>       <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>     }
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>     <strong class="jxr_keyword">if</strong> (geoService.getAuthentication() == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>     <strong class="jxr_keyword">if</strong> (mustDenyAccessForSecuredProxy(geoService)) {
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>       <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>     }
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> allowed = isAuthorizedByRules(geoService.getAuthorizationRules())
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>         .equals(Optional.of(AuthorizationRuleDecision.ALLOW));
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>     logger.trace(
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>         <span class="jxr_string">"User is{} allowed to view GeoService: {} (isAuthorizedByRules={})."</span>,
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>         allowed ? <span class="jxr_string">""</span> : <span class="jxr_string">" not"</span>,
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>         geoService.getTitle(),
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>         allowed);
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>     <strong class="jxr_keyword">return</strong> allowed;
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>   }
+<a class="jxr_linenumber" name="L155" href="#L155">155</a> 
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L157" href="#L157">157</a> <em class="jxr_javadoccomment">   * Verifies that the (authenticated) user may view the layer in context of the geoService.</em>
+<a class="jxr_linenumber" name="L158" href="#L158">158</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L159" href="#L159">159</a> <em class="jxr_javadoccomment">   * @param geoService the GeoService to check</em>
+<a class="jxr_linenumber" name="L160" href="#L160">160</a> <em class="jxr_javadoccomment">   * @param layer the GeoServiceLayer to check</em>
+<a class="jxr_linenumber" name="L161" href="#L161">161</a> <em class="jxr_javadoccomment">   * @return the result from the access control checks.</em>
+<a class="jxr_linenumber" name="L162" href="#L162">162</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> userAllowedToViewGeoServiceLayer(<a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService, GeoServiceLayer layer) {
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>     logger.trace(
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>         <span class="jxr_string">"Checking if user is allowed to view GeoService '{}' and layer {} ({})."</span>,
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>         geoService.getTitle(),
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>         layer.getName(),
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>         layer.getTitle());
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>     <em class="jxr_comment">// check if user is allowed to view the geoService</em>
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>     Optional&lt;AuthorizationRuleDecision&gt; geoserviceDecision =
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>         isAuthorizedByRules(geoService.getAuthorizationRules());
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>     <strong class="jxr_keyword">if</strong> (geoserviceDecision.equals(Optional.of(AuthorizationRuleDecision.DENY))) {
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>       logger.trace(<span class="jxr_string">"Viewing GeoService {} is denied for user."</span>, geoService.getTitle());
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>       <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>     }
+<a class="jxr_linenumber" name="L176" href="#L176">176</a> 
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>     GeoServiceLayerSettings layerSettings =
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>         geoService.getSettings().getLayerSettings().get(layer.getName());
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>     <strong class="jxr_keyword">if</strong> (layerSettings != <strong class="jxr_keyword">null</strong> &amp;&amp; layerSettings.getAuthorizationRules() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>       logger.trace(
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>           <span class="jxr_string">"Checking layer settings rules for GeoService '{}' and layer '{}'. \nRules: {}"</span>,
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>           geoService.getTitle(),
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>           layer.getName(),
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>           layerSettings.getAuthorizationRules());
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>       List&lt;AuthorizationRule&gt; combinedRules = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(geoService.getAuthorizationRules());
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>       <strong class="jxr_keyword">for</strong> (AuthorizationRule rule : layerSettings.getAuthorizationRules()) {
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>         <em class="jxr_comment">// replace any rule with the same group name, so we end up with a merged</em>
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>         <em class="jxr_comment">// set of rules where the layer rules override</em>
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>         combinedRules.removeIf(r -&gt; r.getGroupName().equals(rule.getGroupName()));
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>         combinedRules.add(rule);
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>       }
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>       logger.trace(
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>           <span class="jxr_string">"Combined rules for GeoService '{}' and layer '{}': \n{}"</span>,
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>           geoService.getTitle(),
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>           layer.getName(),
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>           combinedRules);
+<a class="jxr_linenumber" name="L197" href="#L197">197</a> 
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>       Optional&lt;AuthorizationRuleDecision&gt; decision = isAuthorizedByRules(combinedRules);
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>       <em class="jxr_comment">// If no authorization rules are present, fall back to geoService authorization.</em>
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>       <strong class="jxr_keyword">if</strong> (decision.isPresent() || !layerSettings.getAuthorizationRules().isEmpty()) {
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>         <strong class="jxr_keyword">boolean</strong> allowed = decision.equals(Optional.of(AuthorizationRuleDecision.ALLOW));
+<a class="jxr_linenumber" name="L202" href="#L202">202</a> 
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>         logger.trace(
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>             <span class="jxr_string">"Viewing GeoService '{}' and layer '{}' ({}) is {} for user."</span>,
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>             geoService.getTitle(),
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>             layer.getName(),
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>             layer.getTitle(),
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>             (allowed ? <span class="jxr_string">"allowed"</span> : <span class="jxr_string">"denied"</span>));
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>         <strong class="jxr_keyword">return</strong> allowed;
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>       }
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>     }
+<a class="jxr_linenumber" name="L212" href="#L212">212</a> 
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>     <strong class="jxr_keyword">boolean</strong> allowed = geoserviceDecision.equals(Optional.of(AuthorizationRuleDecision.ALLOW));
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>     logger.trace(
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>         <span class="jxr_string">"Viewing GeoService '{}' and layer '{}' ({}) is {} for user because service access is {3}."</span>,
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>         geoService.getTitle(), layer.getName(), layer.getTitle(), (allowed ? <span class="jxr_string">"allowed"</span> : <span class="jxr_string">"denied"</span>));
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>     <strong class="jxr_keyword">return</strong> allowed;
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>   }
+<a class="jxr_linenumber" name="L219" href="#L219">219</a> 
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L221" href="#L221">221</a> <em class="jxr_javadoccomment">   * To avoid exposing a secured service by proxying it to everyone, do not proxy a secured GeoService when the user</em>
+<a class="jxr_linenumber" name="L222" href="#L222">222</a> <em class="jxr_javadoccomment">   * is not logged in.</em>
+<a class="jxr_linenumber" name="L223" href="#L223">223</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L224" href="#L224">224</a> <em class="jxr_javadoccomment">   * @param geoService The geo service to check</em>
+<a class="jxr_linenumber" name="L225" href="#L225">225</a> <em class="jxr_javadoccomment">   * @return Whether to deny proxying this service</em>
+<a class="jxr_linenumber" name="L226" href="#L226">226</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> mustDenyAccessForSecuredProxy(<a name="GeoService" href="../../../../org/tailormap/api/persistence/GeoService.html#GeoService">GeoService</a> geoService) {
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>     <strong class="jxr_keyword">if</strong> (!Boolean.TRUE.equals(geoService.getSettings().getUseProxy())) {
 <a class="jxr_linenumber" name="L229" href="#L229">229</a>       <strong class="jxr_keyword">return</strong> false;
 <a class="jxr_linenumber" name="L230" href="#L230">230</a>     }
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>     <strong class="jxr_keyword">return</strong> auth == <strong class="jxr_keyword">null</strong> || auth instanceof AnonymousAuthenticationToken;
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>   }
-<a class="jxr_linenumber" name="L234" href="#L234">234</a> }
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>     <strong class="jxr_keyword">if</strong> (geoService.getAuthentication() == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>       <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>     }
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>     <strong class="jxr_keyword">return</strong> auth == <strong class="jxr_keyword">null</strong> || auth instanceof AnonymousAuthenticationToken;
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>   }
+<a class="jxr_linenumber" name="L237" href="#L237">237</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>
