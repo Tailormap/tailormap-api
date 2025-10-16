@@ -7,6 +7,7 @@ package org.tailormap.api.configuration;
 
 import ch.rasc.sse.eventbus.config.EnableSseEventBus;
 import java.util.Locale;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,9 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 public class TailormapConfig {
   private int timeout;
 
+  @Value("${tailormap-api.default-language:en}")
+  private String defaultLanguage;
+
   public int getTimeout() {
     return timeout;
   }
@@ -35,7 +39,7 @@ public class TailormapConfig {
   @Bean
   public LocaleResolver localeResolver() {
     AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
-    resolver.setDefaultLocale(Locale.ENGLISH);
+    resolver.setDefaultLocale(new Locale(defaultLanguage));
     return resolver;
   }
 }
