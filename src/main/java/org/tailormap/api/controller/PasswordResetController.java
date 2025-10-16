@@ -176,8 +176,6 @@ public class PasswordResetController {
     final Locale locale = localeResolver.resolveLocale(request);
 
     try {
-      // XXX We may need to build the absolute outside the email thread as it may throw an IllegalStateException:
-      // The request object has been recycled and is no longer associated with this facade
       ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
       emailExecutor.execute(() -> {
         try {
