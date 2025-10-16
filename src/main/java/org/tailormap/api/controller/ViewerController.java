@@ -22,7 +22,7 @@ import org.tailormap.api.persistence.Configuration;
 import org.tailormap.api.persistence.Upload;
 import org.tailormap.api.persistence.helper.ApplicationHelper;
 import org.tailormap.api.persistence.helper.UploadHelper;
-import org.tailormap.api.persistence.helper.ViewerHelper;
+import org.tailormap.api.persistence.helper.ViewerResponseHelper;
 import org.tailormap.api.prometheus.TagNames;
 import org.tailormap.api.repository.ApplicationRepository;
 import org.tailormap.api.repository.ConfigurationRepository;
@@ -39,7 +39,7 @@ public class ViewerController implements TagNames {
   private final ApplicationHelper applicationHelper;
   private final AuthorisationService authorisationService;
   private final UploadHelper uploadHelper;
-  private final ViewerHelper viewerHelper;
+  private final ViewerResponseHelper viewerResponseHelper;
 
   public ViewerController(
       ConfigurationRepository configurationRepository,
@@ -47,13 +47,13 @@ public class ViewerController implements TagNames {
       ApplicationHelper applicationHelper,
       AuthorisationService authorisationService,
       UploadHelper uploadHelper,
-      ViewerHelper viewerHelper) {
+      ViewerResponseHelper viewerResponseHelper) {
     this.configurationRepository = configurationRepository;
     this.applicationRepository = applicationRepository;
     this.applicationHelper = applicationHelper;
     this.authorisationService = authorisationService;
     this.uploadHelper = uploadHelper;
-    this.viewerHelper = viewerHelper;
+    this.viewerResponseHelper = viewerResponseHelper;
   }
 
   @GetMapping(path = "${tailormap-api.base-path}/app")
@@ -78,7 +78,8 @@ public class ViewerController implements TagNames {
   @Timed(value = "get_named_app", description = "Get named app")
   @Counted(value = "get_named_app", description = "Count of get named app")
   public ViewerResponse viewer(@ModelAttribute Application app, @ModelAttribute ViewerResponse.KindEnum viewerKind) {
-    ViewerResponse viewerResponse = viewerHelper.getViewerResponse(app).kind(viewerKind);
+    ViewerResponse viewerResponse =
+        viewerResponseHelper.getViewerResponse(app).kind(viewerKind);
 
     AppStyling styling = viewerResponse.getStyling();
     if (styling != null) {
