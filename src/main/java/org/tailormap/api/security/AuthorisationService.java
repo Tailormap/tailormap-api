@@ -140,7 +140,7 @@ public class AuthorisationService {
   public boolean userAllowedToViewGeoService(GeoService geoService) {
     logger.trace(
         "Checking if user is allowed to view GeoService {} ({}).", geoService.getId(), geoService.getTitle());
-    if (!mustDenyAccessForSecuredProxy(geoService)) {
+    if (mustDenyAccessForSecuredProxy(geoService)) {
       return false;
     }
     final boolean allowed = isAuthorizedByRules(geoService.getAuthorizationRules())
