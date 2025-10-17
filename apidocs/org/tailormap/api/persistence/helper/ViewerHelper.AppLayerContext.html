@@ -96,7 +96,7 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="ViewerHelper.html" title="class in org.tailormap.api.persistence.helper">ViewerHelper</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public static record </span><span class="element-name type-name-label">ViewerHelper.AppLayerContext</span>(<a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;node, <a href="../json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings, <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService, <a href="../json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;geoServiceLayer, <a href="../json/FeatureTypeRef.html" title="class in org.tailormap.api.persistence.json">FeatureTypeRef</a>&nbsp;featureTypeRef)
+<div class="type-signature"><span class="modifiers">public static record </span><span class="element-name type-name-label">ViewerHelper.AppLayerContext</span>(@NotNull <a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;node, @NotNull <a href="../json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings, @NotNull <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService, @NotNull <a href="../json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;geoServiceLayer, @Null <a href="../json/FeatureTypeRef.html" title="class in org.tailormap.api.persistence.json">FeatureTypeRef</a>&nbsp;featureTypeRef)
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Record.html" title="class or interface in java.lang" class="external-link">Record</a></span></div>
 </section>
 <section class="summary">
@@ -109,11 +109,11 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.json.AppLayerSettings,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.json.FeatureTypeRef)" class="member-name-link">AppLayerContext</a><wbr>(<a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;node,
- <a href="../json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings,
- <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService,
- <a href="../json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;geoServiceLayer,
- <a href="../json/FeatureTypeRef.html" title="class in org.tailormap.api.persistence.json">FeatureTypeRef</a>&nbsp;featureTypeRef)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.json.AppLayerSettings,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.json.FeatureTypeRef)" class="member-name-link">AppLayerContext</a><wbr>(@NotNull <a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;node,
+ @NotNull <a href="../json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings,
+ @NotNull <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService,
+ @NotNull <a href="../json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;geoServiceLayer,
+ @Null <a href="../json/FeatureTypeRef.html" title="class in org.tailormap.api.persistence.json">FeatureTypeRef</a>&nbsp;featureTypeRef)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Creates an instance of a <code>AppLayerContext</code> record class.</div>
 </div>
@@ -131,7 +131,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="../json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#appLayerSettings()" class="member-name-link">appLayerSettings</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the value of the <code>appLayerSettings</code> record component.</div>
@@ -141,17 +141,17 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Indicates whether some other object is "equal to" this one.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../json/FeatureTypeRef.html" title="class in org.tailormap.api.persistence.json">FeatureTypeRef</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@Null <a href="../json/FeatureTypeRef.html" title="class in org.tailormap.api.persistence.json">FeatureTypeRef</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#featureTypeRef()" class="member-name-link">featureTypeRef</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the value of the <code>featureTypeRef</code> record component.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#geoService()" class="member-name-link">geoService</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the value of the <code>geoService</code> record component.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="../json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#geoServiceLayer()" class="member-name-link">geoServiceLayer</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the value of the <code>geoServiceLayer</code> record component.</div>
@@ -161,7 +161,7 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns a hash code value for this object.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#node()" class="member-name-link">node</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the value of the <code>node</code> record component.</div>
@@ -191,11 +191,16 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="&lt;init&gt;(org.tailormap.api.persistence.json.AppTreeLayerNode,org.tailormap.api.persistence.json.AppLayerSettings,org.tailormap.api.persistence.GeoService,org.tailormap.api.persistence.json.GeoServiceLayer,org.tailormap.api.persistence.json.FeatureTypeRef)">
 <h3>AppLayerContext</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">AppLayerContext</span><wbr><span class="parameters">(<a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;node,
- <a href="../json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings,
- <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService,
- <a href="../json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;geoServiceLayer,
- <a href="../json/FeatureTypeRef.html" title="class in org.tailormap.api.persistence.json">FeatureTypeRef</a>&nbsp;featureTypeRef)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">AppLayerContext</span><wbr><span class="parameters">(@NotNull
+ @NotNull <a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a>&nbsp;node,
+ @NotNull
+ @NotNull <a href="../json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a>&nbsp;appLayerSettings,
+ @NotNull
+ @NotNull <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a>&nbsp;geoService,
+ @NotNull
+ @NotNull <a href="../json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a>&nbsp;geoServiceLayer,
+ @Null
+ @Null <a href="../json/FeatureTypeRef.html" title="class in org.tailormap.api.persistence.json">FeatureTypeRef</a>&nbsp;featureTypeRef)</span></div>
 <div class="block">Creates an instance of a <code>AppLayerContext</code> record class.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -259,7 +264,8 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="node()">
 <h3>node</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a></span>&nbsp;<span class="element-name">node</span>()</div>
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="../json/AppTreeLayerNode.html" title="class in org.tailormap.api.persistence.json">AppTreeLayerNode</a></span>&nbsp;<span class="element-name">node</span>()</div>
 <div class="block">Returns the value of the <code>node</code> record component.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -270,7 +276,8 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="appLayerSettings()">
 <h3>appLayerSettings</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a></span>&nbsp;<span class="element-name">appLayerSettings</span>()</div>
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="../json/AppLayerSettings.html" title="class in org.tailormap.api.persistence.json">AppLayerSettings</a></span>&nbsp;<span class="element-name">appLayerSettings</span>()</div>
 <div class="block">Returns the value of the <code>appLayerSettings</code> record component.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -281,7 +288,8 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="geoService()">
 <h3>geoService</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></span>&nbsp;<span class="element-name">geoService</span>()</div>
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="../GeoService.html" title="class in org.tailormap.api.persistence">GeoService</a></span>&nbsp;<span class="element-name">geoService</span>()</div>
 <div class="block">Returns the value of the <code>geoService</code> record component.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -292,7 +300,8 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="geoServiceLayer()">
 <h3>geoServiceLayer</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a></span>&nbsp;<span class="element-name">geoServiceLayer</span>()</div>
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="../json/GeoServiceLayer.html" title="class in org.tailormap.api.persistence.json">GeoServiceLayer</a></span>&nbsp;<span class="element-name">geoServiceLayer</span>()</div>
 <div class="block">Returns the value of the <code>geoServiceLayer</code> record component.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -303,7 +312,8 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="featureTypeRef()">
 <h3>featureTypeRef</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../json/FeatureTypeRef.html" title="class in org.tailormap.api.persistence.json">FeatureTypeRef</a></span>&nbsp;<span class="element-name">featureTypeRef</span>()</div>
+<div class="member-signature"><span class="annotations">@Null
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@Null <a href="../json/FeatureTypeRef.html" title="class in org.tailormap.api.persistence.json">FeatureTypeRef</a></span>&nbsp;<span class="element-name">featureTypeRef</span>()</div>
 <div class="block">Returns the value of the <code>featureTypeRef</code> record component.</div>
 <dl class="notes">
 <dt>Returns:</dt>

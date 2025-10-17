@@ -140,13 +140,29 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="ViewerHelper.AppLayerContext.html" title="class in org.tailormap.api.persistence.helper">ViewerHelper.AppLayerContext</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAppLayerContextMap(org.tailormap.api.persistence.Application,java.util.List)" class="member-name-link">getAppLayerContextMap</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAppLayerContextMap(org.tailormap.api.persistence.Application)" class="member-name-link">getAppLayerContextMap</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns a map of AppTreeLayerNode id to AppLayerContext, with only nodes that reference an existing
+ GeoServiceLayer, including base layer nodes.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="ViewerHelper.AppLayerContext.html" title="class in org.tailormap.api.persistence.helper">ViewerHelper.AppLayerContext</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAppLayerContextMap(org.tailormap.api.persistence.Application,java.util.List)" class="member-name-link">getAppLayerContextMap</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;appLayerIds)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">As #getAppLayerContextMap(), but only for the given appLayerIds.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="ViewerHelper.AppLayerFullContext.html" title="class in org.tailormap.api.persistence.helper">ViewerHelper.AppLayerFullContext</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAppLayerFullContextMap(org.tailormap.api.persistence.Application)" class="member-name-link">getAppLayerFullContextMap</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">As #getAppLayerContextMap(), but only with nodes that reference an existing GeoServiceLayer that has a feature
+ type.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="ViewerHelper.AppLayerFullContext.html" title="class in org.tailormap.api.persistence.helper">ViewerHelper.AppLayerFullContext</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAppLayerFullContextMap(org.tailormap.api.persistence.Application,java.util.List)" class="member-name-link">getAppLayerFullContextMap</a><wbr>(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;appLayerIds)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">As #getAppLayerFullContextMap(), but only for the given appLayerIds.</div>
+</div>
 </div>
 </div>
 </div>
@@ -180,10 +196,46 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
+<section class="detail" id="getAppLayerContextMap(org.tailormap.api.persistence.Application)">
+<h3>getAppLayerContextMap</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="ViewerHelper.AppLayerContext.html" title="class in org.tailormap.api.persistence.helper">ViewerHelper.AppLayerContext</a>&gt;</span>&nbsp;<span class="element-name">getAppLayerContextMap</span><wbr><span class="parameters">(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</span></div>
+<div class="block">Returns a map of AppTreeLayerNode id to AppLayerContext, with only nodes that reference an existing
+ GeoServiceLayer, including base layer nodes.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>application</code> - the application</dd>
+<dt>Returns:</dt>
+<dd>a map of appLayerId to AppLayerContext</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="getAppLayerContextMap(org.tailormap.api.persistence.Application,java.util.List)">
 <h3>getAppLayerContextMap</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="ViewerHelper.AppLayerContext.html" title="class in org.tailormap.api.persistence.helper">ViewerHelper.AppLayerContext</a>&gt;</span>&nbsp;<span class="element-name">getAppLayerContextMap</span><wbr><span class="parameters">(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;appLayerIds)</span></div>
+<div class="block">As #getAppLayerContextMap(), but only for the given appLayerIds.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>application</code> - the application</dd>
+<dd><code>appLayerIds</code> - the list of appLayerIds to limit the result to</dd>
+<dt>Returns:</dt>
+<dd>a map of appLayerId to AppLayerContext</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getAppLayerFullContextMap(org.tailormap.api.persistence.Application)">
+<h3>getAppLayerFullContextMap</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="ViewerHelper.AppLayerFullContext.html" title="class in org.tailormap.api.persistence.helper">ViewerHelper.AppLayerFullContext</a>&gt;</span>&nbsp;<span class="element-name">getAppLayerFullContextMap</span><wbr><span class="parameters">(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application)</span></div>
+<div class="block">As #getAppLayerContextMap(), but only with nodes that reference an existing GeoServiceLayer that has a feature
+ type.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>application</code> - the application</dd>
+<dt>Returns:</dt>
+<dd>a map of appLayerId to AppLayerFullContext</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -191,6 +243,14 @@ loadScripts(document, 'script');</script>
 <h3>getAppLayerFullContextMap</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="ViewerHelper.AppLayerFullContext.html" title="class in org.tailormap.api.persistence.helper">ViewerHelper.AppLayerFullContext</a>&gt;</span>&nbsp;<span class="element-name">getAppLayerFullContextMap</span><wbr><span class="parameters">(<a href="../Application.html" title="class in org.tailormap.api.persistence">Application</a>&nbsp;application,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;appLayerIds)</span></div>
+<div class="block">As #getAppLayerFullContextMap(), but only for the given appLayerIds.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>application</code> - the application</dd>
+<dd><code>appLayerIds</code> - the list of appLayerIds to limit the result to</dd>
+<dt>Returns:</dt>
+<dd>a map of appLayerId to AppLayerFullContext</dd>
+</dl>
 </section>
 </li>
 </ul>
