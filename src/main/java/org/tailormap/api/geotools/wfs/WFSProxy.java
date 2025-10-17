@@ -18,22 +18,22 @@ import java.net.http.HttpResponse;
 import java.util.Set;
 
 public class WFSProxy {
+  @SuppressWarnings("PMD.CloseResource")
   public static HttpResponse<InputStream> proxyWfsRequest(
       URI wfsRequest, String username, String password, HttpServletRequest request) throws Exception {
+    // XXX not sure when this httpClient is closed... ignore for now
+    final HttpClient httpClient = HttpClient.newBuilder().build();
 
-    try (final HttpClient httpClient = HttpClient.newBuilder().build()) {
+    HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(wfsRequest);
 
-      HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(wfsRequest);
+    addForwardedForRequestHeaders(requestBuilder, request);
 
-      addForwardedForRequestHeaders(requestBuilder, request);
+    // Just a few headers for logging, conditional or range requests not likely to be supported by a
+    // WFS
+    passthroughRequestHeaders(requestBuilder, request, Set.of("Referer", "User-Agent"));
 
-      // Just a few headers for logging, conditional or range requests not likely to be supported by a
-      // WFS
-      passthroughRequestHeaders(requestBuilder, request, Set.of("Referer", "User-Agent"));
+    setHttpBasicAuthenticationHeader(requestBuilder, username, password);
 
-      setHttpBasicAuthenticationHeader(requestBuilder, username, password);
-
-      return httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
-    }
+    return httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
   }
 }

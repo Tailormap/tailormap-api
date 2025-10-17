@@ -246,7 +246,11 @@ public class GeoServiceProxyController {
     return UriComponentsBuilder.fromUriString(finalUrl).build(true).toUri();
   }
 
+  @SuppressWarnings("PMD.CloseResource")
   private static ResponseEntity<?> doProxy(URI uri, GeoService service, HttpServletRequest request) {
+    final HttpClient.Builder builder = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL);
+    // XXX not sure when this httpClient is closed... ignore for now
+    final HttpClient httpClient = builder.build();
 
     HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(uri);
 
@@ -274,9 +278,7 @@ public class GeoServiceProxyController {
           service.getAuthentication().getPassword());
     }
 
-    try (final HttpClient httpClient = HttpClient.newBuilder()
-        .followRedirects(HttpClient.Redirect.NORMAL)
-        .build()) {
+    try {
       // TODO: close JPA connection before proxying
       HttpResponse<InputStream> response =
           httpClient.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofInputStream());
