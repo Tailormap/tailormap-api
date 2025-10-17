@@ -5,6 +5,8 @@
  */
 package org.tailormap.api.persistence.helper;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,40 +36,51 @@ public class ViewerHelper {
     this.featureSourceRepository = featureSourceRepository;
   }
 
-  public record AppLayerFullContext(
-      AppTreeLayerNode node,
-      AppLayerSettings appLayerSettings,
-      GeoService geoService,
-      GeoServiceLayer geoServiceLayer,
-      TMFeatureType featureType) {}
-
   public record AppLayerContext(
-      AppTreeLayerNode node,
-      AppLayerSettings appLayerSettings,
-      GeoService geoService,
-      GeoServiceLayer geoServiceLayer,
-      FeatureTypeRef featureTypeRef) {}
+      @NotNull AppTreeLayerNode node,
+      @NotNull AppLayerSettings appLayerSettings,
+      @NotNull GeoService geoService,
+      @NotNull GeoServiceLayer geoServiceLayer,
+      @Null FeatureTypeRef featureTypeRef) {}
 
+  /**
+   * Returns a map of AppTreeLayerNode id to AppLayerContext, with only nodes that reference an existing
+   * GeoServiceLayer, including base layer nodes.
+   *
+   * @param application the application
+   * @return a map of appLayerId to AppLayerContext
+   */
+  public Map<String, AppLayerContext> getAppLayerContextMap(Application application) {
+    return getAppLayerContextMap(application, null);
+  }
+
+  /**
+   * As #getAppLayerContextMap(), but only for the given appLayerIds.
+   *
+   * @param application the application
+   * @param appLayerIds the list of appLayerIds to limit the result to
+   * @return a map of appLayerId to AppLayerContext
+   */
   public Map<String, AppLayerContext> getAppLayerContextMap(Application application, List<String> appLayerIds) {
-    Map<String, AppTreeLayerNode> appLayerIdToAppLayerNode = new HashMap<>();
-    for (String appLayerId : appLayerIds) {
-      application
-          .getAllAppTreeLayerNode()
-          .filter(node -> node.getId().equals(appLayerId))
-          .findFirst()
-          .ifPresent(node -> appLayerIdToAppLayerNode.put(appLayerId, node));
-    }
+    Map<String, AppTreeLayerNode> nodeMap = new HashMap<>();
+    application.getAllAppTreeLayerNode().forEach(node -> {
+      if (appLayerIds == null || appLayerIds.contains(node.getId())) {
+        nodeMap.put(node.getId(), node);
+      }
+    });
 
-    Map<String, GeoService> geoServiceMap = geoServiceRepository
-        .findByIds(appLayerIdToAppLayerNode.values().stream()
-            .map(AppTreeLayerNode::getServiceId)
-            .distinct()
-            .toList())
-        .stream()
-        .collect(Collectors.toMap(GeoService::getId, service -> service));
+    // Efficiently retrieve all GeoServices in a single query
+    Map<String, GeoService> geoServiceMap =
+        geoServiceRepository
+            .findByIds(nodeMap.values().stream()
+                .map(AppTreeLayerNode::getServiceId)
+                .distinct()
+                .toList())
+            .stream()
+            .collect(Collectors.toMap(GeoService::getId, service -> service));
 
-    Map<String, AppLayerContext> appLayerIdContextMap = new HashMap<>();
-    for (Map.Entry<String, AppTreeLayerNode> entry : appLayerIdToAppLayerNode.entrySet()) {
+    Map<String, AppLayerContext> contextMap = new HashMap<>();
+    for (Map.Entry<String, AppTreeLayerNode> entry : nodeMap.entrySet()) {
       String appLayerId = entry.getKey();
       AppTreeLayerNode lyrNode = entry.getValue();
 
@@ -92,19 +105,45 @@ public class ViewerHelper {
       if (ftr == null) {
         continue;
       }
-      appLayerIdContextMap.put(
+      contextMap.put(
           appLayerId,
           new AppLayerContext(lyrNode, application.getAppLayerSettings(appLayerId), service, layer, ftr));
     }
-    return appLayerIdContextMap;
+    return contextMap;
   }
 
+  public record AppLayerFullContext(
+      @NotNull AppTreeLayerNode node,
+      @NotNull AppLayerSettings appLayerSettings,
+      @NotNull GeoService geoService,
+      @NotNull GeoServiceLayer geoServiceLayer,
+      @NotNull TMFeatureType featureType) {}
+
+  /**
+   * As #getAppLayerContextMap(), but only with nodes that reference an existing GeoServiceLayer that has a feature
+   * type.
+   *
+   * @param application the application
+   * @return a map of appLayerId to AppLayerFullContext
+   */
+  public Map<String, AppLayerFullContext> getAppLayerFullContextMap(Application application) {
+    return getAppLayerFullContextMap(application, null);
+  }
+
+  /**
+   * As #getAppLayerFullContextMap(), but only for the given appLayerIds.
+   *
+   * @param application the application
+   * @param appLayerIds the list of appLayerIds to limit the result to
+   * @return a map of appLayerId to AppLayerFullContext
+   */
   public Map<String, AppLayerFullContext> getAppLayerFullContextMap(
       Application application, List<String> appLayerIds) {
-    Map<String, AppLayerContext> appLayerContextMap = getAppLayerContextMap(application, appLayerIds);
+    Map<String, AppLayerContext> contextMap = getAppLayerContextMap(application, appLayerIds);
 
+    // Efficiently retrieve all TMFeatureSources in a single query
     Map<Long, TMFeatureSource> featureSourceMap = featureSourceRepository
-        .findByIds(appLayerContextMap.values().stream()
+        .findByIds(contextMap.values().stream()
             .map(appLayerFeatureTypeRef ->
                 appLayerFeatureTypeRef.featureTypeRef().getFeatureSourceId())
             .filter(Objects::nonNull)
@@ -113,8 +152,8 @@ public class ViewerHelper {
         .stream()
         .collect(Collectors.toMap(TMFeatureSource::getId, featureSource -> featureSource));
 
-    Map<String, AppLayerFullContext> appLayerFullContextMap = new HashMap<>();
-    for (Map.Entry<String, AppLayerContext> entry : appLayerContextMap.entrySet()) {
+    Map<String, AppLayerFullContext> fullContextMap = new HashMap<>();
+    for (Map.Entry<String, AppLayerContext> entry : contextMap.entrySet()) {
       String appLayerId = entry.getKey();
       AppLayerContext context = entry.getValue();
 
@@ -125,7 +164,7 @@ public class ViewerHelper {
           .orElse(null);
 
       if (featureType != null) {
-        appLayerFullContextMap.put(
+        fullContextMap.put(
             appLayerId,
             new AppLayerFullContext(
                 context.node(),
@@ -136,6 +175,6 @@ public class ViewerHelper {
       }
     }
 
-    return appLayerFullContextMap;
+    return fullContextMap;
   }
 }
