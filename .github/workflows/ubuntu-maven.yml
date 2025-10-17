@@ -24,7 +24,7 @@ on:
 
 jobs:
   build:
-    name: 'Build w/ Java 17'
+    name: "Build w/ Java ${{ env.JAVA_VERSION }}"
     runs-on: ubuntu-latest
     permissions:
       contents: read

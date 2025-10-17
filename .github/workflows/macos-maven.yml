@@ -16,7 +16,7 @@ on:
 
 jobs:
   build:
-    name: 'Build w/ Java 17'
+    name: 'Build w/ Java 21'
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v5
