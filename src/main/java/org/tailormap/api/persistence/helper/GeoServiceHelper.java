@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -111,7 +110,7 @@ public class GeoServiceHelper {
     }
     return UriComponentsBuilder.fromUri(uri).build().getQueryParams().entrySet().stream()
         .filter(entry -> "request".equalsIgnoreCase(entry.getKey()))
-        .map(entry -> entry.getValue().get(0))
+        .map(entry -> entry.getValue().getFirst())
         .findFirst()
         .orElse(null);
   }
@@ -276,8 +275,8 @@ public class GeoServiceHelper {
               try {
                 List<?> legendURLs = gtStyle.getLegendURLs();
                 // GeoTools will replace invalid URLs with null in legendURLs
-                if (legendURLs != null && !legendURLs.isEmpty() && legendURLs.get(0) != null) {
-                  style.legendURL(new URI((String) legendURLs.get(0)));
+                if (legendURLs != null && !legendURLs.isEmpty() && legendURLs.getFirst() != null) {
+                  style.legendURL(new URI((String) legendURLs.getFirst()));
                 }
               } catch (URISyntaxException ignored) {
                 // Won't occur because GeoTools would have already returned null on
@@ -310,7 +309,7 @@ public class GeoServiceHelper {
   void loadWMSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client) throws Exception {
     WebMapServer wms;
     try {
-      wms = new WebMapServer(new URL(geoService.getUrl()), client);
+      wms = new WebMapServer(new URI(geoService.getUrl()).toURL(), client);
     } catch (ClassCastException | IllegalStateException e) {
       // The gt-wms module tries to cast the XML unmarshalling result expecting capabilities, but a
       // WMS 1.0.0/1.1.0 ServiceException may have been unmarshalled which leads to a
@@ -397,7 +396,7 @@ public class GeoServiceHelper {
   }
 
   void loadWMTSCapabilities(GeoService geoService, ResponseTeeingHTTPClient client) throws Exception {
-    WebMapTileServer wmts = new WebMapTileServer(new URL(geoService.getUrl()), client);
+    WebMapTileServer wmts = new WebMapTileServer(new URI(geoService.getUrl()).toURL(), client);
     setServiceInfo(geoService, client, wmts);
 
     // TODO set capabilities if we need something from it
@@ -482,8 +481,8 @@ public class GeoServiceHelper {
             try {
               new WFSFeatureSourceHelper().loadCapabilities(fs, tailormapConfig.getTimeout());
             } catch (IOException e) {
-              String msg = String.format(
-                  "Error loading WFS from URL %s: %s: %s", url, e.getClass(), e.getMessage());
+              String msg = "Error loading WFS from URL %s: %s: %s"
+                  .formatted(url, e.getClass(), e.getMessage());
               if (logger.isTraceEnabled()) {
                 logger.error(msg, e);
               } else {
@@ -517,7 +516,7 @@ public class GeoServiceHelper {
 
     final List<WMSStyle> allOurLayersStyles = serviceLayer.getStyles();
     if (allOurLayersStyles.size() == 1) {
-      return allOurLayersStyles.get(0).getLegendURL();
+      return allOurLayersStyles.getFirst().getLegendURL();
     }
     // remove the styles from all the other layer(s) from the list of all our layers styles
     service.getLayers().stream()

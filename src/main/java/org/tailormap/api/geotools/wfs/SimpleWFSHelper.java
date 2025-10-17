@@ -10,7 +10,6 @@ import static org.tailormap.api.util.HttpProxyUtil.setHttpBasicAuthenticationHea
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -195,11 +194,11 @@ public class SimpleWFSHelper {
       client.setPassword(password);
       client.setConnectTimeout(TIMEOUT);
       client.setReadTimeout(TIMEOUT);
-      WebMapServer wms = new WebMapServer(new URL(url), client);
+      WebMapServer wms = new WebMapServer(new URI(url).toURL(), client);
       // Directly create WMS 1.1.1 request. Creating it from WebMapServer errors with GeoServer
       // about unsupported request in capabilities unless we override WebMapServer to set up
       // specifications.
-      DescribeLayerRequest describeLayerRequest = new WMS1_1_1().createDescribeLayerRequest(new URL(url));
+      DescribeLayerRequest describeLayerRequest = new WMS1_1_1().createDescribeLayerRequest(new URI(url).toURL());
       // XXX Otherwise GeoTools will send VERSION=1.1.0...
       describeLayerRequest.setProperty("VERSION", "1.1.1");
       describeLayerRequest.setLayers(String.join(",", layers));
@@ -216,8 +215,8 @@ public class SimpleWFSHelper {
       }
       return Collections.unmodifiableMap(descriptions);
     } catch (Exception e) {
-      String msg = String.format(
-          "Error in DescribeLayer request to WMS \"%s\": %s: %s", url, e.getClass(), e.getMessage());
+      String msg =
+          "Error in DescribeLayer request to WMS \"%s\": %s: %s".formatted(url, e.getClass(), e.getMessage());
       if (logger.isTraceEnabled()) {
         logger.trace(msg, e);
       } else {

@@ -197,7 +197,7 @@ public class FeaturesController implements Constants {
           // There is a primary key and it is known, use that for sorting
           sortAttrName = tmft.getPrimaryKeyAttribute();
         } else {
-          sortAttrName = propNames.get(0);
+          sortAttrName = propNames.getFirst();
         }
 
         if (null != sortBy) {

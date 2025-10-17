@@ -151,7 +151,7 @@ class PasswordResetControllerIntegrationTest {
             .content("email=foo@example.com")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .accept(MediaType.APPLICATION_JSON)
-            .locale(new Locale(locale))
+            .locale(Locale.of(locale))
             .with(setServletPath(url))
             .with(csrf()))
         .andExpect(status().isAccepted())

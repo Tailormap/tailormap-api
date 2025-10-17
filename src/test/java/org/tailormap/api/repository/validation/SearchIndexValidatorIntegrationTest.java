@@ -58,7 +58,9 @@ class SearchIndexValidatorIntegrationTest {
                       assertEquals(1, errors.getErrorCount(), "Expected 1 error");
                       assertEquals(
                           "This feature type is not available for indexing.",
-                          errors.getAllErrors().get(0).getDefaultMessage(),
+                          errors.getAllErrors()
+                              .getFirst()
+                              .getDefaultMessage(),
                           "Did not get expected error message");
                     },
                     () -> fail("Feature type not found")),

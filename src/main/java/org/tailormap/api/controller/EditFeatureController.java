@@ -151,7 +151,7 @@ public class EditFeatureController implements Constants {
 
         transaction.commit();
         // find the created feature to return
-        newFeature = getFeature(fs, ff.id(newFids.get(0)), application);
+        newFeature = getFeature(fs, ff.id(newFids.getFirst()), application);
       } else {
         throw new ResponseStatusException(
             HttpStatus.BAD_REQUEST, "Feature cannot be added, datasource is not editable");

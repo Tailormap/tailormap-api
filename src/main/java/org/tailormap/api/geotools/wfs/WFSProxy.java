@@ -18,8 +18,10 @@ import java.net.http.HttpResponse;
 import java.util.Set;
 
 public class WFSProxy {
+  @SuppressWarnings("PMD.CloseResource")
   public static HttpResponse<InputStream> proxyWfsRequest(
       URI wfsRequest, String username, String password, HttpServletRequest request) throws Exception {
+    // XXX not sure when this httpClient is closed... ignore for now
     final HttpClient httpClient = HttpClient.newBuilder().build();
 
     HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(wfsRequest);

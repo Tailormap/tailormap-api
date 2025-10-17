@@ -123,7 +123,7 @@ class UniqueValuesControllerReConfiguredIntegrationTest {
     List<String> values = JsonPath.read(body, "$.values");
 
     assertEquals(1, values.size(), "there should only be 1 value");
-    assertTrue(List.of(expected).contains(values.get(0)), "not all values are present");
+    assertTrue(List.of(expected).contains(values.getFirst()), "not all values are present");
   }
 
   @ParameterizedTest(name = "#{index}: should return no unique bronhouder from database with exclusion filter: {0}")

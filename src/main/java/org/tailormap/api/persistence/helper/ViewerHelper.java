@@ -157,22 +157,17 @@ public class ViewerHelper {
       String appLayerId = entry.getKey();
       AppLayerContext context = entry.getValue();
 
-      TMFeatureType featureType = Optional.ofNullable(
-              featureSourceMap.get(context.featureTypeRef().getFeatureSourceId()))
+      Optional.ofNullable(featureSourceMap.get(context.featureTypeRef().getFeatureSourceId()))
           .map(featureSource -> featureSource.findFeatureTypeByName(
               context.featureTypeRef().getFeatureTypeName()))
-          .orElse(null);
-
-      if (featureType != null) {
-        fullContextMap.put(
-            appLayerId,
-            new AppLayerFullContext(
-                context.node(),
-                context.appLayerSettings(),
-                context.geoService(),
-                context.geoServiceLayer(),
-                featureType));
-      }
+          .ifPresent(featureType -> fullContextMap.put(
+              appLayerId,
+              new AppLayerFullContext(
+                  context.node(),
+                  context.appLayerSettings(),
+                  context.geoService(),
+                  context.geoServiceLayer(),
+                  featureType)));
     }
 
     return fullContextMap;
