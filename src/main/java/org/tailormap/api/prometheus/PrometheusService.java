@@ -105,8 +105,11 @@ public class PrometheusService {
    * @throws IOException if there is an error executing the delete query
    */
   public void deleteMetric(String... metricMatches) throws IOException, URISyntaxException {
-    final URL url = new URI(
-            prometheusUrl + "/admin/tsdb/delete_series?match[]=" + String.join("&match[]=", metricMatches))
+    final URL url = UriComponentsBuilder.fromUriString(prometheusUrl)
+        .path("/admin/tsdb/delete_series")
+        .queryParam("match[]", (Object[]) metricMatches)
+        .build()
+        .toUri()
         .toURL();
     logger.trace("Deleting metrics using (PUT): {}", url);
     HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
