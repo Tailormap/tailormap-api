@@ -123,7 +123,7 @@ public class TaskManagerService {
 
     if (scheduler.checkExists(jobKey)) {
       // there should only ever be one trigger for a job in TM
-      Trigger oldTrigger = scheduler.getTriggersOfJob(jobKey).get(0);
+      Trigger oldTrigger = scheduler.getTriggersOfJob(jobKey).getFirst();
 
       if (scheduler.checkExists(oldTrigger.getKey())) {
 

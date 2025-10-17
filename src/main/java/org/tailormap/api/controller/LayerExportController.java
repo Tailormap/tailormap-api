@@ -95,8 +95,7 @@ public class LayerExportController {
               wfsTypeNameDescriptor.password());
           capabilities.setOutputFormats(outputFormats);
         } catch (Exception e) {
-          String msg =
-              String.format("Error getting capabilities for WFS \"%s\"", wfsTypeNameDescriptor.wfsUrl());
+          String msg = "Error getting capabilities for WFS \"%s\"".formatted(wfsTypeNameDescriptor.wfsUrl());
           if (logger.isTraceEnabled()) {
             logger.trace(msg, e);
           } else {
@@ -189,6 +188,13 @@ public class LayerExportController {
     try {
       List<String> wfsAttributeNames = getWFSAttributeNames(wfsTypeNameDescriptor);
       attributes.retainAll(wfsAttributeNames);
+      // SSRF prevention: only allow known-safe attribute names
+      attributes.removeIf(attr -> !attr.matches("^[A-Za-z0-9_]+$"));
+      if (!CollectionUtils.isEmpty(attributes)
+          && attributes.stream().anyMatch(attr -> !wfsAttributeNames.contains(attr))) {
+        logger.warn("Download request contained illegal attribute(s)");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid attribute selection");
+      }
     } catch (IOException e) {
       logger.error("Error getting WFS feature type", e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error getting WFS feature type");

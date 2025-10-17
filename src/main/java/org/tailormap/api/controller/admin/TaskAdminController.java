@@ -219,7 +219,7 @@ the most common fields are listed in the Task interface.
       JobDataMap jobDataMap = jobDetail.getJobDataMap();
 
       /* there should be only one */
-      Trigger trigger = scheduler.getTriggersOfJob(jobDetail.getKey()).get(0);
+      Trigger trigger = scheduler.getTriggersOfJob(jobDetail.getKey()).getFirst();
       CronTrigger cron = ((CronTrigger) trigger);
 
       final Object[] result = new Object[1];

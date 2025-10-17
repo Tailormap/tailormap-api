@@ -169,8 +169,7 @@ public class PasswordResetController {
         request.getRequestURL().toString().replace(request.getRequestURI(), request.getContextPath());
     final Locale locale = localeResolver.resolveLocale(request);
 
-    try {
-      ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
+    try (ExecutorService emailExecutor = Executors.newSingleThreadExecutor()) {
       emailExecutor.execute(() -> {
         try {
           this.userRepository.findByEmail(email).ifPresent(user -> {

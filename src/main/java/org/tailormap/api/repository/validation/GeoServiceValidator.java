@@ -11,7 +11,6 @@ import static org.tailormap.api.util.TMExceptionUtils.joinAllThrowableMessages;
 
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
-import java.net.URL;
 import java.net.UnknownHostException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +55,9 @@ public class GeoServiceValidator implements Validator {
       // For XYZ URL templates, remove replacements
       if (service.getProtocol() == XYZ) {
         // Besides {x}, {y}, {z} also allow {-y} (for TMS) and {a-c} for domains
-        uri = new URL(service.getUrl().replaceAll("\\{[a-z\\-]+}", "")).toURI();
+        uri = new URI(service.getUrl().replaceAll("\\{[a-z\\-]+}", ""));
       } else {
-        uri = new URL(service.getUrl()).toURI();
+        uri = new URI(service.getUrl());
       }
     } catch (Exception e) {
       errors.rejectValue("url", "invalid", "Invalid URI");
@@ -76,9 +75,8 @@ public class GeoServiceValidator implements Validator {
       } catch (UnknownHostException e) {
         errors.rejectValue("url", "unknown-host", "Unknown host: \"" + uri.getHost() + "\"");
       } catch (Exception e) {
-        String msg = String.format(
-            "Error loading capabilities from URL \"%s\": %s",
-            service.getUrl(), joinAllThrowableMessages(e));
+        String msg = "Error loading capabilities from URL \"%s\": %s"
+            .formatted(service.getUrl(), joinAllThrowableMessages(e));
         logger.info(
             "The following exception may not be an application error but could be a problem with an external service or user-entered data: {}",
             msg,

@@ -285,9 +285,8 @@ public class Application {
         gtCrs = CRS.decode(getCrs());
       }
     } catch (Exception e) {
-      String message = String.format(
-          "Application %d: error decoding CRS from code \"%s\": %s: %s",
-          getId(), getCrs(), e.getClass(), e.getMessage());
+      String message = "Application %d: error decoding CRS from code \"%s\": %s: %s"
+          .formatted(getId(), getCrs(), e.getClass(), e.getMessage());
       if (logger.isDebugEnabled()) {
         logger.error(message, e);
       } else {

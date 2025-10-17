@@ -53,10 +53,10 @@ updates:
     labels:
       - infrastructure
     ignore:
-      # stay on Java 17 for now
+      # stay on Java 21 for now
       - dependency-name: "eclipse-temurin"
         versions:
-          - ">= 18"
+          - ">= 22"
 
   - package-ecosystem: "docker-compose"
     directory: "/build/ci/"

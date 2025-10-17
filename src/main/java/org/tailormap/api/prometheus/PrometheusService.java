@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,9 +104,13 @@ public class PrometheusService {
    * @param metricMatches the Prometheus metric matches to be deleted
    * @throws IOException if there is an error executing the delete query
    */
-  public void deleteMetric(String... metricMatches) throws IOException {
-    final URL url =
-        new URL(prometheusUrl + "/admin/tsdb/delete_series?match[]=" + String.join("&match[]=", metricMatches));
+  public void deleteMetric(String... metricMatches) throws IOException, URISyntaxException {
+    final URL url = UriComponentsBuilder.fromUriString(prometheusUrl)
+        .path("/admin/tsdb/delete_series")
+        .queryParam("match[]", (Object[]) metricMatches)
+        .build()
+        .toUri()
+        .toURL();
     logger.trace("Deleting metrics using (PUT): {}", url);
     HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
     httpURLConnection.setRequestMethod("PUT");
@@ -120,8 +125,8 @@ public class PrometheusService {
    *
    * @throws IOException if there is an error executing the delete query
    */
-  public void cleanTombstones() throws IOException {
-    final URL url = new URL(prometheusUrl + "/admin/tsdb/clean_tombstones");
+  public void cleanTombstones() throws IOException, URISyntaxException {
+    final URL url = new URI(prometheusUrl + "/admin/tsdb/clean_tombstones").toURL();
     HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
     httpURLConnection.setRequestMethod("PUT");
 

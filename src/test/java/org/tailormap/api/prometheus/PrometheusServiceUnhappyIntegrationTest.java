@@ -35,25 +35,21 @@ class PrometheusServiceUnhappyIntegrationTest {
 
   @Test
   void testQueryExecution() {
-    Exception exception = assertThrows(IOException.class, () -> {
-      prometheusService.executeQuery("scrape_duration_seconds");
-    });
+    Exception exception =
+        assertThrows(IOException.class, () -> prometheusService.executeQuery("scrape_duration_seconds"));
     assertThat(exception.getMessage(), containsStringIgnoringCase("Connection refused"));
   }
 
   @Test
   void deleteMetric() {
-    Exception exception = assertThrows(IOException.class, () -> {
-      prometheusService.deleteMetric("scrape_samples_scraped");
-    });
+    Exception exception =
+        assertThrows(IOException.class, () -> prometheusService.deleteMetric("scrape_samples_scraped"));
     assertThat(exception.getMessage(), containsStringIgnoringCase("Connection refused"));
   }
 
   @Test
   void cleanTombstones() {
-    Exception exception = assertThrows(IOException.class, () -> {
-      prometheusService.cleanTombstones();
-    });
+    Exception exception = assertThrows(IOException.class, () -> prometheusService.cleanTombstones());
     assertThat(exception.getMessage(), containsStringIgnoringCase("Connection refused"));
   }
 }
