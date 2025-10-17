@@ -966,6 +966,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/controller/admin/TaskAdminController.html#delete(org.tailormap.api.scheduling.TaskType,java.util.UUID)" class="member-name-link">delete(TaskType, UUID)</a> - Method in class org.tailormap.api.controller.admin.<a href="org/tailormap/api/controller/admin/TaskAdminController.html" title="class in org.tailormap.api.controller.admin">TaskAdminController</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/repository/TemporaryTokenRepository.html#deleteByExpirationTimeBefore(java.time.ZonedDateTime)" class="member-name-link">deleteByExpirationTimeBefore(ZonedDateTime)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/TemporaryTokenRepository.html" title="interface in org.tailormap.api.repository">TemporaryTokenRepository</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/ConfigurationRepository.html#deleteConfigurationByKey(java.lang.String)" class="member-name-link">deleteConfigurationByKey(String)</a> - Method in interface org.tailormap.api.repository.<a href="org/tailormap/api/repository/ConfigurationRepository.html" title="interface in org.tailormap.api.repository">ConfigurationRepository</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/configuration/ddl/DeleteDDLScriptBeforeCreating.html" class="type-name-link" title="class in org.tailormap.api.configuration.ddl">DeleteDDLScriptBeforeCreating</a> - Class in <a href="org/tailormap/api/configuration/ddl/package-summary.html">org.tailormap.api.configuration.ddl</a></dt>
@@ -8543,10 +8545,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/tailormap/api/persistence/TemporaryToken.TokenType.html" class="type-name-link" title="enum class in org.tailormap.api.persistence">TemporaryToken.TokenType</a> - Enum Class in <a href="org/tailormap/api/persistence/package-summary.html">org.tailormap.api.persistence</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/configuration/TemporaryTokenCleanupService.html" class="type-name-link" title="class in org.tailormap.api.configuration">TemporaryTokenCleanupService</a> - Class in <a href="org/tailormap/api/configuration/package-summary.html">org.tailormap.api.configuration</a></dt>
-<dd>
-<div class="block">Service for cleaning up expired temporary tokens from the database.</div>
-</dd>
-<dt><a href="org/tailormap/api/configuration/TemporaryTokenCleanupService.html#%3Cinit%3E(org.springframework.jdbc.core.simple.JdbcClient)" class="member-name-link">TemporaryTokenCleanupService(JdbcClient)</a> - Constructor for class org.tailormap.api.configuration.<a href="org/tailormap/api/configuration/TemporaryTokenCleanupService.html" title="class in org.tailormap.api.configuration">TemporaryTokenCleanupService</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/tailormap/api/configuration/TemporaryTokenCleanupService.html#%3Cinit%3E(org.tailormap.api.repository.TemporaryTokenRepository)" class="member-name-link">TemporaryTokenCleanupService(TemporaryTokenRepository)</a> - Constructor for class org.tailormap.api.configuration.<a href="org/tailormap/api/configuration/TemporaryTokenCleanupService.html" title="class in org.tailormap.api.configuration">TemporaryTokenCleanupService</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/tailormap/api/repository/TemporaryTokenRepository.html" class="type-name-link" title="interface in org.tailormap.api.repository">TemporaryTokenRepository</a> - Interface in <a href="org/tailormap/api/repository/package-summary.html">org.tailormap.api.repository</a></dt>
 <dd>&nbsp;</dd>
