@@ -841,7 +841,7 @@ SPDX-License-Identifier: MIT
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <!--suppress UnresolvedMavenProperty -->
-                    <argLine>${surefireArgLine}</argLine>
+                    <argLine>${surefireArgLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
                     <excludes>
                         <exclude>**/*IntegrationTest.java</exclude>
                     </excludes>
@@ -1173,6 +1173,11 @@ SPDX-License-Identifier: MIT
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
+                    </execution>
+                    <execution>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -1853,7 +1858,7 @@ SPDX-License-Identifier: MIT
                                         <profile>populate-testdata</profile>
                                     </profiles>
                                     <!--suppress UnresolvedMavenProperty -->
-                                    <jvmArguments>${failsafeArgLine} -Dspatial.dbs.connect=true -Dtailormap-api.database.populate-testdata.exit=true</jvmArguments>
+                                    <jvmArguments>${failsafeArgLine} -Dspatial.dbs.connect=true -Dtailormap-api.database.populate-testdata.exit=true -javaagent:${org.mockito:mockito-core:jar}</jvmArguments>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1866,7 +1871,7 @@ SPDX-License-Identifier: MIT
                             </includes>
                             <!-- <excludedGroups>prometheus-service-testcase</excludedGroups>-->
                             <!--suppress UnresolvedMavenProperty -->
-                            <argLine>${failsafeArgLine} -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql</argLine>
+                            <argLine>${failsafeArgLine} -Dspring.profiles.active=postgresql -Dspring.profiles.default=postgresql -javaagent:${org.mockito:mockito-core:jar}</argLine>
                             <trimStackTrace>false</trimStackTrace>
                             <useFile>false</useFile>
                             <!--suppress UnresolvedMavenProperty, MavenModelInspection -->
