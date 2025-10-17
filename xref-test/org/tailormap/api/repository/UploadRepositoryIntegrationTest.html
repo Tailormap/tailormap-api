@@ -35,7 +35,7 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>    @Transactional(label = <span class="jxr_string">"inserts and removes an upload"</span>)
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>    <strong class="jxr_keyword">void</strong> should_find_latest_upload_by_category() {
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>      Upload testUpload =
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>          uploadRepository.findByCategory(Upload.CATEGORY_DRAWING_STYLE).get(0);
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>          uploadRepository.findByCategory(Upload.CATEGORY_DRAWING_STYLE).getFirst();
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>      <em class="jxr_comment">// create a copy of the upload with a different filename and younger last-modified time</em>
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>      Upload copiedUpload = <strong class="jxr_keyword">new</strong> Upload()
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>          .setCategory(testUpload.getCategory())

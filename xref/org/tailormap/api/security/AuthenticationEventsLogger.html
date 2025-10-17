@@ -85,27 +85,26 @@
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onFailure(AbstractAuthenticationFailureEvent failure) {
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>      String userInfo = <span class="jxr_string">""</span>;
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      <strong class="jxr_keyword">if</strong> (failure.getAuthentication().getPrincipal() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>        userInfo = String.format(
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>            <span class="jxr_string">" for user \&quot;%s\&quot;"</span>, failure.getAuthentication().getPrincipal());
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>      }
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>      logger.info(
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>          <span class="jxr_string">"Authentication failure: {} {}{}"</span>,
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>          failure.getException().getMessage(),
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>          <em class="jxr_comment">// in this case logging the "login" is useful/warranted for analysis</em>
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>          userInfo,
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>          getIPAddressInfo(failure));
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>      Metrics.counter(
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>              <span class="jxr_string">"tailormap_authentication_failure"</span>,
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>              <span class="jxr_string">"type"</span>,
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>              failure.getSource() instanceof OAuth2LoginAuthenticationToken ? <span class="jxr_string">"oauth2"</span> : <span class="jxr_string">"username_password"</span>)
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>          .increment();
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>    }
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>  
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>    @EventListener
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onDefaultAuthenticationFailureEvent(<a name="DefaultAuthenticationFailureEvent" href="../../../../org/tailormap/api/security/events/DefaultAuthenticationFailureEvent.html#DefaultAuthenticationFailureEvent">DefaultAuthenticationFailureEvent</a> event) {
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>      logger.info(<span class="jxr_string">"Default authentication failure"</span>, event.getException());
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>    }
-<a class="jxr_linenumber" name="L100" href="#L100">100</a> }
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>        userInfo = <span class="jxr_string">" for user \&quot;%s\&quot;"</span>.formatted(failure.getAuthentication().getPrincipal());
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>      }
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>      logger.info(
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>          <span class="jxr_string">"Authentication failure: {} {}{}"</span>,
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          failure.getException().getMessage(),
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          <em class="jxr_comment">// in this case logging the "login" is useful/warranted for analysis</em>
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          userInfo,
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          getIPAddressInfo(failure));
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>      Metrics.counter(
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>              <span class="jxr_string">"tailormap_authentication_failure"</span>,
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>              <span class="jxr_string">"type"</span>,
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>              failure.getSource() instanceof OAuth2LoginAuthenticationToken ? <span class="jxr_string">"oauth2"</span> : <span class="jxr_string">"username_password"</span>)
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>          .increment();
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>    }
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>  
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>    @EventListener
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onDefaultAuthenticationFailureEvent(<a name="DefaultAuthenticationFailureEvent" href="../../../../org/tailormap/api/security/events/DefaultAuthenticationFailureEvent.html#DefaultAuthenticationFailureEvent">DefaultAuthenticationFailureEvent</a> event) {
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>      logger.info(<span class="jxr_string">"Default authentication failure"</span>, event.getException());
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>    }
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

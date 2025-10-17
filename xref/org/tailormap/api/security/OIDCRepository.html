@@ -114,8 +114,8 @@
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         .followRedirects(HttpClient.Redirect.NORMAL)
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         .build();
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>     <strong class="jxr_keyword">for</strong> (<a name="OIDCConfiguration" href="../../../../org/tailormap/api/persistence/OIDCConfiguration.html#OIDCConfiguration">OIDCConfiguration</a> configuration : oidcConfigurationRepository.findAll()) {
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>       String id = String.format(<span class="jxr_string">"%d"</span>, configuration.getId());
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>       String id = <span class="jxr_string">"%d"</span>.formatted(configuration.getId());
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>       <strong class="jxr_keyword">try</strong> (httpClient) {
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>             .uri(<strong class="jxr_keyword">new</strong> URI(configuration.getIssuerUrl() + <span class="jxr_string">"/.well-known/openid-configuration"</span>));
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>         HttpResponse&lt;String&gt; response =

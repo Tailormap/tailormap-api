@@ -160,7 +160,7 @@
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>     List&lt;String&gt; values = JsonPath.read(body, <span class="jxr_string">"$.values"</span>);
 <a class="jxr_linenumber" name="L153" href="#L153">153</a> 
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>     assertEquals(1, values.size(), <span class="jxr_string">"there should only be 1 value"</span>);
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>     assertTrue(List.of(expected).contains(values.get(0)), <span class="jxr_string">"not all values are present"</span>);
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>     assertTrue(List.of(expected).contains(values.getFirst()), <span class="jxr_string">"not all values are present"</span>);
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>   }
 <a class="jxr_linenumber" name="L157" href="#L157">157</a> 
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>   @ParameterizedTest(name = <span class="jxr_string">"#{index}: should return no unique bronhouder from database with exclusion filter: {0}"</span>)

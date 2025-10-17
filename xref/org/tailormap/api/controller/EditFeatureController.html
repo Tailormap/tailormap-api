@@ -159,7 +159,7 @@
 <a class="jxr_linenumber" name="L151" href="#L151">151</a> 
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>         transaction.commit();
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>         <em class="jxr_comment">// find the created feature to return</em>
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>         newFeature = getFeature(fs, ff.id(newFids.get(0)), application);
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>         newFeature = getFeature(fs, ff.id(newFids.getFirst()), application);
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>       } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResponseStatusException(
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>             HttpStatus.BAD_REQUEST, <span class="jxr_string">"Feature cannot be added, datasource is not editable"</span>);

@@ -227,7 +227,7 @@
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>       JobDataMap jobDataMap = jobDetail.getJobDataMap();
 <a class="jxr_linenumber" name="L220" href="#L220">220</a> 
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>       <em class="jxr_comment">/* there should be only one */</em>
-<a class="jxr_linenumber" name="L222" href="#L222">222</a>       Trigger trigger = scheduler.getTriggersOfJob(jobDetail.getKey()).get(0);
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>       Trigger trigger = scheduler.getTriggersOfJob(jobDetail.getKey()).getFirst();
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>       CronTrigger cron = ((CronTrigger) trigger);
 <a class="jxr_linenumber" name="L224" href="#L224">224</a> 
 <a class="jxr_linenumber" name="L225" href="#L225">225</a>       <strong class="jxr_keyword">final</strong> Object[] result = <strong class="jxr_keyword">new</strong> Object[1];

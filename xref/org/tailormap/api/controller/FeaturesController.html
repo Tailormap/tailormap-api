@@ -205,7 +205,7 @@
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>           <em class="jxr_comment">// There is a primary key and it is known, use that for sorting</em>
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>           sortAttrName = tmft.getPrimaryKeyAttribute();
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>           sortAttrName = propNames.get(0);
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>           sortAttrName = propNames.getFirst();
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>         }
 <a class="jxr_linenumber" name="L202" href="#L202">202</a> 
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">null</strong> != sortBy) {

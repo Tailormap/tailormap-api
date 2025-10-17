@@ -293,29 +293,28 @@
 <a class="jxr_linenumber" name="L285" href="#L285">285</a>         gtCrs = CRS.decode(getCrs());
 <a class="jxr_linenumber" name="L286" href="#L286">286</a>       }
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>     } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>       String message = String.format(
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>           <span class="jxr_string">"Application %d: error decoding CRS from code \&quot;%s\&quot;: %s: %s"</span>,
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>           getId(), getCrs(), e.getClass(), e.getMessage());
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>       <strong class="jxr_keyword">if</strong> (logger.isDebugEnabled()) {
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>         logger.error(message, e);
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>       } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>         logger.error(message);
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>       }
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>     }
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>     <strong class="jxr_keyword">return</strong> gtCrs;
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>   }
-<a class="jxr_linenumber" name="L299" href="#L299">299</a> 
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>   @NotNull <strong class="jxr_keyword">public</strong> AppLayerSettings getAppLayerSettings(@NotNull AppTreeLayerNode node) {
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>     <strong class="jxr_keyword">return</strong> getAppLayerSettings(node.getId());
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>   }
-<a class="jxr_linenumber" name="L303" href="#L303">303</a> 
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>   @NotNull <strong class="jxr_keyword">public</strong> AppLayerSettings getAppLayerSettings(@NotNull String appLayerId) {
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>     <strong class="jxr_keyword">return</strong> Optional.ofNullable(getSettings())
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>         .map(AppSettings::getLayerSettings)
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>         .map(layerSettingsMap -&gt; layerSettingsMap.get(appLayerId))
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>         .orElseGet(AppLayerSettings::<strong class="jxr_keyword">new</strong>);
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>   }
-<a class="jxr_linenumber" name="L310" href="#L310">310</a> }
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>       String message = <span class="jxr_string">"Application %d: error decoding CRS from code \&quot;%s\&quot;: %s: %s"</span>
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>           .formatted(getId(), getCrs(), e.getClass(), e.getMessage());
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>       <strong class="jxr_keyword">if</strong> (logger.isDebugEnabled()) {
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>         logger.error(message, e);
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>       } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>         logger.error(message);
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>       }
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>     }
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>     <strong class="jxr_keyword">return</strong> gtCrs;
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>   }
+<a class="jxr_linenumber" name="L298" href="#L298">298</a> 
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>   @NotNull <strong class="jxr_keyword">public</strong> AppLayerSettings getAppLayerSettings(@NotNull AppTreeLayerNode node) {
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>     <strong class="jxr_keyword">return</strong> getAppLayerSettings(node.getId());
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>   }
+<a class="jxr_linenumber" name="L302" href="#L302">302</a> 
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>   @NotNull <strong class="jxr_keyword">public</strong> AppLayerSettings getAppLayerSettings(@NotNull String appLayerId) {
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>     <strong class="jxr_keyword">return</strong> Optional.ofNullable(getSettings())
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>         .map(AppSettings::getLayerSettings)
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>         .map(layerSettingsMap -&gt; layerSettingsMap.get(appLayerId))
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>         .orElseGet(AppLayerSettings::<strong class="jxr_keyword">new</strong>);
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>   }
+<a class="jxr_linenumber" name="L309" href="#L309">309</a> }
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

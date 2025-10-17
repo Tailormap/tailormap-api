@@ -131,7 +131,7 @@
 <a class="jxr_linenumber" name="L123" href="#L123">123</a> 
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>     <strong class="jxr_keyword">if</strong> (scheduler.checkExists(jobKey)) {
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>       <em class="jxr_comment">// there should only ever be one trigger for a job in TM</em>
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>       Trigger oldTrigger = scheduler.getTriggersOfJob(jobKey).get(0);
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>       Trigger oldTrigger = scheduler.getTriggersOfJob(jobKey).getFirst();
 <a class="jxr_linenumber" name="L127" href="#L127">127</a> 
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>       <strong class="jxr_keyword">if</strong> (scheduler.checkExists(oldTrigger.getKey())) {
 <a class="jxr_linenumber" name="L129" href="#L129">129</a> 
