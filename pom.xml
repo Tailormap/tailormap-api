@@ -745,7 +745,7 @@ SPDX-License-Identifier: MIT
             <plugin>
                 <groupId>org.openrewrite.maven</groupId>
                 <artifactId>rewrite-maven-plugin</artifactId>
-                <version>6.20.1</version>
+                <version>6.21.1</version>
                 <configuration>
                     <activeRecipes>
                         <recipe>org.openrewrite.java.migrate.UpgradeToJava17</recipe>
