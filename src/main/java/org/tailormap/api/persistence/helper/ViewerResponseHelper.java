@@ -76,11 +76,8 @@ public class ViewerResponseHelper {
 
   private void removeUnauthorizedLayersFromFilterGroups(
       Map<String, ViewerHelper.AppLayerFullContext> appLayerFullContextMap, List<FilterGroup> filterGroups) {
-    for (FilterGroup filterGroup : filterGroups) {
-      filterGroup.setLayerIds(filterGroup.getLayerIds().stream()
-          .filter(appLayerId -> isAppLayerAuthorized(appLayerFullContextMap.get(appLayerId)))
-          .toList());
-    }
+    filterGroups.forEach(fg ->
+        fg.getLayerIds().removeIf(appLayerId -> !isAppLayerAuthorized(appLayerFullContextMap.get(appLayerId))));
   }
 
   private boolean isAppLayerAuthorized(ViewerHelper.AppLayerFullContext appLayerContext) {
@@ -92,11 +89,9 @@ public class ViewerResponseHelper {
 
   private void removeLayersFromFilterGroupsWithoutFeatureType(
       Map<String, ViewerHelper.AppLayerFullContext> appLayerFullContextMap, List<FilterGroup> filterGroups) {
-    for (FilterGroup filterGroup : filterGroups) {
-      filterGroup.setLayerIds(filterGroup.getLayerIds().stream()
-          .filter(appLayerFullContextMap::containsKey)
-          .toList());
-    }
+    // Layers without a feature type are not in the full context map
+    filterGroups.forEach(
+        fg -> fg.getLayerIds().removeIf(appLayerId -> !appLayerFullContextMap.containsKey(appLayerId)));
   }
 
   private void removeFiltersWithoutAttributeInAllLayers(
@@ -114,9 +109,7 @@ public class ViewerResponseHelper {
           })
           .orElse(new HashSet<>());
 
-      filterGroup.setFilters(filterGroup.getFilters().stream()
-          .filter(f -> attributesCommonToAllLayers.contains(f.getAttribute()))
-          .toList());
+      filterGroup.getFilters().removeIf(f -> !attributesCommonToAllLayers.contains(f.getAttribute()));
     }
   }
 
