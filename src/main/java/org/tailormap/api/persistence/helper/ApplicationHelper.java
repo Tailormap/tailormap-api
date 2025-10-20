@@ -83,8 +83,7 @@ public class ApplicationHelper {
       FeatureSourceRepository featureSourceRepository,
       EntityManager entityManager,
       AuthorisationService authorisationService,
-      SearchIndexRepository searchIndexRepository,
-      UploadHelper uploadHelper) {
+      SearchIndexRepository searchIndexRepository) {
     this.geoServiceHelper = geoServiceHelper;
     this.geoServiceRepository = geoServiceRepository;
     this.configurationRepository = configurationRepository;
@@ -414,7 +413,7 @@ public class ApplicationHelper {
       boolean webMercatorAvailable = this.isWebMercatorAvailable(service, serviceLayer, hiDpiSubstituteLayer);
 
       Object tileset3dStyle = null;
-      if (service.getProtocol() == TILES3D && appLayerSettings.getTileset3dStyle() != null) {
+      if (service.getProtocol() == TILES3D) {
         tileset3dStyle = appLayerSettings.getTileset3dStyle();
       }
 
