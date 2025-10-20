@@ -5,6 +5,7 @@
  */
 package org.tailormap.api.persistence;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.Column;
@@ -20,6 +21,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -180,5 +182,15 @@ public class User {
 
   public void addOrUpdateAdminProperty(String key, Object value, boolean isPublic) {
     AdminAdditionalPropertyHelper.addOrUpdateAdminProperty(additionalProperties, key, value, isPublic);
+  }
+
+  /**
+   * Check if the user is enabled and the validUntil date has not passed yet (or null).
+   *
+   * @return true if the user is enabled and valid, false otherwise.
+   */
+  @JsonIgnore
+  public boolean isEnabledAndValidUntil() {
+    return enabled && (validUntil == null || validUntil.isAfter(ZonedDateTime.now(ZoneId.systemDefault())));
   }
 }

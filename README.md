@@ -21,10 +21,10 @@ To develop the backend this Spring Boot application can be run locally.
 
 To build and run the project, you need to have the following installed:
 
-- Java 17 JDK
-- Maven 3.9.5 or higher
+- Java 21 JDK
+- Maven 3.9.9 or higher (but not 4.0.x)
 - PostGIS configuration database
-- Docker 27.x with buildx 0.17 or higher (this requirement may be skipped if you don't need to build
+- Docker 28.x with buildx 0.29 or higher (this requirement may be skipped if you don't need to build
   the docker images or build release artifacts)
 
 The quickest way to start the PostGIS database is to check out the Docker Compose stack in [tailormap-viewer](https://github.com/Tailormap/tailormap-viewer/)
@@ -188,7 +188,7 @@ Some quick points of attention:
 * PMD checks are enforced. Run `mvn pmd:check` to verify your code.  
 * The ErrorProne compiler is used
 * A current release of Maven is required
-* Java 17
+* Java 21
 * JUnit 3 and 4 are forbidden
 * Code is reviewed before merge to the main branch
 * Javadoc must be valid

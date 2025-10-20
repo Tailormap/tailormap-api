@@ -77,8 +77,7 @@ public class AuthenticationEventsLogger {
   public void onFailure(AbstractAuthenticationFailureEvent failure) {
     String userInfo = "";
     if (failure.getAuthentication().getPrincipal() != null) {
-      userInfo = String.format(
-          " for user \"%s\"", failure.getAuthentication().getPrincipal());
+      userInfo = " for user \"%s\"".formatted(failure.getAuthentication().getPrincipal());
     }
     logger.info(
         "Authentication failure: {} {}{}",

@@ -288,6 +288,21 @@ public class PopulateTestData {
     u.getGroups().add(groupFoo);
     userRepository.save(u);
 
+    u = new User()
+        .setUsername("disabled")
+        .setPassword("{noop}disabled")
+        .setEmail("disabled@example.com")
+        .setEnabled(false);
+    userRepository.save(u);
+
+    u = new User()
+        .setUsername("expired")
+        .setPassword("{noop}expired")
+        .setEmail("expired@example.com")
+        .setValidUntil(
+            OffsetDateTime.now(ZoneId.systemDefault()).minusDays(1).toZonedDateTime());
+    userRepository.save(u);
+
     // Superuser with all access
     u = new User().setUsername("tm-admin").setPassword(adminHashedPassword);
     u.addOrUpdateAdminProperty("some-property", "some-value", true);
@@ -308,7 +323,7 @@ public class PopulateTestData {
   @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
   private void createCatalogTestData() throws Exception {
     Catalog catalog = catalogRepository.findById(Catalog.MAIN).orElseThrow();
-    CatalogNode rootCatalogNode = catalog.getNodes().get(0);
+    CatalogNode rootCatalogNode = catalog.getNodes().getFirst();
     CatalogNode catalogNode = new CatalogNode().id("test").title("Test services");
     rootCatalogNode.addChildrenItem(catalogNode.getId());
     catalog.getNodes().add(catalogNode);
@@ -1263,7 +1278,7 @@ Deze provincie heet **{{naam}}** en ligt in _{{ligtInLandNaam}}_.
 
     if (map5url != null) {
       AppTreeLevelNode root =
-          (AppTreeLevelNode) app.getContentRoot().getBaseLayerNodes().get(0);
+          (AppTreeLevelNode) app.getContentRoot().getBaseLayerNodes().getFirst();
       List<String> childrenIds = new ArrayList<>(root.getChildrenIds());
       childrenIds.add("lyr:map5:map5topo");
       childrenIds.add("lyr:map5:map5topo_simple");

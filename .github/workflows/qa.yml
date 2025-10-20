@@ -26,13 +26,14 @@ jobs:
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v4
         with:
+          allow-dependencies-licenses: pkg:maven/org.eclipse.angus/jakarta.mail@2.0.4?type=jar
           deny-licenses: GPL-2.0+, AGPL-3.0+
           comment-summary-in-pr: on-failure
 
       - name: 'Set up JDK'
         uses: actions/setup-java@v5
         with:
-          java-version: 17
+          java-version: 21
           distribution: 'temurin'
           cache: 'maven'
 

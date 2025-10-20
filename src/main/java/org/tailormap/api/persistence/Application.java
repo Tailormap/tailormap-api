@@ -285,9 +285,8 @@ public class Application {
         gtCrs = CRS.decode(getCrs());
       }
     } catch (Exception e) {
-      String message = String.format(
-          "Application %d: error decoding CRS from code \"%s\": %s: %s",
-          getId(), getCrs(), e.getClass(), e.getMessage());
+      String message = "Application %d: error decoding CRS from code \"%s\": %s: %s"
+          .formatted(getId(), getCrs(), e.getClass(), e.getMessage());
       if (logger.isDebugEnabled()) {
         logger.error(message, e);
       } else {
@@ -298,9 +297,13 @@ public class Application {
   }
 
   @NotNull public AppLayerSettings getAppLayerSettings(@NotNull AppTreeLayerNode node) {
+    return getAppLayerSettings(node.getId());
+  }
+
+  @NotNull public AppLayerSettings getAppLayerSettings(@NotNull String appLayerId) {
     return Optional.ofNullable(getSettings())
         .map(AppSettings::getLayerSettings)
-        .map(layerSettingsMap -> layerSettingsMap.get(node.getId()))
+        .map(layerSettingsMap -> layerSettingsMap.get(appLayerId))
         .orElseGet(AppLayerSettings::new);
   }
 }

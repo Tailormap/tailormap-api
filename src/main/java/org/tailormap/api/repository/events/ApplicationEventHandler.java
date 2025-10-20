@@ -10,6 +10,7 @@ import static org.tailormap.api.prometheus.TagNames.METRICS_APP_REQUEST_COUNTER_
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -64,7 +65,7 @@ public class ApplicationEventHandler {
             application.getId(),
             application.getName());
         prometheusService.deleteMetric(metricsToDelete.toArray(new String[0]));
-      } catch (IOException e) {
+      } catch (IOException | URISyntaxException e) {
         logger.error("Error cleaning up metrics for deleted application with id: {}", application.getId(), e);
       }
     }
@@ -104,7 +105,7 @@ public class ApplicationEventHandler {
               application.getName(),
               removedNodeIds);
           prometheusService.deleteMetric(metricsToDelete.toArray(new String[0]));
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
           logger.error(
               "Error cleaning up layer metrics for updated application with id: {}",
               application.getId(),

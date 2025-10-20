@@ -10,6 +10,6 @@ import java.util.List;
 public record SimpleWFSLayerDescription(String wfsUrl, List<String> typeNames) {
 
   public String getFirstTypeName() {
-    return typeNames.get(0);
+    return typeNames.getFirst();
   }
 }

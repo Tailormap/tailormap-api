@@ -27,7 +27,7 @@ class UploadRepositoryIntegrationTest {
   @Transactional(label = "inserts and removes an upload")
   void should_find_latest_upload_by_category() {
     Upload testUpload =
-        uploadRepository.findByCategory(Upload.CATEGORY_DRAWING_STYLE).get(0);
+        uploadRepository.findByCategory(Upload.CATEGORY_DRAWING_STYLE).getFirst();
     // create a copy of the upload with a different filename and younger last-modified time
     Upload copiedUpload = new Upload()
         .setCategory(testUpload.getCategory())
