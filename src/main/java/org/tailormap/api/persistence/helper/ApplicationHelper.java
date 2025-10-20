@@ -412,11 +412,6 @@ public class ApplicationHelper {
 
       boolean webMercatorAvailable = this.isWebMercatorAvailable(service, serviceLayer, hiDpiSubstituteLayer);
 
-      Object tileset3dStyle = null;
-      if (service.getProtocol() == TILES3D) {
-        tileset3dStyle = appLayerSettings.getTileset3dStyle();
-      }
-
       mapResponse.addAppLayersItem(new AppLayer()
           .id(layerRef.getId())
           .serviceId(serviceLayerServiceIds.get(serviceLayer))
@@ -452,7 +447,7 @@ public class ApplicationHelper {
           .attribution(attribution)
           .description(description)
           .webMercatorAvailable(webMercatorAvailable)
-          .tileset3dStyle(tileset3dStyle)
+          .tileset3dStyle(appLayerSettings.getTileset3dStyle())
           .hiddenFunctionality(appLayerSettings.getHiddenFunctionality()));
 
       return true;
