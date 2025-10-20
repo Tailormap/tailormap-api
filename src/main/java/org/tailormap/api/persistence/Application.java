@@ -17,6 +17,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.geotools.referencing.CRS;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -31,12 +36,6 @@ import org.tailormap.api.persistence.json.Bounds;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.tailormap.api.viewer.model.AppStyling;
 import org.tailormap.api.viewer.model.Component;
-
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Audited
 @Entity

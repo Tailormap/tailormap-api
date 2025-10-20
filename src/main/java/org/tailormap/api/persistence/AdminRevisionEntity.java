@@ -9,11 +9,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Table;
+import java.util.Objects;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.RevisionEntity;
 import org.tailormap.api.persistence.listener.AdminRevisionListener;
-
-import java.util.Objects;
 
 @Entity
 @RevisionEntity
@@ -21,7 +20,8 @@ import java.util.Objects;
 @Table(name = "admin_revisions", schema = "history")
 public class AdminRevisionEntity extends DefaultRevisionEntity {
   private String modifiedBy;
-    @Column(columnDefinition = "text")
+
+  @Column(columnDefinition = "text")
   private String summary;
 
   public String getModifiedBy() {
