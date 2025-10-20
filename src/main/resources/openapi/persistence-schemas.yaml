@@ -650,6 +650,10 @@ components:
           type: number
           format: double
           nullable: true
+        tileset3dStyle:
+          description: The tileset style to use for this layer
+          type: object
+          nullable: true
         hiddenFunctionality:
           $ref: './common-schemas.yaml#/components/schemas/HiddenLayerFunctionality'
         # TODO add properties for selected WMS style, feature info popup template, etc.

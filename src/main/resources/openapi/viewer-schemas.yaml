@@ -159,6 +159,10 @@ components:
         webMercatorAvailable:
           description: Whether Web Mercator projection is available for this layer.
           type: boolean
+        tileset3dStyle:
+          description: 'The tileset style to use for this layer'
+          type: object
+          nullable: true
         hiddenFunctionality:
           $ref: './common-schemas.yaml#/components/schemas/HiddenLayerFunctionality'
 

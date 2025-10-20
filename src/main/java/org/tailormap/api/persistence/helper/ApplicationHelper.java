@@ -447,6 +447,7 @@ public class ApplicationHelper {
           .attribution(attribution)
           .description(description)
           .webMercatorAvailable(webMercatorAvailable)
+          .tileset3dStyle(appLayerSettings.getTileset3dStyle())
           .hiddenFunctionality(appLayerSettings.getHiddenFunctionality()));
 
       return true;
