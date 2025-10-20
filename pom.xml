@@ -498,6 +498,10 @@ SPDX-License-Identifier: MIT
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-envers</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
@@ -1373,6 +1377,7 @@ SPDX-License-Identifier: MIT
                                         <exclude>org.springframework.boot:spring-boot-starter-quartz</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-jdbc</exclude>
                                         <exclude>org.springframework.boot:spring-boot-starter-mail</exclude>
+                                        <exclude>org.springframework.data:spring-data-envers</exclude>
                                         <exclude>org.quartz-scheduler:quartz</exclude>
                                         <exclude>org.springframework.security:spring-security-test</exclude>
                                         <exclude>org.hibernate.orm:hibernate-core</exclude>
