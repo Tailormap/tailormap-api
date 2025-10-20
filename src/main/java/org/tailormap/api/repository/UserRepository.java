@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.history.RevisionRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.lang.NonNull;
@@ -21,7 +22,7 @@ import org.tailormap.api.security.annotation.PreAuthorizeAdmin;
 
 @PreAuthorizeAdmin
 @RepositoryRestResource
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, String>, RevisionRepository<User, String, Long> {
   @Override
   @PreAuthorize("permitAll()")
   @EntityGraph(attributePaths = {"groups"})

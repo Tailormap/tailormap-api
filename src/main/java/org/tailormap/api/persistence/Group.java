@@ -20,11 +20,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
 import org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.tailormap.api.util.Constants;
 
+@Audited
 @Entity
 @Table(name = "groups")
 @EntityListeners(EntityEventPublisher.class)

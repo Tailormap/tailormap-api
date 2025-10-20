@@ -28,12 +28,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
 import org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.tailormap.api.util.Constants;
 import org.tailormap.api.util.TMPasswordDeserializer;
 
+@Audited
 @Entity
 @Table(name = "users")
 @EntityListeners(EntityEventPublisher.class)
