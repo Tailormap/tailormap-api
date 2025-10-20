@@ -65,6 +65,8 @@ updates:
       day: thursday
       time: "23:00"
       timezone: Europe/Amsterdam
+    labels:
+      - infrastructure
 
   - package-ecosystem: "devcontainers"
     directory: "/"
@@ -73,3 +75,5 @@ updates:
       day: thursday
       time: "23:00"
       timezone: Europe/Amsterdam
+    labels:
+      - infrastructure
