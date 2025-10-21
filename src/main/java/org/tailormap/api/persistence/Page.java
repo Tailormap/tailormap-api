@@ -17,9 +17,11 @@ import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
 import org.tailormap.api.persistence.json.PageTile;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
+@Audited
 @Entity
 @EntityListeners(EntityEventPublisher.class)
 public class Page {

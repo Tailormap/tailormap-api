@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -49,6 +50,7 @@ import org.tailormap.api.repository.FeatureSourceRepository;
 import org.tailormap.api.util.TMStringUtils;
 import org.tailormap.api.viewer.model.Service;
 
+@Audited
 @Entity
 @EntityListeners(EntityEventPublisher.class)
 public class GeoService {

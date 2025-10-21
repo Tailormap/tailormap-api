@@ -6,8 +6,9 @@
 package org.tailormap.api.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.history.RevisionRepository;
 import org.tailormap.api.persistence.Catalog;
 import org.tailormap.api.security.annotation.PreAuthorizeAdmin;
 
 @PreAuthorizeAdmin
-public interface CatalogRepository extends JpaRepository<Catalog, String> {}
+public interface CatalogRepository extends JpaRepository<Catalog, String>, RevisionRepository<Catalog, String, Long> {}

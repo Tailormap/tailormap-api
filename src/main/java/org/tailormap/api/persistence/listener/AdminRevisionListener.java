@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.tailormap.api.persistence.AdminRevisionEntity;
+import org.tailormap.api.persistence.AdminRevision;
 
 @Component
 public class AdminRevisionListener {
@@ -20,13 +20,13 @@ public class AdminRevisionListener {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @PrePersist
-  public void prePersist(AdminRevisionEntity entity) {
+  public void prePersist(AdminRevision entity) {
     final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null) {
       logger.warn("No authentication info available, cannot set modifiedBy on revision entity");
       return;
     }
-    logger.debug("Updating revision entity, with authentication info from: {}", authentication);
+    logger.debug("Updating revision entity {}, with authentication info from: {}", entity, authentication);
     entity.setModifiedBy(authentication.getName());
   }
 }
