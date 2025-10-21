@@ -1,6 +1,9 @@
 create schema if not exists history authorization tailormap;
 -- Note this schema is for the default strategy and does not have the org.hibernate.envers.global_with_modified_flag set
 -- spring.jpa.properties.org.hibernate.envers.audit_strategy=org.hibernate.envers.strategy.DefaultAuditStrategy
+
+create sequence revisions_seq start with 1 increment by 50;
+
 create table history.revisions
 (
     id          integer not null,
@@ -202,7 +205,24 @@ create table history.users_revisions
     primary key (revision_number, username)
 );
 
-create sequence revisions_seq start with 1 increment by 50;
+create table history.form_revisions
+(
+    id                bigint  not null,
+    revision_number   integer not null,
+    revision_type     smallint,
+    feature_source_id bigint,
+    feature_type_name varchar(255),
+    fields            jsonb,
+    name              varchar(255),
+    options           jsonb,
+    primary key (id, revision_number)
+);
+
+
+alter table if exists history.form_revisions
+    add constraint FK424q4s5o2yjmf9adtd66nfchs
+        foreign key (revision_number)
+            references history.revisions;
 
 alter table if exists history.application_revisions
     add constraint FKnj2d8iq4f7vm6ldph6gqt71v5
