@@ -11,8 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.data.envers.repository.support.EnversRevisionRepositoryFactoryBean;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.envers.repository.config.EnableEnversRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -22,9 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @since 0.1
  */
 @Configuration
-@EnableJpaRepositories(
-    basePackages = {"org.tailormap.api.repository"},
-    repositoryFactoryBeanClass = EnversRevisionRepositoryFactoryBean.class)
+@EnableEnversRepositories(basePackages = {"org.tailormap.api.repository"})
 @EntityScan(basePackages = {"org.tailormap.api.persistence"})
 @EnableTransactionManagement
 @Profile("!test")

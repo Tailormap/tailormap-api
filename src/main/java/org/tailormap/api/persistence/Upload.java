@@ -20,8 +20,10 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.hibernate.envers.Audited;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
+@Audited
 @Entity
 @EntityListeners(EntityEventPublisher.class)
 public class Upload {

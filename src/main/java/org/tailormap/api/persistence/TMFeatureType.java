@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
 import org.tailormap.api.persistence.helper.TMAttributeTypeHelper;
 import org.tailormap.api.persistence.json.FeatureTypeSettings;
 import org.tailormap.api.persistence.json.TMAttributeDescriptor;
 import org.tailormap.api.persistence.json.TMFeatureTypeInfo;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
+@Audited
 @Entity
 @Table(name = "feature_type")
 @EntityListeners(EntityEventPublisher.class)

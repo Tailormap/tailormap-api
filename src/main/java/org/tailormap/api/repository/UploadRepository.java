@@ -13,11 +13,12 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.history.RevisionRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.tailormap.api.persistence.Upload;
 
-public interface UploadRepository extends JpaRepository<Upload, UUID> {
+public interface UploadRepository extends JpaRepository<Upload, UUID>, RevisionRepository<Upload, UUID, Long> {
   @PreAuthorize("permitAll()")
   @NonNull @Query("select lastModified from Upload where id = :id")
   Optional<OffsetDateTime> findLastModifiedById(@NonNull UUID id);

@@ -13,8 +13,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
+import org.hibernate.envers.Audited;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
+@Audited
 @Entity
 @EntityListeners(EntityEventPublisher.class)
 public class OIDCConfiguration {

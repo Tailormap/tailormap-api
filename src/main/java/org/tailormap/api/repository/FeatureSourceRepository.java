@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.history.RevisionRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.lang.NonNull;
@@ -22,7 +23,8 @@ import org.tailormap.api.security.annotation.PreAuthorizeAdmin;
     path = "feature-sources",
     collectionResourceRel = "feature-sources",
     itemResourceRel = "feature-source")
-public interface FeatureSourceRepository extends JpaRepository<TMFeatureSource, Long> {
+public interface FeatureSourceRepository
+    extends JpaRepository<TMFeatureSource, Long>, RevisionRepository<TMFeatureSource, Long, Long> {
   TMFeatureSource findByUrl(String url);
 
   @Override
