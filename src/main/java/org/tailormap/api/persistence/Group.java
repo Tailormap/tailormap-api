@@ -14,6 +14,8 @@ import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.Pattern;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,8 +23,10 @@ import java.util.Set;
 import java.util.function.Function;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
+import org.tailormap.api.persistence.json.GroupOidcInfo;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 import org.tailormap.api.util.Constants;
 
@@ -69,6 +73,11 @@ public class Group {
   @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
   @Column(columnDefinition = "jsonb")
   private List<AdminAdditionalProperty> additionalProperties = new ArrayList<>();
+
+  @NotAudited
+  @Type(value = io.hypersistence.utils.hibernate.type.json.JsonBinaryType.class)
+  @Column(columnDefinition = "jsonb")
+  private GroupOidcInfo oidcInfo;
 
   public String getName() {
     return name;
@@ -142,6 +151,15 @@ public class Group {
     return this;
   }
 
+  public GroupOidcInfo getOidcInfo() {
+    return oidcInfo;
+  }
+
+  public Group setOidcInfo(GroupOidcInfo oidcInfo) {
+    this.oidcInfo = oidcInfo;
+    return this;
+  }
+
   @PreRemove
   @SuppressWarnings("PMD.UnusedPrivateMethod")
   private void removeMembers() {
@@ -156,7 +174,7 @@ public class Group {
 
   /**
    * Maps a property value in the additional properties of the group. If the property does not exist, it will be
-   * created and the valueMapper function will be called with a null value.
+   * created, and the valueMapper function will be called with a null value.
    *
    * @param key the key of the property
    * @param isPublic whether the property is public
@@ -164,5 +182,13 @@ public class Group {
    */
   public void mapAdminPropertyValue(String key, boolean isPublic, Function<Object, Object> valueMapper) {
     AdminAdditionalPropertyHelper.mapAdminPropertyValue(additionalProperties, key, isPublic, valueMapper);
+  }
+
+  public void oidcClientIdSeen(String clientId) {
+    if (oidcInfo == null) {
+      oidcInfo = new GroupOidcInfo();
+    }
+    oidcInfo.addClientIdsItem(clientId);
+    oidcInfo.putLastSeenByClientIdItem(clientId, OffsetDateTime.now(ZoneId.of("UTC")));
   }
 }

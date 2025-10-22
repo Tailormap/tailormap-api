@@ -7,14 +7,9 @@
 package org.tailormap.api.security;
 
 import java.lang.invoke.MethodHandles;
-import java.time.Instant;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -50,20 +45,7 @@ public class OIDCAuthenticationEventsHandler {
 
       for (String role : roles) {
         Group group = groupRepository.findById(role).orElseGet(() -> new Group().setName(role));
-        group.mapAdminPropertyValue("oidcClientIds", false, value -> {
-          @SuppressWarnings("unchecked")
-          Set<String> clientIds =
-              new HashSet<>(value instanceof List ? (List<String>) value : Collections.emptyList());
-          clientIds.add(clientId);
-          return clientIds;
-        });
-        group.mapAdminPropertyValue("oidcLastSeen", false, value -> {
-          @SuppressWarnings("unchecked")
-          Map<String, String> lastSeenByClientId =
-              value instanceof Map ? (Map<String, String>) value : new HashMap<>();
-          lastSeenByClientId.put(clientId, Instant.now().toString());
-          return lastSeenByClientId;
-        });
+        group.oidcClientIdSeen(clientId);
         groupRepository.save(group);
       }
     }
