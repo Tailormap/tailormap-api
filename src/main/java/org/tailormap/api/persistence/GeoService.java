@@ -30,6 +30,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -95,6 +96,7 @@ public class GeoService {
    * Original capabilities as received from the service. This can be used for capability information not already
    * parsed in this entity, such as tiling information.
    */
+  @NotAudited
   @Basic(fetch = FetchType.LAZY)
   @JsonIgnore
   private byte[] capabilities;
