@@ -1181,9 +1181,11 @@ SPDX-License-Identifier: MIT
                         </configuration>
                     </execution>
                     <execution>
+                        <id>resolve-dependencies</id>
                         <goals>
                             <goal>properties</goal>
                         </goals>
+                        <phase>initialize</phase>
                     </execution>
                 </executions>
             </plugin>
