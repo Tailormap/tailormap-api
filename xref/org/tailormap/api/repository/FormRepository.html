@@ -15,11 +15,12 @@
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> org.tailormap.api.repository;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> org.springframework.data.jpa.repository.JpaRepository;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> org.springframework.data.<strong class="jxr_keyword">rest</strong>.core.annotation.RepositoryRestResource;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Form;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  @RepositoryRestResource(path = <span class="jxr_string">"forms"</span>, collectionResourceRel = <span class="jxr_string">"forms"</span>, itemResourceRel = <span class="jxr_string">"form"</span>)
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="FormRepository" href="../../../../org/tailormap/api/repository/FormRepository.html#FormRepository">FormRepository</a> <strong class="jxr_keyword">extends</strong> JpaRepository&lt;Form, Long&gt; {}
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> org.springframework.data.repository.history.RevisionRepository;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.springframework.data.<strong class="jxr_keyword">rest</strong>.core.annotation.RepositoryRestResource;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.tailormap.api.persistence.Form;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  @RepositoryRestResource(path = <span class="jxr_string">"forms"</span>, collectionResourceRel = <span class="jxr_string">"forms"</span>, itemResourceRel = <span class="jxr_string">"form"</span>)
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="FormRepository" href="../../../../org/tailormap/api/repository/FormRepository.html#FormRepository">FormRepository</a> <strong class="jxr_keyword">extends</strong> JpaRepository&lt;Form, Long&gt;, RevisionRepository&lt;Form, Long, Long&gt; {}
 </pre>
 <hr/>
 <div id="footer">© 2021–2025 <a href="https://www.b3partners.nl/">B3Partners B.V.</a></div>

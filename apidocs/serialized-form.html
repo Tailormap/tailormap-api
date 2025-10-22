@@ -251,6 +251,29 @@ loadScripts(document, 'script');</script>
 <h2 title="Package">Package&nbsp;<a href="org/tailormap/api/persistence/package-summary.html">org.tailormap.api.persistence</a></h2>
 <ul class="block-list">
 <li>
+<section class="serialized-class-details" id="org.tailormap.api.persistence.AdminRevision">
+<h3>Class&nbsp;<a href="org/tailormap/api/persistence/AdminRevision.html" title="class in org.tailormap.api.persistence">org.tailormap.api.persistence.AdminRevision</a></h3>
+<div class="type-signature">class AdminRevision extends org.hibernate.envers.DefaultRevisionEntity implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>modifiedBy</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> modifiedBy</pre>
+</li>
+<li class="block-list">
+<h5>modifiedEntityNames</h5>
+<pre><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt; modifiedEntityNames</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
 <section class="serialized-class-details" id="org.tailormap.api.persistence.SearchIndex">
 <h3>Class&nbsp;<a href="org/tailormap/api/persistence/SearchIndex.html" title="class in org.tailormap.api.persistence">org.tailormap.api.persistence.SearchIndex</a></h3>
 <div class="type-signature">class SearchIndex extends <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
@@ -1535,6 +1558,33 @@ loadScripts(document, 'script');</script>
 <li class="block-list">
 <h5>xyzCrs</h5>
 <pre><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a> xyzCrs</pre>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<li>
+<section class="serialized-class-details" id="org.tailormap.api.persistence.json.GroupOidcInfo">
+<h3>Class&nbsp;<a href="org/tailormap/api/persistence/json/GroupOidcInfo.html" title="class in org.tailormap.api.persistence.json">org.tailormap.api.persistence.json.GroupOidcInfo</a></h3>
+<div class="type-signature">class GroupOidcInfo extends <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a> implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a></div>
+<dl class="name-value">
+<dt>serialVersionUID:</dt>
+<dd>1L</dd>
+</dl>
+<ul class="block-list">
+<li>
+<section class="detail">
+<h4>Serialized Fields</h4>
+<ul class="block-list">
+<li class="block-list">
+<h5>clientIds</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt; clientIds</pre>
+</li>
+<li class="block-list">
+<h5>lastSeenByClientId</h5>
+<pre>@Valid <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/OffsetDateTime.html" title="class or interface in java.time" class="external-link">OffsetDateTime</a>&gt; lastSeenByClientId</pre>
 </li>
 </ul>
 </section>
