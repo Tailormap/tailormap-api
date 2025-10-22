@@ -735,3 +735,22 @@ components:
           nullable: false
         value:
           type: object
+
+    GroupOidcInfo:
+      type: object
+      required:
+        - clientIds
+        - lastSeenByClientId
+      properties:
+        clientIds:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+          description: List of OIDC client IDs where this group (matched by OIDC role name) was received from.
+        lastSeenByClientId:
+          type: object
+          additionalProperties:
+            type: string
+            format: date-time
+          description: Timestamp of the last time this group was seen in an OIDC token of the client ID.

@@ -1,3 +1,21 @@
+alter table if exists groups
+    add column oidc_info jsonb;
+
+update groups
+set oidc_info             = jsonb_build_object('clientIds', coalesce((select elem -> 'value'
+                                                                      from jsonb_array_elements(additional_properties) AS elem
+                                                                      where elem ->> 'key' = 'oidcClientIds'
+                                                                      limit 1), '[]'::jsonb),
+                                               'lastSeenByClientId', coalesce((select elem -> 'value'
+                                                                               from jsonb_array_elements(additional_properties) AS elem
+                                                                               where elem ->> 'key' = 'oidcLastSeen'
+                                                                               limit 1), '{}'::jsonb)),
+    additional_properties = coalesce((select jsonb_agg(elem)
+                                      from jsonb_array_elements(additional_properties) as elem
+                                      where elem ->> 'key' not in ('oidcClientIds', 'oidcLastSeen')), '[]'::jsonb)
+where additional_properties is not null
+and (additional_properties @> '[{"key": "oidcClientIds"}]'::jsonb or additional_properties @> '[{"key": "oidcLastSeen"}]'::jsonb);
+
 create schema if not exists history authorization tailormap;
 -- Note this schema is for the default strategy and does not have the org.hibernate.envers.global_with_modified_flag set
 -- spring.jpa.properties.org.hibernate.envers.audit_strategy=org.hibernate.envers.strategy.DefaultAuditStrategy
@@ -130,6 +148,7 @@ create table history.groups_revisions
     alias_for_group       varchar(255),
     description           varchar(255),
     notes                 text,
+    oidc_info             jsonb,
     system_group          boolean,
     primary key (name, revision_number)
 );
