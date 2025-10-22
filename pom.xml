@@ -130,6 +130,7 @@ SPDX-License-Identifier: MIT
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
         <hibernate.version>6.6.33.Final</hibernate.version>
         <junit-jupiter.version>6.0.0</junit-jupiter.version>
+        <logback.version>1.5.19</logback.version>
         <micrometer.version>1.15.5</micrometer.version>
         <mssql-jdbc.version>13.2.1.jre11</mssql-jdbc.version>
         <oracle-database.version>23.9.0.25.07</oracle-database.version>
