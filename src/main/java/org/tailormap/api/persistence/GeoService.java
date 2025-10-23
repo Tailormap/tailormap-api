@@ -33,6 +33,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.lang.NonNull;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -53,8 +54,8 @@ import org.tailormap.api.viewer.model.Service;
 
 @Audited
 @Entity
-@EntityListeners(EntityEventPublisher.class)
-public class GeoService {
+@EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
+public class GeoService extends AuditMetadata {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 

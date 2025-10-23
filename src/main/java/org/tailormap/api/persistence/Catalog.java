@@ -15,13 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.json.CatalogNode;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
 @Audited
 @Entity
-@EntityListeners(EntityEventPublisher.class)
-public class Catalog {
+@EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
+public class Catalog extends AuditMetadata {
   public static final String MAIN = "main";
 
   @Id

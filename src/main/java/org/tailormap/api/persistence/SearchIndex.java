@@ -22,6 +22,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.Type;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.tailormap.api.admin.model.SearchIndexSummary;
 import org.tailormap.api.admin.model.TaskSchedule;
@@ -30,8 +31,8 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 /** SearchIndex is a table that stores the metadata for search indexes for a feature type. */
 @Entity
 @Table(name = "search_index")
-@EntityListeners(EntityEventPublisher.class)
-public class SearchIndex implements Serializable {
+@EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
+public class SearchIndex extends AuditMetadata implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;

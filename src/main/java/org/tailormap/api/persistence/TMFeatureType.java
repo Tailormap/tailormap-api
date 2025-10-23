@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.helper.TMAttributeTypeHelper;
 import org.tailormap.api.persistence.json.FeatureTypeSettings;
 import org.tailormap.api.persistence.json.TMAttributeDescriptor;
@@ -30,8 +31,8 @@ import org.tailormap.api.persistence.listener.EntityEventPublisher;
 @Audited
 @Entity
 @Table(name = "feature_type")
-@EntityListeners(EntityEventPublisher.class)
-public class TMFeatureType {
+@EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
+public class TMFeatureType extends AuditMetadata {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,12 +14,13 @@ import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import org.hibernate.envers.Audited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
 @Audited
 @Entity
-@EntityListeners(EntityEventPublisher.class)
-public class OIDCConfiguration {
+@EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
+public class OIDCConfiguration extends AuditMetadata {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;

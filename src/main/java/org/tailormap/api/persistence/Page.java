@@ -18,13 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.json.PageTile;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
 @Audited
 @Entity
-@EntityListeners(EntityEventPublisher.class)
-public class Page {
+@EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
+public class Page extends AuditMetadata {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
