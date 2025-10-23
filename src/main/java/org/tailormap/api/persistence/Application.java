@@ -27,6 +27,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.json.AppContent;
 import org.tailormap.api.persistence.json.AppLayerSettings;
 import org.tailormap.api.persistence.json.AppSettings;
@@ -39,8 +40,8 @@ import org.tailormap.api.viewer.model.Component;
 
 @Audited
 @Entity
-@EntityListeners(EntityEventPublisher.class)
-public class Application {
+@EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
+public class Application extends AuditMetadata {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 

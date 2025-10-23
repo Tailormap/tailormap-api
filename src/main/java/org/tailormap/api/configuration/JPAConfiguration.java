@@ -11,9 +11,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.envers.repository.config.EnableEnversRepositories;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.tailormap.api.security.SpringSecurityAuditorAware;
 
 /**
  * JPA configuration beans.
@@ -24,6 +27,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableEnversRepositories(basePackages = {"org.tailormap.api.repository"})
 @EntityScan(basePackages = {"org.tailormap.api.persistence"})
 @EnableTransactionManagement
+@EnableJpaAuditing
 @Profile("!test")
 public class JPAConfiguration {
 
@@ -37,5 +41,10 @@ public class JPAConfiguration {
   @Bean
   public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
     return new PersistenceExceptionTranslationPostProcessor();
+  }
+
+  @Bean
+  public AuditorAware<String> auditorProvider() {
+    return new SpringSecurityAuditorAware();
   }
 }
