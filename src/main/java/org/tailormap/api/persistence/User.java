@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
@@ -38,8 +39,8 @@ import org.tailormap.api.util.TMPasswordDeserializer;
 @Audited
 @Entity
 @Table(name = "users")
-@EntityListeners(EntityEventPublisher.class)
-public class User {
+@EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
+public class User extends AuditMetadata {
 
   @Id
   @Pattern(regexp = Constants.NAME_REGEX, message = "User" + Constants.NAME_REGEX_INVALID_MESSAGE) private String username;
