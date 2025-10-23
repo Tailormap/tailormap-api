@@ -12,11 +12,12 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import org.hibernate.annotations.Type;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
 @Entity
-@EntityListeners(EntityEventPublisher.class)
-public class Configuration {
+@EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
+public class Configuration extends AuditMetadata {
   public static final String DEFAULT_APP = "default-app";
 
   public static final String DEFAULT_BASE_APP = "default-base-app";

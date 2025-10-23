@@ -24,6 +24,7 @@ import java.util.function.Function;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.helper.AdminAdditionalPropertyHelper;
 import org.tailormap.api.persistence.json.AdminAdditionalProperty;
 import org.tailormap.api.persistence.json.GroupOidcInfo;
@@ -33,8 +34,8 @@ import org.tailormap.api.util.Constants;
 @Audited
 @Entity
 @Table(name = "groups")
-@EntityListeners(EntityEventPublisher.class)
-public class Group {
+@EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
+public class Group extends AuditMetadata {
   // Group to make authorization rules for anonymous users
   public static final String ANONYMOUS = "anonymous";
   // Group to make authorization rules for authenticated users

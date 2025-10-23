@@ -21,12 +21,13 @@ import java.time.ZoneId;
 import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.envers.Audited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.tailormap.api.persistence.listener.EntityEventPublisher;
 
 @Audited
 @Entity
-@EntityListeners(EntityEventPublisher.class)
-public class Upload {
+@EntityListeners({EntityEventPublisher.class, AuditingEntityListener.class})
+public class Upload extends AuditMetadata {
   public static final String CATEGORY_APP_LOGO = "app-logo";
   public static final String CATEGORY_LEGEND = "legend";
   public static final String CATEGORY_PORTAL_IMAGE = "portal-image";
