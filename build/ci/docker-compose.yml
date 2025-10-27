@@ -23,7 +23,7 @@ networks:
 services:
   postgres:
     container_name: postgres
-    image: postgis/postgis:17-3.5
+    image: postgis/postgis:18-3.6
     environment:
       TZ: Europe/Amsterdam
       POSTGRES_USER: tailormap
@@ -32,7 +32,7 @@ services:
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql
     networks:
       - tailormap-ci
     healthcheck:
@@ -51,7 +51,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fa6efb5b-075b-4b7b-aab0-96108cd77e76}
       GEODATA_PASSWORD: ${GEODATA_PASSWORD:-980f1c8A-25933b2}
     volumes:
-      - postgis-data:/var/lib/postgresql/data
+      - postgis-data:/var/lib/postgresql
     ports:
       - "127.0.0.1:54322:5432"
     networks:
