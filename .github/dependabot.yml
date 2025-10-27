@@ -25,6 +25,9 @@ updates:
       - dependency-name: org.hibernate.orm.tooling:hibernate-enhance-maven-plugin
         versions:
           - '>= 7'
+      - dependency-name: org.eclipse.jetty.ee10:jetty-ee10-bom
+        versions:
+          - '>= 12.1'
 
   - package-ecosystem: github-actions
     directory: "/"

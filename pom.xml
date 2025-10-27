@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <!-- when updating please check version overrides using the commands in the properties section -->
-        <version>3.5.6</version>
+        <version>3.5.7</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap-api</artifactId>
@@ -126,7 +126,7 @@ SPDX-License-Identifier: MIT
         -->
         <awaitility.version>4.3.0</awaitility.version>
         <commons-lang3.version>3.19.0</commons-lang3.version>
-        <flyway.version>11.14.1</flyway.version>
+        <flyway.version>11.15.0</flyway.version>
         <!-- <hamcrest.version>3.0</hamcrest.version>-->
         <hibernate.version>6.6.33.Final</hibernate.version>
         <junit-jupiter.version>6.0.0</junit-jupiter.version>
@@ -160,7 +160,7 @@ SPDX-License-Identifier: MIT
         <modernizer-maven-plugin.version>3.2.0</modernizer-maven-plugin.version>
         <maven-fluido-skin.version>2.1.0</maven-fluido-skin.version>
         <swagger-ui.version>5.29.3</swagger-ui.version>
-        <sentry.version>8.23.0</sentry.version>
+        <sentry.version>8.24.0</sentry.version>
         <errorProne.version>2.42.0</errorProne.version>
         <errorProneFlags>-XepDisableWarningsInGeneratedCode</errorProneFlags>
         <errorProneExcludePaths>${project.build.directory}/generated-sources/.*</errorProneExcludePaths>
@@ -186,7 +186,7 @@ SPDX-License-Identifier: MIT
                  our spring-boot parent provides this import -->
                 <groupId>org.eclipse.jetty.ee10</groupId>
                 <artifactId>jetty-ee10-bom</artifactId>
-                <version>12.0.28</version>
+                <version>12.0.29</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
